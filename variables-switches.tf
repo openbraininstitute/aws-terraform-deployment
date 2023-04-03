@@ -1,0 +1,18 @@
+variable "create_ssh_bastion_vm_on_public_a_network" {
+  type        = bool
+  default     = true
+  sensitive   = false
+  description = "Create SSH bastion VM on public network in availability zone A: needed for access to HPC resources for example"
+}
+variable "create_ssh_bastion_vm_on_public_b_network" {
+  type        = bool
+  default     = false
+  sensitive   = false
+  description = "Create SSH bastion VM on public network in availability zone B: only needed for testing across availability zones"
+}
+variable "create_nat_gateway" {
+  type        = bool
+  default     = true
+  sensitive   = false
+  description = "Create the outgoing NAT / masquerading gateway for the private subnets"
+}
