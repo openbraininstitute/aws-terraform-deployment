@@ -8,6 +8,7 @@ resource "aws_instance" "ssh_bastion_a" {
   vpc_security_group_ids      = [aws_security_group.public.id]
   associate_public_ip_address = true
   user_data_replace_on_change = true
+  monitoring                  = true
 
   user_data = <<EOF
 #!/bin/bash
@@ -55,6 +56,7 @@ resource "aws_instance" "ssh_bastion_b" {
   vpc_security_group_ids      = [aws_security_group.public.id]
   associate_public_ip_address = true
   user_data_replace_on_change = true
+  monitoring                  = true
 
   user_data = <<EOF
 #!/bin/bash

@@ -37,3 +37,9 @@ tfsec:
     - cd "${TF_ROOT}"
     - /usr/bin/tfsec
   allow_failure: false
+
+terrascan:
+  image: tenable/terrascan
+  stage: validate
+  script:
+    - terrascan scan -i terraform --iac-version v14 --iac-dir ${TF_ROOT} --non-recursive --skip-rules=AC_AWS_0369
