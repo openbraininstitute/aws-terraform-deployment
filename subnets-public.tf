@@ -165,8 +165,6 @@ resource "aws_vpc_security_group_ingress_rule" "public_allow_everything" {
 resource "aws_vpc_security_group_egress_rule" "public_allow_everything_outgoing" {
   security_group_id = aws_security_group.public.id
   description       = "Allow everything outgoing"
-  from_port         = 0
-  to_port           = 0
   ip_protocol       = -1
   cidr_ipv4         = "0.0.0.0/0"
 
