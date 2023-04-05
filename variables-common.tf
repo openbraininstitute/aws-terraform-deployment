@@ -10,3 +10,10 @@ variable "epfl_cidr" {
   description = "CIDR of the network range used by EPFL"
   sensitive   = false
 }
+
+variable "sbo_https_test_hostname" {
+  default     = "sbo-https-test.shapes-registry.org"
+  type        = string
+  description = "The default endpoint for the application load balancer"
+  sensitive   = false
+}
