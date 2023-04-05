@@ -1,0 +1,216 @@
+resource "aws_cloudwatch_log_group" "core_webapp" {
+  # TODO check if the logs can be encrypted
+  name              = var.core_webapp_log_group_name
+  skip_destroy      = false
+  retention_in_days = 5
+
+  kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
+
+  tags = {
+    Application = "core_webapp"
+    SBO_Billing = "core_webapp"
+  }
+}
+
+# TODO check: not used?
+resource "aws_cloudwatch_log_group" "core_webapp_ecs" {
+  # TODO check if the logs can be encrypted
+  name              = "core_webapp_ecs"
+  skip_destroy      = false
+  retention_in_days = 5
+
+  kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
+
+  tags = {
+    Application = "core_webapp"
+    SBO_Billing = "core_webapp"
+  }
+}
+
+resource "aws_ecs_cluster" "core_webapp" {
+  name = "core_webapp_ecs_cluster"
+
+  tags = {
+    Application = "core_webapp"
+    SBO_Billing = "core_webapp"
+  }
+  setting {
+    name  = "containerInsights"
+    value = "disabled" #tfsec:ignore:aws-ecs-enable-container-insight
+  }
+}
+
+# TODO make more strict
+resource "aws_security_group" "core_webapp_ecs_task" {
+  name        = "core_webapp_ecs_task"
+  vpc_id      = aws_vpc.sbo_poc.id
+  description = "Sec group for SBO core webapp"
+
+  tags = {
+    Name        = "core_webapp_secgroup"
+    SBO_Billing = "core_webapp"
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "core_webapp_allow_port_8000" {
+  security_group_id = aws_security_group.core_webapp.id
+
+  ip_protocol = "tcp"
+  from_port   = 8000
+  to_port     = 8000
+  cidr_ipv4   = aws_vpc.sbo_poc.cidr_block
+  description = "Allow port 8000 http"
+}
+
+resource "aws_vpc_security_group_egress_rule" "core_webapp_allow_vpc_outgoing" {
+  security_group_id = aws_security_group.core_webapp.id
+  # TODO limit to what is needed
+  ip_protocol = "tcp"
+  from_port   = 0
+  to_port     = 0
+  cidr_ipv4   = aws_vpc.sbo_poc.cidr_block
+  description = "Allow everything to vpc"
+}
+
+resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
+  count = var.core_webapp_ecs_number_of_containers > 0 ? 1 : 0
+
+  family       = "core_webapp_task_family"
+  network_mode = "awsvpc"
+
+  container_definitions = jsonencode([
+    {
+      memory      = 1024
+      cpu         = 512
+      networkMode = "awsvpc"
+      family      = "blazegraph"
+      essential   = true
+      image       = var.core_webapp_docker_image_url
+      name        = "core_webapp"
+      repositoryCredentials = {
+        credentialsParameter = var.dockerhub_credentials_arn
+      }
+      portMappings = [
+        {
+          hostPort      = 8000
+          containerPort = 8000
+          protocol      = "tcp"
+        }
+      ]
+      environment = [
+        {
+          name  = "FOO"
+          value = "BAR"
+        }
+      ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = var.core_webapp_log_group_name
+          awslogs-region        = var.aws_region
+          awslogs-create-group  = "true"
+          awslogs-stream-prefix = "core_webapp"
+        }
+      }
+    }
+  ])
+
+  cpu                      = 512
+  memory                   = 1024
+  requires_compatibilities = ["FARGATE"]
+  execution_role_arn       = aws_iam_role.ecs_core_webapp_task_execution_role[0].arn
+  task_role_arn            = aws_iam_role.ecs_core_webapp_task_role[0].arn
+}
+
+resource "aws_ecs_service" "core_webapp_ecs_service" {
+  count = var.core_webapp_ecs_number_of_containers > 0 ? 1 : 0
+
+  name            = "core_webapp_ecs_service"
+  cluster         = aws_ecs_cluster.core_webapp.id
+  launch_type     = "FARGATE"
+  task_definition = aws_ecs_task_definition.core_webapp_ecs_definition[0].arn
+  desired_count   = var.core_webapp_ecs_number_of_containers
+  #iam_role        = "${var.ecs_iam_role_name}"
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.core_webapp.arn
+    container_name   = "core_webapp"
+    container_port   = 8000
+  }
+
+  network_configuration {
+    security_groups  = [aws_security_group.core_webapp_ecs_task.id]
+    subnets          = [aws_subnet.core_webapp.id]
+    assign_public_ip = false
+  }
+  depends_on = [
+    aws_cloudwatch_log_group.core_webapp,
+    aws_iam_role.ecs_core_webapp_task_execution_role, # wrong?
+  ]
+  lifecycle {
+    ignore_changes = [task_definition, desired_count]
+  }
+}
+
+#         "arn:aws:kms:${var.aws_region}:${data.aws_caller_identity.current.account_id}:key/key_id"  
+/*{
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt",
+        "ssm:GetParameters",
+        "secretsmanager:GetSecretValue"
+      ],
+      "Resource": [
+        "${var.dockerhub_credentials_arn}"
+      ]
+    }*/
+resource "aws_iam_role" "ecs_core_webapp_task_execution_role" {
+  count = var.core_webapp_ecs_number_of_containers > 0 ? 1 : 0
+  name  = "core_webapp-ecsTaskExecutionRole"
+
+  assume_role_policy = <<EOF
+{
+ "Version": "2012-10-17",
+ "Statement": [
+   {
+     "Action": "sts:AssumeRole",
+     "Principal": {
+       "Service": "ecs-tasks.amazonaws.com"
+     },
+     "Effect": "Allow",
+     "Sid": ""
+   }
+ ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_core_webapp_task_execution_role_policy_attachment" {
+  role       = aws_iam_role.ecs_core_webapp_task_execution_role[0].name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+
+  count = var.core_webapp_ecs_number_of_containers > 0 ? 1 : 0
+}
+
+resource "aws_iam_role" "ecs_core_webapp_task_role" {
+  count = var.core_webapp_ecs_number_of_containers > 0 ? 1 : 0
+  name  = "core_webapp-ecsTaskRole"
+
+  assume_role_policy = <<EOF
+{
+ "Version": "2012-10-17",
+ "Statement": [
+   {
+     "Action": "sts:AssumeRole",
+     "Principal": {
+       "Service": "ecs-tasks.amazonaws.com"
+     },
+     "Effect": "Allow",
+     "Sid": ""
+   }
+ ]
+}
+EOF
+}
+
+data "aws_caller_identity" "current" {}

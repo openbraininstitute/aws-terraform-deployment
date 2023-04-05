@@ -17,3 +17,24 @@ variable "sbo_https_test_hostname" {
   description = "The default endpoint for the application load balancer"
   sensitive   = false
 }
+
+variable "core_webapp_hostname" {
+  default     = "sbo-core-webapp.shapes-registry.org"
+  type        = string
+  description = "The hostname for the core webapp"
+  sensitive   = false
+}
+
+variable "core_webapp_log_group_name" {
+  default     = "core_webapp"
+  type        = string
+  description = "The log name within cloudwatch for the core webapp"
+  sensitive   = false
+}
+
+variable "core_webapp_docker_image_url" {
+  default     = "bluebrain/sbo-core-web-app"
+  type        = string
+  description = "docker image for the core webapp"
+  sensitive   = false
+}
