@@ -10,6 +10,7 @@ stages:
   - test
   - build
   - deploy
+  - configure
   - cleanup
 
 fmt:
@@ -29,6 +30,10 @@ deploy:
     - build
   environment:
     name: $TF_STATE_NAME
+  artifacts:
+    name: bolt-inventory
+    paths:
+      - ${TF_ROOT}/bolt-inventory.yaml
 
 tfsec:
   image: aquasec/tfsec
@@ -43,3 +48,18 @@ terrascan:
   stage: validate
   script:
     - terrascan scan -i terraform --iac-version v14 --iac-dir ${TF_ROOT} --non-recursive --skip-rules=AC_AWS_0369
+
+#puppet_bolt:
+#  image: puppet/puppet-bolt
+#  stage: configure
+#  resource_group: ${TF_STATE_NAME}
+#  dependencies:
+#    - deploy
+#  rules:
+#    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+#  script:
+#    - cat bolt-inventory.yaml
+#    - bolt plan show aws_poc -v
+#    - bolt plan run aws_poc -v
+  
+  
