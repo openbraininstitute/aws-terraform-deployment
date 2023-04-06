@@ -24,7 +24,8 @@ echo "to be replaced with creation of user logins"
   }
 
   metadata_options {
-    http_tokens = "required"
+    http_tokens   = "required"
+    http_endpoint = "enabled"
   }
 }
 
@@ -72,7 +73,8 @@ echo "to be replaced with creation of user logins"
   }
 
   metadata_options {
-    http_tokens = "required"
+    http_tokens   = "required"
+    http_endpoint = "enabled"
   }
 }
 
