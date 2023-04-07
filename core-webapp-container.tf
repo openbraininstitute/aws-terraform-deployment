@@ -53,7 +53,7 @@ resource "aws_security_group" "core_webapp_ecs_task" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "core_webapp_allow_port_8000" {
-  security_group_id = aws_security_group.core_webapp.id
+  security_group_id = aws_security_group.core_webapp_ecs_task.id
 
   ip_protocol = "tcp"
   from_port   = 8000
@@ -62,14 +62,16 @@ resource "aws_vpc_security_group_ingress_rule" "core_webapp_allow_port_8000" {
   description = "Allow port 8000 http"
 }
 
-resource "aws_vpc_security_group_egress_rule" "core_webapp_allow_vpc_outgoing" {
-  security_group_id = aws_security_group.core_webapp.id
+resource "aws_vpc_security_group_egress_rule" "core_webapp_allow_outgoing" {
+  security_group_id = aws_security_group.core_webapp_ecs_task.id
   # TODO limit to what is needed
+  # needs access to dockerhub and to AWS secrets manager, likely also nexus, ...
   ip_protocol = "tcp"
   from_port   = 0
   to_port     = 0
-  cidr_ipv4   = aws_vpc.sbo_poc.cidr_block
-  description = "Allow everything to vpc"
+  cidr_ipv4   = "0.0.0.0/0"
+  #cidr_ipv4   = aws_vpc.sbo_poc.cidr_block
+  description = "Allow everything"
 }
 
 resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
@@ -99,9 +101,31 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
       ]
       environment = [
         {
-          name  = "FOO"
-          value = "BAR"
-        }
+          name  = "DEBUG"
+          value = "true"
+        },
+        {
+          name  = "NEXTAUTH_URL"
+          value = "https://sbo-core-webapp.shapes-registry.org/mmb-beta/api/auth"
+        },
+        {
+          name  = "KEYCLOAK_ISSUER"
+          value = "https://sbo-poc-auth.auth.us-east-1.amazoncognito.com"
+        },
+      ]
+      secrets = [
+        {
+          name      = "KEYCLOAK_CLIENT_SECRET"
+          valueFrom = "${var.sbo_core_webapp_secrets_arn}:cognito_client_secret::"
+        },
+        {
+          name      = "NEXTAUTH_SECRET"
+          valueFrom = "${var.sbo_core_webapp_secrets_arn}:nextauth_secret::"
+        },
+        {
+          name      = "KEYCLOAK_CLIENT_ID"
+          valueFrom = "${var.sbo_core_webapp_secrets_arn}:cognito_client_id::"
+        },
       ]
       logConfiguration = {
         logDriver = "awslogs"
@@ -152,18 +176,6 @@ resource "aws_ecs_service" "core_webapp_ecs_service" {
   }
 }
 
-#         "arn:aws:kms:${var.aws_region}:${data.aws_caller_identity.current.account_id}:key/key_id"  
-/*{
-      "Effect": "Allow",
-      "Action": [
-        "kms:Decrypt",
-        "ssm:GetParameters",
-        "secretsmanager:GetSecretValue"
-      ],
-      "Resource": [
-        "${var.dockerhub_credentials_arn}"
-      ]
-    }*/
 resource "aws_iam_role" "ecs_core_webapp_task_execution_role" {
   count = var.core_webapp_ecs_number_of_containers > 0 ? 1 : 0
   name  = "core_webapp-ecsTaskExecutionRole"
@@ -214,3 +226,15 @@ EOF
 }
 
 data "aws_caller_identity" "current" {}
+
+resource "aws_iam_role_policy_attachment" "ecs_core_webapp_task_role_dockerhub_policy_attachment" {
+  count      = var.core_webapp_ecs_number_of_containers > 0 ? 1 : 0
+  role       = aws_iam_role.ecs_core_webapp_task_execution_role[0].name
+  policy_arn = aws_iam_policy.dockerhub_access.arn
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_core_webapp_secrets_access_policy_attachment" {
+  count      = var.core_webapp_ecs_number_of_containers > 0 ? 1 : 0
+  role       = aws_iam_role.ecs_core_webapp_task_execution_role[0].name
+  policy_arn = aws_iam_policy.sbo_core_webapp_secrets_access.arn
+}

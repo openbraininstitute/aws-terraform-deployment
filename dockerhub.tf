@@ -7,8 +7,8 @@ variable "dockerhub_credentials_arn" {
 }
 
 resource "aws_iam_policy" "dockerhub_access" {
-  name        = "keycloak-task-policy-db"
-  description = "Policy that allows access to the db"
+  name        = "dockerhub-credentiasl-access-policy"
+  description = "Policy that allows access to the dockerhub credentials"
 
   policy = <<EOF
 {

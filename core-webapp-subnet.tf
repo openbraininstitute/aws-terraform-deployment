@@ -33,40 +33,56 @@ resource "aws_route_table_association" "core_webapp" {
   route_table_id = aws_route_table.core_webapp.id
 }
 
-resource "aws_security_group" "core_webapp" {
-  name        = "Core WebAPP"
-  vpc_id      = aws_vpc.sbo_poc.id
-  description = "Sec group for the SBO core webapp"
-
-  tags = {
-    Name        = "core_webapp_secgroup"
-    SBO_Billing = "core_webapp"
+resource "aws_network_acl" "core_webapp" {
+  vpc_id     = aws_vpc.sbo_poc.id
+  subnet_ids = [aws_subnet.core_webapp.id]
+  # Allow local traffic
+  ingress {
+    protocol   = -1
+    rule_no    = 100
+    action     = "allow"
+    cidr_block = aws_vpc.sbo_poc.cidr_block
+    from_port  = 0
+    to_port    = 0
   }
-}
-
-# TODO: limit incoming ports to only 8000 and health check
-# needs to be only accessible from ALB?
-resource "aws_vpc_security_group_ingress_rule" "core_webapp_allow_http_8000" {
-  security_group_id = aws_security_group.core_webapp.id
-  description       = "Allow HTTP on port 8000"
-  from_port         = 8000
-  to_port           = 8000
-  ip_protocol       = "tcp"
-  cidr_ipv4         = "0.0.0.0/0"
-
-  tags = {
-    Name = "core_webapp_allow_http_8000"
+  /* # Allow temporarily all
+  ingress {
+    protocol = -1
+    rule_no = 101
+    action = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port = 0
+    to_port = 0
+  }*/
+  # Allow port 8000 from anywhere
+  # TODO limit to just ALB?
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 105
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 8000
+    to_port    = 8000
   }
-}
-
-# TODO limit to certain services
-resource "aws_vpc_security_group_egress_rule" "core_webapp_allow_everything_outgoing" {
-  security_group_id = aws_security_group.core_webapp.id
-  description       = "Allow everything outgoing"
-  ip_protocol       = -1
-  cidr_ipv4         = "0.0.0.0/0"
-
+  # allow ingress ephemeral ports
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 300
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 1024
+    to_port    = 65535
+  }
+  egress {
+    # TODO limit to dockerhub, secretsmanager, nexus...
+    protocol   = -1
+    rule_no    = 100
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 0
+    to_port    = 0
+  }
   tags = {
-    Name = "core_webapp_allow_everything_outgoing"
+    Name = "core_webapp_acl"
   }
 }
