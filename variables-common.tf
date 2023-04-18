@@ -18,6 +18,8 @@ variable "sbo_https_test_hostname" {
   sensitive   = false
 }
 
+### SBO core webapp ###
+
 variable "core_webapp_hostname" {
   default     = "sbo-core-webapp.shapes-registry.org"
   type        = string
@@ -38,3 +40,130 @@ variable "core_webapp_docker_image_url" {
   description = "docker image for the core webapp"
   sensitive   = false
 }
+
+### Nexus Delta ###
+
+variable "nexus_delta_hostname" {
+  type      = string
+  default   = "sbo-nexus-delta.shapes-registry.org"
+  sensitive = false
+}
+
+variable "nexus_delta_docker_image_url" {
+  type      = string
+  default   = "bluebrain/nexus-delta:1.8.0-M4"
+  sensitive = false
+}
+
+variable "nexus_delta_app_log_group_name" {
+  default   = "nexus_delta_app"
+  type      = string
+  sensitive = false
+}
+
+variable "nexus_web_app_log_group_name" {
+  default   = "nexus_web_app"
+  type      = string
+  sensitive = false
+}
+
+### Nexus Fusion ###
+
+variable "nexus_fusion_hostname" {
+  default   = "sbo-nexus-fusion.shapes-registry.org"
+  type      = string
+  sensitive = false
+}
+
+variable "nexus_web_docker_image_url" {
+  default   = "bluebrain/nexus-delta:1.8.0-M15"
+  sensitive = false
+  type      = string
+}
+
+### Nexus Blazegraph ###
+
+variable "blazegraph_docker_image_url" {
+  default   = "bluebrain/blazegraph-nexus:2.1.6-RC"
+  sensitive = false
+  type      = string
+}
+
+# Directory for /var/lib/blazegraph/data on the EFS filesystem
+variable "efs_blazegraph_data_dir" {
+  default   = "/blazegraph-data-dir"
+  sensitive = false
+  type      = string
+}
+
+# Directory for /var/lib/blazegraph/log4j on the EFS filesystem, should contain the
+# log4j.properties file
+variable "efs_blazegraph_log4j_dir" {
+  default   = "/blazegraph-log4j-dir"
+  sensitive = false
+  type      = string
+}
+
+variable "blazegraph_app_log_group_name" {
+  default   = "blazegraph_app"
+  sensitive = false
+  type      = string
+}
+
+### Nexus ElasticSearch/OpenSearch ###
+
+# Note: you can also request opensearch, but then you need
+# to also change the instance type to a type which is compatible
+# with opensearch.
+variable "nexus_elasticsearch_version" {
+  type      = string
+  default   = "Elasticsearch_7.10"
+  sensitive = false
+}
+
+variable "nexus_elasticsearch_instance_type" {
+  type      = string
+  default   = "t3.small.search"
+  sensitive = false
+}
+
+variable "nexus_es_domain_name" {
+  type      = string
+  default   = "nexus"
+  sensitive = false
+}
+
+### Nexus PostgreSQL ###
+
+variable "nexus_postgresql_database_port" {
+  default   = 5432
+  type      = number
+  sensitive = false
+}
+
+variable "nexus_postgresql_database_name" {
+  type      = string
+  default   = "nexus_db"
+  sensitive = false
+}
+
+variable "nexus_postgresql_database_username" {
+  type      = string
+  default   = "nexus_user"
+  sensitive = false
+}
+#variable "nexus_postgresql_database_password" {
+#  type = string
+#  sensitive = true
+#}
+
+variable "nexus_postgresql_admin_username" {
+  type      = string
+  default   = "admin"
+  sensitive = false
+}
+
+#variable "nexus_postgresql_admin_password" {
+#  type      = string
+#  sensitive = true
+#}

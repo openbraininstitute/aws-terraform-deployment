@@ -23,3 +23,21 @@ variable "core_webapp_ecs_number_of_containers" {
   sensitive   = false
   description = "Number of containers for the SBO core webapp"
 }
+
+variable "blazegraph_ecs_number_of_containers" {
+  type      = number
+  default   = 0
+  sensitive = false
+}
+
+variable "create_nexus_elasticsearch" {
+  type      = bool
+  default   = true
+  sensitive = false
+}
+
+variable "create_nexus_database" {
+  type      = bool
+  default   = false
+  sensitive = false
+}
