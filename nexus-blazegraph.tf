@@ -83,20 +83,38 @@ resource "aws_security_group" "blazegraph_ecs_task" {
   description = "Blazegraph containers"
 }
 
-resource "aws_vpc_security_group_ingress_rule" "blazegraph_ecs_task_ingress" {
+resource "aws_vpc_security_group_ingress_rule" "blazegraph_ecs_task_tcp_ingress" {
   security_group_id = aws_security_group.blazegraph_ecs_task.id
 
-  ip_protocol = "-1"
+  ip_protocol = "tcp"
   from_port   = 0
   to_port     = 0
   cidr_ipv4   = aws_vpc.sbo_poc.cidr_block
-  description = "allow ingress within vpc"
+  description = "allow tcp ingress within vpc"
 }
-
-resource "aws_vpc_security_group_egress_rule" "blazegraph_ecs_task_egress" {
+resource "aws_vpc_security_group_ingress_rule" "blazegraph_ecs_task_udp_ingress" {
   security_group_id = aws_security_group.blazegraph_ecs_task.id
 
-  ip_protocol = "-1"
+  ip_protocol = "udp"
+  from_port   = 0
+  to_port     = 0
+  cidr_ipv4   = aws_vpc.sbo_poc.cidr_block
+  description = "allow udp ingress within vpc"
+}
+
+resource "aws_vpc_security_group_egress_rule" "blazegraph_ecs_task_tcp_egress" {
+  security_group_id = aws_security_group.blazegraph_ecs_task.id
+
+  ip_protocol = "tcp"
+  from_port   = 0
+  to_port     = 0
+  cidr_ipv4   = "0.0.0.0/0"
+  description = "allow any egress"
+}
+resource "aws_vpc_security_group_egress_rule" "blazegraph_ecs_task_udp_egress" {
+  security_group_id = aws_security_group.blazegraph_ecs_task.id
+
+  ip_protocol = "udp"
   from_port   = 0
   to_port     = 0
   cidr_ipv4   = "0.0.0.0/0"
