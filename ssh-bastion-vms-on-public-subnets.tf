@@ -4,7 +4,7 @@ resource "aws_instance" "ssh_bastion_a" {
   instance_type               = "t3.micro"
   count                       = var.create_ssh_bastion_vm_on_public_a_network ? 1 : 0
   subnet_id                   = aws_subnet.public_a.id
-  key_name                    = aws_key_pair.dries-mac-bbp.id
+  key_name                    = data.terraform_remote_state.common.outputs.aws_coreservices_ssh_key_id
   vpc_security_group_ids      = [aws_security_group.public.id]
   associate_public_ip_address = true
   user_data_replace_on_change = true
@@ -53,7 +53,7 @@ resource "aws_instance" "ssh_bastion_b" {
   instance_type               = "t3.micro"
   count                       = var.create_ssh_bastion_vm_on_public_b_network ? 1 : 0
   subnet_id                   = aws_subnet.public_b.id
-  key_name                    = aws_key_pair.dries-mac-bbp.id
+  key_name                    = data.terraform_remote_state.common.outputs.aws_coreservices_ssh_key_id
   vpc_security_group_ids      = [aws_security_group.public.id]
   associate_public_ip_address = true
   user_data_replace_on_change = true
