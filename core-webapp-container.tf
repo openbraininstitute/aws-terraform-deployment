@@ -85,7 +85,7 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
       memory      = 1024
       cpu         = 512
       networkMode = "awsvpc"
-      family      = "blazegraph"
+      family      = "sbocorewebapp"
       essential   = true
       image       = var.core_webapp_docker_image_url
       name        = "core_webapp"
