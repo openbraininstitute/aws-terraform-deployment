@@ -182,3 +182,25 @@ variable "embedder_log_group_name" {
   description = "The log name within cloudwatch for the embedder webapp"
   sensitive   = false
 }
+
+### Machine Learning ElasticSearch/OpenSearch ###
+# Note: you can also request opensearch, but then you need
+# to also change the instance type to a type which is compatible
+# with opensearch.
+variable "ml_opensearch_version" {
+  type      = string
+  default   = "OpenSearch_2.5"
+  sensitive = false
+}
+
+variable "ml_opensearch_instance_type" {
+  type      = string
+  default   = "t3.small.search"
+  sensitive = false
+}
+
+variable "ml_os_domain_name" {
+  type      = string
+  default   = "mlos"
+  sensitive = false
+}

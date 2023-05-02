@@ -48,3 +48,9 @@ variable "embedder_ecs_number_of_containers" {
   sensitive   = false
   description = "Number of containers for the embedder app"
 }
+
+variable "create_ml_opensearch" {
+  type      = bool
+  default   = true
+  sensitive = false
+}
