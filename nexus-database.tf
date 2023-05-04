@@ -25,11 +25,17 @@ resource "aws_security_group" "nexus_db" {
     cidr_blocks = [aws_vpc.sbo_poc.cidr_block]
     description = "allow egress to within vpc"
   }
+  tags = {
+    SBO_Billing = "nexus"
+  }
 }
 
 resource "aws_db_subnet_group" "nexus_db_subnet_group" {
   name       = "nexus-db-group"
   subnet_ids = [aws_subnet.nexus_db_a.id, aws_subnet.nexus_db_b.id]
+  tags = {
+    SBO_Billing = "nexus"
+  }
 }
 
 # Data source to retrieve the password from AWS Secrets Manager

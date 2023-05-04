@@ -64,6 +64,7 @@ resource "aws_network_acl" "machinelearning" {
     to_port    = 0
   }
   tags = {
-    Name = "machinelearning_acl"
+    Name        = "machinelearning_acl"
+    SBO_Billing = "machinelearning"
   }
 }

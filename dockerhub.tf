@@ -27,4 +27,7 @@ resource "aws_iam_policy" "dockerhub_access" {
   ]
 }
 EOF
+  tags = {
+    SBO_Billing = "common"
+  }
 }

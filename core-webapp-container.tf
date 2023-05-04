@@ -60,6 +60,9 @@ resource "aws_vpc_security_group_ingress_rule" "core_webapp_allow_port_8000" {
   to_port     = 8000
   cidr_ipv4   = aws_vpc.sbo_poc.cidr_block
   description = "Allow port 8000 http"
+  tags = {
+    SBO_Billing = "core_webapp"
+  }
 }
 
 resource "aws_vpc_security_group_egress_rule" "core_webapp_allow_outgoing" {
@@ -72,6 +75,9 @@ resource "aws_vpc_security_group_egress_rule" "core_webapp_allow_outgoing" {
   cidr_ipv4   = "0.0.0.0/0"
   #cidr_ipv4   = aws_vpc.sbo_poc.cidr_block
   description = "Allow everything"
+  tags = {
+    SBO_Billing = "core_webapp"
+  }
 }
 
 resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
@@ -144,6 +150,10 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = aws_iam_role.ecs_core_webapp_task_execution_role[0].arn
   task_role_arn            = aws_iam_role.ecs_core_webapp_task_role[0].arn
+
+  tags = {
+    SBO_Billing = "core_webapp"
+  }
 }
 
 resource "aws_ecs_service" "core_webapp_ecs_service" {
@@ -174,6 +184,9 @@ resource "aws_ecs_service" "core_webapp_ecs_service" {
   lifecycle {
     ignore_changes = [task_definition, desired_count]
   }
+  tags = {
+    SBO_Billing = "core_webapp"
+  }
 }
 
 resource "aws_iam_role" "ecs_core_webapp_task_execution_role" {
@@ -195,6 +208,9 @@ resource "aws_iam_role" "ecs_core_webapp_task_execution_role" {
  ]
 }
 EOF
+  tags = {
+    SBO_Billing = "core_webapp"
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_core_webapp_task_execution_role_policy_attachment" {
@@ -223,6 +239,9 @@ resource "aws_iam_role" "ecs_core_webapp_task_role" {
  ]
 }
 EOF
+  tags = {
+    SBO_Billing = "core_webapp"
+  }
 }
 
 data "aws_caller_identity" "current" {}

@@ -16,7 +16,7 @@ resource "aws_subnet" "aws_endpoints" {
 
   tags = {
     Name        = "aws_endpoints"
-    SBO_Billing = "aws_endpoints"
+    SBO_Billing = "common"
   }
 }
 
@@ -33,7 +33,7 @@ resource "aws_route_table" "aws_endpoints" {
   ]
   tags = {
     Name        = "aws_endpoints_route"
-    SBO_Billing = "aws_endpoints"
+    SBO_Billing = "common"
   }
 }
 
@@ -83,7 +83,8 @@ resource "aws_network_acl" "aws_endpoints" {
     to_port    = 0
   }
   tags = {
-    Name = "aws_endpoints_acl"
+    Name        = "aws_endpoints_acl"
+    SBO_Billing = "common"
   }
 }
 
@@ -94,7 +95,7 @@ resource "aws_security_group" "aws_endpoint_secretsmanager" {
 
   tags = {
     Name        = "aws_endpoint_secretsmanager_secgroup"
-    SBO_Billing = "aws_endpoints"
+    SBO_Billing = "common"
   }
 }
 
@@ -133,7 +134,8 @@ resource "aws_vpc_endpoint" "secretsmanager" {
   subnet_ids         = [aws_subnet.aws_endpoints.id]
   security_group_ids = [aws_security_group.aws_endpoint_secretsmanager.id]
   tags = {
-    Name = "secretsmanager"
+    Name        = "secretsmanager"
+    SBO_Billing = "common"
   }
   vpc_endpoint_type = "Interface"
 }

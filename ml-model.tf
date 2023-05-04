@@ -47,6 +47,10 @@ resource "aws_vpc_security_group_ingress_rule" "embedder_allow_port_3000" {
   to_port     = 3000
   cidr_ipv4   = aws_vpc.sbo_poc.cidr_block
   description = "Allow port 3000 http"
+
+  tags = {
+    SBO_Billing = "machinelearning"
+  }
 }
 
 resource "aws_vpc_security_group_egress_rule" "embedder_allow_outgoing" {
@@ -58,6 +62,10 @@ resource "aws_vpc_security_group_egress_rule" "embedder_allow_outgoing" {
   cidr_ipv4   = "0.0.0.0/0"
   #cidr_ipv4   = aws_vpc.sbo_poc.cidr_block
   description = "Allow everything"
+
+  tags = {
+    SBO_Billing = "machinelearning"
+  }
 }
 
 resource "aws_ecs_task_definition" "embedder_ecs_definition" {
@@ -109,6 +117,10 @@ resource "aws_ecs_task_definition" "embedder_ecs_definition" {
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = aws_iam_role.ecs_embedder_task_execution_role[0].arn
   task_role_arn            = aws_iam_role.ecs_embedder_task_role[0].arn
+
+  tags = {
+    SBO_Billing = "machinelearning"
+  }
 }
 
 resource "aws_ecs_service" "embedder_ecs_service" {
@@ -133,6 +145,9 @@ resource "aws_ecs_service" "embedder_ecs_service" {
   lifecycle {
     ignore_changes = [task_definition, desired_count]
   }
+  tags = {
+    SBO_Billing = "machinelearning"
+  }
 }
 
 resource "aws_iam_role" "ecs_embedder_task_execution_role" {
@@ -154,6 +169,9 @@ resource "aws_iam_role" "ecs_embedder_task_execution_role" {
  ]
 }
 EOF
+  tags = {
+    SBO_Billing = "machinelearning"
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_embedder_task_execution_role_policy_attachment" {
@@ -182,6 +200,9 @@ resource "aws_iam_role" "ecs_embedder_task_role" {
  ]
 }
 EOF
+  tags = {
+    SBO_Billing = "machinelearning"
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_embedder_task_role_dockerhub_policy_attachment" {

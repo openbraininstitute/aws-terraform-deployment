@@ -4,6 +4,9 @@ resource "aws_acm_certificate" "sbo_https_test" {
   lifecycle {
     create_before_destroy = true
   }
+  tags = {
+    SBO_Billing = "common"
+  }
 }
 
 resource "aws_route53_record" "sbo_https_test_validation" {
@@ -51,6 +54,9 @@ resource "aws_lb_listener" "sbo_https" {
       message_body = "Fixed response content: https working"
       status_code  = "200"
     }
+  }
+  tags = {
+    SBO_Billing = "common"
   }
 }
 

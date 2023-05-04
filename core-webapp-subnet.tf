@@ -83,6 +83,7 @@ resource "aws_network_acl" "core_webapp" {
     to_port    = 0
   }
   tags = {
-    Name = "core_webapp_acl"
+    Name        = "core_webapp_acl"
+    SBO_Billing = "core_webapp"
   }
 }

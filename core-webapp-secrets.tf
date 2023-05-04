@@ -27,4 +27,7 @@ resource "aws_iam_policy" "sbo_core_webapp_secrets_access" {
   ]
 }
 EOF
+  tags = {
+    SBO_Billing = "core_webapp"
+  }
 }

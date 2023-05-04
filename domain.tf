@@ -3,4 +3,8 @@
 resource "aws_route53_zone" "domain" {
   name    = "shapes-registry.org"
   comment = "Test domain for SBO POC"
+
+  tags = {
+    SBO_Billing = "common"
+  }
 }

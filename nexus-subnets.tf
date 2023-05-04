@@ -4,7 +4,8 @@ resource "aws_subnet" "nexus_app" {
   availability_zone = "${var.aws_region}a"
   cidr_block        = "10.0.2.32/28"
   tags = {
-    Name = "nexus_app"
+    Name        = "nexus_app"
+    SBO_Billing = "nexus"
   }
 }
 
@@ -19,7 +20,8 @@ resource "aws_route_table" "nexus_app" {
     aws_nat_gateway.nat
   ]
   tags = {
-    Name = "nexus_app_route"
+    Name        = "nexus_app_route"
+    SBO_Billing = "nexus"
   }
 }
 
@@ -61,7 +63,8 @@ resource "aws_network_acl" "nexus_app" {
     to_port    = 0
   }
   tags = {
-    Name = "nexus_app_acl"
+    Name        = "nexus_app_acl"
+    SBO_Billing = "nexus"
   }
 }
 
@@ -71,7 +74,8 @@ resource "aws_subnet" "nexus_db_a" {
   availability_zone = "${var.aws_region}a"
   cidr_block        = "10.0.2.48/28"
   tags = {
-    Name = "nexus_db_a"
+    Name        = "nexus_db_a"
+    SBO_Billing = "nexus"
   }
 }
 # Subnet for the Nexus databases and storage
@@ -80,7 +84,8 @@ resource "aws_subnet" "nexus_db_b" {
   availability_zone = "${var.aws_region}b"
   cidr_block        = "10.0.2.64/28"
   tags = {
-    Name = "nexus_db_b"
+    Name        = "nexus_db_b"
+    SBO_Billing = "nexus"
   }
 }
 
@@ -95,7 +100,8 @@ resource "aws_route_table" "nexus_db" {
     aws_nat_gateway.nat
   ]
   tags = {
-    Name = "nexus_db_route"
+    Name        = "nexus_db_route"
+    SBO_Billing = "nexus"
   }
 }
 
@@ -140,7 +146,8 @@ resource "aws_network_acl" "nexus_db" {
     to_port    = 0
   }
   tags = {
-    Name = "nexus_db_acl"
+    Name        = "nexus_db_acl"
+    SBO_Billing = "nexus"
   }
 }
 
@@ -150,7 +157,8 @@ resource "aws_subnet" "blazegraph_app" {
   availability_zone = "${var.aws_region}a"
   cidr_block        = "10.0.2.80/28"
   tags = {
-    Name = "blazegraph_app"
+    Name        = "blazegraph_app"
+    SBO_Billing = "nexus"
   }
 }
 
@@ -164,7 +172,8 @@ resource "aws_route_table" "blazegraph_app" {
     aws_nat_gateway.nat
   ]
   tags = {
-    Name = "blazegraph_app_route"
+    Name        = "blazegraph_app_route"
+    SBO_Billing = "nexus"
   }
 }
 
@@ -204,7 +213,8 @@ resource "aws_network_acl" "blazegraph" {
     to_port    = 0
   }
   tags = {
-    Name = "blazegraph_acl"
+    Name        = "blazegraph_acl"
+    SBO_Billing = "nexus"
   }
 }
 
@@ -213,7 +223,8 @@ resource "aws_subnet" "nexus_es_a" {
   availability_zone = "${var.aws_region}a"
   cidr_block        = "10.0.2.96/28"
   tags = {
-    Name = "nexus_es_a"
+    Name        = "nexus_es_a"
+    SBO_Billing = "nexus"
   }
 }
 
@@ -222,7 +233,8 @@ resource "aws_subnet" "nexus_es_b" {
   availability_zone = "${var.aws_region}b"
   cidr_block        = "10.0.2.112/28"
   tags = {
-    Name = "nexus_es_b"
+    Name        = "nexus_es_b"
+    SBO_Billing = "nexus"
   }
 }
 
@@ -236,7 +248,8 @@ resource "aws_route_table" "nexus_es" {
     aws_nat_gateway.nat
   ]
   tags = {
-    Name = "nexus_es_route"
+    Name        = "nexus_es_route"
+    SBO_Billing = "nexus"
   }
 }
 
@@ -281,6 +294,7 @@ resource "aws_network_acl" "nexus_es" {
     to_port    = 0
   }
   tags = {
-    Name = "nexus_es_acl"
+    Name        = "nexus_es_acl"
+    SBO_Billing = "nexus"
   }
 }

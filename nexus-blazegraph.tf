@@ -5,7 +5,8 @@ resource "aws_efs_file_system" "blazegraph" {
   availability_zone_name = "${var.aws_region}a"
   encrypted              = false #tfsec:ignore:aws-efs-enable-at-rest-encryption
   tags = {
-    Name = "sbp-poc-blazegraph"
+    Name        = "sbp-poc-blazegraph"
+    SBO_Billing = "nexus"
   }
 }
 
@@ -40,6 +41,7 @@ resource "aws_cloudwatch_log_group" "blazegraph_app" {
 
   tags = {
     Application = "blazegraph"
+    SBO_Billing = "nexus"
   }
 }
 
@@ -65,6 +67,10 @@ resource "aws_security_group" "blazegraph_efs" {
     cidr_blocks = [aws_vpc.sbo_poc.cidr_block]
     description = "allow egress within vpc"
   }
+  tags = {
+    Application = "blazegraph"
+    SBO_Billing = "nexus"
+  }
 }
 
 resource "aws_ecs_cluster" "blazegraph" {
@@ -72,6 +78,9 @@ resource "aws_ecs_cluster" "blazegraph" {
   setting {
     name  = "containerInsights"
     value = "disabled" #tfsec:ignore:aws-ecs-enable-container-insight
+  }
+  tags = {
+    SBO_Billing = "nexus"
   }
 }
 
@@ -81,6 +90,9 @@ resource "aws_security_group" "blazegraph_ecs_task" {
   vpc_id = aws_vpc.sbo_poc.id
 
   description = "Blazegraph containers"
+  tags = {
+    SBO_Billing = "nexus"
+  }
 }
 
 resource "aws_vpc_security_group_ingress_rule" "blazegraph_ecs_task_tcp_ingress" {
@@ -91,6 +103,10 @@ resource "aws_vpc_security_group_ingress_rule" "blazegraph_ecs_task_tcp_ingress"
   to_port     = 0
   cidr_ipv4   = aws_vpc.sbo_poc.cidr_block
   description = "allow tcp ingress within vpc"
+
+  tags = {
+    SBO_Billing = "nexus"
+  }
 }
 resource "aws_vpc_security_group_ingress_rule" "blazegraph_ecs_task_udp_ingress" {
   security_group_id = aws_security_group.blazegraph_ecs_task.id
@@ -100,6 +116,10 @@ resource "aws_vpc_security_group_ingress_rule" "blazegraph_ecs_task_udp_ingress"
   to_port     = 0
   cidr_ipv4   = aws_vpc.sbo_poc.cidr_block
   description = "allow udp ingress within vpc"
+
+  tags = {
+    SBO_Billing = "nexus"
+  }
 }
 
 resource "aws_vpc_security_group_egress_rule" "blazegraph_ecs_task_tcp_egress" {
@@ -110,6 +130,10 @@ resource "aws_vpc_security_group_egress_rule" "blazegraph_ecs_task_tcp_egress" {
   to_port     = 0
   cidr_ipv4   = "0.0.0.0/0"
   description = "allow any egress"
+
+  tags = {
+    SBO_Billing = "nexus"
+  }
 }
 resource "aws_vpc_security_group_egress_rule" "blazegraph_ecs_task_udp_egress" {
   security_group_id = aws_security_group.blazegraph_ecs_task.id
@@ -119,6 +143,10 @@ resource "aws_vpc_security_group_egress_rule" "blazegraph_ecs_task_udp_egress" {
   to_port     = 0
   cidr_ipv4   = "0.0.0.0/0"
   description = "allow any egress"
+
+  tags = {
+    SBO_Billing = "nexus"
+  }
 }
 
 resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {

@@ -8,6 +8,7 @@ resource "aws_cloudwatch_log_group" "nexus_es" {
 
   tags = {
     Application = "nexus_es"
+    SBO_Billing = "nexus"
   }
 }
 
@@ -30,6 +31,9 @@ resource "aws_security_group" "nexus_es" {
     to_port     = 0
     cidr_blocks = [aws_vpc.sbo_poc.cidr_block]
     description = "allow access to the VPC"
+  }
+  tags = {
+    SBO_Billing = "nexus"
   }
 }
 
@@ -74,7 +78,8 @@ resource "aws_opensearch_domain" "nexus_es" {
 CONFIG
 
   tags = {
-    Name = "nexus_es"
+    Name        = "nexus_es"
+    SBO_Billing = "nexus"
   }
   depends_on = [aws_iam_service_linked_role.es]
 }
@@ -82,5 +87,9 @@ CONFIG
 resource "aws_iam_service_linked_role" "es" {
   aws_service_name = "es.amazonaws.com"
   description      = "Allows Amazon ES to manage AWS resources for a domain on your behalf."
+
+  tags = {
+    SBO_Billing = "nexus"
+  }
 }
 

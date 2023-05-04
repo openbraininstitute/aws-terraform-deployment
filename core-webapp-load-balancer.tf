@@ -4,6 +4,9 @@ resource "aws_acm_certificate" "core_webapp" {
   lifecycle {
     create_before_destroy = true
   }
+  tags = {
+    SBO_Billing = "core_webapp"
+  }
 }
 
 resource "aws_route53_record" "core_webapp_validation" {
@@ -38,6 +41,9 @@ resource "aws_lb_target_group" "core_webapp" {
   #lifecycle {
   #  create_before_destroy = true
   #}
+  tags = {
+    SBO_Billing = "core_webapp"
+  }
 }
 
 resource "aws_lb_listener_certificate" "core_webapp" {
@@ -59,6 +65,9 @@ resource "aws_lb_listener_rule" "core_webapp_https" {
     host_header {
       values = [var.core_webapp_hostname]
     }
+  }
+  tags = {
+    SBO_Billing = "core_webapp"
   }
 }
 

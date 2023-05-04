@@ -78,7 +78,8 @@ resource "aws_vpc_security_group_ingress_rule" "public_allow_http_epfl" {
   cidr_ipv4         = var.epfl_cidr
 
   tags = {
-    Name = "public_allow_http_epfl"
+    Name        = "public_allow_http_epfl"
+    SBO_Billing = "common"
   }
 }
 
@@ -91,7 +92,8 @@ resource "aws_vpc_security_group_ingress_rule" "public_allow_http_internal" {
   cidr_ipv4         = aws_vpc.sbo_poc.cidr_block
 
   tags = {
-    Name = "public_allow_http_internal"
+    Name        = "public_allow_http_internal"
+    SBO_Billing = "common"
   }
 }
 
@@ -104,7 +106,8 @@ resource "aws_vpc_security_group_ingress_rule" "public_allow_https_epfl" {
   cidr_ipv4         = var.epfl_cidr
 
   tags = {
-    Name = "public_allow_https_epfl"
+    Name        = "public_allow_https_epfl"
+    SBO_Billing = "common"
   }
 }
 
@@ -117,7 +120,8 @@ resource "aws_vpc_security_group_ingress_rule" "public_allow_https_internal" {
   cidr_ipv4         = aws_vpc.sbo_poc.cidr_block
 
   tags = {
-    Name = "public_allow_https_internal"
+    Name        = "public_allow_https_internal"
+    SBO_Billing = "common"
   }
 }
 
@@ -130,7 +134,8 @@ resource "aws_vpc_security_group_ingress_rule" "public_allow_ssh_epfl" {
   cidr_ipv4         = var.epfl_cidr
 
   tags = {
-    Name = "public_allow_ssh_epfl"
+    Name        = "public_allow_ssh_epfl"
+    SBO_Billing = "common"
   }
 }
 
@@ -143,7 +148,8 @@ resource "aws_vpc_security_group_ingress_rule" "public_allow_ssh_internal" {
   cidr_ipv4         = aws_vpc.sbo_poc.cidr_block
 
   tags = {
-    Name = "public_allow_ssh_internal"
+    Name        = "public_allow_ssh_internal"
+    SBO_Billing = "common"
   }
 }
 
@@ -157,7 +163,8 @@ resource "aws_vpc_security_group_ingress_rule" "public_allow_everything" {
   cidr_ipv4         = ["0.0.0.0/0"]
 
   tags = {
-    Name = "public_allow_ssh_internal"
+    Name        = "public_allow_ssh_internal"
+    SBO_Billing = "common"
   }
 }
 */
@@ -169,7 +176,8 @@ resource "aws_vpc_security_group_egress_rule" "public_allow_everything_outgoing"
   cidr_ipv4         = "0.0.0.0/0"
 
   tags = {
-    Name = "public_allow_everything_outgoing"
+    Name        = "public_allow_everything_outgoing"
+    SBO_Billing = "common"
   }
 }
 
@@ -250,6 +258,7 @@ resource "aws_network_acl" "public" {
     to_port    = 0
   }
   tags = {
-    Name = "public_acl"
+    Name        = "public_acl"
+    SBO_Billing = "common"
   }
 }
