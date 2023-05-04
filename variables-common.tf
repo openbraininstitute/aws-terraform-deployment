@@ -167,3 +167,18 @@ variable "nexus_postgresql_admin_username" {
 #  type      = string
 #  sensitive = true
 #}
+
+### Machine Learning Embedder ###
+variable "embedder_docker_image_url" {
+  type        = string
+  default     = "bluebrain/bbs-embeddings:bbsembeddings_multi-qa-mpnet-base-dot-v1-1.0.1"
+  description = "docker image for the embedder webapp"
+  sensitive   = false
+}
+
+variable "embedder_log_group_name" {
+  default     = "embedder"
+  type        = string
+  description = "The log name within cloudwatch for the embedder webapp"
+  sensitive   = false
+}

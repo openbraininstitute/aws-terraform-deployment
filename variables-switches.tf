@@ -41,3 +41,10 @@ variable "create_nexus_database" {
   default   = false
   sensitive = false
 }
+
+variable "embedder_ecs_number_of_containers" {
+  type        = number
+  default     = 1
+  sensitive   = false
+  description = "Number of containers for the embedder app"
+}
