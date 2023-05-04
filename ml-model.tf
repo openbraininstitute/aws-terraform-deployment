@@ -39,14 +39,14 @@ resource "aws_security_group" "embedder_ecs_task" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "embedder_allow_port_80" {
+resource "aws_vpc_security_group_ingress_rule" "embedder_allow_port_3000" {
   security_group_id = aws_security_group.embedder_ecs_task.id
 
   ip_protocol = "tcp"
-  from_port   = 80
-  to_port     = 80
+  from_port   = 3000
+  to_port     = 3000
   cidr_ipv4   = aws_vpc.sbo_poc.cidr_block
-  description = "Allow port 80 http"
+  description = "Allow port 3000 http"
 }
 
 resource "aws_vpc_security_group_egress_rule" "embedder_allow_outgoing" {
@@ -80,7 +80,7 @@ resource "aws_ecs_task_definition" "embedder_ecs_definition" {
       }
       portMappings = [
         {
-          hostPort      = 80
+          hostPort      = 3000
           containerPort = 3000
           protocol      = "tcp"
         }
