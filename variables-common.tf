@@ -171,7 +171,7 @@ variable "nexus_postgresql_admin_username" {
 ### Machine Learning Embedder ###
 variable "embedder_docker_image_url" {
   type        = string
-  default     = "bluebrain/bbs-embeddings:bbsembeddings_multi-qa-mpnet-base-dot-v1-1.0.1"
+  default     = "bluebrain/bbs-embeddings:bbsembeddings_multi-qa-mpnet-base-dot-v1-1.0.2"
   description = "docker image for the embedder webapp"
   sensitive   = false
 }

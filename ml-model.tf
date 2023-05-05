@@ -85,6 +85,13 @@ resource "aws_ecs_task_definition" "embedder_ecs_definition" {
           protocol      = "tcp"
         }
       ]
+      healthcheck = {
+        command     = ["CMD-SHELL", "curl -f http://localhost:3000/healthz || exit 1"]
+        interval    = 30
+        timeout     = 5
+        startPeriod = 60
+        retries     = 3
+      }
       logConfiguration = {
         logDriver = "awslogs"
         options = {
