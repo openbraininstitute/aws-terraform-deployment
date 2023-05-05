@@ -52,7 +52,7 @@ resource "aws_vpc_security_group_ingress_rule" "embedder_allow_port_3000" {
 resource "aws_vpc_security_group_egress_rule" "embedder_allow_outgoing" {
   security_group_id = aws_security_group.embedder_ecs_task.id
 
-  ip_protocol = "tcp"
+  ip_protocol = -1
   from_port   = 0
   to_port     = 0
   cidr_ipv4   = "0.0.0.0/0"
