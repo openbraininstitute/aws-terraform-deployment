@@ -32,6 +32,23 @@ data "aws_ami" "amazonlinux" {
   owners = ["137112412989"] # Amazon
 }
 
+# AMI for latest Ubuntu 22.04 LTS
+data "aws_ami" "ubuntu" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"] # Canonical
+}
+
 # Test image with nginx
 data "aws_ami" "bitnami-nginx" {
   most_recent = true

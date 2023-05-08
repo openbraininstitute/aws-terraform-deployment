@@ -204,3 +204,10 @@ variable "ml_os_domain_name" {
   default   = "mlos"
   sensitive = false
 }
+
+### HPC compute instances ###
+variable "num_compute_instances" {
+  default   = 2
+  type      = number
+  sensitive = false
+}
