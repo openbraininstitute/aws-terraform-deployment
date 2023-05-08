@@ -3,7 +3,8 @@ resource "aws_subnet" "ml_os" {
   availability_zone = "${var.aws_region}a"
   cidr_block        = "10.0.2.128/28"
   tags = {
-    Name = "ml_os"
+    Name        = "ml_os"
+    SBO_Billing = "machinelearning"
   }
 }
 
@@ -17,7 +18,8 @@ resource "aws_route_table" "ml_os" {
     aws_nat_gateway.nat
   ]
   tags = {
-    Name = "ml_os_route"
+    Name        = "ml_os_route"
+    SBO_Billing = "machinelearning"
   }
 }
 
@@ -56,6 +58,7 @@ resource "aws_network_acl" "ml_os" {
     to_port    = 0
   }
   tags = {
-    Name = "ml_os_acl"
+    Name        = "ml_os_acl"
+    SBO_Billing = "machinelearning"
   }
 }

@@ -8,6 +8,7 @@ resource "aws_cloudwatch_log_group" "ml_opensearch" {
 
   tags = {
     Application = "ml_opensearch"
+    SBO_Billing = "machinelearning"
   }
 }
 
@@ -30,6 +31,9 @@ resource "aws_security_group" "ml_opensearch" {
     to_port     = 0
     cidr_blocks = [aws_vpc.sbo_poc.cidr_block]
     description = "allow access to the VPC"
+  }
+  tags = {
+    SBO_Billing = "machinelearning"
   }
 }
 
@@ -74,7 +78,8 @@ resource "aws_opensearch_domain" "ml_opensearch" {
 CONFIG
 
   tags = {
-    Name = "ml_os"
+    Name        = "ml_os"
+    SBO_Billing = "machinelearning"
   }
   depends_on = [aws_iam_service_linked_role.os]
 }
@@ -82,4 +87,8 @@ CONFIG
 resource "aws_iam_service_linked_role" "os" {
   aws_service_name = "es.amazonaws.com"
   description      = "Allows Amazon ES to manage AWS resources for a domain on your behalf."
+
+  tags = {
+    SBO_Billing = "machinelearning"
+  }
 }
