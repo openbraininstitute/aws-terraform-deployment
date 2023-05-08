@@ -23,7 +23,7 @@ resource "aws_route53_record" "core_webapp_validation" {
   records         = [each.value.record]
   ttl             = 60
   type            = each.value.type
-  zone_id         = aws_route53_zone.domain.zone_id
+  zone_id         = data.terraform_remote_state.common.outputs.domain_zone_id
 }
 
 resource "aws_acm_certificate_validation" "core_webapp" {
@@ -72,7 +72,7 @@ resource "aws_lb_listener_rule" "core_webapp_https" {
 }
 
 resource "aws_route53_record" "core_webapp" {
-  zone_id = aws_route53_zone.domain.zone_id
+  zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
   name    = var.core_webapp_hostname
   type    = "CNAME"
   ttl     = 60

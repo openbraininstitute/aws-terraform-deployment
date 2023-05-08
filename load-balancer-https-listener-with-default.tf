@@ -23,7 +23,7 @@ resource "aws_route53_record" "sbo_https_test_validation" {
   records         = [each.value.record]
   ttl             = 60
   type            = each.value.type
-  zone_id         = aws_route53_zone.domain.zone_id
+  zone_id         = data.terraform_remote_state.common.outputs.domain_zone_id
 }
 
 resource "aws_acm_certificate_validation" "sbo_https_test" {
@@ -33,7 +33,7 @@ resource "aws_acm_certificate_validation" "sbo_https_test" {
 
 
 resource "aws_route53_record" "sbo_https_test" {
-  zone_id = aws_route53_zone.domain.zone_id
+  zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
   name    = var.sbo_https_test_hostname
   type    = "CNAME"
   ttl     = 60

@@ -31,7 +31,7 @@ echo "to be replaced with creation of user logins"
 
 resource "aws_route53_record" "ssh_bastion_a" {
   count   = var.create_ssh_bastion_vm_on_public_a_network ? 1 : 0
-  zone_id = aws_route53_zone.domain.zone_id
+  zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
   name    = "ssh_a.shapes-registry.org"
   type    = "A"
   ttl     = 60
@@ -40,7 +40,7 @@ resource "aws_route53_record" "ssh_bastion_a" {
 
 resource "aws_route53_record" "ssh_bastion" {
   count   = var.create_ssh_bastion_vm_on_public_a_network ? 1 : 0
-  zone_id = aws_route53_zone.domain.zone_id
+  zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
   name    = "ssh.shapes-registry.org"
   type    = "A"
   ttl     = 60
@@ -80,7 +80,7 @@ echo "to be replaced with creation of user logins"
 
 resource "aws_route53_record" "ssh_bastion_b" {
   count   = var.create_ssh_bastion_vm_on_public_b_network ? 1 : 0
-  zone_id = aws_route53_zone.domain.zone_id
+  zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
   name    = "ssh_b.shapes-registry.org"
   type    = "A"
   ttl     = 60
