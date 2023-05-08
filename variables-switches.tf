@@ -24,6 +24,13 @@ variable "core_webapp_ecs_number_of_containers" {
   description = "Number of containers for the SBO core webapp"
 }
 
+variable "nexus_app_ecs_number_of_containers" {
+  type        = number
+  default     = 1
+  sensitive   = false
+  description = "Number of containers for delta app"
+}
+
 variable "blazegraph_ecs_number_of_containers" {
   type      = number
   default   = 0
