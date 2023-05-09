@@ -1,5 +1,5 @@
 resource "aws_subnet" "ml_os" {
-  vpc_id            = aws_vpc.sbo_poc.id
+  vpc_id            = data.terraform_remote_state.common.outputs.vpc_id
   availability_zone = "${var.aws_region}a"
   cidr_block        = "10.0.2.128/28"
   tags = {
@@ -9,14 +9,11 @@ resource "aws_subnet" "ml_os" {
 }
 
 resource "aws_route_table" "ml_os" {
-  vpc_id = aws_vpc.sbo_poc.id
+  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat[0].id
+    nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
   }
-  depends_on = [
-    aws_nat_gateway.nat
-  ]
   tags = {
     Name        = "ml_os_route"
     SBO_Billing = "machinelearning"
@@ -29,13 +26,13 @@ resource "aws_route_table_association" "ml_os" {
 }
 
 resource "aws_network_acl" "ml_os" {
-  vpc_id     = aws_vpc.sbo_poc.id
+  vpc_id     = data.terraform_remote_state.common.outputs.vpc_id
   subnet_ids = [aws_subnet.ml_os.id]
   ingress {
     protocol   = -1
     rule_no    = 101
     action     = "allow"
-    cidr_block = aws_vpc.sbo_poc.cidr_block
+    cidr_block = data.terraform_remote_state.common.outputs.vpc_cidr_block
     from_port  = 0
     to_port    = 0
   }

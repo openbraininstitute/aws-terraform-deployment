@@ -14,14 +14,14 @@ resource "aws_cloudwatch_log_group" "ml_opensearch" {
 
 resource "aws_security_group" "ml_opensearch" {
   name   = "ml_opensearch"
-  vpc_id = aws_vpc.sbo_poc.id
+  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
 
   description = "Machine Learning OpenSearch"
   ingress {
     protocol    = "-1"
     from_port   = 0
     to_port     = 0
-    cidr_blocks = [aws_vpc.sbo_poc.cidr_block]
+    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
     description = "allow access from within VPC"
   }
 
@@ -29,7 +29,7 @@ resource "aws_security_group" "ml_opensearch" {
     protocol    = "-1"
     from_port   = 0
     to_port     = 0
-    cidr_blocks = [aws_vpc.sbo_poc.cidr_block]
+    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
     description = "allow access to the VPC"
   }
   tags = {

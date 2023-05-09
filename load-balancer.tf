@@ -3,7 +3,7 @@ resource "aws_lb" "alb" {
   internal           = false #tfsec:ignore:aws-elb-alb-not-public
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb.id]
-  subnets            = [aws_subnet.public_a.id, aws_subnet.public_b.id]
+  subnets            = [data.terraform_remote_state.common.outputs.public_a_subnet_id, data.terraform_remote_state.common.outputs.public_b_subnet_id]
 
   drop_invalid_header_fields = true
 
@@ -16,7 +16,7 @@ resource "aws_lb" "alb" {
 # See https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-update-security-groups.html
 resource "aws_security_group" "alb" {
   name        = "Load balancer"
-  vpc_id      = aws_vpc.sbo_poc.id
+  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
   description = "Sec group for the application load balancer"
 
   tags = {
@@ -44,7 +44,7 @@ resource "aws_vpc_security_group_ingress_rule" "alb_allow_https_internal" {
   from_port         = 443
   to_port           = 443
   ip_protocol       = "tcp"
-  cidr_ipv4         = aws_vpc.sbo_poc.cidr_block
+  cidr_ipv4         = data.terraform_remote_state.common.outputs.vpc_cidr_block
 
   tags = {
     Name = "alb_allow_https_internal"

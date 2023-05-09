@@ -27,7 +27,7 @@ resource "aws_efs_mount_target" "efs_for_nexus_app" {
 # TODO make more strict
 resource "aws_security_group" "nexus_app_efs" {
   name   = "nexus_app_efs"
-  vpc_id = aws_vpc.sbo_poc.id
+  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
 
   description = "Nexus app EFS filesystem"
 
@@ -35,7 +35,7 @@ resource "aws_security_group" "nexus_app_efs" {
     protocol    = "-1"
     from_port   = 0
     to_port     = 0
-    cidr_blocks = [aws_vpc.sbo_poc.cidr_block]
+    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
     description = "allow ingress within vpc"
   }
 
@@ -43,7 +43,7 @@ resource "aws_security_group" "nexus_app_efs" {
     protocol    = "-1"
     from_port   = 0
     to_port     = 0
-    cidr_blocks = [aws_vpc.sbo_poc.cidr_block]
+    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
     description = "allow egress within vpc"
   }
   tags = {
@@ -82,7 +82,7 @@ resource "aws_ecs_cluster" "nexus_app" {
 # TODO make more strict
 resource "aws_security_group" "nexus_app_ecs_task" {
   name        = "nexus_app_ecs_task"
-  vpc_id      = aws_vpc.sbo_poc.id
+  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
   description = "Sec group for SBO nexus app"
 
   tags = {
@@ -97,7 +97,7 @@ resource "aws_vpc_security_group_ingress_rule" "nexus_app_allow_port_8000" {
   ip_protocol = "tcp"
   from_port   = 8000
   to_port     = 8000
-  cidr_ipv4   = aws_vpc.sbo_poc.cidr_block
+  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
   description = "Allow port 8000 http"
   tags = {
     SBO_Billing = "nexus_app"
@@ -112,7 +112,7 @@ resource "aws_vpc_security_group_egress_rule" "nexus_app_allow_outgoing" {
   from_port   = 0
   to_port     = 0
   cidr_ipv4   = "0.0.0.0/0"
-  #cidr_ipv4   = aws_vpc.sbo_poc.cidr_block
+  #cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
   description = "Allow everything"
   tags = {
     SBO_Billing = "nexus_app"

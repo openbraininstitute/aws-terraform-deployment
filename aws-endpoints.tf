@@ -9,7 +9,7 @@
 
 # 10.0.2.16/28 is 10.0.2.16 up to 10.0.2.31 with subnet and broadcast included
 resource "aws_subnet" "aws_endpoints" {
-  vpc_id                  = aws_vpc.sbo_poc.id
+  vpc_id                  = data.terraform_remote_state.common.outputs.vpc_id
   availability_zone       = "${var.aws_region}a"
   cidr_block              = "10.0.2.16/28"
   map_public_ip_on_launch = false
@@ -23,14 +23,11 @@ resource "aws_subnet" "aws_endpoints" {
 # Route table for the aws_endpoints network
 # TODO routing via NAT probably not needed
 resource "aws_route_table" "aws_endpoints" {
-  vpc_id = aws_vpc.sbo_poc.id
+  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat[0].id
+    nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
   }
-  depends_on = [
-    aws_nat_gateway.nat
-  ]
   tags = {
     Name        = "aws_endpoints_route"
     SBO_Billing = "common"
@@ -44,14 +41,14 @@ resource "aws_route_table_association" "aws_endpoints" {
 }
 
 resource "aws_network_acl" "aws_endpoints" {
-  vpc_id     = aws_vpc.sbo_poc.id
+  vpc_id     = data.terraform_remote_state.common.outputs.vpc_id
   subnet_ids = [aws_subnet.aws_endpoints.id]
   # Allow local traffic
   ingress {
     protocol   = -1
     rule_no    = 100
     action     = "allow"
-    cidr_block = aws_vpc.sbo_poc.cidr_block
+    cidr_block = data.terraform_remote_state.common.outputs.vpc_cidr_block
     from_port  = 0
     to_port    = 0
   }
@@ -90,7 +87,7 @@ resource "aws_network_acl" "aws_endpoints" {
 
 resource "aws_security_group" "aws_endpoint_secretsmanager" {
   name        = "AWS secretsmanager endpoint"
-  vpc_id      = aws_vpc.sbo_poc.id
+  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
   description = "Sec group for the endpoint of the AWS secretsmanager"
 
   tags = {
@@ -106,7 +103,7 @@ resource "aws_vpc_security_group_ingress_rule" "aws_endpoint_secretsmanager_inco
   from_port         = 0
   to_port           = 0
   ip_protocol       = "tcp"
-  cidr_ipv4         = aws_vpc.sbo_poc.cidr_block
+  cidr_ipv4         = data.terraform_remote_state.common.outputs.vpc_cidr_block
 
   tags = {
     Name = "aws_endpoint_secretsmanager_incoming"
@@ -127,7 +124,7 @@ resource "aws_vpc_security_group_egress_rule" "aws_endpoint_secretsmanager_outgo
 }
 
 resource "aws_vpc_endpoint" "secretsmanager" {
-  vpc_id             = aws_vpc.sbo_poc.id
+  vpc_id             = data.terraform_remote_state.common.outputs.vpc_id
   service_name       = "com.amazonaws.${var.aws_region}.secretsmanager"
   auto_accept        = true
   ip_address_type    = "ipv4"

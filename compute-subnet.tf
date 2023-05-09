@@ -1,6 +1,6 @@
 # Subnet for compute nodes
 resource "aws_subnet" "compute" {
-  vpc_id            = aws_vpc.sbo_poc.id
+  vpc_id            = data.terraform_remote_state.common.outputs.vpc_id
   availability_zone = "${var.aws_region}a"
   cidr_block        = "10.0.32.0/21"
   tags = {
@@ -11,14 +11,11 @@ resource "aws_subnet" "compute" {
 
 # Route table for the compute network
 resource "aws_route_table" "compute" {
-  vpc_id = aws_vpc.sbo_poc.id
+  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat[0].id
+    nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
   }
-  depends_on = [
-    aws_nat_gateway.nat
-  ]
   tags = {
     Name        = "compute_route"
     SBO_Billing = "common"
@@ -32,7 +29,7 @@ resource "aws_route_table_association" "compute" {
 }
 
 resource "aws_network_acl" "compute" {
-  vpc_id     = aws_vpc.sbo_poc.id
+  vpc_id     = data.terraform_remote_state.common.outputs.vpc_id
   subnet_ids = [aws_subnet.compute.id]
   # Allow local traffic
   # TODO limit to correct ports and subnets
@@ -40,7 +37,7 @@ resource "aws_network_acl" "compute" {
     protocol   = -1
     rule_no    = 100
     action     = "allow"
-    cidr_block = aws_vpc.sbo_poc.cidr_block
+    cidr_block = data.terraform_remote_state.common.outputs.vpc_cidr_block
     from_port  = 0
     to_port    = 0
   }

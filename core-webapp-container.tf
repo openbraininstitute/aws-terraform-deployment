@@ -43,7 +43,7 @@ resource "aws_ecs_cluster" "core_webapp" {
 # TODO make more strict
 resource "aws_security_group" "core_webapp_ecs_task" {
   name        = "core_webapp_ecs_task"
-  vpc_id      = aws_vpc.sbo_poc.id
+  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
   description = "Sec group for SBO core webapp"
 
   tags = {
@@ -58,7 +58,7 @@ resource "aws_vpc_security_group_ingress_rule" "core_webapp_allow_port_8000" {
   ip_protocol = "tcp"
   from_port   = 8000
   to_port     = 8000
-  cidr_ipv4   = aws_vpc.sbo_poc.cidr_block
+  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
   description = "Allow port 8000 http"
   tags = {
     SBO_Billing = "core_webapp"
@@ -73,7 +73,7 @@ resource "aws_vpc_security_group_egress_rule" "core_webapp_allow_outgoing" {
   from_port   = 0
   to_port     = 0
   cidr_ipv4   = "0.0.0.0/0"
-  #cidr_ipv4   = aws_vpc.sbo_poc.cidr_block
+  #cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
   description = "Allow everything"
   tags = {
     SBO_Billing = "core_webapp"

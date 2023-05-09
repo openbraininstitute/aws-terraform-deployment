@@ -37,7 +37,7 @@ resource "aws_lb_target_group" "nexus_app" {
   port        = 8000
   protocol    = "HTTP"
   target_type = "ip"
-  vpc_id      = aws_vpc.sbo_poc.id
+  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
   #lifecycle {
   #  create_before_destroy = true
   #}

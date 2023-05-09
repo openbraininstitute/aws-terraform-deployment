@@ -3,7 +3,7 @@ resource "aws_instance" "compute" {
   instance_type               = "t3.micro"
   count                       = var.create_compute_instances ? var.num_compute_instances : 0
   subnet_id                   = aws_subnet.compute.id
-  key_name                    = aws_key_pair.dries-mac-bbp.id
+  key_name                    = data.terraform_remote_state.common.outputs.aws_coreservices_ssh_key_id
   vpc_security_group_ids      = [aws_security_group.hpc.id]
   associate_public_ip_address = false
   user_data_replace_on_change = false
@@ -50,7 +50,7 @@ resource "aws_efs_backup_policy" "compute_backup_policy" {
 
 resource "aws_security_group" "hpc" {
   name   = "hpc"
-  vpc_id = aws_vpc.sbo_poc.id
+  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
 
   description = "SBO HPC"
 
@@ -58,7 +58,7 @@ resource "aws_security_group" "hpc" {
     protocol    = "-1"
     from_port   = 0
     to_port     = 0
-    cidr_blocks = [aws_vpc.sbo_poc.cidr_block]
+    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
     description = "allow ingress within vpc"
   }
 
@@ -66,7 +66,7 @@ resource "aws_security_group" "hpc" {
     protocol    = "-1"
     from_port   = 0
     to_port     = 0
-    cidr_blocks = [aws_vpc.sbo_poc.cidr_block]
+    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
     description = "allow egress within vpc"
   }
 
@@ -78,7 +78,7 @@ resource "aws_security_group" "hpc" {
 
 resource "aws_security_group" "compute_efs" {
   name   = "compute_efs"
-  vpc_id = aws_vpc.sbo_poc.id
+  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
 
   description = "SBO compute EFS filesystem"
 
@@ -86,7 +86,7 @@ resource "aws_security_group" "compute_efs" {
     protocol    = "-1"
     from_port   = 0
     to_port     = 0
-    cidr_blocks = [aws_vpc.sbo_poc.cidr_block]
+    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
     description = "allow ingress within vpc"
   }
 
@@ -94,7 +94,7 @@ resource "aws_security_group" "compute_efs" {
     protocol    = "-1"
     from_port   = 0
     to_port     = 0
-    cidr_blocks = [aws_vpc.sbo_poc.cidr_block]
+    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
     description = "allow egress within vpc"
   }
 

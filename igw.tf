@@ -1,8 +1,7 @@
 # Gateway for routed (not-NAT) traffic
-resource "aws_internet_gateway" "igw" {
-  vpc_id = aws_vpc.sbo_poc.id
-  tags = {
-    Name        = "igw"
-    SBO_Billing = "common"
-  }
-}
+
+# Deprecated, use instead:
+
+# data.terraform_remote_state.common.outputs.internet_gateway_id
+# data.terraform_remote_state.common.outputs.internet_gateway_arn
+

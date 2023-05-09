@@ -30,7 +30,7 @@ resource "aws_ecs_cluster" "ml_ecs_cluster" {
 # TODO make more strict
 resource "aws_security_group" "embedder_ecs_task" {
   name        = "embedder_ecs_task"
-  vpc_id      = aws_vpc.sbo_poc.id
+  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
   description = "Sec group for embedder webapp"
 
   tags = {
@@ -45,7 +45,7 @@ resource "aws_vpc_security_group_ingress_rule" "embedder_allow_port_3000" {
   ip_protocol = "tcp"
   from_port   = 3000
   to_port     = 3000
-  cidr_ipv4   = aws_vpc.sbo_poc.cidr_block
+  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
   description = "Allow port 3000 http"
 
   tags = {
@@ -58,7 +58,7 @@ resource "aws_vpc_security_group_egress_rule" "embedder_allow_outgoing" {
 
   ip_protocol = -1
   cidr_ipv4   = "0.0.0.0/0"
-  #cidr_ipv4   = aws_vpc.sbo_poc.cidr_block
+  #cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
   description = "Allow everything"
 
   tags = {

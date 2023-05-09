@@ -48,7 +48,7 @@ resource "aws_cloudwatch_log_group" "blazegraph_app" {
 # TODO make more strict
 resource "aws_security_group" "blazegraph_efs" {
   name   = "blazegraph_efs"
-  vpc_id = aws_vpc.sbo_poc.id
+  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
 
   description = "Blazegraph EFS filesystem"
 
@@ -56,7 +56,7 @@ resource "aws_security_group" "blazegraph_efs" {
     protocol    = "-1"
     from_port   = 0
     to_port     = 0
-    cidr_blocks = [aws_vpc.sbo_poc.cidr_block]
+    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
     description = "allow ingress within vpc"
   }
 
@@ -64,7 +64,7 @@ resource "aws_security_group" "blazegraph_efs" {
     protocol    = "-1"
     from_port   = 0
     to_port     = 0
-    cidr_blocks = [aws_vpc.sbo_poc.cidr_block]
+    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
     description = "allow egress within vpc"
   }
   tags = {
@@ -87,7 +87,7 @@ resource "aws_ecs_cluster" "blazegraph" {
 # TODO make more strict
 resource "aws_security_group" "blazegraph_ecs_task" {
   name   = "blazegraph_ecs_task"
-  vpc_id = aws_vpc.sbo_poc.id
+  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
 
   description = "Blazegraph containers"
   tags = {
@@ -101,7 +101,7 @@ resource "aws_vpc_security_group_ingress_rule" "blazegraph_ecs_task_tcp_ingress"
   ip_protocol = "tcp"
   from_port   = 0
   to_port     = 0
-  cidr_ipv4   = aws_vpc.sbo_poc.cidr_block
+  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
   description = "allow tcp ingress within vpc"
 
   tags = {
@@ -114,7 +114,7 @@ resource "aws_vpc_security_group_ingress_rule" "blazegraph_ecs_task_udp_ingress"
   ip_protocol = "udp"
   from_port   = 0
   to_port     = 0
-  cidr_ipv4   = aws_vpc.sbo_poc.cidr_block
+  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
   description = "allow udp ingress within vpc"
 
   tags = {
