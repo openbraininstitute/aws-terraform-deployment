@@ -129,11 +129,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
     {
       memory      = 1024
       cpu         = 512
-      command     = [
-        "/bin/bash",
-        "-c",
-        "/opt/docker/bin/delta-app"
-      ]
+      command     = ["/bin/bash", "-c", "/opt/docker/bin/delta-app"]
       networkMode = "awsvpc"
       family      = "sbonexusapp"
       essential   = true
@@ -172,7 +168,6 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
     efs_volume_configuration {
       file_system_id     = aws_efs_file_system.nexus_app_config.id
       root_directory     = "/opt/appconf"
-      transit_encryption = "DISABLED"
     }
   }
 

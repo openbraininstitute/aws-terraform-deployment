@@ -23,7 +23,7 @@ resource "aws_route53_record" "nexus_app_validation" {
   records         = [each.value.record]
   ttl             = 60
   type            = each.value.type
-  zone_id         = aws_route53_zone.domain.zone_id
+  zone_id         = data.terraform_remote_state.common.outputs.domain_zone_id
 }
 
 resource "aws_acm_certificate_validation" "nexus_app" {
@@ -72,7 +72,7 @@ resource "aws_lb_listener_rule" "nexus_app_https" {
 }
 
 resource "aws_route53_record" "nexus_app" {
-  zone_id = aws_route53_zone.domain.zone_id
+  zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
   name    = var.nexus_delta_hostname
   type    = "CNAME"
   ttl     = 60
