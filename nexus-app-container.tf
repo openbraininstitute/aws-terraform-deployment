@@ -165,8 +165,8 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
   volume {
     name = "efs-nexus-app-config"
     efs_volume_configuration {
-      file_system_id = aws_efs_file_system.nexus_app_config.id
-      root_directory = "/opt/appconf"
+      file_system_id     = aws_efs_file_system.nexus_app_config.id
+      root_directory     = "/opt/appconf"
       transit_encryption = "ENABLED"
     }
   }
