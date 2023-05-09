@@ -1,21 +1,60 @@
-resource "aws_cloudwatch_log_group" "nexus_app" {
-  # TODO check if the logs can be encrypted
-  name              = var.nexus_delta_app_log_group_name
-  skip_destroy      = false
-  retention_in_days = 5
+# Blazegraph needs some storage for data
+resource "aws_efs_file_system" "nexus_app_config" {
+  #ts:skip=AC_AWS_0097
+  creation_token         = "sbo-poc-nexus-app-config"
+  availability_zone_name = "${var.aws_region}a"
+  encrypted              = false #tfsec:ignore:aws-efs-enable-at-rest-encryption
+  tags = {
+    Name        = "sbp-poc-nexus-app-config"
+    SBO_Billing = "nexus_app"
+  }
+}
 
-  kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
+resource "aws_efs_backup_policy" "nexus_backup_policy" {
+  file_system_id = aws_efs_file_system.nexus_app_config.id
 
+  backup_policy {
+    status = "DISABLED"
+  }
+}
+
+resource "aws_efs_mount_target" "efs_for_nexus_app" {
+  file_system_id  = aws_efs_file_system.nexus_app_config.id
+  subnet_id       = aws_subnet.nexus_app.id
+  security_groups = [aws_security_group.nexus_app_efs.id]
+}
+
+# TODO make more strict
+resource "aws_security_group" "nexus_app_efs" {
+  name   = "nexus_app_efs"
+  vpc_id = aws_vpc.sbo_poc.id
+
+  description = "Nexus app EFS filesystem"
+
+  ingress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = [aws_vpc.sbo_poc.cidr_block]
+    description = "allow ingress within vpc"
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = [aws_vpc.sbo_poc.cidr_block]
+    description = "allow egress within vpc"
+  }
   tags = {
     Application = "nexus_app"
     SBO_Billing = "nexus_app"
   }
 }
 
-# TODO check: not used?
-resource "aws_cloudwatch_log_group" "nexus_app_ecs" {
+resource "aws_cloudwatch_log_group" "nexus_app" {
   # TODO check if the logs can be encrypted
-  name              = "nexus_app_ecs"
+  name              = var.nexus_delta_app_log_group_name
   skip_destroy      = false
   retention_in_days = 5
 
@@ -90,7 +129,11 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
     {
       memory      = 1024
       cpu         = 512
-      command     = ["/bin/bash", "-c", "/opt/docker/bin/delta-app"]
+      command     = [
+        "/bin/bash",
+        "-c",
+        "/opt/docker/bin/delta-app"
+      ]
       networkMode = "awsvpc"
       family      = "sbonexusapp"
       essential   = true
@@ -123,6 +166,15 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = aws_iam_role.ecs_nexus_app_task_execution_role[0].arn
   task_role_arn            = aws_iam_role.ecs_nexus_app_task_role[0].arn
+
+  volume {
+    name = "efs-nexus-app-config"
+    efs_volume_configuration {
+      file_system_id     = aws_efs_file_system.nexus_app_config.id
+      root_directory     = "/opt/appconf"
+      transit_encryption = "DISABLED"
+    }
+  }
 
   tags = {
     SBO_Billing = "nexus_app"
