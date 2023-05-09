@@ -7,7 +7,7 @@ variable "dockerhub_credentials_arn" {
 }
 
 resource "aws_iam_policy" "dockerhub_access" {
-  name        = "dockerhub-credentiasl-access-policy"
+  name        = "dockerhub-credentials-access-policy"
   description = "Policy that allows access to the dockerhub credentials"
 
   policy = <<EOF

@@ -54,6 +54,15 @@ resource "aws_network_acl" "machinelearning" {
     from_port  = 80
     to_port    = 80
   }
+  # Allow port 443 from anywhere (dockerhub requirement?)
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 106
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 443
+    to_port    = 443
+  }
   egress {
     # TODO limit to dockerhub, secretsmanager, nexus...
     protocol   = -1

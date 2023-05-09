@@ -4,7 +4,8 @@ resource "aws_subnet" "compute" {
   availability_zone = "${var.aws_region}a"
   cidr_block        = "10.0.32.0/21"
   tags = {
-    Name = "compute"
+    Name        = "compute"
+    SBO_Billing = "common"
   }
 }
 
@@ -19,7 +20,8 @@ resource "aws_route_table" "compute" {
     aws_nat_gateway.nat
   ]
   tags = {
-    Name = "compute_route"
+    Name        = "compute_route"
+    SBO_Billing = "common"
   }
 }
 
@@ -61,6 +63,7 @@ resource "aws_network_acl" "compute" {
     to_port    = 0
   }
   tags = {
-    Name = "compute_acl"
+    Name        = "compute_acl"
+    SBO_Billing = "common"
   }
 }

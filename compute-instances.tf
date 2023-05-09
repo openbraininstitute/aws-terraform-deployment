@@ -19,7 +19,8 @@ resource "aws_instance" "compute" {
   }
 
   tags = {
-    Name = "sbo-poc-compute"
+    Name        = "sbo-poc-compute"
+    SBO_Billing = "common"
   }
 
   credit_specification {
@@ -34,7 +35,8 @@ resource "aws_efs_file_system" "compute_efs" {
   availability_zone_name = "${var.aws_region}a"
   encrypted              = false #tfsec:ignore:aws-efs-enable-at-rest-encryption
   tags = {
-    Name = "sbp-poc-compute"
+    Name        = "sbp-poc-compute"
+    SBO_Billing = "common"
   }
 }
 
@@ -66,6 +68,11 @@ resource "aws_security_group" "compute_efs" {
     to_port     = 0
     cidr_blocks = [aws_vpc.sbo_poc.cidr_block]
     description = "allow egress within vpc"
+  }
+
+  tags = {
+    Name        = "sbp-poc-compute"
+    SBO_Billing = "common"
   }
 }
 
