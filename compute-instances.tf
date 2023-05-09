@@ -4,7 +4,7 @@ resource "aws_instance" "compute" {
   count                       = var.create_compute_instances ? var.num_compute_instances : 0
   subnet_id                   = aws_subnet.compute.id
   key_name                    = aws_key_pair.dries-mac-bbp.id
-  vpc_security_group_ids      = [] # FIXME define this
+  vpc_security_group_ids      = [aws_security_group.hpc.id]
   associate_public_ip_address = false
   user_data_replace_on_change = false
   monitoring                  = true
@@ -35,7 +35,7 @@ resource "aws_efs_file_system" "compute_efs" {
   availability_zone_name = "${var.aws_region}a"
   encrypted              = false #tfsec:ignore:aws-efs-enable-at-rest-encryption
   tags = {
-    Name        = "sbp-poc-compute"
+    Name        = "sbo-poc-compute"
     SBO_Billing = "common"
   }
 }
@@ -45,6 +45,34 @@ resource "aws_efs_backup_policy" "compute_backup_policy" {
 
   backup_policy {
     status = "DISABLED"
+  }
+}
+
+resource "aws_security_group" "hpc" {
+  name   = "hpc"
+  vpc_id = aws_vpc.sbo_poc.id
+
+  description = "SBO HPC"
+
+  ingress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = [aws_vpc.sbo_poc.cidr_block]
+    description = "allow ingress within vpc"
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = [aws_vpc.sbo_poc.cidr_block]
+    description = "allow egress within vpc"
+  }
+
+  tags = {
+    Name        = "sbo-poc-compute"
+    SBO_Billing = "common"
   }
 }
 
@@ -71,7 +99,7 @@ resource "aws_security_group" "compute_efs" {
   }
 
   tags = {
-    Name        = "sbp-poc-compute"
+    Name        = "sbo-poc-compute"
     SBO_Billing = "common"
   }
 }
