@@ -108,9 +108,7 @@ resource "aws_vpc_security_group_egress_rule" "nexus_app_allow_outgoing" {
   security_group_id = aws_security_group.nexus_app_ecs_task.id
   # TODO limit to what is needed
   # needs access to dockerhub and to AWS secrets manager, likely also nexus, ...
-  ip_protocol = "tcp"
-  from_port   = 0
-  to_port     = 0
+  ip_protocol = -1
   cidr_ipv4   = "0.0.0.0/0"
   #cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
   description = "Allow everything"
