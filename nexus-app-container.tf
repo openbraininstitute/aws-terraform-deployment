@@ -143,6 +143,13 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
           protocol      = "tcp"
         }
       ]
+      healthcheck = {
+        command     = ["CMD-SHELL", "exit 0"] // TODO: not exit 0
+        interval    = 30
+        timeout     = 5
+        startPeriod = 60
+        retries     = 3
+      }
       logConfiguration = {
         logDriver = "awslogs"
         options = {
