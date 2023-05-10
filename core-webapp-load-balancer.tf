@@ -69,6 +69,10 @@ resource "aws_lb_listener_rule" "core_webapp_https" {
   tags = {
     SBO_Billing = "core_webapp"
   }
+  depends_on = [
+    aws_lb_listener.sbo_https,
+    aws_lb.alb
+  ]
 }
 
 resource "aws_route53_record" "core_webapp" {

@@ -54,7 +54,7 @@ resource "aws_lb_listener_certificate" "nexus_app" {
 
 resource "aws_lb_listener_rule" "nexus_app_https" {
   listener_arn = aws_lb_listener.sbo_https.arn
-  priority     = 100
+  priority     = 101
 
   action {
     type             = "forward"
@@ -69,6 +69,10 @@ resource "aws_lb_listener_rule" "nexus_app_https" {
   tags = {
     SBO_Billing = "nexus_app"
   }
+  depends_on = [
+    aws_lb_listener.sbo_https,
+    aws_lb.alb
+  ]
 }
 
 resource "aws_route53_record" "nexus_app" {

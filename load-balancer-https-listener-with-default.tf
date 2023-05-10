@@ -58,6 +58,9 @@ resource "aws_lb_listener" "sbo_https" {
   tags = {
     SBO_Billing = "common"
   }
+  depends_on = [
+    aws_lb.alb
+  ]
 }
 
 output "alb_https_test" {
