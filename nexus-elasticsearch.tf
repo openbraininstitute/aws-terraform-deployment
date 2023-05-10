@@ -81,9 +81,11 @@ CONFIG
     Name        = "nexus_es"
     SBO_Billing = "nexus"
   }
-  depends_on = [aws_iam_service_linked_role.es]
+  depends_on = [aws_iam_service_linked_role.os]
 }
 
+/*
+Only one allowed per account? Use the one created in the ML deployment
 resource "aws_iam_service_linked_role" "es" {
   aws_service_name = "es.amazonaws.com"
   description      = "Allows Amazon ES to manage AWS resources for a domain on your behalf."
@@ -91,5 +93,5 @@ resource "aws_iam_service_linked_role" "es" {
   tags = {
     SBO_Billing = "nexus"
   }
-}
+}*/
 

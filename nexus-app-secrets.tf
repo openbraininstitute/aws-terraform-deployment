@@ -1,6 +1,6 @@
 # Created in AWS secret manager
 variable "sbo_nexus_app_secrets_arn" {
-  default     = "???"
+  default     = "arn:aws:secretsmanager:us-east-1:671250183987:secret:nexus_app-xfJP5F"
   type        = string
   description = "The ARN of the SBO nexus app secrets"
   sensitive   = true
