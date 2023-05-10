@@ -150,6 +150,13 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
         startPeriod = 60
         retries     = 3
       }
+      mountPoints = [
+        {
+          sourceVolume  = "efs-nexus-app-config"
+          containerPath = "/opt/appconf"
+          readOnly      = true
+        }
+      ]
       logConfiguration = {
         logDriver = "awslogs"
         options = {
