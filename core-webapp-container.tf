@@ -65,7 +65,7 @@ resource "aws_vpc_security_group_ingress_rule" "core_webapp_allow_port_8000" {
   }
 }
 
-resource "aws_vpc_security_group_egress_rule" "core_webapp_allow_outgoing" {
+resource "aws_vpc_security_group_egress_rule" "core_webapp_allow_outgoing_tcp" {
   security_group_id = aws_security_group.core_webapp_ecs_task.id
   # TODO limit to what is needed
   # needs access to dockerhub and to AWS secrets manager, likely also nexus, ...
@@ -74,7 +74,22 @@ resource "aws_vpc_security_group_egress_rule" "core_webapp_allow_outgoing" {
   to_port     = 0
   cidr_ipv4   = "0.0.0.0/0"
   #cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
-  description = "Allow everything"
+  description = "Allow all TCP"
+  tags = {
+    SBO_Billing = "core_webapp"
+  }
+}
+
+resource "aws_vpc_security_group_egress_rule" "core_webapp_allow_outgoing_udp" {
+  security_group_id = aws_security_group.core_webapp_ecs_task.id
+  # TODO limit to what is needed
+  # needs access to dockerhub and to AWS secrets manager, likely also nexus, ...
+  ip_protocol = "udp"
+  from_port   = 0
+  to_port     = 0
+  cidr_ipv4   = "0.0.0.0/0"
+  #cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  description = "Allow all UDP"
   tags = {
     SBO_Billing = "core_webapp"
   }
