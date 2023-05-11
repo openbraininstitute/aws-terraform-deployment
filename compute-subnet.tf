@@ -5,7 +5,7 @@ resource "aws_subnet" "compute" {
   cidr_block        = "10.0.32.0/21"
   tags = {
     Name        = "compute"
-    SBO_Billing = "common"
+    SBO_Billing = "hpc"
   }
 }
 
@@ -18,7 +18,7 @@ resource "aws_route_table" "compute" {
   }
   tags = {
     Name        = "compute_route"
-    SBO_Billing = "common"
+    SBO_Billing = "hpc"
   }
 }
 
@@ -61,6 +61,6 @@ resource "aws_network_acl" "compute" {
   }
   tags = {
     Name        = "compute_acl"
-    SBO_Billing = "common"
+    SBO_Billing = "hpc"
   }
 }
