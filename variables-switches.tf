@@ -33,7 +33,7 @@ variable "nexus_app_ecs_number_of_containers" {
 
 variable "blazegraph_ecs_number_of_containers" {
   type      = number
-  default   = 0
+  default   = 1
   sensitive = false
 }
 
