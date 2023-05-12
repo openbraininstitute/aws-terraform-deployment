@@ -127,7 +127,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
     {
       memory  = 1024
       cpu     = 512
-      command = ["/bin/bash", "-c", "/opt/docker/bin/delta-app -Dapp.defaults.database.access.host=\"nexus-db-id.ctydazornca3.us-east-1.rds.amazonaws.com\" -Dapp.defaults.database.access.port=5432 -Dapp.defaults.database.password=\"$POSTGRES_PASSWORD\""]
+      command = ["/bin/bash", "-c", "/opt/docker/bin/delta-app -Dapp.defaults.database.access.host=\"nexus-db-id.ctydazornca3.us-east-1.rds.amazonaws.com\" -Dapp.defaults.database.access.port=5432 -Dapp.defaults.database.password=\"$POSTGRES_PASSWORD\" -Dapp.database.tables-autocreate=true"]
       environment = [
         {
           name  = "DELTA_PLUGINS"
