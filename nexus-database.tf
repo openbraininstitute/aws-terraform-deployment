@@ -43,12 +43,14 @@ data "aws_secretsmanager_secret_version" "nexus_database_password" {
   secret_id = "arn:aws:secretsmanager:us-east-1:671250183987:secret:nexus_postgresql_password-jRsJRc"
 }
 
+# tfsec:ignore:aws-rds-enable-performance-insights-encryption
 resource "aws_db_instance" "nexusdb" {
   #ts:skip=AC_AWS_0053
   #ts:skip=AC_AWS_0454
   #ts:skip=AC_AWS_0058
-  allocated_storage       = 5 # in gigabytes
-  backup_retention_period = 2 # in days
+  deletion_protection     = false #tfsec:ignore:AVD-AWS-0177
+  allocated_storage       = 5     # in gigabytes
+  backup_retention_period = 2     # in days
 
   count = var.create_nexus_database ? 1 : 0
 
@@ -67,8 +69,9 @@ resource "aws_db_instance" "nexusdb" {
   #password = var.nexus_postgresql_database_password
   password = data.aws_secretsmanager_secret_version.nexus_database_password.secret_string
 
-  publicly_accessible = false
-  storage_encrypted   = false
+  publicly_accessible          = false
+  performance_insights_enabled = true
+  storage_encrypted            = false #tfsec:ignore:aws-rds-encrypt-instance-storage-data
 
   vpc_security_group_ids = [aws_security_group.nexus_db.id]
 

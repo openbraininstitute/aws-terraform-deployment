@@ -125,9 +125,19 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
 
   container_definitions = jsonencode([
     {
-      memory      = 1024
-      cpu         = 512
-      command     = ["/bin/bash", "-c", "/opt/docker/bin/delta-app"]
+      memory  = 1024
+      cpu     = 512
+      command = ["/bin/bash", "-c", "/opt/docker/bin/delta-app"]
+      environment = [
+        {
+          name  = "DELTA_PLUGINS"
+          value = "/opt/docker/plugins/"
+        },
+        {
+          name  = "DELTA_EXTERNAL_CONF"
+          value = "/opt/appconf/delta.conf"
+        },
+      ]
       networkMode = "awsvpc"
       family      = "sbonexusapp"
       essential   = true

@@ -39,7 +39,7 @@ deploy:
       - ${TF_ROOT}/bolt-inventory.yaml
 
 tfsec:
-  image: aquasec/tfsec
+  image: aquasec/tfsec:v1.28.0
   stage: validate
   script:
     - cd "${TF_ROOT}"

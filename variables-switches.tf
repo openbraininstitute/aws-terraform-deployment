@@ -45,7 +45,7 @@ variable "create_nexus_elasticsearch" {
 
 variable "create_nexus_database" {
   type      = bool
-  default   = false
+  default   = true
   sensitive = false
 }
 
