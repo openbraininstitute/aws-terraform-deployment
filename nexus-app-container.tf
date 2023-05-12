@@ -127,7 +127,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
     {
       memory  = 1024
       cpu     = 512
-      command = ["/bin/bash", "-c", "/opt/docker/bin/delta-app"]
+      command = ["/bin/bash", "-c", "/opt/docker/bin/delta-app -Dapp.defaults.database.access.host=\"nexus-db-id.ctydazornca3.us-east-1.rds.amazonaws.com\" -Dapp.defaults.database.access.port=5432 -Dapp.defaults.database.password=\"$POSTGRES_PASSWORD\""]
       environment = [
         {
           name  = "DELTA_PLUGINS"
@@ -137,6 +137,10 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
           name  = "DELTA_EXTERNAL_CONF"
           value = "/opt/appconf/delta.conf"
         },
+        {
+          name  = "POSTGRES_PASSWORD"
+          value = data.aws_secretsmanager_secret_version.nexus_database_password.secret_string
+        }
       ]
       networkMode = "awsvpc"
       family      = "sbonexusapp"
