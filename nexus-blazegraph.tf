@@ -215,7 +215,7 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
     efs_volume_configuration {
       file_system_id     = aws_efs_file_system.blazegraph.id
       root_directory     = var.efs_blazegraph_data_dir
-      transit_encryption = "DISABLED"
+      transit_encryption = "ENABLED"
     }
   }
   volume {
@@ -223,7 +223,7 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
     efs_volume_configuration {
       file_system_id     = aws_efs_file_system.blazegraph.id
       root_directory     = var.efs_blazegraph_log4j_dir
-      transit_encryption = "DISABLED"
+      transit_encryption = "ENABLED"
     }
   }
 }
