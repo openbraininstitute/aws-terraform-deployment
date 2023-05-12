@@ -125,9 +125,20 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
 
   container_definitions = jsonencode([
     {
-      memory  = 1024
-      cpu     = 512
-      command = ["/bin/bash", "-c", "/opt/docker/bin/delta-app -Dapp.defaults.database.access.host=\"nexus-db-id.ctydazornca3.us-east-1.rds.amazonaws.com\" -Dapp.defaults.database.access.port=5432 -Dapp.defaults.database.password=\"$POSTGRES_PASSWORD\" -Dapp.database.tables-autocreate=true -Dplugins.elasticsearch.base=\"https://vpc-nexus-2ahuujor4v7ehpnj43lfxcnjpu.us-east-1.es.amazonaws.com\""]
+      memory = 1024
+      cpu    = 512
+      command = [
+        "/bin/bash",
+        "-c",
+        <<EOF
+/opt/docker/bin/delta-app
+  -Dapp.defaults.database.access.host="nexus-db-id.ctydazornca3.us-east-1.rds.amazonaws.com"
+  -Dapp.defaults.database.access.port=5432
+  -Dapp.defaults.database.password="$POSTGRES_PASSWORD"
+  -Dapp.database.tables-autocreate=true
+  -Dplugins.elasticsearch.base="https://vpc-nexus-2ahuujor4v7ehpnj43lfxcnjpu.us-east-1.es.amazonaws.com"
+EOF
+      ]
       environment = [
         {
           name  = "DELTA_PLUGINS"
