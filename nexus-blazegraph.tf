@@ -32,6 +32,14 @@ output "efs_on_blazegraph_subnet_dns_name" {
   value = aws_efs_mount_target.efs_for_blazegraph.dns_name
 }
 
+resource "aws_route53_record" "blazegrap_efs" {
+  zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
+  name    = "blazegraph-efs.shapes-registry.org"
+  type    = "CNAME"
+  ttl     = 60
+  records = [aws_efs_mount_target.efs_for_blazegraph.dns_name]
+}
+
 resource "aws_cloudwatch_log_group" "blazegraph_app" {
   name              = var.blazegraph_app_log_group_name
   skip_destroy      = false
@@ -99,10 +107,10 @@ resource "aws_vpc_security_group_ingress_rule" "blazegraph_ecs_task_tcp_ingress"
   security_group_id = aws_security_group.blazegraph_ecs_task.id
 
   ip_protocol = "tcp"
-  from_port   = 0
-  to_port     = 0
+  from_port   = 22
+  to_port     = 22
   cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
-  description = "allow tcp ingress within vpc"
+  description = "allow ssh ingress within vpc"
 
   tags = {
     SBO_Billing = "nexus"
@@ -111,11 +119,11 @@ resource "aws_vpc_security_group_ingress_rule" "blazegraph_ecs_task_tcp_ingress"
 resource "aws_vpc_security_group_ingress_rule" "blazegraph_ecs_task_udp_ingress" {
   security_group_id = aws_security_group.blazegraph_ecs_task.id
 
-  ip_protocol = "udp"
-  from_port   = 0
-  to_port     = 0
+  ip_protocol = "tcp"
+  from_port   = 9999
+  to_port     = 9999
   cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
-  description = "allow udp ingress within vpc"
+  description = "allow blazegraph 9999 ingress within vpc"
 
   tags = {
     SBO_Billing = "nexus"
@@ -127,7 +135,7 @@ resource "aws_vpc_security_group_egress_rule" "blazegraph_ecs_task_tcp_egress" {
 
   ip_protocol = "tcp"
   from_port   = 0
-  to_port     = 0
+  to_port     = 65535
   cidr_ipv4   = "0.0.0.0/0"
   description = "allow any egress"
 
@@ -140,7 +148,7 @@ resource "aws_vpc_security_group_egress_rule" "blazegraph_ecs_task_udp_egress" {
 
   ip_protocol = "udp"
   from_port   = 0
-  to_port     = 0
+  to_port     = 65535
   cidr_ipv4   = "0.0.0.0/0"
   description = "allow any egress"
 
@@ -188,6 +196,13 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
           awslogs-create-group  = "true"
           awslogs-stream-prefix = "blazegraph_app"
         }
+      }
+      healthcheck = {
+        command     = ["CMD-SHELL", "exit 0"] // TODO: not exit 0
+        interval    = 30
+        timeout     = 5
+        startPeriod = 60
+        retries     = 3
       }
       mountPoints = [
         {
@@ -238,7 +253,11 @@ resource "aws_ecs_service" "blazegraph_ecs_service" {
   task_definition = aws_ecs_task_definition.blazegraph_ecs_definition[0].arn
   desired_count   = var.blazegraph_ecs_number_of_containers
   #iam_role        = "${var.ecs_iam_role_name}"
-
+  load_balancer {
+    target_group_arn = aws_lb_target_group.blazegraph.arn
+    container_name   = "blazegraph"
+    container_port   = 9999
+  }
   network_configuration {
     security_groups  = [aws_security_group.blazegraph_ecs_task.id]
     subnets          = [aws_subnet.blazegraph_app.id]
@@ -249,6 +268,11 @@ resource "aws_ecs_service" "blazegraph_ecs_service" {
     #aws_iam_role.ecs_blazegraph_task_execution_role, # wrong?
 
   ]
+  # force redeployment on each tf apply
+  force_new_deployment = true
+  #triggers = {
+  #  redeployment = timestamp()
+  #}
   lifecycle {
     ignore_changes = [task_definition, desired_count]
   }

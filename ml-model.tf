@@ -143,6 +143,16 @@ resource "aws_ecs_service" "embedder_ecs_service" {
   lifecycle {
     ignore_changes = [task_definition, desired_count]
   }
+  load_balancer {
+    target_group_arn = aws_lb_target_group.embedder.arn
+    container_name   = "embedder"
+    container_port   = 3000
+  }
+  # force redeployment on each tf apply
+  force_new_deployment = true
+  #triggers = {
+  #  redeployment = timestamp()
+  #}
   tags = {
     SBO_Billing = "machinelearning"
   }

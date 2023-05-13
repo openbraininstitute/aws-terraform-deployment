@@ -71,7 +71,7 @@ resource "aws_vpc_security_group_egress_rule" "core_webapp_allow_outgoing_tcp" {
   # needs access to dockerhub and to AWS secrets manager, likely also nexus, ...
   ip_protocol = "tcp"
   from_port   = 0
-  to_port     = 0
+  to_port     = 65535
   cidr_ipv4   = "0.0.0.0/0"
   #cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
   description = "Allow all TCP"
@@ -86,7 +86,7 @@ resource "aws_vpc_security_group_egress_rule" "core_webapp_allow_outgoing_udp" {
   # needs access to dockerhub and to AWS secrets manager, likely also nexus, ...
   ip_protocol = "udp"
   from_port   = 0
-  to_port     = 0
+  to_port     = 65535
   cidr_ipv4   = "0.0.0.0/0"
   #cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
   description = "Allow all UDP"
@@ -120,6 +120,13 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
           protocol      = "tcp"
         }
       ]
+      healthcheck = {
+        command     = ["CMD-SHELL", "exit 0"] // TODO: not exit 0
+        interval    = 30
+        timeout     = 5
+        startPeriod = 60
+        retries     = 3
+      }
       environment = [
         {
           name  = "DEBUG"
@@ -196,6 +203,11 @@ resource "aws_ecs_service" "core_webapp_ecs_service" {
     aws_cloudwatch_log_group.core_webapp,
     aws_iam_role.ecs_core_webapp_task_execution_role, # wrong?
   ]
+  # force redeployment on each tf apply
+  force_new_deployment = true
+  #triggers = {
+  #  redeployment = timestamp()
+  #}
   lifecycle {
     ignore_changes = [task_definition, desired_count]
   }

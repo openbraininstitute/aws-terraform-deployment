@@ -110,6 +110,13 @@ variable "blazegraph_app_log_group_name" {
   type      = string
 }
 
+variable "private_blazegraph_hostname" {
+  default     = "private-alb-blazegraph.shapes-registry.org"
+  type        = string
+  description = "Hostname at which the blazegraph containers can be reached via the private ALB"
+  sensitive   = false
+}
+
 ### Nexus ElasticSearch/OpenSearch ###
 
 # Note: you can also request opensearch, but then you need
@@ -180,6 +187,13 @@ variable "embedder_log_group_name" {
   default     = "embedder"
   type        = string
   description = "The log name within cloudwatch for the embedder webapp"
+  sensitive   = false
+}
+
+variable "private_ml_embedder_hostname" {
+  default     = "private-alb-embedder.shapes-registry.org"
+  type        = string
+  description = "Hostname at which the embedder containers can be reached via the private ALB"
   sensitive   = false
 }
 

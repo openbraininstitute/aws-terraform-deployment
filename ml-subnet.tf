@@ -42,23 +42,14 @@ resource "aws_network_acl" "machinelearning" {
     from_port  = 0
     to_port    = 0
   }
-  # Allow port 80 from anywhere
+  # allow ingress ephemeral ports: otherwise ECS can't reach dockerhub
   ingress {
     protocol   = "tcp"
-    rule_no    = 105
+    rule_no    = 300
     action     = "allow"
     cidr_block = "0.0.0.0/0"
-    from_port  = 80
-    to_port    = 80
-  }
-  # Allow port 443 from anywhere (dockerhub requirement?)
-  ingress {
-    protocol   = "tcp"
-    rule_no    = 106
-    action     = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port  = 443
-    to_port    = 443
+    from_port  = 1024
+    to_port    = 65535
   }
   egress {
     # TODO limit to dockerhub, secretsmanager, nexus...
