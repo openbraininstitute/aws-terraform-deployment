@@ -131,7 +131,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
         "/bin/bash",
         "-c",
         <<EOF
-/opt/docker/bin/delta-app
+echo $DELTA_PLUGINS && /opt/docker/bin/delta-app
   -Dapp.defaults.database.access.host="nexus-db-id.ctydazornca3.us-east-1.rds.amazonaws.com"
   -Dapp.defaults.database.access.port=5432
   -Dapp.defaults.database.password="$POSTGRES_PASSWORD"
