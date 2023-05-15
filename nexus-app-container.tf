@@ -239,6 +239,8 @@ resource "aws_ecs_service" "nexus_app_ecs_service" {
     aws_cloudwatch_log_group.nexus_app,
     aws_iam_role.ecs_nexus_app_task_execution_role, # wrong?
   ]
+  # force redeployment on each tf apply
+  force_new_deployment = true
   lifecycle {
     ignore_changes = [task_definition, desired_count]
   }
