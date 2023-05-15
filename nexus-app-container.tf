@@ -242,7 +242,7 @@ resource "aws_ecs_service" "nexus_app_ecs_service" {
   # force redeployment on each tf apply
   force_new_deployment = true
   lifecycle {
-    ignore_changes = [task_definition, desired_count]
+    ignore_changes = [desired_count]
   }
   tags = {
     SBO_Billing = "nexus_app"
