@@ -209,7 +209,7 @@ resource "aws_ecs_service" "core_webapp_ecs_service" {
   #  redeployment = timestamp()
   #}
   lifecycle {
-    ignore_changes = [task_definition, desired_count]
+    ignore_changes = [desired_count]
   }
   tags = {
     SBO_Billing = "core_webapp"

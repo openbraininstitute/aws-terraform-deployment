@@ -77,4 +77,7 @@ resource "aws_db_instance" "nexusdb" {
 
   skip_final_snapshot                 = true
   iam_database_authentication_enabled = false
+  tags = {
+    SBO_Billing = "nexus"
+  }
 }

@@ -141,7 +141,7 @@ resource "aws_ecs_service" "embedder_ecs_service" {
     aws_iam_role.ecs_embedder_task_execution_role, # wrong?
   ]
   lifecycle {
-    ignore_changes = [task_definition, desired_count]
+    ignore_changes = [desired_count]
   }
   load_balancer {
     target_group_arn = aws_lb_target_group.embedder.arn

@@ -24,6 +24,14 @@ resource "aws_efs_mount_target" "efs_for_nexus_app" {
   security_groups = [aws_security_group.nexus_app_efs.id]
 }
 
+resource "aws_route53_record" "nexus_app_efs" {
+  zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
+  name    = "nexus-app-efs.shapes-registry.org"
+  type    = "CNAME"
+  ttl     = 60
+  records = [aws_efs_mount_target.efs_for_nexus_app.dns_name]
+}
+
 # TODO make more strict
 resource "aws_security_group" "nexus_app_efs" {
   name   = "nexus_app_efs"

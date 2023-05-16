@@ -49,6 +49,21 @@ resource "aws_efs_file_system" "compute_efs" {
   }
 }
 
+# TODO: security groups
+resource "aws_efs_mount_target" "compute_efs" {
+  file_system_id  = aws_efs_file_system.compute_efs.id
+  subnet_id       = aws_subnet.compute.id
+  security_groups = [aws_security_group.compute_efs.id]
+}
+
+resource "aws_route53_record" "compute_efs" {
+  zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
+  name    = "compute-efs.shapes-registry.org"
+  type    = "CNAME"
+  ttl     = 60
+  records = [aws_efs_mount_target.compute_efs.dns_name]
+}
+
 resource "aws_efs_backup_policy" "compute_backup_policy" {
   file_system_id = aws_efs_file_system.compute_efs.id
 

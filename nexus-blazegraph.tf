@@ -241,6 +241,9 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
       transit_encryption = "ENABLED"
     }
   }
+  tags = {
+    SBO_Billing = "nexus"
+  }
 }
 
 resource "aws_ecs_service" "blazegraph_ecs_service" {
@@ -274,7 +277,10 @@ resource "aws_ecs_service" "blazegraph_ecs_service" {
   #  redeployment = timestamp()
   #}
   lifecycle {
-    ignore_changes = [task_definition, desired_count]
+    ignore_changes = [desired_count]
+  }
+  tags = {
+    SBO_Billing = "nexus"
   }
 }
 
@@ -297,6 +303,9 @@ resource "aws_iam_role" "ecs_blazegraph_task_execution_role" {
  ]
 }
 EOF
+  tags = {
+    SBO_Billing = "nexus"
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_blazegraph_task_execution_role_policy_attachment" {
