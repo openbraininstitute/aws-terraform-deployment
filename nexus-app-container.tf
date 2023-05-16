@@ -138,15 +138,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
       command = [
         "/bin/bash",
         "-c",
-        <<EOF
-echo $DELTA_PLUGINS && /opt/docker/bin/delta-app \
-  -Dapp.defaults.database.access.host="nexus-db-id.ctydazornca3.us-east-1.rds.amazonaws.com" \
-  -Dapp.defaults.database.access.port=5432 \
-  -Dapp.defaults.database.password="$POSTGRES_PASSWORD" \
-  -Dapp.database.tables-autocreate=true \
-  -Dplugins.jira.enabled=false \
-  -Dplugins.elasticsearch.base="https://vpc-nexus-2ahuujor4v7ehpnj43lfxcnjpu.us-east-1.es.amazonaws.com"
-EOF
+        "/opt/docker/bin/delta-app -Dapp.defaults.database.access.host=\"nexus-db-id.ctydazornca3.us-east-1.rds.amazonaws.com\" -Dapp.defaults.database.access.port=5432 -Dapp.defaults.database.password=\"$POSTGRES_PASSWORD\" -Dapp.database.tables-autocreate=true -Dplugins.jira.enabled=false -Dplugins.elasticsearch.base=\"https://vpc-nexus-2ahuujor4v7ehpnj43lfxcnjpu.us-east-1.es.amazonaws.com\""
       ]
       environment = [
         {
