@@ -74,8 +74,8 @@ resource "aws_ecs_task_definition" "embedder_ecs_definition" {
 
   container_definitions = jsonencode([
     {
-      memory      = 1024
-      cpu         = 512
+      memory      = 2048
+      cpu         = 1024
       networkMode = "awsvpc"
       family      = "embedder"
       essential   = true
@@ -110,8 +110,8 @@ resource "aws_ecs_task_definition" "embedder_ecs_definition" {
     }
   ])
 
-  memory                   = 1024
-  cpu                      = 512
+  memory                   = 2048
+  cpu                      = 1024
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = aws_iam_role.ecs_embedder_task_execution_role[0].arn
   task_role_arn            = aws_iam_role.ecs_embedder_task_role[0].arn
