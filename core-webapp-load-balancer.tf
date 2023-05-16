@@ -41,6 +41,11 @@ resource "aws_lb_target_group" "core_webapp" {
   #lifecycle {
   #  create_before_destroy = true
   #}
+  health_check {
+    enabled  = true
+    path     = "/mmb-beta"
+    protocol = "HTTP"
+  }
   tags = {
     SBO_Billing = "core_webapp"
   }
