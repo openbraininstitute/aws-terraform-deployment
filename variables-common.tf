@@ -150,7 +150,7 @@ variable "nexus_postgresql_database_port" {
 
 variable "nexus_postgresql_database_name" {
   type      = string
-  default   = "nexus_db"
+  default   = "nexus_user"
   sensitive = false
 }
 
