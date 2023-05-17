@@ -62,8 +62,3 @@ variable "create_ml_opensearch" {
   sensitive = false
 }
 
-variable "create_compute_instances" {
-  type      = bool
-  default   = true
-  sensitive = false
-}
