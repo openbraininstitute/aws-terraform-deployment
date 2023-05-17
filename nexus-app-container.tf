@@ -138,7 +138,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
       command = [
         "/bin/bash",
         "-c",
-        "/opt/docker/bin/delta-app -Dapp.defaults.database.access.host=\"nexus-db-id.ctydazornca3.us-east-1.rds.amazonaws.com\" -Dapp.defaults.database.access.port=5432 -Dapp.defaults.database.password=\"$POSTGRES_PASSWORD\" -Dapp.database.tables-autocreate=true -Dplugins.jira.enabled=false -Dplugins.elasticsearch.base=\"https://vpc-nexus-2ahuujor4v7ehpnj43lfxcnjpu.us-east-1.es.amazonaws.com\""
+        "/opt/docker/bin/delta-app -Dapp.defaults.database.password=\"$POSTGRES_PASSWORD\""
       ]
       environment = [
         {
@@ -181,6 +181,11 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
           sourceVolume  = "efs-nexus-app-config"
           containerPath = "/opt/appconf"
           readOnly      = true
+        },
+        {
+          sourceVolume  = "efs-nexus-search-config"
+          containerPath = "/opt/search-config"
+          readOnly      = true
         }
       ]
       logConfiguration = {
@@ -206,6 +211,14 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
     efs_volume_configuration {
       file_system_id     = aws_efs_file_system.nexus_app_config.id
       root_directory     = "/opt/appconf"
+      transit_encryption = "ENABLED"
+    }
+  }
+  volume {
+    name = "efs-nexus-search-config"
+    efs_volume_configuration {
+      file_system_id     = aws_efs_file_system.nexus_app_config.id
+      root_directory     = "/opt/search-config"
       transit_encryption = "ENABLED"
     }
   }
