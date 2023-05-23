@@ -99,14 +99,14 @@ resource "aws_security_group" "nexus_app_ecs_task" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "nexus_app_allow_port_8000" {
+resource "aws_vpc_security_group_ingress_rule" "nexus_app_allow_port_8080" {
   security_group_id = aws_security_group.nexus_app_ecs_task.id
 
   ip_protocol = "tcp"
-  from_port   = 8000
-  to_port     = 8000
+  from_port   = 8080
+  to_port     = 8080
   cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
-  description = "Allow port 8000 http"
+  description = "Allow port 8080 http"
   tags = {
     SBO_Billing = "nexus_app"
   }
@@ -164,8 +164,8 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
       }
       portMappings = [
         {
-          hostPort      = 8000
-          containerPort = 8000
+          hostPort      = 8080
+          containerPort = 8080
           protocol      = "tcp"
         }
       ]
@@ -241,7 +241,7 @@ resource "aws_ecs_service" "nexus_app_ecs_service" {
   load_balancer {
     target_group_arn = aws_lb_target_group.nexus_app.arn
     container_name   = "nexus_app"
-    container_port   = 8000
+    container_port   = 8080
   }
 
   network_configuration {

@@ -34,7 +34,7 @@ resource "aws_acm_certificate_validation" "nexus_app" {
 resource "aws_lb_target_group" "nexus_app" {
   #ts:skip=AC_AWS_0492
   name        = "nexus-app"
-  port        = 8000
+  port        = 8080
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
