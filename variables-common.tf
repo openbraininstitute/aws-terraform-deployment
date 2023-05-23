@@ -197,6 +197,28 @@ variable "private_ml_embedder_hostname" {
   sensitive   = false
 }
 
+### Machine Learning Reader ###
+variable "ml_reader_docker_image_url" {
+  type        = string
+  default     = "bluebrain/bbs-question-answering:biom-electra-large-squad2-v1.2.1"
+  description = "docker image for the ML Reader webapp"
+  sensitive   = false
+}
+
+variable "ml_reader_log_group_name" {
+  default     = "ml_reader"
+  type        = string
+  description = "The log name within cloudwatch for the ML Reader webapp"
+  sensitive   = false
+}
+
+variable "private_ml_reader_hostname" {
+  default     = "private-alb-ml-reader.shapes-registry.org"
+  type        = string
+  description = "Hostname at which the ML Reader containers can be reached via the private ALB"
+  sensitive   = false
+}
+
 ### Machine Learning ElasticSearch/OpenSearch ###
 # Note: you can also request opensearch, but then you need
 # to also change the instance type to a type which is compatible
