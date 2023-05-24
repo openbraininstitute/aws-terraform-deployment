@@ -16,7 +16,7 @@ resource "aws_lb_target_group" "ml_reader" {
 
 resource "aws_lb_listener_rule" "ml_reader_3000" {
   listener_arn = data.terraform_remote_state.common.outputs.private_alb_listener_3000_arn
-  priority     = 100
+  priority     = 102
 
   action {
     type             = "forward"
