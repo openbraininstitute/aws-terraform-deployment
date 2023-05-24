@@ -38,9 +38,9 @@ resource "aws_lb_target_group" "nexus_app" {
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
-  #lifecycle {
-  #  create_before_destroy = true
-  #}
+  lifecycle {
+    create_before_destroy = true
+  }
   tags = {
     SBO_Billing = "nexus_app"
   }
