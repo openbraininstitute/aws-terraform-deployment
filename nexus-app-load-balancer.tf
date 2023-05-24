@@ -33,7 +33,7 @@ resource "aws_acm_certificate_validation" "nexus_app" {
 
 resource "aws_lb_target_group" "nexus_app" {
   #ts:skip=AC_AWS_0492
-  name        = "nexus-app"
+  name_prefix = "nx-dlt"
   port        = 8080
   protocol    = "HTTP"
   target_type = "ip"
