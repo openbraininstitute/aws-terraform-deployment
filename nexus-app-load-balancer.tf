@@ -38,6 +38,11 @@ resource "aws_lb_target_group" "nexus_app" {
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
+  health_check {
+    enabled  = true
+    path     = "/v1/version"
+    protocol = "HTTP"
+  }
   lifecycle {
     create_before_destroy = true
   }
