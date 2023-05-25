@@ -1,13 +1,18 @@
 resource "aws_lb_target_group" "blazegraph" {
   #ts:skip=AC_AWS_0492
-  name        = "blazegraph"
+  name_prefix = "blzgrp"
   port        = 9999
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
-  #lifecycle {
-  #  create_before_destroy = true
-  #}
+  health_check {
+    enabled  = true
+    path     = "/blazegraph/"
+    protocol = "HTTP"
+  }
+  lifecycle {
+    create_before_destroy = true
+  }
   tags = {
     SBO_Billing = "nexus_app"
   }
