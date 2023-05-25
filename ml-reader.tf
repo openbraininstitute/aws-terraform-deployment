@@ -61,7 +61,7 @@ resource "aws_ecs_task_definition" "ml_reader_ecs_definition" {
 
   container_definitions = jsonencode([
     {
-      memory      = 2048
+      memory      = 4096
       cpu         = 1024
       networkMode = "awsvpc"
       family      = "ml_reader"
@@ -97,7 +97,7 @@ resource "aws_ecs_task_definition" "ml_reader_ecs_definition" {
     }
   ])
 
-  memory                   = 2048
+  memory                   = 4096
   cpu                      = 1024
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = aws_iam_role.ecs_ml_reader_task_execution_role[0].arn
