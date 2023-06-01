@@ -61,12 +61,6 @@ variable "nexus_delta_app_log_group_name" {
   sensitive = false
 }
 
-variable "nexus_web_app_log_group_name" {
-  default   = "nexus_web_app"
-  type      = string
-  sensitive = false
-}
-
 ### Nexus Fusion ###
 
 variable "nexus_fusion_hostname" {
@@ -75,10 +69,16 @@ variable "nexus_fusion_hostname" {
   sensitive = false
 }
 
-variable "nexus_web_docker_image_url" {
-  default   = "bluebrain/nexus-delta:1.8.0-M15"
+variable "nexus_fusion_docker_image_url" {
+  default   = "bluebrain/nexus-web:1.8.0-M16-2"
   sensitive = false
   type      = string
+}
+
+variable "nexus_fusion_log_group_name" {
+  default   = "nexus_fusion_app"
+  type      = string
+  sensitive = false
 }
 
 ### Nexus Blazegraph ###

@@ -31,6 +31,13 @@ variable "nexus_app_ecs_number_of_containers" {
   description = "Number of containers for delta app"
 }
 
+variable "nexus_fusion_ecs_number_of_containers" {
+  type        = number
+  default     = 1
+  sensitive   = false
+  description = "Number of containers for nexus fusion"
+}
+
 variable "blazegraph_ecs_number_of_containers" {
   type      = number
   default   = 1
