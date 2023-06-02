@@ -37,14 +37,14 @@ resource "aws_security_group" "nexus_fusion_ecs_task" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "nexus_fusion_allow_port_80" {
+resource "aws_vpc_security_group_ingress_rule" "nexus_fusion_allow_port_8000" {
   security_group_id = aws_security_group.nexus_fusion_ecs_task.id
 
   ip_protocol = "tcp"
-  from_port   = 80
-  to_port     = 80
+  from_port   = 8000
+  to_port     = 8000
   cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
-  description = "Allow port 80 http"
+  description = "Allow port 8000 http"
   tags = {
     SBO_Billing = "nexus_fusion"
   }
@@ -161,7 +161,7 @@ resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
       }
       portMappings = [
         {
-          hostPort      = 80
+          hostPort      = 8000
           containerPort = 8000
           protocol      = "tcp"
         }
@@ -209,7 +209,7 @@ resource "aws_ecs_service" "nexus_fusion_ecs_service" {
   load_balancer {
     target_group_arn = aws_lb_target_group.nexus_fusion.arn
     container_name   = "nexus_fusion"
-    container_port   = 80
+    container_port   = 8000
   }
 
   network_configuration {

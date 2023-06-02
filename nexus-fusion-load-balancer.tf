@@ -34,7 +34,7 @@ resource "aws_acm_certificate_validation" "nexus_fusion" {
 resource "aws_lb_target_group" "nexus_fusion" {
   #ts:skip=AC_AWS_0492
   name_prefix = "nx-fsn"
-  port        = 80
+  port        = 8000
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
@@ -60,7 +60,7 @@ resource "aws_lb_listener_certificate" "nexus_fusion" {
 
 resource "aws_lb_listener_rule" "nexus_fusion_https" {
   listener_arn = aws_lb_listener.sbo_https.arn
-  priority     = 101
+  priority     = 102
 
   action {
     type             = "forward"
