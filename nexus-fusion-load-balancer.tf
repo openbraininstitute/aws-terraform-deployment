@@ -52,39 +52,9 @@ resource "aws_lb_target_group" "nexus_fusion" {
   }
 }
 
-
-resource "aws_lb_listener" "nexus_fusion_https" {
-  load_balancer_arn = aws_lb.alb.arn
-  port              = "443"
-  protocol          = "HTTPS"
-  certificate_arn   = aws_acm_certificate_validation.nexus_fusion.certificate_arn
-
-  default_action {
-    type = "fixed-response"
-
-    fixed_response {
-      content_type = "text/plain"
-      message_body = "Fixed response content: fusion https working"
-      status_code  = "200"
-    }
-  }
-  tags = {
-    SBO_Billing = "nexus_fusion"
-  }
-  depends_on = [
-    aws_lb.alb
-  ]
-}
-
-resource "aws_lb_listener_certificate" "nexus_fusion" {
-  listener_arn    = aws_lb_listener.sbo_https.arn
-  certificate_arn = aws_acm_certificate.nexus_fusion.arn
-}
-
-
 resource "aws_lb_listener_rule" "nexus_fusion_https" {
-  listener_arn = aws_lb_listener.nexus_fusion_https.arn
-  priority     = 102
+  listener_arn = aws_lb_listener.sbo_https.arn
+  priority     = 103
 
   action {
     type             = "forward"
