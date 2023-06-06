@@ -1,36 +1,36 @@
 # Subnet for the Nexus Delta application
-resource "aws_subnet" "nexus_delta" {
+resource "aws_subnet" "nexus_app" {
   vpc_id            = data.terraform_remote_state.common.outputs.vpc_id
   availability_zone = "${var.aws_region}a"
   cidr_block        = "10.0.2.32/28"
   tags = {
-    Name        = "nexus_delta"
+    Name        = "nexus_app"
     SBO_Billing = "nexus"
   }
 }
 
-# Route table for the nexus_delta network
-resource "aws_route_table" "nexus_delta" {
+# Route table for the nexus_app network
+resource "aws_route_table" "nexus_app" {
   vpc_id = data.terraform_remote_state.common.outputs.vpc_id
   route {
     cidr_block     = "0.0.0.0/0"
     nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
   }
   tags = {
-    Name        = "nexus_delta_route"
+    Name        = "nexus_app_route"
     SBO_Billing = "nexus"
   }
 }
 
-# Link route table to nexus_delta network
-resource "aws_route_table_association" "nexus_delta" {
-  subnet_id      = aws_subnet.nexus_delta.id
-  route_table_id = aws_route_table.nexus_delta.id
+# Link route table to nexus_app network
+resource "aws_route_table_association" "nexus_app" {
+  subnet_id      = aws_subnet.nexus_app.id
+  route_table_id = aws_route_table.nexus_app.id
 }
 
-resource "aws_network_acl" "nexus_delta" {
+resource "aws_network_acl" "nexus_app" {
   vpc_id     = data.terraform_remote_state.common.outputs.vpc_id
-  subnet_ids = [aws_subnet.nexus_delta.id]
+  subnet_ids = [aws_subnet.nexus_app.id]
   # Allow local traffic
   # TODO limit to correct ports and subnets
   ingress {
@@ -60,7 +60,7 @@ resource "aws_network_acl" "nexus_delta" {
     to_port    = 0
   }
   tags = {
-    Name        = "nexus_delta_acl"
+    Name        = "nexus_app_acl"
     SBO_Billing = "nexus"
   }
 }

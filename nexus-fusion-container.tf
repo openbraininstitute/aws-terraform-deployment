@@ -214,7 +214,7 @@ resource "aws_ecs_service" "nexus_fusion_ecs_service" {
 
   network_configuration {
     security_groups  = [aws_security_group.nexus_fusion_ecs_task.id]
-    subnets          = [aws_subnet.nexus_delta.id]
+    subnets          = [aws_subnet.nexus_app.id]
     assign_public_ip = false
   }
   depends_on = [

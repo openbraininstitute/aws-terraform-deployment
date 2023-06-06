@@ -14,7 +14,7 @@ resource "aws_lb_target_group" "blazegraph" {
     create_before_destroy = true
   }
   tags = {
-    SBO_Billing = "nexus_delta"
+    SBO_Billing = "nexus_app"
   }
 }
 
@@ -33,7 +33,7 @@ resource "aws_lb_listener_rule" "blazegraph_9999" {
     }
   }
   tags = {
-    SBO_Billing = "nexus_delta"
+    SBO_Billing = "nexus_app"
   }
 }
 
