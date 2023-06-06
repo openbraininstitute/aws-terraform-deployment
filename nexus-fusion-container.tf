@@ -88,7 +88,7 @@ resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
         },
         {
           name  = "API_ENDPOINT"
-          value = "http://${var.nexus_delta_hostname}/v1"
+          value = "https://${var.nexus_delta_hostname}/v1"
         },
         {
           name  = "SERVICE_ACCOUNTS_REALM"
