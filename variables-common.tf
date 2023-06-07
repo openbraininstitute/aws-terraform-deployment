@@ -241,3 +241,24 @@ variable "ml_os_domain_name" {
   sensitive = false
 }
 
+### Viz Brayns renderer service ###
+variable "viz_brayns_docker_image_url" {
+  type        = string
+  default     = "bluebrain/brayns:latest"
+  description = "Docker image for Brayns renderer service"
+  sensitive   = false
+}
+
+variable "viz_brayns_log_group_name" {
+  default     = "viz_brayns"
+  type        = string
+  description = "The log name within cloudwatch for Brayns"
+  sensitive   = false
+}
+
+variable "private_viz_brayns_hostname" {
+  default     = "private-alb-brayns.shapes-registry.org"
+  type        = string
+  description = "Hostname at which Brayns containers can be reached via the private ALB"
+  sensitive   = false
+}

@@ -76,3 +76,9 @@ variable "create_ml_opensearch" {
   sensitive = false
 }
 
+variable "viz_brayns_ecs_number_of_containers" {
+  type        = number
+  default     = 1
+  sensitive   = false
+  description = "Number of containers for the Brayns renderer service"
+}
