@@ -138,7 +138,8 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
       command = [
         "/bin/bash",
         "-c",
-        "/opt/docker/bin/delta-app -Dapp.defaults.database.password=\"$POSTGRES_PASSWORD\""
+        "/opt/docker/bin/delta-app",
+        "-Dapp.defaults.database.password=\"$POSTGRES_PASSWORD\""
       ]
       environment = [
         {
