@@ -31,6 +31,11 @@ resource "aws_acm_certificate_validation" "nexus_fusion" {
   validation_record_fqdns = [for record in aws_route53_record.nexus_fusion_validation : record.fqdn]
 }
 
+resource "aws_lb_listener_certificate" "nexus_fusion" {
+  listener_arn    = aws_lb_listener.sbo_https.arn
+  certificate_arn = aws_acm_certificate.nexus_fusion.arn
+}
+
 resource "aws_lb_target_group" "nexus_fusion" {
   #ts:skip=AC_AWS_0492
   name_prefix = "nx-fsn"
