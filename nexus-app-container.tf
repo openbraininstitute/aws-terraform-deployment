@@ -138,8 +138,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
       command = [
         "/bin/bash",
         "-c",
-        "/opt/docker/bin/delta-app",
-        "-Dapp.defaults.database.password=\"$POSTGRES_PASSWORD\""
+        "/opt/docker/bin/delta-app"
       ]
       environment = [
         {
@@ -149,10 +148,6 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
         {
           name  = "DELTA_EXTERNAL_CONF"
           value = "/opt/appconf/delta.conf"
-        },
-        {
-          name  = "POSTGRES_PASSWORD"
-          value = data.aws_secretsmanager_secret_version.nexus_database_password.secret_string
         }
       ]
       networkMode = "awsvpc"
