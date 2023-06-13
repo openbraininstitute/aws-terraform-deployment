@@ -87,6 +87,13 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
           protocol      = "tcp"
         }
       ]
+      healthcheck = {
+        command     = ["CMD-SHELL", "netcat -zv localhost 8200 || exit 1"]
+        interval    = 30
+        timeout     = 5
+        startPeriod = 60
+        retries     = 3
+      }
       logConfiguration = {
         logDriver = "awslogs"
         options = {
