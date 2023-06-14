@@ -8,6 +8,9 @@ resource "aws_lb_target_group" "viz_brayns" {
   tags = {
     SBO_Billing = "viz"
   }
+  health_check {
+    enabled = false
+  }
 }
 
 resource "aws_lb_listener_rule" "viz_brayns_8200" {
