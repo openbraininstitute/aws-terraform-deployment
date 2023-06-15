@@ -82,3 +82,10 @@ variable "viz_brayns_ecs_number_of_containers" {
   sensitive   = false
   description = "Number of containers for the Brayns renderer service"
 }
+
+variable "viz_brayns_ecs_lb_grace_period" {
+  type        = number
+  default     = 2147483647
+  sensitive   = false
+  description = "Seconds ECS ignores unhealthy Elastic Load Balancing health checks"
+}
