@@ -38,6 +38,19 @@ resource "aws_vpc_security_group_ingress_rule" "alb_allow_https_epfl" {
   }
 }
 
+resource "aws_vpc_security_group_ingress_rule" "alb_allow_brayns_epfl" {
+  security_group_id = aws_security_group.alb.id
+  description       = "Allow Brayns on 8200 from EPFL"
+  from_port         = 8200
+  to_port           = 8200
+  ip_protocol       = "tcp"
+  cidr_ipv4         = var.epfl_cidr
+
+  tags = {
+    Name = "alb_allow_brayns_epfl"
+  }
+}
+
 resource "aws_vpc_security_group_ingress_rule" "alb_allow_https_internal" {
   security_group_id = aws_security_group.alb.id
   description       = "Allow HTTPS from internal"
