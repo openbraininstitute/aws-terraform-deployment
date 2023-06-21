@@ -257,7 +257,7 @@ variable "viz_brayns_log_group_name" {
 }
 
 variable "private_viz_brayns_hostname" {
-  default     = "private-alb-brayns.shapes-registry.org"
+  default     = "sbo-brayns.shapes-registry.org"
   type        = string
   description = "Hostname at which Brayns containers can be reached via the private ALB"
   sensitive   = false
