@@ -1,5 +1,5 @@
 resource "aws_acm_certificate" "brayns" {
-  domain_name       = var.private_viz_brayns_hostname
+  domain_name       = var.viz_brayns_hostname
   validation_method = "DNS"
   lifecycle {
     create_before_destroy = true
@@ -38,7 +38,7 @@ resource "aws_lb_listener_certificate" "brayns" {
 
 resource "aws_route53_record" "brayns" {
   zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
-  name    = var.private_viz_brayns_hostname
+  name    = var.viz_brayns_hostname
   type    = "CNAME"
   ttl     = 60
   records = [aws_lb.alb.dns_name]
@@ -48,6 +48,7 @@ resource "aws_lb_listener" "sbo_brayns" {
   load_balancer_arn = aws_lb.alb.arn
   port              = "8200"
   protocol          = "HTTPS"
+  certificate_arn   = aws_acm_certificate.brayns.arn
 
   default_action {
     type = "fixed-response"
@@ -92,7 +93,7 @@ resource "aws_lb_listener_rule" "viz_brayns_8200" {
 
   condition {
     host_header {
-      values = [var.private_viz_brayns_hostname]
+      values = [var.viz_brayns_hostname]
     }
   }
   tags = {
@@ -102,12 +103,4 @@ resource "aws_lb_listener_rule" "viz_brayns_8200" {
     aws_lb_listener.sbo_brayns,
     aws_lb.alb
   ]
-}
-
-resource "aws_route53_record" "private_viz_brayns" {
-  zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
-  name    = var.private_viz_brayns_hostname
-  type    = "CNAME"
-  ttl     = 60
-  records = [data.terraform_remote_state.common.outputs.private_alb_dns_name]
 }
