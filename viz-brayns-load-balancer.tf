@@ -71,7 +71,7 @@ resource "aws_lb_target_group" "viz_brayns" {
   #ts:skip=AC_AWS_0492
   name        = "viz-brayns"
   port        = 8200
-  protocol    = "HTTP"
+  protocol    = "TCP"
   target_type = "ip"
   vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
   lifecycle {
