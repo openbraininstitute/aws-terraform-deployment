@@ -182,7 +182,12 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
           sourceVolume  = "efs-nexus-search-config"
           containerPath = "/opt/search-config"
           readOnly      = true
-        }
+        },
+        {
+          sourceVolume  = "efs-nexus-disk-storage"
+          containerPath = "/opt/disk-storage"
+          readOnly      = false
+        },
       ]
       logConfiguration = {
         logDriver = "awslogs"
@@ -215,6 +220,14 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
     efs_volume_configuration {
       file_system_id     = aws_efs_file_system.nexus_app_config.id
       root_directory     = "/opt/search-config"
+      transit_encryption = "ENABLED"
+    }
+  }
+  volume {
+    name = "efs-nexus-disk-storage"
+    efs_volume_configuration {
+      file_system_id     = aws_efs_file_system.nexus_app_config.id
+      root_directory     = "/opt/disk-storage"
       transit_encryption = "ENABLED"
     }
   }
