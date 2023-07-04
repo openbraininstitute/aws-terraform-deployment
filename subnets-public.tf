@@ -64,6 +64,24 @@ resource "aws_network_acl" "public" {
     from_port  = 8200
     to_port    = 8200
   }
+  # Allow port 8000 (BCSB) from EPFL
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 110
+    action     = "allow"
+    cidr_block = var.epfl_cidr
+    from_port  = 8000
+    to_port    = 8000
+  }
+  # Deny port 8000 (BCSB) from all other IPs
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 111
+    action     = "deny"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 8000
+    to_port    = 8000
+  }
   # Allow ingress to all other ephemeral ports
   ingress {
     protocol   = "tcp"
