@@ -46,6 +46,15 @@ resource "aws_network_acl" "public" {
     from_port  = 22
     to_port    = 22
   }
+  # Allow port 22 from BBP SSH Bastion
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 112
+    action     = "allow"
+    cidr_block = var.bbpssh_cidr
+    from_port  = 22
+    to_port    = 22
+  }
   # Allow port 8200 (Brayns) from EPFL
   ingress {
     protocol   = "tcp"

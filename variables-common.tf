@@ -11,6 +11,13 @@ variable "epfl_cidr" {
   sensitive   = false
 }
 
+variable "bbpssh_cidr" {
+  type        = string
+  default     = "192.33.211.12/32"
+  description = "CIDR of the network range used by SSH Bastion host (BBP SSH Jumphost)"
+  sensitive   = false
+}
+
 variable "sbo_https_test_hostname" {
   default     = "sbo-https-test.shapes-registry.org"
   type        = string
