@@ -11,6 +11,13 @@ variable "epfl_cidr" {
   sensitive   = false
 }
 
+variable "bb5_login_nodes_cidr" {
+  type        = string
+  default     = "192.33.194.10/31"
+  description = "CIDR of the network range used by BB5 Login Nodes (bbpv1, bbpv2)"
+  sensitive   = false
+}
+
 variable "bbpssh_cidr" {
   type        = string
   default     = "192.33.211.12/32"
