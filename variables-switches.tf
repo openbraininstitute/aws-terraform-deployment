@@ -19,7 +19,7 @@ variable "create_nat_gateway" {
 
 variable "core_webapp_ecs_number_of_containers" {
   type        = number
-  default     = 1
+  default     = 0
   sensitive   = false
   description = "Number of containers for the SBO core webapp"
 }
@@ -58,14 +58,14 @@ variable "create_nexus_database" {
 
 variable "embedder_ecs_number_of_containers" {
   type        = number
-  default     = 1
+  default     = 0
   sensitive   = false
   description = "Number of containers for the embedder app"
 }
 
 variable "ml_reader_ecs_number_of_containers" {
   type        = number
-  default     = 1
+  default     = 0
   sensitive   = false
   description = "Number of containers for the ML Reader app"
 }
@@ -78,7 +78,7 @@ variable "create_ml_opensearch" {
 
 variable "viz_brayns_ecs_number_of_containers" {
   type        = number
-  default     = 1
+  default     = 0
   sensitive   = false
   description = "Number of containers for the Brayns renderer service"
 }
@@ -92,7 +92,7 @@ variable "viz_brayns_ecs_lb_grace_period" {
 
 variable "viz_bcsb_ecs_number_of_containers" {
   type        = number
-  default     = 1
+  default     = 0
   sensitive   = false
   description = "Number of containers for the BCSB service"
 }
