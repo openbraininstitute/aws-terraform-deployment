@@ -84,7 +84,7 @@ resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
         },
         {
           name  = "CLIENT_ID"
-          value = "rmca4ihicfh7oselegp8dq4vc"
+          value = "nexus-delta"
         },
         {
           name  = "API_ENDPOINT"
@@ -92,7 +92,7 @@ resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
         },
         {
           name  = "SERVICE_ACCOUNTS_REALM"
-          value = "sbo-poc"
+          value = "serviceaccounts"
         },
         {
           name  = "PLUGINS_MANIFEST_PATH"
