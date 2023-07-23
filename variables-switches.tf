@@ -103,3 +103,10 @@ variable "viz_bcsb_ecs_lb_grace_period" {
   sensitive   = false
   description = "Seconds ECS ignores unhealthy Elastic Load Balancing health checks"
 }
+
+variable "workflow_ecs_number_of_containers" {
+  type        = number
+  default     = 1
+  sensitive   = false
+  description = "Number of containers for BBP-Workflow"
+}
