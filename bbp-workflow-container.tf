@@ -237,11 +237,6 @@ resource "aws_ecs_service" "workflow_ecs_service" {
   #iam_role        = "${var.ecs_iam_role_name}"
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.bbp_workflow.arn
-    container_name   = "workflow"
-    container_port   = 8082
-  }
-  load_balancer {
     target_group_arn = aws_lb_target_group.bbp_workflow_api.arn
     container_name   = "workflow"
     container_port   = 8100
@@ -250,11 +245,6 @@ resource "aws_ecs_service" "workflow_ecs_service" {
     target_group_arn = aws_lb_target_group.bbp_workflow_api_auth.arn
     container_name   = "workflow"
     container_port   = 8100
-  }
-  load_balancer {
-    target_group_arn = aws_lb_target_group.bbp_workflow_web.arn
-    container_name   = "workflow"
-    container_port   = 8080
   }
 
   network_configuration {
