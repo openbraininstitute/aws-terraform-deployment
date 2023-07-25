@@ -78,9 +78,9 @@ resource "aws_lb_target_group" "bbp_workflow_api" {
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
-  #lifecycle {
-  #  create_before_destroy = true
-  #}
+  lifecycle {
+    create_before_destroy = true
+  }
   health_check {
     enabled  = true
     path     = "/healthz/"
@@ -99,9 +99,9 @@ resource "aws_lb_target_group" "bbp_workflow_api_auth" {
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
-  #lifecycle {
-  #  create_before_destroy = true
-  #}
+  lifecycle {
+    create_before_destroy = true
+  }
   health_check {
     enabled  = true
     path     = "/healthz/"
