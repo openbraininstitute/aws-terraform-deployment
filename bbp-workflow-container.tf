@@ -241,11 +241,6 @@ resource "aws_ecs_service" "workflow_ecs_service" {
     container_name   = "workflow"
     container_port   = 8100
   }
-  load_balancer {
-    target_group_arn = aws_lb_target_group.bbp_workflow_api_auth.arn
-    container_name   = "workflow"
-    container_port   = 8100
-  }
 
   network_configuration {
     security_groups  = [aws_security_group.workflow_ecs_task.id]

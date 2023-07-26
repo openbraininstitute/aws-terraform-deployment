@@ -329,13 +329,6 @@ variable "bbp_workflow_api_hostname" {
   sensitive   = false
 }
 
-variable "bbp_workflow_api_auth_hostname" {
-  default     = "bbp-workflow-api-auth.shapes-registry.org"
-  type        = string
-  description = "Hostname bbp-workflow-api-auth"
-  sensitive   = false
-}
-
 variable "bbp_workflow_web_hostname" {
   default     = "bbp-workflow-web.shapes-registry.org"
   type        = string
