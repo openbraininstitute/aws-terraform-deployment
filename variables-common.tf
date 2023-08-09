@@ -280,7 +280,7 @@ variable "viz_brayns_hostname" {
 ### Viz BCSB service ###
 variable "viz_bcsb_docker_image_url" {
   type        = string
-  default     = "bbpgitlab.epfl.ch:5050/viz/brayns/braynscircuitstudiobackend:latest"
+  default     = "bluebrain/spackah-brayns-circuit-studio-backend:latest"
   description = "Docker image for BCSB service"
   sensitive   = false
 }
