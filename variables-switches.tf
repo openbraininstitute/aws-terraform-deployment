@@ -92,7 +92,7 @@ variable "viz_brayns_ecs_lb_grace_period" {
 
 variable "viz_bcsb_ecs_number_of_containers" {
   type        = number
-  default     = 0
+  default     = 1
   sensitive   = false
   description = "Number of containers for the BCSB service"
 }
