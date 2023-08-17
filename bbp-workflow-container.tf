@@ -209,7 +209,7 @@ resource "aws_ecs_task_definition" "workflow_ecs_definition" {
           value = "/sbo/data/containers/neurodamus-neocortex__1.12-2.16.0-2.8.0.sif"
         },
         {
-          name = "HPC_NRDMS_NEOCORTEX_MULTISCALE_CNTNR"
+          name  = "HPC_NRDMS_NEOCORTEX_MULTISCALE_CNTNR"
           value = "/sbo/data/containers/neurodamus-neocortex-multiscale__1.12-2.16.0-2.8.0.sif"
         },
         {
