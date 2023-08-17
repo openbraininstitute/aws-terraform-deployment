@@ -169,20 +169,48 @@ resource "aws_ecs_task_definition" "workflow_ecs_definition" {
           value = "aws"
         },
         {
-          name  = "HEAD_NODE"
-          value = "sbo-poc-pcluster.shapes-registry.org"
-        },
-        {
           name  = "USER"
           value = "bbp-workflow-sa"
         },
         {
-          name  = "client_id"
-          value = "bbp-workflow"
+          name  = "REDIRECT_URI"
+          value = "https://bbp-workflow-api.shapes-registry.org/auth/?url=%s"
         },
         {
-          name  = "KC_URL"
-          value = "https://sboauth.epfl.ch" # TODO which URL exactly?
+          name  = "KC_HOST"
+          value = "https://sboauth.epfl.ch"
+        },
+        {
+          name  = "KC_REALM"
+          value = "SBO"
+        },
+        {
+          name  = "HPC_HEAD_NODE"
+          value = "sbo-poc-pcluster.shapes-registry.org"
+        },
+        {
+          name  = "HPC_PATH_PREFIX"
+          value = "/sbo/home"
+        },
+        {
+          name  = "HPC_BBP_WORKFLOW_CNTNR"
+          value = "/sbo/data/containers/py-bbp-workflow__3.1.32.dev2.sif"
+        },
+        {
+          name  = "HPC_BRAYNS_CNTNR"
+          value = "/sbo/data/containers/brayns__3.2.1.sif"
+        },
+        {
+          name  = "HPC_NRDMS_HIPPOCAMPUS_CNTNR"
+          value = "/sbo/data/containers/neurodamus-hippocampus__1.8-2.16.0-2.8.0.sif"
+        },
+        {
+          name  = "HPC_NRDMS_NEOCORTEX_CNTNR"
+          value = "/sbo/data/containers/neurodamus-neocortex__1.12-2.16.0-2.8.0.sif"
+        },
+        {
+          name = "HPC_NRDMS_NEOCORTEX_MULTISCALE_CNTNR"
+          value = "/sbo/data/containers/neurodamus-neocortex-multiscale__1.12-2.16.0-2.8.0.sif"
         },
         {
           name  = "NEXUS_BASE"
@@ -197,11 +225,7 @@ resource "aws_ecs_task_definition" "workflow_ecs_definition" {
         {
           name      = "KC_SCR"
           valueFrom = "${var.bbp_workflow_secrets_arn}:KC_SCR::"
-        } /*,
-        {
-          name      = "KEYCLOAK_CLIENT_ID"
-          valueFrom = "${var.bbp_workflow_secrets_arn}:cognito_client_id::"
-        },*/
+        }
       ]
       logConfiguration = {
         logDriver = "awslogs"
