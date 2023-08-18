@@ -106,7 +106,7 @@ resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_b
   })
 
   instance_arn       = var.aws_iam_identity_center_arn
-  permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_hpc_rights.arn
+  permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_billing_rights.arn
 }
 
 resource "aws_ssoadmin_permission_set" "readonly_with_additional_ecs_rights" {
@@ -133,7 +133,7 @@ resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_e
   })
 
   instance_arn       = var.aws_iam_identity_center_arn
-  permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_hpc_rights.arn
+  permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_ecs_rights.arn
 }
 
 locals {
@@ -151,7 +151,14 @@ locals {
   sbo_ecs_full_access_policy_statement = jsonencode({
     Effect = "Allow"
     Action = [
-      "ecs:*",
+      "ecs:Update*",
+      "ecs:Submit*",
+      "ecs:List*",
+      "ecs:Get*",
+      "ecs:Describe*",
+      "ecs:Deregister*",
+      "ecs:DeleteT*",
+      "ecs:DeleteAttributes",
     ]
     Resource = "*"
   })
