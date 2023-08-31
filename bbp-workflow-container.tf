@@ -190,7 +190,7 @@ resource "aws_ecs_task_definition" "workflow_ecs_definition" {
         },
         {
           name  = "HPC_PATH_PREFIX"
-          value = "/sbo/home"
+          value = "/sbo/data/scratch"
         },
         {
           name  = "HPC_SIF_PREFIX"
@@ -199,6 +199,10 @@ resource "aws_ecs_task_definition" "workflow_ecs_definition" {
         {
           name  = "NEXUS_BASE"
           value = "https://sbo-nexus-delta.shapes-registry.org/v1"
+        },
+        {
+          name  = "DEBUG"
+          value = "True"
         },
       ]
       secrets = [
