@@ -199,11 +199,7 @@ resource "aws_ecs_task_definition" "workflow_ecs_definition" {
         {
           name  = "NEXUS_BASE"
           value = "https://sbo-nexus-delta.shapes-registry.org/v1"
-        },
-        {
-          name  = "DEBUG"
-          value = "True"
-        },
+        }
       ]
       secrets = [
         {
@@ -213,7 +209,11 @@ resource "aws_ecs_task_definition" "workflow_ecs_definition" {
         {
           name      = "KC_SCR"
           valueFrom = "${var.bbp_workflow_secrets_arn}:KC_SCR::"
-        }
+        },
+        {
+          name      = "DEBUG"
+          valueFrom = "${var.bbp_workflow_secrets_arn}:DEBUG::"
+        },
       ]
       logConfiguration = {
         logDriver = "awslogs"
