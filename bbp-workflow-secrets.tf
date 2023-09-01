@@ -59,9 +59,10 @@ locals {
   write_read_access_workflow_secrets_policy = jsonencode({
     Effect = "Allow"
     Action = [
-      "secretsmanager:GetSecretValue",
-      "secretsmanager:DescribeSecret",
       "secretsmanager:CreateSecret",
+      "secretsmanager:DescribeSecret",
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:PutSecretValue",
       "secretsmanager:UpdateSecret"
     ],
     "Resource" : [
