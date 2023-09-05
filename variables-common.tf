@@ -321,6 +321,32 @@ variable "viz_bcsb_hostname" {
   sensitive   = false
 }
 
+## viz PostgreSQL ###
+
+variable "viz_postgresql_database_port" {
+  default   = 5432
+  type      = number
+  sensitive = false
+}
+
+variable "viz_postgresql_database_name" {
+  type      = string
+  default   = "vsm"
+  sensitive = false
+}
+
+variable "viz_postgresql_database_username" {
+  type      = string
+  default   = "vsm"
+  sensitive = false
+}
+
+variable "viz_postgresql_admin_username" {
+  type      = string
+  default   = "admin"
+  sensitive = false
+}
+
 ### BBP Workflow ###
 
 variable "workflow_log_group_name" {
