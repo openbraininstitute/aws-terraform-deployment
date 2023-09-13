@@ -189,7 +189,7 @@ resource "aws_ecs_task_definition" "workflow_ecs_definition" {
           value = "sbo-poc-pcluster.shapes-registry.org"
         },
         {
-          name  = "HPC_DATA_PREFIX"
+          name  = "HPC_DATA_PATH"
           value = "/sbo/data/project"
         },
         {
