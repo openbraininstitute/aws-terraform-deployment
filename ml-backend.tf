@@ -100,7 +100,7 @@ resource "aws_ecs_task_definition" "ml_backend_ecs_definition" {
         },
         {
           name  = "DB_HOST"
-          value = "TODO" # TODO
+          value = "TODO" # TODO2
         },
         {
           name  = "DB_PORT"
@@ -110,7 +110,7 @@ resource "aws_ecs_task_definition" "ml_backend_ecs_definition" {
       secrets = [
         {
           name      = "OPENAI_API_KEY"
-          valueFrom = "${var.bbp_ml_secrets_arn}:ABC::" # TODO
+          valueFrom = "${var.bbp_ml_secrets_arn}:ABC::" # TODO1
         }
       ]
       logConfiguration = {
