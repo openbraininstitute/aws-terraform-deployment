@@ -248,6 +248,13 @@ variable "ml_backend_log_group_name" {
   sensitive   = false
 }
 
+variable "private_ml_backend_hostname" {
+  default     = "private-alb-ml-backend.shapes-registry.org"
+  type        = string
+  description = "Hostname at which the ML backend containers can be reached via the private ALB"
+  sensitive   = false
+}
+
 ### Machine Learning ElasticSearch/OpenSearch ###
 # Note: you can also request opensearch, but then you need
 # to also change the instance type to a type which is compatible
