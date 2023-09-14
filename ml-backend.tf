@@ -100,7 +100,7 @@ resource "aws_ecs_task_definition" "ml_backend_ecs_definition" {
         },
         {
           name  = "DB_HOST"
-          value = "TODO" # TODO2
+          value = "https://vpc-mlos-dvhdwgzvybiiyg2t7efsqke7pa.us-east-1.es.amazonaws.com"
         },
         {
           name  = "DB_PORT"
