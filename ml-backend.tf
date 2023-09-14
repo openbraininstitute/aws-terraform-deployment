@@ -25,7 +25,7 @@ resource "aws_security_group" "ml_backend_ecs_task" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "ml_backend_allow_port_3000" {
+resource "aws_vpc_security_group_ingress_rule" "ml_backend_allow_port_8080" {
   security_group_id = aws_security_group.ml_backend_ecs_task.id
 
   ip_protocol = "tcp"
