@@ -233,6 +233,21 @@ variable "private_ml_reader_hostname" {
   sensitive   = false
 }
 
+### Machine Learning Backend ###
+variable "ml_backend_docker_image_url" {
+  type        = string
+  default     = "bluebrain/bbs-pipeline:v0.5.1"
+  description = "docker image for the ML backend"
+  sensitive   = false
+}
+
+variable "ml_backend_log_group_name" {
+  default     = "ml_backend"
+  type        = string
+  description = "The log name within cloudwatch for the ML backend"
+  sensitive   = false
+}
+
 ### Machine Learning ElasticSearch/OpenSearch ###
 # Note: you can also request opensearch, but then you need
 # to also change the instance type to a type which is compatible
