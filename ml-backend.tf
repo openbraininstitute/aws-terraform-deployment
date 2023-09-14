@@ -85,7 +85,7 @@ resource "aws_ecs_task_definition" "ml_backend_ecs_definition" {
         startPeriod = 60
         retries     = 3
       }
-     environment = [
+      environment = [
         {
           name  = "FOO"
           value = "BAR"
