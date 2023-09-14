@@ -87,18 +87,30 @@ resource "aws_ecs_task_definition" "ml_backend_ecs_definition" {
       }
       environment = [
         {
-          name  = "FOO"
-          value = "BAR"
+          name  = "DB_TYPE"
+          value = "opensearch"
         },
         {
-          name  = "BAZ"
-          value = "BAR"
-        }
+          name  = "DB_INDEX_PARAGRAPHS"
+          value = "pubmed_paragraphs_reindexed"
+        },
+        {
+          name  = "SEARCH_TYPE"
+          value = "bm25"
+        },
+        {
+          name  = "DB_HOST"
+          value = "TODO" # TODO
+        },
+        {
+          name  = "DB_PORT"
+          value = 443
+        },
       ]
       secrets = [
         {
-          name      = "ABC"
-          valueFrom = "${var.bbp_ml_secrets_arn}:ABC::" # to be created
+          name      = "OPENAI_API_KEY"
+          valueFrom = "${var.bbp_ml_secrets_arn}:ABC::" # TODO
         }
       ]
       logConfiguration = {
