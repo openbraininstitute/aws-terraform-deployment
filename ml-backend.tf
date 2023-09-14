@@ -85,6 +85,22 @@ resource "aws_ecs_task_definition" "ml_backend_ecs_definition" {
         startPeriod = 60
         retries     = 3
       }
+     environment = [
+        {
+          name  = "FOO"
+          value = "BAR"
+        },
+        {
+          name  = "BAZ"
+          value = "BAR"
+        }
+      ]
+      secrets = [
+        {
+          name      = "ABC"
+          valueFrom = "${var.bbp_ml_secrets_arn}:ABC::" # to be created
+        }
+      ]
       logConfiguration = {
         logDriver = "awslogs"
         options = {
