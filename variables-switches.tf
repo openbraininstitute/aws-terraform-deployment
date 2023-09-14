@@ -72,7 +72,7 @@ variable "ml_reader_ecs_number_of_containers" {
 
 variable "ml_backend_ecs_number_of_containers" {
   type        = number
-  default     = 0
+  default     = 1
   sensitive   = false
   description = "Number of containers for the ML backend"
 }
