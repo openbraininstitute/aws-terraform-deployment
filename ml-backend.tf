@@ -110,7 +110,7 @@ resource "aws_ecs_task_definition" "ml_backend_ecs_definition" {
       secrets = [
         {
           name      = "OPENAI_API_KEY"
-          valueFrom = "${var.bbp_ml_secrets_arn}:ABC::" # TODO1
+          valueFrom = "${var.ml_secrets_arn}:OPENAI_API_KEY::"
         }
       ]
       logConfiguration = {
