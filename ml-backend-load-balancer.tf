@@ -14,8 +14,8 @@ resource "aws_lb_target_group" "ml_backend" {
   }
 }
 
-resource "aws_lb_listener_rule" "ml_backend_8080" {
-  listener_arn = data.terraform_remote_state.common.outputs.private_alb_listener_8080_arn
+resource "aws_lb_listener_rule" "ml_backend_3000" {
+  listener_arn = data.terraform_remote_state.common.outputs.private_alb_listener_3000_arn
   priority     = 102
 
   action {
