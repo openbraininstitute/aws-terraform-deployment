@@ -104,7 +104,7 @@ resource "aws_ecs_task_definition" "ml_backend_ecs_definition" {
         },
         {
           name  = "DB_PORT"
-          value = 443
+          value = "443"
         },
       ]
       secrets = [
