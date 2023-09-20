@@ -68,22 +68,22 @@ resource "aws_network_acl" "viz" {
 
 
 # Subnet for the databases and storage
-resource "aws_subnet" "viz_vsm_db_a" {
+resource "aws_subnet" "viz_db_a" {
   vpc_id            = data.terraform_remote_state.common.outputs.vpc_id
   availability_zone = "${var.aws_region}a"
   cidr_block        = "10.0.40.0/28"
   tags = {
-    Name        = "viz_vsm_db_a"
+    Name        = "viz_db_a"
     SBO_Billing = "viz"
   }
 }
 # Subnet for the databases and storage
-resource "aws_subnet" "viz_vsm_db_b" {
+resource "aws_subnet" "viz_db_b" {
   vpc_id            = data.terraform_remote_state.common.outputs.vpc_id
   availability_zone = "${var.aws_region}b"
   cidr_block        = "10.0.40.16/28"
   tags = {
-    Name        = "viz_vsm_db_b"
+    Name        = "viz_db_b"
     SBO_Billing = "viz"
   }
 }
