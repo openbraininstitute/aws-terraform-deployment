@@ -139,10 +139,10 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
         "/bin/bash",
         "-c",
         "/opt/docker/bin/delta-app",
-        "-Dakka.http.client.parsing.max-content-length=\"100g\"",
+        "-Dakka.http.client.parsing.max-content-length=100g",
         "-Dakka.http.host-connection-pool.max-open-requests=128",
-        "-Dakka.http.host-connection-pool.response-entity-subscription-timeout=\"15.seconds\"",
-        "-Dakka.http.server.parsing.max-content-length=\"2MiB\""
+        "-Dakka.http.host-connection-pool.response-entity-subscription-timeout=15.seconds",
+        "-Dakka.http.server.parsing.max-content-length=2MiB"
       ]
       environment = [
         {
