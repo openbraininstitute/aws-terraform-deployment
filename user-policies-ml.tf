@@ -1,4 +1,3 @@
-# Created in AWS secret manager
 variable "ml_secrets_arn" {
   default     = "arn:aws:secretsmanager:us-east-1:671250183987:secret:ml_secrets-uEWnHv"
   type        = string

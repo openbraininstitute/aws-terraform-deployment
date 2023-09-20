@@ -71,7 +71,7 @@ resource "aws_opensearch_domain" "ml_opensearch" {
             "Action": "es:*",
             "Principal": "*",
             "Effect": "Allow",
-            "Resource": "arn:aws:es:${var.aws_region}:${data.aws_caller_identity.current.account_id}:domain/${var.ml_os_domain_name}/*"
+            "Resource": "arn:aws:es:${data.terraform_remote_state.common.outputs.aws_region}:${data.aws_caller_identity.current.account_id}:domain/${var.ml_os_domain_name}/*"
         }
     ]
 }
