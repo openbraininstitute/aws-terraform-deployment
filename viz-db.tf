@@ -32,7 +32,7 @@ resource "aws_security_group" "viz_db_sg" {
 
 resource "aws_db_subnet_group" "viz_db_subnet_group" {
   name       = "viz-db-subnet-group"
-  subnet_ids = [aws_subnet.viz.id]
+  subnet_ids = [aws_subnet.viz_vsm_db_a.id, aws_subnet.viz_vsm_db_b.id]
   tags = {
     SBO_Billing = "viz"
   }
