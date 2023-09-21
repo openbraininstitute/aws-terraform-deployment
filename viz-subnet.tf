@@ -87,3 +87,63 @@ resource "aws_subnet" "viz_db_b" {
     SBO_Billing = "viz"
   }
 }
+
+
+# Route table for the viz db networks
+resource "aws_route_table" "viz_db" {
+  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
+  }
+  tags = {
+    Name        = "viz_db_route"
+    SBO_Billing = "viz"
+  }
+}
+
+# Link route table to viz db networks
+resource "aws_route_table_association" "viz_db_a" {
+  subnet_id      = aws_subnet.viz_db_a.id
+  route_table_id = aws_route_table.viz_db.id
+}
+
+resource "aws_route_table_association" "viz_db_b" {
+  subnet_id      = aws_subnet.viz_db_b.id
+  route_table_id = aws_route_table.viz_db.id
+}
+
+resource "aws_network_acl" "viz_db" {
+  vpc_id     = data.terraform_remote_state.common.outputs.vpc_id
+  subnet_ids = [aws_subnet.viz_db_a.id, aws_subnet.viz_db_b.id]
+
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 100
+    action     = "allow"
+    cidr_block = data.terraform_remote_state.common.outputs.vpc_cidr_block
+    from_port  = 5432
+    to_port    = 5432
+  }
+  # TODO: do we need it?
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 300
+    action     = "allow"
+    cidr_block = data.terraform_remote_state.common.outputs.vpc_cidr_block
+    from_port  = 1024
+    to_port    = 65535
+  }
+  egress {
+    protocol   = -1
+    rule_no    = 100
+    action     = "allow"
+    cidr_block = data.terraform_remote_state.common.outputs.vpc_cidr_block
+    from_port  = 0
+    to_port    = 0
+  }
+  tags = {
+    Name        = "nexus_viz_acl"
+    SBO_Billing = "viz"
+  }
+}
