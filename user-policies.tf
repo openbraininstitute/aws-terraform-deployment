@@ -159,6 +159,8 @@ locals {
       "ecs:Deregister*",
       "ecs:DeleteT*",
       "ecs:DeleteAttributes",
+      "ecs:ExecuteCommand",
+      "ssm:StartSession",
     ]
     Resource = "*"
   })
