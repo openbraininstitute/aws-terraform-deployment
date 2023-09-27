@@ -63,8 +63,6 @@ resource "aws_vpc_security_group_egress_rule" "viz_brayns_allow_outgoing" {
 }
 
 resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
-  count = var.viz_brayns_ecs_number_of_containers > 0 ? 1 : 0
-
   family       = "viz_brayns_task_family"
   network_mode = "awsvpc"
 
@@ -118,8 +116,6 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
 }
 
 resource "aws_ecs_service" "viz_brayns_ecs_service" {
-  count = var.viz_brayns_ecs_number_of_containers > 0 ? 1 : 0
-
   name                              = "viz_brayns_ecs_service"
   cluster                           = aws_ecs_cluster.viz_ecs_cluster.id
   launch_type                       = "FARGATE"
@@ -152,8 +148,7 @@ resource "aws_ecs_service" "viz_brayns_ecs_service" {
 }
 
 resource "aws_iam_role" "viz_brayns_ecs_task_execution_role" {
-  count = var.viz_brayns_ecs_number_of_containers > 0 ? 1 : 0
-  name  = "viz_brayns-ecsTaskExecutionRole"
+  name = "viz_brayns-ecsTaskExecutionRole"
 
   assume_role_policy = <<EOF
 {
@@ -178,14 +173,10 @@ EOF
 resource "aws_iam_role_policy_attachment" "viz_brayns_ecs_task_execution_role_policy_attachment" {
   role       = aws_iam_role.viz_brayns_ecs_task_execution_role[0].name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-
-  count = var.viz_brayns_ecs_number_of_containers > 0 ? 1 : 0
 }
 
 resource "aws_iam_role" "viz_brayns_ecs_task_role" {
-  count = var.viz_brayns_ecs_number_of_containers > 0 ? 1 : 0
-  name  = "viz_brayns-ecsTaskRole"
-
+  name               = "viz_brayns-ecsTaskRole"
   assume_role_policy = <<EOF
 {
  "Version": "2012-10-17",
@@ -207,7 +198,26 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "viz_brayns_ecs_task_role_dockerhub_policy_attachment" {
-  count      = var.viz_brayns_ecs_number_of_containers > 0 ? 1 : 0
   role       = aws_iam_role.viz_brayns_ecs_task_execution_role[0].name
   policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
+}
+
+resource "aws_iam_role_policy" "ecs_exec_policy" {
+  name = "ecs_exec_policy"
+  role = aws_iam_role.viz_brayns_ecs_task_role.id
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "ssmmessages:CreateControlChannel",
+          "ssmmessages:CreateDataChannel",
+          "ssmmessages:OpenControlChannel",
+          "ssmmessages:OpenDataChannel"
+        ],
+        "Resource" : "*"
+      }
+    ]
+  })
 }
