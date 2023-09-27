@@ -107,8 +107,8 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
   memory                   = 2048
   cpu                      = 1024
   requires_compatibilities = ["FARGATE"]
-  execution_role_arn       = aws_iam_role.viz_brayns_ecs_task_execution_role[0].arn
-  task_role_arn            = aws_iam_role.viz_brayns_ecs_task_role[0].arn
+  execution_role_arn       = aws_iam_role.viz_brayns_ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.viz_brayns_ecs_task_role.arn
 
   tags = {
     SBO_Billing = "viz"
@@ -119,7 +119,7 @@ resource "aws_ecs_service" "viz_brayns_ecs_service" {
   name                              = "viz_brayns_ecs_service"
   cluster                           = aws_ecs_cluster.viz_ecs_cluster.id
   launch_type                       = "FARGATE"
-  task_definition                   = aws_ecs_task_definition.viz_brayns_ecs_definition[0].arn
+  task_definition                   = aws_ecs_task_definition.viz_brayns_ecs_definition.arn
   desired_count                     = var.viz_brayns_ecs_number_of_containers
   health_check_grace_period_seconds = var.viz_brayns_ecs_lb_grace_period
   enable_execute_command            = true
@@ -171,7 +171,7 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "viz_brayns_ecs_task_execution_role_policy_attachment" {
-  role       = aws_iam_role.viz_brayns_ecs_task_execution_role[0].name
+  role       = aws_iam_role.viz_brayns_ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
@@ -198,7 +198,7 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "viz_brayns_ecs_task_role_dockerhub_policy_attachment" {
-  role       = aws_iam_role.viz_brayns_ecs_task_execution_role[0].name
+  role       = aws_iam_role.viz_brayns_ecs_task_execution_role.name
   policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
 }
 
