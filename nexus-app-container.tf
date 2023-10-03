@@ -133,8 +133,8 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
 
   container_definitions = jsonencode([
     {
-      memory = 1024
-      cpu    = 512
+      memory = 8000
+      cpu    = 2000
       command = [
         "/bin/bash",
         "-c",
@@ -205,8 +205,8 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
     }
   ])
 
-  cpu                      = 512
-  memory                   = 1024
+  cpu                      = 2000
+  memory                   = 8000
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = aws_iam_role.ecs_nexus_app_task_execution_role[0].arn
   task_role_arn            = aws_iam_role.ecs_nexus_app_task_role[0].arn
