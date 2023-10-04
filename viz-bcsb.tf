@@ -74,23 +74,21 @@ resource "aws_ecs_task_definition" "viz_bcsb_ecs_definition" {
           protocol      = "tcp"
         }
       ]
-      environment = [
-        {
-          name  = "USE_TLS"
-          value = "0"
-        },
-        {
-          name  = "IS_SENTRY_ENABLED"
-          value = "0"
-        }
+      entrypoint = [
+        "/opt/view/bin/bcsb",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000",
+        "--log_level",
+        "INFO"
       ]
-      entrypoint = ["/opt/view/bin/BCSB"]
       healthcheck = {
-        command     = ["CMD-SHELL", "curl -f http://localhost:8000/docs || exit 1"]
-        interval    = 30
-        timeout     = 5
-        startPeriod = 60
-        retries     = 3
+        command     = ["CMD-SHELL", "/opt/view/bin/bcsb_healthcheck ws://localhost:8000 || exit 1"]
+        interval    = 300
+        timeout     = 60
+        startPeriod = 300
+        retries     = 10
       }
       logConfiguration = {
         logDriver = "awslogs"

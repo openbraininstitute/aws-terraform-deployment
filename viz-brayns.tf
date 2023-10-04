@@ -85,12 +85,23 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
           protocol      = "tcp"
         }
       ]
+      entrypoint = [
+        "/opt/view/bin/braynsService",
+        "--uri",
+        "0.0.0.0:8200",
+        "--log-level",
+        "info",
+        "--plugin",
+        "braynsCircuitExplorer",
+        "--plugin",
+        "braynsAtlasExplorer"
+      ]
       healthcheck = {
-        command     = ["CMD-SHELL", "netcat -zv localhost 8200 || exit 1"]
-        interval    = 30
-        timeout     = 5
-        startPeriod = 60
-        retries     = 3
+        command     = ["CMD-SHELL", "/opt/view/bin/braynsHealthcheck localhost:8200 || exit 1"]
+        interval    = 300
+        timeout     = 60
+        startPeriod = 300
+        retries     = 10
       }
       logConfiguration = {
         logDriver = "awslogs"
