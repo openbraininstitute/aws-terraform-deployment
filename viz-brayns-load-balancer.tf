@@ -46,7 +46,7 @@ resource "aws_route53_record" "brayns" {
 
 resource "aws_lb_listener" "sbo_brayns" {
   load_balancer_arn = aws_lb.alb.arn
-  port              = "8200"
+  port              = "5000"
   protocol          = "HTTPS"
   certificate_arn   = aws_acm_certificate.brayns.arn
 
@@ -70,7 +70,7 @@ resource "aws_lb_listener" "sbo_brayns" {
 resource "aws_lb_target_group" "viz_brayns" {
   #ts:skip=AC_AWS_0492
   name_prefix = "brayns"
-  port        = 8200
+  port        = 5000
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
@@ -82,7 +82,7 @@ resource "aws_lb_target_group" "viz_brayns" {
   }
 }
 
-resource "aws_lb_listener_rule" "viz_brayns_8200" {
+resource "aws_lb_listener_rule" "viz_brayns_5000" {
   listener_arn = aws_lb_listener.sbo_brayns.arn
   priority     = 100
 
@@ -101,6 +101,67 @@ resource "aws_lb_listener_rule" "viz_brayns_8200" {
   }
   depends_on = [
     aws_lb_listener.sbo_brayns,
+    aws_lb.alb
+  ]
+}
+
+resource "aws_lb_listener" "sbo_bcsb" {
+  load_balancer_arn = aws_lb.alb.arn
+  port              = "8000"
+  protocol          = "HTTPS"
+  certificate_arn   = aws_acm_certificate.brayns.arn
+
+  default_action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "Fixed response content: working"
+      status_code  = "200"
+    }
+  }
+  tags = {
+    SBO_Billing = "viz"
+  }
+  depends_on = [
+    aws_lb.alb
+  ]
+}
+
+resource "aws_lb_target_group" "viz_bcsb" {
+  #ts:skip=AC_AWS_0492
+  name_prefix = "bcsb"
+  port        = 8000
+  protocol    = "HTTP"
+  target_type = "ip"
+  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
+  lifecycle {
+    create_before_destroy = true
+  }
+  tags = {
+    SBO_Billing = "viz"
+  }
+}
+
+resource "aws_lb_listener_rule" "viz_bcsb_8000" {
+  listener_arn = aws_lb_listener.sbo_bcsb.arn
+  priority     = 100
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.viz_bcsb.arn
+  }
+
+  condition {
+    host_header {
+      values = [var.viz_brayns_hostname]
+    }
+  }
+  tags = {
+    SBO_Billing = "viz"
+  }
+  depends_on = [
+    aws_lb_listener.sbo_bcsb,
     aws_lb.alb
   ]
 }

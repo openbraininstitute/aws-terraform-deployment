@@ -299,25 +299,10 @@ variable "viz_brayns_hostname" {
   sensitive   = false
 }
 
-### Viz BCSB service ###
 variable "viz_bcsb_docker_image_url" {
   type        = string
   default     = "bluebrain/spackah-bcsb:2.0.0"
   description = "Docker image for BCSB service"
-  sensitive   = false
-}
-
-variable "viz_bcsb_log_group_name" {
-  default     = "viz_bcsb"
-  type        = string
-  description = "The log name within cloudwatch for BCSB"
-  sensitive   = false
-}
-
-variable "viz_bcsb_hostname" {
-  default     = "sbo-bcsb.shapes-registry.org"
-  type        = string
-  description = "Hostname at which BCSB containers can be reached via the ALB"
   sensitive   = false
 }
 

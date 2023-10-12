@@ -64,23 +64,23 @@ resource "aws_network_acl" "public" {
     from_port  = 22
     to_port    = 22
   }
-  # Allow port 8200 (Brayns) from EPFL
+  # Allow port 5000 (Brayns) from EPFL
   ingress {
     protocol   = "tcp"
     rule_no    = 108
     action     = "allow"
     cidr_block = var.epfl_cidr
-    from_port  = 8200
-    to_port    = 8200
+    from_port  = 5000
+    to_port    = 5000
   }
-  # Deny port 8200 (Brayns) from all other IPs
+  # Deny port 5000 (Brayns) from all other IPs
   ingress {
     protocol   = "tcp"
     rule_no    = 109
     action     = "deny"
     cidr_block = "0.0.0.0/0"
-    from_port  = 8200
-    to_port    = 8200
+    from_port  = 5000
+    to_port    = 5000
   }
   # Allow port 8000 (BCSB) from EPFL
   ingress {

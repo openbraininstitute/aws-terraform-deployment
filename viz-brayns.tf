@@ -28,7 +28,7 @@ resource "aws_ecs_cluster" "viz_ecs_cluster" {
 resource "aws_security_group" "viz_brayns_ecs_task" {
   name        = "viz_brayns_ecs_task"
   vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
-  description = "Sec group for Brayns renderer service"
+  description = "Sec group for Brayns service"
 
   tags = {
     Name        = "viz_brayns_secgroup"
@@ -36,14 +36,28 @@ resource "aws_security_group" "viz_brayns_ecs_task" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "viz_brayns_allow_port_8200" {
+resource "aws_vpc_security_group_ingress_rule" "viz_brayns_allow_port_5000" {
   security_group_id = aws_security_group.viz_brayns_ecs_task.id
 
   ip_protocol = "tcp"
-  from_port   = 8200
-  to_port     = 8200
+  from_port   = 5000
+  to_port     = 5000
   cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
-  description = "Allow port 8200 http / websocket"
+  description = "Allow port 5000 http / websocket"
+
+  tags = {
+    SBO_Billing = "viz"
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "viz_brayns_allow_port_8000" {
+  security_group_id = aws_security_group.viz_brayns_ecs_task.id
+
+  ip_protocol = "tcp"
+  from_port   = 8000
+  to_port     = 8000
+  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  description = "Allow port 8000 http / websocket"
 
   tags = {
     SBO_Billing = "viz"
@@ -80,15 +94,15 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
       }
       portMappings = [
         {
-          hostPort      = 8200
-          containerPort = 8200
+          hostPort      = 5000
+          containerPort = 5000
           protocol      = "tcp"
         }
       ]
       entrypoint = [
         "/opt/view/bin/braynsService",
         "--uri",
-        "0.0.0.0:8200",
+        "0.0.0.0:5000",
         "--log-level",
         "info",
         "--plugin",
@@ -97,7 +111,7 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
         "braynsAtlasExplorer"
       ]
       healthcheck = {
-        command     = ["CMD-SHELL", "/opt/view/bin/braynsHealthcheck localhost:8200 || exit 1"]
+        command     = ["CMD-SHELL", "/opt/view/bin/braynsHealthcheck localhost:5000 || exit 1"]
         interval    = 300
         timeout     = 60
         startPeriod = 300
@@ -110,6 +124,50 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
           awslogs-region        = var.aws_region
           awslogs-create-group  = "true"
           awslogs-stream-prefix = "viz_brayns"
+        }
+      }
+    },
+    {
+      memory      = 2048
+      cpu         = 1024
+      networkMode = "awsvpc"
+      family      = "viz_bcsb"
+      essential   = true
+      image       = var.viz_bcsb_docker_image_url
+      name        = "viz_bcsb"
+      repositoryCredentials = {
+        credentialsParameter = data.terraform_remote_state.common.outputs.dockerhub_credentials_arn
+      }
+      portMappings = [
+        {
+          hostPort      = 8000
+          containerPort = 8000
+          protocol      = "tcp"
+        }
+      ]
+      entrypoint = [
+        "/opt/view/bin/bcsb",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000",
+        "--log_level",
+        "INFO"
+      ]
+      healthcheck = {
+        command     = ["CMD-SHELL", "/opt/view/bin/bcsb_healthcheck ws://localhost:8000 || exit 1"]
+        interval    = 300
+        timeout     = 60
+        startPeriod = 300
+        retries     = 10
+      }
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = var.viz_brayns_log_group_name
+          awslogs-region        = var.aws_region
+          awslogs-create-group  = "true"
+          awslogs-stream-prefix = "viz_bcsb"
         }
       }
     }
@@ -150,7 +208,7 @@ resource "aws_ecs_service" "viz_brayns_ecs_service" {
   load_balancer {
     target_group_arn = aws_lb_target_group.viz_brayns.arn
     container_name   = "viz_brayns"
-    container_port   = 8200
+    container_port   = 5000
   }
   force_new_deployment = true
   tags = {
