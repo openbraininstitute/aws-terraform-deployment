@@ -185,13 +185,12 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
 }
 
 resource "aws_ecs_service" "viz_brayns_ecs_service" {
-  name                              = "viz_brayns_ecs_service"
-  cluster                           = aws_ecs_cluster.viz_ecs_cluster.id
-  launch_type                       = "FARGATE"
-  task_definition                   = aws_ecs_task_definition.viz_brayns_ecs_definition.arn
-  desired_count                     = var.viz_brayns_ecs_number_of_containers
-  health_check_grace_period_seconds = var.viz_brayns_ecs_lb_grace_period
-  enable_execute_command            = true
+  name                   = "viz_brayns_ecs_service"
+  cluster                = aws_ecs_cluster.viz_ecs_cluster.id
+  launch_type            = "FARGATE"
+  task_definition        = aws_ecs_task_definition.viz_brayns_ecs_definition.arn
+  desired_count          = var.viz_brayns_ecs_number_of_containers
+  enable_execute_command = true
 
   network_configuration {
     security_groups  = [aws_security_group.viz_brayns_ecs_task.id]
