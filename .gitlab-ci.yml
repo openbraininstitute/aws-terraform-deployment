@@ -1,6 +1,9 @@
 # Based on the template at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.gitlab-ci.yml
 
+variables:
+  TF_AUTO_DEPLOY: "true"
+
 include:
   - local: templates/tf/Base.latest.gitlab-ci.yml
   # See https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Terraform/
