@@ -74,9 +74,6 @@ resource "aws_lb_target_group" "viz_brayns" {
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
-  health_check {
-    enabled = false
-  }
 
   lifecycle {
     create_before_destroy = true
@@ -139,9 +136,7 @@ resource "aws_lb_target_group" "viz_bcsb" {
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
-  health_check {
-    enabled = false
-  }
+
   lifecycle {
     create_before_destroy = true
   }
