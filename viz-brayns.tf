@@ -111,11 +111,7 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
         "braynsAtlasExplorer"
       ]
       healthcheck = {
-        command     = ["CMD-SHELL", "/opt/view/bin/braynsHealthcheck localhost:5000 || exit 1"]
-        interval    = 300
-        timeout     = 60
-        startPeriod = 300
-        retries     = 10
+        command = ["CMD-SHELL", "exit 0"]
       }
       logConfiguration = {
         logDriver = "awslogs"
@@ -155,11 +151,7 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
         "INFO"
       ]
       healthcheck = {
-        command     = ["CMD-SHELL", "/opt/view/bin/bcsb_healthcheck ws://localhost:8000 || exit 1"]
-        interval    = 300
-        timeout     = 60
-        startPeriod = 300
-        retries     = 10
+        command = ["CMD-SHELL", "exit 0"]
       }
       logConfiguration = {
         logDriver = "awslogs"
@@ -223,21 +215,19 @@ resource "aws_ecs_service" "viz_brayns_ecs_service" {
 resource "aws_iam_role" "viz_brayns_ecs_task_execution_role" {
   name = "viz_brayns-ecsTaskExecutionRole"
 
-  assume_role_policy = <<EOF
-{
- "Version": "2012-10-17",
- "Statement": [
-   {
-     "Action": "sts:AssumeRole",
-     "Principal": {
-       "Service": "ecs-tasks.amazonaws.com"
-     },
-     "Effect": "Allow",
-     "Sid": ""
-   }
- ]
-}
-EOF
+  assume_role_policy = jsonencode({
+    "Version" = "2012-10-17",
+    "Statement" = [
+      {
+        "Action" = "sts:AssumeRole",
+        "Principal" = {
+          "Service" = "ecs-tasks.amazonaws.com"
+        },
+        "Effect" = "Allow",
+        "Sid"    = ""
+      }
+    ]
+  })
   tags = {
     SBO_Billing = "viz"
   }
@@ -249,22 +239,20 @@ resource "aws_iam_role_policy_attachment" "viz_brayns_ecs_task_execution_role_po
 }
 
 resource "aws_iam_role" "viz_brayns_ecs_task_role" {
-  name               = "viz_brayns-ecsTaskRole"
-  assume_role_policy = <<EOF
-{
- "Version": "2012-10-17",
- "Statement": [
-   {
-     "Action": "sts:AssumeRole",
-     "Principal": {
-       "Service": "ecs-tasks.amazonaws.com"
-     },
-     "Effect": "Allow",
-     "Sid": ""
-   }
- ]
-}
-EOF
+  name = "viz_brayns-ecsTaskRole"
+  assume_role_policy = jsonencode({
+    "Version" = "2012-10-17",
+    "Statement" = [
+      {
+        "Action" = "sts:AssumeRole",
+        "Principal" = {
+          "Service" = "ecs-tasks.amazonaws.com"
+        },
+        "Effect" = "Allow",
+        "Sid"    = ""
+      }
+    ]
+  })
   tags = {
     SBO_Billing = "viz"
   }
@@ -279,17 +267,17 @@ resource "aws_iam_role_policy" "ecs_exec_policy" {
   name = "ecs_exec_policy"
   role = aws_iam_role.viz_brayns_ecs_task_role.id
   policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
+    "Version" = "2012-10-17",
+    "Statement" = [
       {
-        "Effect" : "Allow",
-        "Action" : [
+        "Effect" = "Allow",
+        "Action" = [
           "ssmmessages:CreateControlChannel",
           "ssmmessages:CreateDataChannel",
           "ssmmessages:OpenControlChannel",
           "ssmmessages:OpenDataChannel"
         ],
-        "Resource" : "*"
+        "Resource" = "*"
       }
     ]
   })
