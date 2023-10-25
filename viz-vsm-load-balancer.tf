@@ -46,7 +46,7 @@ resource "aws_route53_record" "vsm" {
 
 resource "aws_lb_listener" "sbo_vsm" {
   load_balancer_arn = aws_lb.alb.arn
-  port              = 5000
+  port              = 4444
   protocol          = "HTTPS"
   certificate_arn   = aws_acm_certificate.vsm.arn
 
@@ -70,7 +70,7 @@ resource "aws_lb_listener" "sbo_vsm" {
 resource "aws_lb_target_group" "viz_vsm" {
   #ts:skip=AC_AWS_0492
   name_prefix = "vsm"
-  port        = 5000
+  port        = 4444
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
@@ -86,7 +86,7 @@ resource "aws_lb_target_group" "viz_vsm" {
   }
 }
 
-resource "aws_lb_listener_rule" "viz_vsm_5000" {
+resource "aws_lb_listener_rule" "viz_vsm_4444" {
   listener_arn = aws_lb_listener.sbo_vsm.arn
   priority     = 100
 

@@ -23,14 +23,14 @@ resource "aws_security_group" "viz_vsm_ecs_task" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "viz_vsm_allow_port_5000" {
+resource "aws_vpc_security_group_ingress_rule" "viz_vsm_allow_port_4444" {
   security_group_id = aws_security_group.viz_vsm_ecs_task.id
 
   ip_protocol = "tcp"
-  from_port   = 5000
-  to_port     = 5000
+  from_port   = 4444
+  to_port     = 4444
   cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
-  description = "Allow port 5000 http"
+  description = "Allow port 4444 http"
 
   tags = {
     SBO_Billing = "viz"
@@ -67,8 +67,8 @@ resource "aws_ecs_task_definition" "viz_vsm_ecs_definition" {
       }
       portMappings = [
         {
-          hostPort      = 5000
-          containerPort = 5000
+          hostPort      = 4444
+          containerPort = 4444
           protocol      = "tcp"
         }
       ]
@@ -78,7 +78,7 @@ resource "aws_ecs_task_definition" "viz_vsm_ecs_definition" {
         "--address",
         "0.0.0.0",
         "--port",
-        "5000"
+        "4444"
       ]
       environement = [
         {
@@ -123,7 +123,7 @@ resource "aws_ecs_task_definition" "viz_vsm_ecs_definition" {
         }
       ]
       healthcheck = {
-        command = ["CMD-SHELL", "/usr/bin/curl localhost:5000/healthz || exit 1"]
+        command = ["CMD-SHELL", "/usr/bin/curl localhost:4444/healthz || exit 1"]
       }
       logConfiguration = {
         logDriver = "awslogs"
@@ -171,7 +171,7 @@ resource "aws_ecs_service" "viz_vsm_ecs_service" {
   load_balancer {
     target_group_arn = aws_lb_target_group.viz_vsm.arn
     container_name   = "viz_vsm"
-    container_port   = 5000
+    container_port   = 4444
   }
   force_new_deployment = true
   tags = {
