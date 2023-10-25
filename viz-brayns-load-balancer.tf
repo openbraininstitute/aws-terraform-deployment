@@ -46,7 +46,7 @@ resource "aws_route53_record" "brayns" {
 
 resource "aws_lb_listener" "sbo_brayns" {
   load_balancer_arn = aws_lb.alb.arn
-  port              = "5000"
+  port              = 5000
   protocol          = "HTTPS"
   certificate_arn   = aws_acm_certificate.brayns.arn
 
@@ -111,7 +111,7 @@ resource "aws_lb_listener_rule" "viz_brayns_5000" {
 
 resource "aws_lb_listener" "sbo_bcsb" {
   load_balancer_arn = aws_lb.alb.arn
-  port              = "8000"
+  port              = 8000
   protocol          = "HTTPS"
   certificate_arn   = aws_acm_certificate.brayns.arn
 

@@ -277,13 +277,7 @@ variable "ml_os_domain_name" {
   sensitive = false
 }
 
-### Viz Brayns renderer service ###
-variable "viz_brayns_docker_image_url" {
-  type        = string
-  default     = "bluebrain/spackah-brayns:3.3.0"
-  description = "Docker image for Brayns renderer service"
-  sensitive   = false
-}
+### VIZ Brayns renderer service ###
 
 variable "viz_brayns_log_group_name" {
   default     = "viz_brayns"
@@ -299,6 +293,13 @@ variable "viz_brayns_hostname" {
   sensitive   = false
 }
 
+variable "viz_brayns_docker_image_url" {
+  type        = string
+  default     = "bluebrain/spackah-brayns:3.3.0"
+  description = "Docker image for Brayns renderer service"
+  sensitive   = false
+}
+
 variable "viz_bcsb_docker_image_url" {
   type        = string
   default     = "bluebrain/spackah-bcsb:2.1.0"
@@ -306,7 +307,7 @@ variable "viz_bcsb_docker_image_url" {
   sensitive   = false
 }
 
-## viz PostgreSQL ###
+## VIZ PostgreSQL ###
 
 variable "viz_postgresql_database_port" {
   default   = 5432
@@ -331,6 +332,30 @@ variable "viz_postgresql_admin_username" {
   default   = "admin"
   sensitive = false
 }
+
+# VIZ VSM
+
+variable "viz_vsm_log_group_name" {
+  default     = "viz_vsm"
+  type        = string
+  description = "The log name within cloudwatch for VSM"
+  sensitive   = false
+}
+
+variable "viz_vsm_hostname" {
+  default     = "sbo-vsm.shapes-registry.org"
+  type        = string
+  description = "Hostname at which VSM containers can be reached via the ALB"
+  sensitive   = false
+}
+
+variable "viz_vsm_docker_image_url" {
+  type        = string
+  default     = "bluebrain/vsm:latest"
+  description = "Docker image for VSM service"
+  sensitive   = false
+}
+
 
 ### BBP Workflow ###
 

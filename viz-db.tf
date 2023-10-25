@@ -52,8 +52,6 @@ resource "aws_db_instance" "vizdb" {
   allocated_storage       = 5     # in gigabytes
   backup_retention_period = 2     # in days
 
-  count = 1
-
   db_subnet_group_name = aws_db_subnet_group.viz_db_subnet_group.name
 
   engine         = "postgres"
@@ -63,7 +61,6 @@ resource "aws_db_instance" "vizdb" {
 
   identifier = "viz-vsm-db"
   db_name    = var.viz_postgresql_database_name
-
 
   username = var.viz_postgresql_database_username
   password = data.aws_secretsmanager_secret_version.viz_database_password.secret_string

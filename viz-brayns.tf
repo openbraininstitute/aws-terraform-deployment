@@ -263,8 +263,8 @@ resource "aws_iam_role_policy_attachment" "viz_brayns_ecs_task_role_dockerhub_po
   policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
 }
 
-resource "aws_iam_role_policy" "ecs_exec_policy" {
-  name = "ecs_exec_policy"
+resource "aws_iam_role_policy" "viz_brayns_ecs_exec_policy" {
+  name = "viz_brayns_ecs_exec_policy"
   role = aws_iam_role.viz_brayns_ecs_task_role.id
   policy = jsonencode({
     "Version" = "2012-10-17",
