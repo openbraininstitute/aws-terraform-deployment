@@ -173,11 +173,6 @@ resource "aws_ecs_service" "viz_vsm_ecs_service" {
     container_name   = "viz_vsm"
     container_port   = 5000
   }
-  load_balancer {
-    target_group_arn = aws_lb_target_group.viz_bcsb.arn
-    container_name   = "viz_bcsb"
-    container_port   = 8000
-  }
   force_new_deployment = true
   tags = {
     SBO_Billing = "viz"
