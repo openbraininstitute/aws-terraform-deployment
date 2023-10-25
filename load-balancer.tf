@@ -64,6 +64,19 @@ resource "aws_vpc_security_group_ingress_rule" "alb_allow_bcsb_epfl" {
   }
 }
 
+resource "aws_vpc_security_group_ingress_rule" "alb_allow_vsm_epfl" {
+  security_group_id = aws_security_group.alb.id
+  description       = "Allow VSM on 4444 from EPFL"
+  from_port         = 4444
+  to_port           = 4444
+  ip_protocol       = "tcp"
+  cidr_ipv4         = var.epfl_cidr
+
+  tags = {
+    Name = "alb_allow_vsm_epfl"
+  }
+}
+
 resource "aws_vpc_security_group_ingress_rule" "alb_allow_https_internal" {
   security_group_id = aws_security_group.alb.id
   description       = "Allow HTTPS from internal"
