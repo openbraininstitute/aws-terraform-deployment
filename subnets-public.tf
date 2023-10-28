@@ -31,7 +31,7 @@ resource "aws_network_acl" "public" {
   # Allow port 443 from anywhere
   ingress {
     protocol   = "tcp"
-    rule_no    = 106
+    rule_no    = 110
     action     = "allow"
     cidr_block = "0.0.0.0/0"
     from_port  = 443
@@ -40,7 +40,7 @@ resource "aws_network_acl" "public" {
   # Allow port 22 from EPFL
   ingress {
     protocol   = "tcp"
-    rule_no    = 107
+    rule_no    = 115
     action     = "allow"
     cidr_block = var.epfl_cidr
     from_port  = 22
@@ -49,7 +49,7 @@ resource "aws_network_acl" "public" {
   # Allow port 22 from bbpproxy
   ingress {
     protocol   = "tcp"
-    rule_no    = 114
+    rule_no    = 120
     action     = "allow"
     cidr_block = data.terraform_remote_state.common.outputs.bbpproxy_cidr
     from_port  = 22
@@ -58,7 +58,7 @@ resource "aws_network_acl" "public" {
   # Allow port 22 from BBP SSH Bastion
   ingress {
     protocol   = "tcp"
-    rule_no    = 112
+    rule_no    = 125
     action     = "allow"
     cidr_block = var.bbpssh_cidr
     from_port  = 22
@@ -67,7 +67,7 @@ resource "aws_network_acl" "public" {
   # Allow port 22 from BB5 Login Nodes
   ingress {
     protocol   = "tcp"
-    rule_no    = 113
+    rule_no    = 130
     action     = "allow"
     cidr_block = var.bb5_login_nodes_cidr
     from_port  = 22
@@ -76,7 +76,7 @@ resource "aws_network_acl" "public" {
   # Allow port 5000 (Brayns) from EPFL
   ingress {
     protocol   = "tcp"
-    rule_no    = 108
+    rule_no    = 135
     action     = "allow"
     cidr_block = var.epfl_cidr
     from_port  = 5000
@@ -85,7 +85,7 @@ resource "aws_network_acl" "public" {
   # Deny port 5000 (Brayns) from all other IPs
   ingress {
     protocol   = "tcp"
-    rule_no    = 109
+    rule_no    = 140
     action     = "deny"
     cidr_block = "0.0.0.0/0"
     from_port  = 5000
@@ -94,7 +94,7 @@ resource "aws_network_acl" "public" {
   # Allow port 8000 (BCSB) from EPFL
   ingress {
     protocol   = "tcp"
-    rule_no    = 110
+    rule_no    = 145
     action     = "allow"
     cidr_block = var.epfl_cidr
     from_port  = 8000
@@ -103,7 +103,7 @@ resource "aws_network_acl" "public" {
   # Deny port 8000 (BCSB) from all other IPs
   ingress {
     protocol   = "tcp"
-    rule_no    = 111
+    rule_no    = 150
     action     = "deny"
     cidr_block = "0.0.0.0/0"
     from_port  = 8000
@@ -112,7 +112,7 @@ resource "aws_network_acl" "public" {
   # Allow port 4444 (VSM) from EPFL
   ingress {
     protocol   = "tcp"
-    rule_no    = 110
+    rule_no    = 155
     action     = "allow"
     cidr_block = var.epfl_cidr
     from_port  = 4444
@@ -121,7 +121,7 @@ resource "aws_network_acl" "public" {
   # Deny port 4444 (VSM) from all other IPs
   ingress {
     protocol   = "tcp"
-    rule_no    = 111
+    rule_no    = 160
     action     = "deny"
     cidr_block = "0.0.0.0/0"
     from_port  = 4444
@@ -130,7 +130,7 @@ resource "aws_network_acl" "public" {
   # Allow port 8888 (VSM-Proxy) from EPFL
   ingress {
     protocol   = "tcp"
-    rule_no    = 110
+    rule_no    = 165
     action     = "allow"
     cidr_block = var.epfl_cidr
     from_port  = 8888
@@ -139,7 +139,7 @@ resource "aws_network_acl" "public" {
   # Deny port 8888 (VSM-Proxy) from all other IPs
   ingress {
     protocol   = "tcp"
-    rule_no    = 111
+    rule_no    = 170
     action     = "deny"
     cidr_block = "0.0.0.0/0"
     from_port  = 8888
@@ -148,7 +148,7 @@ resource "aws_network_acl" "public" {
   # Allow ingress to all other ephemeral ports
   ingress {
     protocol   = "tcp"
-    rule_no    = 300
+    rule_no    = 900
     action     = "allow"
     cidr_block = "0.0.0.0/0"
     from_port  = 1024
