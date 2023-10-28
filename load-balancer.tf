@@ -77,6 +77,19 @@ resource "aws_vpc_security_group_ingress_rule" "alb_allow_vsm_epfl" {
   }
 }
 
+resource "aws_vpc_security_group_ingress_rule" "alb_allow_vsm_proxy_epfl" {
+  security_group_id = aws_security_group.alb.id
+  description       = "Allow VSM-Proxy on 8888 from EPFL"
+  from_port         = 8888
+  to_port           = 8888
+  ip_protocol       = "tcp"
+  cidr_ipv4         = var.epfl_cidr
+
+  tags = {
+    Name = "alb_allow_vsm_proxy_epfl"
+  }
+}
+
 resource "aws_vpc_security_group_ingress_rule" "alb_allow_https_internal" {
   security_group_id = aws_security_group.alb.id
   description       = "Allow HTTPS from internal"

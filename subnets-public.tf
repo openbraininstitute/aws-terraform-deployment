@@ -127,6 +127,24 @@ resource "aws_network_acl" "public" {
     from_port  = 4444
     to_port    = 4444
   }
+  # Allow port 8888 (VSM-Proxy) from EPFL
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 110
+    action     = "allow"
+    cidr_block = var.epfl_cidr
+    from_port  = 8888
+    to_port    = 8888
+  }
+  # Deny port 8888 (VSM-Proxy) from all other IPs
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 111
+    action     = "deny"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 8888
+    to_port    = 8888
+  }
   # Allow ingress to all other ephemeral ports
   ingress {
     protocol   = "tcp"

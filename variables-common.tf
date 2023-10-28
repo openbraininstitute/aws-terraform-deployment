@@ -342,17 +342,31 @@ variable "viz_vsm_log_group_name" {
   sensitive   = false
 }
 
+variable "viz_vsm_proxy_log_group_name" {
+  default     = "viz_vsm_proxy"
+  type        = string
+  description = "The log name within cloudwatch for VSM-Proxy"
+  sensitive   = false
+}
+
 variable "viz_vsm_hostname" {
   default     = "sbo-vsm.shapes-registry.org"
   type        = string
-  description = "Hostname at which VSM containers can be reached via the ALB"
+  description = "Hostname at which VSM container can be reached via the ALB"
+  sensitive   = false
+}
+
+variable "viz_vsm_proxy_hostname" {
+  default     = "sbo-vsm-proxy.shapes-registry.org"
+  type        = string
+  description = "Hostname at which VSM-Proxy container can be reached via the ALB"
   sensitive   = false
 }
 
 variable "viz_vsm_docker_image_url" {
   type        = string
   default     = "bluebrain/vsm:latest"
-  description = "Docker image for VSM service"
+  description = "Docker image for VSM services"
   sensitive   = false
 }
 
