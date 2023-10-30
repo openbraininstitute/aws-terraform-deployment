@@ -80,7 +80,7 @@ resource "aws_ecs_task_definition" "viz_vsm_proxy_ecs_definition" {
         "--port",
         "8888"
       ]
-      environement = [
+      environment = [
         {
           name  = "VSM_LOG_LEVEL"
           value = "DEBUG"
@@ -115,7 +115,7 @@ resource "aws_ecs_task_definition" "viz_vsm_proxy_ecs_definition" {
         },
         {
           name  = "VSM_KEYCLOAK_HOST"
-          value = "TODO"
+          value = "https://bbpauth.epfl.ch/auth/realms/BBP/protocol/openid-connect/userinfo"
         },
         {
           name  = "PYTHONUNBUFFERED"

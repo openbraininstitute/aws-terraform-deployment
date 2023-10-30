@@ -80,7 +80,7 @@ resource "aws_ecs_task_definition" "viz_vsm_ecs_definition" {
         "--port",
         "4444"
       ]
-      environement = [
+      environment = [
         {
           name  = "VSM_LOG_LEVEL"
           value = "DEBUG"
