@@ -223,7 +223,7 @@ resource "aws_vpc_security_group_ingress_rule" "ssh_bastion_hosts_allow_bbpssh" 
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "ssh_bastion_hosts_allow_ssh_internal" {
+resource "aws_vpc_security_group_ingress_rule" "ssh_bastion_hosts_allow_ssh_vpc_us_east_1" {
   security_group_id = aws_security_group.ssh_bastion_hosts.id
   description       = "Allow SSH from internal"
   from_port         = 22
@@ -231,7 +231,19 @@ resource "aws_vpc_security_group_ingress_rule" "ssh_bastion_hosts_allow_ssh_inte
   ip_protocol       = "tcp"
   cidr_ipv4         = data.terraform_remote_state.common.outputs.vpc_cidr_block
   tags = {
-    Name = "ssh_bastion_hosts_allow_ssh_internal"
+    Name = "ssh_bastion_hosts_allow_ssh_us_east_1"
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "ssh_bastion_hosts_allow_ssh_vpc_us_east_2" {
+  security_group_id = aws_security_group.ssh_bastion_hosts.id
+  description       = "Allow SSH from us-east-2"
+  from_port         = 22
+  to_port           = 22
+  ip_protocol       = "tcp"
+  cidr_ipv4         = data.terraform_remote_state.common.outputs.us_east_2_vpc_cidr_block
+  tags = {
+    Name = "ssh_bastion_hosts_allow_ssh_us_east_2"
   }
 }
 
