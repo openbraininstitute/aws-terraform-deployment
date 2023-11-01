@@ -45,7 +45,7 @@ resource "aws_opensearch_domain" "ml_opensearch" {
   # Note: if you switch between elasticsearch and opensearch, then also the instance type needs to be updated.
   engine_version = var.ml_opensearch_version
   cluster_config {
-    instance_count = 1
+    instance_count = 4
     instance_type  = var.ml_opensearch_instance_type
   }
 
