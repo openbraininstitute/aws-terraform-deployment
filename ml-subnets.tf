@@ -1,7 +1,7 @@
 resource "aws_subnet" "ml_os" {
   vpc_id            = data.terraform_remote_state.common.outputs.vpc_id
   availability_zone = "${data.terraform_remote_state.common.outputs.aws_region}a"
-  cidr_block        = "10.0.2.128/28"
+  cidr_block        = "10.0.4.0/24"
   tags = {
     Name        = "ml_os"
     SBO_Billing = "machinelearning"
