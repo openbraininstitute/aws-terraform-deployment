@@ -111,11 +111,11 @@ resource "aws_ecs_task_definition" "viz_vsm_ecs_definition" {
         },
         {
           name  = "VSM_KEYCLOAK_URL"
-          value = "TODO"
+          value = "https://sboauth.epfl.ch/auth/realms/SBO/protocol/openid-connect/userinfo"
         },
         {
           name  = "VSM_KEYCLOAK_HOST"
-          value = "TODO"
+          value = "sboauth.epfl.ch"
         },
         {
           name  = "PYTHONUNBUFFERED"
