@@ -87,7 +87,7 @@ resource "aws_ecs_task_definition" "viz_vsm_proxy_ecs_definition" {
         },
         {
           name  = "VSM_DB_HOST"
-          value = aws_db_instance.vizdb.endpoint
+          value = aws_db_instance.vizdb.address
         },
         {
           name  = "VSM_DB_USERNAME"
