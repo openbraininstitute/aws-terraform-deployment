@@ -1,71 +1,11 @@
-resource "aws_acm_certificate" "brayns" {
-  domain_name       = var.viz_brayns_hostname
-  validation_method = "DNS"
-  lifecycle {
-    create_before_destroy = true
-  }
-  tags = {
-    SBO_Billing = "viz"
-  }
-}
-
-resource "aws_route53_record" "brayns_validation" {
-  for_each = {
-    for dvo in aws_acm_certificate.brayns.domain_validation_options : dvo.domain_name => {
-      name   = dvo.resource_record_name
-      record = dvo.resource_record_value
-      type   = dvo.resource_record_type
-    }
-  }
-
-  allow_overwrite = true
-  name            = each.value.name
-  records         = [each.value.record]
-  ttl             = 60
-  type            = each.value.type
-  zone_id         = data.terraform_remote_state.common.outputs.domain_zone_id
-}
-
-resource "aws_acm_certificate_validation" "brayns" {
-  certificate_arn         = aws_acm_certificate.brayns.arn
-  validation_record_fqdns = [for record in aws_route53_record.brayns_validation : record.fqdn]
-}
-
-resource "aws_lb_listener_certificate" "brayns" {
-  listener_arn    = aws_lb_listener.sbo_brayns.arn
-  certificate_arn = aws_acm_certificate.brayns.arn
-}
-
 resource "aws_route53_record" "brayns" {
   zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
   name    = var.viz_brayns_hostname
   type    = "CNAME"
   ttl     = 60
-  records = [aws_lb.alb.dns_name]
+  records = [data.terraform_remote_state.common.outputs.private_alb_dns_name]
 }
 
-resource "aws_lb_listener" "sbo_brayns" {
-  load_balancer_arn = aws_lb.alb.arn
-  port              = 5000
-  protocol          = "HTTPS"
-  certificate_arn   = aws_acm_certificate.brayns.arn
-
-  default_action {
-    type = "fixed-response"
-
-    fixed_response {
-      content_type = "text/plain"
-      message_body = "Fixed response content: working"
-      status_code  = "200"
-    }
-  }
-  tags = {
-    SBO_Billing = "viz"
-  }
-  depends_on = [
-    aws_lb.alb
-  ]
-}
 
 resource "aws_lb_target_group" "viz_brayns" {
   #ts:skip=AC_AWS_0492
@@ -87,7 +27,7 @@ resource "aws_lb_target_group" "viz_brayns" {
 }
 
 resource "aws_lb_listener_rule" "viz_brayns_5000" {
-  listener_arn = aws_lb_listener.sbo_brayns.arn
+  listener_arn = data.terraform_remote_state.common.outputs.private_alb_listener_5000_arn
   priority     = 100
 
   action {
@@ -103,33 +43,6 @@ resource "aws_lb_listener_rule" "viz_brayns_5000" {
   tags = {
     SBO_Billing = "viz"
   }
-  depends_on = [
-    aws_lb_listener.sbo_brayns,
-    aws_lb.alb
-  ]
-}
-
-resource "aws_lb_listener" "sbo_bcsb" {
-  load_balancer_arn = aws_lb.alb.arn
-  port              = 8000
-  protocol          = "HTTPS"
-  certificate_arn   = aws_acm_certificate.brayns.arn
-
-  default_action {
-    type = "fixed-response"
-
-    fixed_response {
-      content_type = "text/plain"
-      message_body = "Fixed response content: working"
-      status_code  = "200"
-    }
-  }
-  tags = {
-    SBO_Billing = "viz"
-  }
-  depends_on = [
-    aws_lb.alb
-  ]
 }
 
 resource "aws_lb_target_group" "viz_bcsb" {
@@ -152,7 +65,7 @@ resource "aws_lb_target_group" "viz_bcsb" {
 }
 
 resource "aws_lb_listener_rule" "viz_bcsb_8000" {
-  listener_arn = aws_lb_listener.sbo_bcsb.arn
+  listener_arn = data.terraform_remote_state.common.outputs.private_alb_listener_8000_arn
   priority     = 100
 
   action {
@@ -168,8 +81,4 @@ resource "aws_lb_listener_rule" "viz_bcsb_8000" {
   tags = {
     SBO_Billing = "viz"
   }
-  depends_on = [
-    aws_lb_listener.sbo_bcsb,
-    aws_lb.alb
-  ]
 }
