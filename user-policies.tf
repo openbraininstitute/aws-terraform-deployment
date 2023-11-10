@@ -122,6 +122,27 @@ resource "aws_ssoadmin_permission_set" "readonly_with_additional_ecs_rights" {
   }
 }
 
+resource "aws_ssoadmin_permission_set" "full_ec2_access_us_east_2_rights" {
+  name             = "FullEC2Access-us-east-2"
+  description      = "INFRA-9037 Full access to EC2 objects in us-east-2"
+  instance_arn     = var.aws_iam_identity_center_arn
+  session_duration = "PT2H"
+  tags = {
+    SBO_Billing = "common"
+  }
+}
+
+resource "aws_ssoadmin_permission_set_inline_policy" "full_ec2_access_us_east_2_rights" {
+  inline_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      jsondecode(local.sbo_full_ec2_access_us_east_2_policy),
+    ]
+  })
+  instance_arn       = var.aws_iam_identity_center_arn
+  permission_set_arn = aws_ssoadmin_permission_set.full_ec2_access_us_east_2_rights.arn
+}
+
 resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_ecs_rights" {
   inline_policy = jsonencode({
     Version = "2012-10-17"
@@ -163,6 +184,17 @@ locals {
       "ssm:StartSession",
     ]
     Resource = "*"
+  })
+
+  sbo_full_ec2_access_us_east_2_policy = jsonencode({
+    Action   = "ec2:*",
+    Resource = "*",
+    Effect   = "Allow",
+    Condition = {
+      StringEquals = {
+        "ec2:Region" = "us-east-2"
+      }
+    }
   })
 
   sbo_billing_payment_support_full_access_policy_statement = jsonencode({
