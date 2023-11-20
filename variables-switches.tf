@@ -19,7 +19,7 @@ variable "create_nat_gateway" {
 
 variable "core_webapp_ecs_number_of_containers" {
   type        = number
-  default     = 0
+  default     = 1
   sensitive   = false
   description = "Number of containers for the SBO core webapp"
 }
