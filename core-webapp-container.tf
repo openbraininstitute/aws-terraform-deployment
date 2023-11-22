@@ -138,7 +138,7 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
         },
         {
           name  = "KEYCLOAK_ISSUER"
-          value = "https://sbo-poc-auth.auth.us-east-1.amazoncognito.com"
+          value = "https://sboauth.epfl.ch/auth/realms/SBO"
         },
       ]
       secrets = [
