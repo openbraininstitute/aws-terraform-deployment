@@ -49,7 +49,7 @@ variable "core_webapp_log_group_name" {
 }
 
 variable "core_webapp_docker_image_url" {
-  default     = "bluebrain/sbo-core-web-app:439c86c0-1680702285"
+  default     = "bluebrain/sbo-core-web-app:latest"
   type        = string
   description = "docker image for the core webapp"
   sensitive   = false
