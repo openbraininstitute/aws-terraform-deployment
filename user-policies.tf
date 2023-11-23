@@ -165,6 +165,9 @@ locals {
       "ec2:EnableSerialConsoleAccess",
       "ec2:DisableSerialConsoleAccess",
       "ec2-instance-connect:SendSerialConsoleSSHPublicKey",
+      "ec2:StartInstances",
+      "ec2:StopInstances",
+      "ec2:RebootInstances",
     ]
     Resource = "*"
   })
