@@ -152,10 +152,6 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
         {
           name  = "DELTA_EXTERNAL_CONF"
           value = "/opt/appconf/delta.conf"
-        },
-        {
-          name  = "MIGRATE_COMPOSITE_VIEWS"
-          value = "true"
         }
       ]
       networkMode = "awsvpc"

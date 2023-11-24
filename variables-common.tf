@@ -84,7 +84,7 @@ variable "nexus_fusion_hostname" {
 }
 
 variable "nexus_fusion_docker_image_url" {
-  default   = "bluebrain/nexus-web:1.8.5"
+  default   = "bluebrain/nexus-web:1.9.9"
   sensitive = false
   type      = string
 }
