@@ -249,3 +249,20 @@ resource "aws_iam_role_policy" "viz_vsm_ecs_exec_policy" {
     ]
   })
 }
+
+resource "aws_iam_role_policy" "viz_vsm_ecs_ec2_policy" {
+  name = "viz_vsm_ecs_ec2_policy"
+  role = aws_iam_role.viz_vsm_ecs_task_role.id
+  policy = jsonencode({
+    "Version" = "2012-10-17",
+    "Statement" = [
+      {
+        "Effect" = "Allow",
+        "Action" = [
+          "ec2:*",
+        ],
+        "Resource" = "*"
+      }
+    ]
+  })
+}
