@@ -92,7 +92,7 @@ variable "viz_brayns_ecs_number_of_containers" {
 
 variable "workflow_ecs_number_of_containers" {
   type        = number
-  default     = 1
+  default     = 0
   sensitive   = false
   description = "Number of containers for BBP-Workflow"
 }
