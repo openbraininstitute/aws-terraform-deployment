@@ -24,57 +24,6 @@ resource "aws_ecs_cluster" "viz_ecs_cluster" {
   }
 }
 
-# TODO make more strict
-resource "aws_security_group" "viz_brayns_ecs_task" {
-  name        = "viz_brayns_ecs_task"
-  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
-  description = "Sec group for Brayns service"
-
-  tags = {
-    Name        = "viz_brayns_secgroup"
-    SBO_Billing = "viz"
-  }
-}
-
-resource "aws_vpc_security_group_ingress_rule" "viz_brayns_allow_port_5000" {
-  security_group_id = aws_security_group.viz_brayns_ecs_task.id
-
-  ip_protocol = "tcp"
-  from_port   = 5000
-  to_port     = 5000
-  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
-  description = "Allow port 5000 http / websocket"
-
-  tags = {
-    SBO_Billing = "viz"
-  }
-}
-
-resource "aws_vpc_security_group_ingress_rule" "viz_brayns_allow_port_8000" {
-  security_group_id = aws_security_group.viz_brayns_ecs_task.id
-
-  ip_protocol = "tcp"
-  from_port   = 8000
-  to_port     = 8000
-  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
-  description = "Allow port 8000 http / websocket"
-
-  tags = {
-    SBO_Billing = "viz"
-  }
-}
-
-resource "aws_vpc_security_group_egress_rule" "viz_brayns_allow_outgoing" {
-  security_group_id = aws_security_group.viz_brayns_ecs_task.id
-
-  ip_protocol = -1
-  cidr_ipv4   = "0.0.0.0/0"
-  description = "Allow everything"
-
-  tags = {
-    SBO_Billing = "viz"
-  }
-}
 
 resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
   family       = "viz_brayns_task_family"
@@ -165,11 +114,11 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
     }
   ])
 
-  memory                   = 4096
-  cpu                      = 2048
-  requires_compatibilities = ["FARGATE"]
-  execution_role_arn       = aws_iam_role.viz_brayns_ecs_task_execution_role.arn
-  task_role_arn            = aws_iam_role.viz_brayns_ecs_task_role.arn
+  memory = 4096
+  cpu    = 2048
+  #   requires_compatibilities = ["FARGATE"]
+  execution_role_arn = aws_iam_role.viz_brayns_ecs_task_execution_role.arn
+  task_role_arn      = aws_iam_role.viz_brayns_ecs_task_role.arn
 
   tags = {
     SBO_Billing = "viz"
@@ -179,16 +128,17 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
 resource "aws_ecs_service" "viz_brayns_ecs_service" {
   name                   = "viz_brayns_ecs_service"
   cluster                = aws_ecs_cluster.viz_ecs_cluster.id
-  launch_type            = "FARGATE"
+  launch_type            = "EC2"
+  iam_role               = "TODO"
   task_definition        = aws_ecs_task_definition.viz_brayns_ecs_definition.arn
   desired_count          = var.viz_brayns_ecs_number_of_containers
   enable_execute_command = true
 
-  network_configuration {
-    security_groups  = [aws_security_group.viz_brayns_ecs_task.id]
-    subnets          = [aws_subnet.viz.id]
-    assign_public_ip = false
-  }
+#   network_configuration {
+#     security_groups  = [aws_security_group.viz_brayns_ecs_task.id]
+#     subnets          = [aws_subnet.viz.id]
+#     assign_public_ip = false
+#   }
   depends_on = [
     aws_cloudwatch_log_group.viz_brayns,
     aws_iam_role.viz_brayns_ecs_task_execution_role, # wrong?
