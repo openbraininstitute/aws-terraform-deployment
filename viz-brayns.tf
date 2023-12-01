@@ -114,11 +114,11 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
     }
   ])
 
-  memory = 4096
-  cpu    = 2048
-  #   requires_compatibilities = ["FARGATE"]
-  execution_role_arn = aws_iam_role.viz_brayns_ecs_task_execution_role.arn
-  task_role_arn      = aws_iam_role.viz_brayns_ecs_task_role.arn
+  memory                   = 4096
+  cpu                      = 2048
+  requires_compatibilities = ["EC2"]
+  execution_role_arn       = aws_iam_role.viz_brayns_ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.viz_brayns_ecs_task_role.arn
 
   tags = {
     SBO_Billing = "viz"
@@ -129,16 +129,11 @@ resource "aws_ecs_service" "viz_brayns_ecs_service" {
   name                   = "viz_brayns_ecs_service"
   cluster                = aws_ecs_cluster.viz_ecs_cluster.id
   launch_type            = "EC2"
-  iam_role               = "TODO"
+  iam_role               = aws_iam_role.ecs_service_role.arn
   task_definition        = aws_ecs_task_definition.viz_brayns_ecs_definition.arn
   desired_count          = var.viz_brayns_ecs_number_of_containers
   enable_execute_command = true
 
-#   network_configuration {
-#     security_groups  = [aws_security_group.viz_brayns_ecs_task.id]
-#     subnets          = [aws_subnet.viz.id]
-#     assign_public_ip = false
-#   }
   depends_on = [
     aws_cloudwatch_log_group.viz_brayns,
     aws_iam_role.viz_brayns_ecs_task_execution_role, # wrong?

@@ -26,11 +26,9 @@ resource "aws_iam_instance_profile" "ec2_instance_role_profile" {
 }
 
 
-
-
 resource "aws_launch_template" "ecs_launch_template" {
   name                   = "viz_EC2_LaunchTemplate"
-  image_id               = data.aws_ami.amazon_linux_2.id
+  image_id               = data.aws_ami.amazonlinux.id
   instance_type          = "t3.medium"
   user_data              = base64encode(data.template_file.user_data.rendered)
   vpc_security_group_ids = [aws_security_group.viz_ec2_sg.id]
@@ -45,14 +43,12 @@ resource "aws_launch_template" "ecs_launch_template" {
 }
 
 data "template_file" "user_data" {
-  template =  "echo ECS_CLUSTER='${ecs_cluster_name}' >> /etc/ecs/ecs.config"
+  template = "echo ECS_CLUSTER='${ecs_cluster_name}' >> /etc/ecs/ecs.config"
 
   vars = {
     ecs_cluster_name = aws_ecs_cluster.viz_ecs_cluster.name
   }
 }
-
-
 
 
 resource "aws_security_group" "viz_ec2_sg" {
@@ -104,4 +100,57 @@ resource "aws_vpc_security_group_egress_rule" "viz_brayns_allow_outgoing" {
   tags = {
     SBO_Billing = "viz"
   }
+}
+
+
+resource "aws_autoscaling_group" "ecs_autoscaling_group" {
+  name                  = "viz_asg"
+  max_size              = 10
+  min_size              = 0
+  vpc_zone_identifier   = [aws_subnet.viz.id]
+  health_check_type     = "EC2"
+
+  enabled_metrics = [
+    "GroupMinSize",
+    "GroupMaxSize",
+    "GroupDesiredCapacity",
+    "GroupInServiceInstances",
+    "GroupPendingInstances",
+    "GroupStandbyInstances",
+    "GroupTerminatingInstances",
+    "GroupTotalInstances"
+  ]
+
+  launch_template {
+    id      = aws_launch_template.ecs_launch_template.id
+    version = "$Latest"
+  }
+
+  instance_refresh {
+    strategy = "Rolling"
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  tag {
+    key                 = "Name"
+    value               = "viz_asg"
+    propagate_at_launch = true
+  }
+}
+
+resource "aws_ecs_capacity_provider" "viz_cas" {
+  name = "viz_ECS_CapacityProvider"
+
+  auto_scaling_group_provider {
+    auto_scaling_group_arn         = aws_autoscaling_group.ecs_autoscaling_group.arn
+    managed_termination_protection = "ENABLED"
+  }
+}
+
+resource "aws_ecs_cluster_capacity_providers" "viz_cluster_cas" {
+  cluster_name       = aws_ecs_cluster.viz_ecs_cluster.name
+  capacity_providers = [aws_ecs_capacity_provider.viz_cas.name]
 }
