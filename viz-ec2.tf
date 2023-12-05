@@ -25,13 +25,16 @@ resource "aws_iam_instance_profile" "ec2_instance_role_profile" {
   role = aws_iam_role.ec2_instance_role.id
 }
 
-
 resource "aws_launch_template" "ecs_launch_template" {
   name                   = "viz_EC2_LaunchTemplate"
   image_id               = data.aws_ami.amazonlinux.id
   instance_type          = "t3.medium"
   user_data              = base64encode(data.template_file.user_data.rendered)
   vpc_security_group_ids = [aws_security_group.viz_ec2_sg.id]
+
+  metadata_options {
+    http_tokens = "required"
+  }
 
   iam_instance_profile {
     arn = aws_iam_instance_profile.ec2_instance_role_profile.arn
@@ -43,13 +46,8 @@ resource "aws_launch_template" "ecs_launch_template" {
 }
 
 data "template_file" "user_data" {
-  template = "echo ECS_CLUSTER='${ecs_cluster_name}' >> /etc/ecs/ecs.config"
-
-  vars = {
-    ecs_cluster_name = aws_ecs_cluster.viz_ecs_cluster.name
-  }
+  template = "echo ECS_CLUSTER='${aws_ecs_cluster.viz_ecs_cluster.name}' >> /etc/ecs/ecs.config"
 }
-
 
 resource "aws_security_group" "viz_ec2_sg" {
   name        = "viz_ec2_sg"
@@ -101,7 +99,6 @@ resource "aws_vpc_security_group_egress_rule" "viz_brayns_allow_outgoing" {
     SBO_Billing = "viz"
   }
 }
-
 
 resource "aws_autoscaling_group" "ecs_autoscaling_group" {
   name                = "viz_asg"
