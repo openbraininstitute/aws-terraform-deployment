@@ -104,11 +104,11 @@ resource "aws_vpc_security_group_egress_rule" "viz_brayns_allow_outgoing" {
 
 
 resource "aws_autoscaling_group" "ecs_autoscaling_group" {
-  name                  = "viz_asg"
-  max_size              = 10
-  min_size              = 0
-  vpc_zone_identifier   = [aws_subnet.viz.id]
-  health_check_type     = "EC2"
+  name                = "viz_asg"
+  max_size            = 10
+  min_size            = 0
+  vpc_zone_identifier = [aws_subnet.viz.id]
+  health_check_type   = "EC2"
 
   enabled_metrics = [
     "GroupMinSize",
