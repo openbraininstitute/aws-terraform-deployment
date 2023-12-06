@@ -267,7 +267,7 @@ variable "ml_opensearch_version" {
 
 variable "ml_opensearch_instance_type" {
   type      = string
-  default   = "t3.small.search"
+  default   = "t3.medium.search"
   sensitive = false
 }
 
