@@ -271,8 +271,6 @@ EOF
   }
 }
 
-data "aws_caller_identity" "current" {}
-
 resource "aws_iam_role_policy_attachment" "ecs_core_webapp_task_role_dockerhub_policy_attachment" {
   count      = var.core_webapp_ecs_number_of_containers > 0 ? 1 : 0
   role       = aws_iam_role.ecs_core_webapp_task_execution_role[0].name

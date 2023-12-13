@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 variable "aws_region" {
   type      = string
   default   = "us-east-1"
@@ -52,6 +54,29 @@ variable "core_webapp_docker_image_url" {
   default     = "bluebrain/sbo-core-web-app:latest"
   type        = string
   description = "docker image for the core webapp"
+  sensitive   = false
+}
+
+### SBO cell service ###
+
+variable "cell_svc_hostname" {
+  default     = "sbo-cell-svc.shapes-registry.org"
+  type        = string
+  description = "The hostname for the cell svc"
+  sensitive   = false
+}
+
+variable "cell_svc_log_group_name" {
+  default     = "cell_svc"
+  type        = string
+  description = "The log name within cloudwatch for the cell svc"
+  sensitive   = false
+}
+
+variable "cell_svc_docker_image_url" {
+  default     = "bluebrain/obp-sonata-cell-position:latest"
+  type        = string
+  description = "docker image for the cell svc"
   sensitive   = false
 }
 
