@@ -52,7 +52,7 @@ resource "aws_opensearch_domain" "ml_opensearch" {
   ebs_options {
     ebs_enabled = true
     volume_size = 200
-    throughput  = 125
+    throughput  = 255
   }
 
   vpc_options {
