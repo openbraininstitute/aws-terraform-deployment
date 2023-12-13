@@ -51,7 +51,7 @@ resource "aws_opensearch_domain" "ml_opensearch" {
 
   ebs_options {
     ebs_enabled = true
-    volume_size = 100
+    volume_size = 200
     throughput  = 125
   }
 
