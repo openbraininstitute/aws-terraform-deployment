@@ -131,6 +131,8 @@ resource "aws_autoscaling_group" "ecs_autoscaling_group" {
     create_before_destroy = true
   }
 
+  protect_from_scale_in = true
+
   tag {
     key                 = "Name"
     value               = "viz_asg"
