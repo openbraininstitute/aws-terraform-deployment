@@ -13,6 +13,9 @@ resource "aws_iam_role" "ec2_instance_role" {
       },
     ]
   })
+  tags = {
+    SBO_Billing = "viz"
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "ec2_instance_role_policy" {
@@ -23,6 +26,9 @@ resource "aws_iam_role_policy_attachment" "ec2_instance_role_policy" {
 resource "aws_iam_instance_profile" "ec2_instance_role_profile" {
   name = "viz_EC2_InstanceRoleProfile"
   role = aws_iam_role.ec2_instance_role.id
+  tags = {
+    SBO_Billing = "viz"
+  }
 }
 
 resource "aws_launch_template" "ecs_launch_template" {
@@ -43,6 +49,11 @@ resource "aws_launch_template" "ecs_launch_template" {
   monitoring {
     enabled = true
   }
+
+  tags = {
+    SBO_Billing = "viz"
+  }
+
 }
 
 data "template_file" "user_data" {
@@ -138,6 +149,12 @@ resource "aws_autoscaling_group" "ecs_autoscaling_group" {
     value               = "viz_asg"
     propagate_at_launch = true
   }
+
+  tag {
+    key                 = "SBO_Billing"
+    value               = "viz"
+    propagate_at_launch = true
+  }
 }
 
 resource "aws_ecs_capacity_provider" "viz_cas" {
@@ -146,6 +163,9 @@ resource "aws_ecs_capacity_provider" "viz_cas" {
   auto_scaling_group_provider {
     auto_scaling_group_arn         = aws_autoscaling_group.ecs_autoscaling_group.arn
     managed_termination_protection = "ENABLED"
+  }
+  tags = {
+    SBO_Billing = "viz"
   }
 }
 

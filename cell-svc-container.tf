@@ -10,6 +10,9 @@ resource "aws_security_group" "cell_svc_ecs_instance_sg" {
     description = "Allow all outbound traffic"
     cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
   }
+  tags = {
+    SBO_Billing = "cell_svc"
+  }
 }
 
 resource "aws_iam_role" "cell_svc_ecs_instance_role" {
@@ -29,6 +32,9 @@ resource "aws_iam_role" "cell_svc_ecs_instance_role" {
   ]
 }
 EOF
+  tags = {
+    SBO_Billing = "cell_svc"
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "cell_svc_ecs_instance_policy_attachment" {
@@ -79,6 +85,12 @@ resource "aws_autoscaling_group" "cell_svc_ecs_instance_asg" {
   force_delete              = true
 
   launch_configuration = aws_launch_configuration.cell_svc_ecs_instance_config.id
+
+  tag {
+    key                 = "SBO_Billing"
+    value               = "cell_svc"
+    propagate_at_launch = true
+  }
 }
 
 resource "aws_cloudwatch_log_group" "cell_svc" {

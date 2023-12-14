@@ -12,6 +12,9 @@ variable "cell_svc_bucket_name" {
 #tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket" "sbo-cell-svc-perf-test" {
   bucket = var.cell_svc_bucket_name
+  tags = {
+    SBO_Billing = "cell_svc"
+  }
 }
 
 resource "aws_s3_bucket_public_access_block" "sbo-cell-svc-perf-test" {
@@ -35,6 +38,9 @@ resource "aws_s3_bucket_versioning" "sbo-cell-svc-perf-test-versioning" {
 # ---------------------------------------------------
 resource "aws_iam_user" "cell_svc_bucket_user" {
   name = "cell_svc_bucket_user"
+  tags = {
+    SBO_Billing = "cell_svc"
+  }
 }
 
 # ---------------------------------------------------
@@ -80,6 +86,9 @@ resource "aws_iam_policy" "cell_svc_bucket_role_policy" {
   ]
 }
 EOF
+  tags = {
+    SBO_Billing = "cell_svc"
+  }
 }
 
 # ---------------------------------------------------
