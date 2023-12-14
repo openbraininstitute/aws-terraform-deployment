@@ -196,6 +196,11 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
   family       = "cell_svc_task_family"
   network_mode = "awsvpc"
 
+  volume {
+    name      = "sbo-project-data"
+    host_path = "/sbo/data/project"
+  }
+
   container_definitions = jsonencode([
     {
       memory      = 1024
@@ -215,10 +220,6 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
           protocol      = "tcp"
         }
       ]
-      volumes = [{
-        name      = "sbo-project-data"
-        host_path = "/sbo/data/project"
-      }]
       mountPoints = [{
         sourceVolume  = "sbo-project-data"
         containerPath = "/sbo/data/project"

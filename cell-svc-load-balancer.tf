@@ -59,7 +59,7 @@ resource "aws_lb_listener_certificate" "cell_svc" {
 
 resource "aws_lb_listener_rule" "cell_svc_https" {
   listener_arn = aws_lb_listener.sbo_https.arn
-  priority     = 100
+  priority     = 104
 
   action {
     type             = "forward"
