@@ -245,7 +245,6 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
 
   cpu                      = 256
   memory                   = 1024
-  requires_compatibilities = ["FARGATE"]
   execution_role_arn       = aws_iam_role.ecs_cell_svc_task_execution_role[0].arn
   task_role_arn            = aws_iam_role.ecs_cell_svc_task_role[0].arn
 
