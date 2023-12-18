@@ -18,20 +18,19 @@ resource "aws_security_group" "cell_svc_ecs_instance_sg" {
 resource "aws_iam_role" "cell_svc_ecs_instance_role" {
   name = "cell_svc_ecs_instance_role"
 
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Action" : "sts:AssumeRole"
+        "Principal" : {
+          "Service" : "ec2.amazonaws.com"
+        },
+        "Effect" : "Allow",
+        "Sid" : ""
+      }
+    ]
+  })
   tags = {
     SBO_Billing = "cell_svc"
   }
@@ -243,10 +242,10 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
     }
   ])
 
-  cpu                      = 256
-  memory                   = 1024
-  execution_role_arn       = aws_iam_role.ecs_cell_svc_task_execution_role[0].arn
-  task_role_arn            = aws_iam_role.ecs_cell_svc_task_role[0].arn
+  cpu                = 256
+  memory             = 1024
+  execution_role_arn = aws_iam_role.ecs_cell_svc_task_execution_role[0].arn
+  task_role_arn      = aws_iam_role.ecs_cell_svc_task_role[0].arn
 
   tags = {
     SBO_Billing = "cell_svc"
