@@ -38,6 +38,13 @@ variable "nexus_app_ecs_number_of_containers" {
   description = "Number of containers for delta app"
 }
 
+variable "nexus_storage_ecs_number_of_containers" {
+  type        = number
+  default     = 1
+  sensitive   = false
+  description = "Number of containers for Nexus Storage Service"
+}
+
 variable "nexus_fusion_ecs_number_of_containers" {
   type        = number
   default     = 1

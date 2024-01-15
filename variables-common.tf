@@ -100,6 +100,20 @@ variable "nexus_delta_app_log_group_name" {
   sensitive = false
 }
 
+### Nexus Storage Service ###
+
+variable "nexus_storage_service_log_group_name" {
+  default   = "nexus_storage_service"
+  type      = string
+  sensitive = false
+}
+
+variable "nexus_storage_docker_image_url" {
+  type      = string
+  default   = "bluebrain/nexus-storage:1.10.0-M1"
+  sensitive = false
+}
+
 ### Nexus Fusion ###
 
 variable "nexus_fusion_hostname" {
