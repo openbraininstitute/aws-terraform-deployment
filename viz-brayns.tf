@@ -24,7 +24,6 @@ resource "aws_ecs_cluster" "viz_ecs_cluster" {
   }
 }
 
-
 resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
   family       = "viz_brayns_task_family"
   network_mode = "awsvpc"
@@ -129,7 +128,6 @@ resource "aws_ecs_service" "viz_brayns_ecs_service" {
   name                   = "viz_brayns_ecs_service"
   cluster                = aws_ecs_cluster.viz_ecs_cluster.id
   launch_type            = "EC2"
-  iam_role               = aws_iam_role.ecs_viz_service_role.arn
   task_definition        = aws_ecs_task_definition.viz_brayns_ecs_definition.arn
   desired_count          = var.viz_brayns_ecs_number_of_containers
   enable_execute_command = true
@@ -183,37 +181,34 @@ resource "aws_iam_role" "ecs_viz_service_role" {
   })
 }
 
-#tfsec:ignore:aws-iam-no-policy-wildcards
 resource "aws_iam_role_policy" "ecs_service_role_policy" {
-  name = "ecs_service_role_policy"
-  role = aws_iam_role.ecs_viz_service_role.id
-  policy = jsonencode({
-    "Version" = "2012-10-17",
-    "Statement" = [
-      {
-        "Action" = [
-          "ec2:AuthorizeSecurityGroupIngress",
-          "ec2:Describe*",
-          "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
-          "elasticloadbalancing:DeregisterTargets",
-          "elasticloadbalancing:Describe*",
-          "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
-          "elasticloadbalancing:RegisterTargets",
-          "ec2:DescribeTags",
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:DescribeLogStreams",
-          "logs:PutSubscriptionFilter",
-          "logs:PutLogEvents"
-        ],
-        "Resources" = ["*"],
-        "Effect"    = "Allow",
-      }
-    ]
-  })
-
+  name   = "ecs_service_role_policy"
+  role   = aws_iam_role.ecs_viz_service_role.id
+  policy = data.aws_iam_policy_document.brayns_ecs_service_role_policy.json
 }
 
+#tfsec:ignore:aws-iam-no-policy-wildcards
+data "aws_iam_policy_document" "brayns_ecs_service_role_policy" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "ec2:AuthorizeSecurityGroupIngress",
+      "ec2:Describe*",
+      "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
+      "elasticloadbalancing:DeregisterTargets",
+      "elasticloadbalancing:Describe*",
+      "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
+      "elasticloadbalancing:RegisterTargets",
+      "ec2:DescribeTags",
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:DescribeLogStreams",
+      "logs:PutSubscriptionFilter",
+      "logs:PutLogEvents"
+    ]
+    resources = ["*"]
+  }
+}
 
 resource "aws_iam_role" "viz_brayns_ecs_task_execution_role" {
   name = "viz_brayns-ecsTaskExecutionRole"
