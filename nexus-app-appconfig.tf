@@ -18,8 +18,8 @@ resource "aws_appconfig_configuration_profile" "nexus-delta" {
 resource "aws_appconfig_deployment" "nexus-delta" {
   description              = "test deployment"
   application_id           = aws_appconfig_application.nexus-delta.id
-  environment_id           = aws_appconfig_environment.nexus-delta.id
-  configuration_profile_id = aws_appconfig_configuration_profile.nexus-delta.id
+  environment_id           = aws_appconfig_environment.nexus-delta.environment_id
+  configuration_profile_id = aws_appconfig_configuration_profile.nexus-delta.configuration_profile_id
   configuration_version    = "1"
   deployment_strategy_id   = "AppConfig.AllAtOnce"
 }
