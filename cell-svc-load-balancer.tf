@@ -4,9 +4,7 @@ resource "aws_acm_certificate" "cell_svc" {
   lifecycle {
     create_before_destroy = true
   }
-  tags = {
-    SBO_Billing = "cell_svc"
-  }
+  tags = { SBO_Billing = "cell_svc" }
 }
 
 resource "aws_route53_record" "cell_svc_validation" {
@@ -46,9 +44,7 @@ resource "aws_lb_target_group" "cell_svc" {
     path     = "/docs"
     protocol = "HTTP"
   }
-  tags = {
-    SBO_Billing = "cell_svc"
-  }
+  tags = { SBO_Billing = "cell_svc" }
 }
 
 resource "aws_lb_listener_certificate" "cell_svc" {
@@ -71,9 +67,7 @@ resource "aws_lb_listener_rule" "cell_svc_https" {
       values = [var.cell_svc_hostname]
     }
   }
-  tags = {
-    SBO_Billing = "cell_svc"
-  }
+  tags = { SBO_Billing = "cell_svc" }
   depends_on = [
     aws_lb_listener.sbo_https,
     aws_lb.alb

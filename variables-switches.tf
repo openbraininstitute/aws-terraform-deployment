@@ -28,7 +28,7 @@ variable "cell_svc_ecs_number_of_containers" {
   type        = number
   default     = 1
   sensitive   = false
-  description = "Number of containers for the SBO cell svc"
+  description = "Number of containers for the SBO sonata-cell-position service"
 }
 
 variable "nexus_app_ecs_number_of_containers" {

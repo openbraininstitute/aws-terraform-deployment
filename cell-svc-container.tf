@@ -1,76 +1,46 @@
+# Definition for sonata-cell-service
+
+# Instead of running on Fargate, it currently runs on an EC2 instance
+# (`cells_svc_ec2_launch_template`) which is an called an "ECS Instance"
+# This then hosts ECS "tasks"; which are the containers
+
+# For now, only public data is used, and it is stored on the s3 bucket:
+# sbo-cell-svc-perf-test; this is mounted by sbo-cell-svc-perf-test
+# and then made available to all ECS tasks.
+
+# { EC2 Instance
 # The security group for the EC2 systems that run the ECS cluster for cells
 resource "aws_security_group" "cell_svc_ec2_ecs_instance_sg" {
   vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
   description = "Sec group for SBO cell svc EC2 instance"
-
-  tags = {
-    SBO_Billing = "cell_svc"
-  }
+  tags        = { SBO_Billing = "cell_svc" }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "cell_svc_ec2_ecs_instance_sg_ingress_tcp" {
+resource "aws_vpc_security_group_ingress_rule" "cell_svc_ec2_ecs_instance_sg_ingress_tcp_udp" {
   security_group_id = aws_security_group.cell_svc_ec2_ecs_instance_sg.id
-
-  ip_protocol = "tcp"
-  from_port   = 0
-  to_port     = 65535
-  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
-  description = "Allow port * tcp"
-  tags = {
-    SBO_Billing = "cell_svc"
-  }
+  ip_protocol       = -1
+  cidr_ipv4         = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  description       = "Allow port * TCP/UDP ingress"
+  tags              = { SBO_Billing = "cell_svc" }
 }
 
-
-resource "aws_vpc_security_group_ingress_rule" "cell_svc_ec2_ecs_instance_sg_ingress_udp" {
-  security_group_id = aws_security_group.cell_svc_ec2_ecs_instance_sg.id
-
-  ip_protocol = "udp"
-  from_port   = 0
-  to_port     = 65535
-  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
-  description = "Allow port * udp"
-  tags = {
-    SBO_Billing = "cell_svc"
-  }
-}
-
-resource "aws_vpc_security_group_egress_rule" "cell_svc_ec2_ecs_instance_sg_allow_outgoing_tcp" {
+resource "aws_vpc_security_group_egress_rule" "cell_svc_ec2_ecs_instance_sg_egress_tcp_udp" {
   security_group_id = aws_security_group.cell_svc_ec2_ecs_instance_sg.id
   # TODO limit to what is needed
   # needs access to dockerhub and to AWS secrets manager, likely also nexus, ...
-  ip_protocol = "tcp"
-  from_port   = 0
-  to_port     = 65535
+  ip_protocol = -1
   cidr_ipv4   = "0.0.0.0/0"
   #cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
-  description = "Allow all TCP"
-  tags = {
-    SBO_Billing = "cell_svc"
-  }
+  description = "Allow all TCP/UDP egress"
+  tags        = { SBO_Billing = "cell_svc" }
 }
 
-resource "aws_vpc_security_group_egress_rule" "cell_svc_ec2_ecs_instance_sg_allow_outgoing_udp" {
-  security_group_id = aws_security_group.cell_svc_ec2_ecs_instance_sg.id
-  # TODO limit to what is needed
-  # needs access to dockerhub and to AWS secrets manager, likely also nexus, ...
-  ip_protocol = "udp"
-  from_port   = 0
-  to_port     = 65535
-  cidr_ipv4   = "0.0.0.0/0"
-  #cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
-  description = "Allow all UDP"
-  tags = {
-    SBO_Billing = "cell_svc"
-  }
-}
-
-
-
-# IAM Role for the EC2 instances which will be used for the cells ECS
+# { IAM Role for the EC2 instances which will be used for the cells ECS
+#https://docs.aws.amazon.com/AmazonECS/latest/developerguide/security-iam-awsmanpol.html#security-iam-awsmanpol-AmazonEC2ContainerServiceforEC2Role
 resource "aws_iam_role" "cells_ec2_instance_role" {
-  name               = "Cells_EC2_InstanceRole"
+  name               = "cells_ec2_instance_role"
   assume_role_policy = data.aws_iam_policy_document.cells_ec2_instance_role_policy.json
+  tags               = { SBO_Billing = "cell_svc" }
 }
 
 # Attach policy to role for ec2 instances for cells ecs cluster
@@ -82,8 +52,9 @@ resource "aws_iam_role_policy_attachment" "cells_ec2_instance_role_policy" {
 # An IAM instance profile for the ec2 systems for the cells ecs cluster, based on the IAM role,
 # for the ec2 launch template
 resource "aws_iam_instance_profile" "cells_ec2_instance_role_profile" {
-  name = "Cells_EC2_InstanceRoleProfile"
+  name = "cells_ec2_instance_role_profile"
   role = aws_iam_role.cells_ec2_instance_role.id
+  tags = { SBO_Billing = "cell_svc" }
 }
 
 # The iam policy doc to create the IAM role for the ec2 instances for the cells cluster
@@ -101,10 +72,11 @@ data "aws_iam_policy_document" "cells_ec2_instance_role_policy" {
     }
   }
 }
+# } IAM Role for the EC2 instances which will be used for the cells ECS
 
 # Launch template for the EC2 machines that will be used to run the ECS cluster/containers
 resource "aws_launch_template" "cells_svc_ec2_launch_template" {
-  name                   = "Cells_EC2_ECS_LaunchTemplate"
+  name                   = "cells_svc_ec2_launch_template"
   image_id               = data.aws_ami.amazon_linux_2_ecs.id
   instance_type          = "t2.medium"
   key_name               = data.terraform_remote_state.common.outputs.aws_coreservices_ssh_key_id
@@ -122,6 +94,7 @@ resource "aws_launch_template" "cells_svc_ec2_launch_template" {
   monitoring {
     enabled = true
   }
+  tags = { SBO_Billing = "cell_svc" }
 }
 
 # The template for the user data script of the EC2 machines that will be used to run the cells ECS cluster
@@ -129,61 +102,9 @@ data "template_file" "cells_ec2_ecs_user_data" {
   template = file("cells_ec2_ecs_user_data.sh")
 
   vars = {
-    ecs_cluster_name = "cell_svc_ecs_cluster"
+    ecs_cluster_name = aws_ecs_cluster.cell_svc_ecs_cluster.name
   }
 }
-/*
-# TODO no longer used
-resource "aws_launch_configuration" "cell_svc_ecs_instance_config" {
-  name = "cell_svc_ecs_instance_config"
-
-  #Dries test iam_instance_profile = aws_iam_role.cell_svc_ecs_instance_role.name
-  image_id             = data.aws_ami.amazonlinux.id
-  instance_type        = "t2.medium"
-
-  metadata_options {
-    http_tokens = "required"
-  }
-
-  root_block_device {
-    encrypted = true
-  }
-
-  # TODO create a variable pointing to S3 with project data.
-  user_data = <<-EOF
-                        #!/bin/bash
-
-                        echo ECS_CLUSTER=cell_svc_ecs_cluster >> /etc/ecs/ecs.config
-
-                        wget https://s3.amazonaws.com/mountpoint-s3-release/latest/x86_64/mount-s3.rpm
-                        yum install -y ./mount-s3.rpm
-
-                        mount-s3 sbo-cell-svc-perf-test /sbo/data/project
-                        EOF
-
-  security_groups = [aws_security_group.cell_svc_ecs_instance_sg.name]
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
-resource "aws_autoscaling_group" "cell_svc_ecs_instance_asg" {
-  desired_capacity          = 1
-  max_size                  = 1
-  min_size                  = 1
-  health_check_type         = "EC2"
-  health_check_grace_period = 300 # 5 minutes
-  force_delete              = true
-
-  launch_configuration = aws_launch_configuration.cell_svc_ecs_instance_config.id
-
-  tag {
-    key                 = "SBO_Billing"
-    value               = "cell_svc"
-    propagate_at_launch = true
-  }
-}*/
 
 resource "aws_cloudwatch_log_group" "cell_svc" {
   # TODO check if the logs can be encrypted
@@ -215,7 +136,7 @@ resource "aws_cloudwatch_log_group" "cell_svc_ecs" {
 }
 
 # ECS cluster for cells
-resource "aws_ecs_cluster" "cell_svc" {
+resource "aws_ecs_cluster" "cell_svc_ecs_cluster" {
   name = "cell_svc_ecs_cluster"
 
   tags = {
@@ -230,12 +151,14 @@ resource "aws_ecs_cluster" "cell_svc" {
     value = "disabled" #tfsec:ignore:aws-ecs-enable-container-insight
   }
 }
+# } EC2 Instance
 
+# { ECS Task network
 # TODO make more strict
 resource "aws_security_group" "cell_svc_ecs_task" {
   name        = "cell_svc_ecs_task"
   vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
-  description = "Sec group for SBO cell svc"
+  description = "Sec group for SBO cell svc ECS task"
 
   tags = {
     Name        = "cell_svc_secgroup"
@@ -243,52 +166,30 @@ resource "aws_security_group" "cell_svc_ecs_task" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "cell_svc_allow_port_8000" {
+resource "aws_vpc_security_group_ingress_rule" "cell_svc_task_ingress_port_8050" {
   security_group_id = aws_security_group.cell_svc_ecs_task.id
-
-  ip_protocol = "tcp"
-  from_port   = 8000
-  to_port     = 8000
-  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
-  description = "Allow port 8000 http"
-  tags = {
-    SBO_Billing = "cell_svc"
-  }
+  ip_protocol       = "tcp"
+  from_port         = 8050
+  to_port           = 8050
+  cidr_ipv4         = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  description       = "Allow port 8050 tcp for SBO cell svc ECS task"
+  tags              = { SBO_Billing = "cell_svc" }
 }
 
-resource "aws_vpc_security_group_egress_rule" "cell_svc_allow_outgoing_tcp" {
+resource "aws_vpc_security_group_egress_rule" "cell_svc_task_egress_tcp_udp" {
   security_group_id = aws_security_group.cell_svc_ecs_task.id
   # TODO limit to what is needed
   # needs access to dockerhub and to AWS secrets manager, likely also nexus, ...
-  ip_protocol = "tcp"
-  from_port   = 0
-  to_port     = 65535
+  ip_protocol = -1
   cidr_ipv4   = "0.0.0.0/0"
   #cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
-  description = "Allow all TCP"
-  tags = {
-    SBO_Billing = "cell_svc"
-  }
+  description = "Allow all TCP/UDP egress"
+  tags        = { SBO_Billing = "cell_svc" }
 }
+# } ECS Task network
 
-resource "aws_vpc_security_group_egress_rule" "cell_svc_allow_outgoing_udp" {
-  security_group_id = aws_security_group.cell_svc_ecs_task.id
-  # TODO limit to what is needed
-  # needs access to dockerhub and to AWS secrets manager, likely also nexus, ...
-  ip_protocol = "udp"
-  from_port   = 0
-  to_port     = 65535
-  cidr_ipv4   = "0.0.0.0/0"
-  #cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
-  description = "Allow all UDP"
-  tags = {
-    SBO_Billing = "cell_svc"
-  }
-}
-
-# the task definition for the containers in ecs for cells
+# { ECS Task
 resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
-
   family       = "cell_svc_task_family"
   network_mode = "awsvpc"
 
@@ -311,8 +212,8 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
       }
       portMappings = [
         {
-          hostPort      = 8000
-          containerPort = 8000
+          hostPort      = 8050
+          containerPort = 8050
           protocol      = "tcp"
         }
       ]
@@ -344,25 +245,18 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
   execution_role_arn = aws_iam_role.ecs_cell_svc_task_execution_role.arn
   task_role_arn      = aws_iam_role.ecs_cell_svc_task_role.arn
 
-  tags = {
-    SBO_Billing = "cell_svc"
-  }
+  tags = { SBO_Billing = "cell_svc" }
 }
 
-# service for cells
 resource "aws_ecs_service" "cell_svc_ecs_service" {
-  #count = var.cell_svc_ecs_number_of_containers > 0 ? 1 : 0
-
   name            = "cells_ecs_service"
-  cluster         = aws_ecs_cluster.cell_svc.id
+  cluster         = aws_ecs_cluster.cell_svc_ecs_cluster.id
   launch_type     = "EC2"
   task_definition = aws_ecs_task_definition.cell_svc_ecs_definition.arn
   desired_count   = var.cell_svc_ecs_number_of_containers
   # Doesn't work - iam_role                           = aws_iam_service_linked_role.cells_ecs_service_role.arn
-  # How many percent of a service must be running to still execute a safe deployment
-  deployment_minimum_healthy_percent = 0
-  # How many additional tasks are allowed to run (in percent) while a deployment is executed
-  deployment_maximum_percent = 100
+  deployment_minimum_healthy_percent = 100
+  deployment_maximum_percent         = 100
 
   ## Make use of all available space on the Container Instances
   ordered_placement_strategy {
@@ -373,7 +267,7 @@ resource "aws_ecs_service" "cell_svc_ecs_service" {
   load_balancer {
     target_group_arn = aws_lb_target_group.cell_svc.arn
     container_name   = "cell_svc"
-    container_port   = 8000
+    container_port   = 8050
   }
 
   network_configuration {
@@ -381,6 +275,7 @@ resource "aws_ecs_service" "cell_svc_ecs_service" {
     subnets          = [aws_subnet.cells.id]
     assign_public_ip = false
   }
+
   depends_on = [
     aws_cloudwatch_log_group.cell_svc,
     aws_iam_role.ecs_cell_svc_task_execution_role #, # wrong?
@@ -394,16 +289,15 @@ resource "aws_ecs_service" "cell_svc_ecs_service" {
   lifecycle {
     ignore_changes = [desired_count]
   }
-  tags = {
-    SBO_Billing = "cell_svc"
-  }
+  tags = { SBO_Billing = "cell_svc" }
 }
 
-# Used by the ECS service to manage the cells ECS cluster
-# so not for the ec2 systems and also not for the ecs containers
+# { Used by the ECS service to manage the cells ECS cluster
+# *not* for the EC2 systems and also not for the ECS containers
 resource "aws_iam_role" "cells_ecs_service_role" {
   name               = "Cells_ECS_ServiceRole"
   assume_role_policy = data.aws_iam_policy_document.cells_ecs_service_policy.json
+  tags               = { SBO_Billing = "cell_svc" }
 }
 
 data "aws_iam_policy_document" "cells_ecs_service_policy" {
@@ -448,15 +342,19 @@ data "aws_iam_policy_document" "cells_ecs_service_role_policy" {
     resources = ["*"]
   }
 }
+# } Used by the ECS service to manage the cells ECS cluster
 
+# { ECS Task IAM
 resource "aws_iam_role" "ecs_cell_svc_task_execution_role" {
-  #count = var.cell_svc_ecs_number_of_containers > 0 ? 1 : 0
-  name = "cell_svc-ecsTaskExecutionRole"
-
+  name               = "cell_svc-ecsTaskExecutionRole"
   assume_role_policy = data.aws_iam_policy_document.cells_ecs_task_assume_role_policy.json
-  tags = {
-    SBO_Billing = "cell_svc"
-  }
+  tags               = { SBO_Billing = "cell_svc" }
+}
+
+resource "aws_iam_role" "ecs_cell_svc_task_role" {
+  name               = "cell_svc-ecsTaskRole"
+  assume_role_policy = data.aws_iam_policy_document.cells_ecs_task_assume_role_policy.json
+  tags               = { SBO_Billing = "cell_svc" }
 }
 
 data "aws_iam_policy_document" "cells_ecs_task_assume_role_policy" {
@@ -481,45 +379,20 @@ resource "aws_iam_role_policy_attachment" "ecs_cells_svc_task_role_dockerhub_pol
   policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
 }
 
-resource "aws_iam_role" "ecs_cell_svc_task_role" {
-  name               = "cell_svc-ecsTaskRole"
-  assume_role_policy = data.aws_iam_policy_document.cells_ecs_task_assume_role_policy.json
-}
-/*
-resource "aws_iam_role" "ecs_cell_svc_task_role" {
-  name  = "cell_svc-ecsTaskRole"
-
-  assume_role_policy = <<EOF
-{
- "Version": "2012-10-17",
- "Statement": [
-   {
-     "Action": "sts:AssumeRole",
-     "Principal": {
-       "Service": "ecs-tasks.amazonaws.com"
-     },
-     "Effect": "Allow",
-     "Sid": ""
-   }
- ]
-}
-EOF
-  tags = {
-    SBO_Billing = "cell_svc"
-  }
-}*/
-
 resource "aws_iam_role_policy_attachment" "ecs_cell_svc_task_role_dockerhub_policy_attachment" {
   role       = aws_iam_role.ecs_cell_svc_task_execution_role.name
   policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
 }
+# }
 
+# { Capacity provider; this creates or destroys EC2 *instances* to launch, on which ECS tasks are run
 resource "aws_ecs_capacity_provider" "cells_cas" {
   name = "Cells_ECS_CapacityProvider"
 
   auto_scaling_group_provider {
     auto_scaling_group_arn         = aws_autoscaling_group.cells_ecs_autoscaling_group.arn
     managed_termination_protection = "ENABLED"
+
 
     managed_scaling {
       #maximum_scaling_step_size = 1
@@ -528,21 +401,24 @@ resource "aws_ecs_capacity_provider" "cells_cas" {
       #target_capacity           = 1
     }
   }
+
+  tags = { SBO_Billing = "cell_svc" }
 }
 
 resource "aws_ecs_cluster_capacity_providers" "cas" {
-  cluster_name       = aws_ecs_cluster.cell_svc.name
+  cluster_name       = aws_ecs_cluster.cell_svc_ecs_cluster.name
   capacity_providers = [aws_ecs_capacity_provider.cells_cas.name]
 }
+# } Capacity provider
 
 ## Define Target Tracking on ECS Cluster Task level
-
 resource "aws_appautoscaling_target" "cells_ecs_target" {
   max_capacity       = 1 # TODO
   min_capacity       = 1 # TODO
-  resource_id        = "service/${aws_ecs_cluster.cell_svc.name}/${aws_ecs_service.cell_svc_ecs_service.name}"
+  resource_id        = "service/${aws_ecs_cluster.cell_svc_ecs_cluster.name}/${aws_ecs_service.cell_svc_ecs_service.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
+  tags               = { SBO_Billing = "cell_svc" }
 }
 
 ## Policy for CPU tracking
@@ -617,6 +493,12 @@ resource "aws_autoscaling_group" "cells_ecs_autoscaling_group" {
   tag {
     key                 = "Name"
     value               = "Cells_ASG"
+    propagate_at_launch = true
+  }
+
+  tag {
+    key                 = "SBO_Billing"
+    value               = "cell_svc"
     propagate_at_launch = true
   }
 }

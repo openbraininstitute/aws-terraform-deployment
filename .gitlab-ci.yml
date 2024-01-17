@@ -77,7 +77,7 @@ check_compliance:
     - cd tempdir
     - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@bbpgitlab.epfl.ch/cs/cloud/aws/terraform-compliance
     - ls -la terraform-compliance
-    - cp ../*.tf ../*.tmpl .
+    - cp ../*.sh ../*.tf ../*.tmpl .
     - rm -f gitlab-config.tf
     - terraform init
     - terraform plan -out=plan.tfplan > /dev/null && terraform show -json plan.tfplan > plan.json
