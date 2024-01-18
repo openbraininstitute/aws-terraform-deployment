@@ -90,7 +90,7 @@ variable "nexus_delta_hostname" {
 
 variable "nexus_delta_docker_image_url" {
   type      = string
-  default   = "bluebrain/nexus-delta:1.9.0-M13"
+  default   = "bluebrain/nexus-delta:1.9.0"
   sensitive = false
 }
 
