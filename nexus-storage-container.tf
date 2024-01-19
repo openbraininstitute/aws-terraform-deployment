@@ -51,9 +51,9 @@ resource "aws_vpc_security_group_ingress_rule" "nexus_storage_allow_port_8080" {
 // TODO: once we have S3 bucket info we should only need egress to the mounted volume using whatever protocol is supported
 resource "aws_vpc_security_group_egress_rule" "nexus_storage_allow_outgoing" {
   security_group_id = aws_security_group.nexus_storage_ecs_task.id
-  ip_protocol = -1
-  cidr_ipv4   = "0.0.0.0/0"
-  description = "Allow everything"
+  ip_protocol       = -1
+  cidr_ipv4         = "0.0.0.0/0"
+  description       = "Allow everything"
   tags = {
     SBO_Billing = "nexus_storage"
   }
