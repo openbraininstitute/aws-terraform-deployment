@@ -251,8 +251,9 @@ resource "aws_ecs_service" "nexus_app_ecs_service" {
   desired_count   = var.nexus_app_ecs_number_of_containers
   #iam_role        = "${var.ecs_iam_role_name}"
 
-  # ensure that there are not multiple tasks running at the same time
-  deployment_maximum_percent = 100
+  # ensure that there are not multiple tasks running at the same time during deployment
+  deployment_maximum_percent         = 100
+  deployment_minimum_healthy_percent = 0
 
   load_balancer {
     target_group_arn = aws_lb_target_group.nexus_app.arn
