@@ -256,7 +256,7 @@ resource "aws_ecs_service" "cell_svc_ecs_service" {
   desired_count   = var.cell_svc_ecs_number_of_containers
   # Doesn't work - iam_role                           = aws_iam_service_linked_role.cells_ecs_service_role.arn
   deployment_minimum_healthy_percent = 100
-  deployment_maximum_percent         = 100
+  deployment_maximum_percent         = 200
 
   ## Make use of all available space on the Container Instances
   ordered_placement_strategy {
