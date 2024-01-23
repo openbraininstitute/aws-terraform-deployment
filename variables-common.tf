@@ -243,57 +243,6 @@ variable "embedder_log_group_name" {
   sensitive   = false
 }
 
-variable "private_ml_embedder_hostname" {
-  default     = "private-alb-embedder.shapes-registry.org"
-  type        = string
-  description = "Hostname at which the embedder containers can be reached via the private ALB"
-  sensitive   = false
-}
-
-### Machine Learning Reader ###
-variable "ml_reader_docker_image_url" {
-  type        = string
-  default     = "bluebrain/bbs-question-answering:biom-electra-large-squad2-v1.2.1"
-  description = "docker image for the ML Reader webapp"
-  sensitive   = false
-}
-
-variable "ml_reader_log_group_name" {
-  default     = "ml_reader"
-  type        = string
-  description = "The log name within cloudwatch for the ML Reader webapp"
-  sensitive   = false
-}
-
-variable "private_ml_reader_hostname" {
-  default     = "private-alb-ml-reader.shapes-registry.org"
-  type        = string
-  description = "Hostname at which the ML Reader containers can be reached via the private ALB"
-  sensitive   = false
-}
-
-### Machine Learning Backend ###
-variable "ml_backend_docker_image_url" {
-  type        = string
-  default     = "bluebrain/bbs-pipeline:v0.5.1"
-  description = "docker image for the ML backend"
-  sensitive   = false
-}
-
-variable "ml_backend_log_group_name" {
-  default     = "ml_backend"
-  type        = string
-  description = "The log name within cloudwatch for the ML backend"
-  sensitive   = false
-}
-
-variable "private_ml_backend_hostname" {
-  default     = "private-alb-ml-backend.shapes-registry.org"
-  type        = string
-  description = "Hostname at which the ML backend containers can be reached via the private ALB"
-  sensitive   = false
-}
-
 ### Machine Learning ElasticSearch/OpenSearch ###
 # Note: you can also request opensearch, but then you need
 # to also change the instance type to a type which is compatible
