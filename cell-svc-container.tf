@@ -53,7 +53,7 @@ resource "aws_iam_role_policy_attachment" "cells_ec2_instance_role_policy" {
 # for the ec2 launch template
 resource "aws_iam_instance_profile" "cells_ec2_instance_role_profile" {
   name = "cells_ec2_instance_role_profile"
-  role = aws_iam_role.cells_ec2_instance_role.id
+  role = aws_iam_role.cells_ec2_instance_role.name
   tags = { SBO_Billing = "cell_svc" }
 }
 
@@ -316,7 +316,7 @@ data "aws_iam_policy_document" "cells_ecs_service_policy" {
 resource "aws_iam_role_policy" "cells_ecs_service_role_policy" {
   name   = "Cells_ECS_ServiceRolePolicy"
   policy = data.aws_iam_policy_document.cells_ecs_service_role_policy.json
-  role   = aws_iam_role.cells_ecs_service_role.id
+  role   = aws_iam_role.cells_ecs_service_role.name
 }
 
 # for ecs service role, not for the containers itself
