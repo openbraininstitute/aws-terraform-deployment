@@ -1,3 +1,7 @@
+locals {
+  nexus_delta_app_log_group_name = "nexus_delta_app"
+}
+
 # place to put delta.conf
 resource "aws_efs_file_system" "nexus_app_config" {
   #ts:skip=AC_AWS_0097
@@ -25,7 +29,7 @@ resource "aws_efs_mount_target" "efs_for_nexus_app" {
 }
 
 resource "aws_route53_record" "nexus_app_efs" {
-  zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
+  zone_id = var.domain_zone_id
   name    = "nexus-app-efs.shapes-registry.org"
   type    = "CNAME"
   ttl     = 60
@@ -35,7 +39,7 @@ resource "aws_route53_record" "nexus_app_efs" {
 # TODO make more strict
 resource "aws_security_group" "nexus_app_efs" {
   name   = "nexus_app_efs"
-  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id = var.vpc_id
 
   description = "Nexus app EFS filesystem"
 
@@ -43,7 +47,7 @@ resource "aws_security_group" "nexus_app_efs" {
     protocol    = "-1"
     from_port   = 0
     to_port     = 0
-    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
+    cidr_blocks = [var.vpc_cidr_block]
     description = "allow ingress within vpc"
   }
 
@@ -51,7 +55,7 @@ resource "aws_security_group" "nexus_app_efs" {
     protocol    = "-1"
     from_port   = 0
     to_port     = 0
-    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
+    cidr_blocks = [var.vpc_cidr_block]
     description = "allow egress within vpc"
   }
   tags = {
@@ -62,7 +66,7 @@ resource "aws_security_group" "nexus_app_efs" {
 
 resource "aws_cloudwatch_log_group" "nexus_app" {
   # TODO check if the logs can be encrypted
-  name              = var.nexus_delta_app_log_group_name
+  name              = local.nexus_delta_app_log_group_name
   skip_destroy      = false
   retention_in_days = 5
 
@@ -90,7 +94,7 @@ resource "aws_ecs_cluster" "nexus_app" {
 # TODO make more strict
 resource "aws_security_group" "nexus_app_ecs_task" {
   name        = "nexus_app_ecs_task"
-  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id      = var.vpc_id
   description = "Sec group for SBO nexus app"
 
   tags = {
@@ -105,7 +109,7 @@ resource "aws_vpc_security_group_ingress_rule" "nexus_app_allow_port_8080" {
   ip_protocol = "tcp"
   from_port   = 8080
   to_port     = 8080
-  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  cidr_ipv4   = var.vpc_cidr_block
   description = "Allow port 8080 http"
   tags = {
     SBO_Billing = "nexus_app"
@@ -160,7 +164,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
       image       = var.nexus_delta_docker_image_url
       name        = "nexus_app"
       repositoryCredentials = {
-        credentialsParameter = data.terraform_remote_state.common.outputs.dockerhub_credentials_arn
+        credentialsParameter = var.dockerhub_credentials_arn
       }
       portMappings = [
         {
@@ -196,7 +200,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = var.nexus_delta_app_log_group_name
+          awslogs-group         = local.nexus_delta_app_log_group_name
           awslogs-region        = var.aws_region
           awslogs-create-group  = "true"
           awslogs-stream-prefix = "nexus_app"
@@ -338,7 +342,7 @@ EOF
 resource "aws_iam_role_policy_attachment" "ecs_nexus_app_task_role_dockerhub_policy_attachment" {
   count      = var.nexus_app_ecs_number_of_containers > 0 ? 1 : 0
   role       = aws_iam_role.ecs_nexus_app_task_execution_role[0].name
-  policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
+  policy_arn = var.dockerhub_access_iam_policy_arn
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_nexus_app_secrets_access_policy_attachment" {

@@ -4,7 +4,7 @@ resource "aws_lb_target_group" "blazegraph" {
   port        = 9999
   protocol    = "HTTP"
   target_type = "ip"
-  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id      = var.vpc_id
   health_check {
     enabled  = true
     path     = "/blazegraph/"
@@ -19,7 +19,7 @@ resource "aws_lb_target_group" "blazegraph" {
 }
 
 resource "aws_lb_listener_rule" "blazegraph_9999" {
-  listener_arn = data.terraform_remote_state.common.outputs.private_alb_listener_9999_arn
+  listener_arn = var.private_alb_listener_9999_arn
   priority     = 100
 
   action {
@@ -38,9 +38,9 @@ resource "aws_lb_listener_rule" "blazegraph_9999" {
 }
 
 resource "aws_route53_record" "private_blazegraph" {
-  zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
+  zone_id = var.domain_zone_id
   name    = var.private_blazegraph_hostname
   type    = "CNAME"
   ttl     = 60
-  records = [data.terraform_remote_state.common.outputs.private_alb_dns_name]
+  records = [var.private_alb_dns_name]
 }

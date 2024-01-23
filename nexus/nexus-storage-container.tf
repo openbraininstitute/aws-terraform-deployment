@@ -1,5 +1,9 @@
+locals {
+  nexus_storage_service_log_group_name = "nexus_storage_service"
+}
+
 resource "aws_cloudwatch_log_group" "nexus_storage" {
-  name              = var.nexus_storage_service_log_group_name
+  name              = local.nexus_storage_service_log_group_name
   skip_destroy      = false
   retention_in_days = 5
 
@@ -26,7 +30,7 @@ resource "aws_ecs_cluster" "nexus_storage" {
 
 resource "aws_security_group" "nexus_storage_ecs_task" {
   name        = "nexus_storage_ecs_task"
-  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id      = var.vpc_id
   description = "Sec group for SBO nexus storage service"
 
   tags = {
@@ -41,7 +45,7 @@ resource "aws_vpc_security_group_ingress_rule" "nexus_storage_allow_port_8080" {
   ip_protocol = "tcp"
   from_port   = 8081
   to_port     = 8081
-  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  cidr_ipv4   = var.vpc_cidr_block
   description = "Allow port 8081 http"
   tags = {
     SBO_Billing = "nexus_storage"
@@ -114,7 +118,7 @@ resource "aws_ecs_task_definition" "nexus_storage_ecs_definition" {
       image       = var.nexus_storage_docker_image_url
       name        = "nexus_storage"
       repositoryCredentials = {
-        credentialsParameter = data.terraform_remote_state.common.outputs.dockerhub_credentials_arn
+        credentialsParameter = var.dockerhub_credentials_arn
       }
       portMappings = [
         {
@@ -133,7 +137,7 @@ resource "aws_ecs_task_definition" "nexus_storage_ecs_definition" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = var.nexus_storage_service_log_group_name
+          awslogs-group         = local.nexus_storage_service_log_group_name
           awslogs-region        = var.aws_region
           awslogs-create-group  = "true"
           awslogs-stream-prefix = "nexus_storage"
@@ -249,5 +253,5 @@ EOF
 resource "aws_iam_role_policy_attachment" "ecs_nexus_storage_task_role_dockerhub_policy_attachment" {
   count      = var.nexus_storage_ecs_number_of_containers > 0 ? 1 : 0
   role       = aws_iam_role.ecs_nexus_storage_task_execution_role[0].name
-  policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
+  policy_arn = var.dockerhub_access_iam_policy_arn
 }

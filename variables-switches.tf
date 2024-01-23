@@ -31,45 +31,6 @@ variable "cell_svc_ecs_number_of_containers" {
   description = "Number of containers for the SBO sonata-cell-position service"
 }
 
-variable "nexus_app_ecs_number_of_containers" {
-  type        = number
-  default     = 1
-  sensitive   = false
-  description = "Number of containers for delta app"
-}
-
-variable "nexus_storage_ecs_number_of_containers" {
-  type        = number
-  default     = 1
-  sensitive   = false
-  description = "Number of containers for Nexus Storage Service"
-}
-
-variable "nexus_fusion_ecs_number_of_containers" {
-  type        = number
-  default     = 1
-  sensitive   = false
-  description = "Number of containers for nexus fusion"
-}
-
-variable "blazegraph_ecs_number_of_containers" {
-  type      = number
-  default   = 1
-  sensitive = false
-}
-
-variable "create_nexus_elasticsearch" {
-  type      = bool
-  default   = true
-  sensitive = false
-}
-
-variable "create_nexus_database" {
-  type      = bool
-  default   = true
-  sensitive = false
-}
-
 variable "embedder_ecs_number_of_containers" {
   type        = number
   default     = 0

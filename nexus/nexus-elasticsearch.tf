@@ -1,3 +1,7 @@
+locals {
+
+}
+
 # TODO not yet used I think, needs additional config in aws_opensearch_domain
 resource "aws_cloudwatch_log_group" "nexus_es" {
   name              = "nexus_es"
@@ -14,14 +18,14 @@ resource "aws_cloudwatch_log_group" "nexus_es" {
 
 resource "aws_security_group" "nexus_es" {
   name   = "nexus_es"
-  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id = var.vpc_id
 
   description = "Nexus Elastic Search"
   ingress {
     protocol    = "-1"
     from_port   = 0
     to_port     = 0
-    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
+    cidr_blocks = [var.vpc_cidr_block]
     description = "allow access from within VPC"
   }
 
@@ -29,7 +33,7 @@ resource "aws_security_group" "nexus_es" {
     protocol    = "-1"
     from_port   = 0
     to_port     = 0
-    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
+    cidr_blocks = [var.vpc_cidr_block]
     description = "allow access to the VPC"
   }
   tags = {
@@ -71,7 +75,7 @@ resource "aws_opensearch_domain" "nexus_es" {
             "Action": "es:*",
             "Principal": "*",
             "Effect": "Allow",
-            "Resource": "arn:aws:es:${var.aws_region}:${data.aws_caller_identity.current.account_id}:domain/${var.nexus_es_domain_name}/*"
+            "Resource": "arn:aws:es:${var.aws_region}:${var.aws_account_id}:domain/${var.nexus_es_domain_name}/*"
         }
     ]
 }
@@ -81,17 +85,5 @@ CONFIG
     Name        = "nexus_es"
     SBO_Billing = "nexus"
   }
-  depends_on = [aws_iam_service_linked_role.os]
+  depends_on = [var.aws_iam_service_linked_role_depends_on]
 }
-
-/*
-Only one allowed per account? Use the one created in the ML deployment
-resource "aws_iam_service_linked_role" "es" {
-  aws_service_name = "es.amazonaws.com"
-  description      = "Allows Amazon ES to manage AWS resources for a domain on your behalf."
-
-  tags = {
-    SBO_Billing = "nexus"
-  }
-}*/
-

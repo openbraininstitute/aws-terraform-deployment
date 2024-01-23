@@ -1,6 +1,6 @@
 resource "aws_security_group" "nexus_db" {
   name   = "nexus_db"
-  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id = var.vpc_id
 
   description = "Nexus PostgreSQL database"
   # Only PostgreSQL traffic inbound
@@ -15,14 +15,14 @@ resource "aws_security_group" "nexus_db" {
     from_port   = 0
     to_port     = 0
     protocol    = -1
-    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
+    cidr_blocks = [var.vpc_cidr_block]
     description = "allow ingress from within vpc"
   }
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = -1
-    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
+    cidr_blocks = [var.vpc_cidr_block]
     description = "allow egress to within vpc"
   }
   tags = {

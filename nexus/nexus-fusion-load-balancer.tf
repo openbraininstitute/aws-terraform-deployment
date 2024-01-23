@@ -23,7 +23,7 @@ resource "aws_route53_record" "nexus_fusion_validation" {
   records         = [each.value.record]
   ttl             = 60
   type            = each.value.type
-  zone_id         = data.terraform_remote_state.common.outputs.domain_zone_id
+  zone_id         = var.domain_zone_id
 }
 
 resource "aws_acm_certificate_validation" "nexus_fusion" {
@@ -32,7 +32,7 @@ resource "aws_acm_certificate_validation" "nexus_fusion" {
 }
 
 resource "aws_lb_listener_certificate" "nexus_fusion" {
-  listener_arn    = aws_lb_listener.sbo_https.arn
+  listener_arn    = var.aws_lb_listener_sbo_https_arn
   certificate_arn = aws_acm_certificate.nexus_fusion.arn
 }
 
@@ -42,7 +42,7 @@ resource "aws_lb_target_group" "nexus_fusion" {
   port        = 8000
   protocol    = "HTTP"
   target_type = "ip"
-  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id      = var.vpc_id
   health_check {
     enabled             = true
     path                = "/nexus/web/status"
@@ -58,7 +58,7 @@ resource "aws_lb_target_group" "nexus_fusion" {
 }
 
 resource "aws_lb_listener_rule" "nexus_fusion_https" {
-  listener_arn = aws_lb_listener.sbo_https.arn
+  listener_arn = var.aws_lb_listener_sbo_https_arn
   priority     = 103
 
   action {
@@ -74,18 +74,14 @@ resource "aws_lb_listener_rule" "nexus_fusion_https" {
   tags = {
     SBO_Billing = "nexus_fusion"
   }
-  depends_on = [
-    aws_lb_listener.sbo_https,
-    aws_lb.alb
-  ]
 }
 
 resource "aws_route53_record" "nexus_fusion" {
-  zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
+  zone_id = var.domain_zone_id
   name    = var.nexus_fusion_hostname
   type    = "CNAME"
   ttl     = 60
-  records = [aws_lb.alb.dns_name]
+  records = [var.aws_lb_alb_dns_name]
 }
 
 output "alb_nexus_fusion_hostname" {
