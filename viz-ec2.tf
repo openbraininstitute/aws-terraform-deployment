@@ -35,7 +35,7 @@ resource "aws_launch_template" "ecs_launch_template" {
   name                   = "viz_EC2_LaunchTemplate"
   image_id               = data.aws_ami.amazonlinux.id
   instance_type          = "t3.medium"
-  user_data              = base64encode(data.template_file.user_data.rendered)
+  user_data              = base64encode(data.template_file.viz_ec2_ecs_user_data.rendered)
   vpc_security_group_ids = [aws_security_group.viz_ec2_sg.id]
 
   metadata_options {
@@ -56,8 +56,12 @@ resource "aws_launch_template" "ecs_launch_template" {
 
 }
 
-data "template_file" "user_data" {
-  template = "echo ECS_CLUSTER='${aws_ecs_cluster.viz_ecs_cluster.name}' >> /etc/ecs/ecs.config"
+data "template_file" "viz_ec2_ecs_user_data" {
+  template = file("viz_ec2_ecs_user_data.sh")
+
+  vars = {
+    ecs_cluster_name = aws_ecs_cluster.viz_ecs_cluster.name
+  }
 }
 
 resource "aws_security_group" "viz_ec2_sg" {
