@@ -3,7 +3,7 @@ variable "viz_vsm_db_password_arn" {
   default     = "arn:aws:secretsmanager:us-east-1:671250183987:secret:viz_vsm_db_password-HpmfWe"
   type        = string
   description = "The ARN of the viz vsm secret"
-  sensitive   = true
+  sensitive   = false
 }
 
 resource "aws_ssoadmin_permission_set" "write_read_access_viz_secrets" {
