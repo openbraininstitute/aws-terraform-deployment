@@ -7,7 +7,7 @@ resource "aws_subnet" "cells" {
 
   tags = {
     Name        = "cells"
-    SBO_Billing = "cells"
+    SBO_Billing = "cell_svc"
   }
 }
 
@@ -20,7 +20,7 @@ resource "aws_route_table" "cells" {
   }
   tags = {
     Name        = "cells_route"
-    SBO_Billing = "cells"
+    SBO_Billing = "cell_svc"
   }
 }
 # Link route table to cells network
@@ -80,6 +80,6 @@ resource "aws_network_acl" "cells" {
   }
   tags = {
     Name        = "cells_acl"
-    SBO_Billing = "cells"
+    SBO_Billing = "cell_svc"
   }
 }
