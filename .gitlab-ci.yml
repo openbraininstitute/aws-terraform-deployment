@@ -54,16 +54,16 @@ tfsec:
       when: never
     - if: $CI_COMMIT_BRANCH        # If there's no open merge request, add it to a *branch* pipeline instead.
 
-#terrascan:
-#  image: tenable/terrascan
-#  stage: validate
-#  script:
-#    - terrascan scan -i terraform --iac-version v14 --iac-dir ${TF_ROOT} --non-recursive --skip-rules=AC_AWS_0369
-#  rules:
-#    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-#    - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
-#      when: never
-#    - if: $CI_COMMIT_BRANCH        # If there's no open merge request, add it to a *branch* pipeline instead.
+terrascan:
+  image: tenable/terrascan
+  stage: validate
+  script:
+    - terrascan scan -i terraform --iac-version v14 --iac-dir ${TF_ROOT} --non-recursive --skip-rules=AC_AWS_0369
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
+      when: never
+    - if: $CI_COMMIT_BRANCH        # If there's no open merge request, add it to a *branch* pipeline instead.
 
 check_compliance:
   image: eerkunt/terraform-compliance
