@@ -33,7 +33,7 @@ resource "aws_iam_instance_profile" "ec2_instance_role_profile" {
 
 resource "aws_launch_template" "ecs_launch_template" {
   name                   = "viz_EC2_LaunchTemplate"
-  image_id               = data.aws_ami.amazonlinux.id
+  image_id               = data.aws_ami.amazon_linux_2_ecs.id
   instance_type          = "t3.medium"
   user_data              = base64encode(data.template_file.viz_ec2_ecs_user_data.rendered)
   vpc_security_group_ids = [aws_security_group.viz_ec2_sg.id]
@@ -74,6 +74,21 @@ resource "aws_security_group" "viz_ec2_sg" {
     SBO_Billing = "viz"
   }
 }
+
+resource "aws_vpc_security_group_ingress_rule" "viz_brayns_allow_port_22" {
+  security_group_id = aws_security_group.viz_ec2_sg.id
+
+  ip_protocol = "tcp"
+  from_port   = 22
+  to_port     = 22
+  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  description = "Allow port 22 ssh"
+
+  tags = {
+    SBO_Billing = "viz"
+  }
+}
+
 
 resource "aws_vpc_security_group_ingress_rule" "viz_brayns_allow_port_5000" {
   security_group_id = aws_security_group.viz_ec2_sg.id
@@ -119,6 +134,7 @@ resource "aws_autoscaling_group" "ecs_autoscaling_group" {
   name                = "viz_asg"
   max_size            = 10
   min_size            = 0
+  desired_capacity    = 1
   vpc_zone_identifier = [aws_subnet.viz.id]
   health_check_type   = "EC2"
 
