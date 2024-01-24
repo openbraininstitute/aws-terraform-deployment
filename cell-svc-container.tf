@@ -52,7 +52,7 @@ resource "aws_iam_role_policy_attachment" "cells_ec2_instance_role_policy" {
 # An IAM instance profile for the ec2 systems for the cells ecs cluster, based on the IAM role,
 # for the ec2 launch template
 resource "aws_iam_instance_profile" "cells_ec2_instance_role_profile" {
-  name = "cells_ec2_instance_role_profile"
+  name = "Cells_EC2_InstanceRoleProfile"
   role = aws_iam_role.cells_ec2_instance_role.name
   tags = { SBO_Billing = "cell_svc" }
 }
