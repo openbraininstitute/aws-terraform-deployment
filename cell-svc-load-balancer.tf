@@ -36,12 +36,12 @@ resource "aws_lb_target_group" "cell_svc" {
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
-  #lifecycle {
-  #  create_before_destroy = true
-  #}
+  lifecycle {
+    create_before_destroy = true
+  }
   health_check {
     enabled  = true
-    path     = "/docs"
+    path     = "/health"
     protocol = "HTTP"
   }
   tags = { SBO_Billing = "cell_svc" }
