@@ -48,6 +48,11 @@ resource "aws_iam_role_policy_attachment" "cells_ec2_instance_role_policy" {
   role       = aws_iam_role.cells_ec2_instance_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
 }
+# Give EC2 instance access to S3
+resource "aws_iam_role_policy_attachment" "cells_ec2_instance_role_s3_policy" {
+  role       = aws_iam_role.cells_ec2_instance_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonS3ReadOnlyAccess"
+}
 
 # An IAM instance profile for the ec2 systems for the cells ecs cluster, based on the IAM role,
 # for the ec2 launch template

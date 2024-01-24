@@ -32,7 +32,7 @@ resource "aws_acm_certificate_validation" "cell_svc" {
 resource "aws_lb_target_group" "cell_svc" {
   #ts:skip=AC_AWS_0492
   name        = "cell-svc"
-  port        = 8000
+  port        = 8050
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
