@@ -139,7 +139,7 @@ variable "nexus_elasticsearch_version" {
 
 variable "nexus_elasticsearch_instance_type" {
   type      = string
-  default   = "t3.small.micro"
+  default   = "t3.small.search"
   sensitive = false
 }
 
