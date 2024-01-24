@@ -72,7 +72,7 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
       }
     },
     {
-      memory      = 2048
+      memory      = 512
       cpu         = 1024
       networkMode = "awsvpc"
       family      = "viz_bcsb"
@@ -113,7 +113,7 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
     }
   ])
 
-  memory                   = 4096
+  memory                   = 2560
   cpu                      = 2048
   requires_compatibilities = ["EC2"]
   execution_role_arn       = aws_iam_role.viz_brayns_ecs_task_execution_role.arn
