@@ -85,6 +85,14 @@ resource "aws_route53_record" "nexus_app" {
   records = [var.aws_lb_alb_dns_name]
 }
 
+resource "aws_route53_record" "nexus_app_efs" {
+  zone_id = var.domain_zone_id
+  name    = "nexus-app-efs.shapes-registry.org"
+  type    = "CNAME"
+  ttl     = 60
+  records = [module.delta.efs_delta_dns_name]
+}
+
 output "alb_nexus_app_hostname" {
   value = var.nexus_delta_hostname
 }

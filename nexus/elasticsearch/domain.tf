@@ -1,7 +1,3 @@
-locals {
-
-}
-
 # TODO not yet used I think, needs additional config in aws_opensearch_domain
 resource "aws_cloudwatch_log_group" "nexus_es" {
   name              = "nexus_es"
@@ -12,31 +8,6 @@ resource "aws_cloudwatch_log_group" "nexus_es" {
 
   tags = {
     Application = "nexus_es"
-    SBO_Billing = "nexus"
-  }
-}
-
-resource "aws_security_group" "nexus_es" {
-  name   = "nexus_es"
-  vpc_id = var.vpc_id
-
-  description = "Nexus Elastic Search"
-  ingress {
-    protocol    = "-1"
-    from_port   = 0
-    to_port     = 0
-    cidr_blocks = [var.vpc_cidr_block]
-    description = "allow access from within VPC"
-  }
-
-  egress {
-    protocol    = "-1"
-    from_port   = 0
-    to_port     = 0
-    cidr_blocks = [var.vpc_cidr_block]
-    description = "allow access to the VPC"
-  }
-  tags = {
     SBO_Billing = "nexus"
   }
 }
@@ -60,30 +31,39 @@ resource "aws_opensearch_domain" "nexus_es" {
   }
 
   vpc_options {
-    subnet_ids = [
-      aws_subnet.nexus_es_a.id,
-    ]
-
-    security_group_ids = [aws_security_group.nexus_es.id]
+    subnet_ids         = [var.subnet_id]
+    security_group_ids = [var.subnet_security_group_id]
   }
 
-  access_policies = <<CONFIG
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Action": "es:*",
-            "Principal": "*",
-            "Effect": "Allow",
-            "Resource": "arn:aws:es:${var.aws_region}:${var.aws_account_id}:domain/${var.nexus_es_domain_name}/*"
-        }
-    ]
-}
-CONFIG
+  access_policies = data.aws_iam_policy_document.domain_policy.json
 
   tags = {
     Name        = "nexus_es"
     SBO_Billing = "nexus"
   }
-  depends_on = [var.aws_iam_service_linked_role_depends_on]
+  depends_on = [aws_iam_service_linked_role.es_linked_role]
+}
+
+resource "aws_iam_service_linked_role" "es_linked_role" {
+  aws_service_name = "es.amazonaws.com"
+  description      = "Allows Amazon ES to manage AWS resources for a domain on your behalf."
+}
+
+
+data "aws_region" "current" {}
+
+data "aws_caller_identity" "current" {}
+
+data "aws_iam_policy_document" "domain_policy" {
+  statement {
+    actions = ["es:*"]
+    resources = [
+      "arn:aws:es:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:domain/${var.nexus_es_domain_name}/*"
+    ]
+    effect = "Allow"
+    principals {
+      identifiers = ["*"]
+      type        = "AWS"
+    }
+  }
 }

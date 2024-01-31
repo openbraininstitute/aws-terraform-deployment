@@ -3,3 +3,4 @@
 *.iml
 .terraform*
 .tflint.hcl
+terraform.tfstate*

@@ -126,64 +126,6 @@ variable "private_blazegraph_hostname" {
   sensitive   = false
 }
 
-### Nexus ElasticSearch/OpenSearch ###
-
-# Note: you can also request opensearch, but then you need
-# to also change the instance type to a type which is compatible
-# with opensearch.
-variable "nexus_elasticsearch_version" {
-  type      = string
-  default   = "Elasticsearch_7.10"
-  sensitive = false
-}
-
-variable "nexus_elasticsearch_instance_type" {
-  type      = string
-  default   = "t3.small.search"
-  sensitive = false
-}
-
-variable "nexus_es_domain_name" {
-  type      = string
-  default   = "nexus"
-  sensitive = false
-}
-
-### Nexus PostgreSQL ###
-
-variable "nexus_postgresql_database_port" {
-  default   = 5432
-  type      = number
-  sensitive = false
-}
-
-variable "nexus_postgresql_database_name" {
-  type      = string
-  default   = "nexus_user"
-  sensitive = false
-}
-
-variable "nexus_postgresql_database_username" {
-  type      = string
-  default   = "nexus_user"
-  sensitive = false
-}
-#variable "nexus_postgresql_database_password" {
-#  type = string
-#  sensitive = true
-#}
-
-variable "nexus_postgresql_admin_username" {
-  type      = string
-  default   = "admin"
-  sensitive = false
-}
-
-#variable "nexus_postgresql_admin_password" {
-#  type      = string
-#  sensitive = true
-#}
-
 ### Switches
 
 variable "nexus_storage_ecs_number_of_containers" {
@@ -203,17 +145,5 @@ variable "nexus_fusion_ecs_number_of_containers" {
 variable "blazegraph_ecs_number_of_containers" {
   type      = number
   default   = 1
-  sensitive = false
-}
-
-variable "create_nexus_elasticsearch" {
-  type      = bool
-  default   = true
-  sensitive = false
-}
-
-variable "create_nexus_database" {
-  type      = bool
-  default   = true
   sensitive = false
 }
