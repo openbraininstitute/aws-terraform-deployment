@@ -249,3 +249,21 @@ resource "aws_iam_role_policy" "viz_vsm_ecs_exec_policy" {
     ]
   })
 }
+
+data "aws_iam_policy_document" "all_ecs_access_policy" {
+  statement {
+    effect    = "Allow"
+    actions   = ["ecs:*"]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "viz_vsm_scaling_policy" {
+  name   = "viz_vsm_scaling_policy"
+  policy = data.aws_iam_policy_document.all_ecs_access_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "viz_vsm_ecs_task_scaling_policy_attachment" {
+  role       = aws_iam_role.viz_vsm_ecs_task_role.name
+  policy_arn = aws_iam_policy.viz_vsm_scaling_policy.arn
+}
