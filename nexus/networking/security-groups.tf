@@ -1,8 +1,8 @@
 resource "aws_security_group" "main_subnet_sg" {
   vpc_id = var.vpc_id
 
-  name        = "main_subnet_sg"
-  description = "Allows access from and to the main subnet"
+  name        = "nexus_es"
+  description = "Nexus Elastic Search"
 
   tags = {
     SBO_Billing = "nexus"
