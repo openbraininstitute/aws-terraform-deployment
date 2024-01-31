@@ -55,6 +55,26 @@ module "delta" {
   # - the blazegraph address
 }
 
+moved {
+  from = aws_subnet.nexus_app
+  to   = module.networking.aws_subnet.nexus
+}
+
+moved {
+  from = aws_route_table.nexus_app
+  to   = module.networking.aws_route_table.nexus
+}
+
+moved {
+  from = aws_route_table_association.nexus_app
+  to   = module.networking.aws_route_table_association.nexus
+}
+
+moved {
+  from = aws_network_acl.nexus_app
+  to   = module.networking.aws_network_acl.nexus
+}
+
 # Delta moved blocks
 moved {
   from = aws_cloudwatch_log_group.nexus_app
@@ -166,11 +186,6 @@ moved {
 moved {
   from = aws_cloudwatch_log_group.nexus_es
   to   = module.elasticsearch.aws_cloudwatch_log_group.nexus_es
-}
-
-moved {
-  from = aws_security_group.nexus_es
-  to   = module.networking.aws_security_group.main_subnet_sg
 }
 
 moved {

@@ -176,7 +176,7 @@ resource "aws_ecs_service" "nexus_storage_ecs_service" {
   network_configuration {
     security_groups = [aws_security_group.nexus_storage_ecs_task.id]
     # TODO using the same subnet as Nexus Delta, may be ok?
-    subnets          = [aws_subnet.nexus_app.id]
+    subnets          = [module.networking.subnet_id]
     assign_public_ip = false
   }
   depends_on = [

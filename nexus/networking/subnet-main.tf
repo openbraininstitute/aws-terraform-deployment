@@ -2,7 +2,7 @@
 resource "aws_subnet" "nexus" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}a"
-  cidr_block        = "10.0.1.0/28"
+  cidr_block        = "10.0.2.32/28"
   tags = {
     Name        = "nexus_subnet"
     SBO_Billing = "nexus"

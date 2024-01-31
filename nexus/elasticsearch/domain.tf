@@ -41,13 +41,14 @@ resource "aws_opensearch_domain" "nexus_es" {
     Name        = "nexus_es"
     SBO_Billing = "nexus"
   }
-  depends_on = [aws_iam_service_linked_role.es_linked_role]
+#  depends_on = [aws_iam_service_linked_role.es_linked_role]
 }
 
-resource "aws_iam_service_linked_role" "es_linked_role" {
-  aws_service_name = "es.amazonaws.com"
-  description      = "Allows Amazon ES to manage AWS resources for a domain on your behalf."
-}
+# todo fix this dependency
+#resource "aws_iam_service_linked_role" "es_linked_role" {
+#  aws_service_name = "es.amazonaws.com"
+#  description      = "Allows Amazon ES to manage AWS resources for a domain on your behalf."
+#}
 
 
 data "aws_region" "current" {}
