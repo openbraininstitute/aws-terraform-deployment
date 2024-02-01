@@ -1,14 +1,3 @@
-resource "aws_security_group" "main_subnet_sg" {
-  vpc_id = var.vpc_id
-
-  name        = "nexus_es"
-  description = "Nexus Elastic Search"
-
-  tags = {
-    SBO_Billing = "nexus"
-  }
-}
-
 resource "aws_security_group" "main_sg" {
   vpc_id = var.vpc_id
 
