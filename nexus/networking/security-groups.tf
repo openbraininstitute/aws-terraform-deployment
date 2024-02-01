@@ -34,3 +34,18 @@ resource "aws_vpc_security_group_egress_rule" "main_subnet_egress" {
     SBO_Billing = "nexus"
   }
 }
+
+# todo this is an old security group that is not used anymore and should be deleted.
+# todo however if you remove it, it will fail because of a network interface
+# todo that is still attached to it and that fails to delete. However the interface
+# todo seems to also be unused. 🤔
+resource "aws_security_group" "main_subnet_sg" {
+  vpc_id = var.vpc_id
+
+  name        = "nexus_es"
+  description = "Nexus Elastic Search"
+
+  tags = {
+    SBO_Billing = "nexus"
+  }
+}
