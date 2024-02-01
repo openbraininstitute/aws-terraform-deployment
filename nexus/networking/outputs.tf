@@ -3,7 +3,7 @@ output "subnet_id" {
 }
 
 output "main_subnet_sg_id" {
-  value = aws_security_group.main_subnet_sg.id
+  value = aws_security_group.main_sg.id
 }
 
 output "psql_subnets_ids" {

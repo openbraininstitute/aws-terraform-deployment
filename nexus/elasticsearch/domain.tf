@@ -35,13 +35,25 @@ resource "aws_opensearch_domain" "nexus_es" {
     security_group_ids = [var.subnet_security_group_id]
   }
 
-  access_policies = data.aws_iam_policy_document.domain_policy.json
+  access_policies = <<CONFIG
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": "es:*",
+            "Principal": "*",
+            "Effect": "Allow",
+            "Resource": "arn:aws:es:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:domain/${var.nexus_es_domain_name}/*"
+        }
+    ]
+}
+CONFIG
 
   tags = {
     Name        = "nexus_es"
     SBO_Billing = "nexus"
   }
-#  depends_on = [aws_iam_service_linked_role.es_linked_role]
+  #  depends_on = [aws_iam_service_linked_role.es_linked_role]
 }
 
 # todo fix this dependency
@@ -50,21 +62,5 @@ resource "aws_opensearch_domain" "nexus_es" {
 #  description      = "Allows Amazon ES to manage AWS resources for a domain on your behalf."
 #}
 
-
 data "aws_region" "current" {}
-
 data "aws_caller_identity" "current" {}
-
-data "aws_iam_policy_document" "domain_policy" {
-  statement {
-    actions = ["es:*"]
-    resources = [
-      "arn:aws:es:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:domain/${var.nexus_es_domain_name}/*"
-    ]
-    effect = "Allow"
-    principals {
-      identifiers = ["*"]
-      type        = "AWS"
-    }
-  }
-}
