@@ -29,6 +29,45 @@ resource "aws_ecs_cluster" "nexus_fusion" {
   }
 }
 
+# TODO make more strict
+resource "aws_security_group" "nexus_fusion_ecs_task" {
+  name        = "nexus_fusion_ecs_task"
+  vpc_id      = var.vpc_id
+  description = "Sec group for SBO nexus fusion"
+
+  tags = {
+    Name        = "nexus_fusion_secgroup"
+    SBO_Billing = "nexus_fusion"
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "nexus_fusion_allow_port_8000" {
+  security_group_id = aws_security_group.nexus_fusion_ecs_task.id
+
+  ip_protocol = "tcp"
+  from_port   = 8000
+  to_port     = 8000
+  cidr_ipv4   = data.aws_vpc.provided_vpc.cidr_block
+  description = "Allow port 8000 http"
+  tags = {
+    SBO_Billing = "nexus_fusion"
+  }
+}
+
+resource "aws_vpc_security_group_egress_rule" "nexus_fusion_allow_outgoing" {
+  security_group_id = aws_security_group.nexus_fusion_ecs_task.id
+  # TODO limit to what is needed
+  # needs access to dockerhub and to AWS secrets manager, likely also nexus, ...
+  ip_protocol = -1
+  cidr_ipv4   = "0.0.0.0/0"
+  #cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  description = "Allow everything"
+  tags = {
+    SBO_Billing = "nexus_fusion"
+  }
+}
+
+
 resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
   count = var.nexus_fusion_ecs_number_of_containers > 0 ? 1 : 0
 
