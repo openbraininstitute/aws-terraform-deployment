@@ -10,10 +10,6 @@ variable "vpc_id" {
   type = string
 }
 
-variable "vpc_cidr_block" {
-  type = string
-}
-
 variable "subnet_security_group_id" {
   type = string
 }

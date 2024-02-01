@@ -12,10 +12,6 @@ variable "vpc_id" {
   type = string
 }
 
-variable "vpc_cidr_block" {
-  type = string
-}
-
 variable "dockerhub_access_iam_policy_arn" {
   type = string
 }
@@ -48,10 +44,11 @@ variable "aws_lb_alb_dns_name" {
   type = string
 }
 
-variable "aws_iam_service_linked_role_depends_on" {
-  type        = string
-  description = "Dependency. The role that allows Amazon ES to manage AWS resources for you. This was shared from a role defined in ML."
-}
+# TODO: This is currently an implicit dependency. See `elasticsearch/domain.tf` and get rid of this
+#variable "aws_iam_service_linked_role_depends_on" {
+#  type        = string
+#  description = "Dependency. The role that allows Amazon ES to manage AWS resources for you. This was shared from a role defined in ML."
+#}
 
 ### Nexus Delta ###
 
@@ -59,19 +56,6 @@ variable "nexus_delta_hostname" {
   type      = string
   default   = "sbo-nexus-delta.shapes-registry.org"
   sensitive = false
-}
-
-variable "nexus_delta_docker_image_url" {
-  type      = string
-  default   = "bluebrain/nexus-delta:1.9.0"
-  sensitive = false
-}
-
-variable "nexus_app_ecs_number_of_containers" {
-  type        = number
-  default     = 1
-  sensitive   = false
-  description = "Number of containers for delta app"
 }
 
 ### Nexus Storage Service ###
@@ -98,27 +82,6 @@ variable "nexus_fusion_docker_image_url" {
 
 ### Nexus Blazegraph ###
 
-variable "blazegraph_docker_image_url" {
-  default   = "bluebrain/blazegraph-nexus:2.1.6-RC"
-  sensitive = false
-  type      = string
-}
-
-# Directory for /var/lib/blazegraph/data on the EFS filesystem
-variable "efs_blazegraph_data_dir" {
-  default   = "/blazegraph-data-dir"
-  sensitive = false
-  type      = string
-}
-
-# Directory for /var/lib/blazegraph/log4j on the EFS filesystem, should contain the
-# log4j.properties file
-variable "efs_blazegraph_log4j_dir" {
-  default   = "/blazegraph-log4j-dir"
-  sensitive = false
-  type      = string
-}
-
 variable "private_blazegraph_hostname" {
   default     = "private-alb-blazegraph.shapes-registry.org"
   type        = string
@@ -140,10 +103,4 @@ variable "nexus_fusion_ecs_number_of_containers" {
   default     = 1
   sensitive   = false
   description = "Number of containers for nexus fusion"
-}
-
-variable "blazegraph_ecs_number_of_containers" {
-  type      = number
-  default   = 1
-  sensitive = false
 }

@@ -3,9 +3,7 @@ module "nexus" {
 
   aws_region     = var.aws_region
   aws_account_id = data.aws_caller_identity.current.account_id
-
   vpc_id         = data.terraform_remote_state.common.outputs.vpc_id
-  vpc_cidr_block = data.terraform_remote_state.common.outputs.vpc_cidr_block
 
   dockerhub_access_iam_policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
   dockerhub_credentials_arn       = data.terraform_remote_state.common.outputs.dockerhub_credentials_arn
@@ -17,6 +15,4 @@ module "nexus" {
 
   aws_lb_alb_dns_name           = aws_lb.alb.dns_name
   aws_lb_listener_sbo_https_arn = aws_lb_listener.sbo_https.arn
-
-  aws_iam_service_linked_role_depends_on = aws_iam_service_linked_role.os.name
 }

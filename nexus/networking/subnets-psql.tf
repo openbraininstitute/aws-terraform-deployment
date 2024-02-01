@@ -27,7 +27,7 @@ resource "aws_network_acl" "nexus_db" {
     protocol   = "tcp"
     rule_no    = 100
     action     = "allow"
-    cidr_block = var.vpc_cidr_block
+    cidr_block = data.aws_vpc.provided_vpc.cidr_block
     from_port  = 5432
     to_port    = 5432
   }
@@ -36,7 +36,7 @@ resource "aws_network_acl" "nexus_db" {
     protocol   = -1
     rule_no    = 100
     action     = "allow"
-    cidr_block = var.vpc_cidr_block
+    cidr_block = data.aws_vpc.provided_vpc.cidr_block
     from_port  = 0
     to_port    = 0
   }

@@ -43,7 +43,7 @@ resource "aws_network_acl" "nexus" {
     protocol   = -1
     rule_no    = 100
     action     = "allow"
-    cidr_block = var.vpc_cidr_block
+    cidr_block = data.aws_vpc.provided_vpc.cidr_block
     from_port  = 0
     to_port    = 0
   }

@@ -45,7 +45,7 @@ resource "aws_vpc_security_group_ingress_rule" "nexus_storage_allow_port_8080" {
   ip_protocol = "tcp"
   from_port   = 8081
   to_port     = 8081
-  cidr_ipv4   = var.vpc_cidr_block
+  cidr_ipv4   = data.aws_vpc.provided_vpc.cidr_block
   description = "Allow port 8081 http"
   tags = {
     SBO_Billing = "nexus_storage"
