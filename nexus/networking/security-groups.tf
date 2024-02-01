@@ -27,6 +27,10 @@ resource "aws_vpc_security_group_ingress_rule" "main_subnet_ingress" {
   cidr_ipv4         = data.aws_vpc.provided_vpc.cidr_block
   from_port         = -1
   to_port           = -1
+
+  tags = {
+    SBO_Billing = "nexus"
+  }
 }
 
 resource "aws_vpc_security_group_egress_rule" "main_subnet_egress" {
@@ -36,4 +40,8 @@ resource "aws_vpc_security_group_egress_rule" "main_subnet_egress" {
   cidr_ipv4         = "0.0.0.0/0"
   from_port         = -1
   to_port           = -1
+
+  tags = {
+    SBO_Billing = "nexus"
+  }
 }

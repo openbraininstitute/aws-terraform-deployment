@@ -69,16 +69,15 @@ check_compliance:
   image: eerkunt/terraform-compliance
   stage: validate
   allow_failure: true
+  variables:
+    TF_STATE_NAME: ${TF_STATE_NAME}
   before_script:
     - export TF_VAR_common_token_name=$COMMON_REPO_TOKEN_NAME
     - export TF_VAR_common_token_pass=$COMMON_REPO_TOKEN_PASS
   script:
-    - mkdir tempdir
-    - cd tempdir
     - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@bbpgitlab.epfl.ch/cs/cloud/aws/terraform-compliance
     - ls -la terraform-compliance
-    - cp ../*.sh ../*.tf ../*.tmpl .
-    - rm -f gitlab-config.tf
+    - rm gitlab-config.tf
     - terraform init
     - terraform plan -out=plan.tfplan > /dev/null && terraform show -json plan.tfplan > plan.json
     - terraform-compliance -f ./terraform-compliance -p ./plan.json
