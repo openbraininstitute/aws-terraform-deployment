@@ -259,7 +259,7 @@ variable "thumbnail_generation_api_docker_image_url" {
 }
 
 variable "thumbnail_generation_api_hostname" {
-  default     = "thumbnail_generation_api.shapes-registry.org"
+  default     = "thumbnail-generation-api.shapes-registry.org"
   type        = string
   description = "The hostname for the thumbnail generation api"
   sensitive   = false

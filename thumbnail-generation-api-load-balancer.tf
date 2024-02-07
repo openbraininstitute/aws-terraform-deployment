@@ -58,7 +58,7 @@ resource "aws_lb_listener_certificate" "thumbnail_generation_api" {
 
 resource "aws_lb_listener_rule" "thumbnail_generation_api" {
   listener_arn = aws_lb_listener.sbo_https.arn
-  priority     = 301
+  priority     = 302
 
   action {
     type             = "forward"
