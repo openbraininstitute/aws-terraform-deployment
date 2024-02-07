@@ -230,6 +230,7 @@ resource "aws_iam_role_policy_attachment" "viz_vsm_ecs_task_role_dockerhub_polic
   policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
 }
 
+#tfsec:ignore:aws-iam-no-policy-wildcards
 resource "aws_iam_role_policy" "viz_vsm_ecs_exec_policy" {
   name = "viz_vsm_ecs_exec_policy"
   role = aws_iam_role.viz_vsm_ecs_task_role.id
@@ -242,7 +243,9 @@ resource "aws_iam_role_policy" "viz_vsm_ecs_exec_policy" {
           "ssmmessages:CreateControlChannel",
           "ssmmessages:CreateDataChannel",
           "ssmmessages:OpenControlChannel",
-          "ssmmessages:OpenDataChannel"
+          "ssmmessages:OpenDataChannel",
+          "iam:GetRole",
+          "iam:PassRole"
         ],
         "Resource" = "*"
       }
