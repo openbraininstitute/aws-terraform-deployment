@@ -263,6 +263,10 @@ data "aws_iam_policy_document" "vsm_ecs_service_role_policy" {
 resource "aws_iam_policy" "viz_vsm_scaling_policy" {
   name   = "viz_vsm_scaling_policy"
   policy = data.aws_iam_policy_document.vsm_ecs_service_role_policy.json
+
+  tags = {
+    SBO_Billing = "viz"
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "viz_vsm_ecs_task_scaling_policy_attachment" {

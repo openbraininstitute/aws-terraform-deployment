@@ -55,7 +55,7 @@ resource "aws_db_instance" "vizdb" {
   db_subnet_group_name = aws_db_subnet_group.viz_db_subnet_group.name
 
   engine         = "postgres"
-  engine_version = "14.7"
+  engine_version = "14.10"
   multi_az       = false
   instance_class = "db.t3.small"
 
