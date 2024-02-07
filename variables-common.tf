@@ -247,3 +247,20 @@ variable "bbp_workflow_web_hostname" {
   description = "Hostname bbp-workflow-web"
   sensitive   = false
 }
+
+
+### Thumbnail Generation API ###
+
+variable "thumbnail_generation_api_docker_image_url" {
+  default     = "bluebrain/thumbnail-generation-api:latest"
+  type        = string
+  description = "docker image for the thumbnail generation api"
+  sensitive   = false
+}
+
+variable "thumbnail_generation_api_hostname" {
+  default     = "thumbnail_generation_api.shapes-registry.org"
+  type        = string
+  description = "The hostname for the thumbnail generation api"
+  sensitive   = false
+}
