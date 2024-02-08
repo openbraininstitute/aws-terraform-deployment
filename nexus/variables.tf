@@ -60,10 +60,8 @@ variable "nexus_delta_hostname" {
 
 ### Nexus Storage Service ###
 
-variable "nexus_storage_docker_image_url" {
-  type      = string
-  default   = "bluebrain/nexus-storage:1.10.0-M1"
-  sensitive = false
+variable "amazon_linux_ecs_ami_id" {
+  type = string
 }
 
 ### Nexus Fusion ###

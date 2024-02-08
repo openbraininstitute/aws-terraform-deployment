@@ -15,4 +15,6 @@ module "nexus" {
 
   aws_lb_alb_dns_name           = aws_lb.alb.dns_name
   aws_lb_listener_sbo_https_arn = aws_lb_listener.sbo_https.arn
+
+  amazon_linux_ecs_ami_id = data.aws_ami.amazon_linux_2_ecs.id
 }
