@@ -2,7 +2,7 @@
 resource "aws_subnet" "thumbnail_generation_api" {
   vpc_id                  = data.terraform_remote_state.common.outputs.vpc_id
   availability_zone       = "${var.aws_region}a"
-  cidr_block              = "10.0.3.0/28"
+  cidr_block              = "10.0.8.0/24"
   map_public_ip_on_launch = false
 
   tags = {

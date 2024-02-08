@@ -87,3 +87,7 @@ resource "aws_route53_record" "thumbnail_generation_api" {
   ttl     = 60
   records = [aws_lb.alb.dns_name]
 }
+
+output "alb_thumbnail_generation_api_hostname" {
+  value = var.thumbnail_generation_api_hostname
+}

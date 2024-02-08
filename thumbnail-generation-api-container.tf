@@ -99,7 +99,9 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
             name  = "WHITELISTED_CORS_URLS",
             value = "http:localhost:3000,https://bbp.epfl.ch"
           }
-        ]
+        ],
+        memory = 512
+        cpu    = 1024
       },
       {
         name      = "nginx-reverse-proxy-container",
@@ -116,7 +118,9 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
             containerPath = "/etc/nginx",
             sourceVolume  = "nginx-reverse-proxy-volume"
           }
-        ]
+        ],
+        memory = 512
+        cpu    = 1024
       }
   ])
 
