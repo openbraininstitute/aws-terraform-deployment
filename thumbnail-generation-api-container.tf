@@ -68,6 +68,17 @@ resource "aws_iam_role_policy_attachment" "thumbnail_generation_api_ecs_task_rol
   policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
 }
 
+resource "aws_security_group" "thumbnail_generation_api_sec_group" {
+  name        = "thumbnail_generation_api_sec_group"
+  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
+  description = "Sec group for thumbnail generation api"
+
+  tags = {
+    Name        = "thumbnail_generation_api_secgroup"
+    SBO_Billing = "thumbnail_generation_api"
+  }
+}
+
 
 # Task Definition
 resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
@@ -150,5 +161,11 @@ resource "aws_ecs_service" "thumbnail_generation_api_service" {
     target_group_arn = aws_lb_target_group.thumbnail_generation_api_tg.arn
     container_name   = "nginx-reverse-proxy-container"
     container_port   = 80
+  }
+
+  network_configuration {
+    security_groups  = [aws_security_group.thumbnail_generation_api_sec_group.id]
+    subnets          = [aws_subnet.thumbnail_generation_api.id]
+    assign_public_ip = false
   }
 }
