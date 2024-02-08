@@ -40,6 +40,9 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
       repositoryCredentials = {
         credentialsParameter = data.terraform_remote_state.common.outputs.dockerhub_credentials_arn
       }
+      environment = []
+      mountPoints = []
+      volumesFrom = []
       portMappings = [
         {
           hostPort      = 5000
@@ -59,7 +62,10 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
         "braynsAtlasExplorer"
       ]
       healthcheck = {
-        command = ["CMD-SHELL", "exit 0"]
+        interval = 30
+        retries  = 3
+        timeout  = 5
+        command  = ["CMD-SHELL", "exit 0"]
       }
       logConfiguration = {
         logDriver = "awslogs"
@@ -82,6 +88,9 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
       repositoryCredentials = {
         credentialsParameter = data.terraform_remote_state.common.outputs.dockerhub_credentials_arn
       }
+      environment = []
+      mountPoints = []
+      volumesFrom = []
       portMappings = [
         {
           hostPort      = 8000
@@ -99,7 +108,10 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
         "INFO"
       ]
       healthcheck = {
-        command = ["CMD-SHELL", "exit 0"]
+        interval = 30
+        retries  = 3
+        timeout  = 5
+        command  = ["CMD-SHELL", "exit 0"]
       }
       logConfiguration = {
         logDriver = "awslogs"

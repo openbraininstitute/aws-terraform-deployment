@@ -122,8 +122,13 @@ resource "aws_ecs_task_definition" "viz_vsm_proxy_ecs_definition" {
           value = "TRUE"
         }
       ]
+      mountPoints = []
+      volumesFrom = []
       healthcheck = {
-        command = ["CMD-SHELL", "/usr/bin/curl localhost:8888/healthz || exit 1"]
+        interval = 30
+        retries  = 3
+        timeout  = 5
+        command  = ["CMD-SHELL", "/usr/bin/curl localhost:8888/healthz || exit 1"]
       }
       logConfiguration = {
         logDriver = "awslogs"
