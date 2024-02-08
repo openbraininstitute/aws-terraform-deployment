@@ -77,6 +77,21 @@ resource "aws_security_group" "thumbnail_generation_api_sec_group" {
     Name        = "thumbnail_generation_api_secgroup"
     SBO_Billing = "thumbnail_generation_api"
   }
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = -1
+    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
+    description = "allow ingress from within vpc"
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = -1
+    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
+    description = "allow egress to within vpc"
+  }
 }
 
 
