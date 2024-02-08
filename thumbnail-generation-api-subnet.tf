@@ -73,6 +73,14 @@ resource "aws_network_acl" "thumbnail_generation_api" {
     from_port  = 0
     to_port    = 0
   }
+  egress {
+    rule_no    = 200
+    protocol   = "tcp"
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 2049
+    to_port    = 2049
+  }
   tags = {
     Name        = "thumbnail_generation_api_acl"
     SBO_Billing = "thumbnail_generation_api"
