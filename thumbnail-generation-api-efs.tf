@@ -9,6 +9,10 @@ resource "aws_efs_file_system" "thumbnail_generation_api_efs_instance" {
     Name        = "thumbnail-generation-api-efs"
     SBO_Billing = "thumbnail_generation_api"
   }
+}
 
-
+resource "aws_efs_mount_target" "thumbnail_generation_api_efs_mount_target" {
+  file_system_id  = aws_efs_file_system.thumbnail_generation_api_efs_instance.id
+  subnet_id       = aws_subnet.thumbnail_generation_api.id
+  security_groups = [aws_security_group.thumbnail_generation_api_sec_group.id]
 }
