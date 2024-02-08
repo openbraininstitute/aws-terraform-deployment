@@ -140,6 +140,11 @@ resource "aws_ecs_service" "blazegraph_ecs_service" {
   task_definition = aws_ecs_task_definition.blazegraph_ecs_definition[0].arn
   desired_count   = var.blazegraph_ecs_number_of_containers
   #iam_role        = "${var.ecs_iam_role_name}"
+
+  # ensure that there are not multiple tasks running at the same time during deployment
+  deployment_maximum_percent         = 100
+  deployment_minimum_healthy_percent = 0
+
   load_balancer {
     target_group_arn = aws_lb_target_group.blazegraph.arn
     container_name   = "blazegraph"
