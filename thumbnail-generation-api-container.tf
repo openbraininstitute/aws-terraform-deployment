@@ -76,8 +76,9 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = aws_iam_role.thumbnail_generation_api_ecs_task_execution_role[0].arn
-  cpu                      = 1024
   memory                   = 2048
+  cpu                      = 1024
+
 
   # Container definition for FastAPI
   container_definitions = jsonencode(
@@ -101,8 +102,8 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
             value = "http:localhost:3000,https://bbp.epfl.ch"
           }
         ],
-        memory = 512
-        cpu    = 1024
+        memory = 1024
+        cpu    = 512
       },
       {
         name      = "nginx-reverse-proxy-container",
@@ -120,8 +121,8 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
             sourceVolume  = "nginx-reverse-proxy-volume"
           }
         ],
-        memory = 512
-        cpu    = 1024
+        memory = 1024
+        cpu    = 512
       }
   ])
 
