@@ -76,8 +76,8 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = aws_iam_role.thumbnail_generation_api_ecs_task_execution_role[0].arn
-  cpu                      = 512
-  memory                   = 1024
+  cpu                      = 1024
+  memory                   = 2048
 
   # Container definition for FastAPI
   container_definitions = jsonencode(
