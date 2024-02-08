@@ -62,3 +62,18 @@ module "delta" {
   # - the elasticsearch address
   # - the blazegraph address
 }
+
+moved {
+  from = aws_iam_role.ecs_nexus_storage_task_execution_role
+  to   = module.storage.aws_iam_role.ecs_nexus_storage_task_execution_role
+}
+
+moved {
+  from = aws_iam_role.ecs_nexus_storage_task_role
+  to   = module.storage.aws_iam_role.ecs_nexus_storage_task_role
+}
+
+moved {
+  from = aws_cloudwatch_log_group.nexus_storage
+  to   = module.storage.aws_cloudwatch_log_group.nexus_storage
+}
