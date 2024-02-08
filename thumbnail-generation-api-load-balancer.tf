@@ -34,10 +34,11 @@ resource "aws_acm_certificate_validation" "thumbnail_generation_api" {
 
 # Target Group definition
 resource "aws_lb_target_group" "thumbnail_generation_api_tg" {
-  name     = "thumbnail-generation-api-tg"
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = data.terraform_remote_state.common.outputs.vpc_id
+  name        = "thumbnail-generation-api-tg"
+  port        = 80
+  protocol    = "HTTP"
+  target_type = "ip"
+  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
   lifecycle {
     create_before_destroy = true
   }
