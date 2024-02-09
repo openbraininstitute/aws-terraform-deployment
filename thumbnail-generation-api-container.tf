@@ -14,7 +14,7 @@ resource "aws_ecs_cluster" "thumbnail_generation_api_cluster" {
 }
 
 resource "aws_iam_role" "thumbnail_generation_api_ecs_task_execution_role" {
-  count = var.thumbnail_generation_api_ecs_number_of_containers > 0 ? 1 : 0
+  count = 1
   name  = "thumbnail_generation_api-ecsTaskExecutionRole"
 
   assume_role_policy = jsonencode({
@@ -37,13 +37,13 @@ resource "aws_iam_role" "thumbnail_generation_api_ecs_task_execution_role" {
 
 
 resource "aws_iam_role_policy_attachment" "thumbnail_generation_api_ecs_task_execution_role_policy_attachment" {
-  count      = var.thumbnail_generation_api_ecs_number_of_containers > 0 ? 1 : 0
+  count      = 1
   role       = aws_iam_role.thumbnail_generation_api_ecs_task_execution_role[0].name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 resource "aws_iam_role" "thumbnail_generation_api_ecs_task_role" {
-  count = var.thumbnail_generation_api_ecs_number_of_containers > 0 ? 1 : 0
+  count = 1
   name  = "thumbnail_generation_api-ecsTaskRole"
   assume_role_policy = jsonencode({
     "Version" = "2012-10-17",
@@ -64,7 +64,7 @@ resource "aws_iam_role" "thumbnail_generation_api_ecs_task_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "thumbnail_generation_api_ecs_task_role_dockerhub_policy_attachment" {
-  count      = var.thumbnail_generation_api_ecs_number_of_containers > 0 ? 1 : 0
+  count      = 1
   role       = aws_iam_role.thumbnail_generation_api_ecs_task_execution_role[0].name
   policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
 }
@@ -98,14 +98,14 @@ resource "aws_security_group" "thumbnail_generation_api_sec_group" {
 
 # Task Definition
 resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
-  count                    = var.thumbnail_generation_api_ecs_number_of_containers > 0 ? 1 : 0
+  count                    = 1
   family                   = "thumbnail-generation-api-task-definition"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = aws_iam_role.thumbnail_generation_api_ecs_task_execution_role[0].arn
   task_role_arn            = aws_iam_role.thumbnail_generation_api_ecs_task_role[0].arn
-  memory                   = 2048
-  cpu                      = 1024
+  memory                   = 4096
+  cpu                      = 2048
 
 
   # Container definition for FastAPI
@@ -130,8 +130,8 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
             value = "http:localhost:3000,https://bbp.epfl.ch"
           }
         ],
-        memory = 1024
-        cpu    = 512
+        memory = 2048
+        cpu    = 1024
       },
       {
         name      = "nginx-reverse-proxy-container",
@@ -149,8 +149,8 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
             sourceVolume  = "nginx-reverse-proxy-volume"
           }
         ],
-        memory = 1024
-        cpu    = 512
+        memory = 2048
+        cpu    = 1024
       }
   ])
 
@@ -167,7 +167,7 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
 
 # Service
 resource "aws_ecs_service" "thumbnail_generation_api_service" {
-  count                = var.thumbnail_generation_api_ecs_number_of_containers > 0 ? 1 : 0
+  count                = 1
   name                 = "thumbnail-generation-api-service"
   cluster              = aws_ecs_cluster.thumbnail_generation_api_cluster.id
   task_definition      = aws_ecs_task_definition.thumbnail_generation_api_task_definition[0].arn
