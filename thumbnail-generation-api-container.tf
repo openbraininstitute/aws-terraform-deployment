@@ -14,8 +14,7 @@ resource "aws_ecs_cluster" "thumbnail_generation_api_cluster" {
 }
 
 resource "aws_iam_role" "thumbnail_generation_api_ecs_task_execution_role" {
-  count = 1
-  name  = "thumbnail_generation_api-ecsTaskExecutionRole"
+  name = "thumbnail_generation_api-ecsTaskExecutionRole"
 
   assume_role_policy = jsonencode({
     "Version" = "2012-10-17",
@@ -37,14 +36,12 @@ resource "aws_iam_role" "thumbnail_generation_api_ecs_task_execution_role" {
 
 
 resource "aws_iam_role_policy_attachment" "thumbnail_generation_api_ecs_task_execution_role_policy_attachment" {
-  count      = 1
-  role       = aws_iam_role.thumbnail_generation_api_ecs_task_execution_role[0].name
+  role       = aws_iam_role.thumbnail_generation_api_ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 resource "aws_iam_role" "thumbnail_generation_api_ecs_task_role" {
-  count = 1
-  name  = "thumbnail_generation_api-ecsTaskRole"
+  name = "thumbnail_generation_api-ecsTaskRole"
   assume_role_policy = jsonencode({
     "Version" = "2012-10-17",
     "Statement" = [
@@ -64,8 +61,7 @@ resource "aws_iam_role" "thumbnail_generation_api_ecs_task_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "thumbnail_generation_api_ecs_task_role_dockerhub_policy_attachment" {
-  count      = 1
-  role       = aws_iam_role.thumbnail_generation_api_ecs_task_execution_role[0].name
+  role       = aws_iam_role.thumbnail_generation_api_ecs_task_execution_role.name
   policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
 }
 
@@ -98,12 +94,11 @@ resource "aws_security_group" "thumbnail_generation_api_sec_group" {
 
 # Task Definition
 resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
-  count                    = 1
   family                   = "thumbnail-generation-api-task-definition"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  execution_role_arn       = aws_iam_role.thumbnail_generation_api_ecs_task_execution_role[0].arn
-  task_role_arn            = aws_iam_role.thumbnail_generation_api_ecs_task_role[0].arn
+  execution_role_arn       = aws_iam_role.thumbnail_generation_api_ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.thumbnail_generation_api_ecs_task_role.arn
   memory                   = 4096
   cpu                      = 2048
 
@@ -116,7 +111,7 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
         image = var.thumbnail_generation_api_docker_image_url,
         repositoryCredentials = {
           credentialsParameter = data.terraform_remote_state.common.outputs.dockerhub_credentials_arn
-        }
+        },
         essential = true,
         portMappings = [
           {
@@ -167,10 +162,9 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
 
 # Service
 resource "aws_ecs_service" "thumbnail_generation_api_service" {
-  count                = 1
   name                 = "thumbnail-generation-api-service"
   cluster              = aws_ecs_cluster.thumbnail_generation_api_cluster.id
-  task_definition      = aws_ecs_task_definition.thumbnail_generation_api_task_definition[0].arn
+  task_definition      = aws_ecs_task_definition.thumbnail_generation_api_task_definition.arn
   desired_count        = 1
   force_new_deployment = true
 
