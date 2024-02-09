@@ -41,13 +41,13 @@ resource "aws_route" "nexus_nat_route" {
 
 # Link route table to nexus_app network
 resource "aws_route_table_association" "nexus" {
-  subnet_id      = aws_subnet.nexus.id
+  subnet_id      = aws_subnet.nexus_main.id
   route_table_id = aws_route_table.nexus.id
 }
 
 resource "aws_network_acl" "nexus" {
   vpc_id     = var.vpc_id
-  subnet_ids = [aws_subnet.nexus.id]
+  subnet_ids = [aws_subnet.nexus_main.id]
   # Allow local traffic
   # TODO limit to correct ports and subnets
   ingress {
