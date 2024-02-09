@@ -74,20 +74,55 @@ resource "aws_security_group" "thumbnail_generation_api_sec_group" {
     Name        = "thumbnail_generation_api_secgroup"
     SBO_Billing = "thumbnail_generation_api"
   }
+}
 
-  ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = -1
-    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
-    description = "allow ingress from within vpc"
+resource "aws_vpc_security_group_ingress_rule" "thumbnail_generation_api_allow_port_8080" {
+  security_group_id = aws_security_group.thumbnail_generation_api_sec_group.id
+
+  ip_protocol = "tcp"
+  from_port   = 8080
+  to_port     = 8080
+  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  description = "Allow port 8080 http"
+  tags = {
+    SBO_Billing = "thumbnail_generation_api"
   }
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = -1
-    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
-    description = "allow egress to within vpc"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "thumbnail_generation_api_allow_port_80" {
+  security_group_id = aws_security_group.thumbnail_generation_api_sec_group.id
+
+  ip_protocol = "tcp"
+  from_port   = 80
+  to_port     = 80
+  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  description = "Allow port 80 http"
+  tags = {
+    SBO_Billing = "thumbnail_generation_api"
+  }
+}
+
+resource "aws_vpc_security_group_egress_rule" "thumbnail_generation_api_allow_outgoing_tcp" {
+  security_group_id = aws_security_group.thumbnail_generation_api_sec_group.id
+  ip_protocol       = "tcp"
+  from_port         = 0
+  to_port           = 65535
+  cidr_ipv4         = "0.0.0.0/0"
+  description       = "Allow all TCP"
+  tags = {
+    SBO_Billing = "thumbnail_generation_api"
+  }
+}
+
+resource "aws_vpc_security_group_egress_rule" "thumbnail_generation_api_allow_outgoing_udp" {
+  security_group_id = aws_security_group.thumbnail_generation_api_sec_group.id
+  ip_protocol       = "udp"
+  from_port         = 0
+  to_port           = 65535
+  cidr_ipv4         = "0.0.0.0/0"
+  description       = "Allow all UDP"
+  tags = {
+    SBO_Billing = "thumbnail_generation_api"
   }
 }
 
