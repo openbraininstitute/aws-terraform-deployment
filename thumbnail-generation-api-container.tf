@@ -43,7 +43,8 @@ resource "aws_iam_role_policy_attachment" "thumbnail_generation_api_ecs_task_exe
 }
 
 resource "aws_iam_role" "thumbnail_generation_api_ecs_task_role" {
-  name = "thumbnail_generation_api-ecsTaskRole"
+  count = var.thumbnail_generation_api_ecs_number_of_containers > 0 ? 1 : 0
+  name  = "thumbnail_generation_api-ecsTaskRole"
   assume_role_policy = jsonencode({
     "Version" = "2012-10-17",
     "Statement" = [
@@ -102,6 +103,7 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = aws_iam_role.thumbnail_generation_api_ecs_task_execution_role[0].arn
+  task_role_arn            = aws_iam_role.thumbnail_generation_api_ecs_task_role[0].arn
   memory                   = 2048
   cpu                      = 1024
 
@@ -165,11 +167,13 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
 
 # Service
 resource "aws_ecs_service" "thumbnail_generation_api_service" {
-  count           = var.thumbnail_generation_api_ecs_number_of_containers > 0 ? 1 : 0
-  name            = "thumbnail-generation-api-service"
-  cluster         = aws_ecs_cluster.thumbnail_generation_api_cluster.id
-  task_definition = aws_ecs_task_definition.thumbnail_generation_api_task_definition[0].arn
-  desired_count   = 1
+  count                = var.thumbnail_generation_api_ecs_number_of_containers > 0 ? 1 : 0
+  name                 = "thumbnail-generation-api-service"
+  cluster              = aws_ecs_cluster.thumbnail_generation_api_cluster.id
+  task_definition      = aws_ecs_task_definition.thumbnail_generation_api_task_definition[0].arn
+  desired_count        = 1
+  force_new_deployment = true
+
 
   # Load Balancer configuration
   load_balancer {
