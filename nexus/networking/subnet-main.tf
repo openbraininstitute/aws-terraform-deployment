@@ -1,4 +1,15 @@
 # Subnet for Nexus
+resource "aws_subnet" "nexus_main" {
+  vpc_id            = var.vpc_id
+  availability_zone = "${var.aws_region}a"
+  cidr_block        = "10.0.9.0/24"
+  tags = {
+    Name        = "nexus_main_subnet"
+    SBO_Billing = "nexus"
+  }
+}
+
+# TODO: Old subnet to be deleted once unused
 resource "aws_subnet" "nexus" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}a"

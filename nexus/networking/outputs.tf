@@ -1,5 +1,5 @@
 output "subnet_id" {
-  value = aws_subnet.nexus.id
+  value = aws_subnet.nexus_main.id
 }
 
 output "main_subnet_sg_id" {
