@@ -202,6 +202,7 @@ resource "aws_ecs_service" "thumbnail_generation_api_service" {
   task_definition      = aws_ecs_task_definition.thumbnail_generation_api_task_definition.arn
   desired_count        = 1
   force_new_deployment = true
+  launch_type          = "FARGATE"
 
 
   # Load Balancer configuration
