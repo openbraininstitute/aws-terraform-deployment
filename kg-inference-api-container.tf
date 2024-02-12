@@ -171,9 +171,33 @@ resource "aws_ecs_task_definition" "kg_inference_api_task_definition" {
         ],
         environment = [
           {
+            name  = "BBP_NEXUS_ENDPOINT",
+            value = "https://bbp.epfl.ch/nexus/v1"
+          },
+          {
+            name  = "ENVIRONMENT",
+            value = "DEV"
+          },
+          {
+            name  = "RULES_BUCKET",
+            value = "bbp/inference-rules"
+          },
+          {
+            name  = "DATAMODELS_BUCKET",
+            value = "neurosciencegraph/datamodels"
+          },
+          {
             name  = "WHITELISTED_CORS_URLS",
-            value = "http:localhost:3000,https://bbp.epfl.ch"
-          }
+            value = "https://bluebrainatlas.kcpdev.bbp.epfl.ch,https://bluebrainatlas.kcp.bbp.epfl.ch,https://kg-inference-frontend.kcp.bbp.epfl.ch,http://localhost:3000,https://bbp.epfl.ch"
+          },
+          {
+            name  = "ES_RULE_VIEW",
+            value = "https://bbp.epfl.ch/neurosciencegraph/data/views/aggreg-es/rule_view"
+          },
+          {
+            name  = "SPARQL_RULE_VIEW",
+            value = "https://bbp.epfl.ch/neurosciencegraph/data/views/aggreg-sp/rule_view"
+          },
         ],
         memory = 2048
         cpu    = 1024
