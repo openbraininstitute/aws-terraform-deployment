@@ -57,10 +57,3 @@ variable "workflow_ecs_number_of_containers" {
   sensitive   = false
   description = "Number of containers for BBP-Workflow"
 }
-
-variable "thumbnail_generation_api_ecs_number_of_containers" {
-  type        = number
-  default     = 1
-  sensitive   = false
-  description = "Number of containers for Thumbnail Generation API"
-}

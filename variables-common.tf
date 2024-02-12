@@ -264,3 +264,19 @@ variable "thumbnail_generation_api_hostname" {
   description = "The hostname for the thumbnail generation api"
   sensitive   = false
 }
+
+### KG Inference API ###
+
+variable "kg_inference_api_docker_image_url" {
+  default     = "bluebrain/kg-inference-api:latest"
+  type        = string
+  description = "docker image for the KG Inference API"
+  sensitive   = false
+}
+
+variable "kg_inference_api_hostname" {
+  default     = "kg-inference-api.shapes-registry.org"
+  type        = string
+  description = "The hostname for the KG Inference API"
+  sensitive   = false
+}
