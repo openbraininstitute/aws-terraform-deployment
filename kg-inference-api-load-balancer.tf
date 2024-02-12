@@ -59,7 +59,7 @@ resource "aws_lb_listener_certificate" "kg_inference_api" {
 
 resource "aws_lb_listener_rule" "kg_inference_api" {
   listener_arn = aws_lb_listener.sbo_https.arn
-  priority     = 302
+  priority     = 303
 
   action {
     type             = "forward"
