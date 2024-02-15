@@ -137,3 +137,7 @@ resource "aws_vpc_endpoint" "secretsmanager" {
   vpc_endpoint_type = "Interface"
 }
 
+resource "aws_vpc_endpoint" "s3-us-east1" {
+  vpc_id       = data.terraform_remote_state.common.outputs.vpc_id
+  service_name = "com.amazonaws.us-east-1.s3"
+}
