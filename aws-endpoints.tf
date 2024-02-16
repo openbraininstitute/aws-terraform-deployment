@@ -123,14 +123,28 @@ resource "aws_vpc_endpoint" "secretsmanager" {
   vpc_endpoint_type = "Interface"
 }
 
-resource "aws_vpc_endpoint" "s3-us-east1" {
+resource "aws_vpc_endpoint" "s3_gateway_vpc" {
   vpc_id       = data.terraform_remote_state.common.outputs.vpc_id
-  service_name = "com.amazonaws.us-east-1.s3"
+  service_name = "com.amazonaws.${var.aws_region}.s3"
   route_table_ids = [
     data.terraform_remote_state.common.outputs.route_table_private_subnets_id
   ]
   tags = {
-    Name        = "s3-us-east1"
-    SBO_Billing = "s3-us-east1"
+    Name        = "s3_gateway_vpc"
+    SBO_Billing = "common"
   }
+  vpc_endpoint_type = "Gateway"
+}
+
+resource "aws_vpc_endpoint" "s3express_gateway_vpc" {
+  vpc_id       = data.terraform_remote_state.common.outputs.vpc_id
+  service_name = "com.amazonaws.${var.aws_region}.s3express"
+  route_table_ids = [
+    data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  ]
+  tags = {
+    Name        = "s3express_gateway_vpc"
+    SBO_Billing = "common"
+  }
+  vpc_endpoint_type = "Gateway"
 }
