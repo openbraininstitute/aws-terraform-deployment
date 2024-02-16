@@ -11,22 +11,10 @@ resource "aws_subnet" "thumbnail_generation_api" {
   }
 }
 
-# Route table for the thumbnail_generation_api network
-resource "aws_route_table" "thumbnail_generation_api" {
-  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
-  }
-  tags = {
-    Name        = "thumbnail_generation_api_route"
-    SBO_Billing = "thumbnail_generation_api"
-  }
-}
 # Link route table to thumbnail_generation_api network
 resource "aws_route_table_association" "thumbnail_generation_api" {
   subnet_id      = aws_subnet.thumbnail_generation_api.id
-  route_table_id = aws_route_table.thumbnail_generation_api.id
+  route_table_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
 }
 
 resource "aws_network_acl" "thumbnail_generation_api" {

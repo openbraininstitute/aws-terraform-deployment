@@ -12,22 +12,10 @@ resource "aws_subnet" "core_webapp" {
   }
 }
 
-# Route table for the core_webapp network
-resource "aws_route_table" "core_webapp" {
-  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
-  }
-  tags = {
-    Name        = "core_webapp_route"
-    SBO_Billing = "core_webapp"
-  }
-}
 # Link route table to core_webapp network
 resource "aws_route_table_association" "core_webapp" {
   subnet_id      = aws_subnet.core_webapp.id
-  route_table_id = aws_route_table.core_webapp.id
+  route_table_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
 }
 
 resource "aws_network_acl" "core_webapp" {

@@ -20,24 +20,10 @@ resource "aws_subnet" "aws_endpoints" {
   }
 }
 
-# Route table for the aws_endpoints network
-# TODO routing via NAT probably not needed
-resource "aws_route_table" "aws_endpoints" {
-  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
-  }
-  tags = {
-    Name        = "aws_endpoints_route"
-    SBO_Billing = "common"
-  }
-}
-
 # Link route table to aws_endpoints network
 resource "aws_route_table_association" "aws_endpoints" {
   subnet_id      = aws_subnet.aws_endpoints.id
-  route_table_id = aws_route_table.aws_endpoints.id
+  route_table_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
 }
 
 resource "aws_network_acl" "aws_endpoints" {
@@ -141,7 +127,7 @@ resource "aws_vpc_endpoint" "s3-us-east1" {
   vpc_id       = data.terraform_remote_state.common.outputs.vpc_id
   service_name = "com.amazonaws.us-east-1.s3"
   route_table_ids = [
-    aws_route_table.cells.id
+    data.terraform_remote_state.common.outputs.route_table_private_subnets_id
   ]
   tags = {
     Name        = "s3-us-east1"

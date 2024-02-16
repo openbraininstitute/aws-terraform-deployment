@@ -11,23 +11,10 @@ resource "aws_subnet" "viz" {
   }
 }
 
-# Route table for the viz network
-resource "aws_route_table" "viz" {
-  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
-  }
-  tags = {
-    Name        = "viz_route"
-    SBO_Billing = "viz"
-  }
-}
-
 # Link route table to viz network
 resource "aws_route_table_association" "viz" {
   subnet_id      = aws_subnet.viz.id
-  route_table_id = aws_route_table.viz.id
+  route_table_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
 }
 
 resource "aws_network_acl" "viz" {
@@ -88,29 +75,15 @@ resource "aws_subnet" "viz_db_b" {
   }
 }
 
-
-# Route table for the viz db networks
-resource "aws_route_table" "viz_db" {
-  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
-  }
-  tags = {
-    Name        = "viz_db_route"
-    SBO_Billing = "viz"
-  }
-}
-
 # Link route table to viz db networks
 resource "aws_route_table_association" "viz_db_a" {
   subnet_id      = aws_subnet.viz_db_a.id
-  route_table_id = aws_route_table.viz_db.id
+  route_table_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
 }
 
 resource "aws_route_table_association" "viz_db_b" {
   subnet_id      = aws_subnet.viz_db_b.id
-  route_table_id = aws_route_table.viz_db.id
+  route_table_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
 }
 
 resource "aws_network_acl" "viz_db" {

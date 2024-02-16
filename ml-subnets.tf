@@ -8,21 +8,9 @@ resource "aws_subnet" "ml_os" {
   }
 }
 
-resource "aws_route_table" "ml_os" {
-  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
-  }
-  tags = {
-    Name        = "ml_os_route"
-    SBO_Billing = "machinelearning"
-  }
-}
-
 resource "aws_route_table_association" "ml_os" {
   subnet_id      = aws_subnet.ml_os.id
-  route_table_id = aws_route_table.ml_os.id
+  route_table_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
 }
 
 resource "aws_network_acl" "ml_os" {

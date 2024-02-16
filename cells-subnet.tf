@@ -11,22 +11,10 @@ resource "aws_subnet" "cells" {
   }
 }
 
-# Route table for the cells network
-resource "aws_route_table" "cells" {
-  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
-  }
-  tags = {
-    Name        = "cells_route"
-    SBO_Billing = "cell_svc"
-  }
-}
 # Link route table to cells network
 resource "aws_route_table_association" "cells" {
   subnet_id      = aws_subnet.cells.id
-  route_table_id = aws_route_table.cells.id
+  route_table_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
 }
 
 resource "aws_network_acl" "cells" {

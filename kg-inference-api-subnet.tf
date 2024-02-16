@@ -11,22 +11,10 @@ resource "aws_subnet" "kg_inference_api" {
   }
 }
 
-# Route table for the kg_inference_api network
-resource "aws_route_table" "kg_inference_api" {
-  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
-  }
-  tags = {
-    Name        = "kg_inference_api_route"
-    SBO_Billing = "kg_inference_api"
-  }
-}
 # Link route table to kg_inference_api network
 resource "aws_route_table_association" "kg_inference_api" {
   subnet_id      = aws_subnet.kg_inference_api.id
-  route_table_id = aws_route_table.kg_inference_api.id
+  route_table_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
 }
 
 resource "aws_network_acl" "kg_inference_api" {

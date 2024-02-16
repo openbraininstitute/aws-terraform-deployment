@@ -12,22 +12,11 @@ resource "aws_subnet" "workflow" {
   }
 }
 
-# Route table for bbp-workflow network
-resource "aws_route_table" "workflow" {
-  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
-  }
-  tags = {
-    Name        = "workflow_route"
-    SBO_Billing = "workflow"
-  }
-}
+
 # Link route table to bbp-workflow network
 resource "aws_route_table_association" "workflow" {
   subnet_id      = aws_subnet.workflow.id
-  route_table_id = aws_route_table.workflow.id
+  route_table_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
 }
 
 resource "aws_network_acl" "workflow" {

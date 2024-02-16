@@ -11,22 +11,11 @@ resource "aws_subnet" "core_svc" {
   }
 }
 
-# Route table for the core_svc network
-resource "aws_route_table" "core_svc" {
-  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
-  }
-  tags = {
-    Name        = "core_svc_route"
-    SBO_Billing = "core_svc"
-  }
-}
+
 # Link route table to core_svc network
 resource "aws_route_table_association" "core_svc" {
   subnet_id      = aws_subnet.core_svc.id
-  route_table_id = aws_route_table.core_svc.id
+  route_table_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
 }
 
 resource "aws_network_acl" "core_svc" {
