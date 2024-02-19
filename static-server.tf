@@ -81,13 +81,13 @@ resource "aws_s3_bucket" "static_storage" {
   bucket = local.domain
 }
 
+#tfsec:ignore:aws-s3-no-public-buckets
 resource "aws_s3_bucket_public_access_block" "static_storage" {
   bucket = aws_s3_bucket.static_storage.id
 
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
+  block_public_acls   = true
+  block_public_policy = true
+  ignore_public_acls  = true
 }
 
 resource "aws_s3_bucket_policy" "static_storage" {
