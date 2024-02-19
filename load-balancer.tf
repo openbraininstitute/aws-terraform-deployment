@@ -135,7 +135,7 @@ output "alb_dns_name" {
 resource "aws_lb_listener" "alb_6000" {
   load_balancer_arn = aws_lb.alb.arn
   port              = "6000"
-  protocol = "HTTPS"
+  protocol          = "HTTPS"
 
   default_action {
     type = "fixed-response"
