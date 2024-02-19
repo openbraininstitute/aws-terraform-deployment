@@ -41,6 +41,8 @@ resource "aws_route" "nexus_igw_route" {
   gateway_id             = aws_internet_gateway.nexus_ig[0].id
 }
 
+
+
 # Link route table to nexus_app network
 resource "aws_route_table_association" "public_rt_association" {
   count          = local.create_nat_gateway ? 1 : 0

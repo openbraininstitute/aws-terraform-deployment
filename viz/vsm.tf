@@ -14,9 +14,8 @@ resource "aws_cloudwatch_log_group" "viz_vsm" {
 # TODO make more strict
 resource "aws_security_group" "viz_vsm_ecs_task" {
   name        = "viz_vsm_ecs_task"
-  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id      = data.aws_vpc.selected.id
   description = "Sec group for vsm service"
-
   tags = {
     Name        = "viz_vsm_secgroup"
     SBO_Billing = "viz"
@@ -29,7 +28,7 @@ resource "aws_vpc_security_group_ingress_rule" "viz_vsm_allow_port_4444" {
   ip_protocol = "tcp"
   from_port   = 4444
   to_port     = 4444
-  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  cidr_ipv4   = data.aws_vpc.selected.cidr_block
   description = "Allow port 4444 http"
 
   tags = {
@@ -63,7 +62,7 @@ resource "aws_ecs_task_definition" "viz_vsm_ecs_definition" {
       image       = var.viz_vsm_docker_image_url
       name        = "viz_vsm"
       repositoryCredentials = {
-        credentialsParameter = data.terraform_remote_state.common.outputs.dockerhub_credentials_arn
+        credentialsParameter = data.aws_secretsmanager_secret.dockerhub_creds.arn
       }
       portMappings = [
         {
@@ -232,7 +231,7 @@ resource "aws_iam_role" "viz_vsm_ecs_task_role" {
 
 resource "aws_iam_role_policy_attachment" "viz_vsm_ecs_task_role_dockerhub_policy_attachment" {
   role       = aws_iam_role.viz_vsm_ecs_task_execution_role.name
-  policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
+  policy_arn = data.aws_iam_policy.selected.arn
 }
 
 #tfsec:ignore:aws-iam-no-policy-wildcards

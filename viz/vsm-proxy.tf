@@ -14,7 +14,7 @@ resource "aws_cloudwatch_log_group" "viz_vsm_proxy" {
 # TODO make more strict
 resource "aws_security_group" "viz_vsm_proxy_ecs_task" {
   name        = "viz_vsm_proxy_ecs_task"
-  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id      = data.aws_vpc.selected.id
   description = "Sec group for VSM-Proxy service"
 
   tags = {
@@ -29,7 +29,7 @@ resource "aws_vpc_security_group_ingress_rule" "viz_vsm_proxy_allow_port_8888" {
   ip_protocol = "tcp"
   from_port   = 8888
   to_port     = 8888
-  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  cidr_ipv4   = data.aws_vpc.selected.cidr_block
   description = "Allow port 8888 http"
 
   tags = {
@@ -63,7 +63,7 @@ resource "aws_ecs_task_definition" "viz_vsm_proxy_ecs_definition" {
       image       = var.viz_vsm_docker_image_url
       name        = "viz_vsm_proxy"
       repositoryCredentials = {
-        credentialsParameter = data.terraform_remote_state.common.outputs.dockerhub_credentials_arn
+        credentialsParameter = data.aws_secretsmanager_secret.dockerhub_creds.arn
       }
       portMappings = [
         {
@@ -85,10 +85,10 @@ resource "aws_ecs_task_definition" "viz_vsm_proxy_ecs_definition" {
           name  = "VSM_LOG_LEVEL"
           value = "DEBUG"
         },
-        {
-          name  = "VSM_DB_HOST"
-          value = aws_db_instance.vizdb.address
-        },
+        #        {
+        #          name  = "VSM_DB_HOST"
+        #          value = aws_db_instance.vizdb.address
+        #        },
         {
           name  = "VSM_DB_USERNAME"
           value = var.viz_postgresql_database_username
@@ -97,10 +97,10 @@ resource "aws_ecs_task_definition" "viz_vsm_proxy_ecs_definition" {
           name  = "VSM_DB_NAME"
           value = var.viz_postgresql_database_name
         },
-        {
-          name  = "VSM_DB_PASSWORD"
-          value = data.aws_secretsmanager_secret_version.viz_database_password.secret_string
-        },
+        #        {
+        #          name  = "VSM_DB_PASSWORD"
+        #          value = data.aws_secretsmanager_secret_version.viz_database_password.secret_string
+        #        },
         {
           name  = "VSM_JOB_ALLOCATOR"
           value = "AWS"
@@ -174,7 +174,7 @@ resource "aws_ecs_service" "viz_vsm_proxy_ecs_service" {
     ignore_changes = [desired_count]
   }
   load_balancer {
-    target_group_arn = aws_lb_target_group.viz_vsm_proxy.arn
+    target_group_arn = aws_lb_target_group.viz_vsm_proxy[0].arn
     container_name   = "viz_vsm_proxy"
     container_port   = 8888
   }
@@ -232,7 +232,7 @@ resource "aws_iam_role" "viz_vsm_proxy_ecs_task_role" {
 
 resource "aws_iam_role_policy_attachment" "viz_vsm_proxy_ecs_task_role_dockerhub_policy_attachment" {
   role       = aws_iam_role.viz_vsm_proxy_ecs_task_execution_role.name
-  policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
+  policy_arn = data.aws_iam_policy.selected.arn
 }
 
 resource "aws_iam_role_policy" "viz_vsm_proxy_ecs_exec_policy" {

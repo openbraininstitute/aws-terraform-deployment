@@ -1,6 +1,6 @@
 resource "aws_security_group" "viz_db_sg" {
   name   = "viz_db_sg"
-  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id = data.aws_vpc.selected.id
 
   description = "Security group for viz postgresql database"
   # Only PostgreSQL traffic inbound
@@ -15,14 +15,14 @@ resource "aws_security_group" "viz_db_sg" {
     from_port   = 0
     to_port     = 0
     protocol    = -1
-    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
+    cidr_blocks = [data.aws_vpc.selected.cidr_block]
     description = "allow ingress from within vpc"
   }
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = -1
-    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
+    cidr_blocks = [data.aws_vpc.selected.cidr_block]
     description = "allow egress to within vpc"
   }
   tags = {
@@ -38,9 +38,8 @@ resource "aws_db_subnet_group" "viz_db_subnet_group" {
   }
 }
 
-# Data source to retrieve the password from AWS Secrets Manager
 data "aws_secretsmanager_secret_version" "viz_database_password" {
-  secret_id = "arn:aws:secretsmanager:us-east-1:671250183987:secret:viz_vsm_db_password-HpmfWe"
+  secret_id = var.viz_vsm_db_password_arn
 }
 
 # tfsec:ignore:aws-rds-enable-performance-insights-encryption
@@ -63,6 +62,7 @@ resource "aws_db_instance" "vizdb" {
   db_name    = var.viz_postgresql_database_name
 
   username = var.viz_postgresql_database_username
+  #TODO
   password = data.aws_secretsmanager_secret_version.viz_database_password.secret_string
 
   publicly_accessible          = false

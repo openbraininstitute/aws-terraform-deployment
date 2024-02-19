@@ -38,7 +38,8 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
       image       = var.viz_brayns_docker_image_url
       name        = "viz_brayns"
       repositoryCredentials = {
-        credentialsParameter = data.terraform_remote_state.common.outputs.dockerhub_credentials_arn
+        credentialsParameter = data.aws_secretsmanager_secret.dockerhub_creds.arn
+
       }
       environment = []
       mountPoints = []
@@ -86,7 +87,7 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
       image       = var.viz_bcsb_docker_image_url
       name        = "viz_bcsb"
       repositoryCredentials = {
-        credentialsParameter = data.terraform_remote_state.common.outputs.dockerhub_credentials_arn
+        credentialsParameter = data.aws_secretsmanager_secret.dockerhub_creds.arn
       }
       environment = []
       mountPoints = []
@@ -151,16 +152,7 @@ resource "aws_ecs_service" "viz_brayns_ecs_service" {
   lifecycle {
     ignore_changes = [desired_count]
   }
-  load_balancer {
-    target_group_arn = aws_lb_target_group.viz_brayns.arn
-    container_name   = "viz_brayns"
-    container_port   = 5000
-  }
-  load_balancer {
-    target_group_arn = aws_lb_target_group.viz_bcsb.arn
-    container_name   = "viz_bcsb"
-    container_port   = 8000
-  }
+
   force_new_deployment = true
   tags = {
     SBO_Billing = "viz"
@@ -270,7 +262,7 @@ resource "aws_iam_role" "viz_brayns_ecs_task_role" {
 
 resource "aws_iam_role_policy_attachment" "viz_brayns_ecs_task_role_dockerhub_policy_attachment" {
   role       = aws_iam_role.viz_brayns_ecs_task_execution_role.name
-  policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
+  policy_arn = data.aws_iam_policy.selected.arn
 }
 
 resource "aws_iam_role_policy" "viz_brayns_ecs_exec_policy" {

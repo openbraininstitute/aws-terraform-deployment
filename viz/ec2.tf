@@ -1,3 +1,25 @@
+data "aws_ami" "amazon_linux_2_ecs" {
+  most_recent = true
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  filter {
+    name   = "owner-alias"
+    values = ["amazon"]
+  }
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-ecs-hvm-*-x86_64-ebs"]
+  }
+
+  owners = ["amazon"]
+}
+
+
 resource "aws_iam_role" "ec2_instance_role" {
   name = "viz_EC2_InstanceRole"
   assume_role_policy = jsonencode({
@@ -57,7 +79,7 @@ resource "aws_launch_template" "ecs_launch_template" {
 }
 
 data "template_file" "viz_ec2_ecs_user_data" {
-  template = file("viz_ec2_ecs_user_data.sh")
+  template = file("viz/viz_ec2_ecs_user_data.sh")
 
   vars = {
     ecs_cluster_name = aws_ecs_cluster.viz_ecs_cluster.name
@@ -66,7 +88,7 @@ data "template_file" "viz_ec2_ecs_user_data" {
 
 resource "aws_security_group" "viz_ec2_sg" {
   name        = "viz_ec2_sg"
-  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id      = data.aws_vpc.selected.id
   description = "Sec group for Brayns service"
 
   tags = {
@@ -81,7 +103,7 @@ resource "aws_vpc_security_group_ingress_rule" "viz_brayns_allow_port_22" {
   ip_protocol = "tcp"
   from_port   = 22
   to_port     = 22
-  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  cidr_ipv4   = data.aws_vpc.selected.cidr_block
   description = "Allow port 22 ssh"
 
   tags = {
@@ -96,7 +118,7 @@ resource "aws_vpc_security_group_ingress_rule" "viz_brayns_allow_port_5000" {
   ip_protocol = "tcp"
   from_port   = 5000
   to_port     = 5000
-  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  cidr_ipv4   = data.aws_vpc.selected.cidr_block
   description = "Allow port 5000 http / websocket"
 
   tags = {
@@ -110,7 +132,7 @@ resource "aws_vpc_security_group_ingress_rule" "viz_brayns_allow_port_8000" {
   ip_protocol = "tcp"
   from_port   = 8000
   to_port     = 8000
-  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  cidr_ipv4   = data.aws_vpc.selected.cidr_block
   description = "Allow port 8000 http / websocket"
 
   tags = {
