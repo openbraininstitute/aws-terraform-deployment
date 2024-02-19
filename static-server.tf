@@ -122,7 +122,9 @@ resource "aws_lb_listener_rule" "static_data" {
     host_header {
       values = [local.domain]
     }
+  }
 
+  condition {
     path_pattern {
       values = ["/static/*"]
     }

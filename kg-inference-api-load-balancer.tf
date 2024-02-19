@@ -70,7 +70,9 @@ resource "aws_lb_listener_rule" "kg_inference_api" {
     host_header {
       values = [var.kg_inference_api_hostname]
     }
+  }
 
+  condition {
     source_ip {
       values = [var.epfl_cidr]
     }

@@ -66,7 +66,9 @@ resource "aws_lb_listener_rule" "cell_svc_https" {
     host_header {
       values = [var.cell_svc_hostname]
     }
+  }
 
+  condition {
     source_ip {
       values = [var.epfl_cidr]
     }

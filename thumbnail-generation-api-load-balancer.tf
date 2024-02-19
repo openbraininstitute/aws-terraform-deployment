@@ -70,7 +70,9 @@ resource "aws_lb_listener_rule" "thumbnail_generation_api" {
     host_header {
       values = [var.thumbnail_generation_api_hostname]
     }
+  }
 
+  condition {
     source_ip {
       values = [var.epfl_cidr]
     }

@@ -73,7 +73,9 @@ resource "aws_lb_listener_rule" "bbp_workflow_api" {
     host_header {
       values = [var.bbp_workflow_api_hostname]
     }
+  }
 
+  condition {
     source_ip {
       values = [var.epfl_cidr]
     }

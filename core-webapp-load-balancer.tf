@@ -70,7 +70,9 @@ resource "aws_lb_listener_rule" "core_webapp_https" {
     host_header {
       values = [var.core_webapp_hostname]
     }
+  }
 
+  condition {
     source_ip {
       values = [var.epfl_cidr]
     }

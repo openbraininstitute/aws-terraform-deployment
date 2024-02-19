@@ -70,7 +70,9 @@ resource "aws_lb_listener_rule" "nexus_fusion_https" {
     host_header {
       values = [var.nexus_fusion_hostname]
     }
+  }
 
+  condition {
     source_ip {
       values = var.allowed_source_ip_cidr_blocks
     }
