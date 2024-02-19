@@ -123,27 +123,79 @@ resource "aws_vpc_endpoint" "secretsmanager" {
   vpc_endpoint_type = "Interface"
 }
 
-resource "aws_vpc_endpoint" "s3_gateway_vpc" {
+resource "aws_vpc_endpoint" "cloudwatch" {
+  vpc_id       = data.terraform_remote_state.common.outputs.vpc_id
+  service_name = "com.amazonaws.${var.aws_region}.logs"
+  route_table_ids = [
+    data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  ]
+  tags = {
+    Name        = "cloudwatch"
+    SBO_Billing = "common"
+  }
+  vpc_endpoint_type = "Interface"
+}
+
+resource "aws_vpc_endpoint" "cloudformation" {
+  vpc_id       = data.terraform_remote_state.common.outputs.vpc_id
+  service_name = "com.amazonaws.${var.aws_region}.cloudformation"
+  route_table_ids = [
+    data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  ]
+  tags = {
+    Name        = "cloudformation"
+    SBO_Billing = "common"
+  }
+  vpc_endpoint_type = "Interface"
+}
+
+resource "aws_vpc_endpoint" "ec2" {
+  vpc_id       = data.terraform_remote_state.common.outputs.vpc_id
+  service_name = "com.amazonaws.${var.aws_region}.ec2"
+  route_table_ids = [
+    data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  ]
+  tags = {
+    Name        = "ec2"
+    SBO_Billing = "common"
+  }
+  vpc_endpoint_type = "Interface"
+}
+
+resource "aws_vpc_endpoint" "s3" {
   vpc_id       = data.terraform_remote_state.common.outputs.vpc_id
   service_name = "com.amazonaws.${var.aws_region}.s3"
   route_table_ids = [
     data.terraform_remote_state.common.outputs.route_table_private_subnets_id
   ]
   tags = {
-    Name        = "s3_gateway_vpc"
+    Name        = "s3"
     SBO_Billing = "common"
   }
   vpc_endpoint_type = "Gateway"
 }
 
-resource "aws_vpc_endpoint" "s3express_gateway_vpc" {
+resource "aws_vpc_endpoint" "s3express" {
   vpc_id       = data.terraform_remote_state.common.outputs.vpc_id
   service_name = "com.amazonaws.${var.aws_region}.s3express"
   route_table_ids = [
     data.terraform_remote_state.common.outputs.route_table_private_subnets_id
   ]
   tags = {
-    Name        = "s3express_gateway_vpc"
+    Name        = "s3express"
+    SBO_Billing = "common"
+  }
+  vpc_endpoint_type = "Gateway"
+}
+
+resource "aws_vpc_endpoint" "dynamodb" {
+  vpc_id       = data.terraform_remote_state.common.outputs.vpc_id
+  service_name = "com.amazonaws.${var.aws_region}.dynamodb"
+  route_table_ids = [
+    data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  ]
+  tags = {
+    Name        = "dynamodb"
     SBO_Billing = "common"
   }
   vpc_endpoint_type = "Gateway"
