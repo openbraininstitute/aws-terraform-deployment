@@ -11,5 +11,7 @@ nat_gateway_id                = "nat-0a1f630f60bfcf279"
 private_alb_dns_name          = "internal-sbo-poc-private-alb-1398645643.us-east-1.elb.amazonaws.com"
 private_alb_listener_9999_arn = "arn:aws:elasticloadbalancing:us-east-1:671250183987:listener/app/sbo-poc-private-alb/9218a6246c00752c/dc7a6022650c8898"
 
+allowed_source_ip_cidr_blocks = ["128.178.0.0/15", "10.0.0.0/16"] // EPFL and VPC IPs
+
 aws_lb_alb_dns_name           = "sbo-poc-alb-1920595049.us-east-1.elb.amazonaws.com"
 aws_lb_listener_sbo_https_arn = "arn:aws:elasticloadbalancing:us-east-1:671250183987:listener/app/sbo-poc-alb/f5dfcd670d2b881c/ac6c42d364b0efba"

@@ -47,17 +47,18 @@ resource "aws_lb_listener" "sbo_https" {
   certificate_arn   = aws_acm_certificate_validation.sbo_https_test.certificate_arn
 
   default_action {
-    type = "fixed-response"
+    type = "redirect"
 
-    fixed_response {
-      content_type = "text/plain"
-      message_body = "Fixed response content: https working"
-      status_code  = "200"
+    redirect {
+      path        = "/static/coming-soon/index.html"
+      status_code = "HTTP_302"
     }
   }
+
   tags = {
     SBO_Billing = "common"
   }
+
   depends_on = [
     aws_lb.alb
   ]

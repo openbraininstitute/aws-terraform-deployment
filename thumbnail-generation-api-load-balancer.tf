@@ -59,7 +59,7 @@ resource "aws_lb_listener_certificate" "thumbnail_generation_api" {
 
 resource "aws_lb_listener_rule" "thumbnail_generation_api" {
   listener_arn = aws_lb_listener.sbo_https.arn
-  priority     = 302
+  priority     = 400
 
   action {
     type             = "forward"
@@ -70,7 +70,12 @@ resource "aws_lb_listener_rule" "thumbnail_generation_api" {
     host_header {
       values = [var.thumbnail_generation_api_hostname]
     }
+
+    source_ip {
+      values = [var.epfl_cidr]
+    }
   }
+
   tags = {
     SBO_Billing = "thumbnail_generation_api"
   }

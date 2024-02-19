@@ -62,7 +62,7 @@ resource "aws_lb_listener_certificate" "bbp_workflow_api" {
 
 resource "aws_lb_listener_rule" "bbp_workflow_api" {
   listener_arn = aws_lb_listener.sbo_https.arn
-  priority     = 301
+  priority     = 800
 
   action {
     type             = "forward"
@@ -73,7 +73,12 @@ resource "aws_lb_listener_rule" "bbp_workflow_api" {
     host_header {
       values = [var.bbp_workflow_api_hostname]
     }
+
+    source_ip {
+      values = [var.epfl_cidr]
+    }
   }
+
   tags = {
     SBO_Billing = "workflow"
   }

@@ -60,7 +60,7 @@ resource "aws_lb_listener_certificate" "nexus_app" {
 
 resource "aws_lb_listener_rule" "nexus_app_https" {
   listener_arn = var.aws_lb_listener_sbo_https_arn
-  priority     = 101
+  priority     = 100
 
   action {
     type             = "forward"
@@ -71,7 +71,12 @@ resource "aws_lb_listener_rule" "nexus_app_https" {
     host_header {
       values = [var.nexus_delta_hostname]
     }
+
+    source_ip {
+      values = var.allowed_source_ip_cidr_blocks
+    }
   }
+
   tags = {
     SBO_Billing = "nexus_app"
   }

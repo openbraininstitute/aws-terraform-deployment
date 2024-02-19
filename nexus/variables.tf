@@ -36,6 +36,10 @@ variable "private_alb_dns_name" {
   type = string
 }
 
+variable "allowed_source_ip_cidr_blocks" {
+  type = list(string)
+}
+
 variable "aws_lb_listener_sbo_https_arn" {
   type = string
 }

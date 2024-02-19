@@ -55,7 +55,7 @@ resource "aws_lb_listener_certificate" "cell_svc" {
 
 resource "aws_lb_listener_rule" "cell_svc_https" {
   listener_arn = aws_lb_listener.sbo_https.arn
-  priority     = 104
+  priority     = 700
 
   action {
     type             = "forward"
@@ -66,7 +66,12 @@ resource "aws_lb_listener_rule" "cell_svc_https" {
     host_header {
       values = [var.cell_svc_hostname]
     }
+
+    source_ip {
+      values = [var.epfl_cidr]
+    }
   }
+
   tags = { SBO_Billing = "cell_svc" }
   depends_on = [
     aws_lb_listener.sbo_https,

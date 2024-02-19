@@ -59,7 +59,7 @@ resource "aws_lb_listener_certificate" "core_webapp" {
 
 resource "aws_lb_listener_rule" "core_webapp_https" {
   listener_arn = aws_lb_listener.sbo_https.arn
-  priority     = 100
+  priority     = 200
 
   action {
     type             = "forward"
@@ -70,7 +70,12 @@ resource "aws_lb_listener_rule" "core_webapp_https" {
     host_header {
       values = [var.core_webapp_hostname]
     }
+
+    source_ip {
+      values = [var.epfl_cidr]
+    }
   }
+
   tags = {
     SBO_Billing = "core_webapp"
   }

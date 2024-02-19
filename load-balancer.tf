@@ -25,16 +25,29 @@ resource "aws_security_group" "alb" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "alb_allow_https_epfl" {
+resource "aws_vpc_security_group_ingress_rule" "alb_allow_http_all" {
   security_group_id = aws_security_group.alb.id
-  description       = "Allow HTTPS from EPFL"
+  description       = "Allow HTTP"
+  from_port         = 80
+  to_port           = 80
+  ip_protocol       = "tcp"
+  cidr_ipv4         = "0.0.0.0/0"
+
+  tags = {
+    Name = "alb_allow_https_all"
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "alb_allow_https_all" {
+  security_group_id = aws_security_group.alb.id
+  description       = "Allow HTTPS"
   from_port         = 443
   to_port           = 443
   ip_protocol       = "tcp"
-  cidr_ipv4         = var.epfl_cidr
+  cidr_ipv4         = "0.0.0.0/0"
 
   tags = {
-    Name = "alb_allow_https_epfl"
+    Name = "alb_allow_https_all"
   }
 }
 
@@ -87,19 +100,6 @@ resource "aws_vpc_security_group_ingress_rule" "alb_allow_vsm_proxy_epfl" {
 
   tags = {
     Name = "alb_allow_vsm_proxy_epfl"
-  }
-}
-
-resource "aws_vpc_security_group_ingress_rule" "alb_allow_https_internal" {
-  security_group_id = aws_security_group.alb.id
-  description       = "Allow HTTPS from internal"
-  from_port         = 443
-  to_port           = 443
-  ip_protocol       = "tcp"
-  cidr_ipv4         = data.terraform_remote_state.common.outputs.vpc_cidr_block
-
-  tags = {
-    Name = "alb_allow_https_internal"
   }
 }
 

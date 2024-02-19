@@ -13,6 +13,8 @@ module "nexus" {
   private_alb_dns_name          = data.terraform_remote_state.common.outputs.private_alb_dns_name
   private_alb_listener_9999_arn = data.terraform_remote_state.common.outputs.private_alb_listener_9999_arn
 
+  allowed_source_ip_cidr_blocks = [var.epfl_cidr, data.terraform_remote_state.common.outputs.vpc_cidr_block]
+
   aws_lb_alb_dns_name           = aws_lb.alb.dns_name
   aws_lb_listener_sbo_https_arn = aws_lb_listener.sbo_https.arn
 
