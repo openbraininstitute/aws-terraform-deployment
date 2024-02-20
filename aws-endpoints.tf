@@ -126,9 +126,7 @@ resource "aws_vpc_endpoint" "secretsmanager" {
 resource "aws_vpc_endpoint" "cloudwatch" {
   vpc_id       = data.terraform_remote_state.common.outputs.vpc_id
   service_name = "com.amazonaws.${var.aws_region}.logs"
-  route_table_ids = [
-    data.terraform_remote_state.common.outputs.route_table_private_subnets_id
-  ]
+  subnet_ids   = [aws_subnet.aws_endpoints.id]
   tags = {
     Name        = "cloudwatch"
     SBO_Billing = "common"
@@ -139,9 +137,7 @@ resource "aws_vpc_endpoint" "cloudwatch" {
 resource "aws_vpc_endpoint" "cloudformation" {
   vpc_id       = data.terraform_remote_state.common.outputs.vpc_id
   service_name = "com.amazonaws.${var.aws_region}.cloudformation"
-  route_table_ids = [
-    data.terraform_remote_state.common.outputs.route_table_private_subnets_id
-  ]
+  subnet_ids   = [aws_subnet.aws_endpoints.id]
   tags = {
     Name        = "cloudformation"
     SBO_Billing = "common"
@@ -152,9 +148,7 @@ resource "aws_vpc_endpoint" "cloudformation" {
 resource "aws_vpc_endpoint" "ec2" {
   vpc_id       = data.terraform_remote_state.common.outputs.vpc_id
   service_name = "com.amazonaws.${var.aws_region}.ec2"
-  route_table_ids = [
-    data.terraform_remote_state.common.outputs.route_table_private_subnets_id
-  ]
+  subnet_ids   = [aws_subnet.aws_endpoints.id]
   tags = {
     Name        = "ec2"
     SBO_Billing = "common"
