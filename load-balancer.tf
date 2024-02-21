@@ -103,19 +103,6 @@ resource "aws_vpc_security_group_ingress_rule" "alb_allow_vsm_proxy_epfl" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "alb_allow_lb_internal" {
-  security_group_id = aws_security_group.alb.id
-  description       = "Allow 6000 for public lb"
-  from_port         = 6000
-  to_port           = 6000
-  ip_protocol       = "tcp"
-  cidr_ipv4         = data.terraform_remote_state.common.outputs.vpc_cidr_block
-
-  tags = {
-    Name = "alb_allow_https_epfl"
-  }
-}
-
 # TODO limit to only the listener ports and health check ports of the instance groups
 resource "aws_vpc_security_group_egress_rule" "alb_allow_everything_outgoing" {
   security_group_id = aws_security_group.alb.id
@@ -130,30 +117,4 @@ resource "aws_vpc_security_group_egress_rule" "alb_allow_everything_outgoing" {
 
 output "alb_dns_name" {
   value = aws_lb.alb.dns_name
-}
-
-resource "aws_lb_listener" "alb_6000" {
-  load_balancer_arn = aws_lb.alb.arn
-  port              = "6000"
-  protocol          = "HTTPS"
-
-  default_action {
-    type = "fixed-response"
-
-    fixed_response {
-      content_type = "text/plain"
-      message_body = "Fixed response content: port 6000 listener"
-      status_code  = "200"
-    }
-  }
-  tags = {
-    SBO_Billing = "common"
-  }
-  depends_on = [
-    aws_lb.alb
-  ]
-}
-
-output "alb_listener_6000_arn" {
-  value = aws_lb_listener.alb_6000.arn
 }
