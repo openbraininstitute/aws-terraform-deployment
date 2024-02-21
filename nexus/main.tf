@@ -14,6 +14,15 @@ module "postgres" {
   instance_class           = "db.t3.small"
 }
 
+module "elasticcloud" {
+  source = "./elasticcloud"
+
+  aws_region      = var.aws_region
+  vpc_id          = var.vpc_id
+  subnet_ids      = [module.networking.subnet_b_id]
+  deployment_name = "nexus_es"
+}
+
 module "elasticsearch" {
   source = "./elasticsearch"
 
@@ -61,19 +70,4 @@ module "delta" {
   # - the postgres db address
   # - the elasticsearch address
   # - the blazegraph address
-}
-
-moved {
-  from = aws_iam_role.ecs_nexus_storage_task_execution_role
-  to   = module.storage.aws_iam_role.ecs_nexus_storage_task_execution_role
-}
-
-moved {
-  from = aws_iam_role.ecs_nexus_storage_task_role
-  to   = module.storage.aws_iam_role.ecs_nexus_storage_task_role
-}
-
-moved {
-  from = aws_cloudwatch_log_group.nexus_storage
-  to   = module.storage.aws_cloudwatch_log_group.nexus_storage
 }

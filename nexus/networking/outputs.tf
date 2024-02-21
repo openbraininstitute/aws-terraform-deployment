@@ -2,6 +2,10 @@ output "subnet_id" {
   value = aws_subnet.nexus_main.id
 }
 
+output "subnet_b_id" {
+  value = aws_subnet.nexus_b.id
+}
+
 output "main_subnet_sg_id" {
   value = aws_security_group.main_sg.id
 }
