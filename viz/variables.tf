@@ -17,7 +17,11 @@ variable "secret_dockerhub_arn" {
 variable "dockerhub_access_iam_policy_arn" {
   type    = string
   default = ""
+}
 
+variable "route_table_private_subnets_id" {
+  type    = string
+  default = ""
 }
 
 variable "domain_zone_id" {

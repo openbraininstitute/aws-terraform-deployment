@@ -32,23 +32,10 @@ resource "aws_subnet" "viz_db_b" {
   }
 }
 
-
-# Route table for the viz network
-resource "aws_route_table" "viz" {
-  vpc_id = data.aws_vpc.selected.id
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = data.aws_nat_gateway.selected.id
-  }
-  tags = {
-    Name        = "viz_route"
-    SBO_Billing = "viz"
-  }
-}
 ## Link route table to viz network
 resource "aws_route_table_association" "viz" {
   subnet_id      = aws_subnet.viz.id
-  route_table_id = aws_route_table.viz.id
+  route_table_id = var.route_table_private_subnets_id
 }
 
 resource "aws_network_acl" "viz" {
