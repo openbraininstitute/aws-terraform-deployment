@@ -108,7 +108,7 @@ resource "aws_lb_listener_rule" "viz_vsm_proxy_8888" {
 
   condition {
     host_header {
-      values = ["*.com"]
+      values = var.viz_enable_sandbox ? ["*.com"] : [var.viz_vsm_hostname]
     }
   }
   tags = {
