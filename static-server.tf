@@ -103,6 +103,24 @@ resource "aws_s3_bucket_policy" "static_storage" {
           "Principal": "*",
           "Action":["s3:GetObject"],
           "Resource":["arn:aws:s3:::${local.domain}/*"]
+        },
+        {
+          "Sid": "Write",
+          "Effect": "Allow",
+          "Principal": {
+              "AWS": "arn:aws:iam::671250183987:user/cell_svc_bucket_user"
+          },
+          "Action": ["s3:*Object"],
+          "Resource":["arn:aws:s3:::${local.domain}/*"]
+        },
+        {
+          "Sid": "List",
+          "Effect": "Allow",
+          "Principal": {
+              "AWS": "arn:aws:iam::671250183987:user/cell_svc_bucket_user"
+          },
+          "Action": ["s3:ListBucket"],
+          "Resource":["arn:aws:s3:::${local.domain}"]
         }
       ]
     }
