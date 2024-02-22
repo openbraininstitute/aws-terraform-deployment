@@ -156,6 +156,17 @@ resource "aws_vpc_endpoint" "ec2" {
   vpc_endpoint_type = "Interface"
 }
 
+resource "aws_vpc_endpoint" "efs" {
+  vpc_id       = data.terraform_remote_state.common.outputs.vpc_id
+  service_name = "com.amazonaws.${var.aws_region}.elasticfilesystem"
+  subnet_ids   = [aws_subnet.aws_endpoints.id]
+  tags = {
+    Name        = "efs"
+    SBO_Billing = "common"
+  }
+  vpc_endpoint_type = "Interface"
+}
+
 resource "aws_vpc_endpoint" "s3" {
   vpc_id       = data.terraform_remote_state.common.outputs.vpc_id
   service_name = "com.amazonaws.${var.aws_region}.s3"
