@@ -2,7 +2,7 @@
 resource "aws_subnet" "viz" {
   vpc_id                  = data.aws_vpc.selected.id
   availability_zone       = "${var.aws_region}a"
-  cidr_block              = "10.0.2.176/28"
+  cidr_block              = "10.0.60.0/24"
   map_public_ip_on_launch = false
 
   tags = {
@@ -32,10 +32,11 @@ resource "aws_subnet" "viz_db_b" {
   }
 }
 
+
 ## Link route table to viz network
 resource "aws_route_table_association" "viz" {
   subnet_id      = aws_subnet.viz.id
-  route_table_id = var.route_table_private_subnets_id
+  route_table_id = data.aws_route_table.viz.id
 }
 
 resource "aws_network_acl" "viz" {

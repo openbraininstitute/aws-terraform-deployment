@@ -47,3 +47,20 @@ resource "aws_route_table_association" "viz_public_b" {
   route_table_id = aws_route_table.viz_public[0].id
 }
 
+
+resource "aws_route_table" "viz" {
+  count  = local.sandbox_resource_count
+  vpc_id = data.aws_vpc.selected.id
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = data.aws_nat_gateway.selected.id
+  }
+  tags = {
+    Name        = "viz_route"
+    SBO_Billing = "viz"
+  }
+}
+
+data "aws_route_table" "viz" {
+  route_table_id = var.viz_enable_sandbox ? aws_route_table.viz[0].id : var.route_table_private_subnets_id
+}

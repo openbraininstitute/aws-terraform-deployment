@@ -75,11 +75,14 @@ resource "aws_launch_template" "ecs_launch_template" {
   tags = {
     SBO_Billing = "viz"
   }
+}
 
+locals {
+  viz_user_data = var.viz_enable_sandbox ? "viz_ec2_ecs_user_data.sh" : "viz/viz_ec2_ecs_user_data.sh"
 }
 
 data "template_file" "viz_ec2_ecs_user_data" {
-  template = file("viz/viz_ec2_ecs_user_data.sh")
+  template = file(local.viz_user_data)
 
   vars = {
     ecs_cluster_name = aws_ecs_cluster.viz_ecs_cluster.name

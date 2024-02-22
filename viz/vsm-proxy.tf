@@ -85,10 +85,10 @@ resource "aws_ecs_task_definition" "viz_vsm_proxy_ecs_definition" {
           name  = "VSM_LOG_LEVEL"
           value = "DEBUG"
         },
-        #        {
-        #          name  = "VSM_DB_HOST"
-        #          value = aws_db_instance.vizdb.address
-        #        },
+        {
+          name  = "VSM_DB_HOST"
+          value = aws_db_instance.vizdb.address
+        },
         {
           name  = "VSM_DB_USERNAME"
           value = var.viz_postgresql_database_username
@@ -97,10 +97,10 @@ resource "aws_ecs_task_definition" "viz_vsm_proxy_ecs_definition" {
           name  = "VSM_DB_NAME"
           value = var.viz_postgresql_database_name
         },
-        #        {
-        #          name  = "VSM_DB_PASSWORD"
-        #          value = data.aws_secretsmanager_secret_version.viz_database_password.secret_string
-        #        },
+        {
+          name  = "VSM_DB_PASSWORD"
+          value = data.aws_secretsmanager_secret_version.viz_database_password.secret_string
+        },
         {
           name  = "VSM_JOB_ALLOCATOR"
           value = "AWS"
