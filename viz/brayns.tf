@@ -137,34 +137,6 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
   }
 }
 
-resource "aws_ecs_service" "viz_brayns_ecs_service" {
-  name                   = "viz_brayns_ecs_service"
-  cluster                = aws_ecs_cluster.viz_ecs_cluster.id
-  launch_type            = "EC2"
-  task_definition        = aws_ecs_task_definition.viz_brayns_ecs_definition.arn
-  desired_count          = var.viz_brayns_ecs_number_of_containers
-  enable_execute_command = true
-
-  depends_on = [
-    aws_cloudwatch_log_group.viz_brayns,
-    aws_iam_role.viz_brayns_ecs_task_execution_role, # wrong?
-  ]
-  lifecycle {
-    ignore_changes = [desired_count]
-  }
-
-  force_new_deployment = true
-  tags = {
-    SBO_Billing = "viz"
-  }
-  network_configuration {
-    subnets          = [aws_subnet.viz.id]
-    security_groups  = [aws_security_group.viz_ec2_sg.id]
-    assign_public_ip = false
-  }
-}
-
-
 resource "aws_iam_role" "ecs_viz_service_role" {
   name = "ecs_viz_service_role"
   tags = {
