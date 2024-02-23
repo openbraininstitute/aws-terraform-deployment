@@ -134,7 +134,7 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
         },
         {
           name  = "NEXTAUTH_URL"
-          value = "https://sbo-core-webapp.shapes-registry.org/mmb-beta/api/auth"
+          value = "https://openbrainplatform.org/mmb-beta/api/auth"
         },
         {
           name  = "KEYCLOAK_ISSUER"
