@@ -56,12 +56,12 @@ resource "aws_lb_target_group" "bbp_workflow_api" {
 }
 
 resource "aws_lb_listener_certificate" "bbp_workflow_api" {
-  listener_arn    = aws_lb_listener.sbo_https.arn
+  listener_arn    = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
   certificate_arn = aws_acm_certificate.bbp_workflow_api.arn
 }
 
 resource "aws_lb_listener_rule" "bbp_workflow_api" {
-  listener_arn = aws_lb_listener.sbo_https.arn
+  listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
   priority     = 800
 
   action {
@@ -84,10 +84,6 @@ resource "aws_lb_listener_rule" "bbp_workflow_api" {
   tags = {
     SBO_Billing = "workflow"
   }
-  depends_on = [
-    aws_lb_listener.sbo_https,
-    aws_lb.alb
-  ]
 }
 
 resource "aws_route53_record" "bbp_workflow_api" {
@@ -95,7 +91,7 @@ resource "aws_route53_record" "bbp_workflow_api" {
   name    = var.bbp_workflow_api_hostname
   type    = "CNAME"
   ttl     = 60
-  records = [aws_lb.alb.dns_name]
+  records = [data.terraform_remote_state.common.outputs.public_alb_dns_name]
 }
 
 output "alb_bbp_workflow_api_hostname" {

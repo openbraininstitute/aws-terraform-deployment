@@ -53,12 +53,12 @@ resource "aws_lb_target_group" "thumbnail_generation_api_tg" {
 }
 
 resource "aws_lb_listener_certificate" "thumbnail_generation_api" {
-  listener_arn    = aws_lb_listener.sbo_https.arn
+  listener_arn    = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
   certificate_arn = aws_acm_certificate.thumbnail_generation_api_certificate.arn
 }
 
 resource "aws_lb_listener_rule" "thumbnail_generation_api" {
-  listener_arn = aws_lb_listener.sbo_https.arn
+  listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
   priority     = 400
 
   action {
@@ -81,10 +81,6 @@ resource "aws_lb_listener_rule" "thumbnail_generation_api" {
   tags = {
     SBO_Billing = "thumbnail_generation_api"
   }
-  depends_on = [
-    aws_lb_listener.sbo_https,
-    aws_lb.alb
-  ]
 }
 
 
@@ -93,7 +89,7 @@ resource "aws_route53_record" "thumbnail_generation_api" {
   name    = var.thumbnail_generation_api_hostname
   type    = "CNAME"
   ttl     = 60
-  records = [aws_lb.alb.dns_name]
+  records = [data.terraform_remote_state.common.outputs.public_alb_dns_name]
 }
 
 output "alb_thumbnail_generation_api_hostname" {

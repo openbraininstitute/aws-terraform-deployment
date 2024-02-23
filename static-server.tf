@@ -110,7 +110,7 @@ resource "aws_s3_bucket_policy" "static_storage" {
 }
 
 resource "aws_lb_listener_rule" "static_data" {
-  listener_arn = aws_lb_listener.sbo_https.arn
+  listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
   priority     = 600
 
   action {

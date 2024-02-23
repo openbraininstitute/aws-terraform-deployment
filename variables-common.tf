@@ -36,10 +36,26 @@ variable "sbo_https_test_hostname" {
 
 ### SBO core webapp ###
 
-variable "core_webapp_hostname" {
+# TODO: delete after migration to the production domain.
+variable "core_webapp_poc_hostname" {
   default     = "sbo-core-webapp.shapes-registry.org"
   type        = string
+  description = "The hostname for the core webapp poc"
+  sensitive   = false
+}
+
+variable "core_webapp_hostname" {
+  default     = "openbrainplatform.org"
+  type        = string
   description = "The hostname for the core webapp"
+  sensitive   = false
+}
+
+# TODO: update to "/app/core" after migration to the production domain.
+variable "core_webapp_base_path" {
+  default     = "/mmb-beta"
+  type        = string
+  description = "The base path for the core webapp"
   sensitive   = false
 }
 

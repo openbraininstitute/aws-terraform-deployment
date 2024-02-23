@@ -48,13 +48,13 @@ resource "aws_lb_target_group" "cell_svc" {
 }
 
 resource "aws_lb_listener_certificate" "cell_svc" {
-  listener_arn    = aws_lb_listener.sbo_https.arn
+  listener_arn    = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
   certificate_arn = aws_acm_certificate.cell_svc.arn
 }
 
 
 resource "aws_lb_listener_rule" "cell_svc_https" {
-  listener_arn = aws_lb_listener.sbo_https.arn
+  listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
   priority     = 700
 
   action {
@@ -75,10 +75,6 @@ resource "aws_lb_listener_rule" "cell_svc_https" {
   }
 
   tags = { SBO_Billing = "cell_svc" }
-  depends_on = [
-    aws_lb_listener.sbo_https,
-    aws_lb.alb
-  ]
 }
 
 resource "aws_route53_record" "cell_svc" {
@@ -86,7 +82,7 @@ resource "aws_route53_record" "cell_svc" {
   name    = var.cell_svc_hostname
   type    = "CNAME"
   ttl     = 60
-  records = [aws_lb.alb.dns_name]
+  records = [data.terraform_remote_state.common.outputs.public_alb_dns_name]
 }
 
 output "alb_cell_svc_hostname" {

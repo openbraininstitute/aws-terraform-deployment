@@ -1,120 +1,13 @@
-resource "aws_lb" "alb" {
-  name               = "sbo-poc-alb"
-  internal           = false #tfsec:ignore:aws-elb-alb-not-public
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.alb.id]
-  subnets            = [data.terraform_remote_state.common.outputs.public_a_subnet_id, data.terraform_remote_state.common.outputs.public_b_subnet_id]
+# Public load balancer
 
-  drop_invalid_header_fields = true
+# Moved to deployment-common
+# Use:
 
-  tags = {
-    Name        = "sbo-poc-alb",
-    SBO_Billing = "common"
-  }
-}
+# ARN:
+# data.terraform_remote_state.common.outputs.public_alb_arn
 
-# See https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-update-security-groups.html
-resource "aws_security_group" "alb" {
-  name        = "Load balancer"
-  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
-  description = "Sec group for the application load balancer"
+# Public DNS name:
+# data.terraform_remote_state.common.outputs.public_alb_dns_name
 
-  tags = {
-    Name        = "alb_secgroup"
-    SBO_Billing = "common"
-  }
-}
-
-resource "aws_vpc_security_group_ingress_rule" "alb_allow_http_all" {
-  security_group_id = aws_security_group.alb.id
-  description       = "Allow HTTP"
-  from_port         = 80
-  to_port           = 80
-  ip_protocol       = "tcp"
-  cidr_ipv4         = "0.0.0.0/0"
-
-  tags = {
-    Name = "alb_allow_https_all"
-  }
-}
-
-resource "aws_vpc_security_group_ingress_rule" "alb_allow_https_all" {
-  security_group_id = aws_security_group.alb.id
-  description       = "Allow HTTPS"
-  from_port         = 443
-  to_port           = 443
-  ip_protocol       = "tcp"
-  cidr_ipv4         = "0.0.0.0/0"
-
-  tags = {
-    Name = "alb_allow_https_all"
-  }
-}
-
-resource "aws_vpc_security_group_ingress_rule" "alb_allow_brayns_epfl" {
-  security_group_id = aws_security_group.alb.id
-  description       = "Allow Brayns on 5000 from EPFL"
-  from_port         = 5000
-  to_port           = 5000
-  ip_protocol       = "tcp"
-  cidr_ipv4         = var.epfl_cidr
-
-  tags = {
-    Name = "alb_allow_brayns_epfl"
-  }
-}
-
-resource "aws_vpc_security_group_ingress_rule" "alb_allow_bcsb_epfl" {
-  security_group_id = aws_security_group.alb.id
-  description       = "Allow BCSB on 8000 from EPFL"
-  from_port         = 8000
-  to_port           = 8000
-  ip_protocol       = "tcp"
-  cidr_ipv4         = var.epfl_cidr
-
-  tags = {
-    Name = "alb_allow_bcsb_epfl"
-  }
-}
-
-resource "aws_vpc_security_group_ingress_rule" "alb_allow_vsm_epfl" {
-  security_group_id = aws_security_group.alb.id
-  description       = "Allow VSM on 4444 from EPFL"
-  from_port         = 4444
-  to_port           = 4444
-  ip_protocol       = "tcp"
-  cidr_ipv4         = var.epfl_cidr
-
-  tags = {
-    Name = "alb_allow_vsm_epfl"
-  }
-}
-
-resource "aws_vpc_security_group_ingress_rule" "alb_allow_vsm_proxy_epfl" {
-  security_group_id = aws_security_group.alb.id
-  description       = "Allow VSM-Proxy on 8888 from EPFL"
-  from_port         = 8888
-  to_port           = 8888
-  ip_protocol       = "tcp"
-  cidr_ipv4         = var.epfl_cidr
-
-  tags = {
-    Name = "alb_allow_vsm_proxy_epfl"
-  }
-}
-
-# TODO limit to only the listener ports and health check ports of the instance groups
-resource "aws_vpc_security_group_egress_rule" "alb_allow_everything_outgoing" {
-  security_group_id = aws_security_group.alb.id
-  description       = "Allow everything outgoing"
-  ip_protocol       = -1
-  cidr_ipv4         = "0.0.0.0/0"
-
-  tags = {
-    Name = "alb_allow_everything_outgoing"
-  }
-}
-
-output "alb_dns_name" {
-  value = aws_lb.alb.dns_name
-}
+# HTTPS listener ARN:
+# data.terraform_remote_state.common.outputs.public_alb_https_listener_arn

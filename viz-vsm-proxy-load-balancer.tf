@@ -41,11 +41,11 @@ resource "aws_route53_record" "vsm_proxy" {
   name    = var.viz_vsm_proxy_hostname
   type    = "CNAME"
   ttl     = 60
-  records = [aws_lb.alb.dns_name]
+  records = [data.terraform_remote_state.common.outputs.public_alb_dns_name]
 }
 
 resource "aws_lb_listener" "sbo_vsm_proxy" {
-  load_balancer_arn = aws_lb.alb.arn
+  load_balancer_arn = data.terraform_remote_state.common.outputs.public_alb_arn
   port              = 8888
   protocol          = "HTTPS"
   certificate_arn   = aws_acm_certificate.vsm_proxy.arn
@@ -62,9 +62,6 @@ resource "aws_lb_listener" "sbo_vsm_proxy" {
   tags = {
     SBO_Billing = "viz"
   }
-  depends_on = [
-    aws_lb.alb
-  ]
 }
 
 resource "aws_lb_target_group" "viz_vsm_proxy" {
@@ -103,8 +100,5 @@ resource "aws_lb_listener_rule" "viz_vsm_proxy_8888" {
   tags = {
     SBO_Billing = "viz"
   }
-  depends_on = [
-    aws_lb_listener.sbo_vsm_proxy,
-    aws_lb.alb
-  ]
+  depends_on = [aws_lb_listener.sbo_vsm_proxy]
 }
