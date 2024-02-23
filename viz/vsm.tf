@@ -139,6 +139,10 @@ resource "aws_ecs_task_definition" "viz_vsm_ecs_definition" {
         {
           name  = "PYTHONUNBUFFERED"
           value = "TRUE"
+        },
+        {
+          name  = "VSM_USE_KEYCLOAK"
+          value = var.viz_enable_sandbox ? "0" : "1"
         }
       ]
       mountPoints = []
