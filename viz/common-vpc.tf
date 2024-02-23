@@ -3,9 +3,6 @@ locals {
   prod_resource_count    = var.viz_enable_sandbox ? 0 : 1
 }
 
-
-
-
 resource "aws_vpc" "viz_sandbox" {
   count                = local.sandbox_resource_count
   cidr_block           = "10.0.0.0/16"
@@ -22,8 +19,8 @@ data "aws_vpc" "selected" {
 }
 
 resource "aws_eip" "nat_eip" {
-  count = local.sandbox_resource_count
-  vpc   = true
+  count  = local.sandbox_resource_count
+  domain = "vpc"
 }
 
 resource "aws_internet_gateway" "ig" {

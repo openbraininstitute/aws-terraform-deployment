@@ -39,7 +39,6 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
       name        = "viz_brayns"
       repositoryCredentials = {
         credentialsParameter = data.aws_secretsmanager_secret.dockerhub_creds.arn
-
       }
       environment = []
       mountPoints = []

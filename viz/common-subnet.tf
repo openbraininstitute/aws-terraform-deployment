@@ -38,18 +38,16 @@ resource "aws_route_table" "viz_public" {
 }
 
 resource "aws_route_table_association" "viz_public_a" {
-  count  = local.sandbox_resource_count
+  count          = local.sandbox_resource_count
   subnet_id      = aws_subnet.viz_public_a[0].id
   route_table_id = aws_route_table.viz_public[0].id
 }
 
 resource "aws_route_table_association" "viz_public_b" {
-  count  = local.sandbox_resource_count
+  count          = local.sandbox_resource_count
   subnet_id      = aws_subnet.viz_public_b[0].id
   route_table_id = aws_route_table.viz_public[0].id
 }
-
-
 resource "aws_route_table" "viz" {
   count  = local.sandbox_resource_count
   vpc_id = data.aws_vpc.selected.id

@@ -5,6 +5,7 @@ resource "aws_key_pair" "admin" {
 
 #tfsec:ignore:aws-ec2-enable-at-rest-encryption tfsec:ignore:aws-ec2-enforce-http-token-imds
 resource "aws_instance" "ec2_viz_bastion" {
+  count                  = local.sandbox_resource_count
   vpc_security_group_ids = [aws_security_group.bastion_sg.id]
   ami                    = "ami-0e731c8a588258d0d"
   subnet_id              = aws_subnet.viz_public_a[0].id
@@ -15,10 +16,8 @@ resource "aws_instance" "ec2_viz_bastion" {
   }
 }
 
-output "bastion_instance_ip" { value = aws_instance.ec2_viz_bastion.public_ip }
-
-
 resource "aws_security_group" "bastion_sg" {
+  count       = local.sandbox_resource_count
   name        = "viz_bastion_sg"
   vpc_id      = data.aws_vpc.selected.id
   description = "Sec group for Brayns service"
@@ -29,9 +28,9 @@ resource "aws_security_group" "bastion_sg" {
   }
 }
 
-
 resource "aws_vpc_security_group_ingress_rule" "bastion_sg_allow_ssh" {
-  security_group_id = aws_security_group.bastion_sg.id
+  count             = local.sandbox_resource_count
+  security_group_id = aws_security_group.bastion_sg[0].id
   ip_protocol       = "tcp"
   from_port         = 22
   to_port           = 22
@@ -43,9 +42,9 @@ resource "aws_vpc_security_group_ingress_rule" "bastion_sg_allow_ssh" {
   }
 }
 
-
 resource "aws_vpc_security_group_egress_rule" "viz_bastion_allow_egress" {
-  security_group_id = aws_security_group.bastion_sg.id
+  count             = local.sandbox_resource_count
+  security_group_id = aws_security_group.bastion_sg[0].id
 
   ip_protocol = -1
   cidr_ipv4   = "0.0.0.0/0"
@@ -54,6 +53,3 @@ resource "aws_vpc_security_group_egress_rule" "viz_bastion_allow_egress" {
     SBO_Billing = "viz"
   }
 }
-
-
-
