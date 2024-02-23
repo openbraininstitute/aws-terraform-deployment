@@ -19,8 +19,7 @@ data "aws_vpc" "selected" {
 }
 
 resource "aws_eip" "nat_eip" {
-  count  = local.sandbox_resource_count
-  domain = "vpc"
+  count = local.sandbox_resource_count
 }
 
 resource "aws_internet_gateway" "ig" {

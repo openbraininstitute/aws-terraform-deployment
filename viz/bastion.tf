@@ -6,7 +6,7 @@ resource "aws_key_pair" "admin" {
 #tfsec:ignore:aws-ec2-enable-at-rest-encryption tfsec:ignore:aws-ec2-enforce-http-token-imds
 resource "aws_instance" "ec2_viz_bastion" {
   count                  = local.sandbox_resource_count
-  vpc_security_group_ids = [aws_security_group.bastion_sg.id]
+  vpc_security_group_ids = [aws_security_group.bastion_sg[0].id]
   ami                    = "ami-0e731c8a588258d0d"
   subnet_id              = aws_subnet.viz_public_a[0].id
   key_name               = aws_key_pair.admin.key_name
