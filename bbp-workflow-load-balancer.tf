@@ -57,7 +57,7 @@ resource "aws_lb_target_group" "bbp_workflow_api" {
 
 resource "aws_lb_listener_certificate" "bbp_workflow_api" {
   listener_arn    = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
-  certificate_arn = aws_acm_certificate.bbp_workflow_api.arn
+  certificate_arn = aws_acm_certificate_validation.bbp_workflow_api.certificate_arn
 }
 
 resource "aws_lb_listener_rule" "bbp_workflow_api" {

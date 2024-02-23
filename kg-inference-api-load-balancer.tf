@@ -54,7 +54,7 @@ resource "aws_lb_target_group" "kg_inference_api_tg" {
 
 resource "aws_lb_listener_certificate" "kg_inference_api" {
   listener_arn    = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
-  certificate_arn = aws_acm_certificate.kg_inference_api_certificate.arn
+  certificate_arn = aws_acm_certificate_validation.kg_inference_api.certificate_arn
 }
 
 resource "aws_lb_listener_rule" "kg_inference_api" {

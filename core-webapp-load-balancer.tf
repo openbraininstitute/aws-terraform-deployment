@@ -34,7 +34,7 @@ resource "aws_acm_certificate_validation" "core_webapp_poc" {
 
 resource "aws_lb_listener_certificate" "core_webapp_poc" {
   listener_arn    = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
-  certificate_arn = aws_acm_certificate.core_webapp_poc.arn
+  certificate_arn = aws_acm_certificate_validation.core_webapp_poc.certificate_arn
 }
 
 resource "aws_lb_target_group" "core_webapp" {

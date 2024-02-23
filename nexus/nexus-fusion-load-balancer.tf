@@ -33,7 +33,7 @@ resource "aws_acm_certificate_validation" "nexus_fusion" {
 
 resource "aws_lb_listener_certificate" "nexus_fusion" {
   listener_arn    = var.aws_lb_listener_sbo_https_arn
-  certificate_arn = aws_acm_certificate.nexus_fusion.arn
+  certificate_arn = aws_acm_certificate_validation.nexus_fusion.certificate_arn
 }
 
 resource "aws_lb_target_group" "nexus_fusion" {

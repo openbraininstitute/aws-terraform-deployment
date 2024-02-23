@@ -54,7 +54,7 @@ resource "aws_lb_target_group" "nexus_app" {
 
 resource "aws_lb_listener_certificate" "nexus_app" {
   listener_arn    = var.aws_lb_listener_sbo_https_arn
-  certificate_arn = aws_acm_certificate.nexus_app.arn
+  certificate_arn = aws_acm_certificate_validation.nexus_app.certificate_arn
 }
 
 

@@ -49,9 +49,8 @@ resource "aws_lb_target_group" "cell_svc" {
 
 resource "aws_lb_listener_certificate" "cell_svc" {
   listener_arn    = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
-  certificate_arn = aws_acm_certificate.cell_svc.arn
+  certificate_arn = aws_acm_certificate_validation.cell_svc.certificate_arn
 }
-
 
 resource "aws_lb_listener_rule" "cell_svc_https" {
   listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn

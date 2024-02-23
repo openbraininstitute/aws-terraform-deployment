@@ -54,7 +54,7 @@ resource "aws_lb_target_group" "thumbnail_generation_api_tg" {
 
 resource "aws_lb_listener_certificate" "thumbnail_generation_api" {
   listener_arn    = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
-  certificate_arn = aws_acm_certificate.thumbnail_generation_api_certificate.arn
+  certificate_arn = aws_acm_certificate_validation.thumbnail_generation_api.certificate_arn
 }
 
 resource "aws_lb_listener_rule" "thumbnail_generation_api" {

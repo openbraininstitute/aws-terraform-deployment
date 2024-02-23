@@ -33,7 +33,7 @@ resource "aws_acm_certificate_validation" "vsm_proxy" {
 
 resource "aws_lb_listener_certificate" "vsm_proxy" {
   listener_arn    = aws_lb_listener.sbo_vsm_proxy.arn
-  certificate_arn = aws_acm_certificate.vsm_proxy.arn
+  certificate_arn = aws_acm_certificate_validation.vsm_proxy.certificate_arn
 }
 
 resource "aws_route53_record" "vsm_proxy" {
