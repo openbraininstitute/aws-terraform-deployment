@@ -77,8 +77,6 @@ resource "aws_lb_listener" "sbo_vsm_proxy" {
 
 resource "aws_lb_target_group" "viz_vsm_proxy" {
   #ts:skip=AC_AWS_0492
-  count = local.sandbox_resource_count
-
   name_prefix = "vsmp"
   port        = 8888
   protocol    = "HTTP"
@@ -103,12 +101,12 @@ resource "aws_lb_listener_rule" "viz_vsm_proxy_8888" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.viz_vsm_proxy[0].arn
+    target_group_arn = aws_lb_target_group.viz_vsm_proxy.arn
   }
 
   condition {
     host_header {
-      values = var.viz_enable_sandbox ? ["*.com"] : [var.viz_vsm_hostname]
+      values = var.viz_enable_sandbox ? ["*.com"] : [var.viz_vsm_proxy_hostname]
     }
   }
   tags = {
