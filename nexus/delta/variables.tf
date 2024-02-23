@@ -31,6 +31,10 @@ variable "ecs_cluster_arn" {
   type = string
 }
 
+variable "aws_service_discovery_http_namespace_arn" {
+  type = string
+}
+
 # temporary
 variable "aws_lb_target_group_nexus_app_arn" {
   type = string

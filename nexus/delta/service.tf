@@ -18,6 +18,11 @@ resource "aws_ecs_service" "nexus_app_ecs_service" {
     container_port   = 8080
   }
 
+  service_connect_configuration {
+    enabled   = true
+    namespace = var.aws_service_discovery_http_namespace_arn
+  }
+
   network_configuration {
     security_groups  = [var.subnet_security_group_id]
     subnets          = [var.subnet_id]

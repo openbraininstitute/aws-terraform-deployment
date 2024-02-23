@@ -8,10 +8,8 @@ module "nexus" {
   dockerhub_access_iam_policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
   dockerhub_credentials_arn       = data.terraform_remote_state.common.outputs.dockerhub_credentials_arn
 
-  domain_zone_id                = data.terraform_remote_state.common.outputs.domain_zone_id
-  nat_gateway_id                = data.terraform_remote_state.common.outputs.nat_gateway_id
-  private_alb_dns_name          = data.terraform_remote_state.common.outputs.private_alb_dns_name
-  private_alb_listener_9999_arn = data.terraform_remote_state.common.outputs.private_alb_listener_9999_arn
+  domain_zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
+  nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
 
   allowed_source_ip_cidr_blocks = [var.epfl_cidr, data.terraform_remote_state.common.outputs.vpc_cidr_block]
 

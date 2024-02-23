@@ -8,3 +8,12 @@ resource "aws_ecs_cluster" "nexus" {
     SBO_Billing = "nexus"
   }
 }
+
+resource "aws_service_discovery_http_namespace" "nexus" {
+  name        = "nexus"
+  description = "nexus service discovery namespace"
+
+  tags = {
+    SBO_Billing = "nexus"
+  }
+}

@@ -14,25 +14,15 @@ variable "subnet_security_group_id" {
   type = string
 }
 
-variable "domain_zone_id" {
-  type = string
-}
-
-variable "private_alb_listener_9999_arn" {
-  type = string
-}
-
 variable "ecs_cluster_arn" {
   type = string
 }
 
-# Blazegraph specific
-
-variable "private_blazegraph_hostname" {
-  type        = string
-  description = "Hostname at which the blazegraph containers can be reached via the private ALB"
-  sensitive   = false
+variable "aws_service_discovery_http_namespace_arn" {
+  type = string
 }
+
+# Blazegraph specific
 
 variable "blazegraph_ecs_number_of_containers" {
   type      = number

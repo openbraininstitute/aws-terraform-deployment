@@ -33,14 +33,13 @@ module "elasticsearch" {
 module "blazegraph" {
   source = "./blazegraph"
 
-  aws_region                    = var.aws_region
-  vpc_id                        = var.vpc_id
-  domain_zone_id                = var.domain_zone_id
-  subnet_id                     = module.networking.subnet_id
-  subnet_security_group_id      = module.networking.main_subnet_sg_id
-  private_blazegraph_hostname   = var.private_blazegraph_hostname
-  private_alb_listener_9999_arn = var.private_alb_listener_9999_arn
-  ecs_cluster_arn               = aws_ecs_cluster.nexus.arn
+  aws_region               = var.aws_region
+  vpc_id                   = var.vpc_id
+  subnet_id                = module.networking.subnet_id
+  subnet_security_group_id = module.networking.main_subnet_sg_id
+
+  ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
+  aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
 }
 
 module "storage" {
@@ -60,7 +59,9 @@ module "delta" {
   aws_region               = var.aws_region
   subnet_id                = module.networking.subnet_id
   subnet_security_group_id = module.networking.main_subnet_sg_id
-  ecs_cluster_arn          = aws_ecs_cluster.nexus.arn
+
+  ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
+  aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
 
   aws_lb_target_group_nexus_app_arn = aws_lb_target_group.nexus_app.arn
   dockerhub_access_iam_policy_arn   = var.dockerhub_access_iam_policy_arn

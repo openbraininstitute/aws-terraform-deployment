@@ -28,14 +28,6 @@ variable "domain_zone_id" {
   type = string
 }
 
-variable "private_alb_listener_9999_arn" {
-  type = string
-}
-
-variable "private_alb_dns_name" {
-  type = string
-}
-
 variable "allowed_source_ip_cidr_blocks" {
   type = list(string)
 }
@@ -47,12 +39,6 @@ variable "aws_lb_listener_sbo_https_arn" {
 variable "aws_lb_alb_dns_name" {
   type = string
 }
-
-# TODO: This is currently an implicit dependency. See `elasticsearch/domain.tf` and get rid of this
-#variable "aws_iam_service_linked_role_depends_on" {
-#  type        = string
-#  description = "Dependency. The role that allows Amazon ES to manage AWS resources for you. This was shared from a role defined in ML."
-#}
 
 ### Nexus Delta ###
 
@@ -80,15 +66,6 @@ variable "nexus_fusion_docker_image_url" {
   default   = "bluebrain/nexus-web:1.9.9"
   sensitive = false
   type      = string
-}
-
-### Nexus Blazegraph ###
-
-variable "private_blazegraph_hostname" {
-  default     = "private-alb-blazegraph.shapes-registry.org"
-  type        = string
-  description = "Hostname at which the blazegraph containers can be reached via the private ALB"
-  sensitive   = false
 }
 
 ### Switches
