@@ -117,6 +117,26 @@ resource "aws_ecs_task_definition" "viz_vsm_ecs_definition" {
           value = "sboauth.epfl.ch"
         },
         {
+          name  = "VSM_BRAYNS_TASK_DEFINITION"
+          value = aws_ecs_task_definition.viz_brayns_ecs_definition.arn
+        },
+        {
+          name  = "VSM_BRAYNS_TASK_SECURITY_GROUPS"
+          value = aws_security_group.viz_ec2_sg.id
+        },
+        {
+          name  = "VSM_BRAYNS_TASK_SUBNETS"
+          value = aws_subnet.viz.id
+        },
+        {
+          name  = "VSM_BRAYNS_TASK_CAPACITY_PROVIDER"
+          value = aws_ecs_capacity_provider.viz_cas.name
+        },
+        {
+          name  = "VSM_BRAYNS_TASK_CLUSTER"
+          value = aws_ecs_cluster.viz_ecs_cluster.name
+        },
+        {
           name  = "PYTHONUNBUFFERED"
           value = "TRUE"
         }
