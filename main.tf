@@ -26,6 +26,7 @@ module "viz" {
   vpc_id     = data.terraform_remote_state.common.outputs.vpc_id
 
   dockerhub_access_iam_policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
+  secret_dockerhub_arn            = data.terraform_remote_state.common.outputs.dockerhub_credentials_arn
 
   domain_zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
   nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
