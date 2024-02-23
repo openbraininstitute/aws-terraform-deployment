@@ -174,7 +174,7 @@ resource "aws_ecs_service" "viz_vsm_proxy_ecs_service" {
     ignore_changes = [desired_count]
   }
   load_balancer {
-    target_group_arn = aws_lb_target_group.viz_vsm_proxy[0].arn
+    target_group_arn = aws_lb_target_group.viz_vsm_proxy.arn
     container_name   = "viz_vsm_proxy"
     container_port   = 8888
   }
