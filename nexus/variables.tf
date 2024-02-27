@@ -70,13 +70,6 @@ variable "nexus_fusion_docker_image_url" {
 
 ### Switches
 
-variable "nexus_storage_ecs_number_of_containers" {
-  type        = number
-  default     = 1
-  sensitive   = false
-  description = "Number of containers for Nexus Storage Service"
-}
-
 variable "nexus_fusion_ecs_number_of_containers" {
   type        = number
   default     = 1

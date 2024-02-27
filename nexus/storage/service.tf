@@ -5,12 +5,18 @@ resource "aws_ecs_service" "nexus_storage_ecs_service" {
   task_definition = aws_ecs_task_definition.nexus_storage_ecs_definition.arn
   desired_count   = var.nexus_storage_ecs_number_of_containers
 
-  # TODO add a load balancer to get a static host
-  # load_balancer {
-  #   target_group_arn = aws_lb_target_group.nexus_storage.arn
-  #   container_name   = "nexus_storage"
-  #   container_port   = 8081
-  # }
+  service_connect_configuration {
+    enabled   = true
+    namespace = var.aws_service_discovery_http_namespace_arn
+    service {
+      discovery_name = "storage"
+      port_name      = "storage"
+      client_alias {
+        dns_name = "storage-svc"
+        port     = 8081
+      }
+    }
+  }
 
   enable_execute_command = true
 

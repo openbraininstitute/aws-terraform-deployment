@@ -48,9 +48,11 @@ module "storage" {
   aws_region               = var.aws_region
   subnet_id                = module.networking.subnet_id
   subnet_security_group_id = module.networking.main_subnet_sg_id
-  ecs_cluster_arn          = aws_ecs_cluster.nexus.arn
-  ecs_cluster_name         = aws_ecs_cluster.nexus.name
-  amazon_linux_ecs_ami_id  = var.amazon_linux_ecs_ami_id
+
+  ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
+  ecs_cluster_name                         = aws_ecs_cluster.nexus.name
+  aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
+  amazon_linux_ecs_ami_id                  = var.amazon_linux_ecs_ami_id
 }
 
 module "delta" {

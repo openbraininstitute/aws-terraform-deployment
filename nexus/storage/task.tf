@@ -29,6 +29,7 @@ resource "aws_ecs_task_definition" "nexus_storage_ecs_definition" {
           hostPort      = 8081
           containerPort = 8081
           protocol      = "tcp"
+          name          = "storage"
         }
       ]
       mountPoints = [{

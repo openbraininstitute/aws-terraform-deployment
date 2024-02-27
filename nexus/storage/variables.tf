@@ -23,6 +23,10 @@ variable "amazon_linux_ecs_ami_id" {
   type = string
 }
 
+variable "aws_service_discovery_http_namespace_arn" {
+  type = string
+}
+
 # Specific storage service config
 
 variable "s3_bucket_name" {
@@ -37,6 +41,6 @@ variable "nexus_storage_ecs_number_of_containers" {
 
 variable "nexus_storage_docker_image_url" {
   type      = string
-  default   = "bluebrain/nexus-storage:1.10.0-M1"
+  default   = "bluebrain/nexus-storage:latest"
   sensitive = false
 }
