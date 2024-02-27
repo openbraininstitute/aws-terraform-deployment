@@ -172,7 +172,7 @@ resource "aws_ecs_task_definition" "kg_inference_api_task_definition" {
         environment = [
           {
             name  = "BBP_NEXUS_ENDPOINT",
-            value = "https://bbp.epfl.ch/nexus/v1"
+            value = "https://sbo-nexus-delta.shapes-registry.org/v1"
           },
           {
             name  = "ENVIRONMENT",
@@ -188,15 +188,15 @@ resource "aws_ecs_task_definition" "kg_inference_api_task_definition" {
           },
           {
             name  = "WHITELISTED_CORS_URLS",
-            value = "https://bluebrainatlas.kcpdev.bbp.epfl.ch,https://bluebrainatlas.kcp.bbp.epfl.ch,https://kg-inference-frontend.kcp.bbp.epfl.ch,http://localhost:3000,https://bbp.epfl.ch"
+            value = "http://localhost:3000,https://openbrainplatform.org"
           },
           {
             name  = "ES_RULE_VIEW",
-            value = "https://bbp.epfl.ch/neurosciencegraph/data/views/aggreg-es/rule_view"
+            value = "https://bbp.epfl.ch/bbp/inference-rules/views/aggreg-es/rule_view"
           },
           {
             name  = "SPARQL_RULE_VIEW",
-            value = "https://bbp.epfl.ch/neurosciencegraph/data/views/aggreg-sp/rule_view"
+            value = "https://bbp.epfl.ch/bbp/inference-rules/views/aggreg-sp/rule_view"
           },
         ],
         memory = 2048
