@@ -15,7 +15,7 @@ variable "nexus_delta_hostname" {
 
 variable "nexus_delta_docker_image_url" {
   type    = string
-  default = "bluebrain/nexus-delta:1.9.0"
+  default = "bluebrain/nexus-delta:1.10.0-M5"
 }
 
 variable "subnet_id" {
