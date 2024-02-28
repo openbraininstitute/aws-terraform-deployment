@@ -11,7 +11,7 @@ module "nexus" {
   domain_zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
   nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
 
-  allowed_source_ip_cidr_blocks = [var.epfl_cidr, data.terraform_remote_state.common.outputs.vpc_cidr_block]
+  allowed_source_ip_cidr_blocks = [var.epfl_cidr, data.terraform_remote_state.common.outputs.vpc_cidr_block, data.terraform_remote_state.common.outputs.bbpproxy_cidr]
 
   aws_lb_alb_dns_name           = data.terraform_remote_state.common.outputs.public_alb_dns_name
   aws_lb_listener_sbo_https_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
