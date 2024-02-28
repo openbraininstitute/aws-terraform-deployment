@@ -97,7 +97,6 @@ resource "aws_lb_target_group" "viz_vsm_proxy" {
 resource "aws_lb_listener_rule" "viz_vsm_proxy_8888" {
   listener_arn = aws_lb_listener.sbo_vsm_proxy.arn
   priority     = 100
-  count        = local.sandbox_resource_count
 
   action {
     type             = "forward"
