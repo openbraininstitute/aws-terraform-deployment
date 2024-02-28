@@ -51,9 +51,6 @@ variable "viz_vsm_db_password_arn" {
   sensitive   = false
 }
 
-
-
-
 ### VIZ Brayns renderer service ###
 
 variable "viz_brayns_log_group_name" {
