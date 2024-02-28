@@ -35,19 +35,6 @@ resource "aws_security_group" "alb" {
     SBO_Billing = "common"
   }
 }
-# TODO REMOVE IT ?
-resource "aws_vpc_security_group_ingress_rule" "alb_allow_https_epfl" {
-  security_group_id = data.aws_security_group.alb_selected.id
-  description       = "Allow HTTPS from EPFL"
-  from_port         = 443
-  to_port           = 443
-  ip_protocol       = "tcp"
-  cidr_ipv4         = var.epfl_cidr
-
-  tags = {
-    Name = "alb_allow_https_epfl"
-  }
-}
 
 resource "aws_vpc_security_group_ingress_rule" "alb_allow_brayns_epfl" {
   security_group_id = data.aws_security_group.alb_selected.id
@@ -89,7 +76,9 @@ resource "aws_vpc_security_group_ingress_rule" "alb_allow_vsm_proxy_epfl" {
   }
 }
 
+# Create those only in sandbox env
 resource "aws_vpc_security_group_ingress_rule" "alb_allow_https_internal" {
+  count             = local.sandbox_resource_count
   security_group_id = data.aws_security_group.alb_selected.id
   description       = "Allow HTTPS from internal"
   from_port         = 443
@@ -102,8 +91,8 @@ resource "aws_vpc_security_group_ingress_rule" "alb_allow_https_internal" {
   }
 }
 
-# TODO limit to only the listener ports and health check ports of the instance groups
 resource "aws_vpc_security_group_egress_rule" "alb_allow_everything_outgoing" {
+  count             = local.sandbox_resource_count
   security_group_id = data.aws_security_group.alb_selected.id
   description       = "Allow everything outgoing"
   ip_protocol       = -1
@@ -113,6 +102,21 @@ resource "aws_vpc_security_group_egress_rule" "alb_allow_everything_outgoing" {
     Name = "alb_allow_everything_outgoing"
   }
 }
+
+resource "aws_vpc_security_group_ingress_rule" "alb_allow_https_epfl" {
+  count             = local.sandbox_resource_count
+  security_group_id = data.aws_security_group.alb_selected.id
+  description       = "Allow HTTPS from EPFL"
+  from_port         = 443
+  to_port           = 443
+  ip_protocol       = "tcp"
+  cidr_ipv4         = var.epfl_cidr
+
+  tags = {
+    Name = "alb_allow_https_epfl"
+  }
+}
+
 
 output "alb_dns_name" {
   value = data.aws_lb.alb.dns_name
