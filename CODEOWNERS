@@ -1,0 +1,11 @@
+# This file defines the code owners of different parts of the repo
+# https://docs.gitlab.com/ee/user/project/codeowners/
+#
+# In order to require code owners to review MRs to protected branches
+# the "Require approval from code owners" setting needs to be enabled
+# https://docs.gitlab.com/ee/user/project/protected_branches.html#require-code-owner-approval-on-a-protected-branch
+# In gitlabform, this corresponds to the `code_owner_approval_required`
+# setting on the protected branch definition.
+
+* @cs
+nexus/ @nise
