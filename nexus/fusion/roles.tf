@@ -32,10 +32,8 @@ resource "aws_iam_role" "ecs_nexus_fusion_task_role" {
   tags               = { SBO_Billing = "nexus_fusion" }
 }
 
-# TODO - I don't think this is needed? (It's not for storage service)
-
-# resource "aws_iam_role_policy_attachment" "ecs_nexus_fusion_task_role_dockerhub_policy_attachment" {
-#   count      = var.nexus_fusion_ecs_number_of_containers > 0 ? 1 : 0
-#   role       = aws_iam_role.ecs_nexus_fusion_task_execution_role[0].name
-#   policy_arn = var.dockerhub_access_iam_policy_arn
-# }
+resource "aws_iam_role_policy_attachment" "ecs_nexus_fusion_task_role_dockerhub_policy_attachment" {
+  count      = var.nexus_fusion_ecs_number_of_containers > 0 ? 1 : 0
+  role       = aws_iam_role.ecs_nexus_fusion_task_execution_role[0].name
+  policy_arn = var.dockerhub_access_iam_policy_arn
+}
