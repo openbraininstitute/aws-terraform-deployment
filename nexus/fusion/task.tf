@@ -1,32 +1,8 @@
+
 locals {
   nexus_fusion_log_group_name = "nexus_fusion_app"
-}
-
-resource "aws_cloudwatch_log_group" "nexus_fusion" {
-  # TODO check if the logs can be encrypted
-  name              = local.nexus_fusion_log_group_name
-  skip_destroy      = false
-  retention_in_days = 5
-
-  kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
-
-  tags = {
-    Application = "nexus_fusion"
-    SBO_Billing = "nexus_fusion"
-  }
-}
-
-resource "aws_ecs_cluster" "nexus_fusion" {
-  name = "nexus_fusion_ecs_cluster"
-
-  tags = {
-    Application = "nexus_fusion"
-    SBO_Billing = "nexus_fusion"
-  }
-  setting {
-    name  = "containerInsights"
-    value = "disabled" #tfsec:ignore:aws-ecs-enable-container-insight
-  }
+  fusion_cpu                  = 512
+  fusion_memory               = 1024
 }
 
 resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
@@ -37,8 +13,8 @@ resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
 
   container_definitions = jsonencode([
     {
-      memory = 1024
-      cpu    = 512
+      memory = local.fusion_memory
+      cpu    = local.fusion_cpu
       environment = [
         {
           name  = "BASE_PATH"
@@ -130,8 +106,10 @@ resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
           hostPort      = 8000
           containerPort = 8000
           protocol      = "tcp"
+          name          = "fusion"
         }
       ]
+      volumesFrom = []
       healthcheck = {
         command     = ["CMD-SHELL", "exit 0"] // TODO: not exit 0
         interval    = 30
@@ -151,8 +129,8 @@ resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
     }
   ])
 
-  cpu                      = 512
-  memory                   = 1024
+  memory                   = local.fusion_memory
+  cpu                      = local.fusion_cpu
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = aws_iam_role.ecs_nexus_fusion_task_execution_role[0].arn
   task_role_arn            = aws_iam_role.ecs_nexus_fusion_task_role[0].arn
@@ -162,98 +140,16 @@ resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
   }
 }
 
-resource "aws_ecs_service" "nexus_fusion_ecs_service" {
-  count = var.nexus_fusion_ecs_number_of_containers > 0 ? 1 : 0
 
-  name            = "nexus_fusion_ecs_service"
-  cluster         = aws_ecs_cluster.nexus_fusion.id
-  launch_type     = "FARGATE"
-  task_definition = aws_ecs_task_definition.nexus_fusion_ecs_definition[0].arn
-  desired_count   = var.nexus_fusion_ecs_number_of_containers
-  #iam_role        = "${var.ecs_iam_role_name}"
+resource "aws_cloudwatch_log_group" "nexus_fusion" {
+  name              = local.nexus_fusion_log_group_name
+  skip_destroy      = false
+  retention_in_days = 5
 
-  load_balancer {
-    target_group_arn = aws_lb_target_group.nexus_fusion.arn
-    container_name   = "nexus_fusion"
-    container_port   = 8000
-  }
+  kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
 
-  network_configuration {
-    security_groups  = [module.networking.main_subnet_sg_id]
-    subnets          = [module.networking.subnet_id]
-    assign_public_ip = false
-  }
-  depends_on = [
-    aws_cloudwatch_log_group.nexus_fusion,
-    aws_iam_role.ecs_nexus_fusion_task_execution_role, # wrong?
-  ]
-  # force redeployment on each tf apply
-  force_new_deployment = true
-  lifecycle {
-    ignore_changes = [desired_count]
-  }
   tags = {
+    Application = "nexus_fusion"
     SBO_Billing = "nexus_fusion"
   }
-}
-
-resource "aws_iam_role" "ecs_nexus_fusion_task_execution_role" {
-  count = var.nexus_fusion_ecs_number_of_containers > 0 ? 1 : 0
-  name  = "nexus_fusion-ecsTaskExecutionRole"
-
-  assume_role_policy = <<EOF
-{
- "Version": "2012-10-17",
- "Statement": [
-   {
-     "Action": "sts:AssumeRole",
-     "Principal": {
-       "Service": "ecs-tasks.amazonaws.com"
-     },
-     "Effect": "Allow",
-     "Sid": ""
-   }
- ]
-}
-EOF
-  tags = {
-    SBO_Billing = "nexus_fusion"
-  }
-}
-
-resource "aws_iam_role_policy_attachment" "ecs_nexus_fusion_task_execution_role_policy_attachment" {
-  role       = aws_iam_role.ecs_nexus_fusion_task_execution_role[0].name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-
-  count = var.nexus_fusion_ecs_number_of_containers > 0 ? 1 : 0
-}
-
-resource "aws_iam_role" "ecs_nexus_fusion_task_role" {
-  count = var.nexus_fusion_ecs_number_of_containers > 0 ? 1 : 0
-  name  = "nexus_fusion-ecsTaskRole"
-
-  assume_role_policy = <<EOF
-{
- "Version": "2012-10-17",
- "Statement": [
-   {
-     "Action": "sts:AssumeRole",
-     "Principal": {
-       "Service": "ecs-tasks.amazonaws.com"
-     },
-     "Effect": "Allow",
-     "Sid": ""
-   }
- ]
-}
-EOF
-  tags = {
-    SBO_Billing = "nexus_fusion"
-  }
-}
-
-resource "aws_iam_role_policy_attachment" "ecs_nexus_fusion_task_role_dockerhub_policy_attachment" {
-  count      = var.nexus_fusion_ecs_number_of_containers > 0 ? 1 : 0
-  role       = aws_iam_role.ecs_nexus_fusion_task_execution_role[0].name
-  policy_arn = var.dockerhub_access_iam_policy_arn
 }

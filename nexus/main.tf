@@ -74,3 +74,51 @@ module "delta" {
   # - the elasticsearch address
   # - the blazegraph address
 }
+
+module "fusion" {
+  source = "./fusion"
+
+  nexus_fusion_hostname = var.nexus_fusion_hostname
+  nexus_delta_hostname  = var.nexus_delta_hostname
+
+  aws_region               = var.aws_region
+  subnet_id                = module.networking.subnet_id
+  subnet_security_group_id = module.networking.main_subnet_sg_id
+
+  ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
+  aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
+
+  aws_lb_target_group_nexus_fusion_arn = aws_lb_target_group.nexus_fusion.arn
+  dockerhub_access_iam_policy_arn      = var.dockerhub_access_iam_policy_arn
+  dockerhub_credentials_arn            = var.dockerhub_credentials_arn
+}
+
+moved {
+  from = aws_cloudwatch_log_group.nexus_fusion
+  to   = module.fusion.aws_cloudwatch_log_group.nexus_fusion
+}
+
+moved {
+  from = aws_ecs_service.nexus_fusion_ecs_service[0]
+  to   = module.fusion.aws_ecs_service.nexus_fusion_ecs_service[0]
+}
+
+moved {
+  from = aws_ecs_task_definition.nexus_fusion_ecs_definition[0]
+  to   = module.fusion.aws_ecs_task_definition.nexus_fusion_ecs_definition[0]
+}
+
+moved {
+  from = aws_iam_role.ecs_nexus_fusion_task_execution_role[0]
+  to   = module.fusion.aws_iam_role.ecs_nexus_fusion_task_execution_role[0]
+}
+
+moved {
+  from = aws_iam_role.ecs_nexus_fusion_task_role[0]
+  to   = module.fusion.aws_iam_role.ecs_nexus_fusion_task_role[0]
+}
+
+moved {
+  from = aws_iam_role_policy_attachment.ecs_nexus_fusion_task_execution_role_policy_attachment[0]
+  to   = module.fusion.aws_iam_role_policy_attachment.ecs_nexus_fusion_task_execution_role_policy_attachment[0]
+}
