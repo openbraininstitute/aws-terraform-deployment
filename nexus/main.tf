@@ -23,13 +23,6 @@ module "elasticcloud" {
   deployment_name = "nexus_es"
 }
 
-module "elasticsearch" {
-  source = "./elasticsearch"
-
-  subnet_id                = module.networking.subnet_id
-  subnet_security_group_id = module.networking.main_subnet_sg_id
-}
-
 module "blazegraph" {
   source = "./blazegraph"
 
