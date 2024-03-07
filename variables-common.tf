@@ -73,6 +73,29 @@ variable "core_webapp_docker_image_url" {
   sensitive   = false
 }
 
+### Virtual Lab Manager service ###
+
+variable "virtual_lab_manager_base_path" {
+  default     = "/api/virtual-lab-manager"
+  type        = string
+  description = "The base path for the virtual lab manager"
+  sensitive   = false
+}
+
+variable "virtual_lab_manager_log_group_name" {
+  default     = "virtual_lab_manager"
+  type        = string
+  description = "The log name within cloudwatch for the virtual lab manager"
+  sensitive   = false
+}
+
+variable "virtual_lab_manager_docker_image_url" {
+  default     = "bluebrain/obp-virtual-lab-manager:latest"
+  type        = string
+  description = "docker image for the virtual lab manager"
+  sensitive   = false
+}
+
 ### SBO cell service ###
 
 variable "cell_svc_hostname" {
@@ -201,5 +224,12 @@ variable "kg_inference_api_hostname" {
   default     = "kg-inference-api.shapes-registry.org"
   type        = string
   description = "The hostname for the KG Inference API"
+  sensitive   = false
+}
+
+variable "keycloak_server_url" {
+  default     = "https://sboauth.epfl.ch/auth/"
+  type        = string
+  description = "The URL of the Keycloak server"
   sensitive   = false
 }

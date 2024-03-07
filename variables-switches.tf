@@ -24,6 +24,13 @@ variable "core_webapp_ecs_number_of_containers" {
   description = "Number of containers for the SBO core webapp"
 }
 
+variable "virtual_lab_manager_ecs_number_of_containers" {
+  type        = number
+  default     = 0
+  sensitive   = false
+  description = "Number of containers for the virtual lab manager"
+}
+
 variable "cell_svc_ecs_number_of_containers" {
   type        = number
   default     = 1
