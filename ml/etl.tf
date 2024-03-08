@@ -124,7 +124,7 @@ resource "aws_lb_listener_rule" "ml_etl_rule_private" {
 
   condition {
     path_pattern {
-      values = ["/jats_xml", "/pubmed_xml", "/tei_xml", "/xocs_xml", "/pypdf_pdf", "/core_json", "/grobid_pdf"]
+      values = ["/jats_xml", "/tei_xml", "/xocs_xml", "/core_json", "/grobid_pdf"]
     }
   }
 }
