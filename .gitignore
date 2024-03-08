@@ -5,3 +5,4 @@
 .tflint.hcl
 terraform.tfstate*
 .DS_Store
+*.zip
