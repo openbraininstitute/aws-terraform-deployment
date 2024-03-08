@@ -1,5 +1,5 @@
 resource "aws_security_group" "virtual_lab_manager_db_sg" {
-  name   = "viz_db_sg"
+  name   = "virtual_lab_manager_db_sg"
   vpc_id = data.terraform_remote_state.common.outputs.vpc_id
 
   description = "Security group for virtual lab manager Postgresql database"
@@ -19,7 +19,7 @@ resource "aws_security_group" "virtual_lab_manager_db_sg" {
 
 resource "aws_db_subnet_group" "virtual_lab_manager_db_subnet_group" {
   name       = "virtual-lab-manager-db-subnet-group"
-  subnet_ids = [aws_subnet.core_svc.id]
+  subnet_ids = [aws_subnet.core_svc_a.id, aws_subnet.core_svc_b.id]
 
   tags = {
     SBO_Billing = "virtual_lab_manager"
