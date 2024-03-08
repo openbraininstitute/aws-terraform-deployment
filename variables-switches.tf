@@ -38,20 +38,6 @@ variable "cell_svc_ecs_number_of_containers" {
   description = "Number of containers for the SBO sonata-cell-position service"
 }
 
-variable "embedder_ecs_number_of_containers" {
-  type        = number
-  default     = 0
-  sensitive   = false
-  description = "Number of containers for the embedder app"
-}
-
-variable "create_ml_opensearch" {
-  type      = bool
-  default   = true
-  sensitive = false
-}
-
-
 variable "workflow_ecs_number_of_containers" {
   type        = number
   default     = 0

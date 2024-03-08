@@ -1,0 +1,7 @@
+aiobotocore
+apache-airflow
+boto3
+elasticsearch>=8.5
+httpx
+opensearch-py
+pydantic==2.5.3

@@ -1,3 +1,26 @@
+module "ml" {
+  source = "./ml"
+
+  aws_region = data.terraform_remote_state.common.outputs.aws_region
+  account_id = data.aws_caller_identity.current.account_id
+
+  vpc_id                         = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_cidr_block                 = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  route_table_private_subnets_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+
+  dockerhub_credentials_arn = data.terraform_remote_state.common.outputs.dockerhub_credentials_arn
+  backend_image_url         = "bluebrain/bbs-pipeline:v0.17.1"
+  etl_image_url             = "bluebrain/bbs-etl:parse-v1.8.1"
+
+  alb_security_group_id = data.terraform_remote_state.common.outputs.public_alb_sg_id
+  alb_listener_arn      = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+
+  private_alb_security_group_id = "sg-0a2007eb7704cc303"
+  private_alb_listener_arn      = data.terraform_remote_state.common.outputs.private_alb_listener_3000_arn
+
+  secret_manager_arn = "arn:aws:secretsmanager:us-east-1:671250183987:secret:ml_secrets-uEWnHv"
+}
+
 module "nexus" {
   source = "./nexus"
 

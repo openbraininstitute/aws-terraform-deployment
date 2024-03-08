@@ -119,44 +119,6 @@ variable "cell_svc_docker_image_url" {
   sensitive   = false
 }
 
-### Machine Learning Embedder ###
-variable "embedder_docker_image_url" {
-  type        = string
-  default     = "bluebrain/bbs-embeddings:bbsembeddings_multi-qa-mpnet-base-dot-v1-1.0.2"
-  description = "docker image for the embedder webapp"
-  sensitive   = false
-}
-
-variable "embedder_log_group_name" {
-  default     = "embedder"
-  type        = string
-  description = "The log name within cloudwatch for the embedder webapp"
-  sensitive   = false
-}
-
-### Machine Learning ElasticSearch/OpenSearch ###
-# Note: you can also request opensearch, but then you need
-# to also change the instance type to a type which is compatible
-# with opensearch.
-variable "ml_opensearch_version" {
-  type      = string
-  default   = "OpenSearch_2.5"
-  sensitive = false
-}
-
-variable "ml_opensearch_instance_type" {
-  type      = string
-  default   = "t3.medium.search"
-  sensitive = false
-}
-
-variable "ml_os_domain_name" {
-  type      = string
-  default   = "mlos"
-  sensitive = false
-}
-
-
 ### BBP Workflow ###
 
 variable "workflow_log_group_name" {
