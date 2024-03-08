@@ -92,7 +92,7 @@ variable "os_node_number" {
 variable "os_instance_type" {
   description = "Type of opensearch instance"
   type        = string
-  default     = "t3.small.search"
+  default     = "t3.medium.search"
 }
 
 variable "os_ebs_volume" {
