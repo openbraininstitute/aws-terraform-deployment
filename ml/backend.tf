@@ -24,7 +24,7 @@ module "ml_ecs_service_backend" {
       essential   = true
       image       = var.backend_image_url
       name        = "ml_backend"
-      repositoryCredentials = {
+      repository_credentials = {
         credentialsParameter = var.dockerhub_credentials_arn
       }
       port_mappings = [
@@ -135,7 +135,7 @@ module "ml_ecs_service_backend" {
         },
 
       ]
-      logConfiguration = {
+      log_configuration = {
         logDriver = "awslogs"
         options = {
           awslogs-group         = "ml_backend"

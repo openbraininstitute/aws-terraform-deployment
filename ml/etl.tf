@@ -22,7 +22,7 @@ module "ml_ecs_service_etl" {
       image                    = var.etl_image_url
       name                     = "ml_etl"
       readonly_root_filesystem = false
-      repositoryCredentials = {
+      repository_credentials = {
         credentialsParameter = var.dockerhub_credentials_arn
       }
 
@@ -41,7 +41,7 @@ module "ml_ecs_service_etl" {
         startPeriod = 60
         retries     = 3
       }
-      logConfiguration = {
+      log_configuration = {
         logDriver = "awslogs"
         options = {
           awslogs-group         = "ml_etl"
