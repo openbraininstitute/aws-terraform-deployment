@@ -156,7 +156,7 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         },
         {
           name  = "POSTGRES_PORT"
-          value = 5432
+          value = "5432"
         },
         {
           name  = "POSTGRES_USER"

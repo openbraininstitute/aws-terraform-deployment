@@ -26,7 +26,7 @@ variable "core_webapp_ecs_number_of_containers" {
 
 variable "virtual_lab_manager_ecs_number_of_containers" {
   type        = number
-  default     = 0
+  default     = 1
   sensitive   = false
   description = "Number of containers for the virtual lab manager"
 }
