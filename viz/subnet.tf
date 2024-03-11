@@ -12,7 +12,7 @@ resource "aws_subnet" "viz" {
 }
 
 resource "aws_subnet" "viz_b" {
-  count = local.sandbox_resource_count
+  count                   = local.sandbox_resource_count
   vpc_id                  = data.aws_vpc.selected.id
   availability_zone       = "${var.aws_region}b"
   cidr_block              = "10.0.70.0/24"
