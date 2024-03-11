@@ -103,8 +103,8 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
 
   container_definitions = jsonencode([
     {
-      memory      = 256
-      cpu         = 512
+      cpu         = 256
+      memory      = 512
       networkMode = "awsvpc"
       family      = "virtuallabmanager"
       essential   = true
@@ -193,8 +193,8 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
     }
   ])
 
-  cpu                      = 512
-  memory                   = 256
+  cpu                      = 256
+  memory                   = 512
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = aws_iam_role.ecs_virtual_lab_manager_task_execution_role[0].arn
   task_role_arn            = aws_iam_role.ecs_virtual_lab_manager_task_role[0].arn
