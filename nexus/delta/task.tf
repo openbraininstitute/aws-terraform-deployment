@@ -32,6 +32,20 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
           value = "/opt/appconf/delta.conf"
         }
       ]
+      secrets = [
+        {
+          name      = "POSTGRES_PASSWORD"
+          valueFrom = "${var.sbo_nexus_app_secrets_arn}:postgres_password::"
+        },
+        {
+          name      = "ELASTICSEARCH_PASSWORD"
+          valueFrom = "${var.sbo_nexus_app_secrets_arn}:elasticsearch_password::"
+        },
+        {
+          name      = "REMOTE_STORAGE_PASSWORD"
+          valueFrom = "${var.sbo_nexus_app_secrets_arn}:remote_storage_password::"
+        }
+      ]
       networkMode = "awsvpc"
       family      = "sbonexusapp"
       essential   = true
