@@ -41,7 +41,12 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
         credentialsParameter = data.aws_secretsmanager_secret.dockerhub_creds.arn
       }
       environment = []
-      mountPoints = []
+      mountPoints = [
+        {
+          "sourceVolume" : "data",
+          "containerPath" : "/sbo/data/project"
+        }
+      ]
       volumesFrom = []
       portMappings = [
         {
@@ -78,8 +83,8 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
       }
     },
     {
-      memory      = 512
-      cpu         = 1024
+      memory      = 256
+      cpu         = 512
       networkMode = "awsvpc"
       family      = "viz_bcsb"
       essential   = true
@@ -122,9 +127,53 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
           awslogs-stream-prefix = "viz_bcsb"
         }
       }
-    }
-  ])
+    },
+    {
+      memory      = 256
+      cpu         = 256
+      networkMode = "awsvpc"
+      family      = "viz_brayns"
+      essential   = false
+      image       = "ppx86/s3_helper"
+      name        = "viz_brayns_s3_helper"
+      environment = []
+      entrypoint = [
+        "/bin/bash",
+        "/app/s3_heper.sh"
+      ]
+      mountPoints = [
+        {
+          "sourceVolume" : "data",
+          "containerPath" : "/sbo/data/project"
+        }
+      ]
+      volumesFrom = []
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = var.viz_brayns_log_group_name
+          awslogs-region        = var.aws_region
+          awslogs-create-group  = "true"
+          awslogs-stream-prefix = "viz_brayns_s3_helper"
+        }
 
+      }
+      linuxParameters = {
+        "capabilities" = {
+          "add" = ["SYS_ADMIN"],
+        }
+        "devices" = [
+          {
+            "containerPath" = "/dev/fuse",
+            "hostPath"      = "/dev/fuse",
+            "permissions"   = null
+          }
+      ] }
+    },
+  ])
+  volume {
+    name = "data"
+  }
   memory                   = 2560
   cpu                      = 2048
   requires_compatibilities = ["EC2"]
@@ -234,6 +283,11 @@ resource "aws_iam_role" "viz_brayns_ecs_task_role" {
 resource "aws_iam_role_policy_attachment" "viz_brayns_ecs_task_role_dockerhub_policy_attachment" {
   role       = aws_iam_role.viz_brayns_ecs_task_execution_role.name
   policy_arn = data.aws_iam_policy.selected.arn
+}
+
+resource "aws_iam_role_policy_attachment" "viz_brayns_ecs_task_role_s3_policy_attachment" {
+  role       = aws_iam_role.viz_brayns_ecs_task_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
 }
 
 resource "aws_iam_role_policy" "viz_brayns_ecs_exec_policy" {
