@@ -90,7 +90,7 @@ variable "virtual_lab_manager_log_group_name" {
 }
 
 variable "virtual_lab_manager_docker_image_url" {
-  default     = "bluebrain/obp-virtual-lab-manager:latest"
+  default     = "bluebrain/obp-virtual-lab-api:latest"
   type        = string
   description = "docker image for the virtual lab manager"
   sensitive   = false
