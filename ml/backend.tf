@@ -4,7 +4,7 @@ module "ml_ecs_service_backend" {
 
   name                  = "ml-ecs-service-backend"
   cluster_arn           = local.ecs_cluster_arn
-  task_exec_secret_arns = [var.secret_manager_arn, module.ml_rds_postgres.db_instance_master_user_secret_arn]
+  task_exec_secret_arns = [var.secret_manager_arn, var.dockerhub_credentials_arn, module.ml_rds_postgres.db_instance_master_user_secret_arn]
 
 
   cpu    = 1024
@@ -186,6 +186,7 @@ module "ml_ecs_service_backend" {
       cidr_blocks = ["0.0.0.0/0"]
     }
   }
+
   tags = {
     Name        = "ml_backend"
     SBO_Billing = "machinelearning"

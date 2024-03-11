@@ -1,8 +1,9 @@
 module "ml_ecs_service_etl" {
   source = "terraform-aws-modules/ecs/aws//modules/service"
 
-  name        = "ml-ecs-service-etl"
-  cluster_arn = local.ecs_cluster_arn
+  name                  = "ml-ecs-service-etl"
+  cluster_arn           = local.ecs_cluster_arn
+  task_exec_secret_arns = [var.dockerhub_credentials_arn]
 
   cpu    = 1024
   memory = 2048
@@ -91,6 +92,7 @@ module "ml_ecs_service_etl" {
       cidr_blocks = [var.vpc_cidr_block]
     }
   }
+
   tags = {
     Name        = "ml_etl"
     SBO_Billing = "machinelearning"
