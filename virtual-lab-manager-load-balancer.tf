@@ -23,7 +23,7 @@ resource "aws_lb_target_group" "virtual_lab_manager" {
 
 resource "aws_lb_listener_rule" "virtual_lab_manager" {
   listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
-  priority     = 202
+  priority     = 203
 
   action {
     type             = "forward"
