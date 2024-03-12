@@ -89,6 +89,41 @@ resource "aws_lb_listener_rule" "core_webapp" {
   }
 }
 
+resource "aws_lb_listener_rule" "core_webapp_redirect" {
+  listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  priority     = 1000
+
+  action {
+    type = "redirect"
+    redirect {
+      path        = "/mmb-beta"
+      status_code = "HTTP_302"
+    }
+  }
+
+  condition {
+    host_header {
+      values = [var.core_webapp_hostname]
+    }
+  }
+
+  condition {
+    path_pattern {
+      values = ["/", "/static/coming-soon/index.html"]
+    }
+  }
+
+  condition {
+    source_ip {
+      values = [var.epfl_cidr]
+    }
+  }
+
+  tags = {
+    SBO_Billing = "core_webapp"
+  }
+}
+
 resource "aws_lb_listener_rule" "core_webapp_poc" {
   listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
   priority     = 201
