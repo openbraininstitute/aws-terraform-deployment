@@ -62,6 +62,8 @@ module "delta" {
   dockerhub_access_iam_policy_arn   = var.dockerhub_access_iam_policy_arn
   dockerhub_credentials_arn         = var.dockerhub_credentials_arn
 
+  postgres_host = module.postgres.host
+
   # TODO once possible, this module should also take in (at least) the following:
   # - the postgres db address
   # - the elasticsearch address

@@ -21,8 +21,6 @@ resource "aws_db_instance" "nexusdb" {
   allocated_storage       = 5     # in gigabytes
   backup_retention_period = 2     # in days
 
-  count = var.create_nexus_database ? 1 : 0
-
   db_subnet_group_name = aws_db_subnet_group.nexus_db_subnet_group.name
 
   engine         = "postgres"

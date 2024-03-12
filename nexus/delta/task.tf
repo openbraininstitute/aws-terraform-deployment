@@ -30,6 +30,10 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
         {
           name  = "DELTA_EXTERNAL_CONF"
           value = "/opt/appconf/delta.conf"
+        },
+        {
+          name  = "POSTGRES_HOST"
+          value = var.postgres_host
         }
       ]
       secrets = [
