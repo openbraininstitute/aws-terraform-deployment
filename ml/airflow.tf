@@ -8,6 +8,7 @@ module "ml_mwaa" {
 
   vpc_id             = var.vpc_id
   private_subnet_ids = local.private_subnet_ids
+  source_cidr        = [var.vpc_cidr_block]
 
   min_workers = var.airflow_min_worker
   max_workers = var.airflow_max_worker

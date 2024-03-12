@@ -199,7 +199,7 @@ async def check_docs_exists_in_db(
         "query": {"terms": {"pmc_id": pmc_ids}},
         "aggs": {"matched_ids": {"terms": {"field": "pmc_id", "size": len(pmc_ids)}}},
     }
-    docs = await client.search(index=index, query=query)
+    docs = await client.search(index=index, query=query, **{"request_timeout": 60})
     existing_ids = [
         doc["key"] for doc in docs["aggregations"]["matched_ids"]["buckets"]
     ]
