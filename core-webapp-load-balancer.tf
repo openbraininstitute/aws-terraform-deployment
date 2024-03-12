@@ -91,7 +91,7 @@ resource "aws_lb_listener_rule" "core_webapp" {
 
 resource "aws_lb_listener_rule" "core_webapp_redirect" {
   listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
-  priority     = 1000
+  priority     = 201
 
   action {
     type = "redirect"
@@ -126,7 +126,7 @@ resource "aws_lb_listener_rule" "core_webapp_redirect" {
 
 resource "aws_lb_listener_rule" "core_webapp_poc" {
   listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
-  priority     = 201
+  priority     = 202
 
   action {
     type             = "forward"
