@@ -1,8 +1,0 @@
-aws_region                               = "us-east-1"
-subnet_id                                = "subnet-0b7efbe81901493e7"
-subnet_security_group_id                 = "sg-07cb47bad77fe7b72"
-ecs_cluster_arn                          = "arn:aws:ecs:us-east-1:058264116529:cluster/nexus_ecs_cluster"
-ecs_cluster_name                         = "nexus_ecs_cluster"
-amazon_linux_ecs_ami_id                  = "ami-0d42173b665d626f0"
-s3_bucket_name                           = "sbonexusdatatest"
-aws_service_discovery_http_namespace_arn = "arn:aws:servicediscovery:us-east-1:058264116529:namespace/ns-3r4bdiyjxam2iad4"

@@ -1,10 +1,4 @@
-# Nexus Storage Service
-The storage service is run using ECS with EC2 (rather than Fargate as for the other containerised apps). Since EC2 is not managed by AWS we have to provide more config such as AMI, instance type and IAM roles.
+# [DEPRECATED] Nexus Storage Service
+The Nexus Storage Service is currently running on the AWS parallel cluster, see [here](https://bbpgitlab.epfl.ch/cs/cloud/aws/parallel-cluster/-/blob/staging/scripts/s3/setup_nexus_storage_service.sh?ref_type=heads) for infrastructure code. For transparency we've copied this configuration to this repo, alongside the rest of the nexus stack.
 
-With this we can mount the S3 bucket containing nexus data when the EC2 instance is launched (done in [init_storage_instance](./init_storage_instance.sh)). When ECS sees that there's an eligible EC2 instance, it starts a containerised task on this instance. This is able to read/write to S3 using the mount as a POSIX file system.
-
-An auto-scaling group / capacity provider is used to launch instances once the terraform is applied.
-
-TODO:
-1. Add a load balancer and output the host for delta.
-2. Switch production delta to point to this storage service and not the one on the parallel cluster.
+For OBP launch this parallel cluster instance of the service will be removed in favour of direct uploads through Nexus Delta and S3. See [here](https://bbpteam.epfl.ch/project/spaces/display/BBPP154/Architecture+to+Manage+Data+in+Lustre+FSx+and+Nexus+Integration) and [here](https://bbpteam.epfl.ch/project/spaces/pages/viewpage.action?pageId=173211936) for more details about the plan. Long term, the only storage service remaining will be on-premises in Kubernetes. 
