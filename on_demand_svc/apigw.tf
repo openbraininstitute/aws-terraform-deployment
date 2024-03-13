@@ -22,6 +22,13 @@ resource "aws_cloudwatch_log_group" "apigw" {
   tags              = var.tags
 }
 
+#tfsec:ignore:aws-cloudwatch-log-group-customer-key
+resource "aws_cloudwatch_log_group" "apigw_access_log" {
+  name              = "/aws/apigateway/${local.cluster_name}_access_log"
+  retention_in_days = 1
+  tags              = var.tags
+}
+
 data "aws_iam_policy_document" "apigw" {
   statement {
     principals {
@@ -86,7 +93,6 @@ resource "aws_apigatewayv2_integration" "ws_handler" {
   integration_uri    = aws_lambda_function.ws_handler[each.key].invoke_arn
 }
 
-#tfsec:ignore:aws-api-gateway-enable-access-logging
 resource "aws_apigatewayv2_stage" "prod" {
   api_id      = aws_apigatewayv2_api.this.id
   name        = "prod"
@@ -96,6 +102,10 @@ resource "aws_apigatewayv2_stage" "prod" {
     logging_level          = "INFO"
     throttling_burst_limit = 1
     throttling_rate_limit  = 2
+  }
+  access_log_settings {
+    destination_arn = resource.aws_cloudwatch_log_group.apigw_access_log.arn
+    format          = "json"
   }
   tags = var.tags
 }
