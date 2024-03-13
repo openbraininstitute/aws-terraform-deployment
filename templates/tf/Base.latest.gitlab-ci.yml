@@ -51,11 +51,6 @@ variables:
     - gitlab-terraform plan
     - gitlab-terraform plan-json
   resource_group: ${TF_STATE_NAME}
-  artifacts:
-    paths:
-      - ${TF_ROOT}/plan.cache
-    reports:
-      terraform: ${TF_ROOT}/plan.json
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.

@@ -30,9 +30,11 @@ build:
     - export TF_VAR_common_token_pass=$COMMON_REPO_TOKEN_PASS
   extends: .terraform:build
   artifacts:
-    name: on-demand-zip-files
     paths:
-     - on_demand_svc/src/*.zip
+     - ${TF_ROOT}/on_demand_svc/src/*.zip
+     - ${TF_ROOT}/plan.cache
+    reports:
+      terraform: ${TF_ROOT}/plan.json
 
 deploy:
   extends: .terraform:deploy
