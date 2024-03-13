@@ -105,7 +105,7 @@ resource "aws_apigatewayv2_stage" "prod" {
   }
   access_log_settings {
     destination_arn = resource.aws_cloudwatch_log_group.apigw_access_log.arn
-    format          = "json"
+    format          = "{\"requestId\":\"$context.requestId\", \"ip\": \"$context.identity.sourceIp\", \"requestTime\":\"$context.requestTime\", \"routeKey\":\"$context.routeKey\", \"status\":\"$context.status\"}"
   }
   tags = var.tags
 }
