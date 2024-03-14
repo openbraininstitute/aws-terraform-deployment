@@ -26,6 +26,14 @@ variable "postgres_host" {
   type = string
 }
 
+variable "elasticsearch_endpoint" {
+  type = string
+}
+
+variable "blazegraph_endpoint" {
+  type = string
+}
+
 variable "subnet_security_group_id" {
   type        = string
   description = "security group applied to the resource which should describe how the resource can communicate inside the subnet"

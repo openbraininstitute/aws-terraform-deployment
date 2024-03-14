@@ -49,12 +49,9 @@ module "delta" {
   dockerhub_access_iam_policy_arn   = var.dockerhub_access_iam_policy_arn
   dockerhub_credentials_arn         = var.dockerhub_credentials_arn
 
-  postgres_host = module.postgres.host
-
-  # TODO once possible, this module should also take in (at least) the following:
-  # - the postgres db address
-  # - the elasticsearch address
-  # - the blazegraph address
+  postgres_host          = module.postgres.host
+  elasticsearch_endpoint = module.elasticcloud.http_endpoint
+  blazegraph_endpoint    = "http://${module.blazegraph.blazebraph_dns_name}:9999/blazegraph"
 }
 
 module "fusion" {

@@ -34,6 +34,14 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
         {
           name  = "POSTGRES_HOST"
           value = var.postgres_host
+        },
+        {
+          name  = "ELASTICSEARCH_ENDPOINT"
+          value = var.elasticsearch_endpoint
+        },
+        {
+          name  = "BLAZEGRAPH_ENDPOINT"
+          value = var.blazegraph_endpoint
         }
       ]
       secrets = [

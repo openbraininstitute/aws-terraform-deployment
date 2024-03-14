@@ -24,12 +24,6 @@ variable "aws_service_discovery_http_namespace_arn" {
 
 # Blazegraph specific
 
-variable "blazegraph_ecs_number_of_containers" {
-  type      = number
-  default   = 1
-  sensitive = false
-}
-
 variable "blazegraph_docker_image_url" {
   default   = "bluebrain/blazegraph-nexus:2.1.6-RC"
   sensitive = false

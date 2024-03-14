@@ -3,14 +3,12 @@ locals {
 }
 
 resource "aws_ecs_service" "blazegraph_ecs_service" {
-  count = var.blazegraph_ecs_number_of_containers > 0 ? 1 : 0
-
   name        = "blazegraph_ecs_service"
   cluster     = var.ecs_cluster_arn
   launch_type = "FARGATE"
 
-  task_definition = aws_ecs_task_definition.blazegraph_ecs_definition[0].arn
-  desired_count   = var.blazegraph_ecs_number_of_containers
+  task_definition = aws_ecs_task_definition.blazegraph_ecs_definition.arn
+  desired_count   = 1
   #iam_role        = "${var.ecs_iam_role_name}"
 
   # ensure that there are not multiple tasks running at the same time during deployment

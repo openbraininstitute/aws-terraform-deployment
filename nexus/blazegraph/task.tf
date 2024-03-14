@@ -4,7 +4,6 @@ locals {
 }
 
 resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
-  count        = var.blazegraph_ecs_number_of_containers > 0 ? 1 : 0
   family       = "blazegraph_task_family"
   network_mode = "awsvpc"
 
@@ -69,7 +68,7 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
   cpu                      = local.blazegraph_cpu
   memory                   = local.blazegraph_memory
   requires_compatibilities = ["FARGATE"]
-  execution_role_arn       = aws_iam_role.ecs_blazegraph_task_execution_role[0].arn
+  execution_role_arn       = aws_iam_role.ecs_blazegraph_task_execution_role.arn
   #task_role_arn            = aws_iam_role.ecs_blazegraph_task_role[0].arn
 
   volume {
@@ -94,7 +93,6 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
 }
 
 resource "aws_iam_role" "ecs_blazegraph_task_execution_role" {
-  count = var.blazegraph_ecs_number_of_containers > 0 ? 1 : 0
   name  = "blazegraph-ecsTaskExecutionRole"
 
   assume_role_policy = <<EOF
@@ -118,7 +116,6 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_blazegraph_task_execution_role_policy_attachment" {
-  role       = aws_iam_role.ecs_blazegraph_task_execution_role[0].name
+  role       = aws_iam_role.ecs_blazegraph_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-  count      = var.blazegraph_ecs_number_of_containers > 0 ? 1 : 0
 }
