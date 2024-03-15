@@ -184,6 +184,7 @@ locals {
       "ecs:DeleteT*",
       "ecs:DeleteAttributes",
       "ecs:ExecuteCommand",
+      "ecs:StopTask",
       "ssm:StartSession",
     ]
     Resource = "*"
