@@ -157,7 +157,7 @@ resource "aws_vpc_security_group_egress_rule" "viz_brayns_allow_outgoing" {
 
 resource "aws_autoscaling_group" "ecs_autoscaling_group" {
   name                = "viz_asg"
-  max_size            = 10
+  max_size            = 2
   min_size            = 0
   desired_capacity    = 1
   vpc_zone_identifier = [aws_subnet.viz.id]

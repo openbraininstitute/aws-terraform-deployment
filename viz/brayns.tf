@@ -160,7 +160,8 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
       }
       linuxParameters = {
         "capabilities" = {
-          "add" = ["SYS_ADMIN"],
+          "add"  = ["SYS_ADMIN"],
+          "drop" = []
         }
         "devices" = [
           {
