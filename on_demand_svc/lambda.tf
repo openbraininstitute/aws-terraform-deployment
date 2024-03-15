@@ -1,26 +1,3 @@
-locals {
-  ws_handler_policy = {
-    connect = [{
-      actions   = ["ecs:RunTask"]
-      resources = [aws_ecs_task_definition.this.arn]
-      }, {
-      actions   = ["ecs:TagResource"]
-      resources = ["arn:aws:ecs:${var.aws_region}:${var.account_id}:task/${aws_ecs_task_definition.this.family}/*"]
-      }, {
-      actions   = ["iam:PassRole"]
-      resources = [aws_iam_role.task_exec.arn]
-    }]
-    default = [{
-      actions   = ["ecs:DescribeTasks"]
-      resources = ["arn:aws:ecs:${var.aws_region}:${var.account_id}:task/${aws_ecs_task_definition.this.family}/*"]
-    }]
-    disconnect = [{
-      actions   = ["none:null"] # dummy, so it doesn't fail
-      resources = [aws_ecs_task_definition.this.arn]
-    }]
-  }
-}
-
 variable "actions" {
   type    = set(string)
   default = ["connect", "default", "disconnect"]
@@ -37,22 +14,42 @@ data "aws_iam_policy_document" "assume_role" {
   }
 }
 
-data "aws_iam_policy_document" "ws_handler_policy" {
-  for_each = local.ws_handler_policy
-  dynamic "statement" {
-    for_each = each.value
-    content {
-      actions   = statement.value.actions
-      resources = statement.value.resources
-      effect    = "Allow"
-    }
+data "aws_iam_policy_document" "ws_handler_connect" {
+  statement {
+    actions   = ["ecs:RunTask"]
+    resources = [aws_ecs_task_definition.this.arn]
+    effect    = "Allow"
+  }
+  statement {
+    actions   = ["ecs:TagResource"]
+    resources = ["arn:aws:ecs:${var.aws_region}:${var.account_id}:task/${aws_ecs_task_definition.this.family}/*"]
+    effect    = "Allow"
+  }
+  statement {
+    actions   = ["iam:PassRole"]
+    resources = [aws_iam_role.task_exec.arn]
+    effect    = "Allow"
   }
 }
 
-resource "aws_iam_policy" "ws_handler_policy" {
-  for_each = local.ws_handler_policy
-  policy   = data.aws_iam_policy_document.ws_handler_policy[each.key].json
-  tags     = var.tags
+resource "aws_iam_policy" "ws_handler_connect" {
+  name   = "${var.svc_name}-ws-handler-connect"
+  policy = data.aws_iam_policy_document.ws_handler_connect.json
+  tags   = var.tags
+}
+
+data "aws_iam_policy_document" "ws_handler_default" {
+  statement {
+    actions   = ["ecs:DescribeTasks"]
+    resources = ["arn:aws:ecs:${var.aws_region}:${var.account_id}:task/${aws_ecs_task_definition.this.family}/*"]
+    effect    = "Allow"
+  }
+}
+
+resource "aws_iam_policy" "ws_handler_default" {
+  name   = "${var.svc_name}-ws-handler-default"
+  policy = data.aws_iam_policy_document.ws_handler_default.json
+  tags   = var.tags
 }
 
 #tfsec:ignore:aws-cloudwatch-log-group-customer-key
@@ -81,11 +78,12 @@ resource "aws_iam_policy" "ws_handler_logs" {
 resource "aws_iam_role" "ws_handler" {
   for_each           = var.actions
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
-  managed_policy_arns = concat([
-    aws_iam_policy.ws_handler_logs[each.key].arn,
-    aws_iam_policy.ddb_table_perms[each.key].arn,
-    aws_iam_policy.ws_handler_policy[each.key].arn,
-  ], contains(["default", "disconnect"], each.key) ? ["arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"] : [])
+  managed_policy_arns = concat(
+    [aws_iam_policy.ws_handler_logs[each.key].arn, aws_iam_policy.ddb_table_perms[each.key].arn],
+    "connect" == each.key ? [aws_iam_policy.ws_handler_connect.arn] : [],
+    "default" == each.key ? [aws_iam_policy.ws_handler_default.arn] : [],
+    # default/disconnect lambda should run in vpc to access ECS task endpoint
+  contains(["default", "disconnect"], each.key) ? ["arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"] : [])
   tags = var.tags
 }
 
@@ -146,6 +144,7 @@ data "aws_iam_policy_document" "ws_authz_logs" {
 }
 
 resource "aws_iam_policy" "ws_authz_logs" {
+  name   = "${var.svc_name}-ws-authz-logs"
   policy = data.aws_iam_policy_document.ws_authz_logs.json
   tags   = var.tags
 }

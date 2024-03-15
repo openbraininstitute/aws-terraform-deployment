@@ -51,6 +51,7 @@ data "aws_iam_policy_document" "invoke_ws_handler" {
 
 resource "aws_iam_policy" "invoke_ws_handler" {
   for_each = var.actions
+  name     = "${var.svc_name}-apigw-invoke-ws-handler-${each.value}"
   policy   = data.aws_iam_policy_document.invoke_ws_handler[each.key].json
   tags     = var.tags
 }
@@ -78,6 +79,7 @@ resource "aws_iam_role" "invoke_ws_authz" {
 
 resource "aws_iam_role" "apigw" {
   for_each            = var.actions
+  name                = "${var.svc_name}-apigw-invoke-ws-handler-${each.value}"
   assume_role_policy  = data.aws_iam_policy_document.apigw.json
   managed_policy_arns = [aws_iam_policy.invoke_ws_handler[each.key].arn]
   tags                = var.tags
@@ -105,7 +107,13 @@ resource "aws_apigatewayv2_stage" "prod" {
   }
   access_log_settings {
     destination_arn = resource.aws_cloudwatch_log_group.apigw_access_log.arn
-    format          = "{\"requestId\":\"$context.requestId\", \"ip\": \"$context.identity.sourceIp\", \"requestTime\":\"$context.requestTime\", \"routeKey\":\"$context.routeKey\", \"status\":\"$context.status\"}"
+    format = jsonencode({
+      requestId   = "$context.requestId"
+      ip          = "$context.identity.sourceIp"
+      requestTime = "$context.requestTime"
+      routeKey    = "$context.routeKey"
+      status      = "$context.status"
+    })
   }
   tags = var.tags
 }

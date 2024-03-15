@@ -158,7 +158,8 @@ resource "aws_ecs_task_definition" "this" {
           containerPath = "/dev/fuse"
         }]
         capabilities = {
-          add = ["SYS_ADMIN"]
+          add  = ["SYS_ADMIN"]
+          drop = []
         }
       }
       portMappings = [

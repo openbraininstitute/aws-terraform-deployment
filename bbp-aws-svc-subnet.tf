@@ -4,7 +4,7 @@ resource "aws_subnet" "bbp_aws_svc_ec2" {
   cidr_block        = "10.0.3.32/28"
 
   tags = {
-    Name        = "bbp_aws_svc"
+    Name        = "bbp-aws-svc-ec2"
     SBO_Billing = "bbp_aws_svc"
   }
 }
@@ -15,7 +15,7 @@ resource "aws_subnet" "bbp_aws_svc_ecs" {
   cidr_block        = "10.0.3.64/28"
 
   tags = {
-    Name        = "bbp_aws_svc"
+    Name        = "bbp-aws-svc-ecs"
     SBO_Billing = "bbp_aws_svc"
   }
 }

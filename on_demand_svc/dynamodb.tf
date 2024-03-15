@@ -8,7 +8,7 @@ locals {
 }
 
 resource "aws_dynamodb_table" "this" {
-  name         = "ws_conn_task"
+  name         = "${local.cluster_name}_ws_conn_task"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "conn"
   attribute {
