@@ -211,7 +211,8 @@ resource "aws_ecs_capacity_provider" "viz_cas" {
       instance_warmup_period = 10
     }
     auto_scaling_group_arn         = aws_autoscaling_group.ecs_autoscaling_group.arn
-    managed_termination_protection = "ENABLED"
+    managed_termination_protection = "DISABLED"
+    managed_draining               = "DISABLED"
   }
   tags = {
     SBO_Billing = "viz"
