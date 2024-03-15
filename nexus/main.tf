@@ -20,7 +20,7 @@ module "elasticcloud" {
   aws_region      = var.aws_region
   vpc_id          = var.vpc_id
   subnet_ids      = [module.networking.subnet_b_id]
-  deployment_name = "nexus_es"
+  deployment_name = "nexus-es"
 }
 
 module "blazegraph" {
