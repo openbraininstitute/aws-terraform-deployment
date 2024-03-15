@@ -93,7 +93,7 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
 }
 
 resource "aws_iam_role" "ecs_blazegraph_task_execution_role" {
-  name  = "blazegraph-ecsTaskExecutionRole"
+  name = "blazegraph-ecsTaskExecutionRole"
 
   assume_role_policy = <<EOF
 {
