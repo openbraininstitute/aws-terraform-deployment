@@ -21,7 +21,9 @@ from airflow.operators.python import PythonOperator
 from botocore import UNSIGNED
 from botocore.config import Config
 from elasticsearch import ApiError
-from elasticsearch.helpers import BulkIndexError
+from elasticsearch.helpers import BulkIndexError as ESBulkIndexError
+from opensearchpy.exceptions import TransportError
+from opensearchpy.helpers import BulkIndexError as OSBulkIndexError
 from httpx import AsyncClient, HTTPError
 from opensearchpy import AsyncOpenSearch as AsyncOpensearch
 from opensearchpy.helpers import async_bulk
@@ -566,7 +568,7 @@ async def parse_and_upload(
                 logger.info("Upload data to database.")
                 try:
                     await ds_client.bulk(upload_bulk, **{"request_timeout": 60})
-                except (ApiError, BulkIndexError) as e:
+                except (ApiError, ESBulkIndexError, TransportError, OSBulkIndexError) as e:
                     logger.info(
                         f"Article {s3_bucket_key} could not be uploaded properly. {e}"
                     )

@@ -86,7 +86,7 @@ variable "os_version" {
 variable "os_node_number" {
   description = "Number of nodes of the Opensearch cluster."
   type        = number
-  default     = 1
+  default     = 4
 }
 
 variable "os_instance_type" {
