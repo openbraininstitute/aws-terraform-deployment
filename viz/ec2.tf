@@ -159,7 +159,6 @@ resource "aws_autoscaling_group" "ecs_autoscaling_group" {
   name                = "viz_asg"
   max_size            = 2
   min_size            = 0
-  desired_capacity    = 1
   vpc_zone_identifier = [aws_subnet.viz.id]
   health_check_type   = "EC2"
 
