@@ -157,7 +157,7 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
         environment = [
           {
             name  = "WHITELISTED_CORS_URLS",
-            value = "http:localhost:3000,https://bbp.epfl.ch"
+            value = "http://localhost:3000,https://${data.terraform_remote_state.common.outputs.primary_domain}"
           }
         ],
         memory = 2048
