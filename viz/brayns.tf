@@ -41,12 +41,6 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
         credentialsParameter = data.aws_secretsmanager_secret.dockerhub_creds.arn
       }
       environment = []
-      mountPoints = [
-        {
-          "sourceVolume" : "data",
-          "containerPath" : "/sbo/data/project"
-        }
-      ]
       volumesFrom = []
       portMappings = [
         {
@@ -55,7 +49,8 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
           protocol      = "tcp"
         }
       ]
-      entrypoint = [
+      command = [
+        "/app/mount_s3.sh",
         "/opt/view/bin/braynsService",
         "--uri",
         "0.0.0.0:5000",
@@ -128,53 +123,7 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
         }
       }
     },
-    {
-      memory      = 256
-      cpu         = 256
-      networkMode = "awsvpc"
-      family      = "viz_brayns"
-      essential   = false
-      image       = "ppx86/s3_helper"
-      name        = "viz_brayns_s3_helper"
-      environment = []
-      entrypoint = [
-        "/bin/bash",
-        "/app/s3_heper.sh"
-      ]
-      mountPoints = [
-        {
-          "sourceVolume" : "data",
-          "containerPath" : "/sbo/data/project"
-        }
-      ]
-      volumesFrom = []
-      logConfiguration = {
-        logDriver = "awslogs"
-        options = {
-          awslogs-group         = var.viz_brayns_log_group_name
-          awslogs-region        = var.aws_region
-          awslogs-create-group  = "true"
-          awslogs-stream-prefix = "viz_brayns_s3_helper"
-        }
-
-      }
-      linuxParameters = {
-        "capabilities" = {
-          "add"  = ["SYS_ADMIN"],
-          "drop" = []
-        }
-        "devices" = [
-          {
-            "containerPath" = "/dev/fuse",
-            "hostPath"      = "/dev/fuse",
-            "permissions"   = null
-          }
-      ] }
-    },
   ])
-  volume {
-    name = "data"
-  }
   memory                   = 2560
   cpu                      = 2048
   requires_compatibilities = ["EC2"]

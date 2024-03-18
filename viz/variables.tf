@@ -69,7 +69,7 @@ variable "viz_brayns_hostname" {
 
 variable "viz_brayns_docker_image_url" {
   type        = string
-  default     = "bluebrain/spackah-brayns:3.4.1"
+  default     = "ppx86/brayns_aws_wrapper:latest"
   description = "Docker image for Brayns renderer service"
   sensitive   = false
 }
