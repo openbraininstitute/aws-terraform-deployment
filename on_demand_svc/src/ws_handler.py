@@ -15,7 +15,7 @@ RETRY_IN = 2  # seconds
 MAX_ATTEMPTS = ROUTE_TIMEOUT // RETRY_IN - 2
 
 DDB = boto3.client("dynamodb")
-ECS = boto3.client('ecs')
+ECS = boto3.client("ecs")
 
 DDB_TABLE = os.environ["DDB_TABLE"]
 APIGW_ENDPOINT = os.environ["APIGW_ENDPOINT"]
@@ -45,6 +45,7 @@ def connect(event, context):
                     {"name": "APIGW_CONN_ID", "value": conn_id},
                     {"name": "SVC_BUCKET", "value": SVC_BUCKET},
                     {"name": "SVC_VLAB", "value": svc_vlab}]}]},
+        propagateTags="TASK_DEFINITION",
         tags=[{
             "key": "vlab",
             "value": svc_vlab}])
