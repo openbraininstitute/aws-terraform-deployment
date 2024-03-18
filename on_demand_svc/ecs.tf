@@ -91,9 +91,12 @@ data "aws_iam_policy_document" "task" {
 
 data "aws_iam_policy_document" "post_to_connection" {
   statement {
-    actions   = ["execute-api:ManageConnections"]
-    effect    = "Allow"
-    resources = ["${aws_apigatewayv2_api.this.execution_arn}/prod/POST/@connections/*"]
+    actions = ["execute-api:ManageConnections"]
+    effect  = "Allow"
+    resources = [
+      "${aws_apigatewayv2_api.this.execution_arn}/prod/POST/@connections/*",
+      "${aws_apigatewayv2_api.this.execution_arn}/prod/DELETE/@connections/*"
+    ]
   }
 }
 
