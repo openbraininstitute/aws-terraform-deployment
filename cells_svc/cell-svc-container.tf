@@ -28,7 +28,7 @@ resource "aws_vpc_security_group_egress_rule" "cell_svc_ec2_ecs_instance_sg_egre
 # { IAM Role for the EC2 instances which will be used for the cells ECS
 #https://docs.aws.amazon.com/AmazonECS/latest/developerguide/security-iam-awsmanpol.html#security-iam-awsmanpol-AmazonEC2ContainerServiceforEC2Role
 resource "aws_iam_role" "cells_ec2_instance_role" {
-  name               = "cells_ec2_instance_role"
+  name_prefix        = "cl_ec2"
   assume_role_policy = data.aws_iam_policy_document.cells_ec2_instance_role_policy.json
   tags               = { SBO_Billing = "cell_svc" }
 }
@@ -47,9 +47,9 @@ resource "aws_iam_role_policy_attachment" "cells_ec2_instance_role_s3_policy" {
 # An IAM instance profile for the ec2 systems for the cells ecs cluster, based on the IAM role,
 # for the ec2 launch template
 resource "aws_iam_instance_profile" "cells_ec2_instance_role_profile" {
-  name = "Cells_EC2_InstanceRoleProfile"
-  role = aws_iam_role.cells_ec2_instance_role.name
-  tags = { SBO_Billing = "cell_svc" }
+  name_prefix = "cl_ins"
+  role        = aws_iam_role.cells_ec2_instance_role.name
+  tags        = { SBO_Billing = "cell_svc" }
 }
 
 # The iam policy doc to create the IAM role for the ec2 instances for the cells cluster
@@ -118,7 +118,7 @@ resource "aws_cloudwatch_log_group" "cell_svc" {
 # TODO check: not used?
 resource "aws_cloudwatch_log_group" "cell_svc_ecs" {
   # TODO check if the logs can be encrypted
-  name              = "cell_svc_ecs"
+  name_prefix       = "cl_log"
   skip_destroy      = false
   retention_in_days = 5
 
@@ -151,7 +151,7 @@ resource "aws_ecs_cluster" "cell_svc_ecs_cluster" {
 # { ECS Task network
 # TODO make more strict
 resource "aws_security_group" "cell_svc_ecs_task" {
-  name        = "cell_svc_ecs_task"
+  name_prefix = "cl_tsk"
   vpc_id      = var.vpc_id
   description = "Sec group for SBO cell svc ECS task"
 
@@ -290,7 +290,7 @@ resource "aws_ecs_service" "cell_svc_ecs_service" {
 # { Used by the ECS service to manage the cells ECS cluster
 # *not* for the EC2 systems and also not for the ECS containers
 resource "aws_iam_role" "cells_ecs_service_role" {
-  name               = "Cells_ECS_ServiceRole"
+  name_prefix        = "cl_ecs"
   assume_role_policy = data.aws_iam_policy_document.cells_ecs_service_policy.json
   tags               = { SBO_Billing = "cell_svc" }
 }
@@ -341,13 +341,13 @@ data "aws_iam_policy_document" "cells_ecs_service_role_policy" {
 
 # { ECS Task IAM
 resource "aws_iam_role" "ecs_cell_svc_task_execution_role" {
-  name               = "cell_svc-ecsTaskExecutionRole"
+  name_prefix        = "cl_exe"
   assume_role_policy = data.aws_iam_policy_document.cells_ecs_task_assume_role_policy.json
   tags               = { SBO_Billing = "cell_svc" }
 }
 
 resource "aws_iam_role" "ecs_cell_svc_task_role" {
-  name               = "cell_svc-ecsTaskRole"
+  name_prefix        = "cl_svc"
   assume_role_policy = data.aws_iam_policy_document.cells_ecs_task_assume_role_policy.json
   tags               = { SBO_Billing = "cell_svc" }
 }
