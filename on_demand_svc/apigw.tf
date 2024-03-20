@@ -10,7 +10,7 @@ resource "aws_apigatewayv2_authorizer" "this" {
   authorizer_type            = "REQUEST"
   authorizer_uri             = aws_lambda_function.ws_authz.invoke_arn
   authorizer_credentials_arn = aws_iam_role.invoke_ws_authz.arn
-  identity_sources           = ["route.request.header.Authorization"]
+  identity_sources           = ["route.request.header.Sec-WebSocket-Protocol"]
   name                       = "ws_authz"
   depends_on                 = [aws_cloudwatch_log_group.apigw]
 }

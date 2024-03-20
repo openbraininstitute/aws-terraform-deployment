@@ -8,7 +8,7 @@ def do(event, context):
     epfl_cidr = ip_network("128.178.0.0/15", False)
 
     # FIXME add proper keycloak authz
-    if (ip in epfl_cidr and headers["Authorization"].startswith("Bearer ")):
+    if (ip in epfl_cidr and headers["Sec-WebSocket-Protocol"].startswith("Bearer-")):
         return json.loads(generateAllow("me", event["methodArn"]))
 
     return json.loads(generateDeny("me", event["methodArn"]))

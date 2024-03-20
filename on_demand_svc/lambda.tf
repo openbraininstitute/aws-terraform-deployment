@@ -64,7 +64,7 @@ data "aws_iam_policy_document" "ws_handler_logs" {
   for_each = var.actions
   statement {
     actions   = ["logs:CreateLogStream", "logs:PutLogEvents"]
-    resources = ["arn:aws:logs:${var.aws_region}:${var.account_id}:log-group:/aws/lambda/ws_handler_${each.value}:*"]
+    resources = ["${aws_cloudwatch_log_group.ws_handler[each.key].arn}:*"]
     effect    = "Allow"
   }
 }
@@ -138,7 +138,7 @@ resource "aws_cloudwatch_log_group" "ws_authz" {
 data "aws_iam_policy_document" "ws_authz_logs" {
   statement {
     actions   = ["logs:CreateLogStream", "logs:PutLogEvents"]
-    resources = ["arn:aws:logs:${var.aws_region}:${var.account_id}:log-group:/aws/lambda/ws_authz:*"]
+    resources = ["${aws_cloudwatch_log_group.ws_authz.arn}:*"]
     effect    = "Allow"
   }
 }
