@@ -173,6 +173,13 @@ variable "thumbnail_generation_api_hostname" {
   sensitive   = false
 }
 
+variable "thumbnail_generation_api_log_group_name" {
+  default     = "thumbnail_generation_api"
+  type        = string
+  description = "The log name within cloudwatch for the thumbnail generation api"
+  sensitive   = false
+}
+
 ### KG Inference API ###
 
 variable "kg_inference_api_docker_image_url" {

@@ -218,3 +218,17 @@ resource "aws_ecs_service" "thumbnail_generation_api_service" {
     assign_public_ip = false
   }
 }
+
+resource "aws_cloudwatch_log_group" "thumbnail_generation_api" {
+  name              = var.thumbnail_generation_api_log_group_name
+  skip_destroy      = false
+  retention_in_days = 5
+
+  kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
+
+  tags = {
+    Application = "thumbnail_generation_api"
+    SBO_Billing = "thumbnail_generation_api"
+  }
+}
+
