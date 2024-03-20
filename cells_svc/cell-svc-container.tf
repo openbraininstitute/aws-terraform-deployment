@@ -1,17 +1,7 @@
-# Definition for sonata-cell-service
-
-# Instead of running on Fargate, it currently runs on an EC2 instance
-# (`cells_svc_ec2_launch_template`) which is an called an "ECS Instance"
-# This then hosts ECS "tasks"; which are the containers
-
-# For now, only public data is used, and it is stored on the s3 bucket:
-# sbo-cell-svc-perf-test; this is mounted by sbo-cell-svc-perf-test
-# and then made available to all ECS tasks.
-
 # { EC2 Instance
 # The security group for the EC2 systems that run the ECS cluster for cells
 resource "aws_security_group" "cell_svc_ec2_ecs_instance_sg" {
-  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id      = var.vpc_id
   description = "Sec group for SBO cell svc EC2 instance"
   tags        = { SBO_Billing = "cell_svc" }
 }
@@ -19,7 +9,7 @@ resource "aws_security_group" "cell_svc_ec2_ecs_instance_sg" {
 resource "aws_vpc_security_group_ingress_rule" "cell_svc_ec2_ecs_instance_sg_ingress_tcp_udp" {
   security_group_id = aws_security_group.cell_svc_ec2_ecs_instance_sg.id
   ip_protocol       = -1
-  cidr_ipv4         = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  cidr_ipv4         = var.vpc_cidr_block
   description       = "Allow port * TCP/UDP ingress"
   tags              = { SBO_Billing = "cell_svc" }
 }
@@ -30,7 +20,7 @@ resource "aws_vpc_security_group_egress_rule" "cell_svc_ec2_ecs_instance_sg_egre
   # needs access to dockerhub and to AWS secrets manager, likely also nexus, ...
   ip_protocol = -1
   cidr_ipv4   = "0.0.0.0/0"
-  #cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  #cidr_ipv4   = var.vpc_cidr_block
   description = "Allow all TCP/UDP egress"
   tags        = { SBO_Billing = "cell_svc" }
 }
@@ -82,9 +72,9 @@ data "aws_iam_policy_document" "cells_ec2_instance_role_policy" {
 # Launch template for the EC2 machines that will be used to run the ECS cluster/containers
 resource "aws_launch_template" "cells_svc_ec2_launch_template" {
   name                   = "cells_svc_ec2_launch_template"
-  image_id               = data.aws_ami.amazon_linux_2_ecs.id
+  image_id               = var.amazon_linux_ecs_ami_id
   instance_type          = "t2.medium"
-  key_name               = data.terraform_remote_state.common.outputs.aws_coreservices_ssh_key_id
+  key_name               = var.aws_coreservices_ssh_key_id
   user_data              = base64encode(data.template_file.cells_ec2_ecs_user_data.rendered)
   vpc_security_group_ids = [aws_security_group.cell_svc_ec2_ecs_instance_sg.id]
 
@@ -104,7 +94,7 @@ resource "aws_launch_template" "cells_svc_ec2_launch_template" {
 
 # The template for the user data script of the EC2 machines that will be used to run the cells ECS cluster
 data "template_file" "cells_ec2_ecs_user_data" {
-  template = file("cells_ec2_ecs_user_data.sh")
+  template = file("${path.module}/cells_ec2_ecs_user_data.sh")
 
   vars = {
     ecs_cluster_name = aws_ecs_cluster.cell_svc_ecs_cluster.name
@@ -162,7 +152,7 @@ resource "aws_ecs_cluster" "cell_svc_ecs_cluster" {
 # TODO make more strict
 resource "aws_security_group" "cell_svc_ecs_task" {
   name        = "cell_svc_ecs_task"
-  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id      = var.vpc_id
   description = "Sec group for SBO cell svc ECS task"
 
   tags = {
@@ -176,7 +166,7 @@ resource "aws_vpc_security_group_ingress_rule" "cell_svc_task_ingress_port_8050"
   ip_protocol       = "tcp"
   from_port         = 8050
   to_port           = 8050
-  cidr_ipv4         = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  cidr_ipv4         = var.vpc_cidr_block
   description       = "Allow port 8050 tcp for SBO cell svc ECS task"
   tags              = { SBO_Billing = "cell_svc" }
 }
@@ -187,7 +177,7 @@ resource "aws_vpc_security_group_egress_rule" "cell_svc_task_egress_tcp_udp" {
   # needs access to dockerhub and to AWS secrets manager, likely also nexus, ...
   ip_protocol = -1
   cidr_ipv4   = "0.0.0.0/0"
-  #cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  #cidr_ipv4   = var.vpc_cidr_block
   description = "Allow all TCP/UDP egress"
   tags        = { SBO_Billing = "cell_svc" }
 }
@@ -213,7 +203,7 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
       image       = var.cell_svc_docker_image_url
       name        = "cell_svc"
       repositoryCredentials = {
-        credentialsParameter = data.terraform_remote_state.common.outputs.dockerhub_credentials_arn
+        credentialsParameter = var.dockerhub_credentials_arn
       }
       portMappings = [
         {
@@ -379,14 +369,9 @@ resource "aws_iam_role_policy_attachment" "ecs_cell_svc_task_execution_role_poli
 
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_cells_svc_task_role_dockerhub_policy_attachment" {
-  role       = aws_iam_role.ecs_cell_svc_task_execution_role.name
-  policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
-}
-
 resource "aws_iam_role_policy_attachment" "ecs_cell_svc_task_role_dockerhub_policy_attachment" {
   role       = aws_iam_role.ecs_cell_svc_task_execution_role.name
-  policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
+  policy_arn = var.dockerhub_access_iam_policy_arn
 }
 # }
 

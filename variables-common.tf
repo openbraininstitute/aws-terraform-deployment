@@ -96,29 +96,6 @@ variable "virtual_lab_manager_docker_image_url" {
   sensitive   = false
 }
 
-### SBO cell service ###
-
-variable "cell_svc_hostname" {
-  default     = "sbo-cell-svc.shapes-registry.org"
-  type        = string
-  description = "The hostname for the cell svc"
-  sensitive   = false
-}
-
-variable "cell_svc_log_group_name" {
-  default     = "cell_svc"
-  type        = string
-  description = "The log name within cloudwatch for the cell svc"
-  sensitive   = false
-}
-
-variable "cell_svc_docker_image_url" {
-  default     = "bluebrain/obp-sonata-cell-position:latest"
-  type        = string
-  description = "docker image for the sonata-cell-service"
-  sensitive   = false
-}
-
 ### BBP Workflow ###
 
 variable "workflow_log_group_name" {
