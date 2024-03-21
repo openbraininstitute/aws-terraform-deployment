@@ -449,12 +449,12 @@ resource "aws_appautoscaling_policy" "cells_ecs_memory_policy" {
 
 ## Creates an ASG linked with our main VPC
 resource "aws_autoscaling_group" "cells_ecs_autoscaling_group" {
-  name                  = "cells_ASG"
+  name_prefix           = "cl_asg"
   max_size              = 1
   min_size              = 1
   vpc_zone_identifier   = [aws_subnet.cells.id]
   health_check_type     = "EC2"
-  protect_from_scale_in = true
+  protect_from_scale_in = false
 
   enabled_metrics = [
     "GroupMinSize",
@@ -472,17 +472,12 @@ resource "aws_autoscaling_group" "cells_ecs_autoscaling_group" {
     version = "$Latest"
   }
 
-  instance_refresh {
-    strategy = "Rolling"
-  }
-
-  lifecycle {
-    create_before_destroy = true
-  }
+  instance_refresh { strategy = "Rolling" }
+  lifecycle { create_before_destroy = true }
 
   tag {
     key                 = "Name"
-    value               = "Cells_ASG"
+    value               = "cells_autoscaling_group"
     propagate_at_launch = true
   }
 
