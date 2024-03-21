@@ -162,6 +162,15 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
         ],
         memory = 2048
         cpu    = 1024
+        logConfiguration = {
+          logDriver = "awslogs"
+          options = {
+            awslogs-group         = var.thumbnail_generation_api_log_group_name
+            awslogs-region        = var.aws_region
+            awslogs-create-group  = "true"
+            awslogs-stream-prefix = "thumbnail_generation_api"
+          }
+        }
       },
       {
         name      = "nginx-reverse-proxy-container",
