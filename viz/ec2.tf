@@ -205,13 +205,14 @@ resource "aws_ecs_capacity_provider" "viz_cas" {
   name = "viz_ECS_CapacityProvider"
 
   auto_scaling_group_provider {
+    # PP: re-enabling temporarily
+    #  managed_draining               = "DISABLED"
     managed_scaling {
       status                 = "ENABLED"
       instance_warmup_period = 10
     }
     auto_scaling_group_arn         = aws_autoscaling_group.ecs_autoscaling_group.arn
     managed_termination_protection = "DISABLED"
-    managed_draining               = "DISABLED"
   }
   tags = {
     SBO_Billing = "viz"
