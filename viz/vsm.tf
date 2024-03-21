@@ -201,7 +201,7 @@ resource "aws_ecs_service" "viz_vsm_ecs_service" {
     container_name   = "viz_vsm"
     container_port   = 4444
   }
-  force_new_deployment = false
+  force_new_deployment = true
   tags = {
     SBO_Billing = "viz"
   }
