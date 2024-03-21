@@ -51,7 +51,7 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
       ]
       command = [
         "/app/mount_s3.sh",
-        "/opt/view/bin/braynsService",
+        "braynsService",
         "--uri",
         "0.0.0.0:5000",
         "--log-level",
@@ -76,6 +76,18 @@ resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
           awslogs-stream-prefix = "viz_brayns"
         }
       }
+      linuxParameters = {
+        "capabilities" = {
+          "add"  = ["SYS_ADMIN"],
+          "drop" = []
+        }
+        "devices" = [
+          {
+            "containerPath" = "/dev/fuse",
+            "hostPath"      = "/dev/fuse",
+            "permissions"   = null
+          }
+      ] }
     },
     {
       memory      = 256
