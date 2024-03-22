@@ -17,7 +17,8 @@ MAX_ATTEMPTS = ROUTE_TIMEOUT // RETRY_IN - 2
 DDB = boto3.client("dynamodb")
 ECS = boto3.client("ecs")
 
-DDB_TABLE = os.environ["DDB_TABLE"]
+DDB_WS_CONN_TASK = os.environ["DDB_WS_CONN_TASK"]
+DDB_ECS_TASK_ACC = os.environ["DDB_ECS_TASK_ACC"]
 APIGW_ENDPOINT = os.environ["APIGW_ENDPOINT"]
 APIGW_REGION = os.environ["APIGW_REGION"]
 ECS_CLUSTER = os.environ["ECS_CLUSTER"]
@@ -28,8 +29,13 @@ SVC_SECURITY_GRP = os.environ["SVC_SECURITY_GRP"]
 SVC_BUCKET = os.environ["SVC_BUCKET"]
 
 
+def _task_key(date, label):
+    return f"{date.strftime('%Y-%m')}-{label}"
+
+
 def connect(event, context):
     conn_id = event["requestContext"]["connectionId"]
+    protocol = event["headers"]["Sec-WebSocket-Protocol"]
     svc_vlab = event["requestContext"]["authorizer"]["SVC_VLAB"]
     task = ECS.run_task(
         cluster=ECS_CLUSTER,
@@ -49,18 +55,21 @@ def connect(event, context):
         tags=[{
             "key": "vlab",
             "value": svc_vlab}])
+    now = datetime.utcnow()
+    L.info(_task_key(now, svc_vlab))
     DDB.put_item(
-        TableName=DDB_TABLE,
+        TableName=DDB_WS_CONN_TASK,
         Item={"conn": {"S": conn_id},
               "task": {"S": task["tasks"][0]["taskArn"]},
               "ip": {"S": ""},
-              "task_submit_time": {"S": datetime.utcnow().isoformat()}})
-    return {"statusCode": 200}
+              "task_submit_time": {"S": now.isoformat()}})
+    return {"statusCode": 200,
+            "headers": {"Sec-WebSocket-Protocol": protocol}}
 
 def default(event, context):
     start_time = datetime.utcnow()
     conn_id = event["requestContext"]["connectionId"]
-    data = DDB.get_item(TableName=DDB_TABLE, Key={"conn": {"S": conn_id}})
+    data = DDB.get_item(TableName=DDB_WS_CONN_TASK, Key={"conn": {"S": conn_id}})
     ip = data["Item"]["ip"]["S"]
     if not ip:
         wait_for_svc_attempts = 0
@@ -101,10 +110,10 @@ def default(event, context):
             sleep(RETRY_IN)
         if svc_healthy:
             L.info("Task lead time %s:", str(datetime.utcnow() - task_submit_time))
-            DDB.update_item(TableName=DDB_TABLE,
+            DDB.update_item(TableName=DDB_WS_CONN_TASK,
                             Key={"conn": {"S": conn_id}},
-                            UpdateExpression="set ip = :ip, task_submit_time = :task_submit_time",
-                            ExpressionAttributeValues={":ip": {"S": ip}, ":task_submit_time": {"S": ""}})
+                            UpdateExpression="set ip = :ip",
+                            ExpressionAttributeValues={":ip": {"S": ip}})
         else:
             return {"statusCode": 503,
                     "body": json.dumps({"message": "Retry later"})}
@@ -122,8 +131,13 @@ def default(event, context):
 
 def disconnect(event, context):
     conn_id = event["requestContext"]["connectionId"]
-    data = DDB.delete_item(TableName=DDB_TABLE, Key={"conn": {"S": conn_id}}, ReturnValues="ALL_OLD")
+    data = DDB.delete_item(TableName=DDB_WS_CONN_TASK, Key={"conn": {"S": conn_id}}, ReturnValues="ALL_OLD")
+    task_submit_time = datetime.fromisoformat(data["Attributes"]["task_submit_time"]["S"])
     ip = data["Attributes"]["ip"]["S"]
+    task = data["Attributes"]["task"]["S"]
+    ECS.stop_task(cluster=ECS_CLUSTER, task=task)
+    task_duration = datetime.utcnow() - task_submit_time
+    L.info("Task duration %s", str(task_duration))
     if ip:
         try:
             urlopen(Request(f"http://{ip}:8080/shutdown", method="POST"), timeout=2)

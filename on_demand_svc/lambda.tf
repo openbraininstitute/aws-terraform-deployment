@@ -52,6 +52,20 @@ resource "aws_iam_policy" "ws_handler_default" {
   tags   = var.tags
 }
 
+data "aws_iam_policy_document" "ws_handler_disconnect" {
+  statement {
+    actions   = ["ecs:StopTask"]
+    resources = ["arn:aws:ecs:${var.aws_region}:${var.account_id}:task/${aws_ecs_task_definition.this.family}/*"]
+    effect    = "Allow"
+  }
+}
+
+resource "aws_iam_policy" "ws_handler_disconnect" {
+  name   = "${var.svc_name}-ws-handler-disconnect"
+  policy = data.aws_iam_policy_document.ws_handler_disconnect.json
+  tags   = var.tags
+}
+
 #tfsec:ignore:aws-cloudwatch-log-group-customer-key
 resource "aws_cloudwatch_log_group" "ws_handler" {
   for_each          = var.actions
@@ -82,6 +96,7 @@ resource "aws_iam_role" "ws_handler" {
     [aws_iam_policy.ws_handler_logs[each.key].arn, aws_iam_policy.ddb_table_perms[each.key].arn],
     "connect" == each.key ? [aws_iam_policy.ws_handler_connect.arn] : [],
     "default" == each.key ? [aws_iam_policy.ws_handler_default.arn] : [],
+    "disconnect" == each.key ? [aws_iam_policy.ws_handler_disconnect.arn] : [],
     # default/disconnect lambda should run in vpc to access ECS task endpoint
   contains(["default", "disconnect"], each.key) ? ["arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"] : [])
   tags = var.tags
@@ -104,7 +119,8 @@ resource "aws_lambda_function" "ws_handler" {
   timeout          = each.value == "default" ? 29 : 10 # defalut route should wait for svc <29s(apigw ws timeout)
   environment {
     variables = {
-      "DDB_TABLE"        = aws_dynamodb_table.this.name
+      "DDB_WS_CONN_TASK" = aws_dynamodb_table.ws_conn_task.name
+      "DDB_ECS_TASK_ACC" = aws_dynamodb_table.ecs_task_acc.name
       "APIGW_ENDPOINT"   = "https://${aws_apigatewayv2_api.this.id}.execute-api.${var.aws_region}.amazonaws.com/${aws_apigatewayv2_stage.prod.name}"
       "APIGW_REGION"     = var.aws_region
       "ECS_CLUSTER"      = aws_ecs_cluster.this.name
@@ -168,11 +184,6 @@ resource "aws_lambda_function" "ws_authz" {
   handler          = "ws_authz.do"
   source_code_hash = data.archive_file.ws_authz.output_base64sha256
   runtime          = "python3.10"
-  environment {
-    variables = {
-      "DDB_TABLE" = aws_dynamodb_table.this.name
-    }
-  }
   tracing_config {
     mode = "PassThrough" #tfsec:ignore:aws-lambda-enable-tracing
   }

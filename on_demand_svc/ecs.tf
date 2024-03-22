@@ -103,6 +103,7 @@ data "aws_iam_policy_document" "post_to_connection" {
 resource "aws_iam_policy" "post_to_connection" {
   name   = "${var.svc_name}-apigw-post-to-connection"
   policy = data.aws_iam_policy_document.post_to_connection.json
+  tags   = var.tags
 }
 
 resource "aws_iam_role" "task" {
@@ -128,6 +129,7 @@ data "aws_iam_policy_document" "dockerhub" {
 resource "aws_iam_policy" "dockerhub" {
   name   = "${var.svc_name}-ecs-dockerhub-access"
   policy = data.aws_iam_policy_document.dockerhub.json
+  tags   = var.tags
 }
 
 resource "aws_iam_role" "task_exec" {
