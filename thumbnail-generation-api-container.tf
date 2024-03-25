@@ -89,18 +89,18 @@ resource "aws_vpc_security_group_ingress_rule" "thumbnail_generation_api_allow_p
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "thumbnail_generation_api_allow_port_80" {
-  security_group_id = aws_security_group.thumbnail_generation_api_sec_group.id
+# resource "aws_vpc_security_group_ingress_rule" "thumbnail_generation_api_allow_port_80" {
+#   security_group_id = aws_security_group.thumbnail_generation_api_sec_group.id
 
-  ip_protocol = "tcp"
-  from_port   = 80
-  to_port     = 80
-  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
-  description = "Allow port 80 http"
-  tags = {
-    SBO_Billing = "thumbnail_generation_api"
-  }
-}
+#   ip_protocol = "tcp"
+#   from_port   = 80
+#   to_port     = 80
+#   cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
+#   description = "Allow port 80 http"
+#   tags = {
+#     SBO_Billing = "thumbnail_generation_api"
+#   }
+# }
 
 resource "aws_vpc_security_group_egress_rule" "thumbnail_generation_api_allow_outgoing_tcp" {
   security_group_id = aws_security_group.thumbnail_generation_api_sec_group.id
