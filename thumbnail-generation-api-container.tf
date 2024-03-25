@@ -194,14 +194,14 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
   ])
 
   # Volume definition for EFS
-  volume {
-    name = "nginx-reverse-proxy-volume"
-    efs_volume_configuration {
-      file_system_id     = aws_efs_file_system.thumbnail_generation_api_efs_instance.id
-      root_directory     = "/etc/nginx"
-      transit_encryption = "ENABLED"
-    }
-  }
+  # volume {
+  #   name = "nginx-reverse-proxy-volume"
+  #   efs_volume_configuration {
+  #     file_system_id     = aws_efs_file_system.thumbnail_generation_api_efs_instance.id
+  #     root_directory     = "/etc/nginx"
+  #     transit_encryption = "ENABLED"
+  #   }
+  # }
 }
 
 # Service
