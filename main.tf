@@ -42,7 +42,7 @@ module "nexus" {
   amazon_linux_ecs_ami_id = data.aws_ami.amazon_linux_2_ecs.id
 }
 
-module "viz" {
+/*module "viz" {
   source = "./viz"
 
   aws_region = var.aws_region
@@ -57,7 +57,7 @@ module "viz" {
   aws_lb_alb_arn                 = data.terraform_remote_state.common.outputs.public_alb_arn
   aws_security_group_alb_id      = data.terraform_remote_state.common.outputs.public_alb_sg_id
   route_table_private_subnets_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
-}
+}*/
 
 module "cells_svc" {
   source = "./cells_svc"
