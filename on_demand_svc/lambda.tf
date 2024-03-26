@@ -93,10 +93,13 @@ resource "aws_iam_role" "ws_handler" {
   for_each           = var.actions
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
   managed_policy_arns = concat(
-    [aws_iam_policy.ws_handler_logs[each.key].arn, aws_iam_policy.ddb_table_perms[each.key].arn],
+    [aws_iam_policy.ws_handler_logs[each.key].arn, aws_iam_policy.ddb_ws_conn_task[each.key].arn],
     "connect" == each.key ? [aws_iam_policy.ws_handler_connect.arn] : [],
     "default" == each.key ? [aws_iam_policy.ws_handler_default.arn] : [],
-    "disconnect" == each.key ? [aws_iam_policy.ws_handler_disconnect.arn] : [],
+    "disconnect" == each.key ? [
+      aws_iam_policy.ws_handler_disconnect.arn,
+      aws_iam_policy.ddb_ecs_task_acc.arn,
+    ] : [],
     # default/disconnect lambda should run in vpc to access ECS task endpoint
   contains(["default", "disconnect"], each.key) ? ["arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"] : [])
   tags = var.tags

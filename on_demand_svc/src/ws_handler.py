@@ -33,6 +33,13 @@ def _task_key(date, label):
     return f"{date.strftime('%Y-%m')}-{label}"
 
 
+def _update_item_acc(time, svc_vlab, task_duration):
+    DDB.update_item(TableName=DDB_ECS_TASK_ACC,
+                    Key={"year_month_acc": {"S": _task_key(time, svc_vlab)}},
+                    UpdateExpression="set task_duration = if_not_exists(task_duration, :zero) + :d",
+                    ExpressionAttributeValues={":d": {"N": str(task_duration)}, ":zero": {"N": "0"}})
+
+
 def connect(event, context):
     conn_id = event["requestContext"]["connectionId"]
     protocol = event["headers"]["Sec-WebSocket-Protocol"]
@@ -65,6 +72,7 @@ def connect(event, context):
               "task_submit_time": {"S": now.isoformat()}})
     return {"statusCode": 200,
             "headers": {"Sec-WebSocket-Protocol": protocol}}
+
 
 def default(event, context):
     start_time = datetime.utcnow()
@@ -129,18 +137,37 @@ def default(event, context):
         L.error("Unable to forward message: %s", e)
     return {"statusCode": 500, "body": json.dumps({"message": "Error forwarding message"})}
 
+
 def disconnect(event, context):
     conn_id = event["requestContext"]["connectionId"]
+    svc_vlab = event["requestContext"]["authorizer"]["SVC_VLAB"]
     data = DDB.delete_item(TableName=DDB_WS_CONN_TASK, Key={"conn": {"S": conn_id}}, ReturnValues="ALL_OLD")
     task_submit_time = datetime.fromisoformat(data["Attributes"]["task_submit_time"]["S"])
     ip = data["Attributes"]["ip"]["S"]
     task = data["Attributes"]["task"]["S"]
-    ECS.stop_task(cluster=ECS_CLUSTER, task=task)
-    task_duration = datetime.utcnow() - task_submit_time
-    L.info("Task duration %s", str(task_duration))
     if ip:
         try:
-            urlopen(Request(f"http://{ip}:8080/shutdown", method="POST"), timeout=2)
+            # let shutdown cleanup task wait 10sec
+            urlopen(Request(f"http://{ip}:8080/shutdown", method="POST"), timeout=10)
         except URLError as e:
             L.info("Shutting down svc error: %s", e)
+    ECS.stop_task(cluster=ECS_CLUSTER, task=task)
+    # task accounting
+    task_end_time = datetime.utcnow()
+    if task_end_time - task_submit_time > timedelta(days=1):
+        L.error("Task was running for too long! Submitted: %s, finished: %s, vlab: %s, task: %s",
+                task_submit_time, task_end_time, svc_vlab, task)
+        return {"statusCode": 500}
+    end_time_1st_day_of_month = datetime(task_end_time.year, task_end_time.month, 1)
+    if task_submit_time < end_time_1st_day_of_month:
+        # task duration spanned over two months
+        old_month_duration = (end_time_1st_day_of_month - task_submit_time).total_seconds()
+        new_month_duration = (task_end_time - end_time_1st_day_of_month).total_seconds()
+        _update_item_acc(task_submit_time, svc_vlab, old_month_duration)
+        _update_item_acc(task_end_time, svc_vlab, new_month_duration)
+        L.info("Task duration old month:%s, new month:%s", old_month_duration, new_month_duration)
+    else:
+        task_duration = (task_end_time - task_submit_time).total_seconds()
+        _update_item_acc(task_submit_time, svc_vlab, task_duration)
+        L.info("Task duration:%s", task_duration)
     return {"statusCode": 200}
