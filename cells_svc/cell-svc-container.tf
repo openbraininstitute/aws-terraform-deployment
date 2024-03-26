@@ -454,7 +454,7 @@ resource "aws_autoscaling_group" "cells_ecs_autoscaling_group" {
   min_size              = 1
   vpc_zone_identifier   = [aws_subnet.cells.id]
   health_check_type     = "EC2"
-  protect_from_scale_in = false
+  protect_from_scale_in = true
 
   enabled_metrics = [
     "GroupMinSize",
