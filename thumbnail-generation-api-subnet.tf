@@ -37,14 +37,14 @@ resource "aws_network_acl" "thumbnail_generation_api" {
     from_port  = 8080
     to_port    = 8080
   }
-  # ingress {
-  #   protocol   = "tcp"
-  #   rule_no    = 106
-  #   action     = "allow"
-  #   cidr_block = "0.0.0.0/0"
-  #   from_port  = 80
-  #   to_port    = 80
-  # }
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 106
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 80
+    to_port    = 80
+  }
   ingress {
     protocol   = "tcp"
     rule_no    = 300

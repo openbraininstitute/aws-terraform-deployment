@@ -89,18 +89,18 @@ resource "aws_vpc_security_group_ingress_rule" "thumbnail_generation_api_allow_p
   }
 }
 
-# resource "aws_vpc_security_group_ingress_rule" "thumbnail_generation_api_allow_port_80" {
-#   security_group_id = aws_security_group.thumbnail_generation_api_sec_group.id
+resource "aws_vpc_security_group_ingress_rule" "thumbnail_generation_api_allow_port_80" {
+  security_group_id = aws_security_group.thumbnail_generation_api_sec_group.id
 
-#   ip_protocol = "tcp"
-#   from_port   = 80
-#   to_port     = 80
-#   cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
-#   description = "Allow port 80 http"
-#   tags = {
-#     SBO_Billing = "thumbnail_generation_api"
-#   }
-# }
+  ip_protocol = "tcp"
+  from_port   = 80
+  to_port     = 80
+  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  description = "Allow port 80 http"
+  tags = {
+    SBO_Billing = "thumbnail_generation_api"
+  }
+}
 
 resource "aws_vpc_security_group_egress_rule" "thumbnail_generation_api_allow_outgoing_tcp" {
   security_group_id = aws_security_group.thumbnail_generation_api_sec_group.id
@@ -172,36 +172,36 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
           }
         }
       },
-      # {
-      #   name      = "nginx-reverse-proxy-container",
-      #   image     = "nginx:latest",
-      #   essential = true,
-      #   portMappings = [
-      #     {
-      #       containerPort = 80,
-      #       protocol      = "tcp"
-      #     }
-      #   ],
-      #   mountPoints = [
-      #     {
-      #       containerPath = "/etc/nginx",
-      #       sourceVolume  = "nginx-reverse-proxy-volume"
-      #     }
-      #   ],
-      #   memory = 2048
-      #   cpu    = 1024
-      # }
+      {
+        name      = "nginx-reverse-proxy-container",
+        image     = "nginx:latest",
+        essential = true,
+        portMappings = [
+          {
+            containerPort = 80,
+            protocol      = "tcp"
+          }
+        ],
+        mountPoints = [
+          {
+            containerPath = "/etc/nginx",
+            sourceVolume  = "nginx-reverse-proxy-volume"
+          }
+        ],
+        memory = 2048
+        cpu    = 1024
+      }
   ])
 
   # Volume definition for EFS
-  # volume {
-  #   name = "nginx-reverse-proxy-volume"
-  #   efs_volume_configuration {
-  #     file_system_id     = aws_efs_file_system.thumbnail_generation_api_efs_instance.id
-  #     root_directory     = "/etc/nginx"
-  #     transit_encryption = "ENABLED"
-  #   }
-  # }
+  volume {
+    name = "nginx-reverse-proxy-volume"
+    efs_volume_configuration {
+      file_system_id     = aws_efs_file_system.thumbnail_generation_api_efs_instance.id
+      root_directory     = "/etc/nginx"
+      transit_encryption = "ENABLED"
+    }
+  }
 }
 
 # Service
@@ -217,8 +217,8 @@ resource "aws_ecs_service" "thumbnail_generation_api_service" {
   # Load Balancer configuration
   load_balancer {
     target_group_arn = aws_lb_target_group.thumbnail_generation_api_tg.arn
-    container_name   = "thumbnail-generation-api-container"
-    container_port   = 8080
+    container_name   = "nginx-reverse-proxy-container"
+    container_port   = 80
   }
 
   network_configuration {
