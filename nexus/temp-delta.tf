@@ -57,6 +57,9 @@ resource "aws_lb_listener_certificate" "nexus_app" {
   certificate_arn = aws_acm_certificate_validation.nexus_app.certificate_arn
 }
 
+data "aws_nat_gateway" "provided_nat_gateway" {
+  id = var.nat_gateway_id
+}
 
 resource "aws_lb_listener_rule" "nexus_app_https" {
   listener_arn = var.aws_lb_listener_sbo_https_arn
@@ -75,7 +78,7 @@ resource "aws_lb_listener_rule" "nexus_app_https" {
 
   condition {
     source_ip {
-      values = var.allowed_source_ip_cidr_blocks
+      values = concat(var.allowed_source_ip_cidr_blocks, [format("%s/32", data.aws_nat_gateway.provided_nat_gateway.public_ip)])
     }
   }
 
