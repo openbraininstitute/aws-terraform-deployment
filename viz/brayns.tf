@@ -11,8 +11,8 @@ resource "aws_cloudwatch_log_group" "viz_brayns" {
   }
 }
 
-resource "aws_ecs_cluster" "viz_ecs_cluster" {
-  name = "viz_ecs_cluster"
+resource "aws_ecs_cluster" "viz_ecs_cluster_2" {
+  name = "viz_ecs_cluster_2"
 
   tags = {
     Application = "viz"

@@ -155,7 +155,7 @@ resource "aws_ecs_task_definition" "viz_vsm_proxy_ecs_definition" {
 
 resource "aws_ecs_service" "viz_vsm_proxy_ecs_service" {
   name                   = "viz_vsm_proxy_ecs_service"
-  cluster                = aws_ecs_cluster.viz_ecs_cluster.id
+  cluster                = aws_ecs_cluster.viz_ecs_cluster_2.id
   launch_type            = "FARGATE"
   task_definition        = aws_ecs_task_definition.viz_vsm_proxy_ecs_definition.arn
   desired_count          = 1

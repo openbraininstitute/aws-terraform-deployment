@@ -85,7 +85,7 @@ data "template_file" "viz_ec2_ecs_user_data" {
   template = file(local.viz_user_data)
 
   vars = {
-    ecs_cluster_name = aws_ecs_cluster.viz_ecs_cluster.name
+    ecs_cluster_name = aws_ecs_cluster.viz_ecs_cluster_2.name
   }
 }
 
@@ -220,6 +220,6 @@ resource "aws_ecs_capacity_provider" "viz_cas" {
 }
 
 resource "aws_ecs_cluster_capacity_providers" "viz_cluster_cas" {
-  cluster_name       = aws_ecs_cluster.viz_ecs_cluster.name
+  cluster_name       = aws_ecs_cluster.viz_ecs_cluster_2.name
   capacity_providers = [aws_ecs_capacity_provider.viz_cas.name]
 }

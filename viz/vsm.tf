@@ -134,7 +134,7 @@ resource "aws_ecs_task_definition" "viz_vsm_ecs_definition" {
         },
         {
           name  = "VSM_BRAYNS_TASK_CLUSTER"
-          value = aws_ecs_cluster.viz_ecs_cluster.name
+          value = aws_ecs_cluster.viz_ecs_cluster_2.name
         },
         {
           name  = "PYTHONUNBUFFERED"
@@ -178,7 +178,7 @@ resource "aws_ecs_task_definition" "viz_vsm_ecs_definition" {
 
 resource "aws_ecs_service" "viz_vsm_ecs_service" {
   name                   = "viz_vsm_ecs_service"
-  cluster                = aws_ecs_cluster.viz_ecs_cluster.id
+  cluster                = aws_ecs_cluster.viz_ecs_cluster_2.id
   launch_type            = "FARGATE"
   task_definition        = aws_ecs_task_definition.viz_vsm_ecs_definition.arn
   desired_count          = 1
