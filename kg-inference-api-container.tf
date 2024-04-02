@@ -201,6 +201,15 @@ resource "aws_ecs_task_definition" "kg_inference_api_task_definition" {
         ],
         memory = 2048
         cpu    = 1024
+        logConfiguration = {
+          logDriver = "awslogs"
+          options = {
+            awslogs-group         = var.kg_inference_api_log_group_name
+            awslogs-region        = var.aws_region
+            awslogs-create-group  = "true"
+            awslogs-stream-prefix = "kg_inference_api"
+          }
+        }
       },
       {
         name      = "nginx-reverse-proxy-container",
@@ -255,5 +264,18 @@ resource "aws_ecs_service" "kg_inference_api_service" {
     security_groups  = [aws_security_group.kg_inference_api_sec_group.id]
     subnets          = [aws_subnet.kg_inference_api.id]
     assign_public_ip = false
+  }
+}
+
+resource "aws_cloudwatch_log_group" "kg_inference_api" {
+  name              = var.kg_inference_api_log_group_name
+  skip_destroy      = false
+  retention_in_days = 5
+
+  kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
+
+  tags = {
+    Application = "kg_inference_api"
+    SBO_Billing = "kg_inference_api"
   }
 }

@@ -179,3 +179,10 @@ variable "keycloak_server_url" {
   description = "The URL of the Keycloak server"
   sensitive   = false
 }
+
+variable "kg_inference_api_log_group_name" {
+  default     = "kg_inference_api"
+  type        = string
+  description = "The log name within cloudwatch for the kg inference api"
+  sensitive   = false
+}
