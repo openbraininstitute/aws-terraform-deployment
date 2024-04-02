@@ -21,6 +21,10 @@ resource "aws_lb_target_group" "virtual_lab_manager" {
   }
 }
 
+data "aws_nat_gateway" "nat_gateway" {
+  id = data.terraform_remote_state.common.outputs.nat_gateway_id
+}
+
 resource "aws_lb_listener_rule" "virtual_lab_manager" {
   listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
   priority     = 203
@@ -38,7 +42,7 @@ resource "aws_lb_listener_rule" "virtual_lab_manager" {
 
   condition {
     source_ip {
-      values = [var.epfl_cidr]
+      values = [var.epfl_cidr, format("%s/32", data.aws_nat_gateway.nat_gateway.public_ip)]
     }
   }
 
