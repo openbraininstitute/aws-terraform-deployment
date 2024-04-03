@@ -1,3 +1,13 @@
+# Definition for sonata-cell-service
+
+# Instead of running on Fargate, it currently runs on an EC2 instance
+# (`cells_svc_ec2_launch_template`) which is an called an "ECS Instance"
+# This then hosts ECS "tasks"; which are the containers
+
+# For now, only public data is used, and it is stored on the s3 bucket:
+# sbo-cell-svc-perf-test; this is mounted by sbo-cell-svc-perf-test
+# and then made available to all ECS tasks.
+
 # { EC2 Instance
 # The security group for the EC2 systems that run the ECS cluster for cells
 resource "aws_security_group" "cell_svc_ec2_ecs_instance_sg" {
@@ -38,6 +48,7 @@ resource "aws_iam_role_policy_attachment" "cells_ec2_instance_role_policy" {
   role       = aws_iam_role.cells_ec2_instance_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
 }
+
 # Give EC2 instance access to S3
 resource "aws_iam_role_policy_attachment" "cells_ec2_instance_role_s3_policy" {
   role       = aws_iam_role.cells_ec2_instance_role.name
@@ -77,6 +88,7 @@ resource "aws_launch_template" "cells_svc_ec2_launch_template" {
   key_name               = var.aws_coreservices_ssh_key_id
   user_data              = base64encode(data.template_file.cells_ec2_ecs_user_data.rendered)
   vpc_security_group_ids = [aws_security_group.cell_svc_ec2_ecs_instance_sg.id]
+  update_default_version = true
 
   iam_instance_profile {
     arn = aws_iam_instance_profile.cells_ec2_instance_role_profile.arn
