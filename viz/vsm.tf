@@ -130,7 +130,7 @@ resource "aws_ecs_task_definition" "viz_vsm_ecs_definition" {
         },
         {
           name  = "VSM_BRAYNS_TASK_CAPACITY_PROVIDER"
-          value = aws_ecs_capacity_provider.viz_cas.name
+          value = aws_ecs_capacity_provider.viz.name
         },
         {
           name  = "VSM_BRAYNS_TASK_CLUSTER"

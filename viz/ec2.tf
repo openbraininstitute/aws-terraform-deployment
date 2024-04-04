@@ -201,8 +201,8 @@ resource "aws_autoscaling_group" "ecs_autoscaling_group" {
   }
 }
 
-resource "aws_ecs_capacity_provider" "viz_cas" {
-  name = "viz_ECS_CapacityProvider"
+resource "aws_ecs_capacity_provider" "viz" {
+  name = "viz"
 
   auto_scaling_group_provider {
     # PP: re-enabling temporarily
@@ -221,5 +221,5 @@ resource "aws_ecs_capacity_provider" "viz_cas" {
 
 resource "aws_ecs_cluster_capacity_providers" "viz_cluster_cas" {
   cluster_name       = aws_ecs_cluster.viz_ecs_cluster_2.name
-  capacity_providers = [aws_ecs_capacity_provider.viz_cas.name]
+  capacity_providers = [aws_ecs_capacity_provider.viz.name]
 }
