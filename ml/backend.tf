@@ -60,6 +60,10 @@ module "ml_ecs_service_backend" {
           value = "443"
         },
         {
+          name  = "BBS_DB__INDEX_JOURNALS"
+          value = "impact_factors"
+        },
+        {
           name  = "BBS_RETRIEVAL__SEARCH_TYPE"
           value = "bm25"
         },
