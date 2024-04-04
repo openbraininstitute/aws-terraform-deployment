@@ -389,12 +389,10 @@ resource "aws_iam_role_policy_attachment" "ecs_cell_svc_task_role_dockerhub_poli
 
 # { Capacity provider; this creates or destroys EC2 *instances* to launch, on which ECS tasks are run
 resource "aws_ecs_capacity_provider" "cells_cas" {
-  name = "Cells_ECS_CapacityProvider"
+  name = "cells_ecs_capacity_provider"
 
   auto_scaling_group_provider {
     auto_scaling_group_arn         = aws_autoscaling_group.cells_ecs_autoscaling_group.arn
-    managed_termination_protection = "ENABLED"
-
 
     managed_scaling {
       #maximum_scaling_step_size = 1
