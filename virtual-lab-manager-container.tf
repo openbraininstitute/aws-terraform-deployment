@@ -169,12 +169,12 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
       ]
       secrets = [
         {
-          name      = "KEYCLOAK_ADMIN_USERNAME"
-          valueFrom = "${var.virtual_lab_manager_secrets_arn}:keycloak_admin_username::"
+          name      = "KC_CLIENT_ID"
+          valueFrom = "${var.virtual_lab_manager_secrets_arn}:keycloak_client_id::"
         },
         {
-          name      = "KEYCLOAK_ADMIN_PASSWORD"
-          valueFrom = "${var.virtual_lab_manager_secrets_arn}:keycloak_admin_password::"
+          name      = "KC_CLIENT_SECRET"
+          valueFrom = "${var.virtual_lab_manager_secrets_arn}:keycloak_client_secret::"
         },
         {
           name      = "POSTGRES_PASSWORD"
