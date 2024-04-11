@@ -5,7 +5,7 @@
 # - keycloak_admin_password
 # - database_password
 variable "virtual_lab_manager_secrets_arn" {
-  default     = "arn:aws:secretsmanager:us-east-1:671250183987:secret:virtual_lab_manager-2Axecx"
+  default     = "arn:aws:secretsmanager:us-east-1:671250183987:secret:virtual_lab_client-40RJ3c"
   type        = string
   description = "The ARN of the virtual lab manager secrets"
   sensitive   = true
