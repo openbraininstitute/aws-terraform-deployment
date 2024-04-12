@@ -21,6 +21,6 @@ resource "aws_s3_bucket_public_access_block" "nexus_ship" {
 resource "aws_s3_object" "object" {
   bucket = aws_s3_bucket.nexus_ship.id
   key    = "ship.conf"
-  source = "./ship.conf"
+  source = "${path.module}/ship.conf"
   etag   = filemd5("${path.module}/ship.conf")
 }
