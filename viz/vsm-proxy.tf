@@ -72,9 +72,8 @@ resource "aws_ecs_task_definition" "viz_vsm_proxy_ecs_definition" {
           protocol      = "tcp"
         }
       ]
+      entrypoint = ["vsm_slave"]
       command = [
-        "-m",
-        "vsm.slave",
         "--address",
         "0.0.0.0",
         "--port",

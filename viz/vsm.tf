@@ -71,9 +71,8 @@ resource "aws_ecs_task_definition" "viz_vsm_ecs_definition" {
           protocol      = "tcp"
         }
       ]
+      entrypoint = ["vsm_master"]
       command = [
-        "-m",
-        "vsm.master",
         "--address",
         "0.0.0.0",
         "--port",
