@@ -82,3 +82,16 @@ module "cells_svc" {
 
   amazon_linux_ecs_ami_id = data.aws_ami.amazon_linux_2_ecs.id
 }
+
+module "nse" {
+  source = "./nse"
+
+  aws_region                = var.aws_region
+  account_id                = data.aws_caller_identity.current.account_id
+  vpc_id                    = data.terraform_remote_state.common.outputs.vpc_id
+  dockerhub_credentials_arn = data.terraform_remote_state.common.outputs.dockerhub_credentials_arn
+  amazon_linux_ecs_ami_id   = data.aws_ami.amazon_linux_2_ecs.id
+  route_table_id            = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+
+  docker_image_url = "bluebrain/blue-naas-single-cell:latest"
+}
