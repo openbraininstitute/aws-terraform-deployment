@@ -25,8 +25,8 @@ resource "aws_nat_gateway" "nat_gateway" {
 }
 
 resource "aws_eip" "nat_eip" {
-  count = local.create_nat_gateway ? 1 : 0
-  vpc   = true
+  count  = local.create_nat_gateway ? 1 : 0
+  domain = "vpc"
 }
 
 resource "aws_route_table" "public_route_table" {

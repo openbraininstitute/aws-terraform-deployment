@@ -44,9 +44,10 @@ module "delta" {
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
+  ecs_task_execution_role_arn              = aws_iam_role.nexus_ecs_task_execution.arn
+  nexus_secrets_arn                        = var.nexus_secrets_arn
 
   aws_lb_target_group_nexus_app_arn = aws_lb_target_group.nexus_app.arn
-  dockerhub_access_iam_policy_arn   = var.dockerhub_access_iam_policy_arn
   dockerhub_credentials_arn         = var.dockerhub_credentials_arn
 
   postgres_host          = module.postgres.host
@@ -72,32 +73,16 @@ module "fusion" {
   dockerhub_credentials_arn            = var.dockerhub_credentials_arn
 }
 
-moved {
-  from = aws_cloudwatch_log_group.nexus_fusion
-  to   = module.fusion.aws_cloudwatch_log_group.nexus_fusion
+module "ship" {
+  source = "./ship"
+
+  dockerhub_credentials_arn   = var.dockerhub_credentials_arn
+  ecs_task_execution_role_arn = aws_iam_role.nexus_ecs_task_execution.arn
+  nexus_secrets_arn           = var.nexus_secrets_arn
+  postgres_host               = module.postgres.host
 }
 
 moved {
-  from = aws_ecs_service.nexus_fusion_ecs_service[0]
-  to   = module.fusion.aws_ecs_service.nexus_fusion_ecs_service[0]
-}
-
-moved {
-  from = aws_ecs_task_definition.nexus_fusion_ecs_definition[0]
-  to   = module.fusion.aws_ecs_task_definition.nexus_fusion_ecs_definition[0]
-}
-
-moved {
-  from = aws_iam_role.ecs_nexus_fusion_task_execution_role[0]
-  to   = module.fusion.aws_iam_role.ecs_nexus_fusion_task_execution_role[0]
-}
-
-moved {
-  from = aws_iam_role.ecs_nexus_fusion_task_role[0]
-  to   = module.fusion.aws_iam_role.ecs_nexus_fusion_task_role[0]
-}
-
-moved {
-  from = aws_iam_role_policy_attachment.ecs_nexus_fusion_task_execution_role_policy_attachment[0]
-  to   = module.fusion.aws_iam_role_policy_attachment.ecs_nexus_fusion_task_execution_role_policy_attachment[0]
+  from = module.delta.aws_iam_policy.sbo_nexus_app_secrets_access
+  to   = aws_iam_policy.nexus_secrets_access
 }

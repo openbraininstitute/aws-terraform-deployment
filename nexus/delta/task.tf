@@ -47,15 +47,15 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
       secrets = [
         {
           name      = "POSTGRES_PASSWORD"
-          valueFrom = "${var.sbo_nexus_app_secrets_arn}:postgres_password::"
+          valueFrom = "${var.nexus_secrets_arn}:postgres_password::"
         },
         {
           name      = "ELASTICSEARCH_PASSWORD"
-          valueFrom = "${var.sbo_nexus_app_secrets_arn}:elasticsearch_password::"
+          valueFrom = "${var.nexus_secrets_arn}:elasticsearch_password::"
         },
         {
           name      = "REMOTE_STORAGE_PASSWORD"
-          valueFrom = "${var.sbo_nexus_app_secrets_arn}:remote_storage_password::"
+          valueFrom = "${var.nexus_secrets_arn}:remote_storage_password::"
         }
       ]
       networkMode = "awsvpc"
@@ -114,7 +114,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
   cpu                      = local.nexus_cpu
   memory                   = local.nexus_memory
   requires_compatibilities = ["FARGATE"]
-  execution_role_arn       = aws_iam_role.ecs_nexus_app_task_execution_role[0].arn
+  execution_role_arn       = var.ecs_task_execution_role_arn
   task_role_arn            = aws_iam_role.ecs_nexus_app_task_role[0].arn
 
   volume {
