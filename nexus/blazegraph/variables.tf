@@ -22,6 +22,11 @@ variable "aws_service_discovery_http_namespace_arn" {
   type = string
 }
 
+variable "ecs_task_execution_role_arn" {
+  type        = string
+  description = "The ARN of the ECS task execution role that is used by the ECS agent"
+}
+
 # Blazegraph specific
 
 variable "blazegraph_docker_image_url" {

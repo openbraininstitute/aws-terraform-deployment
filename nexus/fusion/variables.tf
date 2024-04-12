@@ -46,13 +46,14 @@ variable "nexus_fusion_ecs_number_of_containers" {
   description = "Number of containers for nexus fusion"
 }
 
+variable "ecs_task_execution_role_arn" {
+  type        = string
+  description = "The ARN of the ECS task execution role that is used by the ECS agent"
+}
+
 # Temporary
 
 variable "aws_lb_target_group_nexus_fusion_arn" {
-  type = string
-}
-
-variable "dockerhub_access_iam_policy_arn" {
   type = string
 }
 

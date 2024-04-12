@@ -115,7 +115,6 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
   memory                   = local.nexus_memory
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = var.ecs_task_execution_role_arn
-  task_role_arn            = aws_iam_role.ecs_nexus_app_task_role[0].arn
 
   volume {
     name = "efs-nexus-app-config"

@@ -132,8 +132,7 @@ resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
   memory                   = local.fusion_memory
   cpu                      = local.fusion_cpu
   requires_compatibilities = ["FARGATE"]
-  execution_role_arn       = aws_iam_role.ecs_nexus_fusion_task_execution_role[0].arn
-  task_role_arn            = aws_iam_role.ecs_nexus_fusion_task_role[0].arn
+  execution_role_arn       = var.ecs_task_execution_role_arn
 
   tags = {
     SBO_Billing = "nexus_fusion"

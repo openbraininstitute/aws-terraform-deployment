@@ -35,10 +35,7 @@ resource "aws_ecs_service" "nexus_fusion_ecs_service" {
     subnets          = [var.subnet_id]
     assign_public_ip = false
   }
-  depends_on = [
-    aws_cloudwatch_log_group.nexus_fusion,
-    aws_iam_role.ecs_nexus_fusion_task_execution_role, # wrong?
-  ]
+  depends_on = [aws_cloudwatch_log_group.nexus_fusion]
   # force redeployment on each tf apply
   force_new_deployment = true
   lifecycle {

@@ -68,8 +68,7 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
   cpu                      = local.blazegraph_cpu
   memory                   = local.blazegraph_memory
   requires_compatibilities = ["FARGATE"]
-  execution_role_arn       = aws_iam_role.ecs_blazegraph_task_execution_role.arn
-  #task_role_arn            = aws_iam_role.ecs_blazegraph_task_role[0].arn
+  execution_role_arn       = var.ecs_task_execution_role_arn
 
   volume {
     name = "efs-blazegraph-data"
@@ -90,32 +89,4 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
   tags = {
     SBO_Billing = "nexus"
   }
-}
-
-resource "aws_iam_role" "ecs_blazegraph_task_execution_role" {
-  name = "blazegraph-ecsTaskExecutionRole"
-
-  assume_role_policy = <<EOF
-{
- "Version": "2012-10-17",
- "Statement": [
-   {
-     "Action": "sts:AssumeRole",
-     "Principal": {
-       "Service": "ecs-tasks.amazonaws.com"
-     },
-     "Effect": "Allow",
-     "Sid": ""
-   }
- ]
-}
-EOF
-  tags = {
-    SBO_Billing = "nexus"
-  }
-}
-
-resource "aws_iam_role_policy_attachment" "ecs_blazegraph_task_execution_role_policy_attachment" {
-  role       = aws_iam_role.ecs_blazegraph_task_execution_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
