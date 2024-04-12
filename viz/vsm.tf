@@ -48,7 +48,7 @@ resource "aws_vpc_security_group_egress_rule" "viz_vsm_allow_outgoing" {
   }
 }
 
-resource "aws_ecs_task_definition" "viz_vsm_ecs_definition" {
+resource "aws_ecs_task_definition" "viz_vsm" {
   family       = "viz_vsm_task_family"
   network_mode = "awsvpc"
 
@@ -85,7 +85,7 @@ resource "aws_ecs_task_definition" "viz_vsm_ecs_definition" {
         },
         {
           name  = "VSM_DB_HOST"
-          value = aws_db_instance.vizdb.address
+          value = aws_db_instance.viz.address
         },
         {
           name  = "VSM_DB_USERNAME"
@@ -117,11 +117,11 @@ resource "aws_ecs_task_definition" "viz_vsm_ecs_definition" {
         },
         {
           name  = "VSM_BRAYNS_TASK_DEFINITION"
-          value = aws_ecs_task_definition.viz_brayns_ecs_definition.arn
+          value = aws_ecs_task_definition.viz_brayns.arn
         },
         {
           name  = "VSM_BRAYNS_TASK_SECURITY_GROUPS"
-          value = aws_security_group.viz_ec2_sg.id
+          value = aws_security_group.viz_ec2.id
         },
         {
           name  = "VSM_BRAYNS_TASK_SUBNETS"
@@ -133,7 +133,7 @@ resource "aws_ecs_task_definition" "viz_vsm_ecs_definition" {
         },
         {
           name  = "VSM_BRAYNS_TASK_CLUSTER"
-          value = aws_ecs_cluster.viz_ecs_cluster_2.name
+          value = aws_ecs_cluster.viz.name
         },
         {
           name  = "PYTHONUNBUFFERED"
@@ -175,11 +175,11 @@ resource "aws_ecs_task_definition" "viz_vsm_ecs_definition" {
   }
 }
 
-resource "aws_ecs_service" "viz_vsm_ecs_service" {
+resource "aws_ecs_service" "viz_vsm" {
   name                   = "viz_vsm_ecs_service"
-  cluster                = aws_ecs_cluster.viz_ecs_cluster_2.id
+  cluster                = aws_ecs_cluster.viz.id
   launch_type            = "FARGATE"
-  task_definition        = aws_ecs_task_definition.viz_vsm_ecs_definition.arn
+  task_definition        = aws_ecs_task_definition.viz_vsm.arn
   desired_count          = 1
   enable_execute_command = true
 
@@ -227,7 +227,7 @@ resource "aws_iam_role" "viz_vsm_ecs_task_execution_role" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "viz_vsm_ecs_task_execution_role_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "viz_vsm_ecs_task_execution_role" {
   role       = aws_iam_role.viz_vsm_ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
@@ -252,13 +252,13 @@ resource "aws_iam_role" "viz_vsm_ecs_task_role" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "viz_vsm_ecs_task_role_dockerhub_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "viz_vsm_ecs_task_role_dockerhub" {
   role       = aws_iam_role.viz_vsm_ecs_task_execution_role.name
   policy_arn = data.aws_iam_policy.selected.arn
 }
 
 #tfsec:ignore:aws-iam-no-policy-wildcards
-resource "aws_iam_role_policy" "viz_vsm_ecs_exec_policy" {
+resource "aws_iam_role_policy" "viz_vsm_ecs_exec" {
   name = "viz_vsm_ecs_exec_policy"
   role = aws_iam_role.viz_vsm_ecs_task_role.id
   policy = jsonencode({
@@ -281,7 +281,7 @@ resource "aws_iam_role_policy" "viz_vsm_ecs_exec_policy" {
 }
 
 #tfsec:ignore:aws-iam-no-policy-wildcards
-data "aws_iam_policy_document" "vsm_ecs_service_role_policy" {
+data "aws_iam_policy_document" "vsm_ecs_service_role" {
   statement {
     effect    = "Allow"
     actions   = ["ecs:*"]
@@ -292,14 +292,14 @@ data "aws_iam_policy_document" "vsm_ecs_service_role_policy" {
 
 resource "aws_iam_policy" "viz_vsm_scaling_policy" {
   name   = "viz_vsm_scaling_policy"
-  policy = data.aws_iam_policy_document.vsm_ecs_service_role_policy.json
+  policy = data.aws_iam_policy_document.vsm_ecs_service_role.json
 
   tags = {
     SBO_Billing = "viz"
   }
 }
 
-resource "aws_iam_role_policy_attachment" "viz_vsm_ecs_task_scaling_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "viz_vsm_ecs_task_scaling" {
   role       = aws_iam_role.viz_vsm_ecs_task_role.name
   policy_arn = aws_iam_policy.viz_vsm_scaling_policy.arn
 }

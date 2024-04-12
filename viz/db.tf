@@ -1,5 +1,5 @@
-resource "aws_security_group" "viz_db_sg" {
-  name   = "viz_db_sg"
+resource "aws_security_group" "viz_db" {
+  name   = "viz_security_group"
   vpc_id = data.aws_vpc.selected.id
 
   description = "Security group for viz postgresql database"
@@ -30,8 +30,8 @@ resource "aws_security_group" "viz_db_sg" {
   }
 }
 
-resource "aws_db_subnet_group" "viz_db_subnet_group" {
-  name       = "viz-db-subnet-group"
+resource "aws_db_subnet_group" "viz" {
+  name       = "viz_db_subnet_group"
   subnet_ids = [aws_subnet.viz_db_a.id, aws_subnet.viz_db_b.id]
   tags = {
     SBO_Billing = "viz"
@@ -43,7 +43,7 @@ data "aws_secretsmanager_secret_version" "viz_database_password" {
 }
 
 # tfsec:ignore:aws-rds-enable-performance-insights-encryption
-resource "aws_db_instance" "vizdb" {
+resource "aws_db_instance" "viz" {
   #ts:skip=AC_AWS_0053
   #ts:skip=AC_AWS_0454
   #ts:skip=AC_AWS_0058
@@ -51,7 +51,7 @@ resource "aws_db_instance" "vizdb" {
   allocated_storage       = 5     # in gigabytes
   backup_retention_period = 2     # in days
 
-  db_subnet_group_name = aws_db_subnet_group.viz_db_subnet_group.name
+  db_subnet_group_name = aws_db_subnet_group.viz.name
 
   engine         = "postgres"
   engine_version = "14.10"
@@ -69,7 +69,7 @@ resource "aws_db_instance" "vizdb" {
   performance_insights_enabled = true
   storage_encrypted            = false #tfsec:ignore:aws-rds-encrypt-instance-storage-data
 
-  vpc_security_group_ids = [aws_security_group.viz_db_sg.id]
+  vpc_security_group_ids = [aws_security_group.viz_db.id]
 
   skip_final_snapshot                 = true
   iam_database_authentication_enabled = false

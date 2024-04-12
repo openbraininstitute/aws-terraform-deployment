@@ -49,7 +49,7 @@ resource "aws_vpc_security_group_egress_rule" "viz_vsm_proxy_allow_outgoing" {
   }
 }
 
-resource "aws_ecs_task_definition" "viz_vsm_proxy_ecs_definition" {
+resource "aws_ecs_task_definition" "viz_vsm_proxy" {
   family       = "viz_vsm_proxy_task_family"
   network_mode = "awsvpc"
 
@@ -86,7 +86,7 @@ resource "aws_ecs_task_definition" "viz_vsm_proxy_ecs_definition" {
         },
         {
           name  = "VSM_DB_HOST"
-          value = aws_db_instance.vizdb.address
+          value = aws_db_instance.viz.address
         },
         {
           name  = "VSM_DB_USERNAME"
@@ -152,11 +152,11 @@ resource "aws_ecs_task_definition" "viz_vsm_proxy_ecs_definition" {
   }
 }
 
-resource "aws_ecs_service" "viz_vsm_proxy_ecs_service" {
+resource "aws_ecs_service" "viz_vsm_proxy" {
   name                   = "viz_vsm_proxy_ecs_service"
-  cluster                = aws_ecs_cluster.viz_ecs_cluster_2.id
+  cluster                = aws_ecs_cluster.viz.id
   launch_type            = "FARGATE"
-  task_definition        = aws_ecs_task_definition.viz_vsm_proxy_ecs_definition.arn
+  task_definition        = aws_ecs_task_definition.viz_vsm_proxy.arn
   desired_count          = 1
   enable_execute_command = true
 
@@ -204,7 +204,7 @@ resource "aws_iam_role" "viz_vsm_proxy_ecs_task_execution_role" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "viz_vsm_proxy_ecs_task_execution_role_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "viz_vsm_proxy_ecs_task_execution_role" {
   role       = aws_iam_role.viz_vsm_proxy_ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
@@ -229,12 +229,12 @@ resource "aws_iam_role" "viz_vsm_proxy_ecs_task_role" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "viz_vsm_proxy_ecs_task_role_dockerhub_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "viz_vsm_proxy_ecs_task_role_dockerhub" {
   role       = aws_iam_role.viz_vsm_proxy_ecs_task_execution_role.name
   policy_arn = data.aws_iam_policy.selected.arn
 }
 
-resource "aws_iam_role_policy" "viz_vsm_proxy_ecs_exec_policy" {
+resource "aws_iam_role_policy" "viz_vsm_proxy_ecs_exec" {
   name = "viz_vsm_proxy_ecs_exec_policy"
   role = aws_iam_role.viz_vsm_proxy_ecs_task_role.id
   policy = jsonencode({

@@ -11,20 +11,7 @@ resource "aws_cloudwatch_log_group" "viz_brayns" {
   }
 }
 
-resource "aws_ecs_cluster" "viz_ecs_cluster_2" {
-  name = "viz_ecs_cluster_2"
-
-  tags = {
-    Application = "viz"
-    SBO_Billing = "viz"
-  }
-  setting {
-    name  = "containerInsights"
-    value = "disabled" #tfsec:ignore:aws-ecs-enable-container-insight
-  }
-}
-
-resource "aws_ecs_task_definition" "viz_brayns_ecs_definition" {
+resource "aws_ecs_task_definition" "viz_brayns" {
   family       = "viz_brayns_task_family"
   network_mode = "awsvpc"
 
@@ -217,7 +204,7 @@ resource "aws_iam_role" "viz_brayns_ecs_task_execution_role" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "viz_brayns_ecs_task_execution_role_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "viz_brayns_ecs_task_execution_role" {
   role       = aws_iam_role.viz_brayns_ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
@@ -242,17 +229,17 @@ resource "aws_iam_role" "viz_brayns_ecs_task_role" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "viz_brayns_ecs_task_role_dockerhub_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "viz_brayns_ecs_task_role_dockerhub" {
   role       = aws_iam_role.viz_brayns_ecs_task_execution_role.name
   policy_arn = data.aws_iam_policy.selected.arn
 }
 
-resource "aws_iam_role_policy_attachment" "viz_brayns_ecs_task_role_s3_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "viz_brayns_ecs_task_role_s3" {
   role       = aws_iam_role.viz_brayns_ecs_task_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
 }
 
-resource "aws_iam_role_policy" "viz_brayns_ecs_exec_policy" {
+resource "aws_iam_role_policy" "viz_brayns_ecs_exec" {
   name = "viz_brayns_ecs_exec_policy"
   role = aws_iam_role.viz_brayns_ecs_task_role.id
   policy = jsonencode({
