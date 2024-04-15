@@ -139,15 +139,15 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
           value = "${var.virtual_lab_manager_base_path}"
         },
         {
-          name  = "KEYCLOAK_SERVER_URL"
+          name  = "KC_SERVER_URI"
           value = "${var.keycloak_server_url}"
         },
         {
-          name  = "KEYCLOAK_REALM_NAME"
+          name  = "KC_REALM_NAME"
           value = "SBO"
         },
         {
-          name  = "KEYCLOAK_USER_REALM_NAME"
+          name  = "KC_USER_NAME"
           value = "master"
         },
         {
@@ -165,6 +165,22 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         {
           name  = "POSTGRES_DB"
           value = var.virtual_lab_manager_postgres_db
+        },
+        {
+          name  = "DEPLOYMENT_ENV"
+          value = var.virtual_lab_manager_depoloyment_env
+        },
+        {
+          name  = "NEXUS_DELTA_URI"
+          value = var.virtual_lab_manager_nexus_delta_uri
+        },
+        {
+          name  = "INVITE_EXPIRES_IN_DAYS"
+          value = var.virtual_lab_manager_invite_expiration
+        },
+        {
+          name  = "INVITE_LINK_BASE"
+          value = var.virtual_lab_manager_invite_link
         }
       ]
       secrets = [
