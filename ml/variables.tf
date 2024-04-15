@@ -167,25 +167,3 @@ variable "ec_param_group" {
   description = "Group of parameters for redis"
   default     = "default.redis7"
 }
-
-variable "airflow_version" {
-  description = "Version of the mwaa instance."
-  default     = "2.8.1"
-}
-
-variable "airflow_instance_type" {
-  description = "Type of airflow instance."
-  default     = "mw1.small"
-}
-
-variable "airflow_min_worker" {
-  description = "Minimum number of workers."
-  type        = number
-  default     = 1
-}
-
-variable "airflow_max_worker" {
-  description = "Maximum number of workers."
-  type        = number
-  default     = 1
-}
