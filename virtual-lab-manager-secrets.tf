@@ -5,6 +5,7 @@
 # - keycloak_admin_password
 # - database_password
 # - invite_jwt_secret
+# - mail_password
 variable "virtual_lab_manager_secrets_arn" {
   default     = "arn:aws:secretsmanager:us-east-1:671250183987:secret:virtual_lab_manager-2Axecx"
   type        = string

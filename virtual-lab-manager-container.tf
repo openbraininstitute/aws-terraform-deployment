@@ -199,6 +199,10 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         {
           name      = "INVITE_JWT_SECRET"
           valueFrom = "${var.virtual_lab_manager_secrets_arn}:invite_jwt_secret::"
+        },
+        {
+          name      = "MAIL_PASSWORD"
+          valueFrom = "${var.virtual_lab_manager_secrets_arn}:mail_password::"
         }
       ]
       logConfiguration = {
