@@ -195,6 +195,10 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         {
           name      = "POSTGRES_PASSWORD"
           valueFrom = "${var.virtual_lab_manager_secrets_arn}:database_password::"
+        },
+        {
+          name      = "INVITE_JWT_SECRET"
+          valueFrom = "${var.virtual_lab_manager_secrets_arn}:invite_jwt_secret::"
         }
       ]
       logConfiguration = {
