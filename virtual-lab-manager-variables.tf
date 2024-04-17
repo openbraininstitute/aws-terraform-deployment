@@ -27,8 +27,8 @@ variable "virtual_lab_manager_nexus_delta_uri" {
 }
 
 variable "virtual_lab_manager_invite_expiration" {
-  default     = 7
-  type        = number
+  default     = "7"
+  type        = string
   description = "virtual lab invite expiration in days"
   sensitive   = false
 }
