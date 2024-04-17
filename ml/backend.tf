@@ -17,8 +17,8 @@ module "ml_ecs_service_backend" {
   # Container definition(s)
   container_definitions = {
     ml_backend = {
-      memory      = 4096
       cpu         = 1024
+      memory      = 4096
       networkMode = "awsvpc"
       family      = "ml_backend"
       essential   = true
@@ -27,6 +27,7 @@ module "ml_ecs_service_backend" {
       repository_credentials = {
         credentialsParameter = var.dockerhub_credentials_arn
       }
+      readonly_root_filesystem = false
       port_mappings = [
         {
           name          = "ml_backend"

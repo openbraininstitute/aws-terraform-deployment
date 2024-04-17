@@ -168,6 +168,17 @@ variable "ec_param_group" {
   default     = "default.redis7"
 }
 
+variable "sqs_etl_parser_list" {
+  description = "List of parsers deployed behind the load balancer"
+  type        = list(string)
+  default     = ["jats_xml", "xocs_xml", "core_json", "grobid_pdf", "pubmed_xml"]
+}
+
+variable "private_alb_dns" {
+  description = "DNS of the private loadbalancer."
+  type        = string
+}
+
 variable "tags" {
   description = "tags of the resources."
   type        = map(string)
