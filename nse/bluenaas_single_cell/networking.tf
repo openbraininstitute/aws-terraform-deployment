@@ -1,7 +1,7 @@
 resource "aws_subnet" "bluenaas_single_cell_ec2" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}a"
-  cidr_block        = "10.0.11.0/28"
+  cidr_block        = "10.0.11.0/24"
 
   tags = {
     Name        = "bluenaas-single-cell-ec2"
@@ -12,7 +12,7 @@ resource "aws_subnet" "bluenaas_single_cell_ec2" {
 resource "aws_subnet" "bluenaas_single_cell_ecs" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}a"
-  cidr_block        = "10.0.11.16/28"
+  cidr_block        = "10.0.12.0/24"
 
   tags = {
     Name        = "bluenaas-single-cell-ecs"
