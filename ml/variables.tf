@@ -167,3 +167,9 @@ variable "ec_param_group" {
   description = "Group of parameters for redis"
   default     = "default.redis7"
 }
+
+variable "tags" {
+  description = "tags of the resources."
+  type        = map(string)
+  default     = { SBO_Billing = "machinelearning" }
+}

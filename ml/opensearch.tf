@@ -10,11 +10,7 @@ resource "aws_security_group" "ml_opensearch" {
     cidr_blocks = [var.vpc_cidr_block]
     description = "allow access from within VPC"
   }
-
-  tags = {
-    Name        = "ml_os"
-    SBO_Billing = "machinelearning"
-  }
+  tags = var.tags
 }
 
 # TODO: figure out how to configure logging to ml_es loggroup
@@ -55,18 +51,12 @@ resource "aws_opensearch_domain" "ml_opensearch" {
 CONFIG
 
   depends_on = [aws_iam_service_linked_role.ml_os_linked_role]
-  tags = {
-    Name        = "ml_os"
-    SBO_Billing = "machinelearning"
-  }
+  tags       = var.tags
 }
 
 resource "aws_iam_service_linked_role" "ml_os_linked_role" {
   aws_service_name = "es.amazonaws.com"
   description      = "Allows Amazon ES to manage AWS resources for a domain on your behalf."
 
-  tags = {
-    Name        = "ml_os"
-    SBO_Billing = "machinelearning"
-  }
+  tags = var.tags
 }

@@ -1,5 +1,5 @@
 resource "aws_security_group" "ml_rds" {
-  name   = "ml-rds"
+  name   = "ml-rds-sg"
   vpc_id = var.vpc_id
 
   description = "Machine Learning RDS"
@@ -11,10 +11,7 @@ resource "aws_security_group" "ml_rds" {
     description = "allow access from within VPC"
   }
 
-  tags = {
-    Name        = "ml_rds"
-    SBO_Billing = "machinelearning"
-  }
+  tags = var.tags
 }
 
 #tfsec:ignore:aws-rds-enable-performance-insights
@@ -56,9 +53,5 @@ module "ml_rds_postgres" {
   # Database Deletion Protection
   deletion_protection = false
 
-  tags = {
-    Name        = "ml_rds"
-    SBO_Billing = "machinelearning"
-  }
-
+  tags = var.tags
 }

@@ -97,17 +97,14 @@ module "ml_ecs_service_etl" {
       cidr_blocks = ["0.0.0.0/0"]
     }
   }
-
-  tags = {
-    Name        = "ml_etl"
-    SBO_Billing = "machinelearning"
-  }
+  tags = var.tags
 }
 
 
 resource "aws_service_discovery_http_namespace" "ml_etl" {
   name        = "ml_etl"
   description = "CloudMap namespace for ml_etl"
+  tags        = var.tags
 }
 
 
@@ -117,6 +114,7 @@ resource "aws_lb_target_group" "ml_target_group_etl_private" {
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = var.vpc_id
+  tags        = var.tags
 }
 
 
@@ -134,6 +132,7 @@ resource "aws_lb_listener_rule" "ml_etl_rule_private" {
       values = ["/jats_xml", "/tei_xml", "/xocs_xml", "/core_json", "/grobid_pdf"]
     }
   }
+  tags = var.tags
 }
 
 resource "aws_iam_policy" "ml_ecs_etl_log_policy" {
@@ -155,4 +154,5 @@ resource "aws_iam_policy" "ml_ecs_etl_log_policy" {
     ]
     }
   )
+  tags = var.tags
 }

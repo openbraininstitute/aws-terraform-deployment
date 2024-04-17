@@ -16,4 +16,5 @@ module "ml_ecs_cluster" {
       }
     }
   }
+  tags = var.tags
 }

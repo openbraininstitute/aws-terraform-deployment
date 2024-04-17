@@ -194,15 +194,13 @@ module "ml_ecs_service_backend" {
     }
   }
 
-  tags = {
-    Name        = "ml_backend"
-    SBO_Billing = "machinelearning"
-  }
+  tags = var.tags
 }
 
 resource "aws_service_discovery_http_namespace" "ml_backend_namespace" {
   name        = "ml_backend"
   description = "CloudMap namespace for ml_backend"
+  tags        = var.tags
 }
 
 resource "aws_lb_target_group" "ml_target_group_backend" {
@@ -211,6 +209,7 @@ resource "aws_lb_target_group" "ml_target_group_backend" {
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = var.vpc_id
+  tags        = var.tags
 }
 
 resource "aws_lb_listener_rule" "ml_backend_listener_rule" {
@@ -233,6 +232,7 @@ resource "aws_lb_listener_rule" "ml_backend_listener_rule" {
       values = ["128.178.0.0/15"]
     }
   }
+  tags = var.tags
 }
 
 resource "aws_iam_policy" "ml_ecs_backend_log_policy" {
@@ -254,4 +254,5 @@ resource "aws_iam_policy" "ml_ecs_backend_log_policy" {
     ]
     }
   )
+  tags = var.tags
 }

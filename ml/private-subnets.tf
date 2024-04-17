@@ -2,10 +2,7 @@ resource "aws_subnet" "ml_subnet_a" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}a"
   cidr_block        = "10.0.4.0/24"
-  tags = {
-    Name        = "ml_subnet_a"
-    SBO_Billing = "machinelearning"
-  }
+  tags              = var.tags
 }
 
 resource "aws_route_table_association" "ml_rta_a" {
@@ -42,20 +39,14 @@ resource "aws_network_acl" "ml_acl_a" {
     from_port  = 0
     to_port    = 0
   }
-  tags = {
-    Name        = "ml_acl_a"
-    SBO_Billing = "machinelearning"
-  }
+  tags = var.tags
 }
 
 resource "aws_subnet" "ml_subnet_b" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}b"
   cidr_block        = "10.0.27.0/24"
-  tags = {
-    Name        = "ml_subnet_b"
-    SBO_Billing = "machinelearning"
-  }
+  tags              = var.tags
 }
 
 resource "aws_route_table_association" "ml_rta_b" {
@@ -92,8 +83,5 @@ resource "aws_network_acl" "ml_acl_b" {
     from_port  = 0
     to_port    = 0
   }
-  tags = {
-    Name        = "ml_acl_b"
-    SBO_Billing = "machinelearning"
-  }
+  tags = var.tags
 }
