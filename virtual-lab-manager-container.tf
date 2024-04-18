@@ -181,6 +181,30 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         {
           name  = "INVITE_LINK_BASE"
           value = var.virtual_lab_manager_invite_link
+        },
+        {
+          name  = "MAIL_USERNAME"
+          value = var.virtual_lab_manager_mail_username
+        },
+        {
+          name  = "MAIL_FROM"
+          value = var.virtual_lab_manager_mail_from
+        },
+        {
+          name  = "MAIL_SERVER"
+          value = var.virtual_lab_manager_mail_server
+        },
+        {
+          name  = "MAIL_PORT"
+          value = var.virtual_lab_manager_mail_port
+        },
+        {
+          name  = "MAIL_STARTTLS"
+          value = var.virtual_lab_manager_mail_starttls
+        },
+        {
+          name = "USE_CREDENTIALS"
+          value = var.virtual_lab_manager_use_credentials
         }
       ]
       secrets = [
