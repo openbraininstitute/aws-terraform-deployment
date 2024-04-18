@@ -4,7 +4,7 @@ module "ml_ecs_service_backend" {
 
   name                  = "ml-ecs-service-backend"
   cluster_arn           = local.ecs_cluster_arn
-  task_exec_secret_arns = [var.secret_manager_arn, var.dockerhub_credentials_arn, module.ml_rds_postgres.db_instance_master_user_secret_arn]
+  task_exec_secret_arns = [var.secret_manager_arn, var.dockerhub_credentials_arn]
 
 
   cpu    = 1024
@@ -97,18 +97,6 @@ module "ml_ecs_service_backend" {
           value = "postgresql://"
         },
         {
-          name  = "BBS_SQL__PORT"
-          value = module.ml_rds_postgres.db_instance_port
-        },
-        {
-          name  = "BBS_SQL__HOST"
-          value = module.ml_rds_postgres.db_instance_address
-        },
-        {
-          name  = "BBS_SQL__USER"
-          value = module.ml_rds_postgres.db_instance_username
-        },
-        {
           name  = "BBS_REDIS__HOST"
           value = aws_elasticache_cluster.ml_redis_cluster.cache_nodes[0].address
         },
@@ -134,11 +122,6 @@ module "ml_ecs_service_backend" {
           name      = "SENTRY_DSN"
           valueFrom = "${var.secret_manager_arn}:SENTRY_DSN::"
         },
-        {
-          name      = "BBS_SQL__PASSWORD"
-          valueFrom = "${module.ml_rds_postgres.db_instance_master_user_secret_arn}:password::"
-        },
-
       ]
       log_configuration = {
         logDriver = "awslogs"

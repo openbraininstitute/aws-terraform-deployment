@@ -107,43 +107,6 @@ variable "os_ebs_throughput" {
   default     = 255
 }
 
-variable "rds_engine" {
-  description = "type of rds database."
-  default     = "postgres"
-}
-
-variable "rds_version" {
-  description = "version of the rds database."
-  default     = "16.1"
-}
-
-variable "rds_instance_class" {
-  description = "The instance class to use for the RDS instance."
-  default     = "db.t4g.small"
-}
-
-variable "rds_allocated_storage" {
-  description = "The amount of storage to allocate for the RDS instance (in gigabytes)."
-  type        = number
-  default     = 20
-}
-
-variable "rds_user" {
-  description = "Unsername of the rds instance."
-  default     = "postgres"
-}
-
-variable "rds_port" {
-  description = "Port of the rds instance."
-  type        = string
-  default     = "5432"
-}
-
-variable "rds_param_group" {
-  description = "Group of parameters for the rds instance."
-  default     = "postgres14"
-}
-
 variable "ec_cluster_name" {
   description = "Name of the redis instance."
   default     = "redis-cluster"
