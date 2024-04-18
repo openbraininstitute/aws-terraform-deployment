@@ -14,7 +14,7 @@ module "ml_ecs_service_consumer" {
   enable_autoscaling       = true
   autoscaling_max_capacity = 5
   autoscaling_min_capacity = 2
-  desired_count            = 2
+  desired_count            = 3
 
   # Container definition(s)
   container_definitions = {
