@@ -3,16 +3,13 @@ import json
 import logging
 import boto3
 from datetime import datetime, timedelta
-from time import sleep
 from urllib.request import urlopen, Request
 from urllib.error import URLError
 
 L = logging.getLogger()
 L.setLevel(logging.INFO)
 
-ROUTE_TIMEOUT = 29 - 3 # seconds
-RETRY_IN = 2  # seconds
-MAX_ATTEMPTS = ROUTE_TIMEOUT // RETRY_IN - 2
+RETRY_MSG = "Retry later"
 
 DDB = boto3.client("dynamodb")
 ECS = boto3.client("ecs")
@@ -80,58 +77,44 @@ def default(event, context):
     data = DDB.get_item(TableName=DDB_WS_CONN_TASK, Key={"conn": {"S": conn_id}})
     ip = data["Item"]["ip"]["S"]
     if not ip:
-        wait_for_svc_attempts = 0
         svc_healthy = False
         task_submit_time = datetime.fromisoformat(data["Item"]["task_submit_time"]["S"])
         task_arn = data["Item"]["task"]["S"]
-        while (datetime.utcnow() - start_time < timedelta(seconds=ROUTE_TIMEOUT)
-               and wait_for_svc_attempts < MAX_ATTEMPTS):
-            described = ECS.describe_tasks(cluster=ECS_CLUSTER, tasks=[task_arn])
-            task = described["tasks"][0]
-            containers = task.get("containers", [])
-            if len(containers) > 0:
-                network_ifs = containers[0].get("networkInterfaces", [])
-                if len(network_ifs) > 0:
-                    ip = network_ifs[0].get("privateIpv4Address")
-                    L.info("service ip ready, ip: %s", ip)
-                    break
-            wait_for_svc_attempts += 1
-            L.info("waiting for service ip, attempt: %d", wait_for_svc_attempts)
-            sleep(RETRY_IN)
+        described = ECS.describe_tasks(cluster=ECS_CLUSTER, tasks=[task_arn])
+        task = described["tasks"][0]
+        containers = task.get("containers", [])
+        if len(containers) > 0:
+            network_ifs = containers[0].get("networkInterfaces", [])
+            if len(network_ifs) > 0:
+                ip = network_ifs[0].get("privateIpv4Address")
+                L.info("Service ip ready, ip: %s.", ip)
         if not ip:
-            return {"statusCode": 503,
-                    # could be "Internal server error" if apigw integration crashed
-                    "body": json.dumps({"message": "Retry later"})}
-        while (datetime.utcnow() - start_time < timedelta(seconds=ROUTE_TIMEOUT)
-               and wait_for_svc_attempts < MAX_ATTEMPTS):
-            try:
-                with urlopen(f"http://{ip}:8080/health",
-                             timeout=1) as response:
-                    if response.status == 204:
-                        L.info("service is healthy")
-                        svc_healthy = True
-                        break
-            except URLError as e:
-                L.info("Checking for service error: %s", e)
-            wait_for_svc_attempts += 1
-            L.info("Waiting for service to be healthy, attempt: %s", wait_for_svc_attempts)
-            sleep(RETRY_IN)
+            L.info("Waiting for service ip.")
+            # could be "Internal server error" if apigw integration crashed
+            return {"statusCode": 503, "body": json.dumps({"message": RETRY_MSG})}
+        try:
+            with urlopen(f"http://{ip}:8080/health", timeout=1) as response:
+                if response.status == 204:
+                    L.info("Service is healthy.")
+                    svc_healthy = True
+        except URLError as e:
+            L.info("Checking for service error: %s.", e)
         if svc_healthy:
-            L.info("Task lead time %s:", str(datetime.utcnow() - task_submit_time))
+            L.info("Task lead time: %s.", str(datetime.utcnow() - task_submit_time))
             DDB.update_item(TableName=DDB_WS_CONN_TASK,
                             Key={"conn": {"S": conn_id}},
                             UpdateExpression="set ip = :ip",
                             ExpressionAttributeValues={":ip": {"S": ip}})
         else:
-            return {"statusCode": 503,
-                    "body": json.dumps({"message": "Retry later"})}
+            L.info("Waiting for service to be healthy.")
+            return {"statusCode": 503, "body": json.dumps({"message": RETRY_MSG})}
     # we have ip and svc is healthy
     try:
         with urlopen(Request(f"http://{ip}:8080/default",
                              headers={"Content-Type": "application/json"},
                              data=event["body"].encode()),
                      timeout=2) as response:
-            L.info("Message forwarded")
+            L.info("Message forwarded.")
             return {"statusCode": response.status, "body": response.read()}
     except URLError as e:
         L.error("Unable to forward message: %s", e)
@@ -150,7 +133,7 @@ def disconnect(event, context):
             # let shutdown cleanup task wait 10sec
             urlopen(Request(f"http://{ip}:8080/shutdown", method="POST"), timeout=10)
         except URLError as e:
-            L.info("Shutting down svc error: %s", e)
+            L.info("Shutting down svc error: %s.", e)
     ECS.stop_task(cluster=ECS_CLUSTER, task=task)
     # task accounting
     task_end_time = datetime.utcnow()
@@ -165,9 +148,9 @@ def disconnect(event, context):
         new_month_duration = (task_end_time - end_time_1st_day_of_month).total_seconds()
         _update_item_acc(task_submit_time, svc_vlab, old_month_duration)
         _update_item_acc(task_end_time, svc_vlab, new_month_duration)
-        L.info("Task duration old month:%s, new month:%s", old_month_duration, new_month_duration)
+        L.info("Task duration old month: %s, new month: %s.", old_month_duration, new_month_duration)
     else:
         task_duration = (task_end_time - task_submit_time).total_seconds()
         _update_item_acc(task_submit_time, svc_vlab, task_duration)
-        L.info("Task duration:%s", task_duration)
+        L.info("Task duration: %s.", task_duration)
     return {"statusCode": 200}

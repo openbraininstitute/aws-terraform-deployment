@@ -148,8 +148,8 @@ resource "aws_ecs_task_definition" "this" {
   container_definitions = jsonencode([
     {
       name        = local.cluster_name
-      memory      = 512
-      cpu         = 512
+      memory      = var.ecs_memory
+      cpu         = var.ecs_cpu
       networkMode = "awsvpc"
       family      = local.cluster_name
       essential   = true

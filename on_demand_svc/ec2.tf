@@ -32,7 +32,7 @@ data "template_file" "ec2_user_data" {
 resource "aws_launch_template" "this" {
   name          = var.svc_name
   image_id      = var.ec2_image_id
-  instance_type = "t3.small"
+  instance_type = var.ec2_instance_type
   user_data     = base64encode(data.template_file.ec2_user_data.rendered)
   iam_instance_profile { arn = aws_iam_instance_profile.ec2.arn }
   monitoring { enabled = true }

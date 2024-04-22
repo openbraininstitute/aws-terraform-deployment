@@ -18,9 +18,24 @@ variable "ec2_image_id" {
   type        = string
   description = "AMI for ec2 launch template."
 }
+variable "ec2_instance_type" {
+  type        = string
+  description = "EC2 instance type."
+  default     = "t3.small"
+}
 variable "ecs_subnet_id" {
   type        = string
   description = "Subnet where the service ECS components will be deployed."
+}
+variable "ecs_cpu" {
+  type        = number
+  description = "ECS cpu units per task."
+  default     = 512
+}
+variable "ecs_memory" {
+  type        = number
+  description = "ECS memory units per task."
+  default     = 512
 }
 variable "dockerhub_creds_arn" {
   type        = string
