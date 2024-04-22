@@ -1,13 +1,12 @@
 #tfsec:ignore:aws-ec2-no-public-egress-sgr
-module "ml_ecs_service_etl" {
+module "ml-ecs_service_grobid" {
   source = "terraform-aws-modules/ecs/aws//modules/service"
 
-  name                  = "ml-ecs-service-etl"
-  cluster_arn           = local.ecs_cluster_arn
-  task_exec_secret_arns = [var.dockerhub_credentials_arn]
+  name        = "ml-ecs-service-grobid"
+  cluster_arn = local.ecs_cluster_arn
 
   cpu    = 1024
-  memory = 2048
+  memory = 4096
 
   # Enables ECS Exec
   enable_execute_command = true
@@ -15,47 +14,37 @@ module "ml_ecs_service_etl" {
 
   # Container definition(s)
   container_definitions = {
-    ml_etl = {
-      memory                   = 2048
+    ml_grobid = {
       cpu                      = 1024
+      memory                   = 4096
       networkMode              = "awsvpc"
-      family                   = "ml_etl"
+      family                   = "ml_grobid"
       essential                = true
-      image                    = var.etl_image_url
-      name                     = "ml_etl"
+      image                    = var.grobid_image_url
+      name                     = "ml_grobid"
       readonly_root_filesystem = false
-      repository_credentials = {
-        credentialsParameter = var.dockerhub_credentials_arn
-      }
-
       port_mappings = [
         {
-          name          = "ml_etl"
-          containerPort = 3000
-          hostPort      = 3000
+          name          = "ml_grobid"
+          containerPort = 8070
+          hostPort      = 8070
           protocol      = "tcp"
         }
       ]
       health_check = {
-        command     = ["CMD-SHELL", "curl -f http://localhost:3000/healthz || exit 1"]
+        command     = ["CMD-SHELL", "curl -f http://localhost:8070/ || exit 1"]
         interval    = 30
         timeout     = 5
         startPeriod = 60
         retries     = 3
       }
-      environment = [
-        {
-          name  = "GROBID_URL"
-          value = "http://${var.private_alb_dns}:3000"
-        }
-      ]
-      log_configuration = {
+      logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = "ml_etl"
+          awslogs-group         = "ml_grobid"
           awslogs-region        = "us-east-1"
           awslogs-create-group  = "true"
-          awslogs-stream-prefix = "ml_etl"
+          awslogs-stream-prefix = "ml_grobid"
         }
       }
     }
@@ -66,22 +55,22 @@ module "ml_ecs_service_etl" {
   }
 
   service_connect_configuration = {
-    namespace = aws_service_discovery_http_namespace.ml_etl.arn
+    namespace = aws_service_discovery_http_namespace.ml_grobid.arn
     service = {
       client_alias = {
-        port     = 3000
-        dns_name = "ml_etl"
+        port     = 8070
+        dns_name = "ml_grobid"
       }
-      port_name      = "ml_etl"
-      discovery_name = "ml_etl"
+      port_name      = "ml_grobid"
+      discovery_name = "ml_grobid"
     }
   }
 
   load_balancer = {
     service_private = {
-      target_group_arn = aws_lb_target_group.ml_target_group_etl_private.arn
-      container_name   = "ml_etl"
-      container_port   = 3000
+      target_group_arn = aws_lb_target_group.target_group_grobid_private.arn
+      container_name   = "ml_grobid"
+      container_port   = 8070
     }
   }
 
@@ -89,8 +78,8 @@ module "ml_ecs_service_etl" {
   security_group_rules = {
     private_alb_ingress_3000 = {
       type                     = "ingress"
-      from_port                = 3000
-      to_port                  = 3000
+      from_port                = 8070
+      to_port                  = 8070
       protocol                 = "tcp"
       description              = "Service port"
       source_security_group_id = var.private_alb_security_group_id
@@ -103,46 +92,45 @@ module "ml_ecs_service_etl" {
       cidr_blocks = ["0.0.0.0/0"]
     }
   }
-  tags = var.tags
+  tags = {
+    Name        = "ml_grobid"
+    SBO_Billing = "machinelearning"
+  }
 }
 
 
-resource "aws_service_discovery_http_namespace" "ml_etl" {
-  name        = "ml_etl"
-  description = "CloudMap namespace for ml_etl"
-  tags        = var.tags
+resource "aws_service_discovery_http_namespace" "ml_grobid" {
+  name        = "ml_grobid"
+  description = "CloudMap namespace for ml_grobid"
 }
 
-
-resource "aws_lb_target_group" "ml_target_group_etl_private" {
-  name        = "target-group-etl-private"
-  port        = 3000
+resource "aws_lb_target_group" "target_group_grobid_private" {
+  name        = "target-group-grobid-private"
+  port        = 8070
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = var.vpc_id
-  tags        = var.tags
 }
 
 
-resource "aws_lb_listener_rule" "ml_etl_rule_private" {
+resource "aws_lb_listener_rule" "grobid_rule_private" {
   listener_arn = var.private_alb_listener_arn
-  priority     = 200
+  priority     = 300
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.ml_target_group_etl_private.arn
+    target_group_arn = aws_lb_target_group.target_group_grobid_private.arn
   }
 
   condition {
     path_pattern {
-      values = ["/jats_xml", "/tei_xml", "/xocs_xml", "/core_json", "/grobid_pdf"]
+      values = ["/api/*"]
     }
   }
-  tags = var.tags
 }
 
-resource "aws_iam_policy" "ml_ecs_etl_log_policy" {
-  name = "ml_ecs_etl_logs"
+resource "aws_iam_policy" "ml_ecs_grobid_log_policy" {
+  name = "ml_ecs_grobid_logs"
   policy = jsonencode({ # tfsec:ignore:aws-iam-no-policy-wildcards
     "Version" : "2012-10-17",
     "Statement" : [
@@ -160,5 +148,4 @@ resource "aws_iam_policy" "ml_ecs_etl_log_policy" {
     ]
     }
   )
-  tags = var.tags
 }

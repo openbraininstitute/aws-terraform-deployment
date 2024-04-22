@@ -42,12 +42,17 @@ variable "private_alb_listener_arn" {
 }
 
 variable "backend_image_url" {
-  description = "Url of the ECR image to use in the ECS image (format repo:tag)"
+  description = "Url of the docker image to use in the ECS container for the backend (format repo:tag)"
   type        = string
 }
 
 variable "etl_image_url" {
-  description = "Url of the ECR image to use in the ECS image (format repo:tag)"
+  description = "Url of the docker image to use in the ECS container for etl (format repo:tag)"
+  type        = string
+}
+
+variable "grobid_image_url" {
+  description = "Url of the docker image to use in the ECS container for grobid (format repo:tag)"
   type        = string
 }
 
