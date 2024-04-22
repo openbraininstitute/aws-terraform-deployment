@@ -12,3 +12,4 @@ nexus/ @nise
 ml/ @ml
 cells_svc/ @nse
 viz/ @viz
+hpc/ @hpc
