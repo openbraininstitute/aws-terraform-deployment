@@ -49,3 +49,10 @@ resource "aws_s3_object" "ml_parser_folders" {
   content_type = "application/x-directory"
 }
 
+resource "aws_vpc_endpoint" "sqs_endpoint" {
+  vpc_id            = var.vpc_id
+  service_name      = "com.amazonaws.${var.aws_region}.sqs"
+  subnet_ids        = local.private_subnet_ids
+  tags              = var.tags
+  vpc_endpoint_type = "Interface"
+}
