@@ -203,7 +203,7 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
           value = var.virtual_lab_manager_mail_starttls
         },
         {
-          name = "USE_CREDENTIALS"
+          name  = "USE_CREDENTIALS"
           value = var.virtual_lab_manager_use_credentials
         }
       ]
