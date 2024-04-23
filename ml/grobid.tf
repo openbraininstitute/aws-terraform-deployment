@@ -31,13 +31,6 @@ module "ml-ecs_service_grobid" {
           protocol      = "tcp"
         }
       ]
-      health_check = {
-        command     = ["CMD-SHELL", "curl -f http://localhost:8070/ || exit 1"]
-        interval    = 30
-        timeout     = 5
-        startPeriod = 60
-        retries     = 3
-      }
       logConfiguration = {
         logDriver = "awslogs"
         options = {

@@ -36,13 +36,6 @@ module "ml_ecs_service_backend" {
           protocol      = "tcp"
         }
       ]
-      health_check = {
-        command     = ["CMD-SHELL", "curl -f http://localhost:8080/healthz || exit 1"]
-        interval    = 30
-        timeout     = 5
-        startPeriod = 60
-        retries     = 3
-      }
       environment = [
         {
           name  = "BBS_DB__DB_TYPE"
@@ -107,6 +100,10 @@ module "ml_ecs_service_backend" {
         {
           name  = "BBS_MISC__APPLICATION_PREFIX"
           value = "/api/literature"
+        },
+        {
+          name  = "BBS_MISC__CORS_ORIGINS"
+          value = "https://openbrainplatform.org"
         },
       ]
       secrets = [
@@ -194,6 +191,9 @@ resource "aws_lb_target_group" "ml_target_group_backend" {
   target_type = "ip"
   vpc_id      = var.vpc_id
   tags        = var.tags
+  health_check {
+    path = "/healthz"
+  }
 }
 
 resource "aws_lb_listener_rule" "ml_backend_listener_rule" {

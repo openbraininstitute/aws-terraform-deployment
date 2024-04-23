@@ -4,6 +4,7 @@ module "ml_sqs" {
   name = "ml-sqs"
 
   visibility_timeout_seconds = 120
+  message_retention_seconds  = 1209600
 
   redrive_policy = {
     maxReceiveCount = 4

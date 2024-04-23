@@ -32,7 +32,7 @@ module "ml_producer_eventbridge" {
           containerOverrides = [
             {
               name    = "ml_producer",
-              command = ["pu_producer", "pmc-oa-opendata", "${module.ml_sqs.queue_url}", "--index", "pmc_paragraphs_v2", "--parser-name", "jats_xml", "--prefix", "oa_comm/xml/all", "oa_noncomm/xml/all", "author_manuscript/xml/all", "--file-extension", "xml", "-v"]
+              command = ["pu_producer", "pmc-oa-opendata", "${module.ml_sqs.queue_url}", "--index", "pmc_paragraphs_v2", "--parser-name", "jats_xml", "--start-date", "01-01-1700", "--prefix", "oa_comm/xml/all", "oa_noncomm/xml/all", "author_manuscript/xml/all", "--file-extension", "xml", "-v"]
             }
           ]
         })
