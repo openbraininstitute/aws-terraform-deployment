@@ -11,6 +11,14 @@ module "coreservices_key" {
   name       = "aws_coreservices"
   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDO8QAh2WZ/WcZnNeojPNhadeodMO2l3PssaUFJWfvEFNzkuo5ci7nxb39M2FH6RyFAfqykV/v89KfDIg9K2ebJQZS+x6Enrqm7+ROmZjCdpYkFm7l2NCoKLus92DaPX6k1Tv5hcI76BqWN4nOKQxzb7ziJxFl5wzLgTwnXZvY33dA3Pu6aimksv071KnQ3hJKk6Omx/l7Hv/D7c0tU8vRCUefzHT3TkRpRgTTq+Wd8S0pGSmMB4drk5PiUzEVczxuIfmYGCWV2va6aT34yuMOw/6y2Cr9guCkyR2FkFm7q0MPw0aKGFBwTT05eiEWBWKQQbqi1qMtSwd6tp4qv6crN SSH key for AWS SBO POC"
 }
+module "cs" {
+  source = "./cs"
+  vpc_id            = data.terraform_remote_state.common.outputs.vpc_id
+  aws_region        = data.terraform_remote_state.common.outputs.aws_region
+  route_table_id    = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  db_instance_class = "db.t3.micro"
+}
+ 
 module "ml" {
   source = "./ml"
 
@@ -130,3 +138,4 @@ module "hpc" {
   peering_route_tables       = ["rtb-0e4eb2a1cbab24423"]
   existing_route_targets     = ["172.16.0.0/16"]
 }
+

@@ -1,0 +1,96 @@
+#tfsec:ignore:aws-ecs-enable-in-transit-encryption
+resource "aws_ecs_task_definition" "sbo_keycloak_task" {
+  family                   = "keycloak-task"
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"  # Use AWS VPC networking mode
+  cpu                      = 2048
+  memory                   = 4096
+  container_definitions = <<TASK_DEFINITION
+  [
+        {
+            "name": "keycloak-container",
+            "image": "keycloak/keycloak:21.1.1",
+            "cpu": 2048,
+            "memory": 4096,
+            "portMappings": [
+                {
+                    "name": "keycloak-container-8081-tcp",
+                    "containerPort": 8081,
+                    "hostPort": 8081,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "command": [
+                "--config-file=/docker-keycloak/keycloak.conf  start --https-port=8081 --https-certificate-file=/docker-keycloak/keycloak-server.crt.pem --https-certificate-key-file=/docker-keycloak/keycloak-server.key.pem"
+            ],
+            "environment": [
+                {
+                    "name": "KC_PROXY",
+                    "value": "edge"
+                },
+                {
+                    "name": "DB_ADDR",
+                    "value": "keycloak-db.c9km4kk2kujz.eu-central-1.rds.amazonaws.com"
+                },
+                {
+                    "name": "DB_VENDOR",
+                    "value": "postgres"
+                },
+                {
+                    "name": "KEYCLOAK_ADMIN",
+                    "value": "admin"
+                },
+                {
+                    "name": "DB_USER",
+                    "value": "keycloak_sbo"
+                },
+                {
+                    "name": "KC_HOSTNAME_STRICT",
+                    "value": "false"
+                },
+                {
+                    "name": "DB_DATABASE",
+                    "value": "keycloak_sbo"
+                },
+	        {
+ 	            "name": "KC_HEALTH_ENABLED",
+	            "value": "true"
+	        },
+	        {
+	            "name": "PROXY_ADDRESS_FORWARDING",
+	            "value": "true"
+	        }
+            ],
+            "mountPoints": [
+                {
+                    "sourceVolume": "keycloak-volume",
+                    "containerPath": "/docker-keycloak",
+                    "readOnly": false
+                }
+            ],
+            "volumesFrom": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-create-group": "true",
+                    "awslogs-group": "/ecs/keycloak-task",
+                    "awslogs-region": "eu-central-1",
+                    "awslogs-stream-prefix": "ecs"
+                },
+                "secretOptions": []
+            },
+            "systemControls": []
+        }
+    ]
+    TASK_DEFINITION
+    execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
+    volume {
+      name      = "keycloak-volume"
+      efs_volume_configuration {
+        file_system_id     = aws_efs_file_system.keycloakfs.id
+        root_directory     = "/"
+      }
+    }
+}
+
