@@ -14,7 +14,7 @@ resource "aws_iam_policy" "ship_import_bucket_access" {
           "s3:Put*"
         ]
         Effect   = "Allow"
-        Resource = aws_s3_bucket.nexus_ship.arn
+        Resource = [aws_s3_bucket.nexus_ship.arn, "${aws_s3_bucket.nexus_ship.arn}/*"]
       },
     ]
   })
@@ -36,7 +36,7 @@ resource "aws_iam_policy" "ship_target_bucket_access" {
           "s3:Put*"
         ]
         Effect   = "Allow"
-        Resource = var.target_bucket_arn
+        Resource = [var.target_bucket_arn, "${var.target_bucket_arn}/*"]
       },
     ]
   })
