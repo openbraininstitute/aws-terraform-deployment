@@ -39,13 +39,6 @@ variable "nexus_delta_hostname" {
   sensitive = false
 }
 
-variable "nexus_fusion_ecs_number_of_containers" {
-  type        = number
-  default     = 1
-  sensitive   = false
-  description = "Number of containers for nexus fusion"
-}
-
 variable "ecs_task_execution_role_arn" {
   type        = string
   description = "The ARN of the ECS task execution role that is used by the ECS agent"

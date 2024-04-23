@@ -2,12 +2,6 @@ variable "aws_region" {
   type = string
 }
 
-# TODO I think we can delete this
-variable "nexus_app_ecs_number_of_containers" {
-  type    = number
-  default = 1
-}
-
 variable "nexus_delta_hostname" {
   type    = string
   default = "sbo-nexus-delta.shapes-registry.org"

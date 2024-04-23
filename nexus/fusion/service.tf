@@ -1,11 +1,9 @@
 resource "aws_ecs_service" "nexus_fusion_ecs_service" {
-  count = var.nexus_fusion_ecs_number_of_containers > 0 ? 1 : 0
-
   name            = "nexus_fusion_ecs_service"
   cluster         = var.ecs_cluster_arn
   launch_type     = "FARGATE"
-  task_definition = aws_ecs_task_definition.nexus_fusion_ecs_definition[0].arn
-  desired_count   = var.nexus_fusion_ecs_number_of_containers
+  task_definition = aws_ecs_task_definition.nexus_fusion_ecs_definition.arn
+  desired_count   = 1
 
   # ensure that there are not multiple tasks running at the same time during deployment
   deployment_maximum_percent         = 100

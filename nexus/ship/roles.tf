@@ -21,8 +21,12 @@ EOF
   }
 }
 
-resource "aws_iam_role_policy_attachment" "ship_ecs_task" {
+resource "aws_iam_role_policy_attachment" "import_bucket_access" {
   role       = aws_iam_role.nexus_ship_ecs_task.name
-  policy_arn = aws_iam_policy.s3_read_access.arn
+  policy_arn = aws_iam_policy.ship_import_bucket_access.arn
 }
 
+resource "aws_iam_role_policy_attachment" "target_bucket_access" {
+  role       = aws_iam_role.nexus_ship_ecs_task.name
+  policy_arn = aws_iam_policy.ship_target_bucket_access.arn
+}

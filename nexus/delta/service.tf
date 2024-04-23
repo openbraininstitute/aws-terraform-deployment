@@ -1,10 +1,8 @@
 resource "aws_ecs_service" "nexus_app_ecs_service" {
-  count = var.nexus_app_ecs_number_of_containers > 0 ? 1 : 0
-
   name            = "nexus_app_ecs_service"
   cluster         = var.ecs_cluster_arn
   launch_type     = "FARGATE"
-  task_definition = aws_ecs_task_definition.nexus_app_ecs_definition[0].arn
+  task_definition = aws_ecs_task_definition.nexus_app_ecs_definition.arn
   desired_count   = 1
   #iam_role        = "${var.ecs_iam_role_name}"
 

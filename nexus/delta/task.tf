@@ -5,7 +5,6 @@ locals {
 }
 
 resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
-  count        = var.nexus_app_ecs_number_of_containers > 0 ? 1 : 0
   family       = "nexus_app_task_family"
   network_mode = "awsvpc"
 

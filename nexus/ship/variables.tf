@@ -15,3 +15,8 @@ variable "nexus_secrets_arn" {
   type        = string
   description = "The ARN of the secrets manager secret that contains the nexus secrets"
 }
+
+variable "target_bucket_arn" {
+  type        = string
+  description = "The ARN of the S3 bucket that the ship will copy data to"
+}

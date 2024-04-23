@@ -67,12 +67,3 @@ variable "nexus_fusion_docker_image_url" {
   sensitive = false
   type      = string
 }
-
-### Switches
-
-variable "nexus_fusion_ecs_number_of_containers" {
-  type        = number
-  default     = 1
-  sensitive   = false
-  description = "Number of containers for nexus fusion"
-}
