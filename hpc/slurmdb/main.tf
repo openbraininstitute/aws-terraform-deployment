@@ -1,8 +1,16 @@
-resource "aws_db_subnet_group" "slurm_db_subnet_group" {
-  name       = "slurm-db-subnet-group"
-  count      = var.create_slurmdb ? 1 : 0
-  subnet_ids = var.slurm_db_subnets_ids
-}
+# TODO: this was disabled because it conflicts with the already existing instance
+#       destroying it would break the current PoC. It needs to be re-enabled when
+#       everything is set up cleanly again
+#
+#       MAKE SURE TO DO THE OTHER TODO AS WELL!
+#
+#       search for TODO-SLURMDB
+#
+# resource "aws_db_subnet_group" "slurm_db_subnet_group" {
+#   name       = "slurm-db-subnet-group"
+#   count      = var.create_slurmdb ? 1 : 0
+#   subnet_ids = var.slurm_db_subnets_ids
+# }
 
 # Data source to retrieve the password from AWS Secrets Manager
 data "aws_secretsmanager_secret_version" "slurm_database_password" {
@@ -19,7 +27,8 @@ resource "aws_db_instance" "slurmdb" {
   allocated_storage       = 5     # in gigabytes
   backup_retention_period = 2     # in days
 
-  db_subnet_group_name = one(aws_db_subnet_group.slurm_db_subnet_group[*].name)
+  # TODO-SLURMDB: re-enable
+  # db_subnet_group_name = one(aws_db_subnet_group.slurm_db_subnet_group[*].name)
 
   engine         = "mysql"
   engine_version = "8.0.35"
