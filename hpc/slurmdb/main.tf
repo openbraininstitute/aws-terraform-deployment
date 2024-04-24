@@ -2,9 +2,9 @@
 #       destroying it would break the current PoC. It needs to be re-enabled when
 #       everything is set up cleanly again
 #
-#       MAKE SURE TO DO THE OTHER TODO AS WELL!
+#       MAKE SURE TO DO THE OTHER TODOS AS WELL!
 #
-#       search for TODO-SLURMDB
+#       search for TODO-SLURMDB throughout the HPC module
 #
 # resource "aws_db_subnet_group" "slurm_db_subnet_group" {
 #   name       = "slurm-db-subnet-group"

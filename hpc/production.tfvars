@@ -6,7 +6,8 @@ slurm_mysql_admin_password = "arn:aws:secretsmanager:us-east-1:671250183987:secr
 create_compute_instances   = false
 num_compute_instances      = 0
 compute_instance_type      = "m7g.medium"
-create_slurmdb             = true
+# TODO-SLURMDB: re-enable once redeploying everything
+create_slurmdb             = false
 create_jumphost            = false
 compute_nat_access         = false
 compute_subnet_count       = 15
