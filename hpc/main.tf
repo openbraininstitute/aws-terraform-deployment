@@ -38,6 +38,7 @@ module "networking" {
   av_zone_suffixes          = var.av_zone_suffixes
   peering_route_tables      = var.peering_route_tables
   existing_route_targets    = var.existing_route_targets
+  security_groups           = [module.security.compute_hpc_sg_id]
 }
 
 module "security" {

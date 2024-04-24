@@ -8,6 +8,7 @@ resource "aws_vpc_endpoint" "cloudwatch" {
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
   subnet_ids          = slice(local.aws_subnet_compute_ids, 0, min(4, length(local.aws_subnet_compute_ids)))
+  security_group_ids  = var.security_groups
   tags = {
     Name = "cloudwatch endpoint"
   }
@@ -18,6 +19,7 @@ resource "aws_vpc_endpoint" "cloudformation" {
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
   subnet_ids          = slice(local.aws_subnet_compute_ids, 0, min(4, length(local.aws_subnet_compute_ids)))
+  security_group_ids  = var.security_groups
   tags = {
     Name = "cloudformation endpoint"
   }
@@ -28,6 +30,7 @@ resource "aws_vpc_endpoint" "ec2" {
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
   subnet_ids          = slice(local.aws_subnet_compute_ids, 0, min(4, length(local.aws_subnet_compute_ids)))
+  security_group_ids  = var.security_groups
   tags = {
     Name = "ec2 endpoint"
   }

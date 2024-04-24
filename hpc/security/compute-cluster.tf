@@ -74,6 +74,26 @@ resource "aws_security_group" "hpc" {
   }
 }
 
+resource "aws_vpc_security_group_ingress_rule" "hpc_allow_sg_ingress" {
+  security_group_id = aws_security_group.hpc.id
+
+  ip_protocol                  = -1
+  from_port                    = -1
+  to_port                      = -1
+  referenced_security_group_id = aws_security_group.hpc.id
+  description                  = "allow ingress within security group"
+}
+
+resource "aws_vpc_security_group_egress_rule" "hpc_allow_sg_egress" {
+  security_group_id = aws_security_group.hpc.id
+
+  ip_protocol                  = -1
+  from_port                    = -1
+  to_port                      = -1
+  referenced_security_group_id = aws_security_group.hpc.id
+  description                  = "allow egress within security group"
+}
+
 resource "aws_vpc_security_group_ingress_rule" "hpc_allow_peering_ingress" {
   security_group_id = aws_security_group.hpc.id
 
