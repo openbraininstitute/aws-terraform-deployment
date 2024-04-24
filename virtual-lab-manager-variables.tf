@@ -81,3 +81,10 @@ variable "virtual_lab_manager_use_credentials" {
   description = "Use username and password for authentication when sending emails"
   sensitive   = false
 }
+
+variable "virtual_lab_manager_cors_origins" {
+  type        = list(string)
+  default     = ["http://localhost:3000"]
+  description = "Origins that are allowed to make requests to the virtual lab api through a browser"
+  sensitive   = false
+}

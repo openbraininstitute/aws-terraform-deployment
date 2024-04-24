@@ -205,6 +205,10 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         {
           name  = "USE_CREDENTIALS"
           value = var.virtual_lab_manager_use_credentials
+        },
+        {
+          name  = "CORS_ORIGINS"
+          value = "${jsonencode(var.virtual_lab_manager_cors_origins)}"
         }
       ]
       secrets = [
