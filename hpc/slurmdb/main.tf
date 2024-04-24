@@ -4,7 +4,7 @@
 #
 #       MAKE SURE TO DO THE OTHER TODOS AS WELL!
 #
-#       search for TODO-SLURMDB throughout the HPC module
+#       search for TODO-SLURMDB throughout the HPC module and in the repo root's main.tf
 #
 # resource "aws_db_subnet_group" "slurm_db_subnet_group" {
 #   name       = "slurm-db-subnet-group"

@@ -1,3 +1,5 @@
+# example only - the real variables are defined in ../main.tf
+
 aws_region                 = "us-east-1"
 obp_vpc_id                 = "vpc-0f4c0dae68dde7f59"
 sbo_billing                = "hpc"
