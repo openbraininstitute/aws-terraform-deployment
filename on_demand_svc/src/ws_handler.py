@@ -100,6 +100,17 @@ def default(event, context):
         except URLError as e:
             L.info("Checking for service error: %s.", e)
         if svc_healthy:
+            try:
+                token = event["requestContext"]["authorizer"]["TOKEN"]
+                with urlopen(Request(f"http://{ip}:8080/init",
+                                    headers={"Content-Type": "application/json"},
+                                    data=json.dumps({"token": token}).encode()),
+                             timeout=2) as response:
+                    L.info("Service init invoked.")
+            except URLError as e:
+                L.error("Unable to init service: %s", e)
+                return {"statusCode": 500,
+                        "body": json.dumps({"message": "Error invoking svc init"})}
             L.info("Task lead time: %s.", str(datetime.utcnow() - task_submit_time))
             DDB.update_item(TableName=DDB_WS_CONN_TASK,
                             Key={"conn": {"S": conn_id}},

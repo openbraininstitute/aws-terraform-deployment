@@ -1,4 +1,3 @@
-import json
 from ipaddress import ip_network, ip_address
 
 
@@ -6,12 +5,17 @@ def do(event, context):
     headers = event["headers"]
     ip = ip_address(headers["X-Forwarded-For"])
     epfl_cidr = ip_network("128.178.0.0/15", False)
+    token = headers.get("Sec-WebSocket-Protocol", "").replace("Bearer-", "Bearer ")
 
     # FIXME add proper keycloak authz
-    if (ip in epfl_cidr and headers["Sec-WebSocket-Protocol"].startswith("Bearer-")):
-        return json.loads(generateAllow("me", event["methodArn"]))
+    if (ip in epfl_cidr and token.startswith("Bearer ")):
+        authResponse = generateAllow("me", event["methodArn"])
+        # FIXME get user vlab/proj
+        authResponse["context"] = {"SVC_VLAB": "O1_data_physiology_sep11",
+                                   "TOKEN": token}
+        return authResponse
 
-    return json.loads(generateDeny("me", event["methodArn"]))
+    return generateDeny("me", event["methodArn"])
 
 
 def generatePolicy(principalId, effect, resource):
@@ -28,10 +32,7 @@ def generatePolicy(principalId, effect, resource):
         policyDocument["Statement"] = [statementOne]
         authResponse["policyDocument"] = policyDocument
 
-    # FIXME get user vlab/proj
-    authResponse["context"] = {"SVC_VLAB": "O1_data_physiology_sep11"}
-
-    return json.dumps(authResponse)
+    return authResponse
 
 
 def generateAllow(principalId, resource):
