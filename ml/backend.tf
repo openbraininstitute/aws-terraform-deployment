@@ -103,7 +103,7 @@ module "ml_ecs_service_backend" {
         },
         {
           name  = "BBS_MISC__CORS_ORIGINS"
-          value = "https://openbrainplatform.org"
+          value = "https://openbrainplatform.org, https://bbp.epfl.ch"
         },
       ]
       secrets = [
