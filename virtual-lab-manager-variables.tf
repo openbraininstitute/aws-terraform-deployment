@@ -34,9 +34,9 @@ variable "virtual_lab_manager_invite_expiration" {
 }
 
 variable "virtual_lab_manager_invite_link" {
-  default     = "https://openbrainplatform.org"
+  default     = "https://openbrainplatform.org/mmb-beta"
   type        = string
-  description = "virtual lab invite url (frontend domain) without the base path as '/mmb-beta'"
+  description = "virtual lab invite base link to which the invite path (/invite?token=abc) should be appended"
   sensitive   = false
 }
 
