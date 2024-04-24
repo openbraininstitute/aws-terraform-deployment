@@ -108,7 +108,7 @@ module "hpc" {
   slurm_mysql_admin_password = "arn:aws:secretsmanager:us-east-1:671250183987:secret:hpc_slurm_db_password-6LNuBy"
   create_compute_instances   = false
   num_compute_instances      = 0
-  create_slurmdb             = false  # TODO-SLURMDB: re-enable when redeploying the cluster
+  create_slurmdb             = false # TODO-SLURMDB: re-enable when redeploying the cluster
   compute_instance_type      = "m7g.medium"
   create_jumphost            = false
   compute_nat_access         = false

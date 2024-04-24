@@ -9,10 +9,10 @@ create_compute_instances   = false
 num_compute_instances      = 0
 compute_instance_type      = "m7g.medium"
 # TODO-SLURMDB: re-enable once redeploying everything
-create_slurmdb             = false
-create_jumphost            = false
-compute_nat_access         = false
-compute_subnet_count       = 15
-av_zone_suffixes           = ["a", "b", "c", "d"]
-peering_route_tables       = []
-existing_route_targets     = []
+create_slurmdb         = false
+create_jumphost        = false
+compute_nat_access     = false
+compute_subnet_count   = 15
+av_zone_suffixes       = ["a", "b", "c", "d"]
+peering_route_tables   = []
+existing_route_targets = []
