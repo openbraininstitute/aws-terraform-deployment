@@ -14,10 +14,12 @@ module "ml_producer_eventbridge" {
     ml_producer_pmc = {
       description         = "Cron for producer aimed at pmc's s3 bucket."
       schedule_expression = "cron(0 2 * * ? *)"
+      state               = "ENABLED"
     }
     ml_producer_local = {
       description         = "Cron for producer aimed at our s3 bucket containing papers."
       schedule_expression = "cron(0 2 * * ? *)"
+      state               = "ENABLED"
     }
   }
 
