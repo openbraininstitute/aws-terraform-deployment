@@ -136,6 +136,14 @@ resource "aws_ecs_task_definition" "viz_vsm" {
           value = aws_ecs_cluster.viz.name
         },
         {
+          name  = "VSM_BUCKET_NAME"
+          value = "sbo-cell-svc-perf-test"
+        },
+        {
+          name  = "VSM_BUCKET_MOUNT_PATH"
+          value = "/sbo/data/project"
+        },
+        {
           name  = "PYTHONUNBUFFERED"
           value = "TRUE"
         },
