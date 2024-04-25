@@ -33,11 +33,12 @@ resource "aws_acm_certificate_validation" "nexus_app" {
 
 resource "aws_lb_target_group" "nexus_app" {
   #ts:skip=AC_AWS_0492
-  name_prefix = "nx-dlt"
-  port        = 8080
-  protocol    = "HTTP"
-  target_type = "ip"
-  vpc_id      = var.vpc_id
+  name_prefix          = "nx-dlt"
+  port                 = 8080
+  protocol             = "HTTP"
+  target_type          = "ip"
+  vpc_id               = var.vpc_id
+  deregistration_delay = "30"
   health_check {
     enabled             = true
     path                = "/v1/version"
