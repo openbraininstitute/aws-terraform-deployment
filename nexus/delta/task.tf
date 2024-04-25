@@ -10,8 +10,8 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
 
   container_definitions = jsonencode([
     {
-      memory = local.nexus_memory
-      cpu    = local.nexus_cpu
+      memory  = local.nexus_memory
+      cpu     = local.nexus_cpu
       command = [
         "/bin/bash",
         "-c",
@@ -75,7 +75,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
       ]
       volumesFrom = []
       healthcheck = {
-        command     = ["CMD-SHELL", "exit 0"] // TODO: not exit 0
+        command = ["CMD-SHELL", "exit 0"] // TODO: not exit 0
         interval    = 30
         timeout     = 5
         startPeriod = 60
@@ -114,6 +114,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
   memory                   = local.nexus_memory
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = var.ecs_task_execution_role_arn
+  task_role_arn            = aws_iam_role.nexus_delta_ecs_task.arn
 
   volume {
     name = "efs-nexus-app-config"

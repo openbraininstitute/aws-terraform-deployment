@@ -21,7 +21,7 @@ EOF
   }
 }
 
-resource "aws_iam_role_policy_attachment" "ship_ecs_task" {
+resource "aws_iam_role_policy_attachment" "delta_ecs_task" {
   role       = aws_iam_role.nexus_delta_ecs_task.name
   policy_arn = aws_iam_policy.nexus_delta_bucket_access.arn
 }
@@ -29,7 +29,7 @@ resource "aws_iam_role_policy_attachment" "ship_ecs_task" {
 #tfsec:ignore:aws-iam-no-policy-wildcards
 resource "aws_iam_policy" "nexus_delta_bucket_access" {
   name        = "NexusDeltaBucketAccess"
-  description = "A policy that grants read-only access to the ship S3 bucket"
+  description = "A policy that grants access to the delta S3 bucket"
 
   policy = jsonencode({
     Version = "2012-10-17"
