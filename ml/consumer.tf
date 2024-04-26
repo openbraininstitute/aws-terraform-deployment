@@ -6,8 +6,8 @@ module "ml_ecs_service_consumer" {
   cluster_arn           = local.ecs_cluster_arn
   task_exec_secret_arns = [var.dockerhub_credentials_arn]
 
-  cpu    = 1024
-  memory = 2048
+  cpu    = 512
+  memory = 1024
 
   # Enables ECS Exec
   enable_execute_command   = true
@@ -19,8 +19,8 @@ module "ml_ecs_service_consumer" {
   # Container definition(s)
   container_definitions = {
     ml_consumer = {
-      memory      = 2048
-      cpu         = 1024
+      cpu         = 512
+      memory      = 1024
       networkMode = "awsvpc"
       family      = "ml_consumer"
       essential   = true
