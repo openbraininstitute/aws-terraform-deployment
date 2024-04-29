@@ -12,7 +12,7 @@
 
 resource "aws_subnet" "compute" {
   vpc_id            = var.pcluster_vpc_id
-  availability_zone = "${var.aws_region}${var.av_zone_suffixes[count.index % 4]}"
+  availability_zone = "${var.aws_region}${var.av_zone_suffixes[count.index % length(var.av_zone_suffixes)]}"
   count             = var.compute_subnet_count
   # .1 is public, .2 and .3 are slurm
   cidr_block = "172.32.${count.index + 4}.0/24"
