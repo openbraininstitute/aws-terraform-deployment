@@ -42,7 +42,7 @@ resource "aws_network_acl_rule" "deny_other_compute_subnets" {
   count          = var.compute_subnet_count * (var.compute_subnet_count - 1)
   network_acl_id = aws_network_acl.compute[count.index % var.compute_subnet_count].id
   protocol       = -1
-  rule_number    = 800 + count.index
+  rule_number    = 1000 + count.index
   rule_action    = "deny"
   cidr_block = aws_subnet.compute[
     floor(count.index / var.compute_subnet_count + (
@@ -63,7 +63,7 @@ resource "aws_network_acl_rule" "deny_other_compute_subnets_egress" {
   network_acl_id = aws_network_acl.compute[count.index % var.compute_subnet_count].id
   egress         = true
   protocol       = -1
-  rule_number    = 1000 + count.index
+  rule_number    = 2000 + count.index
   rule_action    = "deny"
   cidr_block = aws_subnet.compute[
     floor(count.index / var.compute_subnet_count + (
@@ -83,7 +83,7 @@ resource "aws_network_acl_rule" "allow_other_traffic_in_compute_subnets" {
   count          = var.compute_subnet_count
   network_acl_id = aws_network_acl.compute[count.index].id
   protocol       = -1
-  rule_number    = 900 + count.index
+  rule_number    = 4000 + count.index
   rule_action    = "allow"
   cidr_block     = "0.0.0.0/0"
   from_port      = -1
@@ -95,7 +95,7 @@ resource "aws_network_acl_rule" "allow_other_traffic_in_compute_subnets_egress" 
   network_acl_id = aws_network_acl.compute[count.index].id
   egress         = true
   protocol       = -1
-  rule_number    = 1100 + count.index
+  rule_number    = 4100 + count.index
   rule_action    = "allow"
   cidr_block     = "0.0.0.0/0"
   from_port      = -1
