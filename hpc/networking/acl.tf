@@ -1,4 +1,108 @@
 # ##############################################################################
+# Prevent the different compute subnets from talking to each other.
+# ##############################################################################
+
+resource "aws_network_acl" "compute" {
+  vpc_id     = var.pcluster_vpc_id
+  count      = var.compute_subnet_count
+  subnet_ids = [aws_subnet.compute[count.index].id]
+}
+
+# About this monstrosity
+#
+# count:
+# ------
+# We want an aws_network_acl for every compute network (var.compute_subnet_count)
+# Every aws_network_acl needs a rule per compute subnet _except_ itself (var.compute_subnet_count - 1)
+#
+# network_acl_id:
+# ---------------
+# modulo is a nice way to keep iterating through the different aws_network_acl objects
+#
+# cidr_block:
+# -----------
+# When writing a few variations of var.compute_subnet_count out in three columns (count.index, network_acl_id, aws_subnet.compute[index]), there's a pattern:
+# the network index gets a +1 for the first line of the first iteration, for the first two lines of the second iteration, etc
+# rephrased: the last +1 happens every time count.index / network_acl_id is exactly var.compute_subnet_count + 1 (as well as for the first entry - but don't divide by 0!)
+#
+# since terraform logical operators don't short-circuit, doing something like `count.index == 0 || (count.index / network_acl_id)` is impossible (don't divide by 0!)
+# so we complicate things...
+# `count.index % var.compute_subnet_count` is the compute subnet index
+#
+# count.index / var.compute_subnet_count tells us which iteration we're in (0-based) and so which compute subnet we want to block
+# the rest of it is to see whether we should increment that by an additional +1:
+#
+# if count.index <= var.compute_subnet_count AND compute_subnet_index == 0
+# OR
+# if count.index / (compute_subnet_index or 1 if it's 0) >= var.compute_subnet_count + 1
+# THEN
+# add one to the compute_subnet_index we want to block
+
+resource "aws_network_acl_rule" "deny_other_compute_subnets" {
+  count          = var.compute_subnet_count * (var.compute_subnet_count - 1)
+  network_acl_id = aws_network_acl.compute[count.index % var.compute_subnet_count].id
+  protocol       = -1
+  rule_number    = 800 + count.index
+  rule_action    = "deny"
+  cidr_block = aws_subnet.compute[
+    floor(count.index / var.compute_subnet_count + (
+      (
+        ((count.index <= (var.compute_subnet_count) && (count.index % var.compute_subnet_count) == 0) ||
+          ((count.index / ((count.index % var.compute_subnet_count) == 0 ? 1 : count.index % var.compute_subnet_count)) >= (var.compute_subnet_count + 1))
+        )
+      ) ? 1 : 0)
+    )
+  ].cidr_block
+  from_port = -1
+  to_port   = -1
+}
+
+# now do it again, but for egress
+resource "aws_network_acl_rule" "deny_other_compute_subnets_egress" {
+  count          = var.compute_subnet_count * (var.compute_subnet_count - 1)
+  network_acl_id = aws_network_acl.compute[count.index % var.compute_subnet_count].id
+  egress         = true
+  protocol       = -1
+  rule_number    = 1000 + count.index
+  rule_action    = "deny"
+  cidr_block = aws_subnet.compute[
+    floor(count.index / var.compute_subnet_count + (
+      (
+        ((count.index <= (var.compute_subnet_count) && (count.index % var.compute_subnet_count) == 0) ||
+          ((count.index / ((count.index % var.compute_subnet_count) == 0 ? 1 : count.index % var.compute_subnet_count)) >= (var.compute_subnet_count + 1))
+        )
+      ) ? 1 : 0)
+    )
+  ].cidr_block
+  from_port = -1
+  to_port   = -1
+}
+
+# Refine as needed, for now we just want to block traffic between compute subnets
+resource "aws_network_acl_rule" "allow_other_traffic_in_compute_subnets" {
+  count          = var.compute_subnet_count
+  network_acl_id = aws_network_acl.compute[count.index].id
+  protocol       = -1
+  rule_number    = 900 + count.index
+  rule_action    = "allow"
+  cidr_block     = "0.0.0.0/0"
+  from_port      = -1
+  to_port        = -1
+}
+
+resource "aws_network_acl_rule" "allow_other_traffic_in_compute_subnets_egress" {
+  count          = var.compute_subnet_count
+  network_acl_id = aws_network_acl.compute[count.index].id
+  egress         = true
+  protocol       = -1
+  rule_number    = 1100 + count.index
+  rule_action    = "allow"
+  cidr_block     = "0.0.0.0/0"
+  from_port      = -1
+  to_port        = -1
+}
+
+# ##############################################################################
 # A set of example Network ACLs - these were tested and work
 # ##############################################################################
 #

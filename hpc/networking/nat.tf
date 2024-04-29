@@ -15,7 +15,7 @@ resource "aws_nat_gateway" "compute_gw" {
 }
 
 resource "aws_route" "compute_nat" {
-  route_table_id         = aws_route_table.compute.id
+  route_table_id         = aws_route_table.compute[count.index].id
   count                  = var.create_compute_instances && var.compute_nat_access ? 1 : 0
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = one(aws_nat_gateway.compute_gw[*].id)
