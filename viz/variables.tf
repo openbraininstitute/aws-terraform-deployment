@@ -74,13 +74,6 @@ variable "viz_brayns_docker_image_url" {
   sensitive   = false
 }
 
-variable "viz_bcsb_docker_image_url" {
-  type        = string
-  default     = "bluebrain/spackah-bcsb:2.1.2"
-  description = "Docker image for BCSB service"
-  sensitive   = false
-}
-
 ## VIZ PostgreSQL ###
 
 variable "viz_postgresql_database_port" {

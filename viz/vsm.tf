@@ -88,24 +88,36 @@ resource "aws_ecs_task_definition" "viz_vsm" {
           value = aws_db_instance.viz.address
         },
         {
-          name  = "VSM_DB_USERNAME"
-          value = var.viz_postgresql_database_username
-        },
-        {
           name  = "VSM_DB_NAME"
           value = var.viz_postgresql_database_name
+        },
+        {
+          name  = "VSM_DB_USERNAME"
+          value = var.viz_postgresql_database_username
         },
         {
           name  = "VSM_DB_PASSWORD"
           value = data.aws_secretsmanager_secret_version.viz_database_password.secret_string
         },
         {
+          name  = "VSM_RECREATE_DB"
+          value = "1"
+        },
+        {
           name  = "VSM_JOB_ALLOCATOR"
           value = "AWS"
         },
         {
-          name  = "VSM_AWS_HOST"
-          value = var.viz_brayns_hostname
+          name  = "VSM_JOB_DURATION_SECONDS"
+          value = "28800"
+        },
+        {
+          name  = "VSM_JOB_CLEANUP_PERIOD_SECONDS"
+          value = "10"
+        },
+        {
+          name  = "VSM_USE_KEYCLOAK"
+          value = var.viz_enable_sandbox ? "0" : "1"
         },
         {
           name  = "VSM_KEYCLOAK_URL"
@@ -128,12 +140,12 @@ resource "aws_ecs_task_definition" "viz_vsm" {
           value = aws_subnet.viz.id
         },
         {
-          name  = "VSM_BRAYNS_TASK_CAPACITY_PROVIDER"
-          value = aws_ecs_capacity_provider.viz.name
-        },
-        {
           name  = "VSM_BRAYNS_TASK_CLUSTER"
           value = aws_ecs_cluster.viz.name
+        },
+        {
+          name  = "VSM_BRAYNS_TASK_CAPACITY_PROVIDER"
+          value = aws_ecs_capacity_provider.viz.name
         },
         {
           name  = "VSM_BUCKET_NAME"
@@ -146,10 +158,6 @@ resource "aws_ecs_task_definition" "viz_vsm" {
         {
           name  = "PYTHONUNBUFFERED"
           value = "TRUE"
-        },
-        {
-          name  = "VSM_USE_KEYCLOAK"
-          value = var.viz_enable_sandbox ? "0" : "1"
         }
       ]
       mountPoints = []

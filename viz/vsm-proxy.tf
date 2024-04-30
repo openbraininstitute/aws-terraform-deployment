@@ -89,32 +89,16 @@ resource "aws_ecs_task_definition" "viz_vsm_proxy" {
           value = aws_db_instance.viz.address
         },
         {
-          name  = "VSM_DB_USERNAME"
-          value = var.viz_postgresql_database_username
-        },
-        {
           name  = "VSM_DB_NAME"
           value = var.viz_postgresql_database_name
         },
         {
+          name  = "VSM_DB_USERNAME"
+          value = var.viz_postgresql_database_username
+        },
+        {
           name  = "VSM_DB_PASSWORD"
           value = data.aws_secretsmanager_secret_version.viz_database_password.secret_string
-        },
-        {
-          name  = "VSM_JOB_ALLOCATOR"
-          value = "AWS"
-        },
-        {
-          name  = "VSM_AWS_HOST"
-          value = var.viz_brayns_hostname
-        },
-        {
-          name  = "VSM_KEYCLOAK_URL"
-          value = "https://sboauth.epfl.ch/auth/realms/SBO/protocol/openid-connect/userinfo"
-        },
-        {
-          name  = "VSM_KEYCLOAK_HOST"
-          value = "sboauth.epfl.ch"
         },
         {
           name  = "PYTHONUNBUFFERED"

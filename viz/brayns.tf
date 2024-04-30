@@ -42,7 +42,7 @@ resource "aws_ecs_task_definition" "viz_brayns" {
         "--uri",
         "0.0.0.0:5000",
         "--log-level",
-        "info",
+        "debug",
         "--plugin",
         "braynsCircuitExplorer",
         "--plugin",
@@ -52,7 +52,7 @@ resource "aws_ecs_task_definition" "viz_brayns" {
         interval = 30
         retries  = 3
         timeout  = 5
-        command  = ["CMD-SHELL", "exit 0"]
+        command  = ["CMD-SHELL", "/usr/bin/curl localhost:5000/healthz || exit 1"]
       }
       logConfiguration = {
         logDriver = "awslogs"
@@ -75,53 +75,7 @@ resource "aws_ecs_task_definition" "viz_brayns" {
             "permissions"   = null
           }
       ] }
-    },
-    {
-      memory      = 256
-      cpu         = 512
-      networkMode = "awsvpc"
-      family      = "viz_bcsb"
-      essential   = true
-      image       = var.viz_bcsb_docker_image_url
-      name        = "viz_bcsb"
-      repositoryCredentials = {
-        credentialsParameter = data.aws_secretsmanager_secret.dockerhub_creds.arn
-      }
-      environment = []
-      mountPoints = []
-      volumesFrom = []
-      portMappings = [
-        {
-          hostPort      = 8000
-          containerPort = 8000
-          protocol      = "tcp"
-        }
-      ]
-      entrypoint = [
-        "/opt/view/bin/bcsb",
-        "--host",
-        "0.0.0.0",
-        "--port",
-        "8000",
-        "--log_level",
-        "INFO"
-      ]
-      healthcheck = {
-        interval = 30
-        retries  = 3
-        timeout  = 5
-        command  = ["CMD-SHELL", "exit 0"]
-      }
-      logConfiguration = {
-        logDriver = "awslogs"
-        options = {
-          awslogs-group         = var.viz_brayns_log_group_name
-          awslogs-region        = var.aws_region
-          awslogs-create-group  = "true"
-          awslogs-stream-prefix = "viz_bcsb"
-        }
-      }
-    },
+    }
   ])
   memory                   = 2560
   cpu                      = 2048
