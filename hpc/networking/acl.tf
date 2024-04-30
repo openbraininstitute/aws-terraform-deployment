@@ -10,6 +10,8 @@ resource "aws_network_acl" "compute" {
 
 # About this monstrosity
 #
+# Block "all compute subnets except myself"
+#
 # count:
 # ------
 # We want an aws_network_acl for every compute network (var.compute_subnet_count)
