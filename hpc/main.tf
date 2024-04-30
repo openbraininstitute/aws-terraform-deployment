@@ -28,6 +28,7 @@ module "networking" {
   source = "./networking"
 
   pcluster_vpc_id           = module.vpc.pcluster_vpc_id
+  obp_vpc_id                = var.obp_vpc_id
   vpc_peering_connection_id = module.vpc.peering_connection_id
   aws_region                = var.aws_region
   create_compute_instances  = var.create_compute_instances

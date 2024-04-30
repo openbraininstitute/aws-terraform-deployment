@@ -6,11 +6,11 @@
 #
 #       search for TODO-SLURMDB throughout the HPC module and in the repo root's main.tf
 #
-# resource "aws_db_subnet_group" "slurm_db_subnet_group" {
-#   name       = "slurm-db-subnet-group"
-#   count      = var.create_slurmdb ? 1 : 0
-#   subnet_ids = var.slurm_db_subnets_ids
-# }
+resource "aws_db_subnet_group" "slurm_db_subnet_group" {
+  name       = "slurm-db-subnet-group"
+  count      = var.create_slurmdb ? 1 : 0
+  subnet_ids = var.slurm_db_subnets_ids
+}
 
 # Data source to retrieve the password from AWS Secrets Manager
 data "aws_secretsmanager_secret_version" "slurm_database_password" {
@@ -27,8 +27,7 @@ resource "aws_db_instance" "slurmdb" {
   allocated_storage       = 5     # in gigabytes
   backup_retention_period = 2     # in days
 
-  # TODO-SLURMDB: re-enable
-  # db_subnet_group_name = one(aws_db_subnet_group.slurm_db_subnet_group[*].name)
+  db_subnet_group_name = one(aws_db_subnet_group.slurm_db_subnet_group[*].name)
 
   engine         = "mysql"
   engine_version = "8.0.35"

@@ -79,27 +79,74 @@ resource "aws_network_acl_rule" "deny_other_compute_subnets_egress" {
 }
 
 # Refine as needed, for now we just want to block traffic between compute subnets
-resource "aws_network_acl_rule" "allow_other_traffic_in_compute_subnets" {
+resource "aws_network_acl_rule" "allow_other_traffic_from_pcluster_vpc" {
   count          = var.compute_subnet_count
   network_acl_id = aws_network_acl.compute[count.index].id
   protocol       = -1
   rule_number    = 4000 + count.index
   rule_action    = "allow"
-  cidr_block     = "0.0.0.0/0"
+  cidr_block     = data.aws_vpc.pcluster_vpc.cidr_block
   from_port      = -1
   to_port        = -1
 }
 
-resource "aws_network_acl_rule" "allow_other_traffic_in_compute_subnets_egress" {
+resource "aws_network_acl_rule" "allow_other_traffic_to_pcluster_vpc" {
   count          = var.compute_subnet_count
   network_acl_id = aws_network_acl.compute[count.index].id
   egress         = true
   protocol       = -1
   rule_number    = 4100 + count.index
   rule_action    = "allow"
-  cidr_block     = "0.0.0.0/0"
+  cidr_block     = data.aws_vpc.pcluster_vpc.cidr_block
   from_port      = -1
   to_port        = -1
+}
+
+resource "aws_network_acl_rule" "allow_other_traffic_from_obp_vpc" {
+  count          = var.compute_subnet_count
+  network_acl_id = aws_network_acl.compute[count.index].id
+  protocol       = -1
+  rule_number    = 4200 + count.index
+  rule_action    = "allow"
+  cidr_block     = data.aws_vpc.obp_vpc.cidr_block
+  from_port      = -1
+  to_port        = -1
+}
+
+resource "aws_network_acl_rule" "allow_other_traffic_to_obp_vpc" {
+  count          = var.compute_subnet_count
+  network_acl_id = aws_network_acl.compute[count.index].id
+  egress         = true
+  protocol       = -1
+  rule_number    = 4300 + count.index
+  rule_action    = "allow"
+  cidr_block     = data.aws_vpc.obp_vpc.cidr_block
+  from_port      = -1
+  to_port        = -1
+}
+
+resource "aws_network_acl_rule" "allow_return_traffic_in" {
+  count          = var.compute_subnet_count
+  network_acl_id = aws_network_acl.compute[count.index].id
+  protocol       = "tcp"
+  rule_number    = 4400 + count.index
+  rule_action    = "allow"
+  cidr_block     = "0.0.0.0/0"
+  from_port      = 1024
+  to_port        = 65535
+}
+
+# for S3 traffic
+resource "aws_network_acl_rule" "allow_https_traffic_out" {
+  count          = var.compute_subnet_count
+  network_acl_id = aws_network_acl.compute[count.index].id
+  egress         = true
+  protocol       = "tcp"
+  rule_number    = 4500 + count.index
+  rule_action    = "allow"
+  cidr_block     = "0.0.0.0/0"
+  from_port      = 443
+  to_port        = 443
 }
 
 # ##############################################################################

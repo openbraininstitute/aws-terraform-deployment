@@ -1,3 +1,8 @@
+variable "obp_vpc_id" {
+  type        = string
+  description = "ID of the existing VPC"
+}
+
 variable "pcluster_vpc_id" {
   type        = string
   description = "ID of the VPC created in the VPC module"
