@@ -1,3 +1,6 @@
+module "dockerhub_secret" {
+  source = "./dockerhub_secret"
+}
 module "ml" {
   source = "./ml"
 
@@ -8,7 +11,7 @@ module "ml" {
   vpc_cidr_block                 = data.terraform_remote_state.common.outputs.vpc_cidr_block
   route_table_private_subnets_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
 
-  dockerhub_credentials_arn = data.terraform_remote_state.common.outputs.dockerhub_credentials_arn
+  dockerhub_credentials_arn = module.dockerhub_secret.dockerhub_credentials_arn
   backend_image_url         = "bluebrain/bbs-pipeline:v0.18.1"
   etl_image_url             = "bluebrain/bbs-etl:parse-v1.8.3"
   grobid_image_url          = "lfoppiano/grobid:0.8.0"
@@ -30,8 +33,8 @@ module "nexus" {
   aws_account_id = data.aws_caller_identity.current.account_id
   vpc_id         = data.terraform_remote_state.common.outputs.vpc_id
 
-  dockerhub_access_iam_policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
-  dockerhub_credentials_arn       = data.terraform_remote_state.common.outputs.dockerhub_credentials_arn
+  dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
+  dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
 
   domain_zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
   nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
@@ -50,8 +53,8 @@ module "viz" {
   aws_region = var.aws_region
   vpc_id     = data.terraform_remote_state.common.outputs.vpc_id
 
-  dockerhub_access_iam_policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
-  secret_dockerhub_arn            = data.terraform_remote_state.common.outputs.dockerhub_credentials_arn
+  dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
+  secret_dockerhub_arn            = module.dockerhub_secret.dockerhub_credentials_arn
 
   domain_zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
   nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
@@ -69,8 +72,8 @@ module "cells_svc" {
   vpc_id         = data.terraform_remote_state.common.outputs.vpc_id
   vpc_cidr_block = data.terraform_remote_state.common.outputs.vpc_cidr_block
 
-  dockerhub_access_iam_policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
-  dockerhub_credentials_arn       = data.terraform_remote_state.common.outputs.dockerhub_credentials_arn
+  dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
+  dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
 
   domain_zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
 
@@ -91,7 +94,7 @@ module "nse" {
   aws_region                = var.aws_region
   account_id                = data.aws_caller_identity.current.account_id
   vpc_id                    = data.terraform_remote_state.common.outputs.vpc_id
-  dockerhub_credentials_arn = data.terraform_remote_state.common.outputs.dockerhub_credentials_arn
+  dockerhub_credentials_arn = module.dockerhub_secret.dockerhub_credentials_arn
   amazon_linux_ecs_ami_id   = data.aws_ami.amazon_linux_2_ecs.id
   route_table_id            = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
 

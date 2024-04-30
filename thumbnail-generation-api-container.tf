@@ -62,7 +62,7 @@ resource "aws_iam_role" "thumbnail_generation_api_ecs_task_role" {
 
 resource "aws_iam_role_policy_attachment" "thumbnail_generation_api_ecs_task_role_dockerhub_policy_attachment" {
   role       = aws_iam_role.thumbnail_generation_api_ecs_task_execution_role.name
-  policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
+  policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
 }
 
 resource "aws_security_group" "thumbnail_generation_api_sec_group" {
@@ -145,7 +145,7 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
         name  = "thumbnail-generation-api-container",
         image = var.thumbnail_generation_api_docker_image_url,
         repositoryCredentials = {
-          credentialsParameter = data.terraform_remote_state.common.outputs.dockerhub_credentials_arn
+          credentialsParameter = module.dockerhub_secret.dockerhub_credentials_arn
         },
         essential = true,
         portMappings = [

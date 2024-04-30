@@ -52,6 +52,7 @@ tfsec:
   stage: validate
   script:
     - cd "${TF_ROOT}"
+    - rm -f import-statements.tf # tfsec can't handle the new import statements
     - /usr/bin/tfsec
   allow_failure: false
   rules:

@@ -112,7 +112,7 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
       name        = "virtual_lab_manager"
 
       repositoryCredentials = {
-        credentialsParameter = data.terraform_remote_state.common.outputs.dockerhub_credentials_arn
+        credentialsParameter = module.dockerhub_secret.dockerhub_credentials_arn
       }
 
       portMappings = [
@@ -351,7 +351,7 @@ resource "aws_iam_role" "ecs_virtual_lab_manager_task_role" {
 
 resource "aws_iam_role_policy_attachment" "ecs_virtual_lab_manager_task_role_dockerhub_policy_attachment" {
   role       = aws_iam_role.ecs_virtual_lab_manager_task_execution_role[0].name
-  policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
+  policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
 
   count = var.virtual_lab_manager_ecs_number_of_containers > 0 ? 1 : 0
 }

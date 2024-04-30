@@ -111,7 +111,7 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
       image       = var.core_webapp_docker_image_url
       name        = "core_webapp"
       repositoryCredentials = {
-        credentialsParameter = data.terraform_remote_state.common.outputs.dockerhub_credentials_arn
+        credentialsParameter = module.dockerhub_secret.dockerhub_credentials_arn
       }
       portMappings = [
         {
@@ -274,7 +274,7 @@ EOF
 resource "aws_iam_role_policy_attachment" "ecs_core_webapp_task_role_dockerhub_policy_attachment" {
   count      = var.core_webapp_ecs_number_of_containers > 0 ? 1 : 0
   role       = aws_iam_role.ecs_core_webapp_task_execution_role[0].name
-  policy_arn = data.terraform_remote_state.common.outputs.dockerhub_access_iam_policy_arn
+  policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_core_webapp_secrets_access_policy_attachment" {

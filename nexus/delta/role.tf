@@ -32,7 +32,7 @@ resource "aws_iam_policy" "nexus_delta_bucket_access" {
   description = "A policy that grants access to the delta S3 bucket"
 
   policy = jsonencode({
-    Version   = "2012-10-17"
+    Version = "2012-10-17"
     Statement = [
       {
         Action = [
