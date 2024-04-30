@@ -84,5 +84,6 @@ module "efs" {
   compute_efs_sg_id        = module.security.compute_efs_sg_id
   create_compute_instances = var.create_compute_instances
   compute_subnet_ids       = module.networking.compute_subnet_ids
+  compute_subnet_efs_ids   = module.networking.compute_subnet_efs_ids
   av_zone_suffixes         = var.av_zone_suffixes
 }

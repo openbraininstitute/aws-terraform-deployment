@@ -7,8 +7,9 @@ resource "aws_vpc_endpoint" "cloudwatch" {
   service_name        = "com.amazonaws.us-east-1.monitoring"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
-  subnet_ids          = slice(local.aws_subnet_compute_ids, 0, min(length(var.av_zone_suffixes), length(local.aws_subnet_compute_ids)))
-  security_group_ids  = var.security_groups
+  # all of the endpoint_subnet ids - they're guaranteed to be in different availability zones, no need to get fancy
+  subnet_ids         = local.aws_subnet_compute_endpoints_ids
+  security_group_ids = var.security_groups
   tags = {
     Name = "cloudwatch endpoint"
   }
@@ -18,7 +19,7 @@ resource "aws_vpc_endpoint" "cloudformation" {
   service_name        = "com.amazonaws.us-east-1.cloudformation"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
-  subnet_ids          = slice(local.aws_subnet_compute_ids, 0, min(length(var.av_zone_suffixes), length(local.aws_subnet_compute_ids)))
+  subnet_ids          = local.aws_subnet_compute_endpoints_ids
   security_group_ids  = var.security_groups
   tags = {
     Name = "cloudformation endpoint"
@@ -29,7 +30,7 @@ resource "aws_vpc_endpoint" "ec2" {
   service_name        = "com.amazonaws.us-east-1.ec2"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
-  subnet_ids          = slice(local.aws_subnet_compute_ids, 0, min(length(var.av_zone_suffixes), length(local.aws_subnet_compute_ids)))
+  subnet_ids          = local.aws_subnet_compute_endpoints_ids
   security_group_ids  = var.security_groups
   tags = {
     Name = "ec2 endpoint"

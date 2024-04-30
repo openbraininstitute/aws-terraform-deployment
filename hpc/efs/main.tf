@@ -13,7 +13,7 @@ resource "aws_efs_file_system" "compute_efs" {
 resource "aws_efs_mount_target" "compute_efs" {
   file_system_id  = aws_efs_file_system.compute_efs.id
   count           = length(var.av_zone_suffixes)
-  subnet_id       = var.compute_subnet_ids[count.index]
+  subnet_id       = var.compute_subnet_efs_ids[count.index]
   security_groups = [var.compute_efs_sg_id]
 }
 

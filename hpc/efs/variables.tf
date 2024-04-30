@@ -21,3 +21,7 @@ variable "compute_subnet_ids" {
 variable "av_zone_suffixes" {
   type = list(string)
 }
+
+variable "compute_subnet_efs_ids" {
+  type = list(string)
+}

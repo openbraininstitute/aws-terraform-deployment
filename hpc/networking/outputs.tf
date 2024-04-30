@@ -13,3 +13,7 @@ output "compute_subnet_ids" {
 output "compute_subnet_public_id" {
   value = local.aws_subnet_public_id
 }
+
+output "compute_subnet_efs_ids" {
+  value = local.aws_subnet_compute_efs_ids
+}
