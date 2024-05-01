@@ -133,7 +133,7 @@ resource "aws_network_acl_rule" "allow_return_traffic_in" {
   protocol       = "tcp"
   rule_number    = 4400 + count.index
   rule_action    = "allow"
-  cidr_block     = "0.0.0.0/0"
+  cidr_block     = "0.0.0.0/0" #tfsec:ignore:aws-ec2-no-public-ingress-acl
   from_port      = 1024
   to_port        = 65535
 }
