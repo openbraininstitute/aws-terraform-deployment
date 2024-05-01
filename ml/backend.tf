@@ -43,7 +43,7 @@ module "ml_ecs_service_backend" {
         },
         {
           name  = "BBS_DB__INDEX_PARAGRAPHS"
-          value = "pmc_paragraphs"
+          value = "pmc_paragraphs_v2"
         },
         {
           name  = "BBS_DB__HOST"
