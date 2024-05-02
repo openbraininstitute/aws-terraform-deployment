@@ -17,3 +17,8 @@ resource "aws_s3_bucket_public_access_block" "nexus_delta" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
+resource "aws_s3_bucket_metric" "snexus_delta_metrics" {
+  bucket = aws_s3_bucket.nexus_delta.id
+  name   = "EntireBucket"
+}

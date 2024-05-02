@@ -81,6 +81,11 @@ resource "aws_s3_bucket" "static_storage" {
   bucket = local.domain
 }
 
+resource "aws_s3_bucket_metric" "static_storage_metrics" {
+  bucket = aws_s3_bucket.static_storage.id
+  name   = "EntireBucket"
+}
+
 #tfsec:ignore:aws-s3-no-public-buckets
 #tfsec:ignore:aws-s3-block-public-policy
 resource "aws_s3_bucket_public_access_block" "static_storage" {

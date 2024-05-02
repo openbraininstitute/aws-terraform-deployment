@@ -24,3 +24,8 @@ resource "aws_s3_object" "object" {
   source = "${path.module}/ship.conf"
   etag   = filemd5("${path.module}/ship.conf")
 }
+
+resource "aws_s3_bucket_metric" "nexus_ship_metrics" {
+  bucket = aws_s3_bucket.nexus_ship.id
+  name   = "EntireBucket"
+}

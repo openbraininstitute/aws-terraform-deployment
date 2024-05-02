@@ -26,6 +26,11 @@ resource "aws_s3_bucket" "ml_paper_bucket" {
   tags = var.tags
 }
 
+resource "aws_s3_bucket_metric" "ml_paper_metrics" {
+  bucket = aws_s3_bucket.ml_paper_bucket.id
+  name   = "EntireBucket"
+}
+
 resource "aws_s3_bucket_public_access_block" "ml_sqs_s3_restriction" {
   bucket = aws_s3_bucket.ml_paper_bucket.id
 
