@@ -150,6 +150,7 @@ resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_e
       jsondecode(local.readonly_access_policy_statement_part1),
       jsondecode(local.readonly_access_policy_statement_part2),
       jsondecode(local.sbo_ecs_full_access_policy_statement),
+      jsondecode(local.pass_role_to_ecs_policy_statement),
     ]
   })
 
@@ -190,6 +191,21 @@ locals {
     ]
     Resource = "*"
   })
+
+  pass_role_to_ecs_policy_statement = jsonencode(
+    {
+      "Action" : "iam:PassRole",
+      "Effect" : "Allow",
+      "Resource" : [
+        "*"
+      ],
+      "Condition" : {
+        "StringLike" : {
+          "iam:PassedToService" : "ecs-tasks.amazonaws.com"
+        }
+      }
+    }
+  )
 
   sbo_full_ec2_access_us_east_2_policy = jsonencode({
     Action   = "ec2:*",
