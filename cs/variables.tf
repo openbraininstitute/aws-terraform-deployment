@@ -15,3 +15,18 @@ variable "route_table_id" {
 variable "db_instance_class" {
   type = string
 }
+
+variable "public_alb_listener" {
+  type = string
+}
+
+variable "primary_auth_hostname" {
+  type = string
+}
+variable "secondary_auth_hostname" {
+  type = string
+}
+
+variable "epfl_cidr" {
+  type = string
+}

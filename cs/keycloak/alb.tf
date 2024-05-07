@@ -1,28 +1,3 @@
-resource "aws_lb" "keycloak_lb" {
-  name               = "keycloak-lb"
-  internal           = false #tfsec:ignore:aws-elb-alb-not-public
-  load_balancer_type = "application"
-  subnets            = var.alb_subnets
-  security_groups    = var.security_groups
-  drop_invalid_header_fields = true
-
-  tags = {
-    Name = "Keycloak Load Balancer"
-  }
-}
-
-resource "aws_lb_listener" "keycloak" {
-  load_balancer_arn = aws_lb.keycloak_lb.arn
-  port              = 80
-  #ts:skip=AC_AWS_0491
-  protocol          = "HTTP" #tfsec:ignore:aws-elb-http-not-used
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.keycloak_target_group.arn
-  }
-}
-
 #  Configure ALB target group
 resource "aws_lb_target_group" "keycloak_target_group" {
   name        = "keycloak-target-group"
@@ -45,18 +20,29 @@ resource "aws_lb_target_group" "keycloak_target_group" {
   }
 }
 
-resource "aws_lb_listener_rule" "auth_path_rule" {
-  listener_arn = aws_lb_listener.keycloak.arn  
-  priority     = 100
-
+resource "aws_lb_listener_rule" "keycloak_https" {
+  listener_arn = var.public_alb_listener 
+  priority     = 555
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.keycloak_target_group.arn  
+    target_group_arn = aws_lb_target_group.keycloak_target_group.arn
   }
-
+  condition {
+    host_header {
+      values = [var.primary_auth_hostname, var.secondary_auth_hostname]
+    }
+  }
   condition {
     path_pattern {
       values = ["/auth"]
     }
+  }
+  condition {
+    source_ip {
+      values = [var.epfl_cidr]
+    }
+  }
+  tags = {
+    SBO_Billing = "keycloak"
   }
 }

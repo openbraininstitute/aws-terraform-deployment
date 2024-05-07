@@ -13,10 +13,14 @@ module "coreservices_key" {
 }
 module "cs" {
   source = "./cs"
-  vpc_id            = data.terraform_remote_state.common.outputs.vpc_id
-  aws_region        = data.terraform_remote_state.common.outputs.aws_region
-  route_table_id    = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
-  db_instance_class = "db.t3.micro"
+  vpc_id                  = data.terraform_remote_state.common.outputs.vpc_id
+  aws_region              = data.terraform_remote_state.common.outputs.aws_region
+  route_table_id          = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  db_instance_class       = "db.t3.micro"
+  public_alb_listener     = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  primary_auth_hostname   = data.terraform_remote_state.common.outputs.primary_auth_hostname
+  secondary_auth_hostname = data.terraform_remote_state.common.outputs.secondary_auth_hostname
+  epfl_cidr = var.epfl_cidr
 }
  
 module "ml" {

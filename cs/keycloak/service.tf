@@ -6,13 +6,12 @@ resource "aws_ecs_service" "keycloak_service_terraform" {
   launch_type = "FARGATE"
   network_configuration {
    subnets         = var.private_subnets
-   security_groups = var.security_groups
+   security_groups = [aws_security_group.efs_sg.id]
   }
   load_balancer {
     target_group_arn = aws_lb_target_group.keycloak_target_group.arn
     container_name = "keycloak-container"
     container_port = 8081
   }
-  depends_on = [aws_lb_listener.keycloak]
 }
 

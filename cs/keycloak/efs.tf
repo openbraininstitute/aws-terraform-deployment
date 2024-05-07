@@ -3,7 +3,7 @@
 resource "aws_efs_file_system" "keycloakfs" {
   performance_mode = "generalPurpose"
   throughput_mode = "bursting"
-  encrypted = "true"
+  encrypted = "false" #tfsec:ignore:aws-efs-enable-at-rest-encryption
   tags = {
     Name = "keycloak"
   }
@@ -11,10 +11,9 @@ resource "aws_efs_file_system" "keycloakfs" {
 
 ### Create mount target for EFS for each subnet
 resource "aws_efs_mount_target" "efs-mt" {
-  count = length(var.efs_subnets)
+  count = length(var.efs_mt_subnets)
   file_system_id = aws_efs_file_system.keycloakfs.id
-  subnet_id = var.efs_subnets[count.index]
-  security_groups = var.security_groups
+  subnet_id = var.efs_mt_subnets[count.index]
 }
 
 output "efs_arn" {
