@@ -22,15 +22,15 @@ output "efs_arn" {
 
 ### Create S3 bucket to upload certs and conf files
 #tfsec:ignore:aws-s3-enable-bucket-encryption tfsec:ignore:aws-s3-encryption-customer-key tfsec:ignore:aws-s3-enable-bucket-logging tfsec:ignore:aws-s3-enable-versioning
-resource "aws_s3_bucket" "cs-keycloak-bucket" {
-  bucket = "cs-keycloak-bucket"
+resource "aws_s3_bucket" "core-services-keycloak" {
+  bucket = "core-services-keycloak"
   tags = {
-    Name        = "Keycloak bucket"
+    Name        = "CS Keycloak"
   }
 }
 
 resource "aws_s3_bucket_public_access_block" "example" {
-  bucket = aws_s3_bucket.cs-keycloak-bucket.id
+  bucket = aws_s3_bucket.core-services-keycloak.id
 
   block_public_acls       = false #tfsec:ignore:aws-s3-block-public-acls
   block_public_policy     = false #tfsec:ignore:aws-s3-block-public-policy
@@ -39,8 +39,8 @@ resource "aws_s3_bucket_public_access_block" "example" {
 }
 
 
-resource "aws_datasync_location_s3" "cs-keycloak-bucket" {
-  s3_bucket_arn = aws_s3_bucket.cs-keycloak-bucket.arn
+resource "aws_datasync_location_s3" "core-services-keycloak" {
+  s3_bucket_arn = aws_s3_bucket.core-services-keycloak.arn
   subdirectory  = "/"
   s3_config {
     bucket_access_role_arn = aws_iam_role.datasync_s3_role.arn
@@ -58,7 +58,7 @@ resource "aws_datasync_location_efs" "datasync_destination_location" {
 resource "aws_datasync_task" "keycloak_s3_to_efs" {
   destination_location_arn = aws_datasync_location_efs.datasync_destination_location.arn
   name                     = "keycloak_s3_to_efs"
-  source_location_arn      = aws_datasync_location_s3.cs-keycloak-bucket.arn
+  source_location_arn      = aws_datasync_location_s3.core-services-keycloak.arn
   options {
     bytes_per_second = -1
   }
