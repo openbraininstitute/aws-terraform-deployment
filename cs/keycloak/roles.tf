@@ -29,10 +29,10 @@ resource "aws_iam_policy" "datasync_s3_policy" {
           "s3:ListBucket",
           "s3:ListBucketMultipartUploads"
         ],
-        "Resource": "arn:aws:s3:::cs-keycloak-bucket",
+        "Resource": "arn:aws:s3:::core-services-keycloak",
         "Condition": {
           "StringEquals": {
-            "aws:ResourceAccount": "992382665735"
+            "aws:ResourceAccount": "671250183987"
           }
         }
       },
@@ -50,10 +50,10 @@ resource "aws_iam_policy" "datasync_s3_policy" {
           "s3:PutObject",
           "s3:PutObjectTagging"
         ],
-        "Resource": "arn:aws:s3:::cs-keycloak-bucket/*",
+        "Resource": "arn:aws:s3:::core-services-keycloak/*",
         "Condition": {
           "StringEquals": {
-            "aws:ResourceAccount": "992382665735"
+            "aws:ResourceAccount": "671250183987"
           }
         }
       }
