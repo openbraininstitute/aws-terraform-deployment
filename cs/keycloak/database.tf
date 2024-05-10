@@ -13,19 +13,20 @@ resource "aws_db_subnet_group" "keycloak_db_subnet_group" {
 resource "aws_db_instance" "postgres" {
   performance_insights_enabled = true
   deletion_protection     = false #tfsec:ignore:AVD-AWS-0177
-  storage_encrypted     = false 
-  identifier            = "keycloak-db"
-  allocated_storage     = 20
-  storage_type          = "gp2"
-  engine                = "postgres"
-  engine_version        = "14"
-  instance_class        = var.db_instance_class
-  db_name               = "keycloak_db"
-  username              = "psqladmin"
-  password              = "postgresql"  # Change to your desired password
-  publicly_accessible   = false
-  multi_az              = true
-  db_subnet_group_name  = aws_db_subnet_group.keycloak_db_subnet_group.name
+  storage_encrypted      = false 
+  identifier             = "keycloak-db"
+  allocated_storage      = 20
+  storage_type           = "gp2"
+  engine                 = "postgres"
+  engine_version         = "14"
+  instance_class         = var.db_instance_class
+  db_name                = "keycloak_db"
+  username               = "psqladmin"
+  password               = "postgresql"  # Change to your desired password
+  publicly_accessible    = false
+  multi_az               = true
+  vpc_security_group_ids = ["keycloak_db_sg"]
+  db_subnet_group_name   = aws_db_subnet_group.keycloak_db_subnet_group.name
   tags = {
     Name = "keycloak-db"
   }

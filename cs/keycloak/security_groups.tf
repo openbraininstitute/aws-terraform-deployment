@@ -21,3 +21,27 @@ resource "aws_security_group" "efs_sg" {
     cidr_blocks     = ["0.0.0.0/0"] #tfsec:ignore:aws-vpc-no-public-egress-sgr
   }
 }
+
+resource "aws_security_group" "main_sg" {
+  vpc_id = var.vpc_id
+
+  name        = "keycloak_db_sg"
+  description = "main secruity group for keycloak db"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "main_subnet_ingress" {
+  security_group_id = aws_security_group.main_sg.id
+  description       = "Allow everything incoming from the VPC"
+  ip_protocol       = -1
+  cidr_ipv4         = "10.0.0.0/16"
+  from_port         = -1
+  to_port           = -1
+}
+resource "aws_vpc_security_group_egress_rule" "main_subnet_egress" {
+  security_group_id = aws_security_group.main_sg.id
+  description       = "Allow everything outgoing"
+  ip_protocol       = -1
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = -1
+  to_port           = -1
+}
