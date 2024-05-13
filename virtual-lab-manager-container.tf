@@ -234,7 +234,7 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         },
         {
           name      = "STRIPE_SECRET_KEY"
-          valueFrom = "${var.virtual_lab_manager_secrets_arn}:STRIPE_SECRET_KEY::"
+          valueFrom = "${var.virtual_lab_manager_secrets_arn}:TEST_STRIPE_SECRET_KEY::"
         },
         {
           name      = "TEST_STRIPE_SECRET_KEY"
