@@ -80,7 +80,7 @@ resource "aws_lb_listener_rule" "core_webapp" {
 
   condition {
     source_ip {
-      values = [var.epfl_cidr]
+      values = [var.epfl_cidr, data.terraform_remote_state.common.outputs.bbpproxy_cidr]
     }
   }
 
@@ -115,7 +115,7 @@ resource "aws_lb_listener_rule" "core_webapp_redirect" {
 
   condition {
     source_ip {
-      values = [var.epfl_cidr]
+      values = [var.epfl_cidr, data.terraform_remote_state.common.outputs.bbpproxy_cidr]
     }
   }
 
@@ -141,7 +141,7 @@ resource "aws_lb_listener_rule" "core_webapp_poc" {
 
   condition {
     source_ip {
-      values = [var.epfl_cidr]
+      values = [var.epfl_cidr, data.terraform_remote_state.common.outputs.bbpproxy_cidr]
     }
   }
 
