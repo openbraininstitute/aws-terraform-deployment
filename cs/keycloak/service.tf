@@ -6,7 +6,7 @@ resource "aws_ecs_service" "keycloak_service_terraform" {
   launch_type = "FARGATE"
   network_configuration {
    subnets         = var.private_subnets
-   security_groups = [aws_security_group.efs_sg.id]
+   security_groups = [aws_security_group.main_sg.id]
   }
   load_balancer {
     target_group_arn = aws_lb_target_group.keycloak_target_group.arn
