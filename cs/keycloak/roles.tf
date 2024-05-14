@@ -14,6 +14,25 @@ resource "aws_iam_role" "datasync_s3_role" {
   })
 }
 
+resource "aws_iam_policy" "ecsTaskLogs" {
+  name        = "ecsTaskLogs"
+  description = "Allows ECS tasks to create log streams and log groups in CloudWatch Logs"
+
+  policy = jsonencode({
+    Version = "2012-10-17" #tfsec:ignore:aws-iam-no-policy-wildcards
+    Statement = [
+      {
+        Effect    = "Allow"
+        Action    = [
+          "logs:CreateLogStream",
+          "logs:CreateLogGroup"
+        ]
+        Resource  = "arn:aws:logs:us-east-1:671250183987:log-group:*" 
+      }
+    ]
+  })
+}
+
 resource "aws_iam_policy" "datasync_s3_policy" {
   name        = "datasync-s3-policy"
   description = "Policy for DataSync to access S3 bucket"
@@ -87,7 +106,13 @@ EOF
 
 
 
-#### We need to attach both policies to the role task_execution_role. The same role should execute the task and fetch secrets from secret manager (db password)
+#### We need to attach following policies to the role task_execution_role. The same role should execute the task and fetch secrets from secret manager (db password)
+
+resource "aws_iam_policy_attachment" "ecs_task_execution_role_attachment_logs" {
+  name       = "ecs-task-execution-role-attachment-logs"
+  roles      = [aws_iam_role.ecs_task_execution_role.name]
+  policy_arn = aws_iam_policy.ecsTaskLogs.arn
+}
 
 resource "aws_iam_policy_attachment" "ecs_task_execution_role_attachment" {
   name       = "ecs-task-execution-role-attachment"
