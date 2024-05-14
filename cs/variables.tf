@@ -30,3 +30,7 @@ variable "secondary_auth_hostname" {
 variable "epfl_cidr" {
   type = string
 }
+
+variable "bbpproxy_cidr" {
+  type = string
+}

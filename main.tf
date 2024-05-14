@@ -20,7 +20,8 @@ module "cs" {
   public_alb_listener     = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
   primary_auth_hostname   = data.terraform_remote_state.common.outputs.primary_auth_hostname
   secondary_auth_hostname = data.terraform_remote_state.common.outputs.secondary_auth_hostname
-  epfl_cidr = var.epfl_cidr
+  epfl_cidr               = var.epfl_cidr
+  bbpproxy_cidr           = data.terraform_remote_state.common.outputs.bbpproxy_cidr
 }
  
 module "ml" {

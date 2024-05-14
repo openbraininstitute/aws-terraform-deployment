@@ -12,6 +12,10 @@ variable "epfl_cidr" {
   type = string
 }
 
+variable "bbpproxy_cidr" {
+  type = string
+}
+
 variable "efs_mt_subnets" {
   type = list(string)
 }

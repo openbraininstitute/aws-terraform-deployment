@@ -34,12 +34,12 @@ resource "aws_lb_listener_rule" "keycloak_https" {
   }
   condition {
     path_pattern {
-      values = ["/auth"]
+      values = ["/auth*"]
     }
   }
   condition {
     source_ip {
-      values = [var.epfl_cidr]
+      values = [var.epfl_cidr, var.bbpproxy_cidr]
     }
   }
   tags = {
