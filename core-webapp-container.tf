@@ -140,6 +140,10 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
           name  = "KEYCLOAK_ISSUER"
           value = "https://sboauth.epfl.ch/auth/realms/SBO"
         },
+        {
+          name      = "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"
+          valueFrom = "pk_test_51P6uAFFE4Bi50cLlatJIc0fUPsP0jQkaCCJ8TTkIYOOLIrLzxX1M9p1kVD11drNqsF9p7yiaumWJ8UHb3ptJJRXB00y3qjYReV"
+        },
       ]
       secrets = [
         {
@@ -153,7 +157,7 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
         {
           name      = "KEYCLOAK_CLIENT_ID"
           valueFrom = "${var.sbo_core_webapp_secrets_arn}:cognito_client_id::"
-        },
+        }
       ]
       logConfiguration = {
         logDriver = "awslogs"
