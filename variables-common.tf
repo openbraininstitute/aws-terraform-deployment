@@ -13,10 +13,10 @@ variable "epfl_cidr" {
   sensitive   = false
 }
 
-variable "saucelabsproxy_cidr" {
+variable "bbp_dmz_cidr" {
   type        = string
-  default     = "192.33.211.8/32"
-  description = "CIDR of the proxy for SauceLabs"
+  default     = "192.33.211.0/26"
+  description = "CIDR of the BBP DMZ, containing bbpproxy, bbpssh bastion host and the proxy for SauceLabs"
   sensitive   = false
 }
 
