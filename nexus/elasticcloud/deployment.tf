@@ -16,6 +16,9 @@ resource "ec_deployment" "deployment" {
       zone_count  = 1
       autoscaling = {}
     }
+    config = {
+      user_settings_yaml = file("${path.module}/es.yaml")
+    }
   }
 
   kibana = {
