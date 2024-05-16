@@ -39,7 +39,7 @@ resource "aws_lb_listener_rule" "keycloak_https" {
   }
   condition {
     source_ip {
-      values = [var.epfl_cidr, var.bbpproxy_cidr]
+      values = var.allowed_source_ip_cidr_blocks
     }
   }
   tags = {

@@ -12,7 +12,7 @@ module "keycloak" {
   public_alb_listener     = var.public_alb_listener
   primary_auth_hostname   = var.primary_auth_hostname
   secondary_auth_hostname = var.secondary_auth_hostname
-  epfl_cidr               = var.epfl_cidr
-  bbpproxy_cidr           = var.bbpproxy_cidr
   efs_mt_subnets          = module.networking.keycloak_private_subnets
+
+  allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
 }

@@ -27,10 +27,6 @@ variable "secondary_auth_hostname" {
   type = string
 }
 
-variable "epfl_cidr" {
-  type = string
-}
-
-variable "bbpproxy_cidr" {
-  type = string
+variable "allowed_source_ip_cidr_blocks" {
+  type = list(string)
 }

@@ -20,10 +20,10 @@ module "cs" {
   public_alb_listener     = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
   primary_auth_hostname   = data.terraform_remote_state.common.outputs.primary_auth_hostname
   secondary_auth_hostname = data.terraform_remote_state.common.outputs.secondary_auth_hostname
-  epfl_cidr               = var.epfl_cidr
-  bbpproxy_cidr           = data.terraform_remote_state.common.outputs.bbpproxy_cidr
+
+  allowed_source_ip_cidr_blocks = [var.epfl_cidr, data.terraform_remote_state.common.outputs.vpc_cidr_block, data.terraform_remote_state.common.outputs.bbpproxy_cidr, var.saucelabsproxy_cidr]
 }
- 
+
 module "ml" {
   source = "./ml"
 
@@ -62,7 +62,7 @@ module "nexus" {
   domain_zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
   nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
 
-  allowed_source_ip_cidr_blocks = [var.epfl_cidr, data.terraform_remote_state.common.outputs.vpc_cidr_block, data.terraform_remote_state.common.outputs.bbpproxy_cidr]
+  allowed_source_ip_cidr_blocks = [var.epfl_cidr, data.terraform_remote_state.common.outputs.vpc_cidr_block, data.terraform_remote_state.common.outputs.bbpproxy_cidr, var.saucelabsproxy_cidr]
 
   aws_lb_alb_dns_name           = data.terraform_remote_state.common.outputs.public_alb_dns_name
   aws_lb_listener_sbo_https_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn

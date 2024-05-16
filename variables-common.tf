@@ -13,6 +13,13 @@ variable "epfl_cidr" {
   sensitive   = false
 }
 
+variable "saucelabsproxy_cidr" {
+  type        = string
+  default     = "192.33.211.8/32"
+  description = "CIDR of the proxy for SauceLabs"
+  sensitive   = false
+}
+
 variable "bb5_login_nodes_cidr" {
   type        = string
   default     = "192.33.194.8/29"
