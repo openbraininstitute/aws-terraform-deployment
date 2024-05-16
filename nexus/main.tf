@@ -11,7 +11,7 @@ module "postgres" {
 
   subnets_ids              = module.networking.psql_subnets_ids
   subnet_security_group_id = module.networking.main_subnet_sg_id
-  instance_class           = "db.t3.small"
+  instance_class           = "db.t3.large"
 }
 
 module "elasticcloud" {
