@@ -33,20 +33,18 @@ variable "db_instance_class" {
 
 # This is the subnet where ECS service will be running
 variable "private_subnets" {
-  type = list(string)
+  type    = list(string)
   default = ["subnet-03e6e9df2641a2e47"]
 }
 
 # Currently using opened SG, the same one as used for efs (efs_sg) - hardcoded in service.tf, not in use
 variable "security_groups" {
-  type = list(string)
+  type    = list(string)
   default = ["sg-00d229cdb6f4e0dc6"]
 }
 
 #Subnet for datasync task - subnet-03e6e9df2641a2e47 - cs_subnet us-east-1a
 variable "datasync_subnet_arn" {
-  type = string
+  type    = string
   default = "arn:aws:ec2:us-east-1:671250183987:subnet/subnet-03e6e9df2641a2e47"
 }
-
-

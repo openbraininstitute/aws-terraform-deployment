@@ -2,8 +2,8 @@
 ### create efs volume to import keycloak.conf file and TLS certs
 resource "aws_efs_file_system" "keycloakfs" {
   performance_mode = "generalPurpose"
-  throughput_mode = "bursting"
-  encrypted = "false" #tfsec:ignore:aws-efs-enable-at-rest-encryption
+  throughput_mode  = "bursting"
+  encrypted        = "false" #tfsec:ignore:aws-efs-enable-at-rest-encryption
   tags = {
     Name = "keycloak"
   }
@@ -11,9 +11,9 @@ resource "aws_efs_file_system" "keycloakfs" {
 
 ### Create mount target for EFS for each subnet
 resource "aws_efs_mount_target" "efs-mt" {
-  count = length(var.efs_mt_subnets)
+  count          = length(var.efs_mt_subnets)
   file_system_id = aws_efs_file_system.keycloakfs.id
-  subnet_id = var.efs_mt_subnets[count.index]
+  subnet_id      = var.efs_mt_subnets[count.index]
 }
 
 output "efs_arn" {
@@ -25,7 +25,7 @@ output "efs_arn" {
 resource "aws_s3_bucket" "core-services-keycloak" {
   bucket = "core-services-keycloak"
   tags = {
-    Name        = "CS Keycloak"
+    Name = "CS Keycloak"
   }
 }
 
@@ -50,7 +50,7 @@ resource "aws_datasync_location_s3" "core-services-keycloak" {
 resource "aws_datasync_location_efs" "datasync_destination_location" {
   ec2_config {
     security_group_arns = [aws_security_group.efs_sg.arn]
-    subnet_arn = var.datasync_subnet_arn
+    subnet_arn          = var.datasync_subnet_arn
   }
   efs_file_system_arn = aws_efs_file_system.keycloakfs.arn
 }

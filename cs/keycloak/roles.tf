@@ -22,12 +22,12 @@ resource "aws_iam_policy" "ecsTaskLogs" {
     Version = "2012-10-17" #tfsec:ignore:aws-iam-no-policy-wildcards
     Statement = [
       {
-        Effect    = "Allow"
-        Action    = [
+        Effect = "Allow"
+        Action = [
           "logs:CreateLogStream",
           "logs:CreateLogGroup"
         ]
-        Resource  = "arn:aws:logs:us-east-1:671250183987:log-group:*" 
+        Resource = "arn:aws:logs:us-east-1:671250183987:log-group:*"
       }
     ]
   })

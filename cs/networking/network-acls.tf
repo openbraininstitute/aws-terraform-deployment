@@ -1,5 +1,5 @@
 resource "aws_network_acl" "cs_subnet" {
-  vpc_id = var.vpc_id
+  vpc_id     = var.vpc_id
   subnet_ids = [aws_subnet.cs_subnet_a.id, aws_subnet.cs_subnet_b.id]
   # Allow local traffic
   ingress {
@@ -7,9 +7,9 @@ resource "aws_network_acl" "cs_subnet" {
     rule_no    = 100
     action     = "allow"
     cidr_block = "0.0.0.0/0"
-#    cidr_block = data.terraform_remote_state.common.outputs.vpc_cidr_block
-    from_port  = 0
-    to_port    = 0
+    # cidr_block = data.terraform_remote_state.common.outputs.vpc_cidr_block
+    from_port = 0
+    to_port   = 0
   }
   /* # Allow temporarily all
   ingress {

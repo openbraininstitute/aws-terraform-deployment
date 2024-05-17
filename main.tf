@@ -13,6 +13,7 @@ module "coreservices_key" {
 }
 module "cs" {
   source = "./cs"
+
   vpc_id                  = data.terraform_remote_state.common.outputs.vpc_id
   aws_region              = data.terraform_remote_state.common.outputs.aws_region
   route_table_id          = data.terraform_remote_state.common.outputs.route_table_private_subnets_id

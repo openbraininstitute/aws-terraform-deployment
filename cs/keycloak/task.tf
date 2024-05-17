@@ -2,10 +2,10 @@
 resource "aws_ecs_task_definition" "sbo_keycloak_task" {
   family                   = "keycloak-task"
   requires_compatibilities = ["FARGATE"]
-  network_mode             = "awsvpc"  # Use AWS VPC networking mode
+  network_mode             = "awsvpc" # Use AWS VPC networking mode
   cpu                      = 2048
   memory                   = 4096
-  container_definitions = <<TASK_DEFINITION
+  container_definitions    = <<TASK_DEFINITION
   [
         {
             "name": "keycloak-container",
@@ -84,13 +84,12 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
         }
     ]
     TASK_DEFINITION
-    execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
-    volume {
-      name      = "keycloak-volume"
-      efs_volume_configuration {
-        file_system_id     = aws_efs_file_system.keycloakfs.id
-        root_directory     = "/"
-      }
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  volume {
+    name = "keycloak-volume"
+    efs_volume_configuration {
+      file_system_id = aws_efs_file_system.keycloakfs.id
+      root_directory = "/"
     }
+  }
 }
-

@@ -4,24 +4,24 @@ resource "aws_lb_target_group" "keycloak_target_group" {
   port        = 8081
   protocol    = "HTTPS"
   target_type = "ip"
-  vpc_id =  var.vpc_id
+  vpc_id      = var.vpc_id
   tags = {
     Name = "Keycloak Target Group"
   }
   health_check {
-    path                = "/auth/health"  
-    port                = "8081"          
-    protocol            = "HTTPS"         
-    interval            = 30              
-    timeout             = 5               
-    healthy_threshold   = 2               
-    unhealthy_threshold = 2               
-    matcher             = "200-399" 
+    path                = "/auth/health"
+    port                = "8081"
+    protocol            = "HTTPS"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    matcher             = "200-399"
   }
 }
 
 resource "aws_lb_listener_rule" "keycloak_https" {
-  listener_arn = var.public_alb_listener 
+  listener_arn = var.public_alb_listener
   priority     = 555
   action {
     type             = "forward"
