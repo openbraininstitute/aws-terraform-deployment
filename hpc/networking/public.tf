@@ -1,8 +1,8 @@
 resource "aws_subnet" "public" {
-  vpc_id            = var.pcluster_vpc_id
+  vpc_id            = var.obp_vpc_id
   availability_zone = "${var.aws_region}a"
   count             = var.create_jumphost ? 1 : 0
-  cidr_block        = "172.32.1.0/24"
+  cidr_block        = "172.31.1.0/24"
   tags = {
     Name = "public"
   }
@@ -15,12 +15,12 @@ locals {
 }
 
 resource "aws_internet_gateway" "default_gateway" {
-  vpc_id = data.aws_vpc.pcluster_vpc.id
+  vpc_id = data.aws_vpc.obp_vpc.id
   count  = var.create_jumphost ? 1 : 0
 }
 
 resource "aws_route_table" "gateway_rt" {
-  vpc_id = var.pcluster_vpc_id
+  vpc_id = var.obp_vpc_id
   count  = var.create_jumphost ? 1 : 0
 
   tags = {

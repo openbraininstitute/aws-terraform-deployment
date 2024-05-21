@@ -6,7 +6,7 @@ data "aws_subnet" "slurm_db_a" {
 resource "aws_security_group" "jumphost" {
   name        = "jumphost"
   count       = var.create_jumphost ? 1 : 0
-  vpc_id      = var.pcluster_vpc_id
+  vpc_id      = var.obp_vpc_id
   description = "Security group for jumphost"
 }
 
