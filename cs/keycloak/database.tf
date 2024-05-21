@@ -9,6 +9,10 @@ resource "aws_db_subnet_group" "keycloak_db_subnet_group" {
   }
 }
 
+data "aws_secretsmanager_secret_version" "keycloak_database_password" {
+  secret_id = var.keycloak_postgresql_database_password_arn
+}
+
 #tfsec:ignore:aws-rds-specify-backup-retention tfsec:ignore:aws-rds-encrypt-instance-storage-data tfsec:ignore:aws-rds-enable-performance-insights-encryption
 resource "aws_db_instance" "postgres" {
   performance_insights_enabled = true
@@ -22,7 +26,7 @@ resource "aws_db_instance" "postgres" {
   instance_class               = var.db_instance_class
   db_name                      = "keycloak_db"
   username                     = "psqladmin"
-  password                     = "postgresql" # TODO Change to your desired password
+  password                     = data.aws_secretsmanager_secret_version.keycloak_database_password.secret_string
   publicly_accessible          = false
   multi_az                     = true
   vpc_security_group_ids       = ["sg-05a6965a825b46067"]

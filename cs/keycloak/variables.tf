@@ -48,3 +48,8 @@ variable "datasync_subnet_arn" {
   type    = string
   default = "arn:aws:ec2:us-east-1:671250183987:subnet/subnet-03e6e9df2641a2e47"
 }
+
+variable "keycloak_postgresql_database_password_arn" {
+  type    = string
+  default = "arn:aws:secretsmanager:us-east-1:671250183987:secret:keycloak_postgresql_password-o9Ybhb"
+}
