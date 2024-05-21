@@ -1,6 +1,6 @@
 locals {
   nexus_delta_app_log_group_name = "nexus_delta_app"
-  nexus_cpu                      = 2048
+  nexus_cpu                      = 4096
   nexus_memory                   = 8192
 }
 
