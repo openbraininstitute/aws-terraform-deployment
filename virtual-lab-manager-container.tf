@@ -357,6 +357,25 @@ resource "aws_iam_role" "ecs_virtual_lab_manager_task_role" {
   }
 }
 
+resource "aws_iam_policy" "ecsTaskLogs_virtuallab" {
+  name        = "ecsTaskLogs-VirtualLab"
+  description = "Allows ECS tasks to create log streams and log groups in CloudWatch Logs"
+
+  policy = jsonencode({
+    Version = "2012-10-17" #tfsec:ignore:aws-iam-no-policy-wildcards
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogStream",
+          "logs:CreateLogGroup"
+        ]
+        Resource = "arn:aws:logs:us-east-1:671250183987:log-group:*"
+      }
+    ]
+  })
+}
+
 resource "aws_iam_role_policy_attachment" "ecs_virtual_lab_manager_task_role_dockerhub_policy_attachment" {
   role       = aws_iam_role.ecs_virtual_lab_manager_task_execution_role[0].name
   policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
@@ -367,6 +386,13 @@ resource "aws_iam_role_policy_attachment" "ecs_virtual_lab_manager_task_role_doc
 resource "aws_iam_role_policy_attachment" "ecs_virtual_lab_manager_secrets_access_policy_attachment" {
   role       = aws_iam_role.ecs_virtual_lab_manager_task_execution_role[0].name
   policy_arn = aws_iam_policy.virtual_lab_manager_secrets_access.arn
+
+  count = var.virtual_lab_manager_ecs_number_of_containers > 0 ? 1 : 0
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_virtual_lab_manager_attachment_logs" {
+  role      = aws_iam_role.ecs_virtual_lab_manager_task_execution_role[0].name
+  policy_arn = aws_iam_policy.ecsTaskLogs_virtuallab.arn
 
   count = var.virtual_lab_manager_ecs_number_of_containers > 0 ? 1 : 0
 }
