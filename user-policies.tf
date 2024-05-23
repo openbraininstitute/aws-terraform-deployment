@@ -82,6 +82,34 @@ resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_h
   permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_hpc_rights.arn
 }
 
+resource "aws_ssoadmin_permission_set" "readonly_with_additional_s3_rights" {
+  name         = "ReadOnlyWithAdditionalS3Rights"
+  description  = "Read only access but with full S3 access"
+  instance_arn = var.aws_iam_identity_center_arn
+
+  #relay_state      = "https://s3.console.aws.amazon.com/s3/home?region=us-east-1#"
+  session_duration = "PT2H"
+
+  tags = {
+    SBO_Billing = "common"
+  }
+}
+
+resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_s3_rights" {
+  inline_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      jsondecode(local.readonly_access_policy_statement_part1),
+      jsondecode(local.readonly_access_policy_statement_part2),
+      jsondecode(local.s3_access_policy_statement),
+    ]
+  })
+
+  instance_arn       = var.aws_iam_identity_center_arn
+  permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_s3_rights.arn
+}
+
+
 resource "aws_ssoadmin_permission_set" "readonly_with_additional_billing_rights" {
   name         = "FullBillingAndPaymentsAccess"
   description  = "Read only access for most but full access for billing, payments, budgets, ..."
@@ -216,6 +244,12 @@ locals {
         "ec2:Region" = "us-east-2"
       }
     }
+  })
+
+  s3_access_policy_statement = jsonencode({
+    Action   = "s3:*",
+    Resource = "*",
+    Effect   = "Allow"
   })
 
   sbo_billing_payment_support_full_access_policy_statement = jsonencode({
