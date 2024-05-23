@@ -209,7 +209,11 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         {
           name  = "CORS_ORIGINS"
           value = "${jsonencode(var.virtual_lab_manager_cors_origins)}"
-        }
+        },
+        {
+          name      = "VLAB_ADMIN_PATH"
+          valueFrom = var.virtual_lab_manager_admin_base_path
+        },
       ]
       secrets = [
         {

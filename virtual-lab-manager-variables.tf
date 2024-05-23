@@ -88,3 +88,10 @@ variable "virtual_lab_manager_cors_origins" {
   description = "Origins that are allowed to make requests to the virtual lab api through a browser"
   sensitive   = false
 }
+
+variable "virtual_lab_manager_admin_base_path" {
+  default     = "{}/mmb-beta/virtual-lab/lab/{}/admin?panel=billing"
+  type        = string
+  description = "admint dashboard path template string"
+  sensitive   = false
+}
