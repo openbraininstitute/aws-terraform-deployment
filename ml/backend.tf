@@ -244,7 +244,7 @@ resource "aws_lb_listener_rule" "ml_backend_listener_rule" {
   tags = var.tags
 }
 
-resource "aws_lb_listener_rule" "ml_backend_rule_private" {
+resource "aws_lb_listener_rule" "ml_backend_listener_rule_private" {
   listener_arn = var.private_alb_listener_arn
   priority     = 200
 
