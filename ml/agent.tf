@@ -168,7 +168,7 @@ resource "aws_lb_listener_rule" "agent_rule" {
 }
 
 resource "aws_lb_target_group" "ml_target_group_agent" {
-  name        = "target-group-agent"
+  name        = "ml-target-group-agent"
   port        = 8078
   protocol    = "HTTP"
   target_type = "ip"
