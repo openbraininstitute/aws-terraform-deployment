@@ -51,6 +51,11 @@ variable "etl_image_url" {
   type        = string
 }
 
+variable "agent_image_url" {
+  description = "Url of the ECR imageof the agent (format repo:tag)"
+  type        = string
+}
+
 variable "grobid_image_url" {
   description = "Url of the docker image to use in the ECS container for grobid (format repo:tag)"
   type        = string

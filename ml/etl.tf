@@ -122,7 +122,7 @@ resource "aws_lb_target_group" "ml_target_group_etl_private" {
 
 resource "aws_lb_listener_rule" "ml_etl_rule_private" {
   listener_arn = var.private_alb_listener_arn
-  priority     = 200
+  priority     = 100
 
   action {
     type             = "forward"

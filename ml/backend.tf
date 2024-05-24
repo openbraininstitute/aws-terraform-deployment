@@ -154,6 +154,11 @@ module "ml_ecs_service_backend" {
       container_name   = "ml_backend"
       container_port   = 8080
     }
+    private_service = {
+      target_group_arn = aws_lb_target_group.ml_target_group_backend_private.arn
+      container_name   = "ml_backend"
+      container_port   = 8080
+    }
   }
 
   subnet_ids = local.private_subnet_ids
@@ -165,6 +170,14 @@ module "ml_ecs_service_backend" {
       protocol                 = "tcp"
       description              = "Service port"
       source_security_group_id = var.alb_security_group_id
+    }
+    private_alb_ingress_3000 = {
+      type                     = "ingress"
+      from_port                = 8080
+      to_port                  = 8080
+      protocol                 = "tcp"
+      description              = "Service port"
+      source_security_group_id = var.private_alb_security_group_id
     }
     egress_all = {
       type        = "egress"
@@ -196,6 +209,18 @@ resource "aws_lb_target_group" "ml_target_group_backend" {
   }
 }
 
+resource "aws_lb_target_group" "ml_target_group_backend_private" {
+  name        = "target-group-backend-private"
+  port        = 3000
+  protocol    = "HTTP"
+  target_type = "ip"
+  vpc_id      = var.vpc_id
+  tags        = var.tags
+  health_check {
+    path = "/healthz"
+  }
+}
+
 resource "aws_lb_listener_rule" "ml_backend_listener_rule" {
   listener_arn = var.alb_listener_arn
   priority     = 550
@@ -214,6 +239,23 @@ resource "aws_lb_listener_rule" "ml_backend_listener_rule" {
   condition {
     source_ip {
       values = ["128.178.0.0/15"]
+    }
+  }
+  tags = var.tags
+}
+
+resource "aws_lb_listener_rule" "ml_backend_rule_private" {
+  listener_arn = var.private_alb_listener_arn
+  priority     = 200
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.ml_target_group_backend_private.arn
+  }
+
+  condition {
+    path_pattern {
+      values = ["/api/literature/*"]
     }
   }
   tags = var.tags
