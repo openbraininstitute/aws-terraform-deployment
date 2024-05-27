@@ -247,7 +247,7 @@ locals {
   })
 
   s3_access_policy_statement = jsonencode({
-    Action   = [
+    Action = [
       "s3:*",
       "s3express:*",
     ]

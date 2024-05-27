@@ -38,27 +38,27 @@ resource "aws_iam_policy" "datasync_s3_policy" {
   description = "Policy for DataSync to access S3 bucket"
 
   policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
+    "Version" : "2012-10-17",
+    "Statement" : [
       {
-        "Sid": "AWSDataSyncS3BucketPermissions",
-        "Effect": "Allow",
-        "Action": [
+        "Sid" : "AWSDataSyncS3BucketPermissions",
+        "Effect" : "Allow",
+        "Action" : [
           "s3:GetBucketLocation",
           "s3:ListBucket",
           "s3:ListBucketMultipartUploads"
         ],
-        "Resource": "arn:aws:s3:::core-services-keycloak",
-        "Condition": {
-          "StringEquals": {
-            "aws:ResourceAccount": "671250183987"
+        "Resource" : "arn:aws:s3:::core-services-keycloak",
+        "Condition" : {
+          "StringEquals" : {
+            "aws:ResourceAccount" : "671250183987"
           }
         }
       },
       {
-        "Sid": "AWSDataSyncS3ObjectPermissions",
-        "Effect": "Allow",
-        "Action": [
+        "Sid" : "AWSDataSyncS3ObjectPermissions",
+        "Effect" : "Allow",
+        "Action" : [
           "s3:AbortMultipartUpload",
           "s3:DeleteObject",
           "s3:GetObject",
@@ -69,10 +69,10 @@ resource "aws_iam_policy" "datasync_s3_policy" {
           "s3:PutObject",
           "s3:PutObjectTagging"
         ],
-        "Resource": "arn:aws:s3:::core-services-keycloak/*",
-        "Condition": {
-          "StringEquals": {
-            "aws:ResourceAccount": "671250183987"
+        "Resource" : "arn:aws:s3:::core-services-keycloak/*",
+        "Condition" : {
+          "StringEquals" : {
+            "aws:ResourceAccount" : "671250183987"
           }
         }
       }

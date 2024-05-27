@@ -399,7 +399,7 @@ resource "aws_iam_role_policy_attachment" "ecs_virtual_lab_manager_secrets_acces
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_virtual_lab_manager_attachment_logs" {
-  role      = aws_iam_role.ecs_virtual_lab_manager_task_execution_role[0].name
+  role       = aws_iam_role.ecs_virtual_lab_manager_task_execution_role[0].name
   policy_arn = aws_iam_policy.ecsTaskLogs_virtuallab.arn
 
   count = var.virtual_lab_manager_ecs_number_of_containers > 0 ? 1 : 0
