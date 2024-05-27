@@ -1,7 +1,7 @@
 resource "aws_subnet" "me_model_analysis_ec2" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}a"
-  cidr_block        = "10.0.13.0/24"
+  cidr_block        = "10.0.15.0/24"
 
   tags = {
     Name        = "me-model-analysis-ec2"
