@@ -177,11 +177,11 @@ resource "aws_ecs_task_definition" "kg_inference_api_task_definition" {
           },
           {
             name  = "ES_RULE_VIEW",
-            value = "https://bbp.epfl.ch/bbp/inference-rules/views/aggreg-es/rule_view"
+            value = "https://bbp.epfl.ch/neurosciencegraph/data/views/aggreg-es/rule_view"
           },
           {
             name  = "SPARQL_RULE_VIEW",
-            value = "https://bbp.epfl.ch/bbp/inference-rules/views/aggreg-sp/rule_view"
+            value = "https://bbp.epfl.ch/neurosciencegraph/data/views/aggreg-sp/rule_view"
           },
         ],
         memory = 2048
