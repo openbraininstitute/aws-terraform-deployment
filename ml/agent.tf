@@ -67,7 +67,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "AGENT_MISC__CORS_ORIGINS"
-          value = "https://openbrainplatform.org, https://bbp.epfl.ch"
+          value = "https://openbrainplatform.org, https://bbp.epfl.ch, https://ml.agent.kcp.bbp.epfl.ch"
         },
       ]
       secrets = [
