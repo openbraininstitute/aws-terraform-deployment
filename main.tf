@@ -123,7 +123,8 @@ module "nse" {
   amazon_linux_ecs_ami_id   = data.aws_ami.amazon_linux_2_ecs.id
   route_table_id            = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
 
-  docker_image_url = "bluebrain/blue-naas-single-cell:latest"
+  single_cell_docker_image_url       = "bluebrain/blue-naas-single-cell:latest"
+  me_model_analysis_docker_image_url = "bluebrain/me-model-analysis:latest"
 }
 
 module "hpc" {
