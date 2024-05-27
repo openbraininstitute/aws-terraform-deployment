@@ -74,21 +74,6 @@ resource "aws_security_group" "kg_inference_api_sec_group" {
     Name        = "kg_inference_api_secgroup"
     SBO_Billing = "kg_inference_api"
   }
-
-  ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = -1
-    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
-    description = "allow ingress from within vpc"
-  }
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = -1
-    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
-    description = "allow egress to within vpc"
-  }
 }
 
 resource "aws_vpc_security_group_ingress_rule" "kg_inference_api_allow_port_8080" {
