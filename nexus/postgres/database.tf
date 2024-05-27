@@ -24,7 +24,7 @@ resource "aws_db_instance" "nexusdb" {
   db_subnet_group_name = aws_db_subnet_group.nexus_db_subnet_group.name
 
   engine         = "postgres"
-  engine_version = "14"
+  engine_version = "15"
   multi_az       = false
   instance_class = var.instance_class
 
