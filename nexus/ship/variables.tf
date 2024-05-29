@@ -20,3 +20,8 @@ variable "target_bucket_arn" {
   type        = string
   description = "The ARN of the S3 bucket that the ship will copy data to"
 }
+
+variable "second_target_bucket_arn" {
+  type        = string
+  description = "The ARN of the second S3 bucket that the ship will copy data to"
+}

@@ -1,7 +1,7 @@
 locals {
   log_group_name = "nexus_ship"
-  ship_cpu       = 256
-  ship_memory    = 512
+  ship_cpu       = 4096
+  ship_memory    = 8192
 }
 
 data "aws_region" "current" {}
@@ -17,9 +17,9 @@ resource "aws_ecs_task_definition" "nexus_ship" {
 
   container_definitions = jsonencode([
     {
-      memory  = local.ship_memory
-      cpu     = local.ship_cpu
-      command = ["config"]
+      memory = local.ship_memory
+      cpu    = local.ship_cpu
+
       environment = [
         {
           name  = "POSTGRES_HOST"
@@ -36,6 +36,16 @@ resource "aws_ecs_task_definition" "nexus_ship" {
       essential   = true
       image       = "bluebrain/nexus-ship:latest"
       name        = "nexus_ship"
+
+      command = [
+        "run",
+        "--s3",
+        "--config",
+        "ship.conf",
+        "--path",
+        "path/to/import/file/in/s3"
+      ],
+
       repositoryCredentials = {
         credentialsParameter = var.dockerhub_credentials_arn
       }
