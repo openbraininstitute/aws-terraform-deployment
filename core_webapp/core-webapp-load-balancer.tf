@@ -24,7 +24,7 @@ resource "aws_route53_record" "core_webapp_poc_validation" {
   records         = [each.value.record]
   ttl             = 60
   type            = each.value.type
-  zone_id         = data.terraform_remote_state.common.outputs.domain_zone_id
+  zone_id         = var.domain_zone_id
 }
 
 resource "aws_acm_certificate_validation" "core_webapp_poc" {
@@ -33,7 +33,7 @@ resource "aws_acm_certificate_validation" "core_webapp_poc" {
 }
 
 resource "aws_lb_listener_certificate" "core_webapp_poc" {
-  listener_arn    = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  listener_arn    = var.public_alb_https_listener_arn
   certificate_arn = aws_acm_certificate_validation.core_webapp_poc.certificate_arn
 }
 
@@ -43,7 +43,7 @@ resource "aws_lb_target_group" "core_webapp" {
   port        = 8000
   protocol    = "HTTP"
   target_type = "ip"
-  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id      = var.vpc_id
   #lifecycle {
   #  create_before_destroy = true
   #}
@@ -58,7 +58,7 @@ resource "aws_lb_target_group" "core_webapp" {
 }
 
 resource "aws_lb_listener_rule" "core_webapp" {
-  listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  listener_arn = var.public_alb_https_listener_arn
   priority     = 200
 
   action {
@@ -90,7 +90,7 @@ resource "aws_lb_listener_rule" "core_webapp" {
 }
 
 resource "aws_lb_listener_rule" "core_webapp_redirect" {
-  listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  listener_arn = var.public_alb_https_listener_arn
   priority     = 201
 
   action {
@@ -125,7 +125,7 @@ resource "aws_lb_listener_rule" "core_webapp_redirect" {
 }
 
 resource "aws_lb_listener_rule" "core_webapp_poc" {
-  listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  listener_arn = var.public_alb_https_listener_arn
   priority     = 202
 
   action {
@@ -151,11 +151,11 @@ resource "aws_lb_listener_rule" "core_webapp_poc" {
 }
 
 resource "aws_route53_record" "core_webapp_poc" {
-  zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
+  zone_id = var.domain_zone_id
   name    = var.core_webapp_poc_hostname
   type    = "CNAME"
   ttl     = 60
-  records = [data.terraform_remote_state.common.outputs.public_alb_dns_name]
+  records = [var.public_alb_dns_name]
 }
 
 output "alb_core_webapp_hostname" {

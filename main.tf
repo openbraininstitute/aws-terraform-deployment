@@ -147,3 +147,24 @@ module "hpc" {
   existing_route_targets     = ["172.16.0.0/16"]
 }
 
+module "core_webapp" {
+  source = "./core_webapp"
+
+  core_webapp_log_group_name           = "core_webapp"
+  vpc_id                               = data.terraform_remote_state.common.outputs.vpc_id
+  core_webapp_ecs_number_of_containers = 1
+  core_webapp_poc_hostname             = "sbo-core-webapp.shapes-registry.org"
+  public_alb_https_listener_arn        = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  public_alb_dns_name                  = data.terraform_remote_state.common.outputs.public_alb_dns_name
+  domain_zone_id                       = data.terraform_remote_state.common.outputs.domain_zone_id
+  aws_region                           = var.aws_region
+  vpc_cidr_block                       = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  core_webapp_docker_image_url         = "bluebrain/sbo-core-web-app:latest"
+  dockerhub_access_iam_policy_arn      = module.dockerhub_secret.dockerhub_access_iam_policy_arn
+  dockerhub_credentials_arn            = module.dockerhub_secret.dockerhub_credentials_arn
+  core_webapp_hostname                 = "openbrainplatform.org"
+  core_webapp_base_path                = "/mmb-beta"
+  epfl_cidr                            = var.epfl_cidr
+  bbp_dmz_cidr                         = var.bbp_dmz_cidr
+  route_table_id                       = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+}

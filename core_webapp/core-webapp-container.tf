@@ -43,7 +43,7 @@ resource "aws_ecs_cluster" "core_webapp" {
 # TODO make more strict
 resource "aws_security_group" "core_webapp_ecs_task" {
   name        = "core_webapp_ecs_task"
-  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id      = var.vpc_id
   description = "Sec group for SBO core webapp"
 
   tags = {
@@ -58,7 +58,7 @@ resource "aws_vpc_security_group_ingress_rule" "core_webapp_allow_port_8000" {
   ip_protocol = "tcp"
   from_port   = 8000
   to_port     = 8000
-  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  cidr_ipv4   = var.vpc_cidr_block
   description = "Allow port 8000 http"
   tags = {
     SBO_Billing = "core_webapp"
@@ -111,7 +111,7 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
       image       = var.core_webapp_docker_image_url
       name        = "core_webapp"
       repositoryCredentials = {
-        credentialsParameter = module.dockerhub_secret.dockerhub_credentials_arn
+        credentialsParameter = var.dockerhub_credentials_arn
       }
       portMappings = [
         {
@@ -278,7 +278,7 @@ EOF
 resource "aws_iam_role_policy_attachment" "ecs_core_webapp_task_role_dockerhub_policy_attachment" {
   count      = var.core_webapp_ecs_number_of_containers > 0 ? 1 : 0
   role       = aws_iam_role.ecs_core_webapp_task_execution_role[0].name
-  policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
+  policy_arn = var.dockerhub_access_iam_policy_arn
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_core_webapp_secrets_access_policy_attachment" {

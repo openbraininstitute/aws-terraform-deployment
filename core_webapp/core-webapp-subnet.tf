@@ -1,7 +1,7 @@
 # Subnet for the SBO core webapp
 # 10.0.2.0/28 is 10.0.2.0 up to 10.0.2.15 with subnet and broadcast included
 resource "aws_subnet" "core_webapp" {
-  vpc_id                  = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id                  = var.vpc_id
   availability_zone       = "${var.aws_region}a"
   cidr_block              = "10.0.2.0/28"
   map_public_ip_on_launch = false
@@ -15,18 +15,18 @@ resource "aws_subnet" "core_webapp" {
 # Link route table to core_webapp network
 resource "aws_route_table_association" "core_webapp" {
   subnet_id      = aws_subnet.core_webapp.id
-  route_table_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  route_table_id = var.route_table_id
 }
 
 resource "aws_network_acl" "core_webapp" {
-  vpc_id     = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id     = var.vpc_id
   subnet_ids = [aws_subnet.core_webapp.id]
   # Allow local traffic
   ingress {
     protocol   = -1
     rule_no    = 100
     action     = "allow"
-    cidr_block = data.terraform_remote_state.common.outputs.vpc_cidr_block
+    cidr_block = var.vpc_cidr_block
     from_port  = 0
     to_port    = 0
   }

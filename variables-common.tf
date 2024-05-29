@@ -41,45 +41,6 @@ variable "sbo_https_test_hostname" {
   sensitive   = false
 }
 
-### SBO core webapp ###
-
-# TODO: delete after migration to the production domain.
-variable "core_webapp_poc_hostname" {
-  default     = "sbo-core-webapp.shapes-registry.org"
-  type        = string
-  description = "The hostname for the core webapp poc"
-  sensitive   = false
-}
-
-variable "core_webapp_hostname" {
-  default     = "openbrainplatform.org"
-  type        = string
-  description = "The hostname for the core webapp"
-  sensitive   = false
-}
-
-# TODO: update to "/app/core" after migration to the production domain.
-variable "core_webapp_base_path" {
-  default     = "/mmb-beta"
-  type        = string
-  description = "The base path for the core webapp"
-  sensitive   = false
-}
-
-variable "core_webapp_log_group_name" {
-  default     = "core_webapp"
-  type        = string
-  description = "The log name within cloudwatch for the core webapp"
-  sensitive   = false
-}
-
-variable "core_webapp_docker_image_url" {
-  default     = "bluebrain/sbo-core-web-app:latest"
-  type        = string
-  description = "docker image for the core webapp"
-  sensitive   = false
-}
-
 ### Virtual Lab Manager service ###
 
 variable "virtual_lab_manager_base_path" {
