@@ -81,3 +81,10 @@ variable "virtual_lab_manager_admin_base_path" {
   description = "admint dashboard path template string"
   sensitive   = false
 }
+
+variable "virtual_lab_manager_deployment_namespace" {
+  default     = "https://openbrainplatform.org"
+  type        = string
+  description = "deployment domain use for nexus project base path"
+  sensitive   = false
+}
