@@ -3,7 +3,7 @@
 #tfsec:ignore:aws-s3-enable-versioning
 #tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket" "nexus" {
-  bucket = "nexus-production"
+  bucket = "nexus-bucket-production"
 
   tags = {
     SBO_Billing = "nexus_ship"
