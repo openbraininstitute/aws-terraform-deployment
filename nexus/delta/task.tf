@@ -59,6 +59,10 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
         {
           name      = "REMOTE_STORAGE_PASSWORD"
           valueFrom = "${var.nexus_secrets_arn}:remote_storage_password::"
+        },
+        {
+          name      = "DELEGATION_PRIVATE_KEY"
+          valueFrom = "${var.nexus_secrets_arn}:delegation_private_key::"
         }
       ]
       networkMode = "awsvpc"
