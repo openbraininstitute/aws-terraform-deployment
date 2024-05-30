@@ -27,11 +27,11 @@ resource "aws_lb_listener_rule" "keycloak_https" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.keycloak_target_group.arn
   }
-  condition {
-    host_header {
-      values = [var.primary_auth_hostname, var.secondary_auth_hostname]
-    }
-  }
+  # condition {
+  #   host_header {
+  #     values = [var.primary_auth_hostname, var.secondary_auth_hostname]
+  #   }
+  # }
   condition {
     path_pattern {
       values = ["/auth*"]

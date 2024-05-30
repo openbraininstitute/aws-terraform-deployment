@@ -66,11 +66,11 @@ resource "aws_lb_listener_rule" "core_webapp" {
     target_group_arn = aws_lb_target_group.core_webapp.arn
   }
 
-#  condition {
-#    host_header {
-#      values = [var.core_webapp_hostname]
-#    }
-#  }
+  # condition {
+  #   host_header {
+  #     values = [var.core_webapp_hostname]
+  #   }
+  # }
 
   condition {
     path_pattern {
@@ -101,11 +101,11 @@ resource "aws_lb_listener_rule" "core_webapp_redirect" {
     }
   }
 
-  condition {
-    host_header {
-      values = [var.core_webapp_hostname]
-    }
-  }
+  # condition {
+  #   host_header {
+  #     values = [var.core_webapp_hostname]
+  #   }
+  # }
 
   condition {
     path_pattern {
