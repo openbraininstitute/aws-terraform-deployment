@@ -69,21 +69,32 @@ variable "core_webapp_base_path" {
   description = "The base path for the core webapp"
   sensitive   = false
 }
-
-variable "epfl_cidr" {
-  type        = string
-  description = "CIDR of the network range used by EPFL"
-  sensitive   = false
-}
-
-variable "bbp_dmz_cidr" {
-  type        = string
-  description = "CIDR of the BBP DMZ, containing bbpproxy, bbpssh bastion host and the proxy for SauceLabs"
-  sensitive   = false
-}
-
 variable "route_table_id" {
   type        = string
   description = "route table for private networks"
   sensitive   = false
+}
+variable "allowed_source_ip_cidr_blocks" {
+  type = list(string)
+}
+
+variable "env_DEBUG" {
+  type        = string
+  sensitive   = false
+  description = "DEBUG environment value for the webapp"
+}
+variable "env_NEXTAUTH_URL" {
+  type        = string
+  sensitive   = false
+  description = "NEXTAUTH_URL environment value for the webapp"
+}
+variable "env_KEYCLOAK_ISSUER" {
+  type        = string
+  sensitive   = false
+  description = "KEYCLOAK_ISSUER environment value for the webapp"
+}
+variable "env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" {
+  type        = string
+  sensitive   = false
+  description = "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY environment value for the webapp"
 }

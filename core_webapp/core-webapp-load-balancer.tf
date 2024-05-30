@@ -66,11 +66,11 @@ resource "aws_lb_listener_rule" "core_webapp" {
     target_group_arn = aws_lb_target_group.core_webapp.arn
   }
 
-  condition {
-    host_header {
-      values = [var.core_webapp_hostname]
-    }
-  }
+#  condition {
+#    host_header {
+#      values = [var.core_webapp_hostname]
+#    }
+#  }
 
   condition {
     path_pattern {
@@ -80,7 +80,7 @@ resource "aws_lb_listener_rule" "core_webapp" {
 
   condition {
     source_ip {
-      values = [var.epfl_cidr, var.bbp_dmz_cidr]
+      values = var.allowed_source_ip_cidr_blocks
     }
   }
 
@@ -115,7 +115,7 @@ resource "aws_lb_listener_rule" "core_webapp_redirect" {
 
   condition {
     source_ip {
-      values = [var.epfl_cidr, var.bbp_dmz_cidr]
+      values = var.allowed_source_ip_cidr_blocks
     }
   }
 
@@ -141,7 +141,7 @@ resource "aws_lb_listener_rule" "core_webapp_poc" {
 
   condition {
     source_ip {
-      values = [var.epfl_cidr, var.bbp_dmz_cidr]
+      values = var.allowed_source_ip_cidr_blocks
     }
   }
 

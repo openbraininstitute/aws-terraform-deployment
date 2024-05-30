@@ -130,19 +130,19 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
       environment = [
         {
           name  = "DEBUG"
-          value = "true"
+          value = var.env_DEBUG
         },
         {
           name  = "NEXTAUTH_URL"
-          value = "https://openbrainplatform.org/mmb-beta/api/auth"
+          value = var.env_NEXTAUTH_URL
         },
         {
           name  = "KEYCLOAK_ISSUER"
-          value = "https://sboauth.epfl.ch/auth/realms/SBO"
+          value = var.env_KEYCLOAK_ISSUER
         },
         {
           name      = "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"
-          valueFrom = "pk_test_51P6uAFFE4Bi50cLlatJIc0fUPsP0jQkaCCJ8TTkIYOOLIrLzxX1M9p1kVD11drNqsF9p7yiaumWJ8UHb3ptJJRXB00y3qjYReV"
+          valueFrom = var.env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
         },
       ]
       secrets = [
