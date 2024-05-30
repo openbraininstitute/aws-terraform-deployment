@@ -29,7 +29,7 @@ resource "aws_lb_listener_rule" "thumbnail_generation_api" {
   }
 
   condition {
-    host_header {
+    path_pattern {
       values = ["${var.thumbnail_generation_api_base_path}/*"]
     }
   }
