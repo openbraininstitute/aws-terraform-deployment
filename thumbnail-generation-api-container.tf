@@ -158,6 +158,10 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
           {
             name  = "WHITELISTED_CORS_URLS",
             value = "http://localhost:3000,https://${data.terraform_remote_state.common.outputs.primary_domain}"
+          },
+          {
+            name  = "BASE_PATH"
+            value = "${var.thumbnail_generation_api_base_path}"
           }
         ],
         memory = 2048
