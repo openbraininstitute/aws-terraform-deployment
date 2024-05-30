@@ -80,7 +80,7 @@ module "ship" {
   dockerhub_credentials_arn   = var.dockerhub_credentials_arn
   ecs_task_execution_role_arn = aws_iam_role.nexus_ecs_task_execution.arn
   nexus_secrets_arn           = var.nexus_secrets_arn
-  postgres_host               = module.postgres.host
+  postgres_host               = module.postgres.second_host
   target_bucket_arn           = module.delta.nexus_delta_bucket_arn
   second_target_bucket_arn    = module.delta.nexus_bucket_arn
 }
