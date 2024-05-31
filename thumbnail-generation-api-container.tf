@@ -60,6 +60,31 @@ resource "aws_iam_role" "thumbnail_generation_api_ecs_task_role" {
   }
 }
 
+resource "aws_iam_policy" "thumbnail_generation_api_ecs_task_logs" {
+  name        = "thumbnail_generation_api-ecsTaskLogs"
+  description = "Allows ECS tasks to create log streams and log groups in CloudWatch Logs"
+
+  policy = jsonencode({
+    Version = "2012-10-17" #tfsec:ignore:aws-iam-no-policy-wildcards
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogStream",
+          "logs:CreateLogGroup"
+        ]
+        Resource = ["*"]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_attachment" {
+  role       = aws_iam_role.thumbnail_generation_api_ecs_task_execution_role.name
+  policy_arn = aws_iam_policy.thumbnail_generation_api_ecs_task_logs.arn
+}
+
+
 resource "aws_iam_role_policy_attachment" "thumbnail_generation_api_ecs_task_role_dockerhub_policy_attachment" {
   role       = aws_iam_role.thumbnail_generation_api_ecs_task_execution_role.name
   policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
