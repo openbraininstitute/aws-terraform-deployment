@@ -15,28 +15,21 @@ variable "core_webapp_ecs_number_of_containers" {
   sensitive   = false
   description = "Number of containers for the SBO core webapp"
 }
-# TODO: delete after migration to the production domain.
-variable "core_webapp_poc_hostname" {
-  default     = "sbo-core-webapp.shapes-registry.org"
-  type        = string
-  description = "The hostname for the core webapp poc"
-  sensitive   = false
-}
-variable "domain_zone_id" {
-  type        = string
-  description = "zone id of the domain where the poc hostname should be added"
-  sensitive   = false
-}
+#variable "domain_zone_id" {
+#  type        = string
+#  description = "zone id of the domain where the poc hostname should be added"
+#  sensitive   = false
+#}
 variable "public_alb_https_listener_arn" {
   type        = string
   description = "alb listener to which the https listener rule should be added"
   sensitive   = false
 }
-variable "public_alb_dns_name" {
-  type        = string
-  description = "public hostname of the alb, which the poc hostname should be an alias of"
-  sensitive   = false
-}
+#variable "public_alb_dns_name" {
+#  type        = string
+#  description = "public hostname of the alb, which the poc hostname should be an alias of"
+#  sensitive   = false
+#}
 variable "aws_region" {
   type      = string
   sensitive = false

@@ -153,10 +153,7 @@ module "core_webapp" {
   core_webapp_log_group_name           = "core_webapp"
   vpc_id                               = data.terraform_remote_state.common.outputs.vpc_id
   core_webapp_ecs_number_of_containers = 1
-  core_webapp_poc_hostname             = "sbo-core-webapp.shapes-registry.org"
   public_alb_https_listener_arn        = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
-  public_alb_dns_name                  = data.terraform_remote_state.common.outputs.public_alb_dns_name
-  domain_zone_id                       = data.terraform_remote_state.common.outputs.domain_zone_id
   aws_region                           = var.aws_region
   core_webapp_docker_image_url         = "bluebrain/sbo-core-web-app:latest"
   dockerhub_access_iam_policy_arn      = module.dockerhub_secret.dockerhub_access_iam_policy_arn

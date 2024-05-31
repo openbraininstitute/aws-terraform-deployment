@@ -1,42 +1,3 @@
-# TODO: delete POC related entries after migration to the production domain.
-resource "aws_acm_certificate" "core_webapp_poc" {
-  domain_name       = var.core_webapp_poc_hostname
-  validation_method = "DNS"
-  lifecycle {
-    create_before_destroy = true
-  }
-  tags = {
-    SBO_Billing = "core_webapp"
-  }
-}
-
-resource "aws_route53_record" "core_webapp_poc_validation" {
-  for_each = {
-    for dvo in aws_acm_certificate.core_webapp_poc.domain_validation_options : dvo.domain_name => {
-      name   = dvo.resource_record_name
-      record = dvo.resource_record_value
-      type   = dvo.resource_record_type
-    }
-  }
-
-  allow_overwrite = true
-  name            = each.value.name
-  records         = [each.value.record]
-  ttl             = 60
-  type            = each.value.type
-  zone_id         = var.domain_zone_id
-}
-
-resource "aws_acm_certificate_validation" "core_webapp_poc" {
-  certificate_arn         = aws_acm_certificate.core_webapp_poc.arn
-  validation_record_fqdns = [for record in aws_route53_record.core_webapp_poc_validation : record.fqdn]
-}
-
-resource "aws_lb_listener_certificate" "core_webapp_poc" {
-  listener_arn    = var.public_alb_https_listener_arn
-  certificate_arn = aws_acm_certificate_validation.core_webapp_poc.certificate_arn
-}
-
 resource "aws_lb_target_group" "core_webapp" {
   #ts:skip=AC_AWS_0492
   name        = "core-webapp"
@@ -66,12 +27,6 @@ resource "aws_lb_listener_rule" "core_webapp" {
     target_group_arn = aws_lb_target_group.core_webapp.arn
   }
 
-  # condition {
-  #   host_header {
-  #     values = [var.core_webapp_hostname]
-  #   }
-  # }
-
   condition {
     path_pattern {
       values = ["${var.core_webapp_base_path}*"]
@@ -89,9 +44,14 @@ resource "aws_lb_listener_rule" "core_webapp" {
   }
 }
 
+# Generates a separate rule for each of the ranges in allowed_source_ip_cidr_blocks
+# => each individual rule remains below the 5 conditions limit
 resource "aws_lb_listener_rule" "core_webapp_redirect" {
+  # Generates a set [0, 1, 2, ..] with an index for each entry in var.cert_arns
+  for_each = toset(formatlist("%s", range(length(var.allowed_source_ip_cidr_blocks))))
+
   listener_arn = var.public_alb_https_listener_arn
-  priority     = 201
+  priority     = 250 + each.value
 
   action {
     type = "redirect"
@@ -115,49 +75,11 @@ resource "aws_lb_listener_rule" "core_webapp_redirect" {
 
   condition {
     source_ip {
-      values = var.allowed_source_ip_cidr_blocks
+      values = [var.allowed_source_ip_cidr_blocks[each.value]]
     }
   }
 
   tags = {
     SBO_Billing = "core_webapp"
   }
-}
-
-resource "aws_lb_listener_rule" "core_webapp_poc" {
-  listener_arn = var.public_alb_https_listener_arn
-  priority     = 202
-
-  action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.core_webapp.arn
-  }
-
-  condition {
-    host_header {
-      values = [var.core_webapp_poc_hostname]
-    }
-  }
-
-  condition {
-    source_ip {
-      values = var.allowed_source_ip_cidr_blocks
-    }
-  }
-
-  tags = {
-    SBO_Billing = "core_webapp"
-  }
-}
-
-resource "aws_route53_record" "core_webapp_poc" {
-  zone_id = var.domain_zone_id
-  name    = var.core_webapp_poc_hostname
-  type    = "CNAME"
-  ttl     = 60
-  records = [var.public_alb_dns_name]
-}
-
-output "alb_core_webapp_hostname" {
-  value = var.core_webapp_hostname
 }
