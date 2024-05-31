@@ -35,6 +35,10 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
           value = var.postgres_host
         },
         {
+          name  = "POSTGRES_HOST_READ_REPLICA"
+          value = var.postgres_host_read_replica
+        },
+        {
           name  = "ELASTICSEARCH_ENDPOINT"
           value = var.elasticsearch_endpoint
         },

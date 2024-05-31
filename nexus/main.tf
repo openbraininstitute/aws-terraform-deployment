@@ -52,9 +52,10 @@ module "delta" {
   aws_lb_target_group_nexus_app_arn = aws_lb_target_group.nexus_app.arn
   dockerhub_credentials_arn         = var.dockerhub_credentials_arn
 
-  postgres_host          = module.postgres.host
-  elasticsearch_endpoint = module.elasticcloud.http_endpoint
-  blazegraph_endpoint    = "http://${module.blazegraph.blazebraph_dns_name}:9999/blazegraph"
+  postgres_host              = module.postgres.host
+  postgres_host_read_replica = module.postgres.host_read_replica
+  elasticsearch_endpoint     = module.elasticcloud.http_endpoint
+  blazegraph_endpoint        = "http://${module.blazegraph.blazebraph_dns_name}:9999/blazegraph"
 }
 
 module "fusion" {

@@ -58,4 +58,8 @@ resource "aws_db_instance" "nexusdb_read_replica" {
   backup_retention_period      = 0
   publicly_accessible          = false
   performance_insights_enabled = true
+
+  tags = {
+    SBO_Billing = "nexus"
+  }
 }

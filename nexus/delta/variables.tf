@@ -20,6 +20,10 @@ variable "postgres_host" {
   type = string
 }
 
+variable "postgres_host_read_replica" {
+  type = string
+}
+
 variable "elasticsearch_endpoint" {
   type = string
 }
