@@ -32,7 +32,6 @@ resource "aws_db_instance" "nexusdb" {
   db_name    = var.nexus_postgresql_database_name
 
   username = var.nexus_postgresql_database_username
-  #password = var.nexus_postgresql_database_password
   password = data.aws_secretsmanager_secret_version.nexus_database_password.secret_string
 
   publicly_accessible          = false
@@ -46,4 +45,17 @@ resource "aws_db_instance" "nexusdb" {
   tags = {
     SBO_Billing = "nexus"
   }
+}
+
+# tfsec:ignore:aws-rds-enable-performance-insights-encryption
+resource "aws_db_instance" "nexusdb_read_replica" {
+  replicate_source_db = aws_db_instance.nexusdb.identifier
+
+  identifier                   = "nexus-db-read-replica"
+  instance_class               = var.read_replica_instance_class
+  multi_az                     = false
+  skip_final_snapshot          = true
+  backup_retention_period      = 0
+  publicly_accessible          = false
+  performance_insights_enabled = true
 }

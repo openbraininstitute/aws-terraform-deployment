@@ -11,6 +11,10 @@ variable "instance_class" {
   type = string
 }
 
+variable "read_replica_instance_class" {
+  type = string
+}
+
 variable "nexus_postgresql_database_name" {
   type    = string
   default = "nexus_user"
