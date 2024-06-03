@@ -33,24 +33,10 @@ variable "virtual_lab_manager_invite_expiration" {
   sensitive   = false
 }
 
-variable "virtual_lab_manager_invite_link" {
-  default     = "https://openbrainplatform.org/mmb-beta"
-  type        = string
-  description = "virtual lab invite base link to which the invite path (/invite?token=abc) should be appended"
-  sensitive   = false
-}
-
 variable "virtual_lab_manager_mail_username" {
   default     = "AKIAZYSNA64ZRY6UDRMA"
   type        = string
   description = "username for sending emails for invites"
-  sensitive   = false
-}
-
-variable "virtual_lab_manager_mail_from" {
-  default     = "noreply@openbrainplatform.org"
-  type        = string
-  description = "noreply address on behalf of which the email is sent"
   sensitive   = false
 }
 

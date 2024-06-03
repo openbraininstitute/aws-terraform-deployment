@@ -179,8 +179,9 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
           value = var.virtual_lab_manager_invite_expiration
         },
         {
-          name  = "INVITE_LINK_BASE"
-          value = var.virtual_lab_manager_invite_link
+          name = "INVITE_LINK_BASE"
+          # TODO: This should be eventually moved into the module input variables.
+          value = "https://${data.terraform_remote_state.common.outputs.primary_domain}/mmb-beta"
         },
         {
           name  = "MAIL_USERNAME"
@@ -188,7 +189,7 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         },
         {
           name  = "MAIL_FROM"
-          value = var.virtual_lab_manager_mail_from
+          value = "noreply@${data.terraform_remote_state.common.outputs.primary_domain}"
         },
         {
           name  = "MAIL_SERVER"
