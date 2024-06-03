@@ -9,6 +9,7 @@ module "networking" {
 module "postgres" {
   source = "./postgres"
 
+  vpc_id                      = var.vpc_id
   subnets_ids                 = module.networking.psql_subnets_ids
   subnet_security_group_id    = module.networking.main_subnet_sg_id
   instance_class              = "db.t4g.large"
