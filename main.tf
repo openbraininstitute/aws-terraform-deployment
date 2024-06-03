@@ -169,3 +169,45 @@ module "core_webapp" {
   env_KEYCLOAK_ISSUER                    = "https://sboauth.epfl.ch/auth/realms/SBO"
   env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = "pk_test_51P6uAFFE4Bi50cLlatJIc0fUPsP0jQkaCCJ8TTkIYOOLIrLzxX1M9p1kVD11drNqsF9p7yiaumWJ8UHb3ptJJRXB00y3qjYReV"
 }
+
+module "kg_inference_api" {
+  source = "./kg-inference-api"
+
+  public_alb_dns_name           = data.terraform_remote_state.common.outputs.public_alb_dns_name
+  domain_zone_id                = data.terraform_remote_state.common.outputs.domain_zone_id
+  public_alb_https_listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  route_table_id                = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  vpc_cidr_block                = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  vpc_id                        = data.terraform_remote_state.common.outputs.vpc_id
+
+  dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
+  dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
+
+
+  aws_region                        = var.aws_region
+  epfl_cidr                         = var.epfl_cidr
+  kg_inference_api_docker_image_url = "bluebrain/kg-inference-api:latest"
+  kg_inference_api_hostname         = "kg-inference-api.shapes-registry.org"
+  kg_inference_api_log_group_name   = "kg_inference_api"
+}
+
+module "thumbnail_generation_api" {
+  source = "./thumbnail-generation-api"
+
+  #public_alb_dns_name           = data.terraform_remote_state.common.outputs.public_alb_dns_name
+  #domain_zone_id                = data.terraform_remote_state.common.outputs.domain_zone_id
+  public_alb_https_listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  route_table_id                = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  vpc_cidr_block                = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  vpc_id                        = data.terraform_remote_state.common.outputs.vpc_id
+  primary_domain_hostname       = "openbrainplatform.org"
+
+  dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
+  dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
+
+  aws_region                                = var.aws_region
+  epfl_cidr                                 = var.epfl_cidr
+  thumbnail_generation_api_docker_image_url = "bluebrain/thumbnail-generation-api:latest"
+  thumbnail_generation_api_base_path        = "/api/thumbnail-generation"
+  thumbnail_generation_api_log_group_name   = "thumbnail_generation_api"
+}

@@ -62,12 +62,12 @@ resource "aws_iam_role" "kg_inference_api_ecs_task_role" {
 
 resource "aws_iam_role_policy_attachment" "kg_inference_api_ecs_task_role_dockerhub_policy_attachment" {
   role       = aws_iam_role.kg_inference_api_ecs_task_execution_role.name
-  policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
+  policy_arn = var.dockerhub_access_iam_policy_arn
 }
 
 resource "aws_security_group" "kg_inference_api_sec_group" {
   name        = "kg_inference_api_sec_group"
-  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id      = var.vpc_id
   description = "Sec group for kg inference api"
 
   tags = {
@@ -82,7 +82,7 @@ resource "aws_vpc_security_group_ingress_rule" "kg_inference_api_allow_port_8080
   ip_protocol = "tcp"
   from_port   = 8080
   to_port     = 8080
-  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  cidr_ipv4   = var.vpc_cidr_block
   description = "Allow port 8080 http"
   tags = {
     SBO_Billing = "kg_inference_api"
@@ -95,7 +95,7 @@ resource "aws_vpc_security_group_ingress_rule" "kg_inference_api_allow_port_80" 
   ip_protocol = "tcp"
   from_port   = 80
   to_port     = 80
-  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  cidr_ipv4   = var.vpc_cidr_block
   description = "Allow port 80 http"
   tags = {
     SBO_Billing = "kg_inference_api"
@@ -145,7 +145,7 @@ resource "aws_ecs_task_definition" "kg_inference_api_task_definition" {
         name  = "kg-inference-api-container",
         image = var.kg_inference_api_docker_image_url,
         repositoryCredentials = {
-          credentialsParameter = module.dockerhub_secret.dockerhub_credentials_arn
+          credentialsParameter = var.dockerhub_credentials_arn
         },
         essential = true,
         portMappings = [

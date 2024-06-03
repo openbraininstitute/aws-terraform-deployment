@@ -1,6 +1,6 @@
 # Subnet for the KG Inference api
 resource "aws_subnet" "kg_inference_api" {
-  vpc_id                  = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id                  = var.vpc_id
   availability_zone       = "${var.aws_region}a"
   cidr_block              = "10.0.7.0/24"
   map_public_ip_on_launch = false
@@ -14,18 +14,18 @@ resource "aws_subnet" "kg_inference_api" {
 # Link route table to kg_inference_api network
 resource "aws_route_table_association" "kg_inference_api" {
   subnet_id      = aws_subnet.kg_inference_api.id
-  route_table_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  route_table_id = var.route_table_id
 }
 
 resource "aws_network_acl" "kg_inference_api" {
-  vpc_id     = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id     = var.vpc_id
   subnet_ids = [aws_subnet.kg_inference_api.id]
   # Allow local traffic
   ingress {
     protocol   = -1
     rule_no    = 100
     action     = "allow"
-    cidr_block = data.terraform_remote_state.common.outputs.vpc_cidr_block
+    cidr_block = var.vpc_cidr_block
     from_port  = 0
     to_port    = 0
   }

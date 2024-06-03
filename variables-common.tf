@@ -102,55 +102,10 @@ variable "bbp_workflow_web_hostname" {
 }
 
 
-### Thumbnail Generation API ###
-
-variable "thumbnail_generation_api_docker_image_url" {
-  default     = "bluebrain/thumbnail-generation-api:latest"
-  type        = string
-  description = "docker image for the thumbnail generation api"
-  sensitive   = false
-}
-
-variable "thumbnail_generation_api_base_path" {
-  default     = "/api/thumbnail-generation"
-  type        = string
-  description = "The base path for the Thumbnail Generation API"
-  sensitive   = false
-}
-
-variable "thumbnail_generation_api_log_group_name" {
-  default     = "thumbnail_generation_api"
-  type        = string
-  description = "The log name within cloudwatch for the thumbnail generation api"
-  sensitive   = false
-}
-
-### KG Inference API ###
-
-variable "kg_inference_api_docker_image_url" {
-  default     = "bluebrain/kg-inference-api:latest"
-  type        = string
-  description = "docker image for the KG Inference API"
-  sensitive   = false
-}
-
-variable "kg_inference_api_hostname" {
-  default     = "kg-inference-api.shapes-registry.org"
-  type        = string
-  description = "The hostname for the KG Inference API"
-  sensitive   = false
-}
 
 variable "keycloak_server_url" {
   default     = "https://sboauth.epfl.ch/auth/"
   type        = string
   description = "The URL of the Keycloak server"
-  sensitive   = false
-}
-
-variable "kg_inference_api_log_group_name" {
-  default     = "kg_inference_api"
-  type        = string
-  description = "The log name within cloudwatch for the kg inference api"
   sensitive   = false
 }

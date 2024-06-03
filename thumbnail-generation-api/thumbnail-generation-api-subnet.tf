@@ -1,6 +1,6 @@
 # Subnet for the Thumbnail Generation api
 resource "aws_subnet" "thumbnail_generation_api" {
-  vpc_id                  = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id                  = var.vpc_id
   availability_zone       = "${var.aws_region}a"
   cidr_block              = "10.0.8.0/24"
   map_public_ip_on_launch = false
@@ -14,18 +14,18 @@ resource "aws_subnet" "thumbnail_generation_api" {
 # Link route table to thumbnail_generation_api network
 resource "aws_route_table_association" "thumbnail_generation_api" {
   subnet_id      = aws_subnet.thumbnail_generation_api.id
-  route_table_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  route_table_id = var.route_table_id
 }
 
 resource "aws_network_acl" "thumbnail_generation_api" {
-  vpc_id     = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id     = var.vpc_id
   subnet_ids = [aws_subnet.thumbnail_generation_api.id]
   # Allow local traffic
   ingress {
     protocol   = -1
     rule_no    = 100
     action     = "allow"
-    cidr_block = data.terraform_remote_state.common.outputs.vpc_cidr_block
+    cidr_block = var.vpc_cidr_block
     from_port  = 0
     to_port    = 0
   }

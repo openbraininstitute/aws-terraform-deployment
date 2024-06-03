@@ -5,7 +5,7 @@ resource "aws_lb_target_group" "thumbnail_generation_api_tg" {
   port        = 80
   protocol    = "HTTP"
   target_type = "ip"
-  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id      = var.vpc_id
   lifecycle {
     create_before_destroy = true
   }
@@ -20,7 +20,7 @@ resource "aws_lb_target_group" "thumbnail_generation_api_tg" {
 }
 
 resource "aws_lb_listener_rule" "thumbnail_generation_api" {
-  listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  listener_arn = var.public_alb_https_listener_arn
   priority     = 400
 
   action {

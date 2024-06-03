@@ -24,7 +24,7 @@ resource "aws_route53_record" "kg_inference_api_validation" {
   records         = [each.value.record]
   ttl             = 60
   type            = each.value.type
-  zone_id         = data.terraform_remote_state.common.outputs.domain_zone_id
+  zone_id         = var.domain_zone_id
 }
 
 resource "aws_acm_certificate_validation" "kg_inference_api" {
@@ -38,7 +38,7 @@ resource "aws_lb_target_group" "kg_inference_api_tg" {
   port        = 80
   protocol    = "HTTP"
   target_type = "ip"
-  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id      = var.vpc_id
   lifecycle {
     create_before_destroy = true
   }
@@ -53,12 +53,12 @@ resource "aws_lb_target_group" "kg_inference_api_tg" {
 }
 
 resource "aws_lb_listener_certificate" "kg_inference_api" {
-  listener_arn    = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  listener_arn    = var.public_alb_https_listener_arn
   certificate_arn = aws_acm_certificate_validation.kg_inference_api.certificate_arn
 }
 
 resource "aws_lb_listener_rule" "kg_inference_api" {
-  listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  listener_arn = var.public_alb_https_listener_arn
   priority     = 500
 
   action {
@@ -84,11 +84,11 @@ resource "aws_lb_listener_rule" "kg_inference_api" {
 }
 
 resource "aws_route53_record" "kg_inference_api" {
-  zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
+  zone_id = var.domain_zone_id
   name    = var.kg_inference_api_hostname
   type    = "CNAME"
   ttl     = 60
-  records = [data.terraform_remote_state.common.outputs.public_alb_dns_name]
+  records = [var.public_alb_dns_name]
 }
 
 output "alb_kg_inference_api_hostname" {

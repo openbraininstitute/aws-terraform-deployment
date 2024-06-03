@@ -87,12 +87,12 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_attachment" {
 
 resource "aws_iam_role_policy_attachment" "thumbnail_generation_api_ecs_task_role_dockerhub_policy_attachment" {
   role       = aws_iam_role.thumbnail_generation_api_ecs_task_execution_role.name
-  policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
+  policy_arn = var.dockerhub_access_iam_policy_arn
 }
 
 resource "aws_security_group" "thumbnail_generation_api_sec_group" {
   name        = "thumbnail_generation_api_sec_group"
-  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id      = var.vpc_id
   description = "Sec group for thumbnail generation api"
 
   tags = {
@@ -107,7 +107,7 @@ resource "aws_vpc_security_group_ingress_rule" "thumbnail_generation_api_allow_p
   ip_protocol = "tcp"
   from_port   = 8080
   to_port     = 8080
-  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  cidr_ipv4   = var.vpc_cidr_block
   description = "Allow port 8080 http"
   tags = {
     SBO_Billing = "thumbnail_generation_api"
@@ -120,7 +120,7 @@ resource "aws_vpc_security_group_ingress_rule" "thumbnail_generation_api_allow_p
   ip_protocol = "tcp"
   from_port   = 80
   to_port     = 80
-  cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  cidr_ipv4   = var.vpc_cidr_block
   description = "Allow port 80 http"
   tags = {
     SBO_Billing = "thumbnail_generation_api"
@@ -170,7 +170,7 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
         name  = "thumbnail-generation-api-container",
         image = var.thumbnail_generation_api_docker_image_url,
         repositoryCredentials = {
-          credentialsParameter = module.dockerhub_secret.dockerhub_credentials_arn
+          credentialsParameter = var.dockerhub_credentials_arn
         },
         essential = true,
         portMappings = [
@@ -182,7 +182,7 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
         environment = [
           {
             name  = "WHITELISTED_CORS_URLS",
-            value = "http://localhost:3000,https://${data.terraform_remote_state.common.outputs.primary_domain}"
+            value = "http://localhost:3000,https://${var.primary_domain_hostname}"
           },
           {
             name  = "BASE_PATH"

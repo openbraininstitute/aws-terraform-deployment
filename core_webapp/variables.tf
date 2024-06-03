@@ -44,11 +44,13 @@ variable "core_webapp_docker_image_url" {
   sensitive   = false
 }
 variable "dockerhub_access_iam_policy_arn" {
-  type = string
+  type      = string
+  sensitive = false
 }
 
 variable "dockerhub_credentials_arn" {
-  type = string
+  type      = string
+  sensitive = false
 }
 variable "core_webapp_hostname" {
   type        = string
