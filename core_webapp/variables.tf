@@ -52,11 +52,6 @@ variable "dockerhub_credentials_arn" {
   type      = string
   sensitive = false
 }
-variable "core_webapp_hostname" {
-  type        = string
-  description = "The hostname for the core webapp"
-  sensitive   = false
-}
 
 # TODO: update to "/app/core" after migration to the production domain.
 variable "core_webapp_base_path" {

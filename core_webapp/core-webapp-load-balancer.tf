@@ -62,12 +62,6 @@ resource "aws_lb_listener_rule" "core_webapp_redirect" {
   }
 
   condition {
-    host_header {
-      values = [var.core_webapp_hostname]
-    }
-  }
-
-  condition {
     path_pattern {
       values = ["/", "/static/coming-soon/index.html"]
     }

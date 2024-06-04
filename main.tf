@@ -158,14 +158,13 @@ module "core_webapp" {
   core_webapp_docker_image_url         = "bluebrain/sbo-core-web-app:latest"
   dockerhub_access_iam_policy_arn      = module.dockerhub_secret.dockerhub_access_iam_policy_arn
   dockerhub_credentials_arn            = module.dockerhub_secret.dockerhub_credentials_arn
-  core_webapp_hostname                 = "openbrainplatform.org"
   core_webapp_base_path                = "/mmb-beta"
   route_table_id                       = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
   allowed_source_ip_cidr_blocks        = [var.epfl_cidr, data.terraform_remote_state.common.outputs.vpc_cidr_block, var.bbp_dmz_cidr]
   vpc_cidr_block                       = data.terraform_remote_state.common.outputs.vpc_cidr_block
 
   env_DEBUG                              = "true"
-  env_NEXTAUTH_URL                       = "https://openbrainplatform.org/mmb-beta/api/auth"
+  env_NEXTAUTH_URL                       = "https://${data.terraform_remote_state.common.outputs.primary_domain}/mmb-beta/api/auth"
   env_KEYCLOAK_ISSUER                    = "https://sboauth.epfl.ch/auth/realms/SBO"
   env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = "pk_test_51P6uAFFE4Bi50cLlatJIc0fUPsP0jQkaCCJ8TTkIYOOLIrLzxX1M9p1kVD11drNqsF9p7yiaumWJ8UHb3ptJJRXB00y3qjYReV"
 }
