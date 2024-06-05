@@ -178,6 +178,7 @@ resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_e
       jsondecode(local.readonly_access_policy_statement_part1),
       jsondecode(local.readonly_access_policy_statement_part2),
       jsondecode(local.sbo_ecs_full_access_policy_statement),
+      jsondecode(local.sbo_ecr_allow_pull_push_policy_statement),
       jsondecode(local.pass_role_to_ecs_policy_statement),
     ]
   })
@@ -216,6 +217,21 @@ locals {
       "ecs:RunTask",
       "ecs:StopTask",
       "ssm:StartSession",
+    ]
+    Resource = "*"
+  })
+
+  # from https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-policy-examples.html#IAM_within_account
+  sbo_ecr_allow_pull_push_policy_statement = jsonencode({
+    Effect = "Allow"
+    Action = [
+      "ecr:BatchGetImage",
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:CompleteLayerUpload",
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:InitiateLayerUpload",
+      "ecr:PutImage",
+      "ecr:UploadLayerPart",
     ]
     Resource = "*"
   })
