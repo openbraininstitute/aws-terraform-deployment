@@ -88,3 +88,7 @@ module "efs" {
   compute_subnet_efs_ids   = module.networking.compute_subnet_efs_ids
   av_zone_suffixes         = var.av_zone_suffixes
 }
+
+module "ecr" {
+  source = "./ecr/"
+}
