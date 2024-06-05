@@ -3,7 +3,7 @@ output "host" {
 }
 
 output "second_host" {
-  value = aws_db_instance.nexus.address
+  value = aws_db_instance.nexus_psql.address
 }
 
 output "host_read_replica" {
