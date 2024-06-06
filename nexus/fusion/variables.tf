@@ -29,7 +29,7 @@ variable "nexus_fusion_hostname" {
 }
 
 variable "nexus_fusion_docker_image_url" {
-  default   = "bluebrain/nexus-web:1.10.0-M2-fix-tag-data-download"
+  default   = "bluebrain/nexus-web:1.10.0-M2-resource-validation"
   sensitive = false
   type      = string
 }
