@@ -59,10 +59,6 @@ resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
           value = "https://${var.nexus_fusion_hostname}/nexus/web/"
         },
         {
-          name  = "LOGO_IMG"
-          value = "https://drive.google.com/uc?id=1PDRUz6qd2rcSLX6S1Lf2oWdTNWeX8Ug9"
-        },
-        {
           name  = "JIRA_URL"
           value = "https://bbpteam.epfl.ch/project/issues"
         },
