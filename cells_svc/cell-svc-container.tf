@@ -198,6 +198,10 @@ resource "aws_vpc_security_group_egress_rule" "cell_svc_task_egress_tcp_udp" {
 # { ECS Task
 resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
   family       = "cell_svc_task_family"
+
+  execution_role_arn = aws_iam_role.ecs_cell_svc_task_execution_role.arn
+  task_role_arn      = aws_iam_role.ecs_cell_svc_task_role.arn
+
   network_mode = "awsvpc"
 
   volume {
@@ -249,8 +253,6 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
 
   cpu                = 256
   memory             = 1024
-  execution_role_arn = aws_iam_role.ecs_cell_svc_task_execution_role.arn
-  task_role_arn      = aws_iam_role.ecs_cell_svc_task_role.arn
 
   tags = { SBO_Billing = "cell_svc" }
 }
@@ -261,7 +263,7 @@ resource "aws_ecs_service" "cell_svc_ecs_service" {
   launch_type     = "EC2"
   task_definition = aws_ecs_task_definition.cell_svc_ecs_definition.arn
   desired_count   = var.cell_svc_ecs_number_of_containers
-  # Doesn't work - iam_role                           = aws_iam_service_linked_role.cells_ecs_service_role.arn
+
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
 
@@ -286,7 +288,6 @@ resource "aws_ecs_service" "cell_svc_ecs_service" {
   depends_on = [
     aws_cloudwatch_log_group.cell_svc,
     aws_iam_role.ecs_cell_svc_task_execution_role #, # wrong?
-    #aws_autoscaling_group.cell_svc_ecs_instance_asg
   ]
   # force redeployment on each tf apply
   force_new_deployment = true
@@ -375,6 +376,32 @@ data "aws_iam_policy_document" "cells_ecs_task_assume_role_policy" {
   }
 }
 
+#tfsec:ignore:aws-iam-no-policy-wildcards
+resource "aws_iam_policy" "cloudwatch_write_policy" {
+  name        = "cl_cloudwatch_write_policy"
+  description = "A policy that grants write access to Cloudwatch logs"
+
+  policy = jsonencode(
+    {
+      "Version" : "2012-10-17",
+      "Statement" : [
+        {
+          "Effect" : "Allow",
+          "Action" : [
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents",
+            "logs:DescribeLogStreams"
+          ],
+          "Resource" : [
+            "arn:aws:logs:*:*:*"
+          ]
+        }
+      ]
+    }
+  )
+}
+
 resource "aws_iam_role_policy_attachment" "ecs_cell_svc_task_execution_role_policy_attachment" {
   role       = aws_iam_role.ecs_cell_svc_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
@@ -384,6 +411,11 @@ resource "aws_iam_role_policy_attachment" "ecs_cell_svc_task_execution_role_poli
 resource "aws_iam_role_policy_attachment" "ecs_cell_svc_task_role_dockerhub_policy_attachment" {
   role       = aws_iam_role.ecs_cell_svc_task_execution_role.name
   policy_arn = var.dockerhub_access_iam_policy_arn
+}
+
+resource "aws_iam_role_policy_attachment" "cloudwatch_write_logs" {
+  role       = aws_iam_role.ecs_cell_svc_task_execution_role.name
+  policy_arn = aws_iam_policy.cloudwatch_write_policy.arn
 }
 # }
 
