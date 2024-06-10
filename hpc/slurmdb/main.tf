@@ -32,7 +32,7 @@ resource "aws_db_instance" "slurmdb" {
   engine         = "mysql"
   engine_version = "8.0.35"
   multi_az       = false
-  instance_class = "db.t3.small"
+  instance_class = "db.t3.micro"
 
   identifier = "hpc-slurm-db"
 

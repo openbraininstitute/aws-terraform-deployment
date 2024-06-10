@@ -146,6 +146,7 @@ module "hpc" {
   peering_route_tables       = ["rtb-0e4eb2a1cbab24423"]
   existing_route_targets     = ["172.16.0.0/16"]
   account_id                 = "671250183987"
+  lambda_subnet_cidr         = "10.0.16.0/24"
 }
 
 module "core_webapp" {

@@ -62,3 +62,8 @@ variable "existing_route_targets" {
 variable "account_id" {
   type = string
 }
+
+variable "lambda_subnet_cidr" {
+  description = "CIDR for the subnet in which lambdas can be deployed"
+  type        = string
+}

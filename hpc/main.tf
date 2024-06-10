@@ -42,6 +42,7 @@ module "networking" {
   security_groups           = [module.security.compute_hpc_sg_id]
   peering_sg_id             = module.security.vpc_peering_security_group_id
   obp_vpc_default_sg_id     = module.security.obp_vpc_default_sg_id
+  lambda_subnet_cidr        = var.lambda_subnet_cidr
 }
 
 module "security" {

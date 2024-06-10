@@ -63,3 +63,8 @@ variable "obp_vpc_default_sg_id" {
   description = "ID for the default security group in the OBP VPC"
   type        = string
 }
+
+variable "lambda_subnet_cidr" {
+  description = "CIDR for the subnet in which lambdas can be deployed"
+  type        = string
+}
