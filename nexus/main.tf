@@ -27,6 +27,9 @@ module "elasticcloud" {
 module "blazegraph" {
   source = "./blazegraph"
 
+  blazegraph_instance_name = "blazegraph"
+  blazegraph_efs_name      = "sbo-poc-blazegraph" # needs to be like this for this instance; once it is decomissioned it doesn't have to be specified anymore
+
   aws_region                  = var.aws_region
   vpc_id                      = var.vpc_id
   subnet_id                   = module.networking.subnet_id
@@ -55,7 +58,7 @@ module "delta" {
   postgres_host              = module.postgres.host
   postgres_host_read_replica = module.postgres.host_read_replica
   elasticsearch_endpoint     = module.elasticcloud.http_endpoint
-  blazegraph_endpoint        = "http://${module.blazegraph.blazebraph_dns_name}:9999/blazegraph"
+  blazegraph_endpoint        = module.blazegraph.http_endpoint
 }
 
 module "fusion" {

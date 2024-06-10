@@ -9,7 +9,6 @@ resource "aws_ecs_service" "blazegraph_ecs_service" {
 
   task_definition = aws_ecs_task_definition.blazegraph_ecs_definition.arn
   desired_count   = 1
-  #iam_role        = "${var.ecs_iam_role_name}"
 
   # ensure that there are not multiple tasks running at the same time during deployment
   deployment_maximum_percent         = 100
@@ -19,11 +18,11 @@ resource "aws_ecs_service" "blazegraph_ecs_service" {
     enabled   = true
     namespace = var.aws_service_discovery_http_namespace_arn
     service {
-      discovery_name = "blazegraph"
-      port_name      = "blazegraph"
+      discovery_name = var.blazegraph_instance_name
+      port_name      = var.blazegraph_instance_name
       client_alias {
-        dns_name = "blazegraph-svc"
-        port     = 9999
+        dns_name = "${var.blazegraph_instance_name}-svc"
+        port     = var.blazegraph_port
       }
     }
   }
@@ -35,14 +34,11 @@ resource "aws_ecs_service" "blazegraph_ecs_service" {
   }
   depends_on = [
     aws_cloudwatch_log_group.blazegraph_app
-    #aws_iam_role.ecs_blazegraph_task_execution_role, # wrong?
-
   ]
+
   # force redeployment on each tf apply
   force_new_deployment = true
-  #triggers = {
-  #  redeployment = timestamp()
-  #}
+
   lifecycle {
     ignore_changes = [desired_count]
   }

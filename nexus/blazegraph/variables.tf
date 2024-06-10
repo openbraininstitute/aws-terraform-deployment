@@ -29,6 +29,22 @@ variable "ecs_task_execution_role_arn" {
 
 # Blazegraph specific
 
+variable "blazegraph_instance_name" {
+  type        = string
+  description = "The name of this Blazegraph instance"
+}
+
+variable "blazegraph_efs_name" {
+  type        = string
+  description = "The name of the EFS for Blazegraph"
+}
+
+variable "blazegraph_port" {
+  type        = number
+  default     = 9999
+  description = "The port on which this Blazegraph instance is available"
+}
+
 variable "blazegraph_docker_image_url" {
   default   = "bluebrain/blazegraph-nexus:2.1.6-RC"
   sensitive = false

@@ -15,10 +15,10 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
       family      = "blazegraph"
       portMappings = [
         {
-          hostPort      = 9999
-          containerPort = 9999
+          hostPort      = var.blazegraph_port
+          containerPort = var.blazegraph_port
           protocol      = "tcp"
-          name          = "blazegraph"
+          name          = var.blazegraph_instance_name
         }
       ]
       essential = true
@@ -27,7 +27,7 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
       environment = [
         {
           name  = "JAVA_OPTS"
-          value = " -Dlog4j.configuration=/var/lib/blazegraph/log4j/log4j.properties -Djava.awt.headless=true -Djava.awt.headless=true -XX:MaxDirectMemorySize=600m -Xms3g -Xmx3g -XX:+UseG1GC "
+          value = "-Dlog4j.rootLogger=\"INFO, stdout\" -Dlog4j.appender.stdout=org.apache.log4j.ConsoleAppender -Dlog4j.appender.stdout.Target=System.out -Dlog4j.appender.stdout.layout=org.apache.log4j.PatternLayout -Dlog4j.appender.stdout.layout.ConversionPattern=\"%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n\" -Djava.awt.headless=true -Djava.awt.headless=true -XX:MaxDirectMemorySize=600m -Xms3g -Xmx3g -XX:+UseG1GC "
         },
         {
           name  = "JETTY_START_TIMEOUT"
@@ -55,11 +55,6 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
           sourceVolume  = "efs-blazegraph-data"
           containerPath = "/var/lib/blazegraph/data"
           readOnly      = false
-        },
-        {
-          sourceVolume  = "efs-blazegraph-log4j"
-          containerPath = "/var/lib/blazegraph/log4j"
-          readOnly      = false
         }
       ]
     }
@@ -75,14 +70,6 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
     efs_volume_configuration {
       file_system_id     = aws_efs_file_system.blazegraph.id
       root_directory     = var.efs_blazegraph_data_dir
-      transit_encryption = "ENABLED"
-    }
-  }
-  volume {
-    name = "efs-blazegraph-log4j"
-    efs_volume_configuration {
-      file_system_id     = aws_efs_file_system.blazegraph.id
-      root_directory     = var.efs_blazegraph_log4j_dir
       transit_encryption = "ENABLED"
     }
   }
