@@ -8,27 +8,24 @@
 # aws_region
 # epfl_cidr
 # kg_inference_api_docker_image_url
-# kg_inference_api_hostname
+# kg_inference_api_base_path
 # kg_inference_api_log_group_name
 
+variable "epfl_cidr" {
+  sensitive = false
+  type      = string
+}
 variable "aws_region" {
   type      = string
   sensitive = false
 }
-
-variable "domain_zone_id" {
-  type        = string
-  description = "zone id of the domain where the poc hostname should be added"
-  sensitive   = false
+variable "primary_domain_hostname" {
+  type      = string
+  sensitive = false
 }
 variable "public_alb_https_listener_arn" {
   type        = string
   description = "alb listener to which the https listener rule should be added"
-  sensitive   = false
-}
-variable "public_alb_dns_name" {
-  type        = string
-  description = "public hostname of the alb, which the poc hostname should be an alias of"
   sensitive   = false
 }
 variable "route_table_id" {
@@ -45,10 +42,6 @@ variable "vpc_id" {
   sensitive   = false
   description = "ID of the VPC"
 }
-variable "epfl_cidr" {
-  sensitive = false
-  type      = string
-}
 
 variable "kg_inference_api_docker_image_url" {
   # default     = "bluebrain/kg-inference-api:latest"
@@ -57,10 +50,10 @@ variable "kg_inference_api_docker_image_url" {
   sensitive   = false
 }
 
-variable "kg_inference_api_hostname" {
-  # default     = "kg-inference-api.shapes-registry.org"
+variable "kg_inference_api_base_path" {
+  # default     = "/api/kg-inference"
   type        = string
-  description = "The hostname for the KG Inference API"
+  description = "The base path for the KG Inference API"
   sensitive   = false
 }
 

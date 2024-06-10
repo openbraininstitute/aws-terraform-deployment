@@ -60,6 +60,31 @@ resource "aws_iam_role" "kg_inference_api_ecs_task_role" {
   }
 }
 
+resource "aws_iam_policy" "kg_inference_api_ecs_task_logs" {
+  name        = "kg_inference_api-ecsTaskLogs"
+  description = "Allows ECS tasks to create log streams and log groups in CloudWatch Logs"
+
+  policy = jsonencode({
+    Version = "2012-10-17" #tfsec:ignore:aws-iam-no-policy-wildcards
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogStream",
+          "logs:CreateLogGroup"
+        ]
+        Resource = "arn:aws:logs:us-east-1:671250183987:log-group:*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_attachment" {
+  role       = aws_iam_role.kg_inference_api_ecs_task_execution_role.name
+  policy_arn = aws_iam_policy.kg_inference_api_ecs_task_logs.arn
+}
+
+
 resource "aws_iam_role_policy_attachment" "kg_inference_api_ecs_task_role_dockerhub_policy_attachment" {
   role       = aws_iam_role.kg_inference_api_ecs_task_execution_role.name
   policy_arn = var.dockerhub_access_iam_policy_arn
@@ -183,6 +208,10 @@ resource "aws_ecs_task_definition" "kg_inference_api_task_definition" {
             name  = "SPARQL_RULE_VIEW",
             value = "https://bbp.epfl.ch/neurosciencegraph/data/views/aggreg-sp/rule_view"
           },
+          {
+            name  = "BASE_PATH"
+            value = "${var.kg_inference_api_base_path}"
+          }
         ],
         memory = 2048
         cpu    = 1024

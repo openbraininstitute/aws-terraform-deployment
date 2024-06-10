@@ -174,12 +174,13 @@ module "core_webapp" {
 module "kg_inference_api" {
   source = "./kg-inference-api"
 
-  public_alb_dns_name           = data.terraform_remote_state.common.outputs.public_alb_dns_name
-  domain_zone_id                = data.terraform_remote_state.common.outputs.domain_zone_id
+  # public_alb_dns_name           = data.terraform_remote_state.common.outputs.public_alb_dns_name
+  # domain_zone_id                = data.terraform_remote_state.common.outputs.domain_zone_id
   public_alb_https_listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
   route_table_id                = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
   vpc_cidr_block                = data.terraform_remote_state.common.outputs.vpc_cidr_block
   vpc_id                        = data.terraform_remote_state.common.outputs.vpc_id
+  primary_domain_hostname       = "openbrainplatform.org"
 
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
@@ -188,7 +189,7 @@ module "kg_inference_api" {
   aws_region                        = var.aws_region
   epfl_cidr                         = var.epfl_cidr
   kg_inference_api_docker_image_url = "bluebrain/kg-inference-api:latest"
-  kg_inference_api_hostname         = "kg-inference-api.shapes-registry.org"
+  kg_inference_api_base_path         = "/api/kg-inference"
   kg_inference_api_log_group_name   = "kg_inference_api"
 }
 
