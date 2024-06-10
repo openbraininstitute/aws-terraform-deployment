@@ -27,7 +27,7 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
       environment = [
         {
           name  = "JAVA_OPTS"
-          value = "-Dlog4j.rootLogger=\"INFO, stdout\" -Dlog4j.appender.stdout=org.apache.log4j.ConsoleAppender -Dlog4j.appender.stdout.Target=System.out -Dlog4j.appender.stdout.layout=org.apache.log4j.PatternLayout -Dlog4j.appender.stdout.layout.ConversionPattern=\"%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n\" -Djava.awt.headless=true -Djava.awt.headless=true -XX:MaxDirectMemorySize=600m -Xms3g -Xmx3g -XX:+UseG1GC "
+          value = "-Djava.awt.headless=true -Djava.awt.headless=true -XX:MaxDirectMemorySize=600m -Xms3g -Xmx3g -XX:+UseG1GC "
         },
         {
           name  = "JETTY_START_TIMEOUT"
