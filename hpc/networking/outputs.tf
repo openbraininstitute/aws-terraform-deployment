@@ -17,3 +17,7 @@ output "compute_subnet_public_id" {
 output "compute_subnet_efs_ids" {
   value = local.aws_subnet_compute_efs_ids
 }
+
+output "lambda_subnet_id" {
+  value = aws_subnet.lambda.id
+}

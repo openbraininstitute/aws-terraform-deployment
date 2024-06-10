@@ -1,3 +1,20 @@
+# Bring the default security group under Terraform management
+resource "aws_default_security_group" "default" {
+  vpc_id = var.obp_vpc_id
+  ingress {
+    protocol  = -1
+    self      = true
+    from_port = 0
+    to_port   = 0
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 data "aws_subnet" "slurm_db_a" {
   id    = var.slurm_db_a_subnet_id
   count = var.create_slurmdb ? 1 : 0

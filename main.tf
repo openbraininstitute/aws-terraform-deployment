@@ -145,6 +145,7 @@ module "hpc" {
   av_zone_suffixes           = ["a", "b", "c", "d"]
   peering_route_tables       = ["rtb-0e4eb2a1cbab24423"]
   existing_route_targets     = ["172.16.0.0/16"]
+  account_id                 = "671250183987"
 }
 
 module "core_webapp" {

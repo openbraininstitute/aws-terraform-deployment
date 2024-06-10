@@ -58,3 +58,7 @@ variable "peering_route_tables" {
 variable "existing_route_targets" {
   type = list(string)
 }
+
+variable "account_id" {
+  type = string
+}

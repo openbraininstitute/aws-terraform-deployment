@@ -23,3 +23,7 @@ variable "create_jumphost" {
 variable "create_slurmdb" {
   type = bool
 }
+
+variable "account_id" {
+  type = string
+}

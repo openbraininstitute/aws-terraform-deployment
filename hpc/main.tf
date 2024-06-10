@@ -40,6 +40,8 @@ module "networking" {
   peering_route_tables      = var.peering_route_tables
   existing_route_targets    = var.existing_route_targets
   security_groups           = [module.security.compute_hpc_sg_id]
+  peering_sg_id             = module.security.vpc_peering_security_group_id
+  obp_vpc_default_sg_id     = module.security.obp_vpc_default_sg_id
 }
 
 module "security" {
@@ -51,6 +53,7 @@ module "security" {
   create_jumphost          = var.create_jumphost
   create_slurmdb           = var.create_slurmdb
   slurm_db_a_subnet_id     = module.networking.slurm_db_a_subnet_id
+  account_id               = var.account_id
 }
 
 module "slurmdb" {
@@ -91,4 +94,15 @@ module "efs" {
 
 module "ecr" {
   source = "./ecr/"
+}
+
+module "resource-provisioner" {
+  source = "./resource-provisioner/"
+
+  hpc_resource_provisioner_role       = module.security.resource_provisioner_iam_role_arn
+  hpc_resource_provisioner_image_uri  = "${var.account_id}.dkr.ecr.${var.aws_region}.amazonaws.com/hpc-resource-provisioner:latest"
+  hpc_resource_provisioner_subnet_ids = [module.networking.lambda_subnet_id]
+  hpc_resource_provisioner_sg_ids     = [module.security.obp_vpc_default_sg_id, module.security.vpc_peering_security_group_id]
+  aws_region                          = var.aws_region
+  account_id                          = var.account_id
 }
