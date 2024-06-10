@@ -13,3 +13,11 @@ output "main_subnet_sg_id" {
 output "psql_subnets_ids" {
   value = [aws_subnet.nexus_db_a.id, aws_subnet.nexus_db_b.id]
 }
+
+output "elastic_vpc_endpoint_id" {
+  value = aws_vpc_endpoint.nexus_es_vpc_ep.id
+}
+
+output "elastic_hosted_zone_name" {
+  value = aws_route53_zone.nexus_es_zone.name
+}

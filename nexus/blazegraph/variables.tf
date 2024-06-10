@@ -29,6 +29,16 @@ variable "ecs_task_execution_role_arn" {
 
 # Blazegraph specific
 
+variable "blazegraph_cpu" {
+  type        = number
+  description = "vCPU value for blazegraph task"
+}
+
+variable "blazegraph_memory" {
+  type        = number
+  description = "RAM value for blazegraph task"
+}
+
 variable "blazegraph_instance_name" {
   type        = string
   description = "The name of this Blazegraph instance"

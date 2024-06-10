@@ -4,7 +4,6 @@ resource "aws_ecs_service" "nexus_app_ecs_service" {
   launch_type     = "FARGATE"
   task_definition = aws_ecs_task_definition.nexus_app_ecs_definition.arn
   desired_count   = 1
-  #iam_role        = "${var.ecs_iam_role_name}"
 
   # ensure that there are not multiple tasks running at the same time during deployment
   deployment_maximum_percent         = 100

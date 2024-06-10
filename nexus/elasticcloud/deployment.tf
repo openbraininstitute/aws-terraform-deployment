@@ -12,7 +12,7 @@ resource "ec_deployment" "deployment" {
 
   elasticsearch = {
     hot = {
-      size        = "4g"
+      size        = var.hot_node_size
       zone_count  = 1
       autoscaling = {}
     }
@@ -33,8 +33,6 @@ resource "ec_deployment_traffic_filter" "deployment_filter" {
   type   = "vpce"
 
   rule {
-    source = aws_vpc_endpoint.nexus_es_vpc_ep.id
+    source = var.elastic_vpc_endpoint_id
   }
-
-  depends_on = [aws_vpc_endpoint.nexus_es_vpc_ep]
 }

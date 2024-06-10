@@ -4,14 +4,14 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
-variable "vpc_id" {
+variable "elastic_vpc_endpoint_id" {
   type        = string
-  description = "VPC ID"
+  description = "id of the vpc endpoint to use for the ES traffic filter"
 }
 
-variable "subnet_ids" {
-  type        = list(string)
-  description = "ID's of the subnets to use for the VPCE. Be aware they MUST be in the supported AZ (https://www.elastic.co/guide/en/cloud/current/ec-traffic-filtering-vpc.html#ec-traffic-filtering-vpc)"
+variable "elastic_hosted_zone_name" {
+  type        = string
+  description = "name of the hosted zone in which the VPC endpoint exists"
 }
 
 variable "deployment_name" {
@@ -20,25 +20,9 @@ variable "deployment_name" {
 }
 
 /**
-* Route53
+* Elasticsearch cluster
 **/
-variable "zone_name" {
+variable "hot_node_size" {
   type        = string
-  description = "Route53 zone name. By default: us-east-1"
-  default     = "vpce.us-east-1.aws.elastic-cloud.com"
-}
-
-variable "record_ttl" {
-  type        = string
-  description = "TTL for the Route53 Record. By default: 300"
-  default     = "300"
-}
-
-/**
-* Private Link
-**/
-variable "service_name" {
-  type        = string
-  description = "The PrivateLink service name for your elastic cloud deployment. By default, us-east-1 (https://www.elastic.co/guide/en/cloud/current/ec-traffic-filtering-vpc.html)"
-  default     = "com.amazonaws.vpce.us-east-1.vpce-svc-0e42e1e06ed010238"
+  description = "sizing for the hot nodes of the cluster. In Elastic Cloud this is specified as a RAM value eg. 4g"
 }

@@ -1,17 +1,12 @@
-locals {
-  blazegraph_cpu    = 1024
-  blazegraph_memory = 6144
-}
-
 resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
-  family       = "blazegraph_task_family"
+  family       = "${var.blazegraph_instance_name}_task_family"
   network_mode = "awsvpc"
 
   container_definitions = jsonencode([
     {
-      memory      = local.blazegraph_memory
+      memory      = var.blazegraph_memory
       networkMode = "awsvpc"
-      cpu         = local.blazegraph_cpu
+      cpu         = var.blazegraph_cpu
       family      = "blazegraph"
       portMappings = [
         {
@@ -60,8 +55,8 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
     }
   ])
 
-  cpu                      = local.blazegraph_cpu
-  memory                   = local.blazegraph_memory
+  cpu                      = var.blazegraph_cpu
+  memory                   = var.blazegraph_memory
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = var.ecs_task_execution_role_arn
 

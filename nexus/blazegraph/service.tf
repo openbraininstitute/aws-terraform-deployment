@@ -3,7 +3,7 @@ locals {
 }
 
 resource "aws_ecs_service" "blazegraph_ecs_service" {
-  name        = "blazegraph_ecs_service"
+  name        = "${var.blazegraph_instance_name}_ecs_service"
   cluster     = var.ecs_cluster_arn
   launch_type = "FARGATE"
 

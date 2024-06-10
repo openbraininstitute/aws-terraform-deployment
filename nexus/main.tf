@@ -18,17 +18,23 @@ module "postgres" {
 module "elasticcloud" {
   source = "./elasticcloud"
 
-  aws_region      = var.aws_region
-  vpc_id          = var.vpc_id
-  subnet_ids      = [module.networking.subnet_b_id]
+  aws_region               = var.aws_region
+  elastic_vpc_endpoint_id  = module.networking.elastic_vpc_endpoint_id
+  elastic_hosted_zone_name = module.networking.elastic_hosted_zone_name
+
+  hot_node_size   = "4g"
   deployment_name = "nexus-es"
 }
 
 module "blazegraph" {
   source = "./blazegraph"
 
+  blazegraph_cpu    = 1024
+  blazegraph_memory = 6144
+
   blazegraph_instance_name = "blazegraph"
-  blazegraph_efs_name      = "sbo-poc-blazegraph" # needs to be like this for this instance; once it is decomissioned it doesn't have to be specified anymore
+  blazegraph_efs_name      = "sbo-poc-blazegraph"
+  # needs to be like this for this instance; once it is decomissioned it doesn't have to be specified anymore
 
   aws_region                  = var.aws_region
   vpc_id                      = var.vpc_id
@@ -90,7 +96,57 @@ module "ship" {
   second_target_bucket_arn    = module.delta.nexus_bucket_arn
 }
 
+#######################
+## SECOND DEPLOYMENT ##
+#######################
+
+module "blazegraph_main" {
+  source = "./blazegraph"
+
+  blazegraph_cpu    = 256
+  blazegraph_memory = 1024
+
+  blazegraph_instance_name = "blazegraph-main"
+  blazegraph_efs_name      = "blazegraph-main"
+  efs_blazegraph_data_dir  = "/"
+
+  aws_region                  = var.aws_region
+  vpc_id                      = var.vpc_id
+  subnet_id                   = module.networking.subnet_id
+  subnet_security_group_id    = module.networking.main_subnet_sg_id
+  ecs_task_execution_role_arn = aws_iam_role.nexus_ecs_task_execution.arn
+
+  ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
+  aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
+}
+
+module "elasticsearch" {
+  source = "./elasticcloud"
+
+  aws_region               = var.aws_region
+  elastic_vpc_endpoint_id  = module.networking.elastic_vpc_endpoint_id
+  elastic_hosted_zone_name = module.networking.elastic_hosted_zone_name
+
+  hot_node_size   = "1g"
+  deployment_name = "nexus-elasticsearch"
+}
+
 moved {
-  from = module.delta.aws_iam_policy.sbo_nexus_app_secrets_access
-  to   = aws_iam_policy.nexus_secrets_access
+  from = module.elasticcloud.aws_security_group.nexus_es_sg
+  to   = module.networking.aws_security_group.nexus_es_sg
+}
+
+moved {
+  from = module.elasticcloud.aws_vpc_endpoint.nexus_es_vpc_ep
+  to   = module.networking.aws_vpc_endpoint.nexus_es_vpc_ep
+}
+
+moved {
+  from = module.elasticcloud.aws_route53_zone.nexus_es_zone
+  to   = module.networking.aws_route53_zone.nexus_es_zone
+}
+
+moved {
+  from = module.elasticcloud.aws_route53_record.nexus_es_record
+  to   = module.networking.aws_route53_record.nexus_es_record
 }
