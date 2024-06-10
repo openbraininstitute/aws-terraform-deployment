@@ -38,12 +38,13 @@ resource "aws_lb_target_group" "nexus_app" {
   protocol             = "HTTP"
   target_type          = "ip"
   vpc_id               = var.vpc_id
-  deregistration_delay = "30"
+  deregistration_delay = "20"
   health_check {
     enabled             = true
     path                = "/v1/version"
     protocol            = "HTTP"
     unhealthy_threshold = 10
+    timeout             = 10
   }
   lifecycle {
     create_before_destroy = true

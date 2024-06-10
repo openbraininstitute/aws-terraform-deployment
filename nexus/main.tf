@@ -104,7 +104,7 @@ module "blazegraph_main" {
   source = "./blazegraph"
 
   blazegraph_cpu    = 256
-  blazegraph_memory = 1024
+  blazegraph_memory = 2048
 
   blazegraph_instance_name = "blazegraph-main"
   blazegraph_efs_name      = "blazegraph-main"
@@ -129,24 +129,4 @@ module "elasticsearch" {
 
   hot_node_size   = "1g"
   deployment_name = "nexus-elasticsearch"
-}
-
-moved {
-  from = module.elasticcloud.aws_security_group.nexus_es_sg
-  to   = module.networking.aws_security_group.nexus_es_sg
-}
-
-moved {
-  from = module.elasticcloud.aws_vpc_endpoint.nexus_es_vpc_ep
-  to   = module.networking.aws_vpc_endpoint.nexus_es_vpc_ep
-}
-
-moved {
-  from = module.elasticcloud.aws_route53_zone.nexus_es_zone
-  to   = module.networking.aws_route53_zone.nexus_es_zone
-}
-
-moved {
-  from = module.elasticcloud.aws_route53_record.nexus_es_record
-  to   = module.networking.aws_route53_record.nexus_es_record
 }
