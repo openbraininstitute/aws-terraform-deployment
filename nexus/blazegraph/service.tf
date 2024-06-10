@@ -1,5 +1,5 @@
 locals {
-  blazegraph_app_log_group_name = "blazegraph_app"
+  blazegraph_app_log_group_name = "${var.blazegraph_instance_name}_app"
 }
 
 resource "aws_ecs_service" "blazegraph_ecs_service" {
