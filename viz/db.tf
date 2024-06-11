@@ -73,6 +73,9 @@ resource "aws_db_instance" "viz" {
 
   skip_final_snapshot                 = true
   iam_database_authentication_enabled = false
+
+  copy_tags_to_snapshot = true
+
   tags = {
     SBO_Billing = "viz"
   }

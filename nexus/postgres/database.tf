@@ -42,6 +42,9 @@ resource "aws_db_instance" "nexusdb" {
 
   skip_final_snapshot                 = true
   iam_database_authentication_enabled = false
+
+  copy_tags_to_snapshot = true
+
   tags = {
     SBO_Billing = "nexus"
   }
@@ -58,6 +61,7 @@ resource "aws_db_instance" "nexusdb_read_replica" {
   backup_retention_period      = 0
   publicly_accessible          = false
   performance_insights_enabled = true
+  copy_tags_to_snapshot        = true
 
   tags = {
     SBO_Billing = "nexus"

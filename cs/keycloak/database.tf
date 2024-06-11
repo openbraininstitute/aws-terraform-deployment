@@ -31,6 +31,7 @@ resource "aws_db_instance" "postgres" {
   multi_az                     = true
   vpc_security_group_ids       = ["sg-05a6965a825b46067"]
   db_subnet_group_name         = aws_db_subnet_group.keycloak_db_subnet_group.name
+  copy_tags_to_snapshot        = true
   tags = {
     Name        = "keycloak-db"
     SBO_Billing = "keycloak"

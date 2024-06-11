@@ -48,4 +48,5 @@ resource "aws_db_instance" "slurmdb" {
 
   skip_final_snapshot                 = true
   iam_database_authentication_enabled = false # tfsec:ignore:aws-rds-enable-iam-auth
+  copy_tags_to_snapshot               = true
 }
