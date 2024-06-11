@@ -67,9 +67,13 @@ module "delta" {
   subnet_id                = module.networking.subnet_id
   subnet_security_group_id = module.networking.main_subnet_sg_id
 
-  delta_instance_name = "delta"
-  delta_efs_name      = "sbo-poc-nexus-app-config" # legacy name so that the efs doesn't get modified
-  s3_bucket_arn       = aws_s3_bucket.nexus_delta.arn
+  delta_cpu    = 4096
+  delta_memory = 8192
+
+  delta_instance_name  = "delta"
+  delta_efs_name       = "sbo-poc-nexus-app-config" # legacy name so that the efs doesn't get modified
+  s3_bucket_arn        = aws_s3_bucket.nexus_delta.arn
+  nexus_delta_hostname = module.delta_target_group.hostname
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
@@ -149,31 +153,47 @@ module "elasticsearch" {
   deployment_name = "nexus-elasticsearch"
 }
 
-moved {
-  from = aws_acm_certificate.nexus_app
-  to   = module.delta_target_group.aws_acm_certificate.nexus_app
+module "nexus_delta_target_group" {
+  source = "./delta_target_group"
+
+  nexus_delta_hostname = "nexus-delta.shapes-registry.org"
+  target_group_prefix  = "nxsdlt"
+
+  vpc_id                        = var.vpc_id
+  domain_zone_id                = var.domain_zone_id
+  aws_lb_listener_sbo_https_arn = var.aws_lb_listener_sbo_https_arn
+  aws_lb_alb_dns_name           = var.aws_lb_alb_dns_name
+  nat_gateway_id                = var.nat_gateway_id
+  allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
 }
-moved {
-  from = aws_route53_record.nexus_app_validation
-  to   = module.delta_target_group.aws_route53_record.nexus_app_validation
-}
-moved {
-  from = aws_acm_certificate_validation.nexus_app
-  to   = module.delta_target_group.aws_acm_certificate_validation.nexus_app
-}
-moved {
-  from = aws_lb_target_group.nexus_app
-  to   = module.delta_target_group.aws_lb_target_group.nexus_app
-}
-moved {
-  from = aws_lb_listener_certificate.nexus_app
-  to   = module.delta_target_group.aws_lb_listener_certificate.nexus_app
-}
-moved {
-  from = aws_lb_listener_rule.nexus_app_https
-  to   = module.delta_target_group.aws_lb_listener_rule.nexus_app_https
-}
-moved {
-  from = aws_route53_record.nexus_app
-  to   = module.delta_target_group.aws_route53_record.nexus_app
+
+module "nexus_delta" {
+  source = "./delta"
+
+  desired_count = 0
+
+  aws_region               = var.aws_region
+  subnet_id                = module.networking.subnet_id
+  subnet_security_group_id = module.networking.main_subnet_sg_id
+
+  delta_cpu    = 256
+  delta_memory = 1024
+
+  delta_instance_name  = "nexus-delta"
+  delta_efs_name       = "nexus-delta"
+  s3_bucket_arn        = aws_s3_bucket.nexus.arn
+  nexus_delta_hostname = module.nexus_delta_target_group.hostname
+
+  ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
+  aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
+  ecs_task_execution_role_arn              = aws_iam_role.nexus_ecs_task_execution.arn
+  nexus_secrets_arn                        = var.nexus_secrets_arn
+
+  aws_lb_target_group_nexus_app_arn = module.nexus_delta_target_group.lb_target_group_arn
+  dockerhub_credentials_arn         = var.dockerhub_credentials_arn
+
+  postgres_host              = "http://replace.me"
+  postgres_host_read_replica = "http://replace.me"
+  elasticsearch_endpoint     = module.elasticsearch.http_endpoint
+  blazegraph_endpoint        = module.blazegraph_main.http_endpoint
 }

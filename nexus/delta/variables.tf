@@ -7,14 +7,27 @@ variable "delta_instance_name" {
   description = "name to use to parametrize the different components in this module"
 }
 
+variable "delta_cpu" {
+  type = number
+}
+
+variable "delta_memory" {
+  type = number
+}
+
+variable "desired_count" {
+  type        = number
+  description = "number of tasks that the service should run. set to 0 to not run anything"
+  default     = 1
+}
+
 variable "delta_efs_name" {
   type        = string
   description = "name for the efs associated with delta"
 }
 
 variable "nexus_delta_hostname" {
-  type    = string
-  default = "sbo-nexus-delta.shapes-registry.org"
+  type = string
 }
 
 variable "nexus_delta_docker_image_url" {

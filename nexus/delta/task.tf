@@ -1,7 +1,7 @@
 locals {
   nexus_delta_app_log_group_name = var.delta_instance_name
-  nexus_cpu                      = 4096
-  nexus_memory                   = 8192
+  nexus_cpu                      = var.delta_cpu
+  nexus_memory                   = var.delta_memory
 }
 
 resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
