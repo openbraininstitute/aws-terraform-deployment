@@ -46,6 +46,20 @@ module "blazegraph" {
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
 }
 
+module "delta_target_group" {
+  source = "./delta_target_group"
+
+  nexus_delta_hostname = "sbo-nexus-delta.shapes-registry.org"
+  target_group_prefix  = "nx-dlt"
+
+  vpc_id                        = var.vpc_id
+  domain_zone_id                = var.domain_zone_id
+  aws_lb_listener_sbo_https_arn = var.aws_lb_listener_sbo_https_arn
+  aws_lb_alb_dns_name           = var.aws_lb_alb_dns_name
+  nat_gateway_id                = var.nat_gateway_id
+  allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
+}
+
 module "delta" {
   source = "./delta"
 
@@ -62,7 +76,7 @@ module "delta" {
   ecs_task_execution_role_arn              = aws_iam_role.nexus_ecs_task_execution.arn
   nexus_secrets_arn                        = var.nexus_secrets_arn
 
-  aws_lb_target_group_nexus_app_arn = aws_lb_target_group.nexus_app.arn
+  aws_lb_target_group_nexus_app_arn = module.delta_target_group.lb_target_group_arn
   dockerhub_credentials_arn         = var.dockerhub_credentials_arn
 
   postgres_host              = module.postgres.host
@@ -75,7 +89,7 @@ module "fusion" {
   source = "./fusion"
 
   nexus_fusion_hostname = var.nexus_fusion_hostname
-  nexus_delta_hostname  = var.nexus_delta_hostname
+  nexus_delta_hostname  = module.delta_target_group.hostname
 
   aws_region               = var.aws_region
   subnet_id                = module.networking.subnet_id
@@ -136,31 +150,30 @@ module "elasticsearch" {
 }
 
 moved {
-  from = module.delta.aws_s3_bucket.nexus_delta
-  to   = aws_s3_bucket.nexus_delta
+  from = aws_acm_certificate.nexus_app
+  to   = module.delta_target_group.aws_acm_certificate.nexus_app
 }
-
 moved {
-  from = module.delta.aws_s3_bucket_public_access_block.nexus_delta
-  to   = aws_s3_bucket_public_access_block.nexus_delta
+  from = aws_route53_record.nexus_app_validation
+  to   = module.delta_target_group.aws_route53_record.nexus_app_validation
 }
-
 moved {
-  from = module.delta.aws_s3_bucket_metric.snexus_delta_metrics
-  to   = aws_s3_bucket_metric.nexus_delta_metrics
+  from = aws_acm_certificate_validation.nexus_app
+  to   = module.delta_target_group.aws_acm_certificate_validation.nexus_app
 }
-
 moved {
-  from = module.delta.aws_s3_bucket.nexus
-  to   = aws_s3_bucket.nexus
+  from = aws_lb_target_group.nexus_app
+  to   = module.delta_target_group.aws_lb_target_group.nexus_app
 }
-
 moved {
-  from = module.delta.aws_s3_bucket_public_access_block.nexus
-  to   = aws_s3_bucket_public_access_block.nexus
+  from = aws_lb_listener_certificate.nexus_app
+  to   = module.delta_target_group.aws_lb_listener_certificate.nexus_app
 }
-
 moved {
-  from = module.delta.aws_s3_bucket_metric.nexus
-  to   = aws_s3_bucket_metric.nexus
+  from = aws_lb_listener_rule.nexus_app_https
+  to   = module.delta_target_group.aws_lb_listener_rule.nexus_app_https
+}
+moved {
+  from = aws_route53_record.nexus_app
+  to   = module.delta_target_group.aws_route53_record.nexus_app
 }

@@ -40,14 +40,6 @@ variable "aws_lb_alb_dns_name" {
   type = string
 }
 
-### Nexus Delta ###
-
-variable "nexus_delta_hostname" {
-  type      = string
-  default   = "sbo-nexus-delta.shapes-registry.org"
-  sensitive = false
-}
-
 ### Nexus Storage Service ###
 
 variable "amazon_linux_ecs_ami_id" {
