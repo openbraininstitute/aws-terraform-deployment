@@ -20,13 +20,18 @@ variable "public_alb_listener" {
   type = string
 }
 
-variable "primary_auth_hostname" {
-  type = string
-}
-variable "secondary_auth_hostname" {
-  type = string
-}
-
 variable "allowed_source_ip_cidr_blocks" {
   type = list(string)
+}
+
+variable "preferred_hostname" {
+  type        = string
+  description = "preferred hostname to which requests for /auth should be redirected if the host is any of the redirect_hostnames"
+  sensitive   = false
+}
+
+variable "redirect_hostnames" {
+  type        = list(string)
+  description = "hostnames which should be redirected to the preferred hostname if there's a request for /auth"
+  sensitive   = false
 }

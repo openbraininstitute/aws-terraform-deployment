@@ -19,8 +19,9 @@ module "cs" {
   route_table_id          = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
   db_instance_class       = "db.t3.micro"
   public_alb_listener     = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
-  primary_auth_hostname   = data.terraform_remote_state.common.outputs.primary_auth_hostname
-  secondary_auth_hostname = data.terraform_remote_state.common.outputs.secondary_auth_hostname
+  
+  preferred_hostname = "openbluebrain.com"
+  redirect_hostnames = ["openbluebrain.ch", "openbrainplatform.org", "openbrainplatform.com"]
 
   allowed_source_ip_cidr_blocks = [var.epfl_cidr, data.terraform_remote_state.common.outputs.vpc_cidr_block, var.bbp_dmz_cidr]
 }

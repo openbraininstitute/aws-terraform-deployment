@@ -20,18 +20,58 @@ resource "aws_lb_target_group" "keycloak_target_group" {
   }
 }
 
+# redirect any request for /auth* using one of the var.redirect_hostnames
+# to /auth on the preferred hostname.
+
+# Generates a separate rule for each of the hostnames in redirect_hostnames
+# => each individual rule remains below the 5 conditions limit
+resource "aws_lb_listener_rule" "keycloak_redirect" {
+  # Generates a set [0, 1, 2, ..] with an index for each entry in var.redirect_hostnames
+  for_each = toset(formatlist("%s", range(length(var.redirect_hostnames))))
+
+  listener_arn = var.public_alb_listener
+  priority     = 555 + each.value
+
+  action {
+    type = "redirect"
+    redirect {
+      protocol    = "HTTPS"
+      host        = var.preferred_hostname
+      path        = "/#{path}"
+      status_code = "HTTP_302"
+    }
+  }
+
+  condition {
+    path_pattern {
+      values = ["/auth*"]
+    }
+  }
+  condition {
+    host_header {
+      values = [var.redirect_hostnames[each.value]]
+    }
+  }
+
+  condition {
+    source_ip {
+      values = var.allowed_source_ip_cidr_blocks
+    }
+  }
+
+  tags = {
+    SBO_Billing = "keycloak"
+  }
+}
+
 resource "aws_lb_listener_rule" "keycloak_https" {
   listener_arn = var.public_alb_listener
-  priority     = 555
+  priority     = 565
   action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.keycloak_target_group.arn
   }
-  # condition {
-  #   host_header {
-  #     values = [var.primary_auth_hostname, var.secondary_auth_hostname]
-  #   }
-  # }
+
   condition {
     path_pattern {
       values = ["/auth*"]
