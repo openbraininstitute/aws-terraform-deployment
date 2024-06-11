@@ -1,5 +1,5 @@
 resource "aws_ecs_service" "nexus_app_ecs_service" {
-  name            = "nexus_app_ecs_service"
+  name            = "${var.delta_instance_name}_ecs_service"
   cluster         = var.ecs_cluster_arn
   launch_type     = "FARGATE"
   task_definition = aws_ecs_task_definition.nexus_app_ecs_definition.arn
@@ -11,7 +11,7 @@ resource "aws_ecs_service" "nexus_app_ecs_service" {
 
   load_balancer {
     target_group_arn = var.aws_lb_target_group_nexus_app_arn
-    container_name   = "nexus_app"
+    container_name   = var.delta_instance_name
     container_port   = 8080
   }
 
@@ -19,10 +19,10 @@ resource "aws_ecs_service" "nexus_app_ecs_service" {
     enabled   = true
     namespace = var.aws_service_discovery_http_namespace_arn
     service {
-      discovery_name = "delta"
-      port_name      = "delta"
+      discovery_name = var.delta_instance_name
+      port_name      = var.delta_instance_name
       client_alias {
-        dns_name = "delta-svc"
+        dns_name = "${var.delta_instance_name}-svc"
         port     = 8080
       }
     }

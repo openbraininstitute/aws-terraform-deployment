@@ -1,11 +1,11 @@
 # place to put delta.conf
 resource "aws_efs_file_system" "nexus_app_config" {
   #ts:skip=AC_AWS_0097
-  creation_token         = "sbo-poc-nexus-app-config"
+  creation_token         = var.delta_efs_name
   availability_zone_name = "${var.aws_region}a"
   encrypted              = false #tfsec:ignore:aws-efs-enable-at-rest-encryption
   tags = {
-    Name        = "sbp-poc-nexus-app-config"
+    Name        = var.delta_efs_name
     SBO_Billing = "nexus_app"
   }
 }

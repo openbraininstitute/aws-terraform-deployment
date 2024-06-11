@@ -1,5 +1,5 @@
 resource "aws_iam_role" "nexus_delta_ecs_task" {
-  name = "nexus_delta-ecsTaskRole"
+  name = "${var.delta_instance_name}-ecsTaskRole"
 
   assume_role_policy = <<EOF
 {
@@ -28,7 +28,7 @@ resource "aws_iam_role_policy_attachment" "delta_ecs_task" {
 
 #tfsec:ignore:aws-iam-no-policy-wildcards
 resource "aws_iam_policy" "nexus_delta_bucket_access" {
-  name        = "NexusDeltaBucketAccess"
+  name        = "${var.delta_instance_name}-NexusDeltaBucketAccess"
   description = "A policy that grants access to the delta S3 bucket"
 
   policy = jsonencode({
@@ -42,7 +42,7 @@ resource "aws_iam_policy" "nexus_delta_bucket_access" {
           "s3:Copy*"
         ]
         Effect   = "Allow"
-        Resource = [aws_s3_bucket.nexus_delta.arn, "${aws_s3_bucket.nexus_delta.arn}/*"]
+        Resource = [var.s3_bucket_arn, "${var.s3_bucket_arn}/*"]
       },
     ]
   })

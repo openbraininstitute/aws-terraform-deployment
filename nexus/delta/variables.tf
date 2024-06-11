@@ -2,6 +2,16 @@ variable "aws_region" {
   type = string
 }
 
+variable "delta_instance_name" {
+  type        = string
+  description = "name to use to parametrize the different components in this module"
+}
+
+variable "delta_efs_name" {
+  type        = string
+  description = "name for the efs associated with delta"
+}
+
 variable "nexus_delta_hostname" {
   type    = string
   default = "sbo-nexus-delta.shapes-registry.org"
@@ -12,12 +22,19 @@ variable "nexus_delta_docker_image_url" {
   default = "bluebrain/nexus-delta:latest"
 }
 
+variable "s3_bucket_arn" {
+  type        = string
+  description = "arn of the bucket that delta will use for s3 storage"
+}
+
 variable "subnet_id" {
-  type = string
+  type        = string
+  description = "id of the subnet in which delta should run"
 }
 
 variable "postgres_host" {
-  type = string
+  type        = string
+  description = "address of the postgres instance delta should use"
 }
 
 variable "postgres_host_read_replica" {
@@ -25,11 +42,13 @@ variable "postgres_host_read_replica" {
 }
 
 variable "elasticsearch_endpoint" {
-  type = string
+  type        = string
+  description = "endpoint of the elasticsearch instance delta should use"
 }
 
 variable "blazegraph_endpoint" {
-  type = string
+  type        = string
+  description = "endpoint of the blazegraph instance delta should use"
 }
 
 variable "subnet_security_group_id" {
@@ -38,7 +57,8 @@ variable "subnet_security_group_id" {
 }
 
 variable "ecs_cluster_arn" {
-  type = string
+  type        = string
+  description = "arn of the ecs cluster in which delta should run"
 }
 
 variable "aws_service_discovery_http_namespace_arn" {

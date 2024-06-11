@@ -1,11 +1,11 @@
 locals {
-  nexus_delta_app_log_group_name = "nexus_delta_app"
+  nexus_delta_app_log_group_name = var.delta_instance_name
   nexus_cpu                      = 4096
   nexus_memory                   = 8192
 }
 
 resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
-  family       = "nexus_app_task_family"
+  family       = var.delta_instance_name
   network_mode = "awsvpc"
 
   container_definitions = jsonencode([
@@ -66,10 +66,9 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
         }
       ]
       networkMode = "awsvpc"
-      family      = "sbonexusapp"
       essential   = true
       image       = var.nexus_delta_docker_image_url
-      name        = "nexus_app"
+      name        = var.delta_instance_name
       repositoryCredentials = {
         credentialsParameter = var.dockerhub_credentials_arn
       }
@@ -112,7 +111,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
           awslogs-group         = local.nexus_delta_app_log_group_name
           awslogs-region        = var.aws_region
           awslogs-create-group  = "true"
-          awslogs-stream-prefix = "nexus_app"
+          awslogs-stream-prefix = "nexus_delta"
         }
       }
     }
@@ -163,7 +162,7 @@ resource "aws_cloudwatch_log_group" "nexus_app" {
   kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
 
   tags = {
-    Application = "nexus_app"
+    Application = var.delta_instance_name
     SBO_Billing = "nexus_app"
   }
 }

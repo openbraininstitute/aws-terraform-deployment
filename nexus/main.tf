@@ -53,6 +53,10 @@ module "delta" {
   subnet_id                = module.networking.subnet_id
   subnet_security_group_id = module.networking.main_subnet_sg_id
 
+  delta_instance_name = "delta"
+  delta_efs_name      = "sbo-poc-nexus-app-config" # legacy name so that the efs doesn't get modified
+  s3_bucket_arn       = aws_s3_bucket.nexus_delta.arn
+
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
   ecs_task_execution_role_arn              = aws_iam_role.nexus_ecs_task_execution.arn
@@ -93,7 +97,7 @@ module "ship" {
   nexus_secrets_arn           = var.nexus_secrets_arn
   postgres_host               = module.postgres.second_host
   target_bucket_arn           = module.delta.nexus_delta_bucket_arn
-  second_target_bucket_arn    = module.delta.nexus_bucket_arn
+  second_target_bucket_arn    = aws_s3_bucket.nexus.arn
 }
 
 #######################
@@ -129,4 +133,34 @@ module "elasticsearch" {
 
   hot_node_size   = "1g"
   deployment_name = "nexus-elasticsearch"
+}
+
+moved {
+  from = module.delta.aws_s3_bucket.nexus_delta
+  to   = aws_s3_bucket.nexus_delta
+}
+
+moved {
+  from = module.delta.aws_s3_bucket_public_access_block.nexus_delta
+  to   = aws_s3_bucket_public_access_block.nexus_delta
+}
+
+moved {
+  from = module.delta.aws_s3_bucket_metric.snexus_delta_metrics
+  to   = aws_s3_bucket_metric.nexus_delta_metrics
+}
+
+moved {
+  from = module.delta.aws_s3_bucket.nexus
+  to   = aws_s3_bucket.nexus
+}
+
+moved {
+  from = module.delta.aws_s3_bucket_public_access_block.nexus
+  to   = aws_s3_bucket_public_access_block.nexus
+}
+
+moved {
+  from = module.delta.aws_s3_bucket_metric.nexus
+  to   = aws_s3_bucket_metric.nexus
 }
