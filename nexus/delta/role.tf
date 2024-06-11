@@ -23,11 +23,11 @@ EOF
 
 resource "aws_iam_role_policy_attachment" "delta_ecs_task" {
   role       = aws_iam_role.nexus_delta_ecs_task.name
-  policy_arn = aws_iam_policy.nexus_delta_bucket_access.arn
+  policy_arn = aws_iam_policy.nexus_delta_s3_bucket_access.arn
 }
 
 #tfsec:ignore:aws-iam-no-policy-wildcards
-resource "aws_iam_policy" "nexus_delta_bucket_access" {
+resource "aws_iam_policy" "nexus_delta_s3_bucket_access" {
   name        = "${var.delta_instance_name}-NexusDeltaBucketAccess"
   description = "A policy that grants access to the delta S3 bucket"
 
@@ -48,3 +48,27 @@ resource "aws_iam_policy" "nexus_delta_bucket_access" {
   })
 }
 
+######################################
+# TODO: Delete the policy below once it is no longer used by any entity
+
+#tfsec:ignore:aws-iam-no-policy-wildcards
+resource "aws_iam_policy" "nexus_delta_bucket_access" {
+  name        = "NexusDeltaBucketAccess"
+  description = "A policy that grants access to the delta S3 bucket"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "s3:Get*",
+          "s3:List*",
+          "s3:Put*",
+          "s3:Copy*"
+        ]
+        Effect   = "Allow"
+        Resource = [var.s3_bucket_arn, "${var.s3_bucket_arn}/*"]
+      },
+    ]
+  })
+}
