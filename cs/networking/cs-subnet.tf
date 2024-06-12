@@ -7,7 +7,7 @@ resource "aws_subnet" "cs_subnet_a" {
 
   tags = {
     Name        = "cs_subnet"
-    SBO_Billing = "cs_subnet"
+    SBO_Billing = "common"
   }
 }
 
@@ -19,7 +19,7 @@ resource "aws_subnet" "cs_subnet_b" {
 
   tags = {
     Name        = "cs_subnet"
-    SBO_Billing = "cs_subnet"
+    SBO_Billing = "common"
   }
 }
 

@@ -50,6 +50,6 @@ resource "aws_network_acl" "cs_subnet" {
   }
   tags = {
     Name        = "cs_subnet_acl"
-    SBO_Billing = "cs_subnet"
+    SBO_Billing = "common"
   }
 }

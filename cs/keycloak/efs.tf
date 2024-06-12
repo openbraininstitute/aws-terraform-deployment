@@ -5,7 +5,8 @@ resource "aws_efs_file_system" "keycloakfs" {
   throughput_mode  = "bursting"
   encrypted        = "false" #tfsec:ignore:aws-efs-enable-at-rest-encryption
   tags = {
-    Name = "keycloak"
+    Name        = "keycloak"
+    SBO_Billing = "keycloak"
   }
 }
 
@@ -25,7 +26,8 @@ output "efs_arn" {
 resource "aws_s3_bucket" "core-services-keycloak" {
   bucket = "core-services-keycloak"
   tags = {
-    Name = "CS Keycloak"
+    Name        = "CS Keycloak"
+    SBO_Billing = "keycloak"
   }
 }
 
@@ -45,6 +47,9 @@ resource "aws_datasync_location_s3" "core-services-keycloak" {
   s3_config {
     bucket_access_role_arn = aws_iam_role.datasync_s3_role.arn
   }
+  tags = {
+    SBO_Billing = "keycloak"
+  }
 }
 
 resource "aws_datasync_location_efs" "datasync_destination_location" {
@@ -61,6 +66,10 @@ resource "aws_datasync_task" "keycloak_s3_to_efs" {
   source_location_arn      = aws_datasync_location_s3.core-services-keycloak.arn
   options {
     bytes_per_second = -1
+  }
+
+  tags = {
+    SBO_Billing = "keycloak"
   }
 }
 

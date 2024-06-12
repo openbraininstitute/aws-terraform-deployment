@@ -13,4 +13,8 @@ resource "aws_ecs_service" "keycloak_service_terraform" {
     container_name   = "keycloak-container"
     container_port   = 8081
   }
+
+  tags = {
+    SBO_Billing = "keycloak"
+  }
 }

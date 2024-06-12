@@ -92,4 +92,8 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
       root_directory = "/"
     }
   }
+
+  tags = {
+    SBO_Billing = "keycloak"
+  }
 }

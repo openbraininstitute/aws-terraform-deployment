@@ -14,12 +14,12 @@ module "coreservices_key" {
 module "cs" {
   source = "./cs"
 
-  vpc_id                  = data.terraform_remote_state.common.outputs.vpc_id
-  aws_region              = data.terraform_remote_state.common.outputs.aws_region
-  route_table_id          = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
-  db_instance_class       = "db.t3.micro"
-  public_alb_listener     = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
-  
+  vpc_id              = data.terraform_remote_state.common.outputs.vpc_id
+  aws_region          = data.terraform_remote_state.common.outputs.aws_region
+  route_table_id      = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  db_instance_class   = "db.t3.micro"
+  public_alb_listener = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+
   preferred_hostname = "openbluebrain.com"
   redirect_hostnames = ["openbluebrain.ch", "openbrainplatform.org", "openbrainplatform.com"]
 
@@ -190,7 +190,7 @@ module "kg_inference_api" {
   aws_region                        = var.aws_region
   epfl_cidr                         = var.epfl_cidr
   kg_inference_api_docker_image_url = "bluebrain/kg-inference-api:latest"
-  kg_inference_api_base_path         = "/api/kg-inference"
+  kg_inference_api_base_path        = "/api/kg-inference"
   kg_inference_api_log_group_name   = "kg_inference_api"
 }
 

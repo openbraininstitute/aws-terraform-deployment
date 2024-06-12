@@ -5,7 +5,7 @@ resource "aws_db_subnet_group" "keycloak_db_subnet_group" {
   subnet_ids = var.efs_mt_subnets
 
   tags = {
-    SBO_Billing = "virtual_lab_manager"
+    SBO_Billing = "keycloak"
   }
 }
 
@@ -32,6 +32,7 @@ resource "aws_db_instance" "postgres" {
   vpc_security_group_ids       = ["sg-05a6965a825b46067"]
   db_subnet_group_name         = aws_db_subnet_group.keycloak_db_subnet_group.name
   tags = {
-    Name = "keycloak-db"
+    Name        = "keycloak-db"
+    SBO_Billing = "keycloak"
   }
 }

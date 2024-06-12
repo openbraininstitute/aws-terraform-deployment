@@ -6,7 +6,8 @@ resource "aws_lb_target_group" "keycloak_target_group" {
   target_type = "ip"
   vpc_id      = var.vpc_id
   tags = {
-    Name = "Keycloak Target Group"
+    Name        = "Keycloak Target Group"
+    SBO_Billing = "keycloak"
   }
   health_check {
     path                = "/auth/health"

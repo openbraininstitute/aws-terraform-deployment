@@ -12,6 +12,10 @@ resource "aws_iam_role" "datasync_s3_role" {
       }
     ]
   })
+
+  tags = {
+    SBO_Billing = "keycloak"
+  }
 }
 
 resource "aws_iam_policy" "ecsTaskLogs" {
@@ -31,6 +35,10 @@ resource "aws_iam_policy" "ecsTaskLogs" {
       }
     ]
   })
+
+  tags = {
+    SBO_Billing = "keycloak"
+  }
 }
 
 resource "aws_iam_policy" "datasync_s3_policy" {
@@ -78,6 +86,10 @@ resource "aws_iam_policy" "datasync_s3_policy" {
       }
     ]
   })
+
+  tags = {
+    SBO_Billing = "keycloak"
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "datasync_s3_policy_attachment" {
@@ -102,6 +114,10 @@ resource "aws_iam_role" "ecs_task_execution_role" {
   ]
 }
 EOF
+
+  tags = {
+    SBO_Billing = "keycloak"
+  }
 }
 
 
