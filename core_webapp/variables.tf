@@ -88,3 +88,10 @@ variable "env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" {
   sensitive   = false
   description = "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY environment value for the webapp"
 }
+
+variable "env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL" {
+  default = "http://internal-sbo-poc-private-alb-1398645643.us-east-1.elb.amazonaws.com:3000/api/literature"
+  type        = string
+  sensitive   = false
+  description = "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY environment value for the webapp"
+}

@@ -144,6 +144,10 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
           name      = "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"
           valueFrom = var.env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
         },
+        {
+          name      = "NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL"
+          valueFrom = var.env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL
+        },
       ]
       secrets = [
         {
