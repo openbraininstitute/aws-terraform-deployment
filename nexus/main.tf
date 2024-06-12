@@ -49,8 +49,8 @@ module "blazegraph" {
 module "delta_target_group" {
   source = "./delta_target_group"
 
-  nexus_delta_hostname = "sbo-nexus-delta.shapes-registry.org"
-  target_group_prefix  = "nx-dlt"
+  nexus_delta_hostname     = "sbo-nexus-delta.shapes-registry.org"
+  target_group_prefix      = "nx-dlt"
   unique_listener_priority = 100
 
   vpc_id                        = var.vpc_id
@@ -157,8 +157,8 @@ module "elasticsearch" {
 module "nexus_delta_target_group" {
   source = "./delta_target_group"
 
-  nexus_delta_hostname = "nexus-delta.shapes-registry.org"
-  target_group_prefix  = "nxsdlt"
+  nexus_delta_hostname     = "nexus-delta.shapes-registry.org"
+  target_group_prefix      = "nxsdlt"
   unique_listener_priority = 101
 
   vpc_id                        = var.vpc_id
