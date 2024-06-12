@@ -77,7 +77,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
           hostPort      = 8080
           containerPort = 8080
           protocol      = "tcp"
-          name          = "delta"
+          name          = var.delta_instance_name
         }
       ]
       volumesFrom = []

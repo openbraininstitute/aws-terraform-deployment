@@ -30,3 +30,8 @@ variable "nat_gateway_id" {
 variable "allowed_source_ip_cidr_blocks" {
   type = list(string)
 }
+
+variable "unique_listener_priority" {
+  type = number
+  description = "globally unique listener priority for the listener that will forward to the created target group"
+}

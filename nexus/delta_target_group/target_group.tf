@@ -65,7 +65,7 @@ data "aws_nat_gateway" "provided_nat_gateway" {
 
 resource "aws_lb_listener_rule" "nexus_app_https" {
   listener_arn = var.aws_lb_listener_sbo_https_arn
-  priority     = 100
+  priority     = var.unique_listener_priority
 
   action {
     type             = "forward"
