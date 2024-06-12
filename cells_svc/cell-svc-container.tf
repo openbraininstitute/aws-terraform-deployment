@@ -197,7 +197,7 @@ resource "aws_vpc_security_group_egress_rule" "cell_svc_task_egress_tcp_udp" {
 
 # { ECS Task
 resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
-  family       = "cell_svc_task_family"
+  family = "cell_svc_task_family"
 
   execution_role_arn = aws_iam_role.ecs_cell_svc_task_execution_role.arn
   task_role_arn      = aws_iam_role.ecs_cell_svc_task_role.arn
@@ -251,8 +251,8 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
     }
   ])
 
-  cpu                = 256
-  memory             = 1024
+  cpu    = 256
+  memory = 1024
 
   tags = { SBO_Billing = "cell_svc" }
 }
