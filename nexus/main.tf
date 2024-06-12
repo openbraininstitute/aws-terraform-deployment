@@ -172,7 +172,7 @@ module "nexus_delta_target_group" {
 module "nexus_delta" {
   source = "./delta"
 
-  desired_count = 0
+  desired_count = 1
 
   aws_region               = var.aws_region
   subnet_id                = module.networking.subnet_id
