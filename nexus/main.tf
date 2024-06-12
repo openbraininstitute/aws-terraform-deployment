@@ -126,7 +126,7 @@ module "ship" {
 module "blazegraph_main" {
   source = "./blazegraph"
 
-  blazegraph_cpu    = 256
+  blazegraph_cpu    = 1024
   blazegraph_memory = 2048
 
   blazegraph_instance_name = "blazegraph-main"
@@ -178,8 +178,8 @@ module "nexus_delta" {
   subnet_id                = module.networking.subnet_id
   subnet_security_group_id = module.networking.main_subnet_sg_id
 
-  delta_cpu    = 256
-  delta_memory = 1024
+  delta_cpu    = 2048
+  delta_memory = 4096
 
   delta_instance_name  = "nexus-delta"
   delta_efs_name       = "nexus-delta"
@@ -194,8 +194,8 @@ module "nexus_delta" {
   aws_lb_target_group_nexus_app_arn = module.nexus_delta_target_group.lb_target_group_arn
   dockerhub_credentials_arn         = var.dockerhub_credentials_arn
 
-  postgres_host              = "http://replace.me"
-  postgres_host_read_replica = "http://replace.me"
+  postgres_host              = module.postgres.second_host
+  postgres_host_read_replica = "http://not.used.right.now"
   elasticsearch_endpoint     = module.elasticsearch.http_endpoint
   blazegraph_endpoint        = module.blazegraph_main.http_endpoint
 }
