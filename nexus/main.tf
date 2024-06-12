@@ -86,8 +86,11 @@ module "delta" {
 
   postgres_host              = module.postgres.host
   postgres_host_read_replica = module.postgres.host_read_replica
-  elasticsearch_endpoint     = module.elasticcloud.http_endpoint
-  blazegraph_endpoint        = module.blazegraph.http_endpoint
+
+  elasticsearch_endpoint = module.elasticcloud.http_endpoint
+  elastic_password_key   = "elasticsearch_password"
+
+  blazegraph_endpoint = module.blazegraph.http_endpoint
 }
 
 module "fusion" {
@@ -196,6 +199,9 @@ module "nexus_delta" {
 
   postgres_host              = module.postgres.second_host
   postgres_host_read_replica = "http://not.used.right.now"
-  elasticsearch_endpoint     = module.elasticsearch.http_endpoint
-  blazegraph_endpoint        = module.blazegraph_main.http_endpoint
+
+  elasticsearch_endpoint = module.elasticsearch.http_endpoint
+  elastic_password_key   = "elastic_password"
+
+  blazegraph_endpoint = module.blazegraph_main.http_endpoint
 }

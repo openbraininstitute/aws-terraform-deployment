@@ -88,6 +88,11 @@ variable "nexus_secrets_arn" {
   description = "The ARN of the secrets manager secret that contains the nexus secrets"
 }
 
+variable "elastic_password_key" {
+  type        = string
+  description = "key of the secret in the secrets manager that holds the password to the elastic user"
+}
+
 # temporary
 variable "aws_lb_target_group_nexus_app_arn" {
   type = string
