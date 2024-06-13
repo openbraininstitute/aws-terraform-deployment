@@ -135,7 +135,9 @@ module "ecs_service_agent" {
       cidr_blocks = ["0.0.0.0/0"]
     }
   }
-  tags = var.tags
+  tags           = var.tags
+  propagate_tags = "SERVICE"
+
 }
 
 resource "aws_service_discovery_http_namespace" "ml_agent" {

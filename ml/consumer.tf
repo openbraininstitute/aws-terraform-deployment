@@ -62,7 +62,8 @@ module "ml_ecs_service_consumer" {
       cidr_blocks = ["0.0.0.0/0"]
     }
   }
-  tags = var.tags
+  tags           = var.tags
+  propagate_tags = "SERVICE"
 }
 
 resource "aws_iam_policy" "ml_os_consumer_policy" {

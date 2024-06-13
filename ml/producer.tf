@@ -143,7 +143,9 @@ module "ml_ecs_task_producer" {
       cidr_blocks = ["0.0.0.0/0"]
     }
   }
-  tags = var.tags
+  tags           = var.tags
+  propagate_tags = "TASK_DEFINITION"
+
 }
 
 resource "aws_iam_policy" "ml_s3_producer_policy" {

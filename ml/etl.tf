@@ -96,7 +96,8 @@ module "ml_ecs_service_etl" {
       cidr_blocks = ["0.0.0.0/0"]
     }
   }
-  tags = var.tags
+  tags           = var.tags
+  propagate_tags = "SERVICE"
 }
 
 

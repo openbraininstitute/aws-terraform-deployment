@@ -89,6 +89,8 @@ module "ml-ecs_service_grobid" {
     Name        = "ml_grobid"
     SBO_Billing = "machinelearning"
   }
+
+  propagate_tags = "SERVICE"
 }
 
 

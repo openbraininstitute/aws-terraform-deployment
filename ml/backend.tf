@@ -188,7 +188,8 @@ module "ml_ecs_service_backend" {
     }
   }
 
-  tags = var.tags
+  tags           = var.tags
+  propagate_tags = "SERVICE"
 }
 
 resource "aws_service_discovery_http_namespace" "ml_backend_namespace" {
