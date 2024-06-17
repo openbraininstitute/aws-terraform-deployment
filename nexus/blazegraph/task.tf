@@ -64,7 +64,6 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
     name = "efs-blazegraph-data"
     efs_volume_configuration {
       file_system_id     = aws_efs_file_system.blazegraph.id
-      root_directory     = var.efs_blazegraph_data_dir
       transit_encryption = "ENABLED"
       authorization_config {
         access_point_id = aws_efs_access_point.blazegraph.id

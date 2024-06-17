@@ -27,7 +27,7 @@ resource "aws_efs_mount_target" "efs_for_blazegraph" {
 resource "aws_efs_access_point" "blazegraph" {
   file_system_id = aws_efs_file_system.blazegraph.id
   root_directory {
-    path = "/"
+    path = var.efs_blazegraph_data_dir
     creation_info {
       owner_gid   = 1000
       owner_uid   = 1000

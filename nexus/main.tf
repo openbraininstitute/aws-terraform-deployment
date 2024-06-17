@@ -134,7 +134,7 @@ module "blazegraph_main" {
 
   blazegraph_instance_name = "blazegraph-main"
   blazegraph_efs_name      = "blazegraph-main"
-  efs_blazegraph_data_dir  = "/"
+  efs_blazegraph_data_dir  = "/bg-data"
 
   aws_region                  = var.aws_region
   vpc_id                      = var.vpc_id
