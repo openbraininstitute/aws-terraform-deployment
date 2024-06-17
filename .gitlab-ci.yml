@@ -23,8 +23,13 @@ fmt:
 validate:
   extends: .terraform:validate
   needs: []
+  variables:
+    KUBERNETES_MEMORY_LIMIT: 4G
+
 
 build:
+  variables:
+    KUBERNETES_MEMORY_LIMIT: 4G
   before_script:
     - export TF_VAR_common_token_name=$COMMON_REPO_TOKEN_NAME
     - export TF_VAR_common_token_pass=$COMMON_REPO_TOKEN_PASS
@@ -101,5 +106,5 @@ check_compliance:
 #    - cat bolt-inventory.yaml
 #    - bolt plan show aws_poc -v
 #    - bolt plan run aws_poc -v
-  
-  
+
+
