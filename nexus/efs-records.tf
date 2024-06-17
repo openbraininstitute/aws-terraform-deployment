@@ -21,3 +21,11 @@ resource "aws_route53_record" "blazegrap_efs" {
   ttl     = 60
   records = [module.blazegraph.efs_blazegraph_dns_name]
 }
+
+resource "aws_route53_record" "blazegraph_main_efs" {
+  zone_id = var.domain_zone_id
+  name    = "blazegraph-main-efs.shapes-registry.org"
+  type    = "CNAME"
+  ttl     = 60
+  records = [module.blazegraph_main.efs_blazegraph_dns_name]
+}
