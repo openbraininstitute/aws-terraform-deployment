@@ -170,6 +170,7 @@ module "core_webapp" {
   env_NEXTAUTH_URL                       = "https://${data.terraform_remote_state.common.outputs.primary_domain}/mmb-beta/api/auth"
   env_KEYCLOAK_ISSUER                    = "https://sboauth.epfl.ch/auth/realms/SBO"
   env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = "pk_test_51P6uAFFE4Bi50cLlatJIc0fUPsP0jQkaCCJ8TTkIYOOLIrLzxX1M9p1kVD11drNqsF9p7yiaumWJ8UHb3ptJJRXB00y3qjYReV"
+  env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL = "http://internal-sbo-poc-private-alb-1398645643.us-east-1.elb.amazonaws.com:3000/api/literature"
 }
 
 module "kg_inference_api" {
