@@ -127,24 +127,33 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
     name = "efs-nexus-app-config"
     efs_volume_configuration {
       file_system_id     = aws_efs_file_system.nexus_app_config.id
-      root_directory     = "/opt/appconf"
       transit_encryption = "ENABLED"
+      authorization_config {
+        access_point_id = aws_efs_access_point.appconf.id
+        iam             = "DISABLED"
+      }
     }
   }
   volume {
     name = "efs-nexus-search-config"
     efs_volume_configuration {
       file_system_id     = aws_efs_file_system.nexus_app_config.id
-      root_directory     = "/opt/search-config"
       transit_encryption = "ENABLED"
+      authorization_config {
+        access_point_id = aws_efs_access_point.search_config.id
+        iam             = "DISABLED"
+      }
     }
   }
   volume {
     name = "efs-nexus-disk-storage"
     efs_volume_configuration {
       file_system_id     = aws_efs_file_system.nexus_app_config.id
-      root_directory     = "/opt/disk-storage"
       transit_encryption = "ENABLED"
+      authorization_config {
+        access_point_id = aws_efs_access_point.disk_storage.id
+        iam             = "DISABLED"
+      }
     }
   }
 

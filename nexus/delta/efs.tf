@@ -23,3 +23,39 @@ resource "aws_efs_mount_target" "efs_for_nexus_app" {
   subnet_id       = var.subnet_id
   security_groups = [var.subnet_security_group_id]
 }
+
+resource "aws_efs_access_point" "appconf" {
+  file_system_id = aws_efs_file_system.nexus_app_config.id
+  root_directory {
+    path = "/opt/appconf"
+    creation_info {
+      owner_gid   = 1000
+      owner_uid   = 1000
+      permissions = "0777"
+    }
+  }
+}
+
+resource "aws_efs_access_point" "search_config" {
+  file_system_id = aws_efs_file_system.nexus_app_config.id
+  root_directory {
+    path = "/opt/search-config"
+    creation_info {
+      owner_gid   = 1000
+      owner_uid   = 1000
+      permissions = "0777"
+    }
+  }
+}
+
+resource "aws_efs_access_point" "disk_storage" {
+  file_system_id = aws_efs_file_system.nexus_app_config.id
+  root_directory {
+    path = "/opt/disk-storage"
+    creation_info {
+      owner_gid   = 1000
+      owner_uid   = 1000
+      permissions = "0777"
+    }
+  }
+}
