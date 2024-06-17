@@ -23,3 +23,15 @@ resource "aws_efs_mount_target" "efs_for_blazegraph" {
   subnet_id       = var.subnet_id
   security_groups = [var.subnet_security_group_id]
 }
+
+resource "aws_efs_access_point" "blazegraph" {
+  file_system_id = aws_efs_file_system.blazegraph.id
+  root_directory {
+    path = "/"
+    creation_info {
+      owner_gid   = 1000
+      owner_uid   = 1000
+      permissions = "0777"
+    }
+  }
+}
