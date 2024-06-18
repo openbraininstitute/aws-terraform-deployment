@@ -45,6 +45,10 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
         {
           name  = "BLAZEGRAPH_ENDPOINT"
           value = var.blazegraph_endpoint
+        },
+        {
+          name  = "BLAZEGRAPH_COMPOSITE_ENDPOINT"
+          value = var.blazegraph_composite_endpoint
         }
       ]
       secrets = [

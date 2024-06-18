@@ -90,7 +90,8 @@ module "delta" {
   elasticsearch_endpoint = module.elasticcloud.http_endpoint
   elastic_password_key   = "elasticsearch_password"
 
-  blazegraph_endpoint = module.blazegraph.http_endpoint
+  blazegraph_endpoint           = module.blazegraph.http_endpoint
+  blazegraph_composite_endpoint = "http://not.used.here"
 }
 
 module "fusion" {
@@ -130,10 +131,30 @@ module "blazegraph_main" {
   source = "./blazegraph"
 
   blazegraph_cpu    = 1024
-  blazegraph_memory = 2048
+  blazegraph_memory = 4096
 
   blazegraph_instance_name = "blazegraph-main"
   blazegraph_efs_name      = "blazegraph-main"
+  efs_blazegraph_data_dir  = "/bg-data"
+
+  aws_region                  = var.aws_region
+  vpc_id                      = var.vpc_id
+  subnet_id                   = module.networking.subnet_id
+  subnet_security_group_id    = module.networking.main_subnet_sg_id
+  ecs_task_execution_role_arn = aws_iam_role.nexus_ecs_task_execution.arn
+
+  ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
+  aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
+}
+
+module "blazegraph_composite" {
+  source = "./blazegraph"
+
+  blazegraph_cpu    = 1024
+  blazegraph_memory = 4096
+
+  blazegraph_instance_name = "blazegraph-composite"
+  blazegraph_efs_name      = "blazegraph-composite"
   efs_blazegraph_data_dir  = "/bg-data"
 
   aws_region                  = var.aws_region
@@ -203,5 +224,6 @@ module "nexus_delta" {
   elasticsearch_endpoint = module.elasticsearch.http_endpoint
   elastic_password_key   = "elastic_password"
 
-  blazegraph_endpoint = module.blazegraph_main.http_endpoint
+  blazegraph_endpoint           = module.blazegraph_main.http_endpoint
+  blazegraph_composite_endpoint = module.blazegraph_composite.http_endpoint
 }

@@ -59,11 +59,6 @@ variable "elasticsearch_endpoint" {
   description = "endpoint of the elasticsearch instance delta should use"
 }
 
-variable "blazegraph_endpoint" {
-  type        = string
-  description = "endpoint of the blazegraph instance delta should use"
-}
-
 variable "subnet_security_group_id" {
   type        = string
   description = "security group applied to the resource which should describe how the resource can communicate inside the subnet"
@@ -93,11 +88,21 @@ variable "elastic_password_key" {
   description = "key of the secret in the secrets manager that holds the password to the elastic user"
 }
 
-# temporary
 variable "aws_lb_target_group_nexus_app_arn" {
   type = string
 }
 
 variable "dockerhub_credentials_arn" {
   type = string
+}
+
+# Blazegraph specific
+variable "blazegraph_endpoint" {
+  type        = string
+  description = "endpoint of the blazegraph instance delta should use"
+}
+
+variable "blazegraph_composite_endpoint" {
+  type        = string
+  description = "endpoint of the blazegraph instance delta should use for the composite views; unused if the delta config does not use the $BLAZEGRAPH_COMPOSITE_ENDPOINT. Leave a blank string if this is not necessary."
 }
