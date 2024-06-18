@@ -25,3 +25,7 @@ output "obp_vpc_default_sg_id" {
 output "resource_provisioner_iam_role_arn" {
   value = aws_iam_role.hpc_resource_provisioner_role.arn
 }
+
+output "endpoints_sg_id" {
+  value = aws_security_group.endpoints.id
+}
