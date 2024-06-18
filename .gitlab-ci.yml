@@ -29,7 +29,7 @@ validate:
 
 build:
   variables:
-    KUBERNETES_MEMORY_LIMIT: 4G
+    KUBERNETES_MEMORY_LIMIT: 6G
   before_script:
     - export TF_VAR_common_token_name=$COMMON_REPO_TOKEN_NAME
     - export TF_VAR_common_token_pass=$COMMON_REPO_TOKEN_PASS
@@ -42,6 +42,8 @@ build:
       terraform: ${TF_ROOT}/plan.json
 
 deploy:
+  variables:
+    KUBERNETES_MEMORY_LIMIT: 6G
   extends: .terraform:deploy
   dependencies:
     - build
