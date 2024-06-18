@@ -24,5 +24,5 @@ resource "aws_rds_cluster" "nexus" {
   master_password = data.aws_secretsmanager_secret_version.nexus_database_password.secret_string
 
   copy_tags_to_snapshot = true
-  snapshot_identifier   = "nexus-second-db"
+  snapshot_identifier   = "arn:aws:rds:us-east-1:671250183987:snapshot:nexus-second-db"
 }
