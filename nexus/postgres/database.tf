@@ -19,7 +19,7 @@ resource "aws_db_instance" "nexusdb" {
   #ts:skip=AC_AWS_0058
   deletion_protection     = false #tfsec:ignore:AVD-AWS-0177
   allocated_storage       = 40    # in gigabytes
-  backup_retention_period = 2     # in days
+  backup_retention_period = 7     # in days
 
   db_subnet_group_name = aws_db_subnet_group.nexus_db_subnet_group.name
 
