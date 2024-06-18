@@ -22,7 +22,7 @@ variable "nexus_postgresql_database_password_arn" {
   default     = "arn:aws:secretsmanager:us-east-1:671250183987:secret:nexus_postgresql_password-jRsJRc"
 }
 
-variable "subnet_security_group_id" {
+variable "security_group_id" {
   type        = string
   description = "security group applied to the resource which should describe how the resource can communicate inside the subnet"
 }

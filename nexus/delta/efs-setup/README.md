@@ -1,6 +1,6 @@
 # Delta EFS
 
-When the Delta module is instantiated, a blank EFS resource is created. In order to start Delta for the first time, some folder/files need to be created manually.
+When the Delta module is instantiated, a blank EFS resource is created. In order to start Delta for the first time, some files need to be created manually.
 
 To access the EFS we mount it to the SSH bastion. This is done via a CS managed puppet script. See [this MR](https://bbpgitlab.epfl.ch/cs/cloud/aws/puppet-bolt-configuration/-/merge_requests/38) as an example.
 

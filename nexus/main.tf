@@ -9,10 +9,9 @@ module "networking" {
 module "postgres" {
   source = "./postgres"
 
-  subnets_ids                 = module.networking.psql_subnets_ids
-  subnet_security_group_id    = module.networking.main_subnet_sg_id
-  instance_class              = "db.t4g.large"
-  read_replica_instance_class = "db.t4g.medium"
+  subnets_ids              = module.networking.psql_subnets_ids
+  subnet_security_group_id = module.networking.main_subnet_sg_id
+  instance_class           = "db.t4g.large"
 }
 
 module "elasticcloud" {
@@ -87,7 +86,7 @@ module "delta" {
   dockerhub_credentials_arn         = var.dockerhub_credentials_arn
 
   postgres_host              = module.postgres.host
-  postgres_host_read_replica = module.postgres.host_read_replica
+  postgres_host_read_replica = "http://not.used.right.now"
 
   elasticsearch_endpoint = module.elasticcloud.http_endpoint
   elastic_password_key   = "elasticsearch_password"
@@ -128,6 +127,14 @@ module "ship" {
 #######################
 ## SECOND DEPLOYMENT ##
 #######################
+
+module "postgres_cluster" {
+  source = "./postgres_cluster"
+
+  subnets_ids       = module.networking.psql_subnets_ids
+  security_group_id = module.networking.main_subnet_sg_id
+  instance_class    = "db.c6gd.medium"
+}
 
 module "blazegraph_main" {
   source = "./blazegraph"
