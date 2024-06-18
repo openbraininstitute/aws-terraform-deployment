@@ -174,7 +174,9 @@ module "elasticsearch" {
   elastic_vpc_endpoint_id  = module.networking.elastic_vpc_endpoint_id
   elastic_hosted_zone_name = module.networking.elastic_hosted_zone_name
 
-  hot_node_size   = "1g"
+  hot_node_size  = "1g"
+  hot_node_count = 2
+
   deployment_name = "nexus-elasticsearch"
 }
 

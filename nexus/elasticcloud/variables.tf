@@ -26,3 +26,9 @@ variable "hot_node_size" {
   type        = string
   description = "sizing for the hot nodes of the cluster. In Elastic Cloud this is specified as a RAM value eg. 4g"
 }
+
+variable "hot_node_count" {
+  type        = number
+  description = "the number of hot nodes in the cluster, each in a different AZ"
+  default     = 1
+}

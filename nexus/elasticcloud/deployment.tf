@@ -13,7 +13,7 @@ resource "ec_deployment" "deployment" {
   elasticsearch = {
     hot = {
       size        = var.hot_node_size
-      zone_count  = 1
+      zone_count  = var.hot_node_count
       autoscaling = {}
     }
   }
