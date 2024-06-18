@@ -22,6 +22,8 @@ module "elasticcloud" {
   elastic_vpc_endpoint_id  = module.networking.elastic_vpc_endpoint_id
   elastic_hosted_zone_name = module.networking.elastic_hosted_zone_name
 
+  elasticsearch_version = "8.12.1"
+
   hot_node_size   = "4g"
   deployment_name = "nexus-es"
 }
@@ -173,6 +175,8 @@ module "elasticsearch" {
   aws_region               = var.aws_region
   elastic_vpc_endpoint_id  = module.networking.elastic_vpc_endpoint_id
   elastic_hosted_zone_name = module.networking.elastic_hosted_zone_name
+
+  elasticsearch_version = "8.13.4"
 
   hot_node_size  = "1g"
   hot_node_count = 2

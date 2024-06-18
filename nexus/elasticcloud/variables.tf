@@ -19,6 +19,11 @@ variable "deployment_name" {
   description = "Name of the deployment in Elastic Cloud"
 }
 
+variable "elasticsearch_version" {
+  type        = string
+  description = "version of elasticsearch to use for the deployment"
+}
+
 /**
 * Elasticsearch cluster
 **/

@@ -5,7 +5,7 @@ resource "ec_deployment" "deployment" {
   name = var.deployment_name
 
   region                 = var.aws_region
-  version                = "8.12.1"
+  version                = var.elasticsearch_version
   deployment_template_id = "aws-general-purpose"
 
   traffic_filter = [ec_deployment_traffic_filter.deployment_filter.id]
