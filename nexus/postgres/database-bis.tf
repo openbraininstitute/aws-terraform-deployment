@@ -13,7 +13,7 @@ resource "aws_db_instance" "nexus_psql" {
   engine         = "postgres"
   engine_version = "15"
   multi_az       = false
-  instance_class = "db.t4g.medium"
+  instance_class = "db.c6gd.medium"
 
   identifier = "nexus-postgres-db"
   db_name    = var.nexus_postgresql_database_name
