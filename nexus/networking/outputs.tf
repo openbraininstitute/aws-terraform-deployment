@@ -11,7 +11,7 @@ output "main_subnet_sg_id" {
 }
 
 output "psql_subnets_ids" {
-  value = [aws_subnet.nexus_db_a.id, aws_subnet.nexus_db_b.id]
+  value = aws_network_acl.nexus_db.subnet_ids
 }
 
 output "elastic_vpc_endpoint_id" {
