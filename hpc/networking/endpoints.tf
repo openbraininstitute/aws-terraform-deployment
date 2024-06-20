@@ -68,7 +68,7 @@ resource "aws_vpc_endpoint" "cloudformation_obp_endpoint" {
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
   subnet_ids          = [aws_subnet.lambda.id]
-  security_group_ids  = [var.peering_sg_id, var.obp_vpc_default_sg_id]
+  security_group_ids  = [var.peering_sg_id, var.obp_vpc_default_sg_id, var.endpoints_sg_id]
   tags = {
     Name = "OBP VPC CloudFormation endpoint"
   }
@@ -80,7 +80,7 @@ resource "aws_vpc_endpoint" "cloudwatch_obp_endpoint" {
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
   subnet_ids          = [aws_subnet.lambda.id]
-  security_group_ids  = [var.peering_sg_id, var.obp_vpc_default_sg_id]
+  security_group_ids  = [var.peering_sg_id, var.obp_vpc_default_sg_id, var.endpoints_sg_id]
   tags = {
     Name = "OBP VPC CloudWatch endpoint"
   }
@@ -92,7 +92,7 @@ resource "aws_vpc_endpoint" "ec2_obp_endpoint" {
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
   subnet_ids          = [aws_subnet.lambda.id]
-  security_group_ids  = [var.peering_sg_id, var.obp_vpc_default_sg_id]
+  security_group_ids  = [var.peering_sg_id, var.obp_vpc_default_sg_id, var.endpoints_sg_id]
   tags = {
     Name = "OBP VPC EC2 endpoint"
   }
@@ -104,7 +104,7 @@ resource "aws_vpc_endpoint" "efs_obp_endpoint" {
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
   subnet_ids          = [aws_subnet.lambda.id]
-  security_group_ids  = [var.peering_sg_id, var.obp_vpc_default_sg_id]
+  security_group_ids  = [var.peering_sg_id, var.obp_vpc_default_sg_id, var.endpoints_sg_id]
   tags = {
     Name = "OBP VPC EFS endpoint"
   }
@@ -116,7 +116,7 @@ resource "aws_vpc_endpoint" "sts_obp_endpoint" {
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
   subnet_ids          = [aws_subnet.lambda.id]
-  security_group_ids  = [var.peering_sg_id, var.obp_vpc_default_sg_id]
+  security_group_ids  = [var.peering_sg_id, var.obp_vpc_default_sg_id, var.endpoints_sg_id]
   tags = {
     Name = "OBP VPC STS endpoint"
   }
@@ -128,7 +128,7 @@ resource "aws_vpc_endpoint" "lambda_obp_endpoint" {
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
   subnet_ids          = [aws_subnet.lambda.id]
-  security_group_ids  = [var.peering_sg_id, var.obp_vpc_default_sg_id]
+  security_group_ids  = [var.peering_sg_id, var.obp_vpc_default_sg_id, var.endpoints_sg_id]
   tags = {
     Name = "OBP VPC Lambda endpoint"
   }
