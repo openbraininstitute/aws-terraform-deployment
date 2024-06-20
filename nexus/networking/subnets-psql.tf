@@ -23,7 +23,7 @@ resource "aws_subnet" "nexus_db_b" {
 # Subnet for the Nexus databases in zone C
 resource "aws_subnet" "nexus_db_c" {
   vpc_id            = var.vpc_id
-  availability_zone = "${var.aws_region}b"
+  availability_zone = "${var.aws_region}c"
   cidr_block        = "10.0.2.80/28"
   tags = {
     Name          = "nexus_db_c"
