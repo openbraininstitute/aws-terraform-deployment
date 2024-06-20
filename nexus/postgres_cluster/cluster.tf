@@ -34,3 +34,7 @@ resource "aws_rds_cluster" "nexus" {
 
   copy_tags_to_snapshot = true
 }
+
+resource "postgresql_database" "nexus" {
+  name = "nexus"
+}
