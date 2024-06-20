@@ -8,10 +8,6 @@ terraform {
       source  = "elastic/ec"
       version = "~> 0.9.0"
     }
-    postgresql = {
-      source  = "cyrilgdn/postgresql"
-      version = "~> 1.22.0"
-    }
   }
 
   required_version = ">= 1.2.0"
