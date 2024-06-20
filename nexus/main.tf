@@ -222,7 +222,7 @@ module "nexus_delta" {
   subnet_security_group_id = module.networking.main_subnet_sg_id
 
   delta_cpu    = 2048
-  delta_memory = 4096
+  delta_memory = 6144
 
   delta_instance_name  = "nexus-delta"
   delta_efs_name       = "nexus-delta"
