@@ -17,10 +17,10 @@ resource "aws_rds_cluster" "nexus" {
   cluster_identifier        = "nexus"
   availability_zones        = ["us-east-1a", "us-east-1b", "us-east-1c"]
   engine                    = "postgres"
-  engine_version            = "15.6"
+  engine_version            = "15"
   db_cluster_instance_class = var.instance_class
   storage_type              = "io1"
-  allocated_storage         = 50
+  allocated_storage         = 100
   iops                      = 1000
 
   backup_retention_period = 7 # in days
@@ -33,5 +33,4 @@ resource "aws_rds_cluster" "nexus" {
   master_password = data.aws_secretsmanager_secret_version.nexus_database_password.secret_string
 
   copy_tags_to_snapshot = true
-  snapshot_identifier   = "arn:aws:rds:us-east-1:671250183987:snapshot:new-snapshot-for-rds-cluster"
 }

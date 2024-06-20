@@ -85,8 +85,8 @@ module "delta" {
   aws_lb_target_group_nexus_app_arn = module.delta_target_group.lb_target_group_arn
   dockerhub_credentials_arn         = var.dockerhub_credentials_arn
 
-  postgres_host              = module.postgres.host
-  postgres_host_read_replica = "http://not.used.right.now"
+  postgres_host        = module.postgres.host
+  postgres_reader_host = "http://not.used.right.now"
 
   elasticsearch_endpoint = module.elasticcloud.http_endpoint
   elastic_password_key   = "elasticsearch_password"
@@ -209,8 +209,6 @@ module "nexus_delta_target_group" {
 module "nexus_delta" {
   source = "./delta"
 
-  desired_count = 1
-
   aws_region               = var.aws_region
   subnet_id                = module.networking.subnet_id
   subnet_security_group_id = module.networking.main_subnet_sg_id
@@ -231,8 +229,8 @@ module "nexus_delta" {
   aws_lb_target_group_nexus_app_arn = module.nexus_delta_target_group.lb_target_group_arn
   dockerhub_credentials_arn         = var.dockerhub_credentials_arn
 
-  postgres_host              = module.postgres.second_host
-  postgres_host_read_replica = "http://not.used.right.now"
+  postgres_host        = module.postgres_cluster.writer_endpoint
+  postgres_reader_host = module.postgres_cluster.reader_endpoint
 
   elasticsearch_endpoint = module.elasticsearch.http_endpoint
   elastic_password_key   = "elastic_password"

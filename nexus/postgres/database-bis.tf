@@ -16,7 +16,7 @@ resource "aws_db_instance" "nexus_psql" {
   instance_class = "db.c6gd.medium"
 
   storage_type = "io1"
-  iops = 1000
+  iops         = 1000
 
   identifier = "nexus-postgres-db"
   db_name    = var.nexus_postgresql_database_name

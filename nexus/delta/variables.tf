@@ -47,11 +47,12 @@ variable "subnet_id" {
 
 variable "postgres_host" {
   type        = string
-  description = "address of the postgres instance delta should use"
+  description = "address of the postgres instance delta should use; specified using the POSTGRES_PASSWORD variable in the delta config"
 }
 
-variable "postgres_host_read_replica" {
-  type = string
+variable "postgres_reader_host" {
+  type        = string
+  description = "address of the postgres reader pool for delta; specified using the POSTGRES_READER_ENDPOINT variable in the delta config. If the config does not use it, then this terraform variable can a blank string"
 }
 
 variable "elasticsearch_endpoint" {
