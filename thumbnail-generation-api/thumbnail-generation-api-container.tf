@@ -187,6 +187,14 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
           {
             name  = "BASE_PATH"
             value = "${var.thumbnail_generation_api_base_path}"
+          },
+          {
+            name  = "ENVIRONMENT"
+            value = "production"
+          },
+          {
+            name  = "SENTRY_DSN"
+            value = "https://df67a83aab2f208467f94df08a207e59@o224246.ingest.us.sentry.io/4507457507885056"
           }
         ],
         memory = 2048
