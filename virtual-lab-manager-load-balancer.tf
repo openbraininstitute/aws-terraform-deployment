@@ -12,7 +12,7 @@ resource "aws_lb_target_group" "virtual_lab_manager" {
 
   health_check {
     enabled  = true
-    path     = "${var.virtual_lab_manager_base_path}/healthz"
+    path     = "${var.virtual_lab_manager_base_path}/health"
     protocol = "HTTP"
   }
 
