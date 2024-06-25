@@ -11,10 +11,6 @@ resource "aws_security_group" "nexus_es_sg" {
     protocol    = "tcp"
     cidr_blocks = [data.aws_vpc.provided_vpc.cidr_block]
   }
-
-  tags = {
-    SBO_Billing = "nexus_es"
-  }
 }
 
 resource "aws_vpc_endpoint" "nexus_es_vpc_ep" {
@@ -27,10 +23,6 @@ resource "aws_vpc_endpoint" "nexus_es_vpc_ep" {
 
   security_group_ids = [aws_security_group.nexus_es_sg.id]
   subnet_ids         = [aws_subnet.nexus_b.id]
-
-  tags = {
-    SBO_Billing = "nexus_es"
-  }
 }
 
 resource "aws_route53_zone" "nexus_es_zone" {
@@ -38,10 +30,6 @@ resource "aws_route53_zone" "nexus_es_zone" {
 
   vpc {
     vpc_id = var.vpc_id
-  }
-
-  tags = {
-    SBO_Billing = "nexus_es"
   }
 }
 

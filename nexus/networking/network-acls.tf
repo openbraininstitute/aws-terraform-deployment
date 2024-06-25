@@ -39,8 +39,4 @@ resource "aws_network_acl" "nexus" {
     from_port  = 0
     to_port    = 0
   }
-  tags = {
-    Name        = "nexus_acl"
-    SBO_Billing = "nexus"
-  }
 }

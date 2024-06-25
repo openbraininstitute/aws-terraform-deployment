@@ -3,10 +3,6 @@ resource "aws_subnet" "nexus_db_a" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}a"
   cidr_block        = "10.0.2.48/28"
-  tags = {
-    Name          = "nexus_db_a"
-    "SBO_Billing" = "nexus"
-  }
 }
 
 # Subnet for the Nexus databases in zone B
@@ -14,10 +10,6 @@ resource "aws_subnet" "nexus_db_b" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}b"
   cidr_block        = "10.0.2.64/28"
-  tags = {
-    Name          = "nexus_db_b"
-    "SBO_Billing" = "nexus"
-  }
 }
 
 # Subnet for the Nexus databases in zone C
@@ -25,10 +17,6 @@ resource "aws_subnet" "nexus_db_c" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}c"
   cidr_block        = "10.0.2.80/28"
-  tags = {
-    Name          = "nexus_db_c"
-    "SBO_Billing" = "nexus"
-  }
 }
 
 resource "aws_network_acl" "nexus_db" {
@@ -51,9 +39,5 @@ resource "aws_network_acl" "nexus_db" {
     cidr_block = data.aws_vpc.provided_vpc.cidr_block
     from_port  = 0
     to_port    = 0
-  }
-  tags = {
-    Name        = "nexus_db_acl"
-    SBO_Billing = "nexus"
   }
 }

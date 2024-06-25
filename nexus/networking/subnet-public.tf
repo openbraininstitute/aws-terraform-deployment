@@ -51,8 +51,4 @@ resource "aws_route_table_association" "public_rt_association" {
 resource "aws_internet_gateway" "nexus_ig" {
   count  = local.create_nat_gateway ? 1 : 0
   vpc_id = var.vpc_id
-  tags = {
-    Name        = "nexus_ig"
-    SBO_Billing = "nexus"
-  }
 }
