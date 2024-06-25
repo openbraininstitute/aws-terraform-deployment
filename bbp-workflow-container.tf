@@ -278,6 +278,7 @@ resource "aws_ecs_service" "workflow_ecs_service" {
   tags = {
     SBO_Billing = "workflow"
   }
+  propagate_tags = "SERVICE"
 }
 
 resource "aws_iam_role" "ecs_workflow_task_execution_role" {

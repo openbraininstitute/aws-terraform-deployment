@@ -298,6 +298,7 @@ resource "aws_ecs_service" "cell_svc_ecs_service" {
     ignore_changes = [desired_count]
   }
   tags = { SBO_Billing = "cell_svc" }
+  propagate_tags = "SERVICE"
 }
 
 # { Used by the ECS service to manage the cells ECS cluster

@@ -45,6 +45,7 @@ resource "aws_ecs_service" "blazegraph_ecs_service" {
   tags = {
     SBO_Billing = "nexus"
   }
+  propagate_tags = "SERVICE"
 }
 
 resource "aws_cloudwatch_log_group" "blazegraph_app" {

@@ -165,6 +165,7 @@ resource "aws_ecs_service" "viz_vsm_proxy" {
   tags = {
     SBO_Billing = "viz"
   }
+  propagate_tags = "SERVICE"
 }
 
 resource "aws_iam_role" "viz_vsm_proxy_ecs_task_execution_role" {

@@ -44,4 +44,5 @@ resource "aws_ecs_service" "nexus_app_ecs_service" {
   tags = {
     SBO_Billing = "nexus_app"
   }
+  propagate_tags = "SERVICE"
 }

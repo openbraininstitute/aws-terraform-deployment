@@ -311,6 +311,7 @@ resource "aws_ecs_service" "virtual_lab_manager_ecs_service" {
   tags = {
     SBO_Billing = "virtual_lab_manager"
   }
+  propagate_tags = "SERVICE"
 }
 
 resource "aws_iam_role" "ecs_virtual_lab_manager_task_execution_role" {

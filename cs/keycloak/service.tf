@@ -17,4 +17,5 @@ resource "aws_ecs_service" "keycloak_service_terraform" {
   tags = {
     SBO_Billing = "keycloak"
   }
+  propagate_tags = "SERVICE"
 }

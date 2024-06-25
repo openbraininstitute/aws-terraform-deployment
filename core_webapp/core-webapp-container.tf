@@ -222,6 +222,7 @@ resource "aws_ecs_service" "core_webapp_ecs_service" {
   tags = {
     SBO_Billing = "core_webapp"
   }
+  propagate_tags = "SERVICE"
 }
 
 resource "aws_iam_role" "ecs_core_webapp_task_execution_role" {

@@ -263,6 +263,8 @@ resource "aws_ecs_service" "thumbnail_generation_api_service" {
     subnets          = [aws_subnet.thumbnail_generation_api.id]
     assign_public_ip = false
   }
+  
+  propagate_tags = "SERVICE"
 }
 
 resource "aws_cloudwatch_log_group" "thumbnail_generation_api" {
