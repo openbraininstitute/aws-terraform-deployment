@@ -297,7 +297,7 @@ resource "aws_ecs_service" "cell_svc_ecs_service" {
   lifecycle {
     ignore_changes = [desired_count]
   }
-  tags = { SBO_Billing = "cell_svc" }
+  tags           = { SBO_Billing = "cell_svc" }
   propagate_tags = "SERVICE"
 }
 

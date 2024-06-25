@@ -279,7 +279,7 @@ resource "aws_ecs_service" "kg_inference_api_service" {
     subnets          = [aws_subnet.kg_inference_api.id]
     assign_public_ip = false
   }
-  
+
   propagate_tags = "SERVICE"
 }
 
