@@ -2,14 +2,14 @@ variable "ml_secrets_arn" {
   default     = "arn:aws:secretsmanager:us-east-1:671250183987:secret:ml_secrets-uEWnHv"
   type        = string
   description = "The ARN of the Machine Learning secrets object"
-  sensitive   = true
+  sensitive   = false
 }
 
 variable "ml_mwaa_arn" {
   default     = "arn:aws:airflow:us-east-1:671250183987:environment/ml-airflow"
   type        = string
   description = "The ARN of the Machine Learning MWAA object"
-  sensitive   = true
+  sensitive   = false
 }
 
 resource "aws_ssoadmin_permission_set" "write_read_access_ml_secrets" {

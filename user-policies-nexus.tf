@@ -2,7 +2,7 @@ variable "nexus_secrets_arn" {
   default     = "arn:aws:secretsmanager:us-east-1:671250183987:secret:nexus*"
   type        = string
   description = "The ARN of all nexus* secrets objects"
-  sensitive   = true
+  sensitive   = false
 }
 
 resource "aws_ssoadmin_permission_set" "write_read_access_nexus_secrets" {
