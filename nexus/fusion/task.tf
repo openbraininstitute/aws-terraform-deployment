@@ -91,7 +91,7 @@ resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
       family      = "sbonexusfusion"
       essential   = true
       image       = var.nexus_fusion_docker_image_url
-      name        = "nexus_fusion"
+      name        = var.fusion_instance_name
       repositoryCredentials = {
         credentialsParameter = var.dockerhub_credentials_arn
       }
