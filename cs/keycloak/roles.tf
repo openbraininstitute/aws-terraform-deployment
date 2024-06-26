@@ -124,20 +124,17 @@ EOF
 
 #### We need to attach following policies to the role task_execution_role. The same role should execute the task and fetch secrets from secret manager (db password)
 
-resource "aws_iam_policy_attachment" "ecs_task_execution_role_attachment_logs" {
-  name       = "ecs-task-execution-role-attachment-logs"
-  roles      = [aws_iam_role.ecs_task_execution_role.name]
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_attachment_logs" {
+  role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = aws_iam_policy.ecsTaskLogs.arn
 }
 
-resource "aws_iam_policy_attachment" "ecs_task_execution_role_attachment" {
-  name       = "ecs-task-execution-role-attachment"
-  roles      = [aws_iam_role.ecs_task_execution_role.name]
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_attachment" {
+  role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-resource "aws_iam_policy_attachment" "secret_access_role_attachment" {
-  name       = "ecs-access-secrets-role-attachment"
-  roles      = [aws_iam_role.ecs_task_execution_role.name]
+resource "aws_iam_role_policy_attachment" "secret_access_role_attachment" {
+  role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
 }
