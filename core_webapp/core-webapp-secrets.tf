@@ -3,7 +3,7 @@ variable "sbo_core_webapp_secrets_arn" {
   default     = "arn:aws:secretsmanager:us-east-1:671250183987:secret:sbo_core_webapp-bwv3ZT"
   type        = string
   description = "The ARN of the SBO core webapp secrets"
-  sensitive   = true
+  sensitive   = false
 }
 
 resource "aws_iam_policy" "sbo_core_webapp_secrets_access" {

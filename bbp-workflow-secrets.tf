@@ -3,7 +3,7 @@ variable "bbp_workflow_secrets_arn" {
   default     = "arn:aws:secretsmanager:us-east-1:671250183987:secret:bbp-workflow-V8k6ff"
   type        = string
   description = "The ARN of the BBP workflow secrets"
-  sensitive   = true
+  sensitive   = false
 }
 
 resource "aws_iam_policy" "bbp_workflow_secrets_access" {

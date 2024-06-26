@@ -10,7 +10,7 @@ variable "virtual_lab_manager_secrets_arn" {
   default     = "arn:aws:secretsmanager:us-east-1:671250183987:secret:virtual_lab_manager-2Axecx"
   type        = string
   description = "The ARN of the virtual lab manager secrets"
-  sensitive   = true
+  sensitive   = false
 }
 
 resource "aws_iam_policy" "virtual_lab_manager_secrets_access" {
