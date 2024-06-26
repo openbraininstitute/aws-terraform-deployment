@@ -1,5 +1,5 @@
 resource "aws_iam_role" "datasync_s3_role" {
-  name = "datasync-s3-role"
+  name = "keycloak-datasync-s3-role"
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -19,7 +19,7 @@ resource "aws_iam_role" "datasync_s3_role" {
 }
 
 resource "aws_iam_policy" "ecsTaskLogs" {
-  name        = "ecsTaskLogs"
+  name        = "keycloak-ecsTaskLogs"
   description = "Allows ECS tasks to create log streams and log groups in CloudWatch Logs"
 
   policy = jsonencode({
@@ -42,7 +42,7 @@ resource "aws_iam_policy" "ecsTaskLogs" {
 }
 
 resource "aws_iam_policy" "datasync_s3_policy" {
-  name        = "datasync-s3-policy"
+  name        = "keycloak-datasync-s3-policy"
   description = "Policy for DataSync to access S3 bucket"
 
   policy = jsonencode({
@@ -99,7 +99,7 @@ resource "aws_iam_role_policy_attachment" "datasync_s3_policy_attachment" {
 
 ### IAM roles and policies needed for keyloak-task logging
 resource "aws_iam_role" "ecs_task_execution_role" {
-  name               = "ecs-task-execution-role"
+  name               = "keycloak-ecs-task-execution-role"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
