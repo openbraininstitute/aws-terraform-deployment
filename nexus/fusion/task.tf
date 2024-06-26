@@ -1,12 +1,12 @@
 
 locals {
-  nexus_fusion_log_group_name = "nexus_fusion_app"
+  nexus_fusion_log_group_name = var.fusion_instance_name
   fusion_cpu                  = 512
   fusion_memory               = 1024
 }
 
 resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
-  family       = "nexus_fusion_task_family"
+  family       = "${var.fusion_instance_name}_task_family"
   network_mode = "awsvpc"
 
   container_definitions = jsonencode([
@@ -100,7 +100,7 @@ resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
           hostPort      = 8000
           containerPort = 8000
           protocol      = "tcp"
-          name          = "fusion"
+          name          = var.fusion_instance_name
         }
       ]
       volumesFrom = []
@@ -114,10 +114,10 @@ resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = local.nexus_fusion_log_group_name
+          awslogs-group         = var.fusion_instance_name
           awslogs-region        = var.aws_region
           awslogs-create-group  = "true"
-          awslogs-stream-prefix = "nexus_fusion"
+          awslogs-stream-prefix = var.fusion_instance_name
         }
       }
     }
@@ -129,20 +129,20 @@ resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
   execution_role_arn       = var.ecs_task_execution_role_arn
 
   tags = {
-    SBO_Billing = "nexus_fusion"
+    SBO_Billing = var.fusion_instance_name
   }
 }
 
 
 resource "aws_cloudwatch_log_group" "nexus_fusion" {
-  name              = local.nexus_fusion_log_group_name
+  name              = var.fusion_instance_name
   skip_destroy      = false
   retention_in_days = 5
 
   kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
 
   tags = {
-    Application = "nexus_fusion"
-    SBO_Billing = "nexus_fusion"
+    Application = var.fusion_instance_name
+    SBO_Billing = var.fusion_instance_name
   }
 }

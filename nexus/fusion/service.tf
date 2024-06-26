@@ -1,5 +1,5 @@
 resource "aws_ecs_service" "nexus_fusion_ecs_service" {
-  name            = "nexus_fusion_ecs_service"
+  name            = "${var.fusion_instance_name}_ecs_service"
   cluster         = var.ecs_cluster_arn
   launch_type     = "FARGATE"
   task_definition = aws_ecs_task_definition.nexus_fusion_ecs_definition.arn
@@ -11,18 +11,18 @@ resource "aws_ecs_service" "nexus_fusion_ecs_service" {
 
   load_balancer {
     target_group_arn = var.aws_lb_target_group_nexus_fusion_arn
-    container_name   = "nexus_fusion"
+    container_name   = var.fusion_instance_name
     container_port   = 8000
   }
 
   service_connect_configuration {
-    enabled   = true
+    enabled   = false
     namespace = var.aws_service_discovery_http_namespace_arn
     service {
-      discovery_name = "fusion"
-      port_name      = "fusion"
+      discovery_name = var.fusion_instance_name
+      port_name      = var.fusion_instance_name
       client_alias {
-        dns_name = "fusion-svc"
+        dns_name = var.fusion_instance_name
         port     = 8000
       }
     }
@@ -40,7 +40,7 @@ resource "aws_ecs_service" "nexus_fusion_ecs_service" {
     ignore_changes = [desired_count]
   }
   tags = {
-    SBO_Billing = "nexus_fusion"
+    SBO_Billing = var.fusion_instance_name
   }
   propagate_tags = "SERVICE"
 }

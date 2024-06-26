@@ -38,7 +38,7 @@ resource "aws_lb_listener_certificate" "nexus_fusion" {
 
 resource "aws_lb_target_group" "nexus_fusion" {
   #ts:skip=AC_AWS_0492
-  name_prefix = "nx-fsn"
+  name_prefix = var.target_group_prefix
   port        = 8000
   protocol    = "HTTP"
   target_type = "ip"
@@ -59,7 +59,7 @@ resource "aws_lb_target_group" "nexus_fusion" {
 
 resource "aws_lb_listener_rule" "nexus_fusion_https" {
   listener_arn = var.public_lb_listener_https_arn
-  priority     = 300
+  priority     = var.unique_listener_priority
 
   action {
     type             = "forward"
@@ -89,8 +89,4 @@ resource "aws_route53_record" "nexus_fusion" {
   type    = "CNAME"
   ttl     = 60
   records = [var.public_load_balancer_dns_name]
-}
-
-output "alb_nexus_fusion_hostname" {
-  value = var.nexus_fusion_hostname
 }

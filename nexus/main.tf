@@ -92,10 +92,26 @@ module "delta" {
   blazegraph_composite_endpoint = "http://not.used.here"
 }
 
-module "fusion" {
-  source = "./fusion"
+module "fusion_target_group" {
+  source = "./fusion_target_group"
 
-  nexus_fusion_hostname = var.nexus_fusion_hostname
+  nexus_fusion_hostname    = "sbo-nexus-fusion.shapes-registry.org"
+  target_group_prefix      = "nx-fus"
+  unique_listener_priority = 300
+
+  vpc_id                        = var.vpc_id
+  domain_zone_id                = var.domain_zone_id
+  public_lb_listener_https_arn  = var.public_lb_listener_https_arn
+  public_load_balancer_dns_name = var.public_load_balancer_dns_name
+  nat_gateway_id                = var.nat_gateway_id
+  allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
+}
+
+module "fusion" {
+  source               = "./fusion"
+  fusion_instance_name = "fusion"
+
+  nexus_fusion_hostname = module.fusion_target_group.hostname
   nexus_delta_hostname  = module.delta_target_group.hostname
 
   aws_region               = var.aws_region
@@ -106,7 +122,7 @@ module "fusion" {
   ecs_task_execution_role_arn              = aws_iam_role.nexus_ecs_task_execution.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
 
-  aws_lb_target_group_nexus_fusion_arn = aws_lb_target_group.nexus_fusion.arn
+  aws_lb_target_group_nexus_fusion_arn = module.fusion_target_group.lb_target_group_arn
   dockerhub_credentials_arn            = var.dockerhub_credentials_arn
 }
 
@@ -229,4 +245,38 @@ module "nexus_delta" {
 
   blazegraph_endpoint           = module.blazegraph_main.http_endpoint
   blazegraph_composite_endpoint = module.blazegraph_composite.http_endpoint
+}
+
+module "nexus_fusion_target_group" {
+  source = "./fusion_target_group"
+
+  nexus_fusion_hostname    = "nexus-fusion.shapes-registry.org"
+  target_group_prefix      = "nxsfus"
+  unique_listener_priority = 301
+
+  vpc_id                        = var.vpc_id
+  domain_zone_id                = var.domain_zone_id
+  nat_gateway_id                = var.nat_gateway_id
+  allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
+  public_lb_listener_https_arn  = var.public_lb_listener_https_arn
+  public_load_balancer_dns_name = var.public_load_balancer_dns_name
+}
+
+module "nexus_fusion" {
+  source               = "./fusion"
+  fusion_instance_name = "nexus_fusion"
+
+  nexus_fusion_hostname = module.nexus_fusion_target_group.hostname
+  nexus_delta_hostname  = module.nexus_delta_target_group.hostname
+
+  aws_region               = var.aws_region
+  subnet_id                = module.networking.subnet_id
+  subnet_security_group_id = module.networking.main_subnet_sg_id
+
+  ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
+  ecs_task_execution_role_arn              = aws_iam_role.nexus_ecs_task_execution.arn
+  aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
+
+  aws_lb_target_group_nexus_fusion_arn = module.nexus_fusion_target_group.lb_target_group_arn
+  dockerhub_credentials_arn            = var.dockerhub_credentials_arn
 }

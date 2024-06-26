@@ -52,12 +52,6 @@ variable "public_lb_listener_https_arn" {
 
 ### Nexus Fusion ###
 
-variable "nexus_fusion_hostname" {
-  default   = "sbo-nexus-fusion.shapes-registry.org"
-  type      = string
-  sensitive = false
-}
-
 variable "nexus_fusion_docker_image_url" {
   default   = "bluebrain/nexus-web:1.9.9"
   sensitive = false
