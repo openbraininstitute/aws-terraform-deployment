@@ -15,7 +15,7 @@ resource "aws_security_group" "nexus_es_sg" {
 
 resource "aws_vpc_endpoint" "nexus_es_vpc_ep" {
   # The PrivateLink service name for your elastic cloud deployment.
-  # (https://www.elastic.co/guide/en/cloud/current/ec-traffic-filtering-vpc.html)
+  # (https://www.elastic.co/guide/en/cloud/current/ec-traffic-filtering-vpc.html#ec-private-link-service-names-aliases)
   service_name = "com.amazonaws.vpce.us-east-1.vpce-svc-0e42e1e06ed010238"
 
   vpc_id            = var.vpc_id
@@ -26,6 +26,8 @@ resource "aws_vpc_endpoint" "nexus_es_vpc_ep" {
 }
 
 resource "aws_route53_zone" "nexus_es_zone" {
+  # The PrivateLink zone name for your elastic cloud deployment.
+  # (https://www.elastic.co/guide/en/cloud/current/ec-traffic-filtering-vpc.html#ec-private-link-service-names-aliases)
   name = "vpce.us-east-1.aws.elastic-cloud.com" # Route53 zone name
 
   vpc {

@@ -67,10 +67,8 @@ module "nexus" {
 
   allowed_source_ip_cidr_blocks = [var.epfl_cidr, data.terraform_remote_state.common.outputs.vpc_cidr_block, var.bbp_dmz_cidr]
 
-  aws_lb_alb_dns_name           = data.terraform_remote_state.common.outputs.public_alb_dns_name
-  aws_lb_listener_sbo_https_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
-
-  amazon_linux_ecs_ami_id = data.aws_ami.amazon_linux_2_ecs.id
+  public_load_balancer_dns_name = data.terraform_remote_state.common.outputs.public_alb_dns_name
+  public_lb_listener_https_arn  = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
 }
 
 module "viz" {

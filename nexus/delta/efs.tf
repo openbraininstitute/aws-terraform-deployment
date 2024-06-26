@@ -1,8 +1,7 @@
-# place to put delta.conf
 resource "aws_efs_file_system" "nexus_app_config" {
   #ts:skip=AC_AWS_0097
   creation_token         = var.delta_efs_name
-  availability_zone_name = "${var.aws_region}a"
+  availability_zone_name = "${data.aws_region.current.name}a"
   encrypted              = false #tfsec:ignore:aws-efs-enable-at-rest-encryption
   tags = {
     Name        = var.delta_efs_name

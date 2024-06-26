@@ -10,7 +10,7 @@ resource "aws_ecs_service" "nexus_app_ecs_service" {
   deployment_minimum_healthy_percent = 0
 
   load_balancer {
-    target_group_arn = var.aws_lb_target_group_nexus_app_arn
+    target_group_arn = var.delta_target_group_arn
     container_name   = var.delta_instance_name
     container_port   = 8080
   }

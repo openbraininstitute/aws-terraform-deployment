@@ -4,6 +4,8 @@ locals {
   nexus_memory                   = var.delta_memory
 }
 
+data "aws_region" "current" {}
+
 resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
   family       = var.delta_instance_name
   network_mode = "awsvpc"
@@ -113,7 +115,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = local.nexus_delta_app_log_group_name
-          awslogs-region        = var.aws_region
+          awslogs-region        = data.aws_region.current.name
           awslogs-create-group  = "true"
           awslogs-stream-prefix = "nexus_delta"
         }

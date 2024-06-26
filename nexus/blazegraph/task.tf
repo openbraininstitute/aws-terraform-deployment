@@ -1,3 +1,5 @@
+data "aws_region" "current" {}
+
 resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
   family       = "${var.blazegraph_instance_name}_task_family"
   network_mode = "awsvpc"
@@ -33,7 +35,7 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = local.blazegraph_app_log_group_name
-          awslogs-region        = var.aws_region
+          awslogs-region        = data.aws_region.current.name
           awslogs-create-group  = "true"
           awslogs-stream-prefix = "blazegraph_app"
         }

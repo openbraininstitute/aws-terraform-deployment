@@ -2,7 +2,7 @@
 resource "aws_efs_file_system" "blazegraph" {
   #ts:skip=AC_AWS_0097
   creation_token         = var.blazegraph_efs_name
-  availability_zone_name = "${var.aws_region}a"
+  availability_zone_name = "${data.aws_region.current.name}a"
   encrypted              = false #tfsec:ignore:aws-efs-enable-at-rest-encryption
   tags = {
     Name        = var.blazegraph_efs_name

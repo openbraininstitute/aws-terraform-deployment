@@ -37,8 +37,6 @@ module "blazegraph" {
   blazegraph_efs_name      = "sbo-poc-blazegraph"
   # needs to be like this for this instance; once it is decomissioned it doesn't have to be specified anymore
 
-  aws_region                  = var.aws_region
-  vpc_id                      = var.vpc_id
   subnet_id                   = module.networking.subnet_id
   subnet_security_group_id    = module.networking.main_subnet_sg_id
   ecs_task_execution_role_arn = aws_iam_role.nexus_ecs_task_execution.arn
@@ -56,8 +54,8 @@ module "delta_target_group" {
 
   vpc_id                        = var.vpc_id
   domain_zone_id                = var.domain_zone_id
-  aws_lb_listener_sbo_https_arn = var.aws_lb_listener_sbo_https_arn
-  aws_lb_alb_dns_name           = var.aws_lb_alb_dns_name
+  public_lb_listener_https_arn  = var.public_lb_listener_https_arn
+  public_load_balancer_dns_name = var.public_load_balancer_dns_name
   nat_gateway_id                = var.nat_gateway_id
   allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
 }
@@ -65,7 +63,6 @@ module "delta_target_group" {
 module "delta" {
   source = "./delta"
 
-  aws_region               = var.aws_region
   subnet_id                = module.networking.subnet_id
   subnet_security_group_id = module.networking.main_subnet_sg_id
 
@@ -82,8 +79,8 @@ module "delta" {
   ecs_task_execution_role_arn              = aws_iam_role.nexus_ecs_task_execution.arn
   nexus_secrets_arn                        = var.nexus_secrets_arn
 
-  aws_lb_target_group_nexus_app_arn = module.delta_target_group.lb_target_group_arn
-  dockerhub_credentials_arn         = var.dockerhub_credentials_arn
+  delta_target_group_arn    = module.delta_target_group.lb_target_group_arn
+  dockerhub_credentials_arn = var.dockerhub_credentials_arn
 
   postgres_host        = module.postgres.host
   postgres_reader_host = "http://not.used.right.now"
@@ -146,8 +143,6 @@ module "blazegraph_main" {
   blazegraph_efs_name      = "blazegraph-main"
   efs_blazegraph_data_dir  = "/bg-data"
 
-  aws_region                  = var.aws_region
-  vpc_id                      = var.vpc_id
   subnet_id                   = module.networking.subnet_id
   subnet_security_group_id    = module.networking.main_subnet_sg_id
   ecs_task_execution_role_arn = aws_iam_role.nexus_ecs_task_execution.arn
@@ -166,8 +161,6 @@ module "blazegraph_composite" {
   blazegraph_efs_name      = "blazegraph-composite"
   efs_blazegraph_data_dir  = "/bg-data"
 
-  aws_region                  = var.aws_region
-  vpc_id                      = var.vpc_id
   subnet_id                   = module.networking.subnet_id
   subnet_security_group_id    = module.networking.main_subnet_sg_id
   ecs_task_execution_role_arn = aws_iam_role.nexus_ecs_task_execution.arn
@@ -200,8 +193,8 @@ module "nexus_delta_target_group" {
 
   vpc_id                        = var.vpc_id
   domain_zone_id                = var.domain_zone_id
-  aws_lb_listener_sbo_https_arn = var.aws_lb_listener_sbo_https_arn
-  aws_lb_alb_dns_name           = var.aws_lb_alb_dns_name
+  public_lb_listener_https_arn  = var.public_lb_listener_https_arn
+  public_load_balancer_dns_name = var.public_load_balancer_dns_name
   nat_gateway_id                = var.nat_gateway_id
   allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
 }
@@ -209,7 +202,6 @@ module "nexus_delta_target_group" {
 module "nexus_delta" {
   source = "./delta"
 
-  aws_region               = var.aws_region
   subnet_id                = module.networking.subnet_id
   subnet_security_group_id = module.networking.main_subnet_sg_id
 
@@ -226,8 +218,8 @@ module "nexus_delta" {
   ecs_task_execution_role_arn              = aws_iam_role.nexus_ecs_task_execution.arn
   nexus_secrets_arn                        = var.nexus_secrets_arn
 
-  aws_lb_target_group_nexus_app_arn = module.nexus_delta_target_group.lb_target_group_arn
-  dockerhub_credentials_arn         = var.dockerhub_credentials_arn
+  delta_target_group_arn    = module.nexus_delta_target_group.lb_target_group_arn
+  dockerhub_credentials_arn = var.dockerhub_credentials_arn
 
   postgres_host        = module.postgres_cluster.writer_endpoint
   postgres_reader_host = module.postgres_cluster.reader_endpoint

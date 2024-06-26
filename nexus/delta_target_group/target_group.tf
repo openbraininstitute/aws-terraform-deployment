@@ -55,7 +55,7 @@ resource "aws_lb_target_group" "nexus_app" {
 }
 
 resource "aws_lb_listener_certificate" "nexus_app" {
-  listener_arn    = var.aws_lb_listener_sbo_https_arn
+  listener_arn    = var.public_lb_listener_https_arn
   certificate_arn = aws_acm_certificate_validation.nexus_app.certificate_arn
 }
 
@@ -64,7 +64,7 @@ data "aws_nat_gateway" "provided_nat_gateway" {
 }
 
 resource "aws_lb_listener_rule" "nexus_app_https" {
-  listener_arn = var.aws_lb_listener_sbo_https_arn
+  listener_arn = var.public_lb_listener_https_arn
   priority     = var.unique_listener_priority
 
   action {
@@ -94,5 +94,5 @@ resource "aws_route53_record" "nexus_app" {
   name    = var.nexus_delta_hostname
   type    = "CNAME"
   ttl     = 60
-  records = [var.aws_lb_alb_dns_name]
+  records = [var.public_load_balancer_dns_name]
 }

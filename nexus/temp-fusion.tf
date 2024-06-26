@@ -32,7 +32,7 @@ resource "aws_acm_certificate_validation" "nexus_fusion" {
 }
 
 resource "aws_lb_listener_certificate" "nexus_fusion" {
-  listener_arn    = var.aws_lb_listener_sbo_https_arn
+  listener_arn    = var.public_lb_listener_https_arn
   certificate_arn = aws_acm_certificate_validation.nexus_fusion.certificate_arn
 }
 
@@ -58,7 +58,7 @@ resource "aws_lb_target_group" "nexus_fusion" {
 }
 
 resource "aws_lb_listener_rule" "nexus_fusion_https" {
-  listener_arn = var.aws_lb_listener_sbo_https_arn
+  listener_arn = var.public_lb_listener_https_arn
   priority     = 300
 
   action {
@@ -88,7 +88,7 @@ resource "aws_route53_record" "nexus_fusion" {
   name    = var.nexus_fusion_hostname
   type    = "CNAME"
   ttl     = 60
-  records = [var.aws_lb_alb_dns_name]
+  records = [var.public_load_balancer_dns_name]
 }
 
 output "alb_nexus_fusion_hostname" {
