@@ -216,7 +216,7 @@ module "nexus_delta_target_group" {
 }
 
 module "nexus_delta" {
-  source = "./delta"
+  source = "./delta_new_config"
 
   subnet_id                = module.networking.subnet_id
   subnet_security_group_id = module.networking.main_subnet_sg_id
