@@ -6,14 +6,14 @@
 # data.terraform_remote_state.common.outputs.vpc_id
 
 # aws_region
-# epfl_cidr
+# allowed_source_ip_cidr_blocks
 # kg_inference_api_docker_image_url
 # kg_inference_api_base_path
 # kg_inference_api_log_group_name
 
-variable "epfl_cidr" {
+variable "allowed_source_ip_cidr_blocks" {
   sensitive = false
-  type      = string
+  type      = list(string)
 }
 variable "aws_region" {
   type      = string

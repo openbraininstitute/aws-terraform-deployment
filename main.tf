@@ -107,7 +107,7 @@ module "cells_svc" {
 
   aws_coreservices_ssh_key_id = module.coreservices_key.key_pair_id
 
-  epfl_cidr = var.epfl_cidr
+  allowed_source_ip_cidr_blocks = [var.epfl_cidr, var.bbp_dmz_cidr]
 
   amazon_linux_ecs_ami_id = data.aws_ami.amazon_linux_2_ecs.id
 }
@@ -187,7 +187,7 @@ module "kg_inference_api" {
 
 
   aws_region                        = var.aws_region
-  epfl_cidr                         = var.epfl_cidr
+  allowed_source_ip_cidr_blocks     = [var.epfl_cidr, var.bbp_dmz_cidr]
   kg_inference_api_docker_image_url = "bluebrain/kg-inference-api:latest"
   kg_inference_api_base_path        = "/api/kg-inference"
   kg_inference_api_log_group_name   = "kg_inference_api"
@@ -208,7 +208,7 @@ module "thumbnail_generation_api" {
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
 
   aws_region                                = var.aws_region
-  epfl_cidr                                 = var.epfl_cidr
+  allowed_source_ip_cidr_blocks             = [var.epfl_cidr, var.bbp_dmz_cidr]
   thumbnail_generation_api_docker_image_url = "bluebrain/thumbnail-generation-api:latest"
   thumbnail_generation_api_base_path        = "/api/thumbnail-generation"
   thumbnail_generation_api_log_group_name   = "thumbnail_generation_api"

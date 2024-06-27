@@ -1,5 +1,5 @@
 #aws_region
-#epfl_cidr
+#allowed_source_ip_cidr_blocks
 #thumbnail_generation_api_base_path
 #thumbnail_generation_api_docker_image_url
 #thumbnail_generation_api_log_group_name
@@ -10,9 +10,9 @@
 # data.terraform_remote_state.common.outputs.vpc_cidr_block
 # data.terraform_remote_state.common.outputs.vpc_id
 
-variable "epfl_cidr" {
+variable "allowed_source_ip_cidr_blocks" {
   sensitive = false
-  type      = string
+  type      = list(string)
 }
 variable "aws_region" {
   type      = string

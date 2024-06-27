@@ -69,7 +69,7 @@ resource "aws_lb_listener_rule" "cell_svc_https" {
 
   condition {
     source_ip {
-      values = [var.epfl_cidr]
+      values = var.allowed_source_ip_cidr_blocks
     }
   }
 

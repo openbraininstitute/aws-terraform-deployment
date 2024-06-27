@@ -77,7 +77,7 @@ resource "aws_lb_listener_rule" "bbp_workflow_api" {
 
   condition {
     source_ip {
-      values = [var.epfl_cidr]
+      values = [var.epfl_cidr, var.bbp_dmz_cidr]
     }
   }
 
