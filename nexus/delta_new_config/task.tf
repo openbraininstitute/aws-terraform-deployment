@@ -135,18 +135,46 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
       command = [
         "sh",
         "-c",
-        "echo $DELTA_CONFIG | base64 -d - | tee /opt/appconf/delta-from-terraform.conf"
+        "echo $DELTA_CONFIG | base64 -d - | tee /opt/appconf/delta-from-terraform.conf && echo $CONSTRUCT_QUERY_CONFIG | base64 -d - | tee /opt/search-config/construct-query-from-terraform.sparql && echo $FIELDS_CONFIG | base64 -d - | tee /opt/search-config/fields-from-terraform.json && echo $MAPPING_CONFIG | base64 -d - | tee /opt/search-config/mapping-from-terraform.json && echo $RESOURCE_TYPES_CONFIG | base64 -d - | tee /opt/search-config/resource-types-from-terraform.json && echo $SEARCH_CONTEXT_CONFIG | base64 -d - | tee /opt/search-config/search-context-from-terraform.json && echo $SETTINGS_CONFIG | base64 -d - | tee /opt/search-config/settings-from-terraform.json"
       ],
       environment = [
         {
           name  = "DELTA_CONFIG"
           value = base64encode(file("${path.module}/delta.conf"))
-        }
+        },
+        {
+          name  = "CONSTRUCT_QUERY_CONFIG"
+          value = base64encode(file("${path.module}/construct-query.sparql"))
+        },
+        {
+          name  = "FIELDS_CONFIG"
+          value = base64encode(file("${path.module}/fields.json"))
+        },
+        {
+          name  = "MAPPING_CONFIG"
+          value = base64encode(file("${path.module}/mapping.json"))
+        },
+        {
+          name  = "RESOURCE_TYPES_CONFIG"
+          value = base64encode(file("${path.module}/resource-types.json"))
+        },
+        {
+          name  = "SEARCH_CONTEXT_CONFIG"
+          value = base64encode(file("${path.module}/search-context.json"))
+        },
+        {
+          name  = "SETTINGS_CONFIG"
+          value = base64encode(file("${path.module}/settings.json"))
+        },
       ],
       mountPoints = [
         {
           sourceVolume  = "efs-nexus-app-config"
           containerPath = "/opt/appconf"
+        },
+        {
+          sourceVolume  = "efs-nexus-search-config"
+          containerPath = "/opt/search-config"
         }
       ],
     }
