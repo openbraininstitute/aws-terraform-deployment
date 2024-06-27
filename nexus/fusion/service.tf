@@ -39,8 +39,5 @@ resource "aws_ecs_service" "nexus_fusion_ecs_service" {
   lifecycle {
     ignore_changes = [desired_count]
   }
-  tags = {
-    SBO_Billing = var.fusion_instance_name
-  }
   propagate_tags = "SERVICE"
 }

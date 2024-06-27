@@ -1,3 +1,7 @@
+variable "aws_region" {
+  type = string
+}
+
 variable "nexus_fusion_hostname" {
   type = string
 }

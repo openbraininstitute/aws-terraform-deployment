@@ -99,6 +99,7 @@ module "fusion_target_group" {
   target_group_prefix      = "nx-fus"
   unique_listener_priority = 300
 
+  aws_region                    = var.aws_region
   vpc_id                        = var.vpc_id
   domain_zone_id                = var.domain_zone_id
   public_lb_listener_https_arn  = var.public_lb_listener_https_arn
@@ -254,6 +255,7 @@ module "nexus_fusion_target_group" {
   target_group_prefix      = "nxsfus"
   unique_listener_priority = 301
 
+  aws_region                    = var.aws_region
   vpc_id                        = var.vpc_id
   domain_zone_id                = var.domain_zone_id
   nat_gateway_id                = var.nat_gateway_id

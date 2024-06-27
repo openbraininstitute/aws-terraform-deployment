@@ -1,8 +1,7 @@
 
 locals {
-  nexus_fusion_log_group_name = var.fusion_instance_name
-  fusion_cpu                  = 512
-  fusion_memory               = 1024
+  fusion_cpu    = 512
+  fusion_memory = 1024
 }
 
 resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
@@ -127,10 +126,6 @@ resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
   cpu                      = local.fusion_cpu
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = var.ecs_task_execution_role_arn
-
-  tags = {
-    SBO_Billing = var.fusion_instance_name
-  }
 }
 
 
@@ -140,9 +135,4 @@ resource "aws_cloudwatch_log_group" "nexus_fusion" {
   retention_in_days = 5
 
   kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
-
-  tags = {
-    Application = var.fusion_instance_name
-    SBO_Billing = var.fusion_instance_name
-  }
 }
