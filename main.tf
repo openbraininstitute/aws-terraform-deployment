@@ -23,7 +23,7 @@ module "cs" {
   preferred_hostname = "openbluebrain.com"
   redirect_hostnames = ["openbluebrain.ch", "openbrainplatform.org", "openbrainplatform.com"]
 
-  allowed_source_ip_cidr_blocks = [var.epfl_cidr, data.terraform_remote_state.common.outputs.vpc_cidr_block, var.bbp_dmz_cidr]
+  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 }
 
 module "ml" {
