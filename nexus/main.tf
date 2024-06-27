@@ -246,6 +246,7 @@ module "nexus_delta" {
 
   blazegraph_endpoint           = module.blazegraph_main.http_endpoint
   blazegraph_composite_endpoint = module.blazegraph_composite.http_endpoint
+  delta_search_config_commit    = "master"
 }
 
 module "nexus_fusion_target_group" {
