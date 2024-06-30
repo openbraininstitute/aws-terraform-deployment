@@ -172,7 +172,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
   volume {
     name = "efs-nexus-app-config"
     efs_volume_configuration {
-      file_system_id     = aws_efs_file_system.nexus_app_config.id
+      file_system_id     = aws_efs_file_system.delta.id
       transit_encryption = "ENABLED"
       authorization_config {
         access_point_id = aws_efs_access_point.delta_config.id
@@ -183,7 +183,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
   volume {
     name = "efs-nexus-disk-storage"
     efs_volume_configuration {
-      file_system_id     = aws_efs_file_system.nexus_app_config.id
+      file_system_id     = aws_efs_file_system.delta.id
       transit_encryption = "ENABLED"
       authorization_config {
         access_point_id = aws_efs_access_point.disk_storage.id
