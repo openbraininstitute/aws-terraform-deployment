@@ -31,7 +31,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
         },
         {
           name  = "DELTA_EXTERNAL_CONF"
-          value = "/opt/appconf/delta-from-terraform.conf"
+          value = "/opt/appconf/delta.conf"
         },
         {
           name  = "POSTGRES_HOST"
@@ -135,7 +135,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
       command = [
         "sh",
         "-c",
-        "echo $DELTA_CONFIG | base64 -d - | tee /opt/appconf/delta-from-terraform.conf && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/construct-query.sparql -O /opt/search-config/construct-query-from-terraform.sparql && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/fields.json -O /opt/search-config/fields-from-terraform.json && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/mapping.json -O /opt/search-config/mapping-from-terraform.json && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/resource-types.json -O /opt/search-config/resource-types-from-terraform.json && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/search-context.json -O /opt/search-config/search-context-from-terraform.json && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/settings.json -O /opt/search-config/settings-from-terraform.json",
+        "echo $DELTA_CONFIG | base64 -d - | tee /opt/appconf/delta.conf && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/construct-query.sparql -O /opt/search-config/construct-query.sparql && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/fields.json -O /opt/search-config/fields.json && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/mapping.json -O /opt/search-config/mapping.json && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/resource-types.json -O /opt/search-config/resource-types.json && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/search-context.json -O /opt/search-config/search-context.json && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/settings.json -O /opt/search-config/settings.json",
       ],
       environment = [
         {
