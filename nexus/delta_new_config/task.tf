@@ -31,7 +31,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
         },
         {
           name  = "DELTA_EXTERNAL_CONF"
-          value = "/opt/appconf/delta.conf"
+          value = "/opt/delta-config/delta.conf"
         },
         {
           name  = "POSTGRES_HOST"
@@ -98,12 +98,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
       mountPoints = [
         {
           sourceVolume  = "efs-nexus-app-config"
-          containerPath = "/opt/appconf"
-          readOnly      = true
-        },
-        {
-          sourceVolume  = "efs-nexus-search-config"
-          containerPath = "/opt/search-config"
+          containerPath = "/opt/delta-config"
           readOnly      = true
         },
         {
@@ -135,7 +130,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
       command = [
         "sh",
         "-c",
-        "echo $DELTA_CONFIG | base64 -d - | tee /opt/appconf/delta.conf && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/construct-query.sparql -O /opt/search-config/construct-query.sparql && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/fields.json -O /opt/search-config/fields.json && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/mapping.json -O /opt/search-config/mapping.json && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/resource-types.json -O /opt/search-config/resource-types.json && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/search-context.json -O /opt/search-config/search-context.json && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/settings.json -O /opt/search-config/settings.json",
+        "echo $DELTA_CONFIG | base64 -d - | tee /opt/delta-config/delta.conf && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/construct-query.sparql -O /opt/delta-config/construct-query.sparql && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/fields.json -O /opt/delta-config/fields.json && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/mapping.json -O /opt/delta-config/mapping.json && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/resource-types.json -O /opt/delta-config/resource-types.json && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/search-context.json -O /opt/delta-config/search-context.json && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/settings.json -O /opt/delta-config/settings.json",
       ],
       environment = [
         {
@@ -150,11 +145,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
       mountPoints = [
         {
           sourceVolume  = "efs-nexus-app-config"
-          containerPath = "/opt/appconf"
-        },
-        {
-          sourceVolume  = "efs-nexus-search-config"
-          containerPath = "/opt/search-config"
+          containerPath = "/opt/delta-config"
         }
       ],
       logConfiguration = {
@@ -184,18 +175,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
       file_system_id     = aws_efs_file_system.nexus_app_config.id
       transit_encryption = "ENABLED"
       authorization_config {
-        access_point_id = aws_efs_access_point.appconf.id
-        iam             = "DISABLED"
-      }
-    }
-  }
-  volume {
-    name = "efs-nexus-search-config"
-    efs_volume_configuration {
-      file_system_id     = aws_efs_file_system.nexus_app_config.id
-      transit_encryption = "ENABLED"
-      authorization_config {
-        access_point_id = aws_efs_access_point.search_config.id
+        access_point_id = aws_efs_access_point.delta_config.id
         iam             = "DISABLED"
       }
     }
