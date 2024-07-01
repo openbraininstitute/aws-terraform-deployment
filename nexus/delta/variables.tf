@@ -94,6 +94,11 @@ variable "delta_target_group_arn" {
   description = "ARN of the target group that the ECS Service will be targeted by."
 }
 
+variable "delta_search_config_commit" {
+  type        = string
+  description = "The github commit hash (or tag/branch) of nexus that contains the search config which should be used in this deployment"
+}
+
 variable "dockerhub_credentials_arn" {
   type        = string
   description = "ARN of the secret that contains valid Dockerhub credentials to pull docker images while authenticated."

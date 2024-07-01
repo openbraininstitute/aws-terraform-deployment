@@ -90,6 +90,7 @@ module "delta" {
 
   blazegraph_endpoint           = module.blazegraph.http_endpoint
   blazegraph_composite_endpoint = "http://not.used.here"
+  delta_search_config_commit    = "80fb06db5f5334da668504c7c66f17ad8585b57b"
 }
 
 module "fusion_target_group" {
@@ -217,7 +218,7 @@ module "nexus_delta_target_group" {
 }
 
 module "nexus_delta" {
-  source = "./delta_new_config"
+  source = "./delta"
 
   subnet_id                = module.networking.subnet_id
   subnet_security_group_id = module.networking.main_subnet_sg_id
@@ -246,7 +247,7 @@ module "nexus_delta" {
 
   blazegraph_endpoint           = module.blazegraph_main.http_endpoint
   blazegraph_composite_endpoint = module.blazegraph_composite.http_endpoint
-  delta_search_config_commit    = "master"
+  delta_search_config_commit    = "bd265a3d3cc4cd588fe93eda2ddaacd28ba32258"
 }
 
 module "nexus_fusion_target_group" {

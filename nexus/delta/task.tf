@@ -12,6 +12,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
 
   container_definitions = jsonencode([
     {
+      name   = "delta"
       memory = local.nexus_memory
       cpu    = local.nexus_cpu
       command = [
@@ -30,7 +31,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
         },
         {
           name  = "DELTA_EXTERNAL_CONF"
-          value = "/opt/appconf/delta.conf"
+          value = "/opt/delta-config/delta.conf"
         },
         {
           name  = "POSTGRES_HOST"
@@ -97,12 +98,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
       mountPoints = [
         {
           sourceVolume  = "efs-nexus-app-config"
-          containerPath = "/opt/appconf"
-          readOnly      = true
-        },
-        {
-          sourceVolume  = "efs-nexus-search-config"
-          containerPath = "/opt/search-config"
+          containerPath = "/opt/delta-config"
           readOnly      = true
         },
         {
@@ -110,6 +106,12 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
           containerPath = "/opt/disk-storage"
           readOnly      = false
         },
+      ]
+      dependsOn = [
+        {
+          containerName = "delta-config"
+          condition     = "COMPLETE"
+        }
       ]
       logConfiguration = {
         logDriver = "awslogs"
@@ -119,6 +121,44 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
           awslogs-create-group  = "true"
           awslogs-stream-prefix = "nexus_delta"
         }
+      }
+    },
+    {
+      name      = "delta-config"
+      image     = "bash"
+      essential = false
+      command = [
+        "sh",
+        "-c",
+        "echo $DELTA_CONFIG | base64 -d - | tee /opt/delta-config/delta.conf && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/construct-query.sparql -O /opt/delta-config/construct-query.sparql && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/fields.json -O /opt/delta-config/fields.json && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/mapping.json -O /opt/delta-config/mapping.json && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/resource-types.json -O /opt/delta-config/resource-types.json && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/search-context.json -O /opt/delta-config/search-context.json && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/settings.json -O /opt/delta-config/settings.json",
+      ],
+      environment = [
+        {
+          name  = "DELTA_CONFIG"
+          value = base64encode(file("${path.module}/delta.conf"))
+        },
+        {
+          name  = "COMMIT"
+          value = "${var.delta_search_config_commit}"
+        }
+      ],
+      mountPoints = [
+        {
+          sourceVolume  = "efs-nexus-app-config"
+          containerPath = "/opt/delta-config"
+        }
+      ],
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = local.nexus_delta_app_log_group_name
+          awslogs-region        = data.aws_region.current.name
+          awslogs-create-group  = "true"
+          awslogs-stream-prefix = "nexus_delta_config"
+        }
+      },
+      repositoryCredentials = {
+        credentialsParameter = var.dockerhub_credentials_arn
       }
     }
   ])
@@ -132,21 +172,10 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
   volume {
     name = "efs-nexus-app-config"
     efs_volume_configuration {
-      file_system_id     = aws_efs_file_system.nexus_app_config.id
+      file_system_id     = aws_efs_file_system.delta.id
       transit_encryption = "ENABLED"
       authorization_config {
-        access_point_id = aws_efs_access_point.appconf.id
-        iam             = "DISABLED"
-      }
-    }
-  }
-  volume {
-    name = "efs-nexus-search-config"
-    efs_volume_configuration {
-      file_system_id     = aws_efs_file_system.nexus_app_config.id
-      transit_encryption = "ENABLED"
-      authorization_config {
-        access_point_id = aws_efs_access_point.search_config.id
+        access_point_id = aws_efs_access_point.delta_config.id
         iam             = "DISABLED"
       }
     }
@@ -154,7 +183,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
   volume {
     name = "efs-nexus-disk-storage"
     efs_volume_configuration {
-      file_system_id     = aws_efs_file_system.nexus_app_config.id
+      file_system_id     = aws_efs_file_system.delta.id
       transit_encryption = "ENABLED"
       authorization_config {
         access_point_id = aws_efs_access_point.disk_storage.id
