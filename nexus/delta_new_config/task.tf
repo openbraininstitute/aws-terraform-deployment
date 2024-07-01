@@ -157,6 +157,15 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
           containerPath = "/opt/search-config"
         }
       ],
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = local.nexus_delta_app_log_group_name
+          awslogs-region        = data.aws_region.current.name
+          awslogs-create-group  = "true"
+          awslogs-stream-prefix = "nexus_delta_config"
+        }
+      },
     }
   ])
 
