@@ -21,3 +21,7 @@ output "compute_subnet_efs_ids" {
 output "lambda_subnet_id" {
   value = aws_subnet.lambda.id
 }
+
+output "endpoints_subnet_id" {
+  value = aws_subnet.obp_vpc_endpoints.id
+}

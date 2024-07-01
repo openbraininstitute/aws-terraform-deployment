@@ -66,7 +66,14 @@ locals {
 }
 
 resource "aws_route_table_association" "compute" {
-  count          = var.compute_subnet_count
+  count          = var.create_jumphost ? var.compute_subnet_count : 0
   subnet_id      = aws_subnet.compute[count.index].id
   route_table_id = aws_route_table.compute[count.index].id
+}
+
+resource "aws_route" "compute_to_public" {
+  count                     = var.compute_subnet_count
+  route_table_id            = aws_route_table.compute[count.index].id
+  destination_cidr_block    = aws_subnet.public[0].cidr_block
+  vpc_peering_connection_id = var.vpc_peering_connection_id
 }

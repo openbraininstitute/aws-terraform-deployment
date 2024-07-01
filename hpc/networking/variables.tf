@@ -69,6 +69,11 @@ variable "lambda_subnet_cidr" {
   type        = string
 }
 
+variable "endpoints_subnet_cidr" {
+  description = "CIDR for the subnet in which endpoints can be deployed"
+  type        = string
+}
+
 variable "endpoints_sg_id" {
   description = "ID for the security group for Endpoints"
   type        = string

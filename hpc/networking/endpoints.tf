@@ -17,7 +17,7 @@ resource "aws_vpc_endpoint" "cloudwatch" {
   subnet_ids          = local.aws_subnet_compute_endpoints_ids
   security_group_ids  = var.security_groups
   tags = {
-    Name = "cloudwatch endpoint"
+    Name = "Parallel-Clusters CloudWatch Endpoint"
   }
 }
 resource "aws_vpc_endpoint" "cloudformation" {
@@ -28,7 +28,7 @@ resource "aws_vpc_endpoint" "cloudformation" {
   subnet_ids          = local.aws_subnet_compute_endpoints_ids
   security_group_ids  = var.security_groups
   tags = {
-    Name = "cloudformation endpoint"
+    Name = "Parallel-Clusters CloudFormation Endpoint"
   }
 }
 resource "aws_vpc_endpoint" "ec2" {
@@ -39,15 +39,16 @@ resource "aws_vpc_endpoint" "ec2" {
   subnet_ids          = local.aws_subnet_compute_endpoints_ids
   security_group_ids  = var.security_groups
   tags = {
-    Name = "ec2 endpoint"
+    Name = "Parallel-Clusters EC2 Endpoint"
   }
 }
+
 resource "aws_vpc_endpoint" "s3" {
   vpc_id          = var.pcluster_vpc_id
   service_name    = "com.amazonaws.${var.aws_region}.s3"
   route_table_ids = aws_route_table.compute[*].id
   tags = {
-    Name = "s3 endpoint"
+    Name = "Parallel-Cluster S3 Endpoint"
   }
 }
 resource "aws_vpc_endpoint" "dynamodb" {
@@ -55,19 +56,28 @@ resource "aws_vpc_endpoint" "dynamodb" {
   service_name    = "com.amazonaws.${var.aws_region}.dynamodb"
   route_table_ids = aws_route_table.compute[*].id
   tags = {
-    Name = "dynamodb endpoint"
+    Name = "Parallel-Clusters DynamoDB Endpoint"
   }
 }
 
 # endpoints for the OBP VPC
 # these are used by at least hpc-resource-provisioner
 
+resource "aws_subnet" "obp_vpc_endpoints" {
+  vpc_id            = var.obp_vpc_id
+  availability_zone = "${var.aws_region}a"
+  cidr_block        = var.endpoints_subnet_cidr
+  tags = {
+    Name = "OBP VPC Endpoints"
+  }
+}
+
 resource "aws_vpc_endpoint" "cloudformation_obp_endpoint" {
   vpc_id              = var.obp_vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.cloudformation"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
-  subnet_ids          = [aws_subnet.lambda.id]
+  subnet_ids          = [aws_subnet.obp_vpc_endpoints.id]
   security_group_ids  = [var.peering_sg_id, var.obp_vpc_default_sg_id, var.endpoints_sg_id]
   tags = {
     Name = "OBP VPC CloudFormation endpoint"
@@ -79,7 +89,7 @@ resource "aws_vpc_endpoint" "cloudwatch_obp_endpoint" {
   service_name        = "com.amazonaws.${var.aws_region}.monitoring"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
-  subnet_ids          = [aws_subnet.lambda.id]
+  subnet_ids          = [aws_subnet.obp_vpc_endpoints.id]
   security_group_ids  = [var.peering_sg_id, var.obp_vpc_default_sg_id, var.endpoints_sg_id]
   tags = {
     Name = "OBP VPC CloudWatch endpoint"
@@ -91,7 +101,7 @@ resource "aws_vpc_endpoint" "ec2_obp_endpoint" {
   service_name        = "com.amazonaws.${var.aws_region}.ec2"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
-  subnet_ids          = [aws_subnet.lambda.id]
+  subnet_ids          = [aws_subnet.obp_vpc_endpoints.id]
   security_group_ids  = [var.peering_sg_id, var.obp_vpc_default_sg_id, var.endpoints_sg_id]
   tags = {
     Name = "OBP VPC EC2 endpoint"
@@ -103,7 +113,7 @@ resource "aws_vpc_endpoint" "efs_obp_endpoint" {
   service_name        = "com.amazonaws.${var.aws_region}.elasticfilesystem"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
-  subnet_ids          = [aws_subnet.lambda.id]
+  subnet_ids          = [aws_subnet.obp_vpc_endpoints.id]
   security_group_ids  = [var.peering_sg_id, var.obp_vpc_default_sg_id, var.endpoints_sg_id]
   tags = {
     Name = "OBP VPC EFS endpoint"
@@ -115,7 +125,7 @@ resource "aws_vpc_endpoint" "sts_obp_endpoint" {
   service_name        = "com.amazonaws.${var.aws_region}.sts"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
-  subnet_ids          = [aws_subnet.lambda.id]
+  subnet_ids          = [aws_subnet.obp_vpc_endpoints.id]
   security_group_ids  = [var.peering_sg_id, var.obp_vpc_default_sg_id, var.endpoints_sg_id]
   tags = {
     Name = "OBP VPC STS endpoint"
@@ -127,7 +137,7 @@ resource "aws_vpc_endpoint" "lambda_obp_endpoint" {
   service_name        = "com.amazonaws.${var.aws_region}.lambda"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
-  subnet_ids          = [aws_subnet.lambda.id]
+  subnet_ids          = [aws_subnet.obp_vpc_endpoints.id]
   security_group_ids  = [var.peering_sg_id, var.obp_vpc_default_sg_id, var.endpoints_sg_id]
   tags = {
     Name = "OBP VPC Lambda endpoint"

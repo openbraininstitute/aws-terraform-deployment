@@ -146,6 +146,7 @@ module "hpc" {
   existing_route_targets     = ["10.0.0.0/16"]
   account_id                 = "671250183987"
   lambda_subnet_cidr         = "10.0.16.0/24"
+  endpoints_subnet_cidr      = "10.0.17.0/24"
 }
 
 module "core_webapp" {
