@@ -6,8 +6,8 @@ resource "aws_route" "existing_to_peer" {
 }
 
 resource "aws_route" "peer_to_existing" {
-  count                     = length(var.existing_route_targets)
+  count                     = var.compute_subnet_count
   route_table_id            = aws_route_table.compute[count.index].id
-  destination_cidr_block    = var.existing_route_targets[count.index]
+  destination_cidr_block    = data.aws_vpc.obp_vpc.cidr_block
   vpc_peering_connection_id = var.vpc_peering_connection_id
 }
