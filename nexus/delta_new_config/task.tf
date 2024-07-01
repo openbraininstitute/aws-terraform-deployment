@@ -166,6 +166,9 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
           awslogs-stream-prefix = "nexus_delta_config"
         }
       },
+      repositoryCredentials = {
+        credentialsParameter = var.dockerhub_credentials_arn
+      }
     }
   ])
 
