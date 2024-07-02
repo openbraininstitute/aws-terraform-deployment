@@ -104,7 +104,7 @@ variable "bbp_workflow_web_hostname" {
 ### Virtual Lab Manager ###
 
 variable "keycloak_server_url" {
-  default     = "https://openbluebrain.com/auth"
+  default     = "https://openbluebrain.com/auth/"
   type        = string
   description = "The URL of the Keycloak server"
   sensitive   = false
