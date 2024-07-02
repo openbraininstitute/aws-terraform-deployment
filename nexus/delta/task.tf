@@ -135,7 +135,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
       environment = [
         {
           name  = "DELTA_CONFIG"
-          value = base64encode(file("${path.module}/delta.conf"))
+          value = base64encode(file("${path.module}/${var.delta_config_file}"))
         },
         {
           name  = "COMMIT"

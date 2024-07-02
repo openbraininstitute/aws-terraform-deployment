@@ -29,6 +29,11 @@ variable "delta_efs_name" {
   description = "Unique name for the EFS associated with Delta. This is where the Delta config and the search config are stored and later mounted to the container."
 }
 
+variable "delta_config_file" {
+  type        = string
+  description = "The filename of the config delta should use. This is only needed if there are two deployments of delta contained within this terraform."
+}
+
 variable "nexus_delta_docker_image_url" {
   type    = string
   default = "bluebrain/nexus-delta:latest"

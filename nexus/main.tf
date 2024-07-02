@@ -91,6 +91,7 @@ module "delta" {
   blazegraph_endpoint           = module.blazegraph.http_endpoint
   blazegraph_composite_endpoint = module.blazegraph.http_endpoint
   delta_search_config_commit    = "80fb06db5f5334da668504c7c66f17ad8585b57b"
+  delta_config_file             = "legacy.conf"
 }
 
 module "fusion_target_group" {
@@ -248,6 +249,7 @@ module "nexus_delta" {
   blazegraph_endpoint           = module.blazegraph_main.http_endpoint
   blazegraph_composite_endpoint = module.blazegraph_composite.http_endpoint
   delta_search_config_commit    = "bd265a3d3cc4cd588fe93eda2ddaacd28ba32258"
+  delta_config_file             = "delta.conf"
 }
 
 module "nexus_fusion_target_group" {
