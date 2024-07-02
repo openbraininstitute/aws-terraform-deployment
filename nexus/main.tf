@@ -70,7 +70,7 @@ module "delta" {
   delta_memory = 8192
 
   delta_instance_name  = "delta"
-  delta_efs_name       = "sbo-poc-nexus-app-config" # legacy name so that the efs doesn't get modified
+  delta_efs_name       = "delta-legacy" # legacy name so that the efs doesn't get modified
   s3_bucket_arn        = aws_s3_bucket.nexus_delta.arn
   nexus_delta_hostname = module.delta_target_group.hostname
 
@@ -227,7 +227,7 @@ module "nexus_delta" {
   delta_memory = 6144
 
   delta_instance_name  = "nexus-delta"
-  delta_efs_name       = "nexus-delta"
+  delta_efs_name       = "delta"
   s3_bucket_arn        = aws_s3_bucket.nexus.arn
   nexus_delta_hostname = module.nexus_delta_target_group.hostname
 
