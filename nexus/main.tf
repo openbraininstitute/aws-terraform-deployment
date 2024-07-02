@@ -83,13 +83,13 @@ module "delta" {
   dockerhub_credentials_arn = var.dockerhub_credentials_arn
 
   postgres_host        = module.postgres.host
-  postgres_reader_host = "http://not.used.right.now"
+  postgres_reader_host = module.postgres.host
 
   elasticsearch_endpoint = module.elasticcloud.http_endpoint
   elastic_password_key   = "elasticsearch_password"
 
   blazegraph_endpoint           = module.blazegraph.http_endpoint
-  blazegraph_composite_endpoint = "http://not.used.here"
+  blazegraph_composite_endpoint = module.blazegraph.http_endpoint
   delta_search_config_commit    = "80fb06db5f5334da668504c7c66f17ad8585b57b"
 }
 
