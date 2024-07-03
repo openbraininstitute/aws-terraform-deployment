@@ -53,11 +53,6 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_service" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-resource "aws_iam_role_policy_attachment" "dockerhub_secret_access" {
-  role       = aws_iam_role.nexus_ecs_task_execution.name
-  policy_arn = var.dockerhub_access_iam_policy_arn
-}
-
 resource "aws_iam_role_policy_attachment" "nexus_secret_access" {
   role       = aws_iam_role.nexus_ecs_task_execution.name
   policy_arn = aws_iam_policy.nexus_secrets_access.arn

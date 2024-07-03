@@ -11,5 +11,5 @@ variable "vpc_id" {
 variable "nat_gateway_id" {
   type        = string
   default     = ""
-  description = "The ID of the provided NAT gateway that is used when routing traffic out of the AWS Network. For sandbox usage only: if left blank, then a new one will be created."
+  description = "The ID of the provided NAT gateway that is used when routing traffic out of the AWS Network."
 }

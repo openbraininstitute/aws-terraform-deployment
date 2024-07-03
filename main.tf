@@ -55,12 +55,10 @@ module "ml" {
 module "nexus" {
   source = "./nexus"
 
-  aws_region     = var.aws_region
-  aws_account_id = data.aws_caller_identity.current.account_id
-  vpc_id         = data.terraform_remote_state.common.outputs.vpc_id
-
-  dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
-  dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
+  aws_region         = var.aws_region
+  aws_account_id     = data.aws_caller_identity.current.account_id
+  vpc_id             = data.terraform_remote_state.common.outputs.vpc_id
+  dockerhub_password = var.nise_dockerhub_password
 
   domain_zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
   nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id

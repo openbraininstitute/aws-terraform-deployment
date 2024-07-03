@@ -10,15 +10,11 @@ resource "aws_route_table" "nexus" {
   vpc_id = var.vpc_id
 }
 
-locals {
-  nat_gateway_id = var.nat_gateway_id != "" ? var.nat_gateway_id : aws_nat_gateway.nat_gateway[0].id
-}
-
 # Route all traffic whose destination is not the VPC to the NAT Gateway
 resource "aws_route" "nexus_nat_route" {
   route_table_id         = aws_route_table.nexus.id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = local.nat_gateway_id
+  nat_gateway_id         = var.nat_gateway_id
 }
 
 # Link route table to the subnet

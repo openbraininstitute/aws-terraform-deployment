@@ -109,3 +109,11 @@ variable "keycloak_server_url" {
   description = "The URL of the Keycloak server"
   sensitive   = false
 }
+
+### Nexus ###
+
+variable "nise_dockerhub_password" {
+  type        = string
+  description = "Password for the NISE dockerhub access. Set via TF_VAR_nise_dockerhub_password variable."
+  sensitive   = true
+}

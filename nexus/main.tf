@@ -6,6 +6,16 @@ module "networking" {
   vpc_id         = var.vpc_id
 }
 
+module "iam" {
+  source = "./iam"
+
+  aws_region     = var.aws_region
+  aws_account_id = var.aws_account_id
+
+  nexus_secrets_arn  = var.nexus_secrets_arn
+  dockerhub_password = var.dockerhub_password
+}
+
 module "postgres" {
   source = "./postgres"
 
@@ -39,7 +49,7 @@ module "blazegraph" {
 
   subnet_id                   = module.networking.subnet_id
   subnet_security_group_id    = module.networking.main_subnet_sg_id
-  ecs_task_execution_role_arn = aws_iam_role.nexus_ecs_task_execution.arn
+  ecs_task_execution_role_arn = module.iam.nexus_ecs_task_execution_role_arn
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
@@ -76,11 +86,11 @@ module "delta" {
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
-  ecs_task_execution_role_arn              = aws_iam_role.nexus_ecs_task_execution.arn
+  ecs_task_execution_role_arn              = module.iam.nexus_ecs_task_execution_role_arn
   nexus_secrets_arn                        = var.nexus_secrets_arn
 
   delta_target_group_arn    = module.delta_target_group.lb_target_group_arn
-  dockerhub_credentials_arn = var.dockerhub_credentials_arn
+  dockerhub_credentials_arn = module.iam.dockerhub_credentials_arn
 
   postgres_host        = module.postgres.host
   postgres_reader_host = module.postgres.host
@@ -122,18 +132,18 @@ module "fusion" {
   subnet_security_group_id = module.networking.main_subnet_sg_id
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
-  ecs_task_execution_role_arn              = aws_iam_role.nexus_ecs_task_execution.arn
+  ecs_task_execution_role_arn              = module.iam.nexus_ecs_task_execution_role_arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
 
   aws_lb_target_group_nexus_fusion_arn = module.fusion_target_group.lb_target_group_arn
-  dockerhub_credentials_arn            = var.dockerhub_credentials_arn
+  dockerhub_credentials_arn            = module.iam.dockerhub_credentials_arn
 }
 
 module "ship" {
   source = "./ship"
 
-  dockerhub_credentials_arn   = var.dockerhub_credentials_arn
-  ecs_task_execution_role_arn = aws_iam_role.nexus_ecs_task_execution.arn
+  dockerhub_credentials_arn   = module.iam.dockerhub_credentials_arn
+  ecs_task_execution_role_arn = module.iam.nexus_ecs_task_execution_role_arn
   nexus_secrets_arn           = var.nexus_secrets_arn
   postgres_host               = "https://replace.this.postgres.host"
   target_bucket_arn           = module.delta.nexus_delta_bucket_arn
@@ -164,7 +174,7 @@ module "blazegraph_main" {
 
   subnet_id                   = module.networking.subnet_id
   subnet_security_group_id    = module.networking.main_subnet_sg_id
-  ecs_task_execution_role_arn = aws_iam_role.nexus_ecs_task_execution.arn
+  ecs_task_execution_role_arn = module.iam.nexus_ecs_task_execution_role_arn
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
@@ -182,7 +192,7 @@ module "blazegraph_composite" {
 
   subnet_id                   = module.networking.subnet_id
   subnet_security_group_id    = module.networking.main_subnet_sg_id
-  ecs_task_execution_role_arn = aws_iam_role.nexus_ecs_task_execution.arn
+  ecs_task_execution_role_arn = module.iam.nexus_ecs_task_execution_role_arn
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
@@ -234,11 +244,11 @@ module "nexus_delta" {
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
-  ecs_task_execution_role_arn              = aws_iam_role.nexus_ecs_task_execution.arn
+  ecs_task_execution_role_arn              = module.iam.nexus_ecs_task_execution_role_arn
   nexus_secrets_arn                        = var.nexus_secrets_arn
 
   delta_target_group_arn    = module.nexus_delta_target_group.lb_target_group_arn
-  dockerhub_credentials_arn = var.dockerhub_credentials_arn
+  dockerhub_credentials_arn = module.iam.dockerhub_credentials_arn
 
   postgres_host        = module.postgres_cluster.writer_endpoint
   postgres_reader_host = module.postgres_cluster.reader_endpoint
@@ -280,9 +290,39 @@ module "nexus_fusion" {
   subnet_security_group_id = module.networking.main_subnet_sg_id
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
-  ecs_task_execution_role_arn              = aws_iam_role.nexus_ecs_task_execution.arn
+  ecs_task_execution_role_arn              = module.iam.nexus_ecs_task_execution_role_arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
 
   aws_lb_target_group_nexus_fusion_arn = module.nexus_fusion_target_group.lb_target_group_arn
-  dockerhub_credentials_arn            = var.dockerhub_credentials_arn
+  dockerhub_credentials_arn            = module.iam.dockerhub_credentials_arn
+}
+
+moved {
+  from = aws_iam_role.nexus_ecs_task_execution
+  to   = module.iam.aws_iam_role.nexus_ecs_task_execution
+}
+
+moved {
+  from = aws_iam_policy.cloudwatch_write_policy
+  to   = module.iam.aws_iam_policy.cloudwatch_write_policy
+}
+
+moved {
+  from = aws_iam_role_policy_attachment.ecs_task_execution_service
+  to   = module.iam.aws_iam_role_policy_attachment.ecs_task_execution_service
+}
+
+moved {
+  from = aws_iam_role_policy_attachment.nexus_secret_access
+  to   = module.iam.aws_iam_role_policy_attachment.nexus_secret_access
+}
+
+moved {
+  from = aws_iam_role_policy_attachment.cloudwatch_write_logs
+  to   = module.iam.aws_iam_role_policy_attachment.cloudwatch_write_logs
+}
+
+moved {
+  from = aws_iam_policy.nexus_secrets_access
+  to   = module.iam.aws_iam_policy.nexus_secrets_access
 }

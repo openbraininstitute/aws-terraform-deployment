@@ -15,14 +15,14 @@ variable "vpc_id" {
   description = "The ID of the VPC in which all Nexus components will be deployed."
 }
 
-variable "dockerhub_access_iam_policy_arn" {
-  type        = string
-  description = "The ARN of the IAM policy that allows to access the Dockerhub credentials stored in AWS Secrets Manager. See also the description of the dockerhub_credentials_arn variable."
+variable "dockerhub_username" {
+  type    = string
+  default = "bbpcinisedeploy"
 }
 
-variable "dockerhub_credentials_arn" {
-  type        = string
-  description = "The ARN of the secret in Secrets Manager that contains the Dockerhub credentials that can be used to pull images while being authenticated."
+variable "dockerhub_password" {
+  type      = string
+  sensitive = true
 }
 
 variable "nat_gateway_id" {
@@ -50,10 +50,8 @@ variable "public_lb_listener_https_arn" {
   description = "ARN of the public listener (used by the public load balancer). We attach to this listener different listener rules which define when a request that hits the load balancer should be forwarded to Delta or Fusion."
 }
 
-### Nexus Fusion ###
-
-variable "nexus_fusion_docker_image_url" {
-  default   = "bluebrain/nexus-web:1.9.9"
-  sensitive = false
-  type      = string
+variable "nexus_secrets_arn" {
+  default     = "arn:aws:secretsmanager:us-east-1:671250183987:secret:nexus_app-xfJP5F"
+  type        = string
+  description = "The ARN of the SBO nexus app secrets"
 }
