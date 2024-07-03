@@ -167,8 +167,8 @@ module "postgres_cluster" {
 module "blazegraph_main" {
   source = "./blazegraph"
 
-  blazegraph_cpu       = 3071
-  blazegraph_memory    = 6144
+  blazegraph_cpu       = 4096
+  blazegraph_memory    = 8192
   blazegraph_java_opts = "-Djava.awt.headless=true -Djava.awt.headless=true -XX:MaxDirectMemorySize=600m -Xms3g -Xmx3g -XX:+UseG1GC "
 
   blazegraph_instance_name = "blazegraph-main"
@@ -186,8 +186,8 @@ module "blazegraph_main" {
 module "blazegraph_composite" {
   source = "./blazegraph"
 
-  blazegraph_cpu       = 3071
-  blazegraph_memory    = 6144
+  blazegraph_cpu       = 4096
+  blazegraph_memory    = 8192
   blazegraph_java_opts = "-Djava.awt.headless=true -Djava.awt.headless=true -XX:MaxDirectMemorySize=600m -Xms3g -Xmx3g -XX:+UseG1GC "
 
   blazegraph_instance_name = "blazegraph-composite"
@@ -209,7 +209,7 @@ module "elasticsearch" {
   elastic_vpc_endpoint_id  = module.networking.elastic_vpc_endpoint_id
   elastic_hosted_zone_name = module.networking.elastic_hosted_zone_name
 
-  elasticsearch_version = "8.14.1"
+  elasticsearch_version = "8.13.4"
 
   hot_node_size  = "4g"
   hot_node_count = 2
