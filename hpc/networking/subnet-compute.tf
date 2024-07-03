@@ -43,10 +43,9 @@ resource "aws_subnet" "compute" {
 
 resource "aws_route_table" "compute" {
   vpc_id = var.pcluster_vpc_id
-  count  = var.compute_subnet_count
 
   tags = {
-    Name = "compute_route_${count.index}"
+    Name = "compute_route"
   }
 }
 
@@ -66,14 +65,23 @@ locals {
 }
 
 resource "aws_route_table_association" "compute" {
-  count          = var.create_jumphost ? var.compute_subnet_count : 0
+  count          = var.compute_subnet_count
   subnet_id      = aws_subnet.compute[count.index].id
-  route_table_id = aws_route_table.compute[count.index].id
+  route_table_id = aws_route_table.compute.id
 }
 
 resource "aws_route" "compute_to_public" {
-  count                     = var.create_jumphost ? var.compute_subnet_count : 0
-  route_table_id            = aws_route_table.compute[count.index].id
+  count                     = var.create_jumphost ? 1 : 0
+  route_table_id            = aws_route_table.compute.id
   destination_cidr_block    = aws_subnet.public[0].cidr_block
   vpc_peering_connection_id = var.vpc_peering_connection_id
 }
+
+
+resource "aws_route" "compute_to_existing_public" {
+  count                     = length(var.existing_public_subnet_cidrs)
+  route_table_id            = aws_route_table.compute.id
+  destination_cidr_block    = var.existing_public_subnet_cidrs[count.index]
+  vpc_peering_connection_id = var.vpc_peering_connection_id
+}
+

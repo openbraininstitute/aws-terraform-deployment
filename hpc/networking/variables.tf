@@ -78,3 +78,8 @@ variable "endpoints_sg_id" {
   description = "ID for the security group for Endpoints"
   type        = string
 }
+
+variable "existing_public_subnet_cidrs" {
+  description = "Existing public subnet CIDR blocks for routing compute subnets to, if any. Mostly for debugging purposes."
+  type        = list(string)
+}

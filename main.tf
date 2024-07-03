@@ -129,24 +129,25 @@ module "nse" {
 module "hpc" {
   source = "./hpc"
 
-  aws_region                 = var.aws_region
-  obp_vpc_id                 = "vpc-08aa04757a326969b"
-  sbo_billing                = "hpc"
-  slurm_mysql_admin_username = "slurm_admin"
-  slurm_mysql_admin_password = "arn:aws:secretsmanager:us-east-1:671250183987:secret:hpc_slurm_db_password-6LNuBy"
-  create_compute_instances   = false
-  num_compute_instances      = 0
-  create_slurmdb             = false # TODO-SLURMDB: re-enable when redeploying the cluster
-  compute_instance_type      = "m7g.medium"
-  create_jumphost            = false
-  compute_nat_access         = false
-  compute_subnet_count       = 16
-  av_zone_suffixes           = ["a", "b", "c", "d"]
-  peering_route_tables       = ["rtb-0e4eb2a1cbab24423"]
-  existing_route_targets     = ["10.0.0.0/16"]
-  account_id                 = "671250183987"
-  lambda_subnet_cidr         = "10.0.16.0/24"
-  endpoints_subnet_cidr      = "10.0.17.0/24"
+  aws_region                   = var.aws_region
+  obp_vpc_id                   = "vpc-08aa04757a326969b"
+  sbo_billing                  = "hpc"
+  slurm_mysql_admin_username   = "slurm_admin"
+  slurm_mysql_admin_password   = "arn:aws:secretsmanager:us-east-1:671250183987:secret:hpc_slurm_db_password-6LNuBy"
+  create_compute_instances     = false
+  num_compute_instances        = 0
+  create_slurmdb               = false # TODO-SLURMDB: re-enable when redeploying the cluster
+  compute_instance_type        = "m7g.medium"
+  create_jumphost              = false
+  compute_nat_access           = false
+  compute_subnet_count         = 16
+  av_zone_suffixes             = ["a", "b", "c", "d"]
+  peering_route_tables         = ["rtb-0e4eb2a1cbab24423"]
+  existing_route_targets       = ["10.0.0.0/16"]
+  account_id                   = "671250183987"
+  lambda_subnet_cidr           = "10.0.16.0/24"
+  endpoints_subnet_cidr        = "10.0.17.0/24"
+  existing_public_subnet_cidrs = ["10.0.1.0/25", "10.0.1.128/25"]
 }
 
 module "core_webapp" {

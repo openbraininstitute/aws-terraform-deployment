@@ -72,3 +72,7 @@ variable "endpoints_subnet_cidr" {
   description = "CIDR for the subnet in which endpoints can be deployed"
   type        = string
 }
+variable "existing_public_subnet_cidrs" {
+  description = "Existing public subnet CIDR blocks for routing compute subnets to, if any. Mostly for debugging purposes."
+  type        = list(string)
+}

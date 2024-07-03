@@ -27,24 +27,25 @@ module "vpc" {
 module "networking" {
   source = "./networking"
 
-  pcluster_vpc_id           = module.vpc.pcluster_vpc_id
-  obp_vpc_id                = var.obp_vpc_id
-  vpc_peering_connection_id = module.vpc.peering_connection_id
-  aws_region                = var.aws_region
-  create_compute_instances  = var.create_compute_instances
-  create_slurmdb            = var.create_slurmdb
-  create_jumphost           = var.create_jumphost
-  compute_nat_access        = var.compute_nat_access
-  compute_subnet_count      = var.compute_subnet_count
-  av_zone_suffixes          = var.av_zone_suffixes
-  peering_route_tables      = var.peering_route_tables
-  existing_route_targets    = var.existing_route_targets
-  security_groups           = [module.security.compute_hpc_sg_id]
-  peering_sg_id             = module.security.vpc_peering_security_group_id
-  obp_vpc_default_sg_id     = module.security.obp_vpc_default_sg_id
-  lambda_subnet_cidr        = var.lambda_subnet_cidr
-  endpoints_subnet_cidr     = var.endpoints_subnet_cidr
-  endpoints_sg_id           = module.security.endpoints_sg_id
+  pcluster_vpc_id              = module.vpc.pcluster_vpc_id
+  obp_vpc_id                   = var.obp_vpc_id
+  vpc_peering_connection_id    = module.vpc.peering_connection_id
+  aws_region                   = var.aws_region
+  create_compute_instances     = var.create_compute_instances
+  create_slurmdb               = var.create_slurmdb
+  create_jumphost              = var.create_jumphost
+  compute_nat_access           = var.compute_nat_access
+  compute_subnet_count         = var.compute_subnet_count
+  av_zone_suffixes             = var.av_zone_suffixes
+  peering_route_tables         = var.peering_route_tables
+  existing_route_targets       = var.existing_route_targets
+  security_groups              = [module.security.compute_hpc_sg_id]
+  peering_sg_id                = module.security.vpc_peering_security_group_id
+  obp_vpc_default_sg_id        = module.security.obp_vpc_default_sg_id
+  lambda_subnet_cidr           = var.lambda_subnet_cidr
+  endpoints_subnet_cidr        = var.endpoints_subnet_cidr
+  endpoints_sg_id              = module.security.endpoints_sg_id
+  existing_public_subnet_cidrs = var.existing_public_subnet_cidrs
 }
 
 module "security" {
