@@ -55,7 +55,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_service" {
 
 resource "aws_iam_role_policy_attachment" "nexus_secret_access" {
   role       = aws_iam_role.nexus_ecs_task_execution.name
-  policy_arn = aws_iam_policy.nexus_secrets_access.arn
+  policy_arn = aws_iam_policy.access_nexus_secrets.arn
 }
 
 resource "aws_iam_role_policy_attachment" "cloudwatch_write_logs" {
