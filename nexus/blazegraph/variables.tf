@@ -35,7 +35,7 @@ variable "blazegraph_memory" {
 }
 
 variable "blazegraph_java_opts" {
-  type        = number
+  type        = string
   description = "JAVA_OPTS for Blazegraph"
 }
 
