@@ -43,6 +43,18 @@ resource "aws_vpc_endpoint" "ec2" {
   }
 }
 
+resource "aws_vpc_endpoint" "ssm" {
+  vpc_id              = var.pcluster_vpc_id
+  service_name        = "com.amazonaws.${var.aws_region}.ssm"
+  vpc_endpoint_type   = "Interface"
+  private_dns_enabled = true
+  subnet_ids          = local.aws_subnet_compute_endpoints_ids
+  security_group_ids  = var.security_groups
+  tags = {
+    Name = "Parallel-Clusters SSM Endpoint"
+  }
+}
+
 resource "aws_vpc_endpoint" "s3" {
   vpc_id          = var.pcluster_vpc_id
   service_name    = "com.amazonaws.${var.aws_region}.s3"
