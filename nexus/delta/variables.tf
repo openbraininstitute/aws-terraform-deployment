@@ -18,6 +18,11 @@ variable "delta_memory" {
   description = "RAM value for the Delta task"
 }
 
+variable "delta_java_opts" {
+  type        = string
+  description = "JAVA_OPTS for the Delta task"
+}
+
 variable "desired_count" {
   type        = number
   description = "Number of tasks that the service should run. Set to 0 to not run anything."

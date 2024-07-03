@@ -77,8 +77,9 @@ module "delta" {
   subnet_id                = module.networking.subnet_id
   subnet_security_group_id = module.networking.main_subnet_sg_id
 
-  delta_cpu    = 4096
-  delta_memory = 8192
+  delta_cpu       = 4096
+  delta_memory    = 8192
+  delta_java_opts = "-Xms4g -Xmx4g"
 
   delta_instance_name  = "delta"
   delta_efs_name       = "delta-legacy" # legacy name so that the efs doesn't get modified
@@ -160,7 +161,7 @@ module "postgres_cluster" {
 
   subnets_ids       = module.networking.psql_subnets_ids
   security_group_id = module.networking.main_subnet_sg_id
-  instance_class    = "db.c6gd.medium"
+  instance_class    = "db.m5d.large"
 }
 
 module "blazegraph_main" {
@@ -208,9 +209,9 @@ module "elasticsearch" {
   elastic_vpc_endpoint_id  = module.networking.elastic_vpc_endpoint_id
   elastic_hosted_zone_name = module.networking.elastic_hosted_zone_name
 
-  elasticsearch_version = "8.13.4"
+  elasticsearch_version = "8.14.1"
 
-  hot_node_size  = "1g"
+  hot_node_size  = "4g"
   hot_node_count = 2
 
   deployment_name = "nexus-elasticsearch"
@@ -237,8 +238,9 @@ module "nexus_delta" {
   subnet_id                = module.networking.subnet_id
   subnet_security_group_id = module.networking.main_subnet_sg_id
 
-  delta_cpu    = 2048
-  delta_memory = 6144
+  delta_cpu       = 4096
+  delta_memory    = 8192
+  delta_java_opts = "-Xms4g -Xmx4g"
 
   delta_instance_name  = "nexus-delta"
   delta_efs_name       = "delta"
