@@ -24,7 +24,7 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
       environment = [
         {
           name  = "JAVA_OPTS"
-          value = "-Djava.awt.headless=true -Djava.awt.headless=true -XX:MaxDirectMemorySize=600m -Xms3g -Xmx3g -XX:+UseG1GC "
+          value = var.blazegraph_java_opts
         },
         {
           name  = "JETTY_START_TIMEOUT"

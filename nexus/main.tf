@@ -40,8 +40,9 @@ module "elasticcloud" {
 module "blazegraph" {
   source = "./blazegraph"
 
-  blazegraph_cpu    = 1024
-  blazegraph_memory = 6144
+  blazegraph_cpu       = 1024
+  blazegraph_memory    = 6144
+  blazegraph_java_opts = "-Djava.awt.headless=true -Djava.awt.headless=true -XX:MaxDirectMemorySize=600m -Xms3g -Xmx3g -XX:+UseG1GC "
 
   blazegraph_instance_name = "blazegraph"
   blazegraph_efs_name      = "sbo-poc-blazegraph"
@@ -165,8 +166,9 @@ module "postgres_cluster" {
 module "blazegraph_main" {
   source = "./blazegraph"
 
-  blazegraph_cpu    = 1024
-  blazegraph_memory = 4096
+  blazegraph_cpu       = 3071
+  blazegraph_memory    = 6144
+  blazegraph_java_opts = "-Djava.awt.headless=true -Djava.awt.headless=true -XX:MaxDirectMemorySize=600m -Xms3g -Xmx3g -XX:+UseG1GC "
 
   blazegraph_instance_name = "blazegraph-main"
   blazegraph_efs_name      = "blazegraph-main"
@@ -183,8 +185,9 @@ module "blazegraph_main" {
 module "blazegraph_composite" {
   source = "./blazegraph"
 
-  blazegraph_cpu    = 1024
-  blazegraph_memory = 4096
+  blazegraph_cpu       = 3071
+  blazegraph_memory    = 6144
+  blazegraph_java_opts = "-Djava.awt.headless=true -Djava.awt.headless=true -XX:MaxDirectMemorySize=600m -Xms3g -Xmx3g -XX:+UseG1GC "
 
   blazegraph_instance_name = "blazegraph-composite"
   blazegraph_efs_name      = "blazegraph-composite"

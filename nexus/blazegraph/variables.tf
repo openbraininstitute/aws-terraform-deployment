@@ -34,6 +34,11 @@ variable "blazegraph_memory" {
   description = "RAM value for the blazegraph task"
 }
 
+variable "blazegraph_java_opts" {
+  type        = number
+  description = "JAVA_OPTS for Blazegraph"
+}
+
 variable "blazegraph_instance_name" {
   type        = string
   description = "The unique name of this Blazegraph instance"
