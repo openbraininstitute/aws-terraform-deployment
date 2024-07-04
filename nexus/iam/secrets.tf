@@ -41,31 +41,3 @@ resource "aws_secretsmanager_secret_version" "example" {
     password = var.dockerhub_password
   })
 }
-
-# TODO: Delete this in the future when possible. It is unused.
-#tfsec:ignore:aws-iam-no-policy-wildcards
-resource "aws_iam_policy" "nexus_secrets_access" {
-  name        = "nexus-secrets-access-policy"
-  description = "Policy that gives access to the nexus secrets"
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ssm:GetParameters",
-        "secretsmanager:GetSecretValue"
-      ],
-      "Resource": [
-        "arn:aws:secretsmanager:us-east-1:671250183987:secret:nexus_app-xfJP5F"
-      ]
-    }
-  ]
-}
-EOF
-  tags = {
-    SBO_Billing = "nexus_app"
-  }
-}
