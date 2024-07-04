@@ -154,7 +154,6 @@ resource "aws_vpc_security_group_egress_rule" "hpc_allow_local_egress" {
 resource "aws_vpc_security_group_egress_rule" "hpc_allow_https" {
   security_group_id = aws_security_group.hpc.id
 
-  count       = var.create_jumphost ? 1 : 0
   ip_protocol = "tcp"
   from_port   = 443
   to_port     = 443
