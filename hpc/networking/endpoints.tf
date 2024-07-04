@@ -58,7 +58,7 @@ resource "aws_vpc_endpoint" "ssm" {
 resource "aws_vpc_endpoint" "s3" {
   vpc_id          = var.pcluster_vpc_id
   service_name    = "com.amazonaws.${var.aws_region}.s3"
-  route_table_ids = [aws_route_table.compute.id]
+  route_table_ids = [aws_route_table.compute.id, data.aws_route_table.default_route_table.id]
   tags = {
     Name = "Parallel-Cluster S3 Endpoint"
   }
@@ -66,7 +66,7 @@ resource "aws_vpc_endpoint" "s3" {
 resource "aws_vpc_endpoint" "dynamodb" {
   vpc_id          = var.pcluster_vpc_id
   service_name    = "com.amazonaws.${var.aws_region}.dynamodb"
-  route_table_ids = [aws_route_table.compute.id]
+  route_table_ids = [aws_route_table.compute.id, data.aws_route_table.default_route_table.id]
   tags = {
     Name = "Parallel-Clusters DynamoDB Endpoint"
   }
