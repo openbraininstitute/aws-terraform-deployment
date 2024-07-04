@@ -11,5 +11,6 @@
 nexus/ @nise
 ml/ @ml
 cells_svc/ @nse
+static-server/ @nse
 viz/ @viz
 hpc/ @hpc

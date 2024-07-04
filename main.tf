@@ -148,6 +148,17 @@ module "hpc" {
   existing_public_subnet_cidrs = ["10.0.1.0/25", "10.0.1.128/25"]
 }
 
+module "static-server" {
+  source = "./static-server"
+
+  aws_region                 = var.aws_region
+  vpc_id                     = data.terraform_remote_state.common.outputs.vpc_id
+  public_subnet_ids          = [data.terraform_remote_state.common.outputs.public_a_subnet_id, data.terraform_remote_state.common.outputs.public_b_subnet_id]
+  domain_name                = data.terraform_remote_state.common.outputs.primary_domain
+  alb_listener_arn           = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  alb_listener_rule_priority = 600
+}
+
 module "core_webapp" {
   source = "./core_webapp"
 
