@@ -6,6 +6,10 @@ resource "aws_subnet" "nexus_b" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}b"
   cidr_block        = "10.0.10.0/24"
+
+  tags = {
+    "Name" = "nexus_b"
+  }
 }
 
 # Link route table to the subnet
