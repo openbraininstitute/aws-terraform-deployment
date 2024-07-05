@@ -155,16 +155,19 @@ resource "aws_lb_listener_rule" "static_data" {
 locals {
   coming_soon_page_files = [
     {
-      key    = "static/coming-soon/index.html"
-      source = "${path.module}/coming-soon-page/index.html"
+      key          = "static/coming-soon/index.html"
+      source       = "${path.module}/coming-soon-page/index.html"
+      content_type = "text/html"
     },
     {
-      key    = "static/coming-soon/css/styles.css"
-      source = "${path.module}/coming-soon-page/styles.css"
+      key          = "static/coming-soon/css/styles.css"
+      source       = "${path.module}/coming-soon-page/styles.css"
+      content_type = "text/css"
     },
     {
-      key    = "static/coming-soon/css/background.jpg"
-      source = "${path.module}/coming-soon-page/background.jpg"
+      key          = "static/coming-soon/css/background.jpg"
+      source       = "${path.module}/coming-soon-page/background.jpg"
+      content_type = "image/jpeg"
     }
   ]
 }
@@ -172,8 +175,10 @@ locals {
 resource "aws_s3_object" "coming_soon_page" {
   count  = length(local.coming_soon_page_files)
   bucket = var.domain_name
-  key    = local.coming_soon_page_files[count.index].key
-  source = local.coming_soon_page_files[count.index].source
+
+  key          = local.coming_soon_page_files[count.index].key
+  source       = local.coming_soon_page_files[count.index].source
+  content_type = local.coming_soon_page_files[count.index].content_type
 
   etag = filemd5(local.coming_soon_page_files[count.index].source)
 }
