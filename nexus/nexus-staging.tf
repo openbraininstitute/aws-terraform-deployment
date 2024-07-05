@@ -38,21 +38,6 @@ module "blazegraph" {
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
 }
 
-module "delta_target_group" {
-  source = "./delta_target_group"
-
-  nexus_delta_hostname     = "sbo-nexus-delta.shapes-registry.org"
-  target_group_prefix      = "nx-dlt"
-  unique_listener_priority = 100
-
-  vpc_id                        = var.vpc_id
-  domain_zone_id                = var.domain_zone_id
-  public_lb_listener_https_arn  = var.public_lb_listener_https_arn
-  public_load_balancer_dns_name = var.public_load_balancer_dns_name
-  nat_gateway_id                = var.nat_gateway_id
-  allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
-}
-
 module "delta" {
   source = "./delta"
 
@@ -66,14 +51,14 @@ module "delta" {
   delta_instance_name  = "delta"
   delta_efs_name       = "delta-legacy" # legacy name so that the efs doesn't get modified
   s3_bucket_arn        = aws_s3_bucket.nexus_delta.arn
-  nexus_delta_hostname = module.delta_target_group.hostname
+  nexus_delta_hostname = module.nexus_delta_target_group.hostname
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
   ecs_task_execution_role_arn              = module.iam.nexus_ecs_task_execution_role_arn
   nexus_secrets_arn                        = var.nexus_secrets_arn
 
-  delta_target_group_arn    = module.delta_target_group.lb_target_group_arn
+  delta_target_group_arn    = module.nexus_delta_target_group.lb_target_group_arn
   dockerhub_credentials_arn = module.iam.dockerhub_credentials_arn
 
   postgres_host        = module.postgres.host
@@ -88,28 +73,12 @@ module "delta" {
   delta_config_file             = "legacy.conf"
 }
 
-module "fusion_target_group" {
-  source = "./fusion_target_group"
-
-  nexus_fusion_hostname    = "sbo-nexus-fusion.shapes-registry.org"
-  target_group_prefix      = "nx-fus"
-  unique_listener_priority = 300
-
-  aws_region                    = var.aws_region
-  vpc_id                        = var.vpc_id
-  domain_zone_id                = var.domain_zone_id
-  public_lb_listener_https_arn  = var.public_lb_listener_https_arn
-  public_load_balancer_dns_name = var.public_load_balancer_dns_name
-  nat_gateway_id                = var.nat_gateway_id
-  allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
-}
-
 module "fusion" {
   source               = "./fusion"
   fusion_instance_name = "fusion"
 
-  nexus_fusion_hostname = module.fusion_target_group.hostname
-  nexus_delta_hostname  = module.delta_target_group.hostname
+  nexus_fusion_hostname = module.nexus_fusion_target_group.hostname
+  nexus_delta_hostname  = module.nexus_delta_target_group.hostname
 
   aws_region               = var.aws_region
   subnet_id                = module.networking.subnet_id
@@ -119,6 +88,6 @@ module "fusion" {
   ecs_task_execution_role_arn              = module.iam.nexus_ecs_task_execution_role_arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
 
-  aws_lb_target_group_nexus_fusion_arn = module.fusion_target_group.lb_target_group_arn
+  aws_lb_target_group_nexus_fusion_arn = module.nexus_fusion_target_group.lb_target_group_arn
   dockerhub_credentials_arn            = module.iam.dockerhub_credentials_arn
 }
