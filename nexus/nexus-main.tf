@@ -28,8 +28,8 @@ module "blazegraph_main" {
   source = "./blazegraph"
 
   blazegraph_cpu       = 4096
-  blazegraph_memory    = 8192
-  blazegraph_java_opts = "-Djava.awt.headless=true -Djetty.maxFormContentSize=40000000 -XX:MaxDirectMemorySize=600m -Xms3g -Xmx3g -XX:+UseG1GC "
+  blazegraph_memory    = 10240
+  blazegraph_java_opts = "-Djava.awt.headless=true -Djetty.maxFormContentSize=40000000 -XX:MaxDirectMemorySize=600m -Xms5g -Xmx5g -XX:+UseG1GC "
 
   blazegraph_instance_name = "blazegraph-main"
   blazegraph_efs_name      = "blazegraph-main"
@@ -47,8 +47,8 @@ module "blazegraph_composite" {
   source = "./blazegraph"
 
   blazegraph_cpu       = 4096
-  blazegraph_memory    = 8192
-  blazegraph_java_opts = "-Djava.awt.headless=true -Djetty.maxFormContentSize=40000000 -XX:MaxDirectMemorySize=600m -Xms3g -Xmx3g -XX:+UseG1GC "
+  blazegraph_memory    = 10240
+  blazegraph_java_opts = "-Djava.awt.headless=true -Djetty.maxFormContentSize=40000000 -XX:MaxDirectMemorySize=600m -Xms5g -Xmx5g -XX:+UseG1GC "
 
   blazegraph_instance_name = "blazegraph-composite"
   blazegraph_efs_name      = "blazegraph-composite"
