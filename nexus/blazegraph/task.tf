@@ -75,5 +75,6 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
   }
   tags = {
     SBO_Billing = "nexus"
+    Nexus       = "blazegraph"
   }
 }

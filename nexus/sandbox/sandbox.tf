@@ -108,6 +108,8 @@ module "blazegraph" {
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
+
+  aws_region = var.aws_region
 }
 
 module "delta_target_group" {

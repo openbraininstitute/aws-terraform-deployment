@@ -1,3 +1,8 @@
+variable "aws_region" {
+  type        = string
+  description = "The AWS region in which the resources will be created."
+}
+
 variable "subnet_id" {
   type        = string
   description = "The ID of the subnet in which Blazegraph will be deployed."
