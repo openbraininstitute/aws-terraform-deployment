@@ -24,7 +24,7 @@ validate:
   extends: .terraform:validate
   needs: []
   variables:
-    KUBERNETES_MEMORY_LIMIT: 4G
+    KUBERNETES_MEMORY_LIMIT: 6G
 
 
 build:
