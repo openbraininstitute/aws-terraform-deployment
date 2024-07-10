@@ -41,8 +41,5 @@ resource "aws_ecs_service" "nexus_app_ecs_service" {
   lifecycle {
     ignore_changes = [desired_count]
   }
-  tags = {
-    SBO_Billing = "nexus_app"
-  }
   propagate_tags = "SERVICE"
 }

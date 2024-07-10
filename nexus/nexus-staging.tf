@@ -73,6 +73,8 @@ module "delta" {
   blazegraph_composite_endpoint = module.blazegraph.http_endpoint
   delta_search_config_commit    = "80fb06db5f5334da668504c7c66f17ad8585b57b"
   delta_config_file             = "legacy.conf"
+
+  aws_region = var.aws_region
 }
 
 module "fusion" {

@@ -114,6 +114,8 @@ module "nexus_delta" {
   blazegraph_composite_endpoint = module.blazegraph_composite.http_endpoint
   delta_search_config_commit    = "bd265a3d3cc4cd588fe93eda2ddaacd28ba32258"
   delta_config_file             = "delta.conf"
+
+  aws_region = var.aws_region
 }
 
 module "nexus_fusion" {

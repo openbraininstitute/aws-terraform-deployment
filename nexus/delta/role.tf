@@ -16,9 +16,6 @@ resource "aws_iam_role" "nexus_delta_ecs_task" {
  ]
 }
 EOF
-  tags = {
-    SBO_Billing = "nexus_ship"
-  }
 }
 
 resource "aws_iam_role_policy_attachment" "delta_ecs_task" {
@@ -46,4 +43,9 @@ resource "aws_iam_policy" "nexus_delta_s3_bucket_access" {
       },
     ]
   })
+
+  tags = {
+    SBO_Billing = "nexus"
+    Nexus       = "delta"
+  }
 }

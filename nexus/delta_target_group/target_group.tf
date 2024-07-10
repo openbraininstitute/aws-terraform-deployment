@@ -4,9 +4,6 @@ resource "aws_acm_certificate" "nexus_app" {
   lifecycle {
     create_before_destroy = true
   }
-  tags = {
-    SBO_Billing = "nexus_app"
-  }
 }
 
 resource "aws_route53_record" "nexus_app_validation" {
@@ -49,9 +46,6 @@ resource "aws_lb_target_group" "nexus_app" {
   lifecycle {
     create_before_destroy = true
   }
-  tags = {
-    SBO_Billing = "nexus_app"
-  }
 }
 
 resource "aws_lb_listener_certificate" "nexus_app" {
@@ -82,10 +76,6 @@ resource "aws_lb_listener_rule" "nexus_app_https" {
     source_ip {
       values = concat(var.allowed_source_ip_cidr_blocks, [format("%s/32", data.aws_nat_gateway.provided_nat_gateway.public_ip)])
     }
-  }
-
-  tags = {
-    SBO_Billing = "nexus_app"
   }
 }
 

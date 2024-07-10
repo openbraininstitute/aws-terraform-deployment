@@ -125,6 +125,8 @@ module "delta_target_group" {
   public_load_balancer_dns_name = local.public_load_balancer_dns_name
   nat_gateway_id                = local.nat_gateway_id
   allowed_source_ip_cidr_blocks = local.allowed_source_ip_cidr_blocks
+
+  aws_region = var.aws_region
 }
 
 module "delta" {
@@ -159,6 +161,8 @@ module "delta" {
   blazegraph_composite_endpoint = module.blazegraph.http_endpoint
   delta_search_config_commit    = "80fb06db5f5334da668504c7c66f17ad8585b57b"
   delta_config_file             = "legacy.conf"
+
+  aws_region = var.aws_region
 }
 
 module "fusion_target_group" {

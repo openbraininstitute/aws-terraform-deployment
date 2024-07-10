@@ -41,3 +41,8 @@ variable "unique_listener_priority" {
   type        = number
   description = "Globally unique listener priority for the listener that will forward to the created target group."
 }
+
+variable "aws_region" {
+  type        = string
+  description = "The AWS region in which the resources will be created."
+}

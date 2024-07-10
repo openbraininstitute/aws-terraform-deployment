@@ -11,6 +11,8 @@ module "nexus_delta_target_group" {
   public_load_balancer_dns_name = var.public_load_balancer_dns_name
   nat_gateway_id                = var.nat_gateway_id
   allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
+
+  aws_region = var.aws_region
 }
 
 module "nexus_fusion_target_group" {
@@ -44,6 +46,8 @@ module "sbo_delta_target_group" {
   public_load_balancer_dns_name = var.public_load_balancer_dns_name
   nat_gateway_id                = var.nat_gateway_id
   allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
+
+  aws_region = var.aws_region
 }
 
 module "sbo_fusion_target_group" {

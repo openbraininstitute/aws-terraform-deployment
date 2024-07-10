@@ -191,10 +191,6 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
       }
     }
   }
-
-  tags = {
-    SBO_Billing = "nexus_app"
-  }
 }
 
 resource "aws_cloudwatch_log_group" "nexus_app" {
@@ -207,6 +203,7 @@ resource "aws_cloudwatch_log_group" "nexus_app" {
 
   tags = {
     Application = var.delta_instance_name
-    SBO_Billing = "nexus_app"
+    SBO_Billing = "nexus"
+    Nexus       = "delta"
   }
 }
