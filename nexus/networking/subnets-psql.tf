@@ -5,7 +5,7 @@ resource "aws_subnet" "nexus_db_a" {
   cidr_block        = "10.0.2.48/28"
 
   tags = {
-    "Name" = "nexus_db_a"
+    "Name"      = "nexus_db_a"
     SBO_Billing = "nexus"
     Nexus       = "delta"
   }
@@ -18,7 +18,7 @@ resource "aws_subnet" "nexus_db_b" {
   cidr_block        = "10.0.2.64/28"
 
   tags = {
-    "Name" = "nexus_db_b"
+    "Name"      = "nexus_db_b"
     SBO_Billing = "nexus"
     Nexus       = "delta"
   }
@@ -31,7 +31,7 @@ resource "aws_subnet" "nexus_db_c" {
   cidr_block        = "10.0.2.80/28"
 
   tags = {
-    "Name" = "nexus_db_c"
+    "Name"      = "nexus_db_c"
     SBO_Billing = "nexus"
     Nexus       = "delta"
   }

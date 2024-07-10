@@ -4,9 +4,7 @@ resource "aws_efs_file_system" "delta" {
   availability_zone_name = "${data.aws_region.current.name}a"
   encrypted              = false #tfsec:ignore:aws-efs-enable-at-rest-encryption
   tags = {
-    Name        = var.delta_efs_name
-    SBO_Billing = "nexus"
-    Nexus       = "delta"
+    Name = var.delta_efs_name
   }
 }
 

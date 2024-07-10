@@ -8,7 +8,7 @@ resource "aws_subnet" "nexus_b" {
   cidr_block        = "10.0.10.0/24"
 
   tags = {
-    "Name" = "nexus_b"
+    "Name"      = "nexus_b"
     SBO_Billing = "nexus"
     Nexus       = "delta"
   }
