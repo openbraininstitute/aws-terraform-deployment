@@ -6,6 +6,8 @@ resource "aws_subnet" "nexus_main" {
 
   tags = {
     "Name" = "nexus_a"
+    SBO_Billing = "nexus"
+    Nexus       = "delta"
   }
 }
 

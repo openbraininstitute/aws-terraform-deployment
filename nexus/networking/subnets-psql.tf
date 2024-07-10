@@ -6,6 +6,8 @@ resource "aws_subnet" "nexus_db_a" {
 
   tags = {
     "Name" = "nexus_db_a"
+    SBO_Billing = "nexus"
+    Nexus       = "delta"
   }
 }
 
@@ -17,6 +19,8 @@ resource "aws_subnet" "nexus_db_b" {
 
   tags = {
     "Name" = "nexus_db_b"
+    SBO_Billing = "nexus"
+    Nexus       = "delta"
   }
 }
 
@@ -28,6 +32,8 @@ resource "aws_subnet" "nexus_db_c" {
 
   tags = {
     "Name" = "nexus_db_c"
+    SBO_Billing = "nexus"
+    Nexus       = "delta"
   }
 }
 
