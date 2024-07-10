@@ -16,10 +16,6 @@ resource "aws_iam_role" "nexus_ecs_task_execution" {
  ]
 }
 EOF
-
-  tags = {
-    SBO_Billing = "nexus"
-  }
 }
 
 #tfsec:ignore:aws-iam-no-policy-wildcards
