@@ -3,6 +3,7 @@ resource "aws_db_subnet_group" "nexus_cluster_subnet_group" {
   subnet_ids = var.subnets_ids
   tags = {
     SBO_Billing = "nexus"
+    Nexus       = "postgres"
   }
 }
 

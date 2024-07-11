@@ -78,6 +78,8 @@ module "postgres" {
   instance_class           = "db.t4g.small"
 
   nexus_postgresql_database_password_arn = local.psql_secret_arn
+
+  aws_region = var.aws_region
 }
 
 module "elasticcloud" {

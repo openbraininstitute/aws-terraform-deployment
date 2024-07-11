@@ -3,6 +3,7 @@ resource "aws_db_subnet_group" "nexus_db_subnet_group" {
   subnet_ids = var.subnets_ids
   tags = {
     SBO_Billing = "nexus"
+    Nexus       = "postgres"
   }
 }
 
@@ -44,8 +45,4 @@ resource "aws_db_instance" "nexusdb" {
   iam_database_authentication_enabled = false
 
   copy_tags_to_snapshot = true
-
-  tags = {
-    SBO_Billing = "nexus"
-  }
 }

@@ -7,4 +7,5 @@ module "ship" {
   postgres_host               = "https://replace.this.postgres.host"
   target_bucket_arn           = module.delta.nexus_delta_bucket_arn
   second_target_bucket_arn    = aws_s3_bucket.nexus.arn
+  aws_region                  = var.aws_region
 }

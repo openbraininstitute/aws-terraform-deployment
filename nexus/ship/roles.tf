@@ -18,6 +18,7 @@ resource "aws_iam_role" "nexus_ship_ecs_task" {
 EOF
   tags = {
     SBO_Billing = "nexus_ship"
+    Nexus       = "ship"
   }
 }
 

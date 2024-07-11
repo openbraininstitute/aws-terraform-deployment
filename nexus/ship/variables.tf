@@ -25,3 +25,8 @@ variable "second_target_bucket_arn" {
   type        = string
   description = "The ARN of the second S3 bucket that the ship will copy data to"
 }
+
+variable "aws_region" {
+  type        = string
+  description = "The AWS region in which the resources will be created."
+}

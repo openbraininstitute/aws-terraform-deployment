@@ -7,6 +7,7 @@ resource "aws_s3_bucket" "nexus_ship" {
 
   tags = {
     SBO_Billing = "nexus_ship"
+    Nexus       = "ship"
   }
 }
 resource "aws_s3_bucket_public_access_block" "nexus_ship" {

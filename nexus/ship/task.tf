@@ -69,6 +69,7 @@ resource "aws_ecs_task_definition" "nexus_ship" {
 
   tags = {
     SBO_Billing = "nexus_ship"
+    Nexus       = "ship"
   }
 }
 

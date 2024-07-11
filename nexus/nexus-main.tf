@@ -22,6 +22,8 @@ module "postgres_cluster" {
   subnets_ids       = module.networking.psql_subnets_ids
   security_group_id = module.networking.main_subnet_sg_id
   instance_class    = "db.m5d.large"
+
+  aws_region = var.aws_region
 }
 
 module "blazegraph_main" {
