@@ -34,4 +34,9 @@ resource "aws_rds_cluster" "nexus" {
   master_password = data.aws_secretsmanager_secret_version.nexus_database_password.secret_string
 
   copy_tags_to_snapshot = true
+
+  tags = {
+    SBO_Billing = "nexus"
+    Nexus       = "postgres"
+  }
 }
