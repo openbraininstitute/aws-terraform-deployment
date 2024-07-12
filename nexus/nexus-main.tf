@@ -123,7 +123,7 @@ module "nexus_delta" {
 module "nexus_fusion" {
   source               = "./fusion"
   providers = {
-    aws             = aws.fusion_tags
+    aws             = aws.nexus_fusion_tags
   }
 
   fusion_instance_name = "nexus_fusion"
