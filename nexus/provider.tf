@@ -23,3 +23,16 @@ provider "aws" {
   }
   region = var.aws_region
 }
+
+provider "aws" {
+  alias  = "nexus_postgres_tags"
+  default_tags {
+    tags = merge(
+      var.default_tags,
+      {
+        Nexus       = "postgres"
+      }
+    )
+  }
+  region = var.aws_region
+}
