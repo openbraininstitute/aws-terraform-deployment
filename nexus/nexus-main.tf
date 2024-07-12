@@ -122,6 +122,10 @@ module "nexus_delta" {
 
 module "nexus_fusion" {
   source               = "./fusion"
+  providers = {
+    aws             = aws.fusion_tags
+  }
+
   fusion_instance_name = "nexus_fusion"
 
   nexus_fusion_hostname = module.sbo_fusion_target_group.hostname
