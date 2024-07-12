@@ -1,10 +1,6 @@
 resource "aws_db_subnet_group" "nexus_cluster_subnet_group" {
   name       = "nexus-cluster-group"
   subnet_ids = var.subnets_ids
-  tags = {
-    SBO_Billing = "nexus"
-    Nexus       = "postgres"
-  }
 }
 
 # TODO the secret should be defined in the code
@@ -34,9 +30,4 @@ resource "aws_rds_cluster" "nexus" {
   master_password = data.aws_secretsmanager_secret_version.nexus_database_password.secret_string
 
   copy_tags_to_snapshot = true
-
-  tags = {
-    SBO_Billing = "nexus"
-    Nexus       = "postgres"
-  }
 }
