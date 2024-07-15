@@ -23,6 +23,7 @@ resource "aws_rds_cluster" "nexus" {
   storage_type              = "io1"
   allocated_storage         = 100
   iops                      = 1000
+  ca_certificate_identifier = "rds-ca-rsa2048-g1"
 
   backup_retention_period = 7 # in days
   storage_encrypted       = false
