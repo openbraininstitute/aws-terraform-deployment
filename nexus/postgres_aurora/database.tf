@@ -8,8 +8,8 @@ data "aws_secretsmanager_secret_version" "nexus_database_password" {
   secret_id = var.nexus_database_password_arn
 }
 
-resource "aws_db_subnet_group" "nexus_cluster_subnet_group" {
-  name       = "nexus-cluster-group"
+resource "aws_db_subnet_group" "nexus_aurora_subnet_group" {
+  name       = "nexus-aurora-group"
   subnet_ids = var.subnets_ids
   tags = {
     SBO_Billing = "nexus"
@@ -27,13 +27,15 @@ module "aurora_postgresql" {
   engine_mode       = "provisioned"
   engine_version    = data.aws_rds_engine_version.postgresql.version
 
+  vpc_id            = var.vpc_id
+
   backup_retention_period = 7 # in days
   storage_encrypted       = false
 
   master_username   = var.nexus_database_username
   master_password = "pouet"
 
-  db_subnet_group_name = aws_db_subnet_group.nexus_cluster_subnet_group.name
+  db_subnet_group_name = aws_db_subnet_group.nexus_aurora_subnet_group.name
   vpc_security_group_ids = [var.security_group_id]
 
   monitoring_interval = 0
