@@ -31,7 +31,7 @@ module "aurora_postgresql" {
   storage_encrypted       = false
 
   master_username = var.nexus_database_username
-  master_password = var.nexus_database_password_arn.secret_string
+  master_password = data.aws_secretsmanager_secret_version.nexus_database_password.secret_string
 
   db_subnet_group_name = aws_db_subnet_group.nexus_aurora_subnet_group.name
   vpc_security_group_ids = [var.security_group_id]
