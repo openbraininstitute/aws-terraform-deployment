@@ -34,6 +34,8 @@ module "aurora_postgresql" {
   master_password = data.aws_secretsmanager_secret_version.nexus_database_password.secret_string
 
   db_subnet_group_name = aws_db_subnet_group.nexus_aurora_subnet_group.name
+
+  vpc_id = var.vpc_id
   vpc_security_group_ids = [var.security_group_id]
 
   monitoring_interval = 0

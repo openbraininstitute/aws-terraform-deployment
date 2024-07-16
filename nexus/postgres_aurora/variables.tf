@@ -32,3 +32,8 @@ variable "security_group_id" {
   type        = string
   description = "security group applied to the resource which should describe how the resource can communicate inside the subnet"
 }
+
+variable "vpc_id" {
+  type        = string
+  description = "The ID of the provided VPC in which all Nexus components will be deployed."
+}

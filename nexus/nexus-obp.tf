@@ -7,4 +7,5 @@ module "postgres_aurora" {
 
   subnets_ids       = module.networking.psql_subnets_ids
   security_group_id = module.networking.main_subnet_sg_id
+  vpc_id         = var.vpc_id
 }
