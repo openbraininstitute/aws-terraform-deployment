@@ -26,8 +26,9 @@ module "aurora_postgresql" {
   backup_retention_period = 7 # in days
   storage_encrypted       = false
 
-  master_username = var.nexus_database_username
-  master_password = data.aws_secretsmanager_secret_version.nexus_database_password.secret_string
+  manage_master_user_password = false
+  master_username             = var.nexus_database_username
+  master_password             = data.aws_secretsmanager_secret_version.nexus_database_password.secret_string
 
   db_subnet_group_name = aws_db_subnet_group.nexus_aurora_subnet_group.name
 
