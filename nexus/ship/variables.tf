@@ -2,6 +2,14 @@ variable "postgres_host" {
   type = string
 }
 
+variable "postgres_database" {
+  type = string
+}
+
+variable "postgres_username" {
+  type = string
+}
+
 variable "target_base_uri" {
   type = string
   description = "The base uri to patch content urls in distributions"

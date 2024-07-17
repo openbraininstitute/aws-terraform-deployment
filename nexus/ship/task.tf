@@ -30,6 +30,14 @@ resource "aws_ecs_task_definition" "nexus_ship" {
           value = var.target_base_uri
         },
         {
+          name  = "POSTGRES_DATABASE"
+          value = var.postgres_database
+        },
+        {
+          name  = "POSTGRES_USERNAME"
+          value = var.postgres_username
+        },
+        {
           name  = "TARGET_BUCKET"
           value = var.target_bucket
         }
