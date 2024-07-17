@@ -9,6 +9,8 @@ module "ship" {
   ecs_task_execution_role_arn = module.iam.nexus_ecs_task_execution_role_arn
   nexus_secrets_arn           = var.nexus_secrets_arn
   postgres_host               = "https://replace.this.postgres.host"
+  target_base_uri             = "https://sbo-nexus-delta.shapes-registry.org/v1"
+  target_bucket               = "nexus-bucket-production"
   target_bucket_arn           = module.delta.nexus_delta_bucket_arn
   second_target_bucket_arn    = aws_s3_bucket.nexus.arn
   aws_region                  = var.aws_region

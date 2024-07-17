@@ -2,6 +2,16 @@ variable "postgres_host" {
   type = string
 }
 
+variable "target_base_uri" {
+  type = string
+  description = "The base uri to patch content urls in distributions"
+}
+
+variable "target_bucket" {
+  type = string
+  description = "The destination bucket for physical files"
+}
+
 variable "dockerhub_credentials_arn" {
   type = string
 }

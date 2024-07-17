@@ -24,6 +24,14 @@ resource "aws_ecs_task_definition" "nexus_ship" {
         {
           name  = "POSTGRES_HOST"
           value = var.postgres_host
+        },
+        {
+          name  = "TARGET_BASE_URI"
+          value = var.target_base_uri
+        },
+        {
+          name  = "TARGET_BUCKET"
+          value = var.target_bucket
         }
       ]
       secrets = [
