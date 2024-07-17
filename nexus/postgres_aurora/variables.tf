@@ -21,9 +21,12 @@ variable "max_capacity" {
   default = 8
 }
 
+variable "nexus_postgresql_database_name" {
+  type    = string
+}
+
 variable "nexus_database_username" {
   type    = string
-  default = "nexus_user"
 }
 
 variable "nexus_database_password_arn" {
