@@ -43,6 +43,8 @@ module "aurora_postgresql" {
     max_capacity = var.max_capacity
   }
 
+  skip_final_snapshot = true
+
   instance_class = "db.serverless"
   instances = {
     1 = {}
