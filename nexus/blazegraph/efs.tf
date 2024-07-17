@@ -7,8 +7,6 @@ resource "aws_efs_file_system" "blazegraph" {
 
   tags = {
     Name        = var.blazegraph_efs_name
-    SBO_Billing = "nexus"
-    Nexus       = "blazegraph"
   }
 }
 
@@ -35,9 +33,5 @@ resource "aws_efs_access_point" "blazegraph" {
       owner_uid   = 1000
       permissions = "0777"
     }
-  }
-  tags = {
-    SBO_Billing = "nexus"
-    Nexus       = "blazegraph"
   }
 }

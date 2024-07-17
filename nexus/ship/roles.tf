@@ -16,10 +16,6 @@ resource "aws_iam_role" "nexus_ship_ecs_task" {
  ]
 }
 EOF
-  tags = {
-    SBO_Billing = "nexus_ship"
-    Nexus       = "ship"
-  }
 }
 
 resource "aws_iam_role_policy_attachment" "import_bucket_access" {

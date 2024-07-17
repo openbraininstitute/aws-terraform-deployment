@@ -203,7 +203,5 @@ resource "aws_cloudwatch_log_group" "nexus_app" {
 
   tags = {
     Application = var.delta_instance_name
-    SBO_Billing = "nexus"
-    Nexus       = "delta"
   }
 }

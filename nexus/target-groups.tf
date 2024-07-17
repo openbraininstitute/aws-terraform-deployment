@@ -36,6 +36,10 @@ module "nexus_fusion_target_group" {
 module "sbo_delta_target_group" {
   source = "./delta_target_group"
 
+  providers = {
+    aws             = aws.nexus_delta_tags
+  }
+
   nexus_delta_hostname     = "sbo-nexus-delta.shapes-registry.org"
   target_group_prefix      = "nx-dlt"
   unique_listener_priority = 100

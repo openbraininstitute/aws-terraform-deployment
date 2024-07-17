@@ -42,10 +42,6 @@ resource "aws_ecs_service" "blazegraph_ecs_service" {
   lifecycle {
     ignore_changes = [desired_count]
   }
-  tags = {
-    SBO_Billing = "nexus"
-    Nexus       = "blazegraph"
-  }
   propagate_tags = "SERVICE"
 }
 
@@ -58,7 +54,5 @@ resource "aws_cloudwatch_log_group" "blazegraph_app" {
 
   tags = {
     Application = "blazegraph"
-    SBO_Billing = "nexus"
-    Nexus       = "blazegraph"
   }
 }

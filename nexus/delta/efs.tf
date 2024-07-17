@@ -5,8 +5,6 @@ resource "aws_efs_file_system" "delta" {
   encrypted              = false #tfsec:ignore:aws-efs-enable-at-rest-encryption
   tags = {
     Name        = var.delta_efs_name
-    SBO_Billing = "nexus"
-    Nexus       = "delta"
   }
 }
 
@@ -34,11 +32,6 @@ resource "aws_efs_access_point" "delta_config" {
       permissions = "0777"
     }
   }
-
-  tags = {
-    SBO_Billing = "nexus"
-    Nexus       = "delta"
-  }
 }
 
 resource "aws_efs_access_point" "disk_storage" {
@@ -50,10 +43,5 @@ resource "aws_efs_access_point" "disk_storage" {
       owner_uid   = 1000
       permissions = "0777"
     }
-  }
-
-  tags = {
-    SBO_Billing = "nexus"
-    Nexus       = "delta"
   }
 }

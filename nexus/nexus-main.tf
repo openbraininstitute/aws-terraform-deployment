@@ -1,6 +1,10 @@
 module "networking" {
   source = "./networking"
 
+  providers = {
+    aws             = aws.nexus_networking_tags
+  }
+
   aws_region     = var.aws_region
   nat_gateway_id = var.nat_gateway_id
   vpc_id         = var.vpc_id
@@ -8,6 +12,10 @@ module "networking" {
 
 module "iam" {
   source = "./iam"
+
+  providers = {
+    aws             = aws.nexus_iam_tags
+  }
 
   aws_region     = var.aws_region
   aws_account_id = var.aws_account_id
@@ -33,6 +41,10 @@ module "postgres_cluster" {
 module "blazegraph_main" {
   source = "./blazegraph"
 
+  providers = {
+    aws             = aws.nexus_blazegraph_tags
+  }
+
   blazegraph_cpu       = 4096
   blazegraph_memory    = 10240
   blazegraph_java_opts = "-Djava.awt.headless=true -Djetty.maxFormContentSize=40000000 -XX:MaxDirectMemorySize=600m -Xms5g -Xmx5g -XX:+UseG1GC "
@@ -53,6 +65,10 @@ module "blazegraph_main" {
 
 module "blazegraph_composite" {
   source = "./blazegraph"
+
+  providers = {
+    aws             = aws.nexus_blazegraph_tags
+  }
 
   blazegraph_cpu       = 4096
   blazegraph_memory    = 10240
@@ -89,6 +105,10 @@ module "elasticsearch" {
 
 module "nexus_delta" {
   source = "./delta"
+
+  providers = {
+    aws             = aws.nexus_delta_tags
+  }
 
   subnet_id                = module.networking.subnet_id
   subnet_security_group_id = module.networking.main_subnet_sg_id

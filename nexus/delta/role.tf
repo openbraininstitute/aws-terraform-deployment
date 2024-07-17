@@ -43,9 +43,4 @@ resource "aws_iam_policy" "nexus_delta_s3_bucket_access" {
       },
     ]
   })
-
-  tags = {
-    SBO_Billing = "nexus"
-    Nexus       = "delta"
-  }
 }

@@ -4,11 +4,6 @@
 #tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket" "nexus_ship" {
   bucket = "nexus-ship-production"
-
-  tags = {
-    SBO_Billing = "nexus_ship"
-    Nexus       = "ship"
-  }
 }
 resource "aws_s3_bucket_public_access_block" "nexus_ship" {
   bucket = aws_s3_bucket.nexus_ship.id

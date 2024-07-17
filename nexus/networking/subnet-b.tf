@@ -9,8 +9,6 @@ resource "aws_subnet" "nexus_b" {
 
   tags = {
     "Name"      = "nexus_b"
-    SBO_Billing = "nexus"
-    Nexus       = "networking"
   }
 }
 

@@ -1,3 +1,12 @@
+locals {
+  s3_tags        = merge(
+    var.default_tags,
+    {
+      Nexus       = "s3"
+    }
+  )
+}
+
 ###########
 ## First bucket used by the first instance of Nexus
 ###########
@@ -8,10 +17,7 @@
 #tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket" "nexus_delta" {
   bucket = "nexus-delta-production"
-
-  tags = {
-    SBO_Billing = "nexus_ship"
-  }
+  tags = local.s3_tags
 }
 resource "aws_s3_bucket_public_access_block" "nexus_delta" {
   bucket = aws_s3_bucket.nexus_delta.id
@@ -37,10 +43,7 @@ resource "aws_s3_bucket_metric" "nexus_delta_metrics" {
 #tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket" "nexus" {
   bucket = "nexus-bucket-production"
-
-  tags = {
-    SBO_Billing = "nexus_ship"
-  }
+  tags = local.s3_tags
 }
 
 resource "aws_s3_bucket_public_access_block" "nexus" {

@@ -66,11 +66,6 @@ resource "aws_ecs_task_definition" "nexus_ship" {
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = var.ecs_task_execution_role_arn
   task_role_arn            = aws_iam_role.nexus_ship_ecs_task.arn
-
-  tags = {
-    SBO_Billing = "nexus_ship"
-    Nexus       = "ship"
-  }
 }
 
 resource "aws_cloudwatch_log_group" "nexus_ship" {
