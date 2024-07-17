@@ -1,3 +1,7 @@
+variable "nexus_postgresql_name" {
+  type    = string
+}
+
 variable "nexus_postgresql_engine_version" {
   type    = string
   default = "16.2"

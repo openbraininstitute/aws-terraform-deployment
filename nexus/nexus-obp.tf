@@ -5,7 +5,8 @@ module "postgres_aurora" {
     aws             = aws.nexus_postgres_tags
   }
 
-  subnets_ids       = module.networking.psql_subnets_ids
-  security_group_id = module.networking.main_subnet_sg_id
-  vpc_id         = var.vpc_id
+  nexus_postgresql_name = "nexus-obp"
+  subnets_ids           = module.networking.psql_subnets_ids
+  security_group_id     = module.networking.main_subnet_sg_id
+  vpc_id                = var.vpc_id
 }
