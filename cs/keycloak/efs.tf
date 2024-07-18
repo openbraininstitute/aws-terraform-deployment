@@ -21,6 +21,24 @@ output "efs_arn" {
   value = aws_efs_file_system.keycloakfs.arn
 }
 
+# INFRA-9832 Create efs for keycloak theme
+resource "aws_efs_file_system" "keycloak-theme" {
+  performance_mode = "generalPurpose"
+  throughput_mode  = "bursting"
+  encrypted        = "false" #tfsec:ignore:aws-efs-enable-at-rest-encryption
+  tags = {
+    Name        = "keycloak-theme"
+    SBO_Billing = "keycloak"
+  }
+}
+
+### Create mount target for keycloak theme EFS for each subnet
+resource "aws_efs_mount_target" "keycloak-theme-mt" {
+  count          = length(var.efs_mt_subnets)
+  file_system_id = aws_efs_file_system.keycloak-theme.id
+  subnet_id      = var.efs_mt_subnets[count.index]
+}
+
 ### Create S3 bucket to upload certs and conf files
 #tfsec:ignore:aws-s3-enable-bucket-encryption tfsec:ignore:aws-s3-encryption-customer-key tfsec:ignore:aws-s3-enable-bucket-logging tfsec:ignore:aws-s3-enable-versioning
 resource "aws_s3_bucket" "core-services-keycloak" {
