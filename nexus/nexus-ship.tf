@@ -12,8 +12,8 @@ module "ship" {
   postgres_database           = "nexus-obp"
   postgres_username           = "nexus-obp"
   target_base_uri             = "https://sbo-nexus-delta.shapes-registry.org/v1"
-  target_bucket               = "nexus-bucket-production"
-  target_bucket_arn           = module.delta.nexus_delta_bucket_arn
+  target_bucket               = "nexus-obp-production"
+  target_bucket_arn           = aws_s3_bucket.nexus_obp.arn
   second_target_bucket_arn    = aws_s3_bucket.nexus.arn
   aws_region                  = var.aws_region
 }
