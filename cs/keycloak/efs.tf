@@ -34,9 +34,10 @@ resource "aws_efs_file_system" "keycloak-theme" {
 
 ### Create mount target for keycloak theme EFS for each subnet
 resource "aws_efs_mount_target" "keycloak-theme-mt" {
-  count          = length(var.efs_mt_subnets)
-  file_system_id = aws_efs_file_system.keycloak-theme.id
-  subnet_id      = var.efs_mt_subnets[count.index]
+  count           = length(var.efs_mt_subnets)
+  file_system_id  = aws_efs_file_system.keycloak-theme.id
+  security_groups = var.security_groups
+  subnet_id       = var.efs_mt_subnets[count.index]
 }
 
 ### Create S3 bucket to upload certs and conf files
