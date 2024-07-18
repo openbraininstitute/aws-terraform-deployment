@@ -23,7 +23,9 @@ module "aurora_postgresql" {
   engine_mode        = "provisioned"
   engine_version     = data.aws_rds_engine_version.postgresql.version
 
-  backup_retention_period = 7 # in days
+  apply_immediately = true
+
+  backup_retention_period = 0 # in days
   storage_encrypted       = false
 
   manage_master_user_password = false

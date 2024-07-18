@@ -34,7 +34,6 @@ resource "aws_rds_cluster" "nexus" {
   master_username = var.nexus_postgresql_database_username
   master_password = data.aws_secretsmanager_secret_version.nexus_database_password.secret_string
 
-  skip_final_snapshot   = true
   copy_tags_to_snapshot = true
 
   tags = {
