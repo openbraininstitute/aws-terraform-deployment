@@ -25,7 +25,7 @@ module "aurora_postgresql" {
 
   apply_immediately = true
 
-  backup_retention_period = 0 # in days
+  backup_retention_period = 7 # in days
   storage_encrypted       = false
 
   manage_master_user_password = false
