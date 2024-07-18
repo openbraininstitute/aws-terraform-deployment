@@ -109,6 +109,33 @@ resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_s
   permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_s3_rights.arn
 }
 
+resource "aws_ssoadmin_permission_set" "readonly_with_additional_dashboard_rights" {
+  name         = "ReadOnlyWithDashboardRights"
+  description  = "Read only access but with full dashboard access"
+  instance_arn = var.aws_iam_identity_center_arn
+
+  #relay_state      = "https://s3.console.aws.amazon.com/s3/home?region=us-east-1#"
+  session_duration = "PT2H"
+
+  tags = {
+    SBO_Billing = "common"
+  }
+}
+
+resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_dashboard_rights" {
+  inline_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      jsondecode(local.readonly_access_policy_statement_part1),
+      jsondecode(local.readonly_access_policy_statement_part2),
+      jsondecode(local.dashboard_access_policy_statement),
+    ]
+  })
+
+  instance_arn       = var.aws_iam_identity_center_arn
+  permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_dashboard_rights.arn
+}
+
 
 resource "aws_ssoadmin_permission_set" "readonly_with_additional_billing_rights" {
   name         = "FullBillingAndPaymentsAccess"
@@ -188,6 +215,15 @@ resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_e
 }
 
 locals {
+  dashboard_access_policy_statement = jsonencode({
+    Effect = "Allow"
+    Action = [
+      "cloudwatch:PutDashboard",
+      "cloudwatch:DeleteDashboards",
+    ]
+    Resource = "*"
+  })
+
   sbo_ec2_serial_console_access_policy_statement = jsonencode({
     Effect = "Allow"
     Action = [
