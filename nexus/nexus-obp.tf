@@ -1,5 +1,5 @@
 locals {
-  environment = "nexus-obp"
+  environment = "nexusobp"
 }
 
 module "postgres_aurora" {
