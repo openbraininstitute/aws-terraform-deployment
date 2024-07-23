@@ -111,3 +111,7 @@ module "resource-provisioner" {
   aws_region                          = var.aws_region
   account_id                          = var.account_id
 }
+
+module "dynamodb" {
+  source = "./dynamodb/"
+}

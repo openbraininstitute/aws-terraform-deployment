@@ -15,3 +15,13 @@ Variables to set
   * `av_zone_suffixes`: which availability zones (a, b, c, ...) to create the compute subnets in
   * `peering_route_tables`: which route tables need to get an extra route to the peering VPC
   * `existing_route_targets`: which CIDRs should be reachable from the pcluster VPC
+
+Tags
+====
+
+For the HPC Resource Provisioner to be able to identify certain resources it's allowed to use, we add the `HPC_Goal:compute_cluster` tag to them. This is the case for:
+
+  * the compute subnets
+  * the EFS
+  * the security group
+  * the SSH keypair

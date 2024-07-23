@@ -4,7 +4,8 @@ resource "aws_efs_file_system" "compute_efs" {
   creation_token = "sbo-poc-compute-efs-token"
   encrypted      = false #tfsec:ignore:aws-efs-enable-at-rest-encryption
   tags = {
-    Name = "sbo-poc-compute-efs"
+    Name     = "sbo-poc-compute-efs"
+    HPC_Goal = "compute_cluster"
   }
 }
 

@@ -66,13 +66,15 @@
                 "dynamodb:ListTagsOfResource",
                 "dynamodb:CreateTable",
                 "dynamodb:DeleteTable",
+                "dynamodb:DeleteItem",
                 "dynamodb:GetItem",
                 "dynamodb:PutItem",
                 "dynamodb:UpdateItem",
                 "dynamodb:Query",
+                "dynamodb:Scan",
                 "dynamodb:TagResource"
             ],
-            "Resource": "arn:aws:dynamodb:*:${account_id}:table/parallelcluster-*",
+            "Resource": "arn:aws:dynamodb:*:${account_id}:table/*parallelcluster-*",
             "Effect": "Allow",
             "Sid": "DynamoDB"
         },

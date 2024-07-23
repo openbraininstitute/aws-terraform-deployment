@@ -87,7 +87,8 @@ resource "aws_security_group" "hpc" {
   description = "SBO HPC"
 
   tags = {
-    Name = "sbo-poc-compute-hpc-sg"
+    Name     = "sbo-poc-compute-hpc-sg"
+    HPC_Goal = "compute_cluster"
   }
 }
 

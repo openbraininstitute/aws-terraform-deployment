@@ -37,7 +37,8 @@ resource "aws_subnet" "compute" {
   count             = var.compute_subnet_count
   cidr_block        = "172.32.${count.index + 3 * length(var.av_zone_suffixes)}.0/24"
   tags = {
-    Name = "compute_${count.index}"
+    Name     = "compute_${count.index}"
+    HPC_Goal = "compute_cluster"
   }
 }
 

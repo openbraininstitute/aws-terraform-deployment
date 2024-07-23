@@ -4,5 +4,7 @@ resource "aws_key_pair" "key" {
 
   tags = {
     SBO_Billing = "common"
+    HPC_Goal    = "compute_cluster"
   }
 }
+
