@@ -139,7 +139,7 @@ module "hpc" {
   create_jumphost              = false
   compute_nat_access           = false
   compute_subnet_count         = 16
-  av_zone_suffixes             = ["a", "b", "c", "d"]
+  av_zone_suffixes             = ["a"]
   peering_route_tables         = ["rtb-0e4eb2a1cbab24423"]
   existing_route_targets       = ["10.0.0.0/16"]
   account_id                   = "671250183987"

@@ -10,12 +10,14 @@
 # There's an open issue about this on github: https://github.com/hashicorp/terraform-provider-aws/issues/33117
 #
 # In order for the compute clusters to be able to talk to the endpoints, we'll put those in their own dedicated subnet as well
+#
+# The first +3 is to jump over the slurmdb subnets
 
 resource "aws_subnet" "compute_endpoints" {
   vpc_id            = var.pcluster_vpc_id
   availability_zone = "${var.aws_region}${var.av_zone_suffixes[count.index % length(var.av_zone_suffixes)]}"
   count             = length(var.av_zone_suffixes)
-  cidr_block        = "172.32.${count.index + length(var.av_zone_suffixes)}.0/24"
+  cidr_block        = "172.32.${count.index + length(var.av_zone_suffixes) + 3}.0/24"
   tags = {
     Name = "compute_endpoints_${var.av_zone_suffixes[count.index % length(var.av_zone_suffixes)]}"
   }
@@ -25,7 +27,7 @@ resource "aws_subnet" "compute_efs" {
   vpc_id            = var.pcluster_vpc_id
   availability_zone = "${var.aws_region}${var.av_zone_suffixes[count.index % length(var.av_zone_suffixes)]}"
   count             = length(var.av_zone_suffixes)
-  cidr_block        = "172.32.${count.index + 2 * length(var.av_zone_suffixes)}.0/24"
+  cidr_block        = "172.32.${count.index + 3 + 2 * length(var.av_zone_suffixes)}.0/24"
   tags = {
     Name = "compute_efs_${var.av_zone_suffixes[count.index % length(var.av_zone_suffixes)]}"
   }
@@ -35,7 +37,7 @@ resource "aws_subnet" "compute" {
   vpc_id            = var.pcluster_vpc_id
   availability_zone = "${var.aws_region}${var.av_zone_suffixes[count.index % length(var.av_zone_suffixes)]}"
   count             = var.compute_subnet_count
-  cidr_block        = "172.32.${count.index + 3 * length(var.av_zone_suffixes)}.0/24"
+  cidr_block        = "172.32.${count.index + 3 + 3 * length(var.av_zone_suffixes)}.0/24"
   tags = {
     Name     = "compute_${count.index}"
     HPC_Goal = "compute_cluster"
