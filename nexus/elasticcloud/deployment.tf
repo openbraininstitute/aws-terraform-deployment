@@ -1,11 +1,5 @@
 # Adapted from https://github.com/math280h/terraform-elastic-cloud-private-link-aws
 # which is distributed under the MIT License
-locals {
-  ec_tags        = {
-    Nexus       = "elastic",
-    SBO_Billing = "nexus"
-  }
-}
 
 resource "ec_deployment" "deployment" {
   name = var.deployment_name
@@ -28,7 +22,7 @@ resource "ec_deployment" "deployment" {
     topology = {}
   }
 
-  tags = local.ec_tags
+  tags = var.aws_tags
 }
 
 resource "ec_deployment_traffic_filter" "deployment_filter" {

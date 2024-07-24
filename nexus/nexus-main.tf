@@ -101,6 +101,11 @@ module "elasticsearch" {
   hot_node_count = 2
 
   deployment_name = "nexus-elasticsearch"
+
+  aws_tags = {
+    Nexus       = "elastic",
+    SBO_Billing = "nexus"
+  }
 }
 
 module "nexus_delta" {

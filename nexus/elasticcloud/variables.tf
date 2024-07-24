@@ -37,3 +37,7 @@ variable "hot_node_count" {
   description = "the number of hot nodes in the cluster, each in a different AZ"
   default     = 1
 }
+
+variable "aws_tags" {
+  type = map(string)
+}
