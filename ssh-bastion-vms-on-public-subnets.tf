@@ -1,7 +1,7 @@
 resource "aws_instance" "ssh_bastion_a" {
   # TODO create specific security group
   ami                         = data.aws_ami.almalinux.id
-  instance_type               = "t3.micro"
+  instance_type               = "t3.medium"
   count                       = var.create_ssh_bastion_vm_on_public_a_network ? 1 : 0
   subnet_id                   = data.terraform_remote_state.common.outputs.public_a_subnet_id
   key_name                    = data.terraform_remote_state.common.outputs.aws_coreservices_ssh_key_id
@@ -50,7 +50,7 @@ resource "aws_route53_record" "ssh_bastion" {
 resource "aws_instance" "ssh_bastion_b" {
   # TODO create specific security group
   ami                         = data.aws_ami.almalinux.id
-  instance_type               = "t3.micro"
+  instance_type               = "t3.medium"
   count                       = var.create_ssh_bastion_vm_on_public_b_network ? 1 : 0
   subnet_id                   = data.terraform_remote_state.common.outputs.public_b_subnet_id
   key_name                    = data.terraform_remote_state.common.outputs.aws_coreservices_ssh_key_id
