@@ -88,3 +88,69 @@ module "elasticsearch_obp" {
     SBO_Billing = "nexus"
   }
 }
+
+module "nexus_delta_obp" {
+  source = "./delta"
+
+  providers = {
+    aws = aws.nexus_delta_tags
+  }
+
+  subnet_id                = module.networking.subnet_id
+  subnet_security_group_id = module.networking.main_subnet_sg_id
+
+  delta_cpu       = 4096
+  delta_memory    = 8192
+  delta_java_opts = "-Xms4g -Xmx4g"
+
+  delta_instance_name = "nexus-delta-obp"
+  delta_efs_name      = "delta-obp"
+  s3_bucket_arn       = aws_s3_bucket.nexus_obp.arn
+
+  ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
+  aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
+  ecs_task_execution_role_arn              = module.iam.nexus_ecs_task_execution_role_arn
+  nexus_secrets_arn                        = var.nexus_secrets_arn
+
+  delta_target_group_arn    = module.obp_delta_target_group.lb_target_group_arn
+  dockerhub_credentials_arn = module.iam.dockerhub_credentials_arn
+
+  postgres_host        = module.postgres_aurora.writer_endpoint
+  postgres_reader_host = module.postgres_aurora.reader_endpoint
+
+  elasticsearch_endpoint = module.elasticsearch_obp.http_endpoint
+  elastic_password_arn   = module.elasticsearch_obp.elastic_user_credentials_secret_arn
+
+  blazegraph_endpoint           = module.blazegraph_obp_bg.http_endpoint
+  blazegraph_composite_endpoint = module.blazegraph_obp_composite.http_endpoint
+
+  delta_search_config_commit = "bd265a3d3cc4cd588fe93eda2ddaacd28ba32258"
+  delta_config_file          = "delta.conf"
+
+  aws_region = var.aws_region
+}
+
+module "nexus_fusion_obp" {
+  source = "./fusion"
+  providers = {
+    aws = aws.nexus_fusion_tags
+  }
+
+  fusion_instance_name = "nexus-fusion-obp"
+
+  nexus_fusion_hostname  = "openbluebrain.com"
+  nexus_fusion_base_path = "/nexus/web/"
+  nexus_delta_endpoint   = "https://openbluebrain.com/api/nexus/v1"
+
+
+  aws_region               = var.aws_region
+  subnet_id                = module.networking.subnet_id
+  subnet_security_group_id = module.networking.main_subnet_sg_id
+
+  ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
+  ecs_task_execution_role_arn              = module.iam.nexus_ecs_task_execution_role_arn
+  aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
+
+  aws_lb_target_group_nexus_fusion_arn = module.sbo_fusion_target_group.lb_target_group_arn
+  dockerhub_credentials_arn            = module.iam.dockerhub_credentials_arn
+}

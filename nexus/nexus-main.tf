@@ -122,10 +122,9 @@ module "nexus_delta" {
   delta_memory    = 8192
   delta_java_opts = "-Xms4g -Xmx4g"
 
-  delta_instance_name  = "nexus-delta"
-  delta_efs_name       = "delta"
-  s3_bucket_arn        = aws_s3_bucket.nexus.arn
-  nexus_delta_hostname = module.sbo_delta_target_group.hostname
+  delta_instance_name = "nexus-delta"
+  delta_efs_name      = "delta"
+  s3_bucket_arn       = aws_s3_bucket.nexus.arn
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn

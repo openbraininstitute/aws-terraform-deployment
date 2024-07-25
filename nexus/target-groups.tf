@@ -19,6 +19,25 @@ module "sbo_delta_target_group" {
   aws_region = var.aws_region
 }
 
+module "obp_delta_target_group" {
+  source = "./path_target_group"
+
+  providers = {
+    aws = aws.nexus_delta_tags
+  }
+
+  target_port       = 8080
+  base_path         = "/api/nexus"
+  health_check_path = "/api/nexus/v1/version"
+
+  allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
+  public_lb_listener_https_arn  = var.public_lb_listener_https_arn
+  target_group_prefix           = "obpdlt"
+  unique_listener_priority      = 101
+  nat_gateway_id                = var.nat_gateway_id
+  vpc_id                        = var.vpc_id
+}
+
 module "sbo_fusion_target_group" {
   source = "./fusion_target_group"
 
@@ -37,5 +56,24 @@ module "sbo_fusion_target_group" {
   public_load_balancer_dns_name = var.public_load_balancer_dns_name
   nat_gateway_id                = var.nat_gateway_id
   allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
+}
+
+module "obp_fusion_target_group" {
+  source = "./path_target_group"
+
+  providers = {
+    aws = aws.nexus_fusion_tags
+  }
+
+  target_port       = 8000
+  base_path         = "/web/fusion"
+  health_check_path = "/nexus/web/status"
+
+  allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
+  public_lb_listener_https_arn  = var.public_lb_listener_https_arn
+  target_group_prefix           = "obpfus"
+  unique_listener_priority      = 301
+  nat_gateway_id                = var.nat_gateway_id
+  vpc_id                        = var.vpc_id
 }
 

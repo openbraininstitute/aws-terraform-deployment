@@ -94,11 +94,6 @@ variable "elastic_password_arn" {
   description = "ARN of the secret that contains the elastic user password. The password needs to be under the 'password' key."
 }
 
-variable "nexus_delta_hostname" {
-  type        = string
-  description = "Hostname to use for Delta in this instance."
-}
-
 variable "delta_target_group_arn" {
   type        = string
   description = "ARN of the target group that the ECS Service will be targeted by."
