@@ -15,7 +15,7 @@ resource "aws_db_subnet_group" "nexus_aurora_subnet_group" {
 
 # tfsec:ignore:aws-rds-encrypt-cluster-storage-data
 module "aurora_postgresql" {
-  source  = "terraform-aws-modules/rds-aurora/aws"
+  source = "terraform-aws-modules/rds-aurora/aws"
 
   name               = var.nexus_postgresql_name
   availability_zones = ["us-east-1a", "us-east-1b", "us-east-1c"]
@@ -35,7 +35,7 @@ module "aurora_postgresql" {
 
   db_subnet_group_name = aws_db_subnet_group.nexus_aurora_subnet_group.name
 
-  vpc_id = var.vpc_id
+  vpc_id                 = var.vpc_id
   vpc_security_group_ids = [var.security_group_id]
 
   monitoring_interval = 0
@@ -45,7 +45,7 @@ module "aurora_postgresql" {
     max_capacity = var.max_capacity
   }
 
-  skip_final_snapshot       = true
+  skip_final_snapshot = true
 
   instance_class = "db.serverless"
   instances = {

@@ -6,7 +6,7 @@ resource "aws_efs_file_system" "blazegraph" {
   encrypted              = false #tfsec:ignore:aws-efs-enable-at-rest-encryption
 
   tags = {
-    Name        = var.blazegraph_efs_name
+    Name = var.blazegraph_efs_name
   }
 }
 

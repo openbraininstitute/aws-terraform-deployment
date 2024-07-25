@@ -61,7 +61,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
         },
         {
           name      = "ELASTICSEARCH_PASSWORD"
-          valueFrom = "${var.nexus_secrets_arn}:${var.elastic_password_key}::"
+          valueFrom = "${var.elastic_password_arn}:password::"
         },
         {
           name      = "REMOTE_STORAGE_PASSWORD"

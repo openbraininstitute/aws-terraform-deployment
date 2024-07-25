@@ -2,7 +2,7 @@ module "sbo_delta_target_group" {
   source = "./delta_target_group"
 
   providers = {
-    aws             = aws.nexus_delta_tags
+    aws = aws.nexus_delta_tags
   }
 
   nexus_delta_hostname     = "sbo-nexus-delta.shapes-registry.org"
@@ -23,7 +23,7 @@ module "sbo_fusion_target_group" {
   source = "./fusion_target_group"
 
   providers = {
-    aws             = aws.nexus_fusion_tags
+    aws = aws.nexus_fusion_tags
   }
 
   nexus_fusion_hostname    = "sbo-nexus-fusion.shapes-registry.org"

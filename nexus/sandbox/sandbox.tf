@@ -12,8 +12,8 @@ locals {
   public_load_balancer_dns_name = module.nexus_sandbox_setup.public_load_balancer_dns_name
   vpc_id                        = module.nexus_sandbox_setup.vpc_id
 
-  nexus_secrets_arn = "arn:aws:secretsmanager:us-east-1:058264116529:secret:nexus-HoRddo"
-  psql_secret_arn   = "arn:aws:secretsmanager:us-east-1:058264116529:secret:nexus_postgresql_password-bX9Jo7"
+  nexus_secrets_arn = "arn:aws:secretsmanager:us-east-1:058264116529:secret:nexus-25Vd68"
+  psql_secret_arn   = "arn:aws:secretsmanager:us-east-1:058264116529:secret:nexus_postgresql_password-CPEAmn"
 }
 
 # Define this as TF_VAR_nise_dockerhub_password env variable. Currently
@@ -79,7 +79,7 @@ module "postgres" {
 
   nexus_postgresql_database_password_arn = local.psql_secret_arn
 
-  aws_region = var.aws_region
+  aws_region = local.aws_region
 }
 
 module "elasticcloud" {
@@ -103,6 +103,7 @@ module "blazegraph" {
 
   blazegraph_instance_name = "blazegraph-sandbox"
   blazegraph_efs_name      = "blazegraph-sandbox"
+  blazegraph_java_opts     = ""
 
   subnet_id                   = module.networking.subnet_id
   subnet_security_group_id    = module.networking.main_subnet_sg_id
@@ -111,7 +112,7 @@ module "blazegraph" {
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
 
-  aws_region = var.aws_region
+  aws_region = local.aws_region
 }
 
 module "delta_target_group" {
@@ -128,7 +129,7 @@ module "delta_target_group" {
   nat_gateway_id                = local.nat_gateway_id
   allowed_source_ip_cidr_blocks = local.allowed_source_ip_cidr_blocks
 
-  aws_region = var.aws_region
+  aws_region = local.aws_region
 }
 
 module "delta" {
@@ -144,6 +145,7 @@ module "delta" {
   delta_efs_name       = "delta-sandbox" # legacy name so that the efs doesn't get modified
   s3_bucket_arn        = aws_s3_bucket.nexus_delta.arn
   nexus_delta_hostname = module.delta_target_group.hostname
+  delta_java_opts      = ""
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
@@ -157,14 +159,14 @@ module "delta" {
   postgres_reader_host = module.postgres.host
 
   elasticsearch_endpoint = module.elasticcloud.http_endpoint
-  elastic_password_key   = "elasticsearch_password"
+  elastic_password_arn   = module.elasticcloud.elastic_user_credentials_secret_arn
 
   blazegraph_endpoint           = module.blazegraph.http_endpoint
   blazegraph_composite_endpoint = module.blazegraph.http_endpoint
   delta_search_config_commit    = "80fb06db5f5334da668504c7c66f17ad8585b57b"
   delta_config_file             = "legacy.conf"
 
-  aws_region = var.aws_region
+  aws_region = local.aws_region
 }
 
 module "fusion_target_group" {

@@ -5,7 +5,7 @@ resource "aws_subnet" "nexus_main" {
   cidr_block        = "10.0.9.0/24"
 
   tags = {
-    "Name"      = "nexus_a"
+    "Name" = "nexus_a"
   }
 }
 

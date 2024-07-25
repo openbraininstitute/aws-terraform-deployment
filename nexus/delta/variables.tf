@@ -89,9 +89,9 @@ variable "nexus_secrets_arn" {
   description = "The ARN of the secrets manager secret that contains the nexus secrets."
 }
 
-variable "elastic_password_key" {
+variable "elastic_password_arn" {
   type        = string
-  description = "Key of the secret in the secrets manager that holds the password to the elastic user."
+  description = "ARN of the secret that contains the elastic user password. The password needs to be under the 'password' key."
 }
 
 variable "nexus_delta_hostname" {

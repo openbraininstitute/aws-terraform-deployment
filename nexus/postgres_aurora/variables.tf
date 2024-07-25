@@ -1,5 +1,5 @@
 variable "nexus_postgresql_name" {
-  type    = string
+  type = string
 }
 
 variable "nexus_postgresql_engine_version" {
@@ -12,21 +12,21 @@ variable "subnets_ids" {
 }
 
 variable "min_capacity" {
-  type = number
+  type    = number
   default = 2
 }
 
 variable "max_capacity" {
-  type = number
+  type    = number
   default = 8
 }
 
 variable "nexus_postgresql_database_name" {
-  type    = string
+  type = string
 }
 
 variable "nexus_database_username" {
-  type    = string
+  type = string
 }
 
 variable "nexus_database_password_arn" {

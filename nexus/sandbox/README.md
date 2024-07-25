@@ -2,19 +2,22 @@
 
 ## Usage
 
+Assumptions:
+1. The nexus_postgresqul_password already exists in the password manager. This is the password that will be used for the db.
+2. The nexus secret already exists in the password manager and contains the keys: "postgres_password", "remote_storage_password", "delegation_private_key". The "postgres_password" value is the same as in step 1.
+
 In order to deploy a sandboxed Nexus:
 
 1. Ensure that the `locals` defined in `sandbox.tf` are correct.
-    1. Create the nexus and psql secret manually. Populate the psql secret with a plaintext password, this will be the password used when creating the DB.
-    2. Fill the nexus password with the same keys as in the `nexus_app` secret in production, and adapt the values.
-    3. Define the `TF_VAR_nise_dockerhub_password` to be the password from the NISE Dockerhub credentials. This can be currently found in the NISE 1password.
+2. Define the following environment variables to be able to run the plan:
+```shell
+export TF_VAR_nise_dockerhub_password=$NISE_DOCKER_PASSWORD # from 1password secret called "Dockerhub"
+export EC_API_KEY=$SANDBOX_EC_API_KEY # from 1password secret "ElasticCloud Sandbox API Key"
+```
 2. Via the terminal, go to the `sandbox` folder and run `terraform plan`.
 3. Run `terraform apply`.
-4. Check on the sandbox Elasticsearch deployment on cloud.elastic.com (use the sandbox credentials from 1password to log in), and reset the password for the `elastic` user. Copy the new one into the nexus secret in Secret Manager.
 
 Currently we still get 2 DNS validation errors but these can be ignored for now.
-
-In the future we can replace step 4 by reading the secret from the ES deployment via terraform and put it into a secret that can be read by Delta.
 
 In order to connect, you can go to the load balancer settings and find the name of the public load balancer. You can use its DNS name to query delta as follows:
 

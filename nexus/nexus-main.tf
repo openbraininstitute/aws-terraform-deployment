@@ -2,7 +2,7 @@ module "networking" {
   source = "./networking"
 
   providers = {
-    aws             = aws.nexus_networking_tags
+    aws = aws.nexus_networking_tags
   }
 
   aws_region     = var.aws_region
@@ -14,7 +14,7 @@ module "iam" {
   source = "./iam"
 
   providers = {
-    aws             = aws.nexus_iam_tags
+    aws = aws.nexus_iam_tags
   }
 
   aws_region     = var.aws_region
@@ -28,7 +28,7 @@ module "postgres_cluster" {
   source = "./postgres_cluster"
 
   providers = {
-    aws             = aws.nexus_postgres_tags
+    aws = aws.nexus_postgres_tags
   }
 
   subnets_ids       = module.networking.psql_subnets_ids
@@ -42,7 +42,7 @@ module "blazegraph_main" {
   source = "./blazegraph"
 
   providers = {
-    aws             = aws.nexus_blazegraph_tags
+    aws = aws.nexus_blazegraph_tags
   }
 
   blazegraph_cpu       = 4096
@@ -67,7 +67,7 @@ module "blazegraph_composite" {
   source = "./blazegraph"
 
   providers = {
-    aws             = aws.nexus_blazegraph_tags
+    aws = aws.nexus_blazegraph_tags
   }
 
   blazegraph_cpu       = 4096
@@ -112,7 +112,7 @@ module "nexus_delta" {
   source = "./delta"
 
   providers = {
-    aws             = aws.nexus_delta_tags
+    aws = aws.nexus_delta_tags
   }
 
   subnet_id                = module.networking.subnet_id
@@ -139,7 +139,7 @@ module "nexus_delta" {
   postgres_reader_host = module.postgres_cluster.reader_endpoint
 
   elasticsearch_endpoint = module.elasticsearch.http_endpoint
-  elastic_password_key   = "elastic_password"
+  elastic_password_arn   = module.elasticsearch.elastic_user_credentials_secret_arn
 
   blazegraph_endpoint           = module.blazegraph_main.http_endpoint
   blazegraph_composite_endpoint = module.blazegraph_composite.http_endpoint
@@ -150,9 +150,9 @@ module "nexus_delta" {
 }
 
 module "nexus_fusion" {
-  source               = "./fusion"
+  source = "./fusion"
   providers = {
-    aws             = aws.nexus_fusion_tags
+    aws = aws.nexus_fusion_tags
   }
 
   fusion_instance_name = "nexus_fusion"

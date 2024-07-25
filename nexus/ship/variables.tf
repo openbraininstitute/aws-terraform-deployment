@@ -11,12 +11,12 @@ variable "postgres_username" {
 }
 
 variable "target_base_uri" {
-  type = string
+  type        = string
   description = "The base uri to patch content urls in distributions"
 }
 
 variable "target_bucket" {
-  type = string
+  type        = string
   description = "The destination bucket for physical files"
 }
 

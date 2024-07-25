@@ -34,3 +34,16 @@ resource "ec_deployment_traffic_filter" "deployment_filter" {
     source = var.elastic_vpc_endpoint_id
   }
 }
+
+#tfsec:ignore:aws-ssm-secret-use-customer-key
+resource "aws_secretsmanager_secret" "elastic_password" {
+  name = "nexus_${var.deployment_name}_elastic_password"
+}
+
+resource "aws_secretsmanager_secret_version" "elastic_password" {
+  secret_id = aws_secretsmanager_secret.elastic_password.id
+  secret_string = jsonencode({
+    username = "elastic",
+    password = ec_deployment.deployment.elasticsearch_password
+  })
+}

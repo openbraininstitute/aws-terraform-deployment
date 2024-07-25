@@ -1,8 +1,8 @@
 locals {
-  s3_tags        = merge(
+  s3_tags = merge(
     var.default_tags,
     {
-      Nexus       = "s3"
+      Nexus = "s3"
     }
   )
 }
@@ -16,8 +16,8 @@ locals {
 #tfsec:ignore:aws-s3-enable-versioning
 #tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket" "nexus_delta" {
-  bucket = "nexus-delta-production"
-  tags = local.s3_tags
+  bucket        = "nexus-delta-production"
+  tags          = local.s3_tags
   force_destroy = true
 }
 resource "aws_s3_bucket_public_access_block" "nexus_delta" {
@@ -44,7 +44,7 @@ resource "aws_s3_bucket_metric" "nexus_delta_metrics" {
 #tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket" "nexus" {
   bucket = "nexus-bucket-production"
-  tags = local.s3_tags
+  tags   = local.s3_tags
 }
 
 resource "aws_s3_bucket_public_access_block" "nexus" {
@@ -71,7 +71,7 @@ resource "aws_s3_bucket_metric" "nexus" {
 #tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket" "nexus_obp" {
   bucket = "nexus-obp-production"
-  tags = local.s3_tags
+  tags   = local.s3_tags
 }
 
 resource "aws_s3_bucket_public_access_block" "nexus_obp" {

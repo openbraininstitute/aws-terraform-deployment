@@ -6,15 +6,15 @@ module "postgres_aurora" {
   source = "./postgres_aurora"
 
   providers = {
-    aws             = aws.nexus_postgres_tags
+    aws = aws.nexus_postgres_tags
   }
 
   nexus_postgresql_name          = local.environment
   nexus_postgresql_database_name = local.environment
   nexus_database_username        = local.environment
-  subnets_ids           = module.networking.psql_subnets_ids
-  security_group_id     = module.networking.main_subnet_sg_id
-  vpc_id                = var.vpc_id
+  subnets_ids                    = module.networking.psql_subnets_ids
+  security_group_id              = module.networking.main_subnet_sg_id
+  vpc_id                         = var.vpc_id
 }
 
 # Blazegraph instance dedicated to Blazegraph views
@@ -22,7 +22,7 @@ module "blazegraph_obp_bg" {
   source = "./blazegraph"
 
   providers = {
-    aws             = aws.nexus_blazegraph_tags
+    aws = aws.nexus_blazegraph_tags
   }
 
   blazegraph_cpu       = 4096
@@ -48,7 +48,7 @@ module "blazegraph_obp_composite" {
   source = "./blazegraph"
 
   providers = {
-    aws             = aws.nexus_blazegraph_tags
+    aws = aws.nexus_blazegraph_tags
   }
 
   blazegraph_cpu       = 4096

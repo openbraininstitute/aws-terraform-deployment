@@ -2,7 +2,7 @@ module "ship" {
   source = "./ship"
 
   providers = {
-    aws             = aws.nexus_ship_tags
+    aws = aws.nexus_ship_tags
   }
 
   dockerhub_credentials_arn   = module.iam.dockerhub_credentials_arn

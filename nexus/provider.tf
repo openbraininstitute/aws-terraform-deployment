@@ -12,12 +12,12 @@ provider "aws" {
 }
 
 provider "aws" {
-  alias  = "nexus_blazegraph_tags"
+  alias = "nexus_blazegraph_tags"
   default_tags {
     tags = merge(
       var.default_tags,
       {
-        Nexus       = "blazegraph"
+        Nexus = "blazegraph"
       }
     )
   }
@@ -25,12 +25,12 @@ provider "aws" {
 }
 
 provider "aws" {
-  alias  = "nexus_delta_tags"
+  alias = "nexus_delta_tags"
   default_tags {
     tags = merge(
       var.default_tags,
       {
-        Nexus       = "delta"
+        Nexus = "delta"
       }
     )
   }
@@ -38,12 +38,12 @@ provider "aws" {
 }
 
 provider "aws" {
-  alias  = "nexus_fusion_tags"
+  alias = "nexus_fusion_tags"
   default_tags {
     tags = merge(
       var.default_tags,
       {
-        Nexus       = "fusion"
+        Nexus = "fusion"
       }
     )
   }
@@ -51,12 +51,12 @@ provider "aws" {
 }
 
 provider "aws" {
-  alias  = "nexus_iam_tags"
+  alias = "nexus_iam_tags"
   default_tags {
     tags = merge(
       var.default_tags,
       {
-        Nexus       = "iam"
+        Nexus = "iam"
       }
     )
   }
@@ -64,12 +64,12 @@ provider "aws" {
 }
 
 provider "aws" {
-  alias  = "nexus_networking_tags"
+  alias = "nexus_networking_tags"
   default_tags {
     tags = merge(
       var.default_tags,
       {
-        Nexus       = "networking"
+        Nexus = "networking"
       }
     )
   }
@@ -77,12 +77,12 @@ provider "aws" {
 }
 
 provider "aws" {
-  alias  = "nexus_postgres_tags"
+  alias = "nexus_postgres_tags"
   default_tags {
     tags = merge(
       var.default_tags,
       {
-        Nexus       = "postgres"
+        Nexus = "postgres"
       }
     )
   }
@@ -90,12 +90,12 @@ provider "aws" {
 }
 
 provider "aws" {
-  alias  = "nexus_ship_tags"
+  alias = "nexus_ship_tags"
   default_tags {
     tags = merge(
       var.default_tags,
       {
-        Nexus       = "ship"
+        Nexus = "ship"
       }
     )
   }
