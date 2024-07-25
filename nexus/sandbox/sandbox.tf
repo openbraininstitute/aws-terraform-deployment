@@ -89,10 +89,14 @@ module "elasticcloud" {
   elastic_vpc_endpoint_id  = module.networking.elastic_vpc_endpoint_id
   elastic_hosted_zone_name = module.networking.elastic_hosted_zone_name
 
-  elasticsearch_version = "8.12.1"
+  elasticsearch_version = "8.14.3"
 
   hot_node_size   = "1g"
   deployment_name = "nexus-sandbox-es"
+
+  aws_tags = {
+    Nexus = "elastic"
+  }
 }
 
 module "blazegraph" {
