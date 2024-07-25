@@ -22,8 +22,6 @@ resource "ec_deployment" "deployment" {
     topology = {}
   }
 
-  reset_elasticsearch_password = true
-
   tags = var.aws_tags
 }
 
