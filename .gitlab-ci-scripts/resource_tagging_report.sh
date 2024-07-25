@@ -3,7 +3,8 @@
 OUTPUT_FILE=${1:-"untagged_resources.csv"}
 TAG_KEY=${2:-"SBO_Billing"}
 CSV_SEP=${3:-';'}
-OUTPUT_FILE_TMP=$(echo -n ${OUTPUT_FILE} | sed -r "s|(.*)csv|\1txt|")
+OUTPUT_FILE_TMP=/tmp/$(basename ${OUTPUT_FILE})_$(date +%s)
+TAG_IGNORED="ignored/error"
 UNTAGGED_RESOURCES=$(aws resource-explorer-2 search --query-string="region:us-east-1 -tag.key:${TAG_KEY}")
 
 
@@ -43,10 +44,15 @@ function output {
     echo "${1}${CSV_SEP}${2}" | sed "s| |\\\\ |g"
 }
 
+# Helper function to get the list of ARNs from a given ResourceType
+function get_arn_list {
+    echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"${1}\") | .Arn"
+}
+
 # Helper function to support the retrieval of untagged EC2-related resources
 function _get_untagged_ec2_base {
     # Retrieve the list of EC2 resources (e.g., ENI) and their metadata (e.g., security group, VPC, etc.)
-    local arns=($(echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"${1}\") | .Arn"))
+    local arns=($(get_arn_list "${1}"))
     local ids=$(echo $(echo ${arns[@]} | tr ' ' '\n' | cut -d'/' -f2) | tr ' ' ',')
     local list=$(aws ec2 ${2} --filters Name=${3},Values=${ids})
     local list_size=$(echo ${list} | jq ".${4}[].${5}" | wc -l)
@@ -143,7 +149,7 @@ function get_untagged_rtb {
 # Function to get the list of untagged EC2 Launch Templates and their potential owner
 function get_untagged_lt {
     # Retrieve the list of EC2 Launch Templates and their metadata
-    local arns=($(echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"ec2:launch-template\") | .Arn"))
+    local arns=($(get_arn_list "ec2:launch-template"))
     local ids=($(echo ${arns[@]} | tr ' ' '\n' | cut -d'/' -f2))
 
     # Try to guess the tag by selecting the properties from each Launch Template version
@@ -166,9 +172,9 @@ function get_untagged_lt {
 # Function to get the list of untagged EC2 Placement Groups and their potential owner
 function get_untagged_pg {
     # Retrieve the list of EC2 Placement Groups and their metadata
-    local arns=($(echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"ec2:placement-group\") | .Arn"))
+    local arns=($(get_arn_list "ec2:placement-group"))
     local ids=($(echo ${arns[@]} | tr ' ' '\n' | cut -d'/' -f2))
-    local list=$(aws ec2 describe-placement-groups --group-ids ${ids[@]})
+    local list=$(aws ec2 describe-placement-groups --group-ids ${ids[@]} 2>/dev/null)
     local list_size=$(echo ${list} | jq ".PlacementGroups[].GroupId" | wc -l)
 
     # Try to guess the tag by selecting the properties from each EC2 Placement Group
@@ -185,7 +191,7 @@ function get_untagged_pg {
 # Function to get the list of untagged ECS Task Definitions and their potential owner
 function get_untagged_td {
     # Retrieve the list of ECS Task Definitions
-    local arns=($(echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"ecs:task-definition\") | .Arn"))
+    local arns=($(get_arn_list "ecs:task-definition"))
 
     # Try to guess the tag by selecting the properties from each ECS Task Definition
     for arn in ${arns[@]}; do
@@ -206,7 +212,7 @@ function get_untagged_td {
 # Function to get the list of untagged CloudWatch Alarms and their potential owner
 function get_untagged_alarm {
     # Retrieve the list of CloudWatch Alarms and their metadata
-    local names=($(echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"cloudwatch:alarm\") | .Arn" | sed -r "s|.*:([^:]+)|\1|"))
+    local names=($(get_arn_list "cloudwatch:alarm" | sed -r "s|.*:([^:]+)|\1|"))
     local list=$(aws cloudwatch describe-alarms --alarm-names ${names[@]})
     local list_size=$(echo ${list} | jq ".MetricAlarms[].AlarmName" | wc -l)
 
@@ -223,7 +229,7 @@ function get_untagged_alarm {
 # Function to get the list of untagged CloudWatch Log Groups and their potential owner
 function get_untagged_loggroup {
     # As there is not much information to query for Log Groups, guess the tag by using the ARN
-    for loggroup_arn in $(echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"logs:log-group\") | .Arn"); do
+    for loggroup_arn in $(get_arn_list "logs:log-group"); do
         output "${loggroup_arn}" "$(resource_to_tag "${loggroup_arn}")"
     done
 }
@@ -231,7 +237,7 @@ function get_untagged_loggroup {
 # Function to get the list of untagged EC2 Key-Pairs and their potential owner
 function get_untagged_keypair {
     # Retrieve the list of Key-Pairs and their metadata
-    local keypair_arns=($(echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"ec2:key-pair\") | .Arn"))
+    local keypair_arns=($(get_arn_list "ec2:key-pair"))
     local keypair_ids=$(echo $(echo ${keypair_arns[@]} | tr ' ' '\n' | cut -d'/' -f2) | tr ' ' ',')
     local keypair_list=$(aws ec2 describe-key-pairs --filters Name=key-pair-id,Values=${keypair_ids})
 
@@ -247,7 +253,7 @@ function get_untagged_keypair {
 # Function to get the list of untagged KMS Keys and their potential owner
 function get_untagged_kms_key {
     # Retrieve the ARNs of the untagged KMS Keys
-    local kms_key_arns=($(echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"kms:key\") | .Arn"))
+    local kms_key_arns=($(get_arn_list "kms:key"))
 
     # As there is not much information to query, guess the tag by using the description or the alias
     for kms_key_arn in ${kms_key_arns[@]}; do
@@ -267,7 +273,7 @@ function get_untagged_kms_key {
 # Function to get the list of untagged ECS Container Instances and their potential owner
 function get_untagged_ecs_ci {
     # Retrieve the ARNs of the untagged ECS Container Instances
-    local ecs_ci_arns=($(echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"ecs:container-instance\") | .Arn"))
+    local ecs_ci_arns=($(get_arn_list "ecs:container-instance"))
 
     # Try to guess the tag by the name of the resource
     for ecs_ci_arn in ${ecs_ci_arns[@]}; do
@@ -279,7 +285,7 @@ function get_untagged_ecs_ci {
 # Function to get the list of untagged ElastiCache Parameter Groups and their potential owner
 function get_untagged_ecache_pg {
     # Retrieve the ARNs of the untagged ElastiCache Parameter Groups
-    local pg_arns=($(echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"elasticache:parametergroup\") | .Arn"))
+    local pg_arns=($(get_arn_list "elasticache:parametergroup"))
 
     # As there is not much information to query, guess the tag by using the description
     for pg_arn in ${pg_arns[@]}; do
@@ -294,7 +300,7 @@ function get_untagged_ecache_pg {
 # Function to get the list of untagged ElastiCache Users and their potential owner
 function get_untagged_ecache_usr {
     # Retrieve the ARNs of the untagged ElastiCache Users
-    local usr_arns=($(echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"elasticache:user\") | .Arn"))
+    local usr_arns=($(get_arn_list "elasticache:user"))
 
     # As there is not much information to query, guess the tag by using the name
     for usr_arn in ${usr_arns[@]}; do
@@ -308,7 +314,7 @@ function get_untagged_ecache_usr {
 # Function to get the list of untagged Elastic Load Balancing Listener Rules and their potential owner
 function get_untagged_elb_lr {
     # Retrieve the ARNs of the untagged ELB Listener Rules and the parent Listener
-    local lr_arns=($(echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"elasticloadbalancing:listener-rule/app\") | .Arn"))
+    local lr_arns=($(get_arn_list "elasticloadbalancing:listener-rule/app"))
     local l_arns=($(echo ${lr_arns[@]} | tr ' ' '\n' | sed -r "s|(^.*elasticloadbalancing.*listener)-rule(.*)/[^/]+$|\1\2|"))
     local l_tags=$(aws elbv2 describe-tags --resource-arns ${l_arns[@]})
 
@@ -330,7 +336,7 @@ function get_untagged_elb_lr {
 # Function to get the list of untagged EventBridge Event Buses and their potential owner
 function get_untagged_ebr_bus {
     # Retrieve the ARNs of the untagged EventBridge Event Buses
-    local ebr_bus_arns=($(echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"events:event-bus\") | .Arn"))
+    local ebr_bus_arns=($(get_arn_list "events:event-bus"))
 
     # As there is not much information to query, guess the tag by using the name
     for ebr_bus_arn in ${ebr_bus_arns[@]}; do
@@ -342,7 +348,7 @@ function get_untagged_ebr_bus {
 # Function to get the list of untagged EventBridge Rules and their potential owner
 function get_untagged_ebr_rule {
     # Retrieve the ARNs of the untagged EventBridge Rules
-    local ebr_rule_arns=($(echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"events:rule\") | .Arn"))
+    local ebr_rule_arns=($(get_arn_list "events:rule"))
 
     # As there is not much information to query, guess the tag by using the description
     for ebr_rule_arn in ${ebr_rule_arns[@]}; do
@@ -354,7 +360,7 @@ function get_untagged_ebr_rule {
 # Function to get the list of untagged Lambda Functions and their potential owner
 function get_untagged_lambda_fn {
     # Retrieve the ARNs of the untagged Lambda Functions
-    local lambda_fn_arns=($(echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"lambda:function\") | .Arn"))
+    local lambda_fn_arns=($(get_arn_list "lambda:function"))
 
     for lambda_fn_arn in ${lambda_fn_arns[@]}; do
         # Try to guess the tag by retrieving the Security Group of the function
@@ -375,7 +381,7 @@ function get_untagged_lambda_fn {
 # Function to get the list of untagged MemoryDB Parameter Groups and their potential owner
 function get_untagged_mdb_pg {
     # Retrieve the ARNs of the untagged MemoryDB Parameter Groups
-    local mdb_pg_arns=($(echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"memorydb:parametergroup\") | .Arn"))
+    local mdb_pg_arns=($(get_arn_list "memorydb:parametergroup"))
 
     # As there is not much information to query, guess the tag by using the description
     for mdb_pg_arn in ${mdb_pg_arns[@]}; do
@@ -389,7 +395,7 @@ function get_untagged_mdb_pg {
 # Function to get the list of untagged MemoryDB Users and their potential owner
 function get_untagged_mdb_usr {
     # Retrieve the ARNs of the untagged MemoryDB Users
-    local mdb_usr_arns=($(echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"memorydb:user\") | .Arn"))
+    local mdb_usr_arns=($(get_arn_list "memorydb:user"))
 
     # As there is not much information to query, guess the tag by using the name
     for mdb_usr_arn in ${mdb_usr_arns[@]}; do
@@ -401,7 +407,7 @@ function get_untagged_mdb_usr {
 # Function to get the list of untagged RDS Parameter Groups and their potential owner
 function get_untagged_rds_pg {
     # Retrieve the ARNs of the untagged RDS Parameter Groups
-    local rds_pg_arns=($(echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"rds:pg\") | .Arn"))
+    local rds_pg_arns=($(get_arn_list "rds:pg"))
 
     # As there is not much information to query, guess the tag by using the description
     for rds_pg_arn in ${rds_pg_arns[@]}; do
@@ -416,7 +422,7 @@ function get_untagged_rds_pg {
 # Function to get the list of untagged RDS Cluster Parameter Groups and their potential owner
 function get_untagged_rds_cpg {
     # Retrieve the ARNs of the untagged RDS Cluster Parameter Groups
-    local rds_cpg_arns=($(echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"rds:cluster-pg\") | .Arn"))
+    local rds_cpg_arns=($(get_arn_list "rds:cluster-pg"))
 
     # As there is not much information to query, guess the tag by using the description
     for rds_cpg_arn in ${rds_cpg_arns[@]}; do
@@ -431,7 +437,7 @@ function get_untagged_rds_cpg {
 # Function to get the list of untagged RDS Option Groups and their potential owner
 function get_untagged_rds_og {
     # Retrieve the ARNs of the untagged RDS Option Groups
-    local rds_og_arns=($(echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"rds:og\") | .Arn"))
+    local rds_og_arns=($(get_arn_list "rds:og"))
 
     # As there is not much information to query, guess the tag by using the description
     for rds_og_arn in ${rds_og_arns[@]}; do
@@ -446,7 +452,7 @@ function get_untagged_rds_og {
 # Function to get the list of untagged RDS Security Groups and their potential owner
 function get_untagged_rds_sg {
     # Retrieve the ARNs of the untagged RDS Security Groups
-    local rds_sg_arns=($(echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"rds:secgrp\") | .Arn"))
+    local rds_sg_arns=($(get_arn_list "rds:secgrp"))
 
     # As there is not much information to query, guess the tag by using the description
     for rds_sg_arn in ${rds_sg_arns[@]}; do
@@ -461,7 +467,7 @@ function get_untagged_rds_sg {
 # Function to get the list of untagged S3 Access Points and their potential owner
 function get_untagged_s3_ap {
     # Retrieve the ARNs of the untagged S3 Access Points
-    local s3_ap_arns=($(echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"s3:accesspoint\") | .Arn"))
+    local s3_ap_arns=($(get_arn_list "s3:accesspoint"))
 
     for s3_ap_arn in ${s3_ap_arns[@]}; do
         # Try to guess the tag by using the associated S3 bucket
@@ -483,42 +489,28 @@ function get_untagged_s3_ap {
 # Main Functionality #
 ######################
 
-# Generate the output CSV with all of the deducted tags
-echo "ARN;Owner"                \
-     $(get_untagged_eni)        \
-     $(get_untagged_sg)         \
-     $(get_untagged_sgr)        \
-     $(get_untagged_acl)        \
-     $(get_untagged_rtb)        \
-     $(get_untagged_lt)         \
-     $(get_untagged_pg)         \
-     $(get_untagged_td)         \
-     $(get_untagged_alarm)      \
-     $(get_untagged_loggroup)   \
-     $(get_untagged_keypair)    \
-     $(get_untagged_kms_key)    \
-     $(get_untagged_ecs_ci)     \
-     $(get_untagged_ecache_pg)  \
-     $(get_untagged_ecache_usr) \
-     $(get_untagged_elb_lr)     \
-     $(get_untagged_ebr_bus)    \
-     $(get_untagged_ebr_rule)   \
-     $(get_untagged_lambda_fn)  \
-     $(get_untagged_mdb_pg)     \
-     $(get_untagged_mdb_usr)    \
-     $(get_untagged_rds_pg)     \
-     $(get_untagged_rds_cpg)    \
-     $(get_untagged_rds_og)     \
-     $(get_untagged_rds_sg)     \
-     $(get_untagged_s3_ap)      |
-    tr ' ' '\n' | { sed -u 1q; sort -t${CSV_SEP} -k2; } > ${OUTPUT_FILE}
+# Append the output from each 'get_untagged_*' function into a temporary file
+get_untagged_fn_list=($(grep "function get_untagged_" ${0} | grep -v "grep" | sed -r "s|^function ([^ ]+).*$|\1|"))
+for get_untagged_fn in ${get_untagged_fn_list[@]}; do
+    eval ${get_untagged_fn} >> ${OUTPUT_FILE_TMP}
+done
 
-# Pretty-print the result on-screen
+# Include the list of non-supported / erroneous resources
+arn_filter="$(echo -n $(cat ${OUTPUT_FILE_TMP} | cut -d${CSV_SEP} -f1) | tr ' ' '|')"
+echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[].Arn" | grep -v -E "${arn_filter}" | sed -r "s|(.*)|\1${CSV_SEP}${TAG_IGNORED}|" >> ${OUTPUT_FILE_TMP}
+
+# Generate the output CSV with all of the deducted tags
+echo "ARN${CSV_SEP}Owner" > ${OUTPUT_FILE}
+sort -t${CSV_SEP} -k2 ${OUTPUT_FILE_TMP} >> ${OUTPUT_FILE}
+
+# Pretty-print the result for displaying on-screen
 cat ${OUTPUT_FILE} | tr ${CSV_SEP} '\t' | tablign > ${OUTPUT_FILE_TMP}
 sep_length=$(cat ${OUTPUT_FILE_TMP} | awk '{ print length }' | sort -nr | head -n1 | cut -d' ' -f1)
 sed -i "2i$(printf -- '-%0.s' $(seq 1 1 ${sep_length}))" ${OUTPUT_FILE_TMP}
+cat ${OUTPUT_FILE_TMP} && rm -f ${OUTPUT_FILE_TMP}
 
-cat ${OUTPUT_FILE_TMP}
-
-echo -e "\n\nFound $(($(sed 1d ${OUTPUT_FILE} | wc -l))) resources untagged.\nSee list above or" \
-        "download the '${OUTPUT_FILE}' artifact for further information."
+# Finally, provide a summary of the results obtained
+num_resources_untagged=$(sed 1d ${OUTPUT_FILE} | grep -v "${TAG_IGNORED}" | wc -l)
+num_resources_ignored=$(grep "${TAG_IGNORED}" ${OUTPUT_FILE} | wc -l)
+echo -e "\n\nFound ${num_resources_untagged} resources untagged, including ${num_resources_ignored} additional resources" \
+        "ignored / not available.\nSee list above or download the '${OUTPUT_FILE}' artifact for further information."
