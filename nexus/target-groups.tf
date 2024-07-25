@@ -67,7 +67,7 @@ module "obp_fusion_target_group" {
 
   target_port       = 8000
   base_path         = "/web/fusion"
-  health_check_path = "/nexus/web/status"
+  health_check_path = "/web/fusion/status"
 
   allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
   public_lb_listener_https_arn  = var.public_lb_listener_https_arn

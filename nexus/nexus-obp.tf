@@ -139,7 +139,7 @@ module "nexus_fusion_obp" {
   fusion_instance_name = "nexus-fusion-obp"
 
   nexus_fusion_hostname  = "openbluebrain.com"
-  nexus_fusion_base_path = "/nexus/web/"
+  nexus_fusion_base_path = "/web/fusion"
   nexus_delta_endpoint   = "https://openbluebrain.com/api/nexus/v1"
 
 
@@ -151,6 +151,6 @@ module "nexus_fusion_obp" {
   ecs_task_execution_role_arn              = module.iam.nexus_ecs_task_execution_role_arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
 
-  aws_lb_target_group_nexus_fusion_arn = module.sbo_fusion_target_group.lb_target_group_arn
+  aws_lb_target_group_nexus_fusion_arn = module.obp_fusion_target_group.lb_target_group_arn
   dockerhub_credentials_arn            = module.iam.dockerhub_credentials_arn
 }
