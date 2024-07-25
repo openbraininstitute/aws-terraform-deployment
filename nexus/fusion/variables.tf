@@ -28,13 +28,18 @@ variable "nexus_fusion_hostname" {
   sensitive = false
 }
 
+variable "nexus_fusion_base_path" {
+  type      = string
+  sensitive = false
+}
+
 variable "nexus_fusion_docker_image_url" {
   default   = "bluebrain/nexus-web:1.10.0-M2-resource-validation"
   sensitive = false
   type      = string
 }
 
-variable "nexus_delta_hostname" {
+variable "nexus_delta_endpoint" {
   type      = string
   sensitive = false
 }

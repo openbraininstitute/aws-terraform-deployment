@@ -157,8 +157,9 @@ module "nexus_fusion" {
 
   fusion_instance_name = "nexus_fusion"
 
-  nexus_fusion_hostname = module.sbo_fusion_target_group.hostname
-  nexus_delta_hostname  = module.sbo_delta_target_group.hostname
+  nexus_fusion_hostname  = module.sbo_fusion_target_group.hostname
+  nexus_fusion_base_path = "/nexus/web/"
+  nexus_delta_endpoint   = "https://${module.sbo_delta_target_group.hostname}/v1"
 
   aws_region               = var.aws_region
   subnet_id                = module.networking.subnet_id

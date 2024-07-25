@@ -15,7 +15,7 @@ resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
       environment = [
         {
           name  = "BASE_PATH"
-          value = "/nexus/web/"
+          value = var.nexus_fusion_base_path
         },
         {
           name  = "HOST_NAME"
@@ -27,7 +27,7 @@ resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
         },
         {
           name  = "API_ENDPOINT"
-          value = "https://${var.nexus_delta_hostname}/v1"
+          value = var.nexus_delta_endpoint
         },
         {
           name  = "SERVICE_ACCOUNTS_REALM"
@@ -55,23 +55,7 @@ resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
         },
         {
           name  = "LOGO_LINK"
-          value = "https://${var.nexus_fusion_hostname}/nexus/web/"
-        },
-        {
-          name  = "JIRA_URL"
-          value = "https://bbpteam.epfl.ch/project/issues"
-        },
-        {
-          name  = "JIRA_RESOURCE_FIELD_NAME"
-          value = "customfield_13511"
-        },
-        {
-          name  = "JIRA_PROJECT_FIELD_NAME"
-          value = "customfield_13510"
-        },
-        {
-          name  = "JIRA_SUPPORTED_REALMS"
-          value = "bbp"
+          value = "https://${var.nexus_fusion_hostname}${var.nexus_fusion_base_path}"
         },
         {
           name  = "ANALYSIS_PLUGIN_SHOW_ON_TYPES"
