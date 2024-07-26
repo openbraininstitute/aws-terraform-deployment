@@ -139,7 +139,7 @@ module "nexus_fusion_obp" {
   fusion_instance_name = "nexus-fusion-obp"
 
   nexus_fusion_hostname  = "openbluebrain.com"
-  nexus_fusion_base_path = "/web/fusion"
+  nexus_fusion_base_path = "/web/fusion/"
   nexus_delta_endpoint   = "https://openbluebrain.com/api/nexus/v1"
 
 
