@@ -12,15 +12,15 @@ locals {
   public_load_balancer_dns_name = module.nexus_sandbox_setup.public_load_balancer_dns_name
   vpc_id                        = module.nexus_sandbox_setup.vpc_id
 
-  nexus_secrets_arn = "arn:aws:secretsmanager:us-east-1:058264116529:secret:nexus-25Vd68"
-  psql_secret_arn   = "arn:aws:secretsmanager:us-east-1:058264116529:secret:nexus_postgresql_password-CPEAmn"
+  # All needed secrets from secret manager below
+  nexus_secrets_arn           = "arn:aws:secretsmanager:us-east-1:058264116529:secret:nexus-25Vd68"
+  psql_secret_arn             = "arn:aws:secretsmanager:us-east-1:058264116529:secret:nexus_postgresql_password-CPEAmn"
+  ec_api_key_arn              = "arn:aws:secretsmanager:us-east-1:058264116529:secret:ec_api_key-ET0Y5u"
+  nise_dockerhub_password_arn = "arn:aws:secretsmanager:us-east-1:058264116529:secret:nise_dockerhub_password-l7Bs4c"
 }
 
-# Define this as TF_VAR_nise_dockerhub_password env variable. Currently
-# this password can be found in the NISE 1password.
-variable "nise_dockerhub_password" {
-  type      = string
-  sensitive = true
+data "aws_secretsmanager_secret_version" "nise_dockerhub_password" {
+  secret_id = local.nise_dockerhub_password_arn
 }
 
 ####
@@ -67,19 +67,20 @@ module "iam" {
   aws_region     = local.aws_region
 
   nexus_secrets_arn  = local.nexus_secrets_arn
-  dockerhub_password = var.nise_dockerhub_password
+  dockerhub_password = data.aws_secretsmanager_secret_version.nise_dockerhub_password.secret_string
 }
 
-module "postgres" {
-  source = "../postgres"
+module "postgres_aurora" {
+  source = "../postgres_aurora"
 
-  subnets_ids              = module.networking.psql_subnets_ids
-  subnet_security_group_id = module.networking.main_subnet_sg_id
-  instance_class           = "db.t4g.small"
+  nexus_database_password_arn = local.psql_secret_arn
 
-  nexus_postgresql_database_password_arn = local.psql_secret_arn
-
-  aws_region = local.aws_region
+  nexus_postgresql_name          = "sandbox"
+  nexus_postgresql_database_name = "sandbox"
+  nexus_database_username        = "sandbox"
+  subnets_ids                    = module.networking.psql_subnets_ids
+  security_group_id              = module.networking.main_subnet_sg_id
+  vpc_id                         = local.vpc_id
 }
 
 module "elasticcloud" {
@@ -145,11 +146,10 @@ module "delta" {
   delta_cpu    = 1024
   delta_memory = 2048
 
-  delta_instance_name  = "delta-sandbox"
-  delta_efs_name       = "delta-sandbox" # legacy name so that the efs doesn't get modified
-  s3_bucket_arn        = aws_s3_bucket.nexus_delta.arn
-  nexus_delta_hostname = module.delta_target_group.hostname
-  delta_java_opts      = ""
+  delta_instance_name = "delta-sandbox"
+  delta_efs_name      = "delta-sandbox" # legacy name so that the efs doesn't get modified
+  s3_bucket_arn       = aws_s3_bucket.nexus_delta.arn
+  delta_java_opts     = ""
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
@@ -159,8 +159,8 @@ module "delta" {
   delta_target_group_arn    = module.delta_target_group.lb_target_group_arn
   dockerhub_credentials_arn = module.iam.dockerhub_credentials_arn
 
-  postgres_host        = module.postgres.host
-  postgres_reader_host = module.postgres.host
+  postgres_host        = module.postgres_aurora.writer_endpoint
+  postgres_reader_host = module.postgres_aurora.reader_endpoint
 
   elasticsearch_endpoint = module.elasticcloud.http_endpoint
   elastic_password_arn   = module.elasticcloud.elastic_user_credentials_secret_arn
@@ -194,7 +194,6 @@ module "fusion" {
   fusion_instance_name = "fusion"
 
   nexus_fusion_hostname = module.fusion_target_group.hostname
-  nexus_delta_hostname  = module.delta_target_group.hostname
 
   aws_region               = local.aws_region
   subnet_id                = module.networking.subnet_id
@@ -207,4 +206,6 @@ module "fusion" {
   aws_lb_target_group_nexus_fusion_arn = module.fusion_target_group.lb_target_group_arn
   dockerhub_credentials_arn            = module.iam.dockerhub_credentials_arn
 
+  nexus_delta_endpoint   = "https://${module.delta_target_group.hostname}/v1"
+  nexus_fusion_base_path = "/nexus/web/"
 }
