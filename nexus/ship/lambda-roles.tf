@@ -60,20 +60,20 @@ resource "aws_iam_policy" "run_ship_ecs_task" {
 
 resource "aws_iam_role_policy_attachment" "AWSLambdaBasicExecutionRole" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-  role       = aws_iam_role.nexus_ship_lambda.arn
+  role       = aws_iam_role.nexus_ship_lambda.name
 }
 
 resource "aws_iam_role_policy_attachment" "AWSLambdaVPCAccessExecutionRole" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
-  role       = aws_iam_role.nexus_ship_lambda.arn
+  role       = aws_iam_role.nexus_ship_lambda.name
 }
 
 resource "aws_iam_role_policy_attachment" "nexus_ship_pass_role" {
   policy_arn = aws_iam_policy.nexus_ship_pass_role.arn
-  role       = aws_iam_role.nexus_ship_lambda.arn
+  role       = aws_iam_role.nexus_ship_lambda.name
 }
 
 resource "aws_iam_role_policy_attachment" "run_ship_ecs_task" {
   policy_arn = aws_iam_policy.run_ship_ecs_task.arn
-  role       = aws_iam_role.nexus_ship_lambda.arn
+  role       = aws_iam_role.nexus_ship_lambda.name
 }
