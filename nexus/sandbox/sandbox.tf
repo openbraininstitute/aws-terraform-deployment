@@ -6,7 +6,6 @@ locals {
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
   aws_region                    = "us-east-1"
   aws_account_id                = "058264116529"
-  domain_zone_id                = module.nexus_sandbox_setup.domain_zone_id
   nat_gateway_id                = module.nexus_sandbox_setup.nat_gateway_id
   public_lb_listener_https_arn  = module.nexus_sandbox_setup.public_lb_listener_http_arn
   public_load_balancer_dns_name = module.nexus_sandbox_setup.public_load_balancer_dns_name
@@ -68,6 +67,8 @@ module "iam" {
 
   nexus_secrets_arn  = local.nexus_secrets_arn
   dockerhub_password = data.aws_secretsmanager_secret_version.nise_dockerhub_password.secret_string
+
+  secret_recovery_window_in_days = 0
 }
 
 module "postgres_aurora" {
@@ -76,11 +77,15 @@ module "postgres_aurora" {
   nexus_database_password_arn = local.psql_secret_arn
 
   nexus_postgresql_name          = "sandbox"
-  nexus_postgresql_database_name = "sandbox"
-  nexus_database_username        = "sandbox"
+  nexus_postgresql_database_name = "nexus_user"
+  nexus_database_username        = "nexus_user"
   subnets_ids                    = module.networking.psql_subnets_ids
   security_group_id              = module.networking.main_subnet_sg_id
   vpc_id                         = local.vpc_id
+
+
+  min_capacity = 1
+  max_capacity = 1
 }
 
 module "elasticcloud" {
@@ -93,7 +98,9 @@ module "elasticcloud" {
   elasticsearch_version = "8.14.3"
 
   hot_node_size   = "1g"
-  deployment_name = "nexus-sandbox-es"
+  deployment_name = "nexus-sandbox"
+
+  secret_recovery_window_in_days = 0
 
   aws_tags = {
     Nexus = "elastic"
@@ -121,20 +128,18 @@ module "blazegraph" {
 }
 
 module "delta_target_group" {
-  source = "../delta_target_group"
+  source = "../path_target_group"
 
-  nexus_delta_hostname     = "sbo-nexus-delta.shapes-registry.org"
-  target_group_prefix      = "nx-dlt"
-  unique_listener_priority = 100
+  target_port       = 8080
+  base_path         = "/api/nexus"
+  health_check_path = "/api/nexus/v1/version"
 
-  vpc_id                        = local.vpc_id
-  domain_zone_id                = local.domain_zone_id
-  public_lb_listener_https_arn  = local.public_lb_listener_https_arn
-  public_load_balancer_dns_name = local.public_load_balancer_dns_name
-  nat_gateway_id                = local.nat_gateway_id
   allowed_source_ip_cidr_blocks = local.allowed_source_ip_cidr_blocks
-
-  aws_region = local.aws_region
+  public_lb_listener_https_arn  = local.public_lb_listener_https_arn
+  target_group_prefix           = "obpdlt"
+  unique_listener_priority      = 101
+  nat_gateway_id                = local.nat_gateway_id
+  vpc_id                        = local.vpc_id
 }
 
 module "delta" {
@@ -174,26 +179,25 @@ module "delta" {
 }
 
 module "fusion_target_group" {
-  source = "../fusion_target_group"
+  source = "../path_target_group"
 
-  nexus_fusion_hostname    = "sbo-nexus-fusion.shapes-registry.org"
-  target_group_prefix      = "nx-fus"
-  unique_listener_priority = 300
+  target_port       = 8000
+  base_path         = "/web/fusion"
+  health_check_path = "/web/fusion/status"
 
-  aws_region                    = local.aws_region
-  vpc_id                        = local.vpc_id
-  domain_zone_id                = local.domain_zone_id
-  public_lb_listener_https_arn  = local.public_lb_listener_https_arn
-  public_load_balancer_dns_name = local.public_load_balancer_dns_name
-  nat_gateway_id                = local.nat_gateway_id
   allowed_source_ip_cidr_blocks = local.allowed_source_ip_cidr_blocks
+  public_lb_listener_https_arn  = local.public_lb_listener_https_arn
+  target_group_prefix           = "obpfus"
+  unique_listener_priority      = 301
+  nat_gateway_id                = local.nat_gateway_id
+  vpc_id                        = local.vpc_id
 }
 
 module "fusion" {
   source               = "../fusion"
   fusion_instance_name = "fusion"
 
-  nexus_fusion_hostname = module.fusion_target_group.hostname
+  nexus_fusion_hostname = "openbluebrain.sandbox"
 
   aws_region               = local.aws_region
   subnet_id                = module.networking.subnet_id
@@ -206,6 +210,6 @@ module "fusion" {
   aws_lb_target_group_nexus_fusion_arn = module.fusion_target_group.lb_target_group_arn
   dockerhub_credentials_arn            = module.iam.dockerhub_credentials_arn
 
-  nexus_delta_endpoint   = "https://${module.delta_target_group.hostname}/v1"
+  nexus_delta_endpoint   = "https://openbluebrain.sandbox/api/nexus/v1"
   nexus_fusion_base_path = "/nexus/web/"
 }

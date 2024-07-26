@@ -30,8 +30,9 @@ EOF
 
 #tfsec:ignore:aws-ssm-secret-use-customer-key
 resource "aws_secretsmanager_secret" "dockerhub_credentials" {
-  name        = "nexus_dockerhub_credentials"
-  description = "The credentials of the NISE dockerhub account used to authenticate calls to dockerhub."
+  name                    = "nexus_dockerhub_credentials"
+  description             = "The credentials of the NISE dockerhub account used to authenticate calls to dockerhub."
+  recovery_window_in_days = var.secret_recovery_window_in_days
 }
 
 resource "aws_secretsmanager_secret_version" "example" {
