@@ -121,11 +121,11 @@ resource "aws_ecs_task_definition" "viz_vsm" {
         },
         {
           name  = "VSM_KEYCLOAK_URL"
-          value = "https://sboauth.epfl.ch/auth/realms/SBO/protocol/openid-connect/userinfo"
+          value = "https://openbluebrain.com/auth/realms/SBO/protocol/openid-connect/userinfo"
         },
         {
           name  = "VSM_KEYCLOAK_HOST"
-          value = "sboauth.epfl.ch"
+          value = "openbluebrain.com"
         },
         {
           name  = "VSM_BRAYNS_TASK_DEFINITION"

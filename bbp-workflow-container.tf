@@ -174,7 +174,7 @@ resource "aws_ecs_task_definition" "workflow_ecs_definition" {
         },
         {
           name  = "KC_HOST"
-          value = "https://sboauth.epfl.ch"
+          value = "https://openbluebrain.com"
         },
         {
           name  = "KC_REALM"
