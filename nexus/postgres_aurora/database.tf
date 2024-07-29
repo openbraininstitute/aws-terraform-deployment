@@ -40,6 +40,8 @@ module "aurora_postgresql" {
 
   monitoring_interval = 0
 
+  performance_insights_enabled = true
+
   serverlessv2_scaling_configuration = {
     min_capacity = var.min_capacity
     max_capacity = var.max_capacity
