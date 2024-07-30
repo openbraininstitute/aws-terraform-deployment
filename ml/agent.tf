@@ -42,8 +42,8 @@ module "ecs_service_agent" {
           value = "http://${var.private_alb_dns}:3000/api/literature/retrieval/"
         },
         {
-          name  = "AGENT_TOOLS__KNOWLEDGE_GRAPH__URL"
-          value = "https://bbp.epfl.ch/nexus/v1/search/query/suite/sbo"
+          name  = "AGENT_KNOWLEDGE_GRAPH__BASE_URL"
+          value = "https://openbluebrain.com/api/nexus/v1"
         },
         {
           name  = "AGENT_AGENT__MODEL"
@@ -55,15 +55,43 @@ module "ecs_service_agent" {
         },
         {
           name  = "AGENT_GENERATIVE__OPENAI__MODEL"
-          value = "gpt-3.5-turbo"
+          value = "gpt-4o-mini"
         },
         {
-          name  = "AGENT_TOOLS__KNOWLEDGE_GRAPH__SEARCH_SIZE"
-          value = "3"
+          name  = "AGENT_TOOLS__MORPHO__SEARCH_SIZE"
+          value = "10"
+        },
+        {
+          name  = "AGENT_TOOLS__KG_MORPHO__SEARCH_SIZE"
+          value = "6"
+        },
+        {
+          name  = "AGENT_TOOLS__TRACE__SEARCH_SIZE"
+          value = "10"
+        },
+        {
+          name  = "AGENT_TOOLS__LITERATURE__RERANKER_K"
+          value = "8"
+        },
+        {
+          name  = "AGENT_KEYCLOAK__VALIDATE_TOKEN"
+          value = "true"
+        },
+        {
+          name  = "AGENT_KEYCLOAK__ISSUER"
+          value = "https://openbluebrain.com/auth/realms/SBO"
+        },
+        {
+          name  = "AGENT_KNOWLEDGE_GRAPH__DOWNLOAD_HIERARCHY"
+          value = "false"
         },
         {
           name  = "AGENT_MISC__APPLICATION_PREFIX"
           value = "/api/agent"
+        },
+        {
+          name  = "AGENT_DB__PREFIX"
+          value = "sqlite:///sqlite.db"
         },
         {
           name  = "AGENT_MISC__CORS_ORIGINS"
@@ -76,8 +104,8 @@ module "ecs_service_agent" {
           valueFrom = "${var.secret_manager_arn}:OPENAI_API_KEY::"
         },
         {
-          name      = "AGENT_TOOLS__KNOWLEDGE_GRAPH__TOKEN"
-          valueFrom = "${var.secret_manager_arn}:KG_TOKEN::"
+          name      = "AGENT_COHERE__TOKEN"
+          valueFrom = "${var.secret_manager_arn}:COHERE_TOKEN::"
         },
       ]
       logConfiguration = {

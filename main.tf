@@ -39,7 +39,7 @@ module "ml" {
   dockerhub_credentials_arn = module.dockerhub_secret.dockerhub_credentials_arn
   backend_image_url         = "bluebrain/bbs-pipeline:v0.18.2"
   etl_image_url             = "bluebrain/bbs-etl:parse-v1.8.3"
-  agent_image_url           = "bluebrain/agents:v0.2.0"
+  agent_image_url           = "bluebrain/agents:v0.6.0"
   grobid_image_url          = "lfoppiano/grobid:0.8.0"
 
   alb_security_group_id = data.terraform_remote_state.common.outputs.public_alb_sg_id
