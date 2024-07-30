@@ -5,6 +5,13 @@ ecs = boto3.client('ecs')
 
 def lambda_handler(event, context):
 
+    command = ['run','--s3','--config','ship.conf','--path', event['EXPORT_FILE_PATH']]
+
+    if 'OFFSET' in event:
+        command = command + ['--offset', event['OFFSET']]
+
+    print('The command is {}'.format(command))
+
     response = ecs.run_task(
         cluster='nexus_ecs_cluster',
         taskDefinition='nexus_ship_task_family',
@@ -20,7 +27,7 @@ def lambda_handler(event, context):
             'containerOverrides': [
                 {
                     'name': 'nexus_ship',
-                    'command': ['run','--s3','--config','ship.conf','--path', event['EXPORT_FILE_PATH']],
+                    'command': command,
                     'environment': [
                         {
                             'name': 'POSTGRES_DATABASE',
