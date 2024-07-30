@@ -44,3 +44,21 @@ resource "aws_lb_listener_rule" "lb_target_https" {
   }
 }
 
+resource "aws_lb_listener_rule" "lb_target_https_redirect" {
+  listener_arn = var.public_lb_listener_https_arn
+  priority     = var.unique_listener_priority
+
+  action {
+    type = "redirect"
+    redirect {
+      path        = "${var.base_path}/"
+      status_code = "HTTP_302"
+    }
+  }
+  condition {
+    path_pattern {
+      values = [var.base_path]
+    }
+  }
+}
+
