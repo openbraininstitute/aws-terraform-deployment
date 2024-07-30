@@ -211,8 +211,7 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
   volume {
     name = "tmpfs-volume"
     docker_volume_configuration {
-      autoprovision = false
-      driver        = "local"
+      driver = "local"
       driver_opts = {
         type   = "tmpfs"
         device = "tmpfs"

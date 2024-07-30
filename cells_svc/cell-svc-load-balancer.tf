@@ -32,7 +32,7 @@ resource "aws_acm_certificate_validation" "cell_svc" {
 resource "aws_lb_target_group" "cell_svc" {
   #ts:skip=AC_AWS_0492
   name_prefix = "cllb"
-  port        = 8050
+  port        = 8000
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = var.vpc_id
