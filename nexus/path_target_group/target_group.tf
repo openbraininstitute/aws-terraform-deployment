@@ -46,7 +46,7 @@ resource "aws_lb_listener_rule" "lb_target_https" {
 
 resource "aws_lb_listener_rule" "lb_target_https_redirect" {
   listener_arn = var.public_lb_listener_https_arn
-  priority     = var.unique_listener_priority
+  priority     = var.unique_listener_priority + 1
 
   action {
     type = "redirect"
