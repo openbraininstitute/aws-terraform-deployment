@@ -208,17 +208,6 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
     name      = "sbo-project-data"
     host_path = "/sbo/data/project"
   }
-  volume {
-    name = "tmpfs-volume"
-    docker_volume_configuration {
-      driver = "local"
-      driver_opts = {
-        type   = "tmpfs"
-        device = "tmpfs"
-        o      = "size=512m"
-      }
-    }
-  }
 
   container_definitions = jsonencode([
     {
@@ -244,11 +233,6 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
           readOnly      = true
           sourceVolume  = "sbo-project-data"
           containerPath = "/sbo/data/project"
-        },
-        {
-          readOnly      = false
-          sourceVolume  = "tmpfs-volume"
-          containerPath = "/tmp"
         }
       ]
       healthcheck = {
