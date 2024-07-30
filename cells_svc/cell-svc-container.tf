@@ -173,13 +173,13 @@ resource "aws_security_group" "cell_svc_ecs_task" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "cell_svc_task_ingress_port_8050" {
+resource "aws_vpc_security_group_ingress_rule" "cell_svc_task_ingress_port_8000" {
   security_group_id = aws_security_group.cell_svc_ecs_task.id
   ip_protocol       = "tcp"
-  from_port         = 8050
-  to_port           = 8050
+  from_port         = 8000
+  to_port           = 8000
   cidr_ipv4         = var.vpc_cidr_block
-  description       = "Allow port 8050 tcp for SBO cell svc ECS task"
+  description       = "Allow port 8000 tcp for SBO cell svc ECS task"
   tags              = { SBO_Billing = "cell_svc" }
 }
 
@@ -208,6 +208,18 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
     name      = "sbo-project-data"
     host_path = "/sbo/data/project"
   }
+  volume {
+    name = "tmpfs-volume"
+    docker_volume_configuration {
+      autoprovision = false
+      driver        = "local"
+      driver_opts = {
+        type   = "tmpfs"
+        device = "tmpfs"
+        o      = "size=512m"
+      }
+    }
+  }
 
   container_definitions = jsonencode([
     {
@@ -223,15 +235,23 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
       }
       portMappings = [
         {
-          hostPort      = 8050
-          containerPort = 8050
+          hostPort      = 8000
+          containerPort = 8000
           protocol      = "tcp"
         }
       ]
-      mountPoints = [{
-        sourceVolume  = "sbo-project-data"
-        containerPath = "/sbo/data/project"
-      }]
+      mountPoints = [
+        {
+          readOnly      = true
+          sourceVolume  = "sbo-project-data"
+          containerPath = "/sbo/data/project"
+        },
+        {
+          readOnly      = false
+          sourceVolume  = "tmpfs-volume"
+          containerPath = "/tmp"
+        }
+      ]
       healthcheck = {
         command     = ["CMD-SHELL", "exit 0"] // TODO: not exit 0
         interval    = 30
@@ -276,7 +296,7 @@ resource "aws_ecs_service" "cell_svc_ecs_service" {
   load_balancer {
     target_group_arn = aws_lb_target_group.cell_svc.arn
     container_name   = "cell_svc"
-    container_port   = 8050
+    container_port   = 8000
   }
 
   network_configuration {
