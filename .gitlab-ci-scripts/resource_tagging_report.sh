@@ -126,7 +126,7 @@ function get_untagged_sgr {
                            "GroupId"
 }
 
-# Function to get the list of untagged EC2 Launch Templates and their potential owner
+# Function to get the list of untagged ACLs and their potential owner
 function get_untagged_acl {
     _get_untagged_ec2_base "ec2:network-acl" \
                            "describe-network-acls" \
@@ -136,7 +136,7 @@ function get_untagged_acl {
                            "VpcId"
 }
 
-# Function to get the list of untagged EC2 Launch Templates and their potential owner
+# Function to get the list of untagged Route Tables and their potential owner
 function get_untagged_rtb {
     _get_untagged_ec2_base "ec2:route-table" \
                            "describe-route-tables" \
@@ -148,7 +148,6 @@ function get_untagged_rtb {
 
 # Function to get the list of untagged EC2 Launch Templates and their potential owner
 function get_untagged_lt {
-    # Retrieve the list of EC2 Launch Templates and their metadata
     local arns=($(get_arn_list "ec2:launch-template"))
     local ids=($(echo ${arns[@]} | tr ' ' '\n' | cut -d'/' -f2))
 
@@ -171,7 +170,6 @@ function get_untagged_lt {
 
 # Function to get the list of untagged EC2 Placement Groups and their potential owner
 function get_untagged_pg {
-    # Retrieve the list of EC2 Placement Groups and their metadata
     local arns=($(get_arn_list "ec2:placement-group"))
     local ids=($(echo ${arns[@]} | tr ' ' '\n' | cut -d'/' -f2))
     local list=$(aws ec2 describe-placement-groups --group-ids ${ids[@]} 2>/dev/null)
@@ -190,7 +188,6 @@ function get_untagged_pg {
 
 # Function to get the list of untagged ECS Task Definitions and their potential owner
 function get_untagged_td {
-    # Retrieve the list of ECS Task Definitions
     local arns=($(get_arn_list "ecs:task-definition"))
 
     # Try to guess the tag by selecting the properties from each ECS Task Definition
@@ -211,7 +208,6 @@ function get_untagged_td {
 
 # Function to get the list of untagged CloudWatch Alarms and their potential owner
 function get_untagged_alarm {
-    # Retrieve the list of CloudWatch Alarms and their metadata
     local names=($(get_arn_list "cloudwatch:alarm" | sed -r "s|.*:([^:]+)|\1|"))
     local list=$(aws cloudwatch describe-alarms --alarm-names ${names[@]})
     local list_size=$(echo ${list} | jq ".MetricAlarms[].AlarmName" | wc -l)
@@ -236,7 +232,6 @@ function get_untagged_loggroup {
 
 # Function to get the list of untagged EC2 Key-Pairs and their potential owner
 function get_untagged_keypair {
-    # Retrieve the list of Key-Pairs and their metadata
     local keypair_arns=($(get_arn_list "ec2:key-pair"))
     local keypair_ids=$(echo $(echo ${keypair_arns[@]} | tr ' ' '\n' | cut -d'/' -f2) | tr ' ' ',')
     local keypair_list=$(aws ec2 describe-key-pairs --filters Name=key-pair-id,Values=${keypair_ids})
@@ -252,7 +247,6 @@ function get_untagged_keypair {
 
 # Function to get the list of untagged KMS Keys and their potential owner
 function get_untagged_kms_key {
-    # Retrieve the ARNs of the untagged KMS Keys
     local kms_key_arns=($(get_arn_list "kms:key"))
 
     # As there is not much information to query, guess the tag by using the description or the alias
@@ -272,7 +266,6 @@ function get_untagged_kms_key {
 
 # Function to get the list of untagged ECS Container Instances and their potential owner
 function get_untagged_ecs_ci {
-    # Retrieve the ARNs of the untagged ECS Container Instances
     local ecs_ci_arns=($(get_arn_list "ecs:container-instance"))
 
     # Try to guess the tag by the name of the resource
@@ -284,7 +277,6 @@ function get_untagged_ecs_ci {
 
 # Function to get the list of untagged ElastiCache Parameter Groups and their potential owner
 function get_untagged_ecache_pg {
-    # Retrieve the ARNs of the untagged ElastiCache Parameter Groups
     local pg_arns=($(get_arn_list "elasticache:parametergroup"))
 
     # As there is not much information to query, guess the tag by using the description
@@ -299,7 +291,6 @@ function get_untagged_ecache_pg {
 
 # Function to get the list of untagged ElastiCache Users and their potential owner
 function get_untagged_ecache_usr {
-    # Retrieve the ARNs of the untagged ElastiCache Users
     local usr_arns=($(get_arn_list "elasticache:user"))
 
     # As there is not much information to query, guess the tag by using the name
@@ -313,7 +304,6 @@ function get_untagged_ecache_usr {
 
 # Function to get the list of untagged Elastic Load Balancing Listener Rules and their potential owner
 function get_untagged_elb_lr {
-    # Retrieve the ARNs of the untagged ELB Listener Rules and the parent Listener
     local lr_arns=($(get_arn_list "elasticloadbalancing:listener-rule/app"))
     local l_arns=($(echo ${lr_arns[@]} | tr ' ' '\n' | sed -r "s|(^.*elasticloadbalancing.*listener)-rule(.*)/[^/]+$|\1\2|"))
     local l_tags=$(aws elbv2 describe-tags --resource-arns ${l_arns[@]})
@@ -335,7 +325,6 @@ function get_untagged_elb_lr {
 
 # Function to get the list of untagged EventBridge Event Buses and their potential owner
 function get_untagged_ebr_bus {
-    # Retrieve the ARNs of the untagged EventBridge Event Buses
     local ebr_bus_arns=($(get_arn_list "events:event-bus"))
 
     # As there is not much information to query, guess the tag by using the name
@@ -347,7 +336,6 @@ function get_untagged_ebr_bus {
 
 # Function to get the list of untagged EventBridge Rules and their potential owner
 function get_untagged_ebr_rule {
-    # Retrieve the ARNs of the untagged EventBridge Rules
     local ebr_rule_arns=($(get_arn_list "events:rule"))
 
     # As there is not much information to query, guess the tag by using the description
@@ -359,7 +347,6 @@ function get_untagged_ebr_rule {
 
 # Function to get the list of untagged Lambda Functions and their potential owner
 function get_untagged_lambda_fn {
-    # Retrieve the ARNs of the untagged Lambda Functions
     local lambda_fn_arns=($(get_arn_list "lambda:function"))
 
     for lambda_fn_arn in ${lambda_fn_arns[@]}; do
@@ -380,7 +367,6 @@ function get_untagged_lambda_fn {
 
 # Function to get the list of untagged MemoryDB Parameter Groups and their potential owner
 function get_untagged_mdb_pg {
-    # Retrieve the ARNs of the untagged MemoryDB Parameter Groups
     local mdb_pg_arns=($(get_arn_list "memorydb:parametergroup"))
 
     # As there is not much information to query, guess the tag by using the description
@@ -394,7 +380,6 @@ function get_untagged_mdb_pg {
 
 # Function to get the list of untagged MemoryDB Users and their potential owner
 function get_untagged_mdb_usr {
-    # Retrieve the ARNs of the untagged MemoryDB Users
     local mdb_usr_arns=($(get_arn_list "memorydb:user"))
 
     # As there is not much information to query, guess the tag by using the name
@@ -406,7 +391,6 @@ function get_untagged_mdb_usr {
 
 # Function to get the list of untagged RDS Parameter Groups and their potential owner
 function get_untagged_rds_pg {
-    # Retrieve the ARNs of the untagged RDS Parameter Groups
     local rds_pg_arns=($(get_arn_list "rds:pg"))
 
     # As there is not much information to query, guess the tag by using the description
@@ -421,7 +405,6 @@ function get_untagged_rds_pg {
 
 # Function to get the list of untagged RDS Cluster Parameter Groups and their potential owner
 function get_untagged_rds_cpg {
-    # Retrieve the ARNs of the untagged RDS Cluster Parameter Groups
     local rds_cpg_arns=($(get_arn_list "rds:cluster-pg"))
 
     # As there is not much information to query, guess the tag by using the description
@@ -436,7 +419,6 @@ function get_untagged_rds_cpg {
 
 # Function to get the list of untagged RDS Option Groups and their potential owner
 function get_untagged_rds_og {
-    # Retrieve the ARNs of the untagged RDS Option Groups
     local rds_og_arns=($(get_arn_list "rds:og"))
 
     # As there is not much information to query, guess the tag by using the description
@@ -451,7 +433,6 @@ function get_untagged_rds_og {
 
 # Function to get the list of untagged RDS Security Groups and their potential owner
 function get_untagged_rds_sg {
-    # Retrieve the ARNs of the untagged RDS Security Groups
     local rds_sg_arns=($(get_arn_list "rds:secgrp"))
 
     # As there is not much information to query, guess the tag by using the description
@@ -466,7 +447,6 @@ function get_untagged_rds_sg {
 
 # Function to get the list of untagged S3 Access Points and their potential owner
 function get_untagged_s3_ap {
-    # Retrieve the ARNs of the untagged S3 Access Points
     local s3_ap_arns=($(get_arn_list "s3:accesspoint"))
 
     for s3_ap_arn in ${s3_ap_arns[@]}; do
@@ -490,9 +470,11 @@ function get_untagged_s3_ap {
 ######################
 
 # Append the output from each 'get_untagged_*' function into a temporary file
-get_untagged_fn_list=($(grep "function get_untagged_" ${0} | grep -v "grep" | sed -r "s|^function ([^ ]+).*$|\1|"))
+get_untagged_fn_list=($(grep "function get_untagged_" ${0} | grep -v "grep" | sed -r "s|^function ([^ ]+).*$|\1|" | sort))
 for get_untagged_fn in ${get_untagged_fn_list[@]}; do
+    echo -n "Runnning '${get_untagged_fn}()' function... "
     eval ${get_untagged_fn} >> ${OUTPUT_FILE_TMP}
+    echo "Done!"
 done
 
 # Include the list of non-supported / erroneous resources
