@@ -85,13 +85,11 @@ resource "aws_iam_user_policy" "nexus_rds_access" {
           "rds:DescribeEvents"
         ]
         Effect : "Allow"
-        Resource : [
-          "*"
-        ]
+        Resource : "*"
       },
       {
         Action : "rds:*",
-        Effect : "Allows",
+        Effect : "Allow",
         Resource : "arn:aws:rds:us-east-1:671250183987:*:nexus*"
       }
     ]
