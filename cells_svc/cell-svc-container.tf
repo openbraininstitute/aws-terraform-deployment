@@ -384,6 +384,7 @@ data "aws_iam_policy_document" "cells_ecs_task_assume_role_policy" {
 resource "aws_iam_policy" "cloudwatch_write_policy" {
   name        = "cl_cloudwatch_write_policy"
   description = "A policy that grants write access to Cloudwatch logs"
+  tags        = { SBO_Billing = "cell_svc" }
 
   policy = jsonencode(
     {
