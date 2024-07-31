@@ -77,3 +77,18 @@ module "obp_fusion_target_group" {
   vpc_id                        = var.vpc_id
 }
 
+module "delta_nginx_target_group" {
+  source = "./path_target_group"
+
+  target_port       = 8080
+  base_path         = "/api/delta"
+  health_check_path = "/api/delta/v1/version"
+
+  allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
+  public_lb_listener_https_arn  = var.public_lb_listener_https_arn
+  target_group_prefix           = "obpdlt"
+  unique_listener_priority      = 102
+  nat_gateway_id                = var.nat_gateway_id
+  vpc_id                        = var.vpc_id
+}
+
