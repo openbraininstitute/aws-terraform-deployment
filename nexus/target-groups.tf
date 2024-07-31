@@ -87,7 +87,7 @@ module "delta_nginx_target_group" {
   allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
   public_lb_listener_https_arn  = var.public_lb_listener_https_arn
   target_group_prefix           = "obpdlt"
-  unique_listener_priority      = 102
+  unique_listener_priority      = 104
   nat_gateway_id                = var.nat_gateway_id
   vpc_id                        = var.vpc_id
 }
