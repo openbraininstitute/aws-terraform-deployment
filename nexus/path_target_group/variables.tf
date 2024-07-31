@@ -23,6 +23,11 @@ variable "health_check_path" {
   type = string
 }
 
+variable "health_check_code" {
+  type = string
+  default = "200"
+}
+
 variable "allowed_source_ip_cidr_blocks" {
   type        = list(string)
   description = "A list of allowed CIDR blocks. This is used in order to restrict which ranges can make calls to Nexus Delta."

@@ -10,6 +10,7 @@ resource "aws_lb_target_group" "lb_target_group" {
     enabled             = true
     path                = var.health_check_path
     protocol            = "HTTP"
+    matcher             = var.health_check_code
     unhealthy_threshold = 10
     timeout             = 10
   }
