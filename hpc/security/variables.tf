@@ -27,7 +27,3 @@ variable "create_slurmdb" {
 variable "account_id" {
   type = string
 }
-
-variable "endpoints_subnet_id" {
-  type = string
-}

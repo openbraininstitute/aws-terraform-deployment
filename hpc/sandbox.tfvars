@@ -16,5 +16,4 @@ peering_route_tables         = ["rtb-0e59fac620719ddc5"]
 existing_route_targets       = ["172.31.0.0/16"]
 account_id                   = "130659266700"
 lambda_subnet_cidr           = "172.31.2.0/24"
-endpoints_subnet_cidr        = "172.31.3.0/24"
 existing_public_subnet_cidrs = []

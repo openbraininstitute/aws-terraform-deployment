@@ -14,10 +14,7 @@ resource "aws_subnet" "aws_endpoints" {
   cidr_block              = "10.0.2.16/28"
   map_public_ip_on_launch = false
 
-  tags = {
-    Name        = "aws_endpoints"
-    SBO_Billing = "common"
-  }
+  tags = { Name = "VPC Endpoints Subnet" }
 }
 
 # Link route table to aws_endpoints network
@@ -65,21 +62,14 @@ resource "aws_network_acl" "aws_endpoints" {
     from_port  = 0
     to_port    = 0
   }
-  tags = {
-    Name        = "aws_endpoints_acl"
-    SBO_Billing = "common"
-  }
+  tags = { Name = "aws_endpoints_acl" }
 }
 
 resource "aws_security_group" "aws_endpoint_secretsmanager" {
   name        = "AWS secretsmanager endpoint"
   vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
   description = "Sec group for the endpoint of the AWS secretsmanager"
-
-  tags = {
-    Name        = "aws_endpoint_secretsmanager_secgroup"
-    SBO_Billing = "common"
-  }
+  tags        = { Name = "aws_endpoint_secretsmanager_secgroup" }
 }
 
 # TODO could be limited to just certain private subnets?
@@ -90,10 +80,7 @@ resource "aws_vpc_security_group_ingress_rule" "aws_endpoint_secretsmanager_inco
   to_port           = 0
   ip_protocol       = "tcp"
   cidr_ipv4         = data.terraform_remote_state.common.outputs.vpc_cidr_block
-
-  tags = {
-    Name = "aws_endpoint_secretsmanager_incoming"
-  }
+  tags              = { Name = "aws_endpoint_secretsmanager_incoming" }
 }
 
 # TODO limit to certain services
@@ -103,105 +90,120 @@ resource "aws_vpc_security_group_egress_rule" "aws_endpoint_secretsmanager_outgo
   description       = "Allow everything outgoing"
   ip_protocol       = -1
   cidr_ipv4         = "0.0.0.0/0"
-
-  tags = {
-    Name = "aws_endpoint_secretsmanager_outgoing"
-  }
+  tags              = { Name = "aws_endpoint_secretsmanager_outgoing" }
 }
 
 resource "aws_vpc_endpoint" "secretsmanager" {
-  vpc_id             = data.terraform_remote_state.common.outputs.vpc_id
-  service_name       = "com.amazonaws.${var.aws_region}.secretsmanager"
-  auto_accept        = true
-  ip_address_type    = "ipv4"
-  subnet_ids         = [aws_subnet.aws_endpoints.id]
-  security_group_ids = [aws_security_group.aws_endpoint_secretsmanager.id]
-  tags = {
-    Name        = "secretsmanager"
-    SBO_Billing = "common"
-  }
-  vpc_endpoint_type = "Interface"
+  service_name        = "com.amazonaws.${var.aws_region}.secretsmanager"
+  vpc_endpoint_type   = "Interface"
+  vpc_id              = data.terraform_remote_state.common.outputs.vpc_id
+  subnet_ids          = [aws_subnet.aws_endpoints.id]
+  security_group_ids  = [aws_security_group.aws_endpoint_secretsmanager.id]
+  private_dns_enabled = true
+  tags                = { Name = "SecretsManager Endpoint" }
 }
 
 resource "aws_vpc_endpoint" "cloudwatch" {
-  vpc_id       = data.terraform_remote_state.common.outputs.vpc_id
-  service_name = "com.amazonaws.${var.aws_region}.logs"
-  subnet_ids   = [aws_subnet.aws_endpoints.id]
-  tags = {
-    Name        = "cloudwatch"
-    SBO_Billing = "common"
-  }
-  vpc_endpoint_type = "Interface"
+  service_name        = "com.amazonaws.${var.aws_region}.monitoring"
+  vpc_endpoint_type   = "Interface"
+  vpc_id              = data.terraform_remote_state.common.outputs.vpc_id
+  subnet_ids          = [aws_subnet.aws_endpoints.id]
+  private_dns_enabled = true
+  tags                = { Name = "CloudWatch Endpoint" }
+}
+
+resource "aws_vpc_endpoint" "cloudwatch_logs" {
+  service_name        = "com.amazonaws.${var.aws_region}.logs"
+  vpc_endpoint_type   = "Interface"
+  vpc_id              = data.terraform_remote_state.common.outputs.vpc_id
+  subnet_ids          = [aws_subnet.aws_endpoints.id]
+  private_dns_enabled = true
+  tags                = { Name = "CloudWatch Logs Endpoint" }
 }
 
 resource "aws_vpc_endpoint" "cloudformation" {
-  vpc_id       = data.terraform_remote_state.common.outputs.vpc_id
-  service_name = "com.amazonaws.${var.aws_region}.cloudformation"
-  subnet_ids   = [aws_subnet.aws_endpoints.id]
-  tags = {
-    Name        = "cloudformation"
-    SBO_Billing = "common"
-  }
-  vpc_endpoint_type = "Interface"
+  service_name        = "com.amazonaws.${var.aws_region}.cloudformation"
+  vpc_endpoint_type   = "Interface"
+  vpc_id              = data.terraform_remote_state.common.outputs.vpc_id
+  subnet_ids          = [aws_subnet.aws_endpoints.id]
+  private_dns_enabled = true
+  tags                = { Name = "CloudFormation Endpoint" }
 }
 
 resource "aws_vpc_endpoint" "ec2" {
-  vpc_id       = data.terraform_remote_state.common.outputs.vpc_id
-  service_name = "com.amazonaws.${var.aws_region}.ec2"
-  subnet_ids   = [aws_subnet.aws_endpoints.id]
-  tags = {
-    Name        = "ec2"
-    SBO_Billing = "common"
-  }
-  vpc_endpoint_type = "Interface"
+  service_name        = "com.amazonaws.${var.aws_region}.ec2"
+  vpc_endpoint_type   = "Interface"
+  vpc_id              = data.terraform_remote_state.common.outputs.vpc_id
+  subnet_ids          = [aws_subnet.aws_endpoints.id]
+  private_dns_enabled = true
+  tags                = { Name = "EC2 Endpoint" }
 }
 
 resource "aws_vpc_endpoint" "efs" {
-  vpc_id       = data.terraform_remote_state.common.outputs.vpc_id
-  service_name = "com.amazonaws.${var.aws_region}.elasticfilesystem"
-  subnet_ids   = [aws_subnet.aws_endpoints.id]
-  tags = {
-    Name        = "efs"
-    SBO_Billing = "common"
-  }
-  vpc_endpoint_type = "Interface"
+  service_name        = "com.amazonaws.${var.aws_region}.elasticfilesystem"
+  vpc_endpoint_type   = "Interface"
+  vpc_id              = data.terraform_remote_state.common.outputs.vpc_id
+  subnet_ids          = [aws_subnet.aws_endpoints.id]
+  private_dns_enabled = true
+  tags                = { Name = "EFS Endpoint" }
 }
 
 resource "aws_vpc_endpoint" "s3" {
-  vpc_id       = data.terraform_remote_state.common.outputs.vpc_id
-  service_name = "com.amazonaws.${var.aws_region}.s3"
-  route_table_ids = [
-    data.terraform_remote_state.common.outputs.route_table_private_subnets_id
-  ]
-  tags = {
-    Name        = "s3"
-    SBO_Billing = "common"
-  }
+  service_name      = "com.amazonaws.${var.aws_region}.s3"
   vpc_endpoint_type = "Gateway"
+  vpc_id            = data.terraform_remote_state.common.outputs.vpc_id
+  route_table_ids   = [data.terraform_remote_state.common.outputs.route_table_private_subnets_id]
+  tags              = { Name = "S3 Endpoint (Gateway)" }
 }
 
 resource "aws_vpc_endpoint" "s3express" {
-  vpc_id       = data.terraform_remote_state.common.outputs.vpc_id
-  service_name = "com.amazonaws.${var.aws_region}.s3express"
-  route_table_ids = [
-    data.terraform_remote_state.common.outputs.route_table_private_subnets_id
-  ]
-  tags = {
-    Name        = "s3express"
-    SBO_Billing = "common"
-  }
+  service_name      = "com.amazonaws.${var.aws_region}.s3express"
   vpc_endpoint_type = "Gateway"
+  vpc_id            = data.terraform_remote_state.common.outputs.vpc_id
+  route_table_ids   = [data.terraform_remote_state.common.outputs.route_table_private_subnets_id]
+  tags              = { Name = "S3 Express One Zone Endpoint" }
 }
 
 resource "aws_vpc_endpoint" "dynamodb" {
-  vpc_id       = data.terraform_remote_state.common.outputs.vpc_id
-  service_name = "com.amazonaws.${var.aws_region}.dynamodb"
-  route_table_ids = [
-    data.terraform_remote_state.common.outputs.route_table_private_subnets_id
-  ]
-  tags = {
-    Name        = "dynamodb"
-    SBO_Billing = "common"
-  }
+  service_name      = "com.amazonaws.${var.aws_region}.dynamodb"
   vpc_endpoint_type = "Gateway"
+  vpc_id            = data.terraform_remote_state.common.outputs.vpc_id
+  route_table_ids   = [data.terraform_remote_state.common.outputs.route_table_private_subnets_id]
+  tags              = { Name = "DynamoDB Endpoint" }
+}
+
+resource "aws_vpc_endpoint" "sqs" {
+  service_name        = "com.amazonaws.${var.aws_region}.sqs"
+  vpc_endpoint_type   = "Interface"
+  vpc_id              = data.terraform_remote_state.common.outputs.vpc_id
+  subnet_ids          = [aws_subnet.aws_endpoints.id]
+  private_dns_enabled = true
+  tags                = { Name = "SQS Endpoint" }
+}
+
+resource "aws_vpc_endpoint" "ssm" {
+  service_name        = "com.amazonaws.${var.aws_region}.ssm"
+  vpc_endpoint_type   = "Interface"
+  vpc_id              = data.terraform_remote_state.common.outputs.vpc_id
+  subnet_ids          = [aws_subnet.aws_endpoints.id]
+  private_dns_enabled = true
+  tags                = { Name = "SSM Endpoint" }
+}
+
+resource "aws_vpc_endpoint" "sts" {
+  service_name        = "com.amazonaws.${var.aws_region}.sts"
+  vpc_endpoint_type   = "Interface"
+  vpc_id              = data.terraform_remote_state.common.outputs.vpc_id
+  subnet_ids          = [aws_subnet.aws_endpoints.id]
+  private_dns_enabled = true
+  tags                = { Name = "STS Endpoint" }
+}
+
+resource "aws_vpc_endpoint" "lambda" {
+  service_name        = "com.amazonaws.${var.aws_region}.lambda"
+  vpc_endpoint_type   = "Interface"
+  vpc_id              = data.terraform_remote_state.common.outputs.vpc_id
+  subnet_ids          = [aws_subnet.aws_endpoints.id]
+  private_dns_enabled = true
+  tags                = { Name = "Lambda Endpoint" }
 }

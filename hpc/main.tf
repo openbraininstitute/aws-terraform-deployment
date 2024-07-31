@@ -40,11 +40,8 @@ module "networking" {
   peering_route_tables         = var.peering_route_tables
   existing_route_targets       = var.existing_route_targets
   security_groups              = [module.security.compute_hpc_sg_id]
-  peering_sg_id                = module.security.vpc_peering_security_group_id
   obp_vpc_default_sg_id        = module.security.obp_vpc_default_sg_id
   lambda_subnet_cidr           = var.lambda_subnet_cidr
-  endpoints_subnet_cidr        = var.endpoints_subnet_cidr
-  endpoints_sg_id              = module.security.endpoints_sg_id
   existing_public_subnet_cidrs = var.existing_public_subnet_cidrs
 }
 
@@ -58,7 +55,6 @@ module "security" {
   create_slurmdb           = var.create_slurmdb
   slurm_db_a_subnet_id     = module.networking.slurm_db_a_subnet_id
   account_id               = var.account_id
-  endpoints_subnet_id      = module.networking.endpoints_subnet_id
 }
 
 module "slurmdb" {

@@ -122,16 +122,6 @@ resource "aws_vpc_security_group_ingress_rule" "hpc_allow_peering_ingress" {
   description = "allow ingress from peered vpc"
 }
 
-resource "aws_vpc_security_group_egress_rule" "hpc_allow_peering_egress" {
-  security_group_id = aws_security_group.hpc.id
-
-  ip_protocol = -1
-  from_port   = -1
-  to_port     = -1
-  cidr_ipv4   = data.aws_subnet.endpoints_subnet.cidr_block
-  description = "allow access to endpoints subnet"
-}
-
 resource "aws_vpc_security_group_ingress_rule" "hpc_allow_local_ingress" {
   security_group_id = aws_security_group.hpc.id
 

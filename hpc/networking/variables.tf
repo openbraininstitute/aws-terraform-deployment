@@ -53,12 +53,6 @@ variable "security_groups" {
   type        = list(string)
 }
 
-variable "peering_sg_id" {
-  description = "Security group ID for VPC peering"
-  type        = string
-
-}
-
 variable "obp_vpc_default_sg_id" {
   description = "ID for the default security group in the OBP VPC"
   type        = string
@@ -66,16 +60,6 @@ variable "obp_vpc_default_sg_id" {
 
 variable "lambda_subnet_cidr" {
   description = "CIDR for the subnet in which lambdas can be deployed"
-  type        = string
-}
-
-variable "endpoints_subnet_cidr" {
-  description = "CIDR for the subnet in which endpoints can be deployed"
-  type        = string
-}
-
-variable "endpoints_sg_id" {
-  description = "ID for the security group for Endpoints"
   type        = string
 }
 
