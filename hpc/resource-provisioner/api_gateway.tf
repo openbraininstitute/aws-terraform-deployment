@@ -14,9 +14,16 @@ resource "aws_api_gateway_resource" "hpc_resource_provisioner_res_pcluster" {
   path_part   = "pcluster"
 }
 
+resource "aws_api_gateway_resource" "hpc_resource_provisioner_res_version" {
+  rest_api_id = aws_api_gateway_rest_api.hpc_resource_provisioner_api.id
+  parent_id   = aws_api_gateway_resource.hpc_resource_provisioner_res_provisioner.id
+  path_part   = "version"
+}
+
 locals {
   http_methods = ["GET", "POST", "DELETE"]
 }
+
 resource "aws_api_gateway_method" "hpc_resource_provisioner_pcluster_method" {
   rest_api_id   = aws_api_gateway_rest_api.hpc_resource_provisioner_api.id
   resource_id   = aws_api_gateway_resource.hpc_resource_provisioner_res_pcluster.id
@@ -25,11 +32,27 @@ resource "aws_api_gateway_method" "hpc_resource_provisioner_pcluster_method" {
   authorization = "AWS_IAM"
 }
 
-resource "aws_api_gateway_integration" "hpc_resource_provisioner_integration" {
+resource "aws_api_gateway_method" "hpc_resource_provisioner_version_method" {
+  rest_api_id   = aws_api_gateway_rest_api.hpc_resource_provisioner_api.id
+  resource_id   = aws_api_gateway_resource.hpc_resource_provisioner_res_version.id
+  http_method   = "GET"
+  authorization = "AWS_IAM"
+}
+
+resource "aws_api_gateway_integration" "hpc_resource_provisioner_pcluster_integration" {
   count                   = 3
   rest_api_id             = aws_api_gateway_rest_api.hpc_resource_provisioner_api.id
   resource_id             = aws_api_gateway_resource.hpc_resource_provisioner_res_pcluster.id
   http_method             = aws_api_gateway_method.hpc_resource_provisioner_pcluster_method[count.index].http_method
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.hpc_resource_provisioner_lambda.invoke_arn
+  integration_http_method = "POST"
+}
+
+resource "aws_api_gateway_integration" "hpc_resource_provisioner_version_integration" {
+  rest_api_id             = aws_api_gateway_rest_api.hpc_resource_provisioner_api.id
+  resource_id             = aws_api_gateway_resource.hpc_resource_provisioner_res_version.id
+  http_method             = aws_api_gateway_method.hpc_resource_provisioner_version_method.http_method
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.hpc_resource_provisioner_lambda.invoke_arn
   integration_http_method = "POST"
