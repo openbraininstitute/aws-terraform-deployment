@@ -1,8 +1,8 @@
 locals {
   delta_nginx_log_group_name = "delta-nginx"
-  nexus_cpu                      = 512
-  nexus_memory                   = 1024
-  instance_name = "delta-nginx"
+  nexus_cpu                  = 512
+  nexus_memory               = 1024
+  instance_name              = "delta-nginx"
 }
 
 data "aws_region" "current" {}
@@ -33,9 +33,9 @@ resource "aws_ecs_task_definition" "delta_nginx_ecs_definition" {
 
   container_definitions = jsonencode([
     {
-      name   = "delta-nginx"
-      memory = local.nexus_memory
-      cpu    = local.nexus_cpu
+      name        = "delta-nginx"
+      memory      = local.nexus_memory
+      cpu         = local.nexus_cpu
       networkMode = "awsvpc"
       essential   = true
       image       = "nginx:mainline-alpine"

@@ -24,7 +24,7 @@ variable "health_check_path" {
 }
 
 variable "health_check_code" {
-  type = string
+  type    = string
   default = "200"
 }
 
