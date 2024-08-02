@@ -99,8 +99,10 @@ resource "aws_vpc_endpoint" "secretsmanager" {
   vpc_id              = data.terraform_remote_state.common.outputs.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
   security_group_ids  = [aws_security_group.aws_endpoint_secretsmanager.id]
-  private_dns_enabled = true
+  auto_accept         = true
+  ip_address_type     = "ipv4"
   tags                = { Name = "SecretsManager Endpoint" }
+  # private_dns_enabled = true
 }
 
 resource "aws_vpc_endpoint" "cloudwatch" {
