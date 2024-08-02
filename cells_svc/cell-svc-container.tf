@@ -269,6 +269,7 @@ resource "aws_ecs_service" "cell_svc_ecs_service" {
 
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
+  health_check_grace_period_seconds  = 120
 
   ## Make use of all available space on the Container Instances
   ordered_placement_strategy {
