@@ -99,10 +99,8 @@ resource "aws_vpc_endpoint" "secretsmanager" {
   vpc_id              = data.terraform_remote_state.common.outputs.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
   security_group_ids  = [aws_security_group.aws_endpoint_secretsmanager.id]
-  auto_accept         = true
-  ip_address_type     = "ipv4"
+  private_dns_enabled = false
   tags                = { Name = "SecretsManager Endpoint" }
-  # private_dns_enabled = true
 }
 
 resource "aws_vpc_endpoint" "cloudwatch" {
@@ -110,7 +108,7 @@ resource "aws_vpc_endpoint" "cloudwatch" {
   vpc_endpoint_type   = "Interface"
   vpc_id              = data.terraform_remote_state.common.outputs.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
-  private_dns_enabled = true
+  private_dns_enabled = false
   tags                = { Name = "CloudWatch Endpoint" }
 }
 
@@ -119,7 +117,7 @@ resource "aws_vpc_endpoint" "cloudwatch_logs" {
   vpc_endpoint_type   = "Interface"
   vpc_id              = data.terraform_remote_state.common.outputs.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
-  private_dns_enabled = true
+  private_dns_enabled = false
   tags                = { Name = "CloudWatch Logs Endpoint" }
 }
 
@@ -128,7 +126,7 @@ resource "aws_vpc_endpoint" "cloudformation" {
   vpc_endpoint_type   = "Interface"
   vpc_id              = data.terraform_remote_state.common.outputs.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
-  private_dns_enabled = true
+  private_dns_enabled = false
   tags                = { Name = "CloudFormation Endpoint" }
 }
 
@@ -137,7 +135,7 @@ resource "aws_vpc_endpoint" "ec2" {
   vpc_endpoint_type   = "Interface"
   vpc_id              = data.terraform_remote_state.common.outputs.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
-  private_dns_enabled = true
+  private_dns_enabled = false
   tags                = { Name = "EC2 Endpoint" }
 }
 
@@ -146,7 +144,7 @@ resource "aws_vpc_endpoint" "efs" {
   vpc_endpoint_type   = "Interface"
   vpc_id              = data.terraform_remote_state.common.outputs.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
-  private_dns_enabled = true
+  private_dns_enabled = false
   tags                = { Name = "EFS Endpoint" }
 }
 
@@ -179,7 +177,7 @@ resource "aws_vpc_endpoint" "sqs" {
   vpc_endpoint_type   = "Interface"
   vpc_id              = data.terraform_remote_state.common.outputs.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
-  private_dns_enabled = true
+  private_dns_enabled = false
   tags                = { Name = "SQS Endpoint" }
 }
 
@@ -188,7 +186,7 @@ resource "aws_vpc_endpoint" "ssm" {
   vpc_endpoint_type   = "Interface"
   vpc_id              = data.terraform_remote_state.common.outputs.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
-  private_dns_enabled = true
+  private_dns_enabled = false
   tags                = { Name = "SSM Endpoint" }
 }
 
@@ -197,7 +195,7 @@ resource "aws_vpc_endpoint" "sts" {
   vpc_endpoint_type   = "Interface"
   vpc_id              = data.terraform_remote_state.common.outputs.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
-  private_dns_enabled = true
+  private_dns_enabled = false
   tags                = { Name = "STS Endpoint" }
 }
 
@@ -206,6 +204,6 @@ resource "aws_vpc_endpoint" "lambda" {
   vpc_endpoint_type   = "Interface"
   vpc_id              = data.terraform_remote_state.common.outputs.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
-  private_dns_enabled = true
+  private_dns_enabled = false
   tags                = { Name = "Lambda Endpoint" }
 }
