@@ -172,15 +172,6 @@ resource "aws_vpc_endpoint" "dynamodb" {
   tags              = { Name = "DynamoDB Endpoint" }
 }
 
-resource "aws_vpc_endpoint" "sqs" {
-  service_name        = "com.amazonaws.${var.aws_region}.sqs"
-  vpc_endpoint_type   = "Interface"
-  vpc_id              = data.terraform_remote_state.common.outputs.vpc_id
-  subnet_ids          = [aws_subnet.aws_endpoints.id]
-  private_dns_enabled = false
-  tags                = { Name = "SQS Endpoint" }
-}
-
 resource "aws_vpc_endpoint" "ssm" {
   service_name        = "com.amazonaws.${var.aws_region}.ssm"
   vpc_endpoint_type   = "Interface"
