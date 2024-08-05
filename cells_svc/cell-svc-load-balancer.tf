@@ -40,9 +40,12 @@ resource "aws_lb_target_group" "cell_svc" {
     create_before_destroy = true
   }
   health_check {
-    enabled  = true
-    path     = "/health"
-    protocol = "HTTP"
+    enabled             = true
+    path                = "/health"
+    protocol            = "HTTP"
+    interval            = 30
+    healthy_threshold   = 2
+    unhealthy_threshold = 3
   }
   tags = { SBO_Billing = "cell_svc" }
 }
