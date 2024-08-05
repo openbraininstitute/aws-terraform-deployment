@@ -183,6 +183,25 @@ module "core_webapp" {
   env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL = "http://internal-sbo-poc-private-alb-1398645643.us-east-1.elb.amazonaws.com:3000/api/literature"
 }
 
+module "accounting_svc" {
+  source = "./accounting_svc"
+
+  aws_account_id = data.aws_caller_identity.current.account_id
+
+  aws_region               = var.aws_region
+  vpc_id                   = data.terraform_remote_state.common.outputs.vpc_id
+  alb_listener_arn         = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  internet_access_route_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+
+  dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
+  dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
+  docker_image_url                = "bluebrain/obp-accounting-api:2024.7.0-26-ga4f6bf0-prod"
+
+  secrets_arn = "arn:aws:secretsmanager:us-east-1:671250183987:secret:accounting_db-SJGtMG"
+
+  root_path = "/api/accounting"
+}
+
 module "kg_inference_api" {
   source = "./kg-inference-api"
 
