@@ -96,7 +96,7 @@ function _get_untagged_ec2_base {
 # Untagged Lookup Functions #
 #############################
 
-# Function to get the list of untagged ENIs and their potential owner
+# Function to get the list of untagged Elastic Network Interfaces and their potential owner
 function get_untagged_eni {
     _get_untagged_ec2_base "ec2:network-interface" \
                            "describe-network-interfaces" \
@@ -464,17 +464,40 @@ function get_untagged_s3_ap {
     done
 }
 
+# Function to get the list of untagged EC2 EBS Volumes and their potential owner
+function get_untagged_vol {
+    local vol_arns=($(get_arn_list "ec2:volume"))
+
+    for vol_arn in ${vol_arns[@]}; do
+        # Try to guess the tag by using the attached EC2 instance
+        local vol_id=$(echo ${vol_arn} | cut -d'/' -f2)
+        local instance_id=$(aws ec2 describe-volumes --volume-ids ${vol_id} 2>/dev/null | jq -r ".Volumes[0].Attachments[0].InstanceId")
+
+        # If we do not have an instance or the volume does not exist, ignore
+        [[ -z ${instance_id} ]] && continue
+
+        local instance_tags=$(aws ec2 describe-tags --filters Name=resource-id,Values=${instance_id})
+        local tag=$(echo ${instance_tags} | jq -r ".Tags[] | select(.Key == \"${TAG_KEY}\") | .Value" 2>/dev/null)
+
+        # If we still don't have a tag, let's try to guess it from the name of the instance
+        [[ -z ${tag} ]] && tag=$(resource_to_tag "$(echo ${instance_tags} | jq -r ".Tags[] | select(.Key == \"Name\") | .Value" 2>/dev/null)")
+        
+        output "${vol_arn}" "${tag}"
+    done
+}
+
 
 ######################
 # Main Functionality #
 ######################
 
 # Append the output from each 'get_untagged_*' function into a temporary file
+echo "Runnning tag verification functions:"
 get_untagged_fn_list=($(grep "function get_untagged_" ${0} | grep -v "grep" | sed -r "s|^function ([^ ]+).*$|\1|" | sort))
 for get_untagged_fn in ${get_untagged_fn_list[@]}; do
-    echo -n "Runnning '${get_untagged_fn}()' function... "
+    fn_description="$(sed -n $(($(grep -n "function ${get_untagged_fn}" ${0} | cut -d':' -f1 | head -n 1)-1))p ${0})"
+    echo "  - '${get_untagged_fn}()'  ${fn_description}"
     eval ${get_untagged_fn} >> ${OUTPUT_FILE_TMP}
-    echo "Done!"
 done
 
 # Include the list of non-supported / erroneous resources
