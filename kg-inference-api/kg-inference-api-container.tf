@@ -198,7 +198,7 @@ resource "aws_ecs_task_definition" "kg_inference_api_task_definition" {
           },
           {
             name  = "WHITELISTED_CORS_URLS",
-            value = "http://localhost:3000,https://openbrainplatform.org"
+            value = "http://localhost:3000"
           },
           {
             name  = "ES_RULE_VIEW",

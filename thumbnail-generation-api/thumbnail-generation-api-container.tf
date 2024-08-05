@@ -182,7 +182,7 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
         environment = [
           {
             name  = "WHITELISTED_CORS_URLS",
-            value = "http://localhost:3000,https://${var.primary_domain_hostname}"
+            value = "http://localhost:3000"
           },
           {
             name  = "BASE_PATH"
