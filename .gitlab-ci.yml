@@ -56,23 +56,29 @@ deploy:
       - ${TF_ROOT}/bolt-inventory.yaml
 
 verify_tagging:
-  stage: postdeploy
+  extends: .terraform:postdeploy
   dependencies:
     - deploy
-  image: public.ecr.aws/aws-cli/aws-cli:2.17.13
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $TF_AUTO_DEPLOY == "true"
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: manual
-  before_script:
-    - yum install -y python3 jq
-    - pip3 install tablign
-    - export AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_DEFAULT_REGION AWS_DEFAULT_OUTPUT
   script:
-    - bash .gitlab-ci-scripts/resource_tagging_report.sh untagged_resources.csv
+    - bash .gitlab-ci-scripts/resource_tagging_report.sh $OUTPUT_TMP
   artifacts:
     paths:
-      - untagged_resources.csv
+      - $OUTPUT_TMP
+    expire_in: 2 hrs
+    public: false
+
+tag_resources:
+  extends: .terraform:postdeploy
+  dependencies:
+    - verify_tagging
+  script:
+    - bash .gitlab-ci-scripts/resource_tagging_tag.sh $OUTPUT_TMP $OUTPUT_MODIFIED $OUTPUT_UNTAGGED $OUTPUT_TAGGED
+  artifacts:
+    paths:
+      - $OUTPUT_MODIFIED
+      - $OUTPUT_UNTAGGED
+      - $OUTPUT_TAGGED
+    expire_in: 1 week
 
 tfsec:
   image: aquasec/tfsec:v1.28.0

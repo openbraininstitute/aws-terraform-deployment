@@ -1,10 +1,12 @@
 #!/bin/bash
 
 OUTPUT_FILE=${1:-"untagged_resources.csv"}
-TAG_KEY=${2:-"SBO_Billing"}
-CSV_SEP=${3:-';'}
+
 OUTPUT_FILE_TMP=/tmp/$(basename ${OUTPUT_FILE})_$(date +%s)
+TAG_KEY="SBO_Billing"
+TAG_UNKNOWN="unknown"
 TAG_IGNORED="ignored/error"
+CSV_SEP=','
 UNTAGGED_RESOURCES=$(aws resource-explorer-2 search --query-string="region:us-east-1 -tag.key:${TAG_KEY}")
 
 
@@ -35,7 +37,7 @@ function resource_to_tag {
         *"ml"* | *"machinelearning"*) echo "machinelearning";;  # Note: The order is on purpose
         *"common"* | *"default"*) echo "common";;
         *"bbp"*) echo "bbp:unknown";;
-        *) echo "unknown";;
+        *) echo ${TAG_UNKNOWN};;
     esac
 }
 
@@ -255,7 +257,7 @@ function get_untagged_kms_key {
         local kms_key_description=$(aws kms describe-key --key-id ${kms_key_id} | jq -r ".KeyMetadata.Description")
 
         local tag=$(resource_to_tag "${kms_key_description}")
-        if [[ ${tag} == "unknown" ]]; then
+        if [[ ${tag} == ${TAG_UNKNOWN} ]]; then
             kms_key_alias=$(aws kms list-aliases --key-id ${kms_key_id} | jq -r ".Aliases[].AliasName")
             tag=$(resource_to_tag "${kms_key_alias}")
         fi
@@ -359,7 +361,7 @@ function get_untagged_lambda_fn {
 
         # If we still don't have a tag, let's try to guess it from the Log Group or alternatively the ARN
         [[ -z ${tag} ]] && tag=$(resource_to_tag "$(echo ${lambda_fn_description} | jq -r ".Configuration.LoggingConfig.LogGroup")")
-        [[ ${tag} == "unknown" ]] && tag=$(resource_to_tag "${lambda_fn_arn}")
+        [[ ${tag} == ${TAG_UNKNOWN} ]] && tag=$(resource_to_tag "${lambda_fn_arn}")
         
         output "${lambda_fn_arn}" "${tag}"
     done
@@ -507,15 +509,10 @@ echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[].Arn" | grep -v -E "${arn_filter
 # Generate the output CSV with all of the deducted tags
 echo "ARN${CSV_SEP}Owner" > ${OUTPUT_FILE}
 sort -t${CSV_SEP} -k2 ${OUTPUT_FILE_TMP} >> ${OUTPUT_FILE}
-
-# Pretty-print the result for displaying on-screen
-cat ${OUTPUT_FILE} | tr ${CSV_SEP} '\t' | tablign > ${OUTPUT_FILE_TMP}
-sep_length=$(cat ${OUTPUT_FILE_TMP} | awk '{ print length }' | sort -nr | head -n1 | cut -d' ' -f1)
-sed -i "2i$(printf -- '-%0.s' $(seq 1 1 ${sep_length}))" ${OUTPUT_FILE_TMP}
-cat ${OUTPUT_FILE_TMP} && rm -f ${OUTPUT_FILE_TMP}
+rm -f ${OUTPUT_FILE_TMP}
 
 # Finally, provide a summary of the results obtained
 num_resources_untagged=$(sed 1d ${OUTPUT_FILE} | grep -v "${TAG_IGNORED}" | wc -l)
 num_resources_ignored=$(grep "${TAG_IGNORED}" ${OUTPUT_FILE} | wc -l)
-echo -e "\n\nFound ${num_resources_untagged} resources untagged, including ${num_resources_ignored} additional resources" \
-        "ignored / not available.\nSee list above or download the '${OUTPUT_FILE}' artifact for further information."
+echo -e "\n\n\nFound ${num_resources_untagged} resources untagged, including ${num_resources_ignored} additional resources" \
+        "ignored / not available.\nSee next CI job for further information and downloadable artifacts."
