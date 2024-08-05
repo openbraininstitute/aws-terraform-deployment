@@ -195,7 +195,6 @@ module "accounting_svc" {
 
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
-  docker_image_url                = "bluebrain/obp-accounting-api:2024.7.0-26-ga4f6bf0-prod"
 
   secrets_arn = "arn:aws:secretsmanager:us-east-1:671250183987:secret:accounting_db-SJGtMG"
 
