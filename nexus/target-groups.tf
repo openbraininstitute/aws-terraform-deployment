@@ -83,7 +83,6 @@ module "delta_nginx_target_group" {
   target_port       = 8080
   base_path         = "/api/delta"
   health_check_path = "/api/delta/v1/version"
-  health_check_code = "302"
 
   allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
   public_lb_listener_https_arn  = var.public_lb_listener_https_arn
