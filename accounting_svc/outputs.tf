@@ -6,14 +6,14 @@ output "iam_policy_writing_accounting_queues" {
   }
 }
 
-output "queue_short_job_event_name" {
-  description = "Name of the event queue for short jobs"
-  value       = module.short_job_event_queue_set.main_queue_name
+output "queue_oneshot_event_name" {
+  description = "Name of the event queue for oneshot jobs"
+  value       = module.oneshot_event_queue_set.main_queue_name
 }
 
-output "queue_long_job_event_name" {
-  description = "Name of the event queue for long jobs"
-  value       = module.long_job_event_queue_set.main_queue_name
+output "queue_longrun_event_name" {
+  description = "Name of the event queue for longrun jobs"
+  value       = module.longrun_event_queue_set.main_queue_name
 }
 
 output "queue_storage_event_name" {

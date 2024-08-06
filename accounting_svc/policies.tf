@@ -40,8 +40,8 @@ resource "aws_iam_policy" "writing_queues" {
         ],
         "Resource" : [
           module.storage_event_queue_set.main_queue_arn,
-          module.long_job_event_queue_set.main_queue_arn,
-          module.short_job_event_queue_set.main_queue_arn
+          module.longrun_event_queue_set.main_queue_arn,
+          module.oneshot_event_queue_set.main_queue_arn
         ]
       }
     ]

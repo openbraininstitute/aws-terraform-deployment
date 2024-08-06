@@ -7,20 +7,20 @@ module "storage_event_queue_set" {
   read_arn                      = aws_iam_role.ecs_accounting_task_role.arn
 }
 
-module "long_job_event_queue_set" {
+module "longrun_event_queue_set" {
   source = "./queue_set"
 
-  main_queue_name               = "accounting-long-job-event-queue.fifo"
-  dlq_name                      = "accounting-long-job-event-dlq.fifo"
+  main_queue_name               = "accounting-longrun-event-queue.fifo"
+  dlq_name                      = "accounting-longrun-event-dlq.fifo"
   ecs_accounting_task_role_name = aws_iam_role.ecs_accounting_task_role.name
   read_arn                      = aws_iam_role.ecs_accounting_task_role.arn
 }
 
-module "short_job_event_queue_set" {
+module "oneshot_event_queue_set" {
   source = "./queue_set"
 
-  main_queue_name               = "accounting-short-job-event-queue.fifo"
-  dlq_name                      = "accounting-short-job-event-dlq.fifo"
+  main_queue_name               = "accounting-oneshot-event-queue.fifo"
+  dlq_name                      = "accounting-oneshot-event-dlq.fifo"
   ecs_accounting_task_role_name = aws_iam_role.ecs_accounting_task_role.name
   read_arn                      = aws_iam_role.ecs_accounting_task_role.arn
 }

@@ -171,12 +171,12 @@ resource "aws_ecs_task_definition" "accounting_ecs_definition" {
           value = module.storage_event_queue_set.main_queue_name
         },
         {
-          name  = "SQS_LONG_JOB_QUEUE_NAME"
-          value = module.long_job_event_queue_set.main_queue_name
+          name  = "SQS_LONGRUN_QUEUE_NAME"
+          value = module.longrun_event_queue_set.main_queue_name
         },
         {
-          name  = "SQS_SHORT_JOB_QUEUE_NAME"
-          value = module.short_job_event_queue_set.main_queue_name
+          name  = "SQS_ONESHOT_QUEUE_NAME"
+          value = module.oneshot_event_queue_set.main_queue_name
         }
       ]
 
@@ -356,8 +356,8 @@ resource "aws_iam_policy" "read_queues" {
         ],
         "Resource" : [
           module.storage_event_queue_set.main_queue_arn,
-          module.long_job_event_queue_set.main_queue_arn,
-          module.short_job_event_queue_set.main_queue_arn
+          module.longrun_event_queue_set.main_queue_arn,
+          module.oneshot_event_queue_set.main_queue_arn
         ]
       }
     ]

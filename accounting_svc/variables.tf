@@ -23,7 +23,7 @@ variable "root_path" {
 variable "docker_image_url" {
   description = "Docker image for the accounting service"
   type        = string
-  default     = "bluebrain/obp-accounting-api:2024.8.1-prod"
+  default     = "bluebrain/obp-accounting-service:2024.8.5-prod"
 }
 
 variable "dockerhub_credentials_arn" {
