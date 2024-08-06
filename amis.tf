@@ -1,10 +1,10 @@
 # AMI for AlmaLinux 9
 data "aws_ami" "almalinux" {
-  most_recent = true
+  most_recent = false
 
   filter {
     name   = "name"
-    values = ["AlmaLinux OS 9*"]
+    values = ["AlmaLinux OS*9.4.20240805*"]
   }
 
   filter {
