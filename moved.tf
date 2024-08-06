@@ -231,3 +231,93 @@ moved {
   from = aws_route53_record.kg_inference_api_validation["kg-inference-api.shapes-registry.org"]
   to   = module.kg_inference_api.aws_route53_record.kg_inference_api_validation["kg-inference-api.shapes-registry.org"]
 }
+
+moved {
+  from = aws_network_acl.aws_endpoints
+  to   = module.networking.aws_network_acl.aws_endpoints
+}
+
+moved {
+  from = aws_route_table_association.aws_endpoints
+  to   = module.networking.aws_route_table_association.aws_endpoints
+}
+
+moved {
+  from = aws_security_group.aws_endpoint_secretsmanager
+  to   = module.networking.aws_security_group.aws_endpoint_secretsmanager
+}
+
+moved {
+  from = aws_subnet.aws_endpoints
+  to   = module.networking.aws_subnet.aws_endpoints
+}
+
+moved {
+  from = aws_vpc_endpoint.cloudformation
+  to   = module.networking.aws_vpc_endpoint.cloudformation
+}
+
+moved {
+  from = aws_vpc_endpoint.cloudwatch
+  to   = module.networking.aws_vpc_endpoint.cloudwatch
+}
+
+moved {
+  from = aws_vpc_endpoint.cloudwatch_logs
+  to   = module.networking.aws_vpc_endpoint.cloudwatch_logs
+}
+
+moved {
+  from = aws_vpc_endpoint.dynamodb
+  to   = module.networking.aws_vpc_endpoint.dynamodb
+}
+
+moved {
+  from = aws_vpc_endpoint.ec2
+  to   = module.networking.aws_vpc_endpoint.ec2
+}
+
+moved {
+  from = aws_vpc_endpoint.efs
+  to   = module.networking.aws_vpc_endpoint.efs
+}
+
+moved {
+  from = aws_vpc_endpoint.lambda
+  to   = module.networking.aws_vpc_endpoint.lambda
+}
+
+moved {
+  from = aws_vpc_endpoint.s3
+  to   = module.networking.aws_vpc_endpoint.s3
+}
+
+moved {
+  from = aws_vpc_endpoint.s3express
+  to   = module.networking.aws_vpc_endpoint.s3express
+}
+
+moved {
+  from = aws_vpc_endpoint.secretsmanager
+  to   = module.networking.aws_vpc_endpoint.secretsmanager
+}
+
+moved {
+  from = aws_vpc_endpoint.ssm
+  to   = module.networking.aws_vpc_endpoint.ssm
+}
+
+moved {
+  from = aws_vpc_endpoint.sts
+  to   = module.networking.aws_vpc_endpoint.sts
+}
+
+moved {
+  from = aws_vpc_security_group_egress_rule.aws_endpoint_secretsmanager_outgoing
+  to   = module.networking.aws_vpc_security_group_egress_rule.aws_endpoint_secretsmanager_outgoing
+}
+
+moved {
+  from = aws_vpc_security_group_ingress_rule.aws_endpoint_secretsmanager_incoming
+  to   = module.networking.aws_vpc_security_group_ingress_rule.aws_endpoint_secretsmanager_incoming
+}
