@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OUTPUT_FILE=${1:-"untagged_resources.csv"}
+OUTPUT_FILE=${1:-"untagged_resources.tmp"}
 
 OUTPUT_FILE_TMP=/tmp/$(basename ${OUTPUT_FILE})_$(date +%s)
 TAG_KEY="SBO_Billing"
@@ -211,6 +211,10 @@ function get_untagged_td {
 # Function to get the list of untagged CloudWatch Alarms and their potential owner
 function get_untagged_alarm {
     local names=($(get_arn_list "cloudwatch:alarm" | sed -r "s|.*:([^:]+)|\1|"))
+
+    # Temp. commit - For some reason, the AWS CLI does not complain if you provide an empty list of alarms
+    [[ ${#names[@]} -eq 0 ]] && return
+
     local list=$(aws cloudwatch describe-alarms --alarm-names ${names[@]})
     local list_size=$(echo ${list} | jq ".MetricAlarms[].AlarmName" | wc -l)
 

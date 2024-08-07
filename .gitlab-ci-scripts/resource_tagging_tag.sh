@@ -40,7 +40,7 @@ function update_untagged_alarm {
         # If the resource does not contain a valid tag, skip the entry
         [[ ${tag} == ${TAG_UNKNOWN} || ${tag} == ${TAG_IGNORED} ]] && continue
 
-        aws cloudwatch tag-resource --resource-arn "${arn}" --tags "[{\"Key\":\"${TAG_KEY}\",\"Value\":\"${tag}\"}, \
+        echo aws cloudwatch tag-resource --resource-arn "${arn}" --tags "[{\"Key\":\"${TAG_KEY}\",\"Value\":\"${tag}\"}, \
                                                                      {\"Key\":\"${AUTOTAG_KEY}\",\"Value\":\"${AUTOTAG_TS}\"}]"
         
         output "${arn}" "${tag}"
