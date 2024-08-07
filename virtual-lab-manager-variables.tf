@@ -20,7 +20,7 @@ variable "virtual_lab_manager_depoloyment_env" {
 }
 
 variable "virtual_lab_manager_nexus_delta_uri" {
-  default     = "https://sbo-nexus-delta.shapes-registry.org/v1"
+  default     = "https://openbluebrain.com/api/nexus/v1"
   type        = string
   description = "nexus delta service url"
   sensitive   = false
@@ -83,7 +83,7 @@ variable "virtual_lab_manager_admin_base_path" {
 }
 
 variable "virtual_lab_manager_deployment_namespace" {
-  default     = "https://openbrainplatform.org"
+  default     = "https://openbluebrain.com"
   type        = string
   description = "deployment domain use for nexus project base path"
   sensitive   = false
