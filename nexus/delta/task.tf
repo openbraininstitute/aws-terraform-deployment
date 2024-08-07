@@ -22,9 +22,14 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
         "-Dakka.http.client.parsing.max-content-length=100g",
         "-Dakka.http.host-connection-pool.max-open-requests=128",
         "-Dakka.http.host-connection-pool.response-entity-subscription-timeout=15.seconds",
-        "-Dakka.http.server.parsing.max-content-length=2MiB"
+        "-Dakka.http.server.parsing.max-content-length=2MiB",
+        "-Dlogback.configurationFile=/opt/delta-config/logback.xml"
       ]
       environment = [
+        {
+          name  = "KAMON_ENABLED"
+          value = "false"
+        },
         {
           name  = "DELTA_PLUGINS"
           value = "/opt/docker/plugins/"
@@ -130,7 +135,16 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
       command = [
         "sh",
         "-c",
-        "echo $DELTA_CONFIG | base64 -d - | tee /opt/delta-config/delta.conf && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/construct-query.sparql -O /opt/delta-config/construct-query.sparql && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/fields.json -O /opt/delta-config/fields.json && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/mapping.json -O /opt/delta-config/mapping.json && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/resource-types.json -O /opt/delta-config/resource-types.json && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/search-context.json -O /opt/delta-config/search-context.json && wget https://raw.githubusercontent.com/BlueBrain/nexus/$COMMIT/tests/docker/config/settings.json -O /opt/delta-config/settings.json",
+        <<-EOT
+          echo $DELTA_CONFIG  | base64 -d - | tee /opt/delta-config/delta.conf && \
+          echo $LOGBACK_CONFIG | base64 -d - | tee /opt/delta-config/logback.xml && \
+          wget $GITHUB_SEARCH_CONFIG_BASE/construct-query.sparql -O /opt/delta-config/construct-query.sparql && \
+          wget $GITHUB_SEARCH_CONFIG_BASE/fields.json -O /opt/delta-config/fields.json && \
+          wget $GITHUB_SEARCH_CONFIG_BASE/mapping.json -O /opt/delta-config/mapping.json && \
+          wget $GITHUB_SEARCH_CONFIG_BASE/resource-types.json -O /opt/delta-config/resource-types.json && \
+          wget $GITHUB_SEARCH_CONFIG_BASE/search-context.json -O /opt/delta-config/search-context.json && \
+          wget $GITHUB_SEARCH_CONFIG_BASE/settings.json -O /opt/delta-config/settings.json
+        EOT
       ],
       environment = [
         {
@@ -138,8 +152,12 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
           value = base64encode(file("${path.module}/${var.delta_config_file}"))
         },
         {
-          name  = "COMMIT"
-          value = "${var.delta_search_config_commit}"
+          name  = "LOGBACK_CONFIG"
+          value = base64encode(file("${path.module}/logback.xml"))
+        },
+        {
+          name  = "GITHUB_SEARCH_CONFIG_BASE"
+          value = "https://raw.githubusercontent.com/BlueBrain/nexus/${var.delta_search_config_commit}/tests/docker/config"
         }
       ],
       mountPoints = [

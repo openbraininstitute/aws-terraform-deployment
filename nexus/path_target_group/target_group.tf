@@ -61,5 +61,11 @@ resource "aws_lb_listener_rule" "lb_target_https_redirect" {
       values = [var.base_path]
     }
   }
+
+  condition {
+    source_ip {
+      values = concat(var.allowed_source_ip_cidr_blocks, [format("%s/32", data.aws_nat_gateway.provided_nat_gateway.public_ip)])
+    }
+  }
 }
 
