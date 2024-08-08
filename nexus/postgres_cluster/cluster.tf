@@ -18,7 +18,7 @@ resource "aws_rds_cluster" "nexus" {
   cluster_identifier        = "nexus"
   availability_zones        = ["us-east-1a", "us-east-1b", "us-east-1c"]
   engine                    = "postgres"
-  engine_version            = "15"
+  engine_version            = var.nexus_postgresql_engine_version
   db_cluster_instance_class = var.instance_class
   storage_type              = "io1"
   allocated_storage         = 100
@@ -27,6 +27,8 @@ resource "aws_rds_cluster" "nexus" {
 
   backup_retention_period = 7 # in days
   storage_encrypted       = false
+
+  performance_insights_enabled = true
 
   db_subnet_group_name   = aws_db_subnet_group.nexus_cluster_subnet_group.name
   vpc_security_group_ids = [var.security_group_id]
