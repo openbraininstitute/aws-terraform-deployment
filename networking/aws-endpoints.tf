@@ -62,35 +62,35 @@ resource "aws_network_acl" "aws_endpoints" {
     from_port  = 0
     to_port    = 0
   }
-  tags = { Name = "aws_endpoints_acl" }
+  tags = { Name = "VPC Endpoints ACL" }
 }
 
-resource "aws_security_group" "aws_endpoint_secretsmanager" {
-  name        = "AWS secretsmanager endpoint"
+resource "aws_security_group" "aws_endpoints_sg" {
+  name        = "VPC Endpoints Security Group"
   vpc_id      = var.vpc_id
-  description = "Sec group for the endpoint of the AWS secretsmanager"
-  tags        = { Name = "aws_endpoint_secretsmanager_secgroup" }
+  description = "Security Group for the VPC Endpoints of the OBP VPC"
+  tags        = { Name = "VPC Endpoints Security Group" }
 }
 
 # TODO could be limited to just certain private subnets?
-resource "aws_vpc_security_group_ingress_rule" "aws_endpoint_secretsmanager_incoming" {
-  security_group_id = aws_security_group.aws_endpoint_secretsmanager.id
+resource "aws_vpc_security_group_ingress_rule" "aws_endpoints_sgr_ingress" {
+  security_group_id = aws_security_group.aws_endpoints_sg.id
   description       = "Allow all incoming from VPC"
   from_port         = 0
   to_port           = 0
   ip_protocol       = "tcp"
   cidr_ipv4         = var.vpc_cidr_block
-  tags              = { Name = "aws_endpoint_secretsmanager_incoming" }
+  tags              = { Name = "VPC Endpoints Security Group Rule - Ingress" }
 }
 
 # TODO limit to certain services
 # probably egress not needed at all?
-resource "aws_vpc_security_group_egress_rule" "aws_endpoint_secretsmanager_outgoing" {
-  security_group_id = aws_security_group.aws_endpoint_secretsmanager.id
+resource "aws_vpc_security_group_egress_rule" "aws_endpoints_sgr_egress" {
+  security_group_id = aws_security_group.aws_endpoints_sg.id
   description       = "Allow everything outgoing"
   ip_protocol       = -1
   cidr_ipv4         = "0.0.0.0/0"
-  tags              = { Name = "aws_endpoint_secretsmanager_outgoing" }
+  tags              = { Name = "VPC Endpoints Security Group Rule - Egress" }
 }
 
 resource "aws_vpc_endpoint" "secretsmanager" {
@@ -98,7 +98,7 @@ resource "aws_vpc_endpoint" "secretsmanager" {
   vpc_endpoint_type   = "Interface"
   vpc_id              = var.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
-  security_group_ids  = [aws_security_group.aws_endpoint_secretsmanager.id]
+  security_group_ids  = [aws_security_group.aws_endpoints_sg.id]
   private_dns_enabled = false
   tags                = { Name = "SecretsManager Endpoint" }
 }
@@ -108,6 +108,7 @@ resource "aws_vpc_endpoint" "cloudwatch" {
   vpc_endpoint_type   = "Interface"
   vpc_id              = var.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
+  security_group_ids  = [aws_security_group.aws_endpoints_sg.id]
   private_dns_enabled = false
   tags                = { Name = "CloudWatch Endpoint" }
 }
@@ -117,6 +118,7 @@ resource "aws_vpc_endpoint" "cloudwatch_logs" {
   vpc_endpoint_type   = "Interface"
   vpc_id              = var.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
+  security_group_ids  = [aws_security_group.aws_endpoints_sg.id]
   private_dns_enabled = false
   tags                = { Name = "CloudWatch Logs Endpoint" }
 }
@@ -126,6 +128,7 @@ resource "aws_vpc_endpoint" "cloudformation" {
   vpc_endpoint_type   = "Interface"
   vpc_id              = var.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
+  security_group_ids  = [aws_security_group.aws_endpoints_sg.id]
   private_dns_enabled = false
   tags                = { Name = "CloudFormation Endpoint" }
 }
@@ -135,6 +138,7 @@ resource "aws_vpc_endpoint" "ec2" {
   vpc_endpoint_type   = "Interface"
   vpc_id              = var.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
+  security_group_ids  = [aws_security_group.aws_endpoints_sg.id]
   private_dns_enabled = false
   tags                = { Name = "EC2 Endpoint" }
 }
@@ -144,6 +148,7 @@ resource "aws_vpc_endpoint" "efs" {
   vpc_endpoint_type   = "Interface"
   vpc_id              = var.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
+  security_group_ids  = [aws_security_group.aws_endpoints_sg.id]
   private_dns_enabled = false
   tags                = { Name = "EFS Endpoint" }
 }
@@ -177,6 +182,7 @@ resource "aws_vpc_endpoint" "ssm" {
   vpc_endpoint_type   = "Interface"
   vpc_id              = var.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
+  security_group_ids  = [aws_security_group.aws_endpoints_sg.id]
   private_dns_enabled = false
   tags                = { Name = "SSM Endpoint" }
 }
@@ -186,6 +192,7 @@ resource "aws_vpc_endpoint" "sts" {
   vpc_endpoint_type   = "Interface"
   vpc_id              = var.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
+  security_group_ids  = [aws_security_group.aws_endpoints_sg.id]
   private_dns_enabled = false
   tags                = { Name = "STS Endpoint" }
 }
@@ -195,6 +202,7 @@ resource "aws_vpc_endpoint" "lambda" {
   vpc_endpoint_type   = "Interface"
   vpc_id              = var.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
+  security_group_ids  = [aws_security_group.aws_endpoints_sg.id]
   private_dns_enabled = false
   tags                = { Name = "Lambda Endpoint" }
 }
