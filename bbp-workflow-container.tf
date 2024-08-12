@@ -202,7 +202,7 @@ resource "aws_ecs_task_definition" "workflow_ecs_definition" {
         },
         {
           name  = "NEXUS_BASE"
-          value = "https://sbo-nexus-delta.shapes-registry.org/v1"
+          value = "https://openbluebrain.com/api/nexus/v1"
         }
       ]
       secrets = [
