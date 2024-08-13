@@ -55,29 +55,44 @@ deploy:
     paths:
       - ${TF_ROOT}/bolt-inventory.yaml
 
-verify_tagging:
+1_verify_untagged:
   extends: .terraform:postdeploy
   dependencies:
     - deploy
   script:
-    - bash .gitlab-ci-scripts/resource_tagging_report.sh $OUTPUT_TMP
+    - bash .gitlab-ci-scripts/resource_tagging/1_verify_untagged.sh $OUTPUT_UNTAGGED
   artifacts:
     paths:
-      - $OUTPUT_TMP
+      - $OUTPUT_UNTAGGED
     expire_in: 2 hrs
     public: false
 
-tag_resources:
+2_tag_resources:
   extends: .terraform:postdeploy
   needs:
-    - job: verify_tagging
+    - job: 1_verify_untagged
       artifacts: true
   script:
-    - bash .gitlab-ci-scripts/resource_tagging_tag.sh $OUTPUT_TMP $OUTPUT_MODIFIED $OUTPUT_UNTAGGED $OUTPUT_TAGGED
+    - bash .gitlab-ci-scripts/resource_tagging/2_tag_resources.sh $OUTPUT_UNTAGGED $OUTPUT_MODIFIED
   artifacts:
     paths:
       - $OUTPUT_MODIFIED
+    expire_in: 2 hrs
+    public: false
+
+3_generate_report:
+  extends: .terraform:postdeploy
+  needs:
+    - job: 1_verify_untagged
+      artifacts: true
+    - job: 2_tag_resources
+      artifacts: true
+  script:
+    - bash .gitlab-ci-scripts/resource_tagging/3_generate_report.sh $OUTPUT_UNTAGGED $OUTPUT_MODIFIED $OUTPUT_TAGGED
+  artifacts:
+    paths:
       - $OUTPUT_UNTAGGED
+      - $OUTPUT_MODIFIED
       - $OUTPUT_TAGGED
     expire_in: 1 week
 

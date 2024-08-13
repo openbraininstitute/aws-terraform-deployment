@@ -1,12 +1,8 @@
 #!/bin/bash
 
-OUTPUT_FILE=${1:-"untagged_resources.tmp"}
+source "$(dirname ${0})/common.sh"
 
-OUTPUT_FILE_TMP=/tmp/$(basename ${OUTPUT_FILE})_$(date +%s)
-TAG_KEY="SBO_Billing"
-TAG_UNKNOWN="unknown"
-TAG_IGNORED="ignored/error"
-CSV_SEP=','
+OUTPUT_FILE=${1:-"untagged_resources.csv"}
 UNTAGGED_RESOURCES=$(aws resource-explorer-2 search --query-string="region:us-east-1 -tag.key:${TAG_KEY}")
 
 
@@ -14,41 +10,9 @@ UNTAGGED_RESOURCES=$(aws resource-explorer-2 search --query-string="region:us-ea
 # Helper Functions #
 ####################
 
-# Helper function to estimate the tag from a given resource name or description
-function resource_to_tag {
-    name=$(echo -n ${1} | tr "[:upper:]" "[:lower:]")
-    case ${name} in
-        *"bbp_workflow"* | *"workflow"*) echo "bbp_workflow";;
-        *"cell_svc"*) echo "cell_svc";;
-        *"core_svc"*) echo "core_svc";;
-        *"core_webapp"*) echo "core_webapp";;
-        *"gitlab"*) echo "gitlab_runner";;
-        *"hpc"*) echo "hpc";;
-        *"keycloak"*) echo "keycloak";;
-        *"kg_inference_api"*) echo "kg_inference_api";;
-        *"marketplace"*) echo "marketplace-deployment";;
-        *"me_model"*) echo "me_model_analysis";;
-        *"nexus"*) echo "nexus";;
-        *"pcluster"* | *"parallelcluster"* | *"fsx"*) echo "hpc:parallelcluster";;
-        *"single_cell"*) echo "bluenaas_single_cell";;
-        *"thumbnail_generation_api"*) echo "thumbnail_generation_api";;
-        *"virtual_lab_manager"*) echo "virtual_lab_manager";;
-        *"viz"*) echo "viz";;
-        *"ml"* | *"machinelearning"*) echo "machinelearning";;  # Note: The order is on purpose
-        *"common"* | *"default"*) echo "common";;
-        *"bbp"*) echo "bbp:unknown";;
-        *) echo ${TAG_UNKNOWN};;
-    esac
-}
-
-# Helper function to output each row of the CSV
-function output {
-    echo "${1}${CSV_SEP}${2}" | sed "s| |\\\\ |g"
-}
-
 # Helper function to get the list of ARNs from a given ResourceType
 function get_arn_list {
-    echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"${1}\") | .Arn"
+    echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"${1}\") | .Arn" | replace_spaces
 }
 
 # Helper function to support the retrieval of untagged EC2-related resources
@@ -89,7 +53,7 @@ function _get_untagged_ec2_base {
         # If we reach this point and we still don't have a tag, let's try to guess it from the description
         [[ -z ${tag} ]] && tag=$(resource_to_tag "$(echo ${list} | jq -r ".${4}[$i].Description")")
 
-        output "${arn}" ${tag}
+        output "${arn}" "${tag}"
     done
 }
 
@@ -157,7 +121,7 @@ function get_untagged_lt {
     for i in $(seq 0 1 $((${#arns[@]}-1))); do
         local arn=${arns[$i]}
         local id=${ids[$i]}
-        local lt_description=$(aws ec2 describe-launch-template-versions --launch-template-id ${id})
+        local lt_description=$(aws ec2 describe-launch-template-versions --launch-template-id "${id}")
 
         local tag=$(echo ${lt_description} | \
                     jq -r ".LaunchTemplateVersions[].LaunchTemplateData.TagSpecifications[].Tags[] | select(.Key == \"${TAG_KEY}\") | .Value" | \
@@ -166,7 +130,7 @@ function get_untagged_lt {
         # If we reach this point and we still don't have a tag, let's try to guess it from the name
         [[ -z ${tag} ]] && tag=$(resource_to_tag "$(echo ${lt_description} | jq -r ".LaunchTemplateVersions[].LaunchTemplateName")")
 
-        output "${arn}" ${tag}
+        output "${arn}" "${tag}"
     done
 }
 
@@ -184,7 +148,7 @@ function get_untagged_pg {
         local pg_name=$(echo ${list} | jq -r ".PlacementGroups[$i].GroupName")
 
         # As there is not much information to query, let's try to guess the tag from the name
-        output "${arn}" $(resource_to_tag "${pg_name}")
+        output "${arn}" "$(resource_to_tag "${pg_name}")"
     done
 }
 
@@ -194,17 +158,16 @@ function get_untagged_td {
 
     # Try to guess the tag by selecting the properties from each ECS Task Definition
     for arn in ${arns[@]}; do
-        local td_description=$(aws ecs describe-task-definition --task-definition ${arn})
+        local td_description=$(aws ecs describe-task-definition --task-definition "${arn}")
         local exec_role=$(echo ${td_description} | jq -r ".taskDefinition.executionRoleArn" | cut -d'/' -f2)
         
-        local tag=$(aws iam list-role-tags --role-name ${exec_role} | \
-                    jq -r ".Tags[] | select(.Key == \"${TAG_KEY}\") | .Value")
+        local tag=$(aws iam list-role-tags --role-name "${exec_role}" | jq -r ".Tags[] | select(.Key == \"${TAG_KEY}\") | .Value")
 
         # If we reach this point and we still don't have a tag, let's try to guess it from the name
         [[ -z ${tag} ]] && tag=$(resource_to_tag "$(echo ${td_description} | jq -r ".taskDefinition.containerDefinitions[].name")")
 
         # As there is not much information to query, let's try to guess the tag from the name
-        output "${arn}" ${tag}
+        output "${arn}" "${tag}"
     done
 }
 
@@ -212,18 +175,18 @@ function get_untagged_td {
 function get_untagged_alarm {
     local names=($(get_arn_list "cloudwatch:alarm" | sed -r "s|.*:([^:]+)|\1|"))
 
-    # Temp. commit - For some reason, the AWS CLI does not complain if you provide an empty list of alarms
-    [[ ${#names[@]} -eq 0 ]] && return
-
-    local list=$(aws cloudwatch describe-alarms --alarm-names ${names[@]})
-    local list_size=$(echo ${list} | jq ".MetricAlarms[].AlarmName" | wc -l)
-
     # Try to guess the tag by certain properties such as the ECS Cluster Name or the name of the alarm itself
-    for i in $(seq 0 1 $((${list_size}-1))); do
-        local alarm_arn=$(echo ${list} | jq -r ".MetricAlarms[$i].AlarmArn")
-        local resource_name=$(echo ${list} | jq -r ".MetricAlarms[$i].Dimensions[] | select(.Name == \"ClusterName\") | .Value" 2>/dev/null)
-        [[ -z ${resource_name} ]] && resource_name=$(echo ${list} | jq -r ".MetricAlarms[$i].AlarmName")
-        
+    for _name in ${names[@]}; do
+        local name=$(restore_spaces "${_name}")
+        local description=$(aws cloudwatch describe-alarms --alarm-names "${name}" 2>/dev/null)
+
+        # The AWS CLI does not complain if you provide an empty list, incorrectly returning all of the alarms
+        [[ $(echo ${description} | jq ".MetricAlarms[].AlarmName" | wc -l) -ne 1 ]] && continue
+
+        local alarm_arn=$(echo ${description} | jq -r ".MetricAlarms[].AlarmArn")
+        local resource_name=$(echo ${description} | jq -r ".MetricAlarms[].Dimensions[] | select(.Name == \"ClusterName\") | .Value" 2>/dev/null)
+        [[ -z ${resource_name} ]] && resource_name=$(echo ${description} | jq -r ".MetricAlarms[].AlarmName")
+
         output "${alarm_arn}" "$(resource_to_tag "${resource_name}")"
     done
 }
@@ -258,11 +221,11 @@ function get_untagged_kms_key {
     # As there is not much information to query, guess the tag by using the description or the alias
     for kms_key_arn in ${kms_key_arns[@]}; do
         local kms_key_id=$(echo ${kms_key_arn} | cut -d'/' -f2)
-        local kms_key_description=$(aws kms describe-key --key-id ${kms_key_id} | jq -r ".KeyMetadata.Description")
+        local kms_key_description=$(aws kms describe-key --key-id "${kms_key_id}" | jq -r ".KeyMetadata.Description")
 
         local tag=$(resource_to_tag "${kms_key_description}")
         if [[ ${tag} == ${TAG_UNKNOWN} ]]; then
-            kms_key_alias=$(aws kms list-aliases --key-id ${kms_key_id} | jq -r ".Aliases[].AliasName")
+            kms_key_alias=$(aws kms list-aliases --key-id "${kms_key_id}" | jq -r ".Aliases[].AliasName")
             tag=$(resource_to_tag "${kms_key_alias}")
         fi
 
@@ -288,7 +251,7 @@ function get_untagged_ecache_pg {
     # As there is not much information to query, guess the tag by using the description
     for pg_arn in ${pg_arns[@]}; do
         local pg_name=$(echo ${pg_arn} | sed -r "s|^.*:parametergroup:(.*)$|\1|")
-        local pg_description=$(aws elasticache describe-cache-parameter-groups --cache-parameter-group-name ${pg_name} | \
+        local pg_description=$(aws elasticache describe-cache-parameter-groups --cache-parameter-group-name "${pg_name}" | \
                                jq -r ".CacheParameterGroups[].Description")
 
         output "${pg_arn}" "$(resource_to_tag "${pg_description}")"
@@ -302,7 +265,7 @@ function get_untagged_ecache_usr {
     # As there is not much information to query, guess the tag by using the name
     for usr_arn in ${usr_arns[@]}; do
         local usr_id=$(echo ${usr_arn} | sed -r "s|^.*:user:(.*)$|\1|")
-        local usr_name=$(aws elasticache describe-users --user-id ${usr_id} | jq -r ".Users[].UserName")
+        local usr_name=$(aws elasticache describe-users --user-id "${usr_id}" | jq -r ".Users[].UserName")
 
         output "${usr_arn}" "$(resource_to_tag "${usr_name}")"
     done
@@ -335,7 +298,7 @@ function get_untagged_ebr_bus {
 
     # As there is not much information to query, guess the tag by using the name
     for ebr_bus_arn in ${ebr_bus_arns[@]}; do
-        local ebr_bus_name=$(aws events describe-event-bus --name ${ebr_bus_arn} | jq -r ".Name")
+        local ebr_bus_name=$(aws events describe-event-bus --name "${ebr_bus_arn}" | jq -r ".Name")
         output "${ebr_bus_arn}" "$(resource_to_tag "${ebr_bus_name}")"
     done
 }
@@ -346,7 +309,8 @@ function get_untagged_ebr_rule {
 
     # As there is not much information to query, guess the tag by using the description
     for ebr_rule_arn in ${ebr_rule_arns[@]}; do
-        local ebr_rule_description=$(aws events describe-rule --name $(echo ${ebr_rule_arn} | cut -d'/' -f2) | jq -r ".Description")
+        local ebr_rule_name=$(echo ${ebr_rule_arn} | cut -d'/' -f2)
+        local ebr_rule_description=$(aws events describe-rule --name "${ebr_rule_name}" | jq -r ".Description")
         output "${ebr_rule_arn}" "$(resource_to_tag "${ebr_rule_description}")"
     done
 }
@@ -357,7 +321,7 @@ function get_untagged_lambda_fn {
 
     for lambda_fn_arn in ${lambda_fn_arns[@]}; do
         # Try to guess the tag by retrieving the Security Group of the function
-        local lambda_fn_description=$(aws lambda get-function --function-name ${lambda_fn_arn})
+        local lambda_fn_description=$(aws lambda get-function --function-name "${lambda_fn_arn}")
         local lambda_fn_sg=$(echo ${lambda_fn_description} | jq -r ".Configuration.VpcConfig.SecurityGroupIds[0]" 2>/dev/null)
 
         local tag=$(aws ec2 describe-security-groups --filters Name=group-id,Values=${lambda_fn_sg} | \
@@ -377,7 +341,8 @@ function get_untagged_mdb_pg {
 
     # As there is not much information to query, guess the tag by using the description
     for mdb_pg_arn in ${mdb_pg_arns[@]}; do
-        local mdb_pg_description=$(aws memorydb describe-parameter-groups --parameter-group-name $(echo ${mdb_pg_arn} | cut -d'/' -f2) | \
+        local mdb_pg_name=$(echo ${mdb_pg_arn} | cut -d'/' -f2)
+        local mdb_pg_description=$(aws memorydb describe-parameter-groups --parameter-group-name "${mdb_pg_name}" | \
                                    jq -r ".ParameterGroups[].Description")
         
         output "${mdb_pg_arn}" "$(resource_to_tag "${mdb_pg_description}")"
@@ -390,8 +355,9 @@ function get_untagged_mdb_usr {
 
     # As there is not much information to query, guess the tag by using the name
     for mdb_usr_arn in ${mdb_usr_arns[@]}; do
-        local mdb_usr_name=$(aws memorydb describe-users --user-name $(echo ${mdb_usr_arn} | cut -d'/' -f2) | jq -r ".Users[].Name")
-        output "${mdb_usr_arn}" "$(resource_to_tag "${mdb_usr_name}")"
+        local mdb_usr_name=$(echo ${mdb_usr_arn} | cut -d'/' -f2)
+        local mdb_usr=$(aws memorydb describe-users --user-name "${mdb_usr_name}" | jq -r ".Users[].Name")
+        output "${mdb_usr_arn}" "$(resource_to_tag "${mdb_usr}")"
     done
 }
 
@@ -402,7 +368,7 @@ function get_untagged_rds_pg {
     # As there is not much information to query, guess the tag by using the description
     for rds_pg_arn in ${rds_pg_arns[@]}; do
         local rds_pg_name=$(echo ${rds_pg_arn} | sed -r "s|.*:([^:]+)|\1|")
-        local rds_pg_description=$(aws rds describe-db-parameter-groups --db-parameter-group-name ${rds_pg_name} |
+        local rds_pg_description=$(aws rds describe-db-parameter-groups --db-parameter-group-name "${rds_pg_name}" |
                                    jq -r ".DBParameterGroups[].Description")
         
         output "${rds_pg_arn}" "$(resource_to_tag "${rds_pg_description}")"
@@ -416,7 +382,7 @@ function get_untagged_rds_cpg {
     # As there is not much information to query, guess the tag by using the description
     for rds_cpg_arn in ${rds_cpg_arns[@]}; do
         local rds_cpg_name=$(echo ${rds_cpg_arn} | sed -r "s|.*:([^:]+)|\1|")
-        local rds_cpg_description=$(aws rds describe-db-cluster-parameter-groups --db-cluster-parameter-group-name ${rds_cpg_name} |
+        local rds_cpg_description=$(aws rds describe-db-cluster-parameter-groups --db-cluster-parameter-group-name "${rds_cpg_name}" |
                                     jq -r ".DBClusterParameterGroups[].Description")
         
         output "${rds_cpg_arn}" "$(resource_to_tag "${rds_cpg_description}")"
@@ -430,7 +396,7 @@ function get_untagged_rds_og {
     # As there is not much information to query, guess the tag by using the description
     for rds_og_arn in ${rds_og_arns[@]}; do
         local rds_og_name=$(echo ${rds_og_arn} | sed -r "s|.*:og:(.*)$|\1|")
-        local rds_og_description=$(aws rds describe-option-groups --option-group-name ${rds_og_name} |
+        local rds_og_description=$(aws rds describe-option-groups --option-group-name "${rds_og_name}" |
                                    jq -r ".OptionGroupsList[].OptionGroupDescription")
         
         output "${rds_og_arn}" "$(resource_to_tag "${rds_og_description}")"
@@ -444,7 +410,7 @@ function get_untagged_rds_sg {
     # As there is not much information to query, guess the tag by using the description
     for rds_sg_arn in ${rds_sg_arns[@]}; do
         local rds_sg_name=$(echo ${rds_sg_arn} | sed -r "s|.*:([^:]+)|\1|")
-        local rds_sg_description=$(aws rds describe-db-security-groups --db-security-group-name ${rds_sg_name} | \
+        local rds_sg_description=$(aws rds describe-db-security-groups --db-security-group-name "${rds_sg_name}" | \
                                    jq -r ".DBSecurityGroups[].DBSecurityGroupDescription")
         
         output "${rds_sg_arn}" "$(resource_to_tag "${rds_sg_description}")"
@@ -459,9 +425,9 @@ function get_untagged_s3_ap {
         # Try to guess the tag by using the associated S3 bucket
         local s3_account_id=$(echo ${s3_ap_arn} | sed -r "s|.*:([0-9]+):accesspoint.*|\1|")
         local s3_ap_name=$(echo ${s3_ap_arn} | cut -d'/' -f2)
-        local s3_bucket=$(aws s3control get-access-point --account-id ${s3_account_id} --name ${s3_ap_name} | jq -r ".Bucket")
+        local s3_bucket=$(aws s3control get-access-point --account-id "${s3_account_id}" --name "${s3_ap_name}" | jq -r ".Bucket")
         
-        local tag=$(aws s3api get-bucket-tagging --bucket ${s3_bucket} | jq -r ".TagSet[] | select(.Key == \"${TAG_KEY}\") | .Value" 2>/dev/null)
+        local tag=$(aws s3api get-bucket-tagging --bucket "${s3_bucket}" | jq -r ".TagSet[] | select(.Key == \"${TAG_KEY}\") | .Value" 2>/dev/null)
 
         # If we still don't have a tag, let's try to guess it from the ARN
         [[ -z ${tag} ]] && tag=$(resource_to_tag "${s3_ap_arn}")
@@ -477,7 +443,7 @@ function get_untagged_vol {
     for vol_arn in ${vol_arns[@]}; do
         # Try to guess the tag by using the attached EC2 instance
         local vol_id=$(echo ${vol_arn} | cut -d'/' -f2)
-        local instance_id=$(aws ec2 describe-volumes --volume-ids ${vol_id} 2>/dev/null | jq -r ".Volumes[0].Attachments[0].InstanceId")
+        local instance_id=$(aws ec2 describe-volumes --volume-ids "${vol_id}" 2>/dev/null | jq -r ".Volumes[0].Attachments[0].InstanceId")
 
         # If we do not have an instance or the volume does not exist, ignore
         [[ -z ${instance_id} ]] && continue
@@ -498,25 +464,18 @@ function get_untagged_vol {
 ######################
 
 # Append the output from each 'get_untagged_*' function into a temporary file
-echo "Runnning tag verification functions:"
-get_untagged_fn_list=($(grep "function get_untagged_" ${0} | grep -v "grep" | sed -r "s|^function ([^ ]+).*$|\1|" | sort))
-for get_untagged_fn in ${get_untagged_fn_list[@]}; do
-    fn_description="$(sed -n $(($(grep -n "function ${get_untagged_fn}" ${0} | cut -d':' -f1 | head -n 1)-1))p ${0})"
-    echo "  - '${get_untagged_fn}()'  ${fn_description}"
-    eval ${get_untagged_fn} >> ${OUTPUT_FILE_TMP}
-done
+run_script_fns "tag verification" "get_untagged_"
 
 # Include the list of non-supported / erroneous resources
 arn_filter="$(echo -n $(cat ${OUTPUT_FILE_TMP} | cut -d${CSV_SEP} -f1) | tr ' ' '|')"
-echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[].Arn" | grep -v -E "${arn_filter}" | sed -r "s|(.*)|\1${CSV_SEP}${TAG_IGNORED}|" >> ${OUTPUT_FILE_TMP}
+echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[].Arn" | grep -v -E "${arn_filter}" | \
+                             sed -r "s|(.*)|\1${CSV_SEP}${TAG_IGNORED}|" >> ${OUTPUT_FILE_TMP}
 
 # Generate the output CSV with all of the deducted tags
-echo "ARN${CSV_SEP}Owner" > ${OUTPUT_FILE}
-sort -t${CSV_SEP} -k2 ${OUTPUT_FILE_TMP} >> ${OUTPUT_FILE}
-rm -f ${OUTPUT_FILE_TMP}
+output_result_csv ${OUTPUT_FILE}
 
 # Finally, provide a summary of the results obtained
-num_resources_untagged=$(sed 1d ${OUTPUT_FILE} | grep -v "${TAG_IGNORED}" | wc -l)
-num_resources_ignored=$(grep "${TAG_IGNORED}" ${OUTPUT_FILE} | wc -l)
+num_resources_untagged=$(sed 1d ${OUTPUT_FILE} 2>/dev/null | grep -v "${TAG_IGNORED}" | wc -l)
+num_resources_ignored=$(grep "${TAG_IGNORED}" ${OUTPUT_FILE} 2>/dev/null | wc -l)
 echo -e "\n\n\nFound ${num_resources_untagged} resources untagged, including ${num_resources_ignored} additional resources" \
-        "ignored / not available.\nSee next CI job for further information and downloadable artifacts."
+        "ignored / not available.\nSee next CI jobs for further information and downloadable artifacts."
