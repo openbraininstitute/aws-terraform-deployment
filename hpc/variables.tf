@@ -7,6 +7,10 @@ variable "obp_vpc_id" {
   type = string
 }
 
+variable "obp_vpc_default_sg_id" {
+  type = string
+}
+
 variable "sbo_billing" {
   type = string
 }

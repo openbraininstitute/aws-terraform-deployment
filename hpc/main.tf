@@ -40,7 +40,7 @@ module "networking" {
   peering_route_tables         = var.peering_route_tables
   existing_route_targets       = var.existing_route_targets
   security_groups              = [module.security.compute_hpc_sg_id]
-  obp_vpc_default_sg_id        = module.security.obp_vpc_default_sg_id
+  obp_vpc_default_sg_id        = var.obp_vpc_default_sg_id
   lambda_subnet_cidr           = var.lambda_subnet_cidr
   existing_public_subnet_cidrs = var.existing_public_subnet_cidrs
 }
@@ -103,7 +103,7 @@ module "resource-provisioner" {
   hpc_resource_provisioner_role       = module.security.resource_provisioner_iam_role_arn
   hpc_resource_provisioner_image_uri  = "${var.account_id}.dkr.ecr.${var.aws_region}.amazonaws.com/hpc-resource-provisioner:latest"
   hpc_resource_provisioner_subnet_ids = [module.networking.lambda_subnet_id]
-  hpc_resource_provisioner_sg_ids     = [module.security.obp_vpc_default_sg_id, module.security.vpc_peering_security_group_id]
+  hpc_resource_provisioner_sg_ids     = [var.obp_vpc_default_sg_id, module.security.vpc_peering_security_group_id]
   aws_region                          = var.aws_region
   account_id                          = var.account_id
 }

@@ -139,6 +139,7 @@ module "hpc" {
 
   aws_region                   = var.aws_region
   obp_vpc_id                   = "vpc-08aa04757a326969b"
+  obp_vpc_default_sg_id        = "sg-07356e862875b0e81"
   sbo_billing                  = "hpc"
   slurm_mysql_admin_username   = "slurm_admin"
   slurm_mysql_admin_password   = "arn:aws:secretsmanager:us-east-1:671250183987:secret:hpc_slurm_db_password-6LNuBy"

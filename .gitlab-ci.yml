@@ -126,6 +126,7 @@ check_compliance:
   stage: validate
   allow_failure: true
   variables:
+    KUBERNETES_MEMORY_LIMIT: 6G
     TF_STATE_NAME: ${TF_STATE_NAME}
   before_script:
     - export TF_VAR_common_token_name=$COMMON_REPO_TOKEN_NAME
