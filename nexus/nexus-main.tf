@@ -1,29 +1,3 @@
-module "networking" {
-  source = "./networking"
-
-  providers = {
-    aws = aws.nexus_networking_tags
-  }
-
-  aws_region     = var.aws_region
-  nat_gateway_id = var.nat_gateway_id
-  vpc_id         = var.vpc_id
-}
-
-module "iam" {
-  source = "./iam"
-
-  providers = {
-    aws = aws.nexus_iam_tags
-  }
-
-  aws_region     = var.aws_region
-  aws_account_id = var.aws_account_id
-
-  nexus_secrets_arn  = var.nexus_secrets_arn
-  dockerhub_password = var.dockerhub_password
-}
-
 module "postgres_cluster" {
   source = "./postgres_cluster"
 
@@ -31,9 +5,10 @@ module "postgres_cluster" {
     aws = aws.nexus_postgres_tags
   }
 
-  subnets_ids       = module.networking.psql_subnets_ids
-  security_group_id = module.networking.main_subnet_sg_id
-  instance_class    = "db.m5d.large"
+  cluster_identifier = "nexus"
+  subnets_ids        = module.networking.psql_subnets_ids
+  security_group_id  = module.networking.main_subnet_sg_id
+  instance_class     = "db.m5d.large"
 
   aws_region = var.aws_region
 }

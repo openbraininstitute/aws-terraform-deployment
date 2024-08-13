@@ -1,3 +1,7 @@
+variable "cluster_identifier" {
+  type = string
+}
+
 variable "subnets_ids" {
   type = list(string)
 }

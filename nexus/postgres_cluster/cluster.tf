@@ -15,7 +15,7 @@ data "aws_secretsmanager_secret_version" "nexus_database_password" {
 
 # tfsec:ignore:aws-rds-encrypt-cluster-storage-data
 resource "aws_rds_cluster" "nexus" {
-  cluster_identifier        = "nexus"
+  cluster_identifier        = var.cluster_identifier
   availability_zones        = ["us-east-1a", "us-east-1b", "us-east-1c"]
   engine                    = "postgres"
   engine_version            = var.nexus_postgresql_engine_version
