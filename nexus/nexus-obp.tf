@@ -15,6 +15,9 @@ module "postgres_aurora" {
   subnets_ids                    = module.networking.psql_subnets_ids
   security_group_id              = module.networking.main_subnet_sg_id
   vpc_id                         = var.vpc_id
+
+  min_capacity = 4
+  max_capacity = 16
 }
 
 # Blazegraph instance dedicated to Blazegraph views
