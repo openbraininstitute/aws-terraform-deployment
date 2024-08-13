@@ -1,6 +1,6 @@
-# Bring the default security group under Terraform management
+# Default security group under Terraform management (e.g., for tagging)
 resource "aws_default_security_group" "default" {
-  vpc_id = var.obp_vpc_id
+  vpc_id = var.pcluster_vpc_id
   ingress {
     protocol  = -1
     self      = true
