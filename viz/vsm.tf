@@ -84,20 +84,12 @@ resource "aws_ecs_task_definition" "viz_vsm" {
           value = "DEBUG"
         },
         {
-          name  = "VSM_DB_HOST"
-          value = aws_db_instance.viz.address
-        },
-        {
           name  = "VSM_DB_NAME"
           value = var.viz_postgresql_database_name
         },
         {
           name  = "VSM_DB_USERNAME"
           value = var.viz_postgresql_database_username
-        },
-        {
-          name  = "VSM_DB_PASSWORD"
-          value = data.aws_secretsmanager_secret_version.viz_database_password.secret_string
         },
         {
           name  = "VSM_RECREATE_DB"
