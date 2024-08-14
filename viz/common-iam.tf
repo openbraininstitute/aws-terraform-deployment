@@ -18,6 +18,29 @@ resource "aws_iam_policy" "write_read_access_viz_secrets_policy" {
   })
 }
 
+resource "aws_iam_policy" "viz_dynamodb_rw" {
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "dynamodb:PutItem",
+          "dynamodb:UpdateItem",
+          "dynamodb:BatchWriteItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:GetItem",
+          "dynamodb:BatchGetItem",
+          "dynamodb:Query",
+          "dynamodb:Scan"
+        ],
+        Effect   = "Allow"
+        Resource = aws_dynamodb_table.viz_vsm_jobs_table.arn
+      },
+    ]
+  })
+}
+
+
 data "aws_iam_policy" "selected" {
   arn = var.viz_enable_sandbox ? aws_iam_policy.write_read_access_viz_secrets_policy[0].arn : var.dockerhub_access_iam_policy_arn
 }

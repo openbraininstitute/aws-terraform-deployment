@@ -203,6 +203,12 @@ resource "aws_iam_role_policy_attachment" "viz_vsm_proxy_ecs_task_role_dockerhub
   policy_arn = data.aws_iam_policy.selected.arn
 }
 
+resource "aws_iam_role_policy_attachment" "viz_vsm_proxy_ecs_task_dynamodb" {
+  role       = aws_iam_role.viz_vsm_proxy_ecs_task_role.name
+  policy_arn = aws_iam_policy.viz_dynamodb_rw.arn
+}
+
+
 resource "aws_iam_role_policy" "viz_vsm_proxy_ecs_exec" {
   name = "viz_vsm_proxy_ecs_exec_policy"
   role = aws_iam_role.viz_vsm_proxy_ecs_task_role.id
