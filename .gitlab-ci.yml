@@ -88,11 +88,12 @@ deploy:
     - job: 2_tag_resources
       artifacts: true
   script:
-    - bash .gitlab-ci-scripts/resource_tagging/3_generate_report.sh $OUTPUT_UNTAGGED $OUTPUT_MODIFIED $OUTPUT_TAGGED
+    - bash .gitlab-ci-scripts/resource_tagging/3_generate_report.sh $OUTPUT_UNTAGGED $OUTPUT_MODIFIED $OUTPUT_IGNORED $OUTPUT_TAGGED
   artifacts:
     paths:
       - $OUTPUT_UNTAGGED
       - $OUTPUT_MODIFIED
+      - $OUTPUT_IGNORED
       - $OUTPUT_TAGGED
     expire_in: 1 week
 

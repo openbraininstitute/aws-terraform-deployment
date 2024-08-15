@@ -78,6 +78,7 @@ variables:
   variables:
     OUTPUT_UNTAGGED: "untagged_resources.csv"
     OUTPUT_MODIFIED: "modified_resources.csv"
+    OUTPUT_IGNORED: "ignored_resources.csv"
     OUTPUT_TAGGED: "tagged_resources.csv"
   before_script:
     - yum install -y jq
