@@ -29,7 +29,7 @@ module "ml_ecs_service_consumer" {
       repository_credentials = {
         credentialsParameter = var.dockerhub_credentials_arn
       }
-      entrypoint               = ["pu_consumer", "${aws_opensearch_domain.ml_opensearch.endpoint}:443", "http://${var.private_alb_dns}:3000", module.ml_sqs.queue_url, "-b", "100", "-l", 60, "-u", 3000, "--use-ssl", "-v"]
+      entrypoint               = ["pu-consumer", "${aws_opensearch_domain.ml_opensearch.endpoint}:443", "http://${var.private_alb_dns}:3000", module.ml_sqs.queue_url, "-b", "100", "-l", 60, "-u", 3000, "--use-ssl", "-v"]
       readonly_root_filesystem = false
       logConfiguration = {
         logDriver = "awslogs"

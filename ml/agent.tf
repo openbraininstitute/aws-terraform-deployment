@@ -86,6 +86,14 @@ module "ecs_service_agent" {
           value = "true"
         },
         {
+          name  = "AGENT_KEYCLOAK__CLIENT_ID"
+          value = "obp-ml-agent"
+        },
+        {
+          name  = "AGENT_KEYCLOAK__USERNAME"
+          value = "sbo-ml"
+        },
+        {
           name  = "AGENT_DB__PREFIX"
           value = "postgresql://"
         },
@@ -122,6 +130,10 @@ module "ecs_service_agent" {
         {
           name      = "AGENT_DB__PASSWORD"
           valueFrom = "${module.ml_rds_postgres.db_instance_master_user_secret_arn}:password::"
+        },
+        {
+          name      = "AGENT_KEYCLOAK__PASSWORD"
+          valueFrom = "${var.secret_manager_arn}:KEYCLOAK_PASSWORD::"
         },
       ]
       logConfiguration = {
