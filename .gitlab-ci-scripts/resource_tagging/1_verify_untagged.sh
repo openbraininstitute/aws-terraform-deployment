@@ -221,9 +221,12 @@ function get_untagged_kms_key {
     # As there is not much information to query, guess the tag by using the description or the alias
     for kms_key_arn in ${kms_key_arns[@]}; do
         local kms_key_id=$(echo ${kms_key_arn} | cut -d'/' -f2)
-        local kms_key_description=$(aws kms describe-key --key-id "${kms_key_id}" | jq -r ".KeyMetadata.Description")
+        local kms_key_description=$(aws kms describe-key --key-id "${kms_key_id}")
 
-        local tag=$(resource_to_tag "${kms_key_description}")
+        # Ignore AWS-managed entries, as apparently they cannot be manually tagged
+        [[ $(echo ${kms_key_description} | jq -r ".KeyMetadata.KeyManager") == "AWS" ]] && continue
+
+        local tag=$(resource_to_tag "$(echo ${kms_key_description} | jq -r ".KeyMetadata.Description")")
         if [[ ${tag} == ${TAG_UNKNOWN} ]]; then
             kms_key_alias=$(aws kms list-aliases --key-id "${kms_key_id}" | jq -r ".Aliases[].AliasName")
             tag=$(resource_to_tag "${kms_key_alias}")
@@ -250,6 +253,9 @@ function get_untagged_ecache_pg {
 
     # As there is not much information to query, guess the tag by using the description
     for pg_arn in ${pg_arns[@]}; do
+        # Ignore default entries, as apparently they cannot be manually tagged
+        [[ ${pg_arn} == *"parametergroup:default"* ]] && continue
+
         local pg_name=$(echo ${pg_arn} | sed -r "s|^.*:parametergroup:(.*)$|\1|")
         local pg_description=$(aws elasticache describe-cache-parameter-groups --cache-parameter-group-name "${pg_name}" | \
                                jq -r ".CacheParameterGroups[].Description")
@@ -310,8 +316,12 @@ function get_untagged_ebr_rule {
     # As there is not much information to query, guess the tag by using the description
     for ebr_rule_arn in ${ebr_rule_arns[@]}; do
         local ebr_rule_name=$(echo ${ebr_rule_arn} | cut -d'/' -f2)
-        local ebr_rule_description=$(aws events describe-rule --name "${ebr_rule_name}" | jq -r ".Description")
-        output "${ebr_rule_arn}" "$(resource_to_tag "${ebr_rule_description}")"
+        local ebr_rule_description=$(aws events describe-rule --name "${ebr_rule_name}")
+
+        # Ignore AWS-managed entries, as apparently they cannot be manually tagged
+        [[ $(echo ${ebr_rule_description} | jq -r ".ManagedBy") == *".amazonaws.com" ]] && continue
+
+        output "${ebr_rule_arn}" "$(resource_to_tag "$(echo "${ebr_rule_description}" | jq -r ".Description")")"
     done
 }
 
@@ -341,6 +351,9 @@ function get_untagged_mdb_pg {
 
     # As there is not much information to query, guess the tag by using the description
     for mdb_pg_arn in ${mdb_pg_arns[@]}; do
+        # Ignore default entries, as apparently they cannot be manually tagged
+        [[ ${mdb_pg_arn} == *"parametergroup/default"* ]] && continue
+
         local mdb_pg_name=$(echo ${mdb_pg_arn} | cut -d'/' -f2)
         local mdb_pg_description=$(aws memorydb describe-parameter-groups --parameter-group-name "${mdb_pg_name}" | \
                                    jq -r ".ParameterGroups[].Description")
@@ -418,23 +431,24 @@ function get_untagged_rds_sg {
 }
 
 # Function to get the list of untagged S3 Access Points and their potential owner
-function get_untagged_s3_ap {
-    local s3_ap_arns=($(get_arn_list "s3:accesspoint"))
-
-    for s3_ap_arn in ${s3_ap_arns[@]}; do
-        # Try to guess the tag by using the associated S3 bucket
-        local s3_account_id=$(echo ${s3_ap_arn} | sed -r "s|.*:([0-9]+):accesspoint.*|\1|")
-        local s3_ap_name=$(echo ${s3_ap_arn} | cut -d'/' -f2)
-        local s3_bucket=$(aws s3control get-access-point --account-id "${s3_account_id}" --name "${s3_ap_name}" | jq -r ".Bucket")
-        
-        local tag=$(aws s3api get-bucket-tagging --bucket "${s3_bucket}" | jq -r ".TagSet[] | select(.Key == \"${TAG_KEY}\") | .Value" 2>/dev/null)
-
-        # If we still don't have a tag, let's try to guess it from the ARN
-        [[ -z ${tag} ]] && tag=$(resource_to_tag "${s3_ap_arn}")
-
-        output "${s3_ap_arn}" "${tag}"
-    done
-}
+# Important: The resource below is ignored, as there is no mechanism for us to tag the resource
+# function __IGNORED__ get_untagged_s3_ap {
+#     local s3_ap_arns=($(get_arn_list "s3:accesspoint"))
+#
+#     for s3_ap_arn in ${s3_ap_arns[@]}; do
+#         # Try to guess the tag by using the associated S3 bucket
+#         local s3_account_id=$(echo ${s3_ap_arn} | sed -r "s|.*:([0-9]+):accesspoint.*|\1|")
+#         local s3_ap_name=$(echo ${s3_ap_arn} | cut -d'/' -f2)
+#         local s3_bucket=$(aws s3control get-access-point --account-id "${s3_account_id}" --name "${s3_ap_name}" | jq -r ".Bucket")
+#
+#         local tag=$(aws s3api get-bucket-tagging --bucket "${s3_bucket}" | jq -r ".TagSet[] | select(.Key == \"${TAG_KEY}\") | .Value" 2>/dev/null)
+#
+#         # If we still don't have a tag, let's try to guess it from the ARN
+#         [[ -z ${tag} ]] && tag=$(resource_to_tag "${s3_ap_arn}")
+#
+#         output "${s3_ap_arn}" "${tag}"
+#     done
+# }
 
 # Function to get the list of untagged EC2 EBS Volumes and their potential owner
 function get_untagged_vol {

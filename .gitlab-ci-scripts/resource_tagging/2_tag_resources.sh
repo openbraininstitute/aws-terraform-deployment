@@ -52,18 +52,11 @@ function update_untagged_alarm {
     _update_untagged_base "cloudwatch" "alarm"
 }
 
-# Function to update the untagged VPC Endpoint ENIs with their owner
-function update_untagged_eni_vpce {
+# Function to update the untagged Elastic Network Interfaces with their owner
+function update_untagged_eni {
     function _tag_resource_fn {
         local eni_id=$(echo -n ${arn} | cut -d'/' -f2)
-        local eni_type=$(aws ec2 describe-network-interfaces --network-interface-ids "${eni_id}" | \
-                         jq -r ".NetworkInterfaces[].InterfaceType")
-        
-        # Ignore entry if the ENI does not belong to a VPC Endpoint
-        [[ ${eni_type} != "vpc_endpoint" ]] && return 22  # EINVAL
-        
         aws ec2 create-tags --resources "${eni_id}" --tags "${tags_json}"
-
         return $?
     }
 
