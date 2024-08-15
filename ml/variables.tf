@@ -152,6 +152,49 @@ variable "private_alb_dns" {
   type        = string
 }
 
+variable "rds_engine" {
+  description = "type of rds database."
+  default     = "postgres"
+}
+
+variable "rds_version" {
+  description = "version of the rds database."
+  default     = "16.4"
+}
+
+variable "rds_instance_class" {
+  description = "The instance class to use for the RDS instance."
+  default     = "db.t4g.micro"
+}
+
+variable "rds_allocated_storage" {
+  description = "The amount of storage to allocate for the RDS instance (in gigabytes)."
+  type        = number
+  default     = 20
+}
+
+variable "rds_user" {
+  description = "Unsername of the rds instance."
+  default     = "postgres"
+}
+
+variable "rds_port" {
+  description = "Port of the rds instance."
+  type        = string
+  default     = "5432"
+}
+
+variable "rds_param_group" {
+  description = "Group of parameters for the rds instance."
+  default     = "postgres14"
+}
+
+variable "rds_storage_type" {
+  description = "Type of storage (e.g. gp2 or gp3...)"
+  default     = "gp2"
+
+}
+
 variable "tags" {
   description = "tags of the resources."
   type        = map(string)

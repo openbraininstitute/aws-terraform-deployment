@@ -4,7 +4,7 @@ module "ecs_service_agent" {
 
   name                  = "ecs-service-agent"
   cluster_arn           = local.ecs_cluster_arn
-  task_exec_secret_arns = [var.secret_manager_arn, var.dockerhub_credentials_arn]
+  task_exec_secret_arns = [var.secret_manager_arn, var.dockerhub_credentials_arn, module.ml_rds_postgres.db_instance_master_user_secret_arn]
 
 
   cpu    = 1024
@@ -83,15 +83,27 @@ module "ecs_service_agent" {
         },
         {
           name  = "AGENT_KNOWLEDGE_GRAPH__DOWNLOAD_HIERARCHY"
-          value = "false"
+          value = "true"
+        },
+        {
+          name  = "AGENT_DB__PREFIX"
+          value = "postgresql://"
+        },
+        {
+          name  = "AGENT_DB__HOST"
+          value = module.ml_rds_postgres.db_instance_address
+        },
+        {
+          name  = "AGENT_DB__PORT"
+          value = module.ml_rds_postgres.db_instance_port
+        },
+        {
+          name  = "AGENT_DB__USER"
+          value = module.ml_rds_postgres.db_instance_username
         },
         {
           name  = "AGENT_MISC__APPLICATION_PREFIX"
           value = "/api/agent"
-        },
-        {
-          name  = "AGENT_DB__PREFIX"
-          value = "sqlite:///sqlite.db"
         },
         {
           name  = "AGENT_MISC__CORS_ORIGINS"
@@ -106,6 +118,10 @@ module "ecs_service_agent" {
         {
           name      = "AGENT_COHERE__TOKEN"
           valueFrom = "${var.secret_manager_arn}:COHERE_TOKEN::"
+        },
+        {
+          name      = "AGENT_DB__PASSWORD"
+          valueFrom = "${module.ml_rds_postgres.db_instance_master_user_secret_arn}:password::"
         },
       ]
       logConfiguration = {

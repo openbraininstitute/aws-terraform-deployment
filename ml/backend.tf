@@ -38,47 +38,43 @@ module "ml_ecs_service_backend" {
       ]
       environment = [
         {
-          name  = "BBS_DB__DB_TYPE"
+          name  = "SCHOLARAG__DB__DB_TYPE"
           value = "opensearch"
         },
         {
-          name  = "BBS_DB__INDEX_PARAGRAPHS"
+          name  = "SCHOLARAG__DB__INDEX_PARAGRAPHS"
           value = "pmc_paragraphs_v2"
         },
         {
-          name  = "BBS_DB__HOST"
+          name  = "SCHOLARAG__DB__HOST"
           value = aws_opensearch_domain.ml_opensearch.endpoint
         },
         {
-          name  = "BBS_DB__PORT"
+          name  = "SCHOLARAG__DB__PORT"
           value = "443"
         },
         {
-          name  = "BBS_DB__INDEX_JOURNALS"
+          name  = "SCHOLARAG__DB__INDEX_JOURNALS"
           value = "impact_factors"
         },
         {
-          name  = "BBS_RETRIEVAL__SEARCH_TYPE"
+          name  = "SCHOLARAG__RETRIEVAL__SEARCH_TYPE"
           value = "bm25"
         },
         {
-          name  = "BBS_GENERATIVE__LLM_TYPE"
+          name  = "SCHOLARAG__GENERATIVE__LLM_TYPE"
           value = "openai"
         },
         {
-          name  = "BBS_RERANKING__RERANK_TYPE"
+          name  = "SCHOLARAG__RERANKING__RERANK_TYPE"
           value = "cohere"
         },
         {
-          name  = "BBS_GENERATIVE__CUSTOM_PROMPT"
-          value = "true"
+          name  = "SCHOLARAG__GENERATIVE__OPENAI__MODEL"
+          value = "gpt-4o-mini"
         },
         {
-          name  = "BBS_GENERATIVE__OPENAI__MODEL"
-          value = "gpt-3.5-turbo"
-        },
-        {
-          name  = "BBS_GENERATIVE__OPENAI__TEMPERATURE"
+          name  = "SCHOLARAG__GENERATIVE__OPENAI__TEMPERATURE"
           value = "0"
         },
         {
@@ -86,33 +82,37 @@ module "ml_ecs_service_backend" {
           value = "AWS_prod"
         },
         {
-          name  = "BBS_SQL__DB_PREFIX"
-          value = "postgresql://"
-        },
-        {
-          name  = "BBS_REDIS__HOST"
+          name  = "SCHOLARAG__REDIS__HOST"
           value = aws_elasticache_cluster.ml_redis_cluster.cache_nodes[0].address
         },
         {
-          name  = "BBS_REDIS__PORT"
+          name  = "SCHOLARAG__REDIS__PORT"
           value = aws_elasticache_cluster.ml_redis_cluster.port
         },
         {
-          name  = "BBS_MISC__APPLICATION_PREFIX"
+          name  = "SCHOLARAG__KEYCLOAK__ISSUER"
+          value = "https://openbluebrain.com/auth/realms/SBO"
+        },
+        {
+          name  = "SCHOLARAG__KEYCLOAK__VALIDATE_TOKEN"
+          value = "true"
+        },
+        {
+          name  = "SCHOLARAG__MISC__APPLICATION_PREFIX"
           value = "/api/literature"
         },
         {
-          name  = "BBS_MISC__CORS_ORIGINS"
+          name  = "SCHOLARAG__MISC__CORS_ORIGINS"
           value = "https://openbrainplatform.org, https://bbp.epfl.ch"
         },
       ]
       secrets = [
         {
-          name      = "BBS_GENERATIVE__OPENAI__TOKEN"
+          name      = "SCHOLARAG__GENERATIVE__OPENAI__TOKEN"
           valueFrom = "${var.secret_manager_arn}:OPENAI_API_KEY::"
         },
         {
-          name      = "BBS_RERANKING__COHERE__TOKEN"
+          name      = "SCHOLARAG__RERANKING__COHERE__TOKEN"
           valueFrom = "${var.secret_manager_arn}:COHERE_TOKEN::"
         },
         {
