@@ -17,8 +17,8 @@ function _update_untagged_base {
         exit 134  # ENOSYS
     fi
 
-    local arns=($(grep -P ".*:${1}:.*:${2}${3:-":"}.*" ${INPUT_FILE} | cut -d${CSV_SEP} -f1 | replace_spaces))
-    local tags=($(grep -P ".*:${1}:.*:${2}${3:-":"}.*" ${INPUT_FILE} | cut -d${CSV_SEP} -f2))
+    local arns=($(grep -P ".*:${1}:.*:${2}${3:-"/"}.*" ${INPUT_FILE} | cut -d${CSV_SEP} -f1 | replace_spaces))
+    local tags=($(grep -P ".*:${1}:.*:${2}${3:-"/"}.*" ${INPUT_FILE} | cut -d${CSV_SEP} -f2))
 
     for i in $(seq 0 1 $((${#arns[@]}-1))); do
         local arn=$(restore_spaces "${arns[$i]}")
@@ -49,7 +49,7 @@ function update_untagged_alarm {
         return $?
     }
 
-    _update_untagged_base "cloudwatch" "alarm"
+    _update_untagged_base "cloudwatch" "alarm" ":"
 }
 
 # Function to update the untagged Elastic Network Interfaces with their owner
@@ -60,7 +60,18 @@ function update_untagged_eni {
         return $?
     }
 
-    _update_untagged_base "ec2" "network-interface" "/"
+    _update_untagged_base "ec2" "network-interface"
+}
+
+# Function to update the untagged Security Group Rules with their owner
+function update_untagged_sgr {
+    function _tag_resource_fn {
+        local sgr_id=$(echo -n ${arn} | cut -d'/' -f2)
+        aws ec2 create-tags --resources "${sgr_id}" --tags "${tags_json}"
+        return $?
+    }
+
+    _update_untagged_base "ec2" "security-group-rule"
 }
 
 
