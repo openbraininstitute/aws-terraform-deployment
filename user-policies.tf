@@ -250,7 +250,9 @@ locals {
       "ecs:DeleteT*",
       "ecs:DeleteAttributes",
       "ecs:ExecuteCommand",
+      "ecs:RegisterTaskDefinition",
       "ecs:RunTask",
+      "Ecs:StartTask",
       "ecs:StopTask",
       "ssm:StartSession",
     ]
