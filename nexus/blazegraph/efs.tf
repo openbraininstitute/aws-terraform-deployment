@@ -18,6 +18,18 @@ resource "aws_efs_backup_policy" "policy" {
   }
 }
 
+resource "aws_efs_access_point" "blazegraph_config" {
+  file_system_id = aws_efs_file_system.blazegraph.id
+  root_directory {
+    path = "/var/lib/blazegraph/config"
+    creation_info {
+      owner_gid   = 1000
+      owner_uid   = 1000
+      permissions = "0777"
+    }
+  }
+}
+
 resource "aws_efs_mount_target" "efs_for_blazegraph" {
   file_system_id  = aws_efs_file_system.blazegraph.id
   subnet_id       = var.subnet_id

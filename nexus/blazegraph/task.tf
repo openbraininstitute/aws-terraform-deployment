@@ -24,7 +24,7 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
       environment = [
         {
           name  = "JAVA_OPTS"
-          value = var.blazegraph_java_opts
+          value = "-Dlog4j.configuration=/var/lib/blazegraph/config/log4j.properties -DjettyXml=/var/lib/blazegraph/config/jetty.xml -Djava.awt.headless=true ${var.blazegraph_java_opts}"
         },
         {
           name  = "JETTY_START_TIMEOUT"
@@ -49,9 +49,49 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
       }
       mountPoints = [
         {
+          sourceVolume  = "efs-blazegraph-config"
+          containerPath = "/var/lib/blazegraph/config"
+          readOnly      = true
+        },
+        {
           sourceVolume  = "efs-blazegraph-data"
           containerPath = "/var/lib/blazegraph/data"
           readOnly      = false
+        }
+      ]
+      dependsOn = [
+        {
+          containerName = "blazegraph-config"
+          condition     = "COMPLETE"
+        }
+      ]
+    },
+    {
+      name      = "blazegraph-config"
+      image     = "bash"
+      essential = false
+      command = [
+        "sh",
+        "-c",
+        <<-EOT
+          echo $JETTY_CONFIG  | base64 -d - | tee /var/lib/blazegraph/config/jetty.xml && \
+          echo $LOG4J_CONFIG  | base64 -d - | tee /var/lib/blazegraph/config/log4j.properties
+        EOT
+      ],
+      environment = [
+        {
+          name  = "JETTY_CONFIG"
+          value = base64encode(file("${path.module}/jetty.xml"))
+        },
+        {
+          name  = "LOG4J_CONFIG"
+          value = base64encode(file("${path.module}/log4j.properties"))
+        }
+      ],
+      mountPoints = [
+        {
+          sourceVolume  = "efs-blazegraph-config"
+          containerPath = "/var/lib/blazegraph/config"
         }
       ]
     }
@@ -61,6 +101,18 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
   memory                   = var.blazegraph_memory
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = var.ecs_task_execution_role_arn
+
+  volume {
+    name = "efs-blazegraph-config"
+    efs_volume_configuration {
+      file_system_id     = aws_efs_file_system.blazegraph.id
+      transit_encryption = "ENABLED"
+      authorization_config {
+        access_point_id = aws_efs_access_point.blazegraph.id
+        iam             = "DISABLED"
+      }
+    }
+  }
 
   volume {
     name = "efs-blazegraph-data"
