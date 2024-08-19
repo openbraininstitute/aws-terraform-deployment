@@ -52,6 +52,7 @@ module "ml_ecs_service_etl" {
         }
       }
     }
+    tags = var.tags
   }
 
   task_exec_iam_role_policies = {

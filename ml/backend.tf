@@ -132,8 +132,8 @@ module "ml_ecs_service_backend" {
         }
       }
     }
+    tags = var.tags
   }
-
   task_exec_iam_role_policies = {
     log-policy = aws_iam_policy.ml_ecs_backend_log_policy.arn
   }
@@ -149,7 +149,6 @@ module "ml_ecs_service_backend" {
       discovery_name = "ml_backend"
     }
   }
-
   load_balancer = {
     service = {
       target_group_arn = aws_lb_target_group.ml_target_group_backend.arn
