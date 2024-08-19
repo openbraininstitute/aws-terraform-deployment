@@ -69,17 +69,13 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
           valueFrom = "${var.elastic_password_arn}:password::"
         },
         {
-          name      = "REMOTE_STORAGE_PASSWORD"
-          valueFrom = "${var.nexus_secrets_arn}:remote_storage_password::"
-        },
-        {
           name      = "DELEGATION_PRIVATE_KEY"
           valueFrom = "${var.nexus_secrets_arn}:delegation_private_key::"
         }
       ]
       networkMode = "awsvpc"
       essential   = true
-      image       = var.nexus_delta_docker_image_url
+      image       = "bluebrain/nexus-delta:${var.delta_docker_image_version}"
       name        = var.delta_instance_name
       repositoryCredentials = {
         credentialsParameter = var.dockerhub_credentials_arn

@@ -106,9 +106,10 @@ module "nexus_delta_obp" {
   delta_memory    = 8192
   delta_java_opts = "-Xms4g -Xmx4g"
 
-  delta_instance_name = "nexus-delta-obp"
-  delta_efs_name      = "delta-obp"
-  s3_bucket_arn       = aws_s3_bucket.nexus_obp.arn
+  delta_instance_name        = "nexus-delta-obp"
+  delta_docker_image_version = "1.10.0-M17"
+  delta_efs_name             = "delta-obp"
+  s3_bucket_arn              = aws_s3_bucket.nexus_obp.arn
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
@@ -127,7 +128,7 @@ module "nexus_delta_obp" {
   blazegraph_endpoint           = module.blazegraph_obp_bg.http_endpoint
   blazegraph_composite_endpoint = module.blazegraph_obp_composite.http_endpoint
 
-  delta_search_config_commit = "bd265a3d3cc4cd588fe93eda2ddaacd28ba32258"
+  delta_search_config_commit = "61ea3571c384aa2d477fefa4dac8df2755881e2c"
   delta_config_file          = "delta-obp.conf"
 
   aws_region = var.aws_region

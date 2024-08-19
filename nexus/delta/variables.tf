@@ -39,9 +39,9 @@ variable "delta_config_file" {
   description = "The filename of the config delta should use. This is only needed if there are two deployments of delta contained within this terraform."
 }
 
-variable "nexus_delta_docker_image_url" {
-  type    = string
-  default = "bluebrain/nexus-delta:latest"
+variable "delta_docker_image_version" {
+  type        = string
+  description = "Version of the Delta Docker image."
 }
 
 variable "s3_bucket_arn" {
