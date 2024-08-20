@@ -45,10 +45,11 @@ num_resources_modified=$(sed 1d ${INPUT_FILE_M} 2>/dev/null | wc -l)
 num_resources_ignored=$(sed 1d ${OUTPUT_FILE_I} 2>/dev/null | wc -l)
 num_resources_untagged=$(sed 1d ${INPUT_FILE_U} 2>/dev/null | wc -l)
 num_resources_tagged=$(sed 1d ${OUTPUT_FILE_T}  2>/dev/null | wc -l)
-echo -e "After running the tag verification scripts, here is a summary of the results:\n\n" \
-        " - ${num_resources_modified} resources have been modified and manually tagged with '${TAG_KEY}' and '${AUTOTAG_KEY}'.\n" \
-        " - ${num_resources_ignored} could not be verified or are purposely ignored (e.g., untaggeable resources managed by AWS).\n" \
-        " - ${num_resources_tagged} resources are properly tagged with '${TAG_KEY}' and accounted for.\n" \
-        " - ${num_resources_untagged} resources have been identified as '${TAG_KEY}' untagged:"
-        sed 1d ${INPUT_FILE_U} | cut -d${CSV_SEP} -f2 | uniq -c  # List number of untagged resources per owner
+echo -ne "After running the tag verification scripts, here is a summary of the results:\n\n" \
+         " - ${num_resources_modified} resources have been modified and manually tagged with '${TAG_KEY}' and '${AUTOTAG_KEY}'.\n" \
+         " - ${num_resources_ignored} could not be verified or are purposely ignored (e.g., untaggeable resources managed by AWS).\n" \
+         " - ${num_resources_tagged} resources are properly tagged with '${TAG_KEY}' and accounted for.\n" \
+         " - ${num_resources_untagged} resources have been identified as '${TAG_KEY}' untagged"
+         [[ ${num_resources_untagged} -gt 0 ]] && echo ":" || echo "."
+         sed 1d ${INPUT_FILE_U} 2>/dev/null | cut -d${CSV_SEP} -f2 | uniq -c  # List number of untagged resources per owner
 echo -e "\nSee output CSV artifacts from the CI job for further information and specific details."
