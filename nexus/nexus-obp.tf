@@ -128,7 +128,7 @@ module "nexus_delta_obp" {
   blazegraph_endpoint           = module.blazegraph_obp_bg.http_endpoint
   blazegraph_composite_endpoint = module.blazegraph_obp_composite.http_endpoint
 
-  delta_search_config_commit = "61ea3571c384aa2d477fefa4dac8df2755881e2c"
+  delta_search_config_commit = "a8a05d1ee7aa0a2d89231c9f55f38f934dc24153"
   delta_config_file          = "delta-obp.conf"
 
   aws_region = var.aws_region
