@@ -7,7 +7,7 @@ resource "aws_lb_target_group" "lb_target_group" {
   vpc_id               = var.vpc_id
   deregistration_delay = "20"
   health_check {
-    enabled             = true
+    enabled             = var.health_check_enabled
     path                = var.health_check_path
     protocol            = "HTTP"
     matcher             = var.health_check_code

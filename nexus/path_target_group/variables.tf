@@ -19,6 +19,11 @@ variable "target_port" {
   description = "Port on which targets receive traffic"
 }
 
+variable "health_check_enabled" {
+  type    = bool
+  default = true
+}
+
 variable "health_check_path" {
   type = string
 }
