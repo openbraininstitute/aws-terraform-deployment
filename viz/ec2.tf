@@ -74,6 +74,12 @@ resource "aws_launch_template" "ecs_launch_template" {
   tags = {
     SBO_Billing = "viz"
   }
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      SBO_Billing = "viz"
+    }
+  }
 }
 
 locals {
