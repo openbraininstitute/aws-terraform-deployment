@@ -140,11 +140,7 @@ resource "aws_ecs_task_definition" "accounting_ecs_definition" {
       environment = [
         {
           name  = "APP_DEBUG"
-          value = "true"
-        },
-        {
-          name  = "DEBUG"
-          value = "true"
+          value = "false"
         },
         {
           name  = "ROOT_PATH"
