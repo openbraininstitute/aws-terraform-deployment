@@ -132,7 +132,6 @@ module "ml_ecs_service_backend" {
         }
       }
     }
-    tags = var.tags
   }
   task_exec_iam_role_policies = {
     log-policy = aws_iam_policy.ml_ecs_backend_log_policy.arn

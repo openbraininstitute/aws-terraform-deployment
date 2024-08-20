@@ -147,7 +147,6 @@ module "ecs_service_agent" {
       }
       readonly_root_filesystem = false
     }
-    tags = var.tags
   }
 
   task_exec_iam_role_policies = {

@@ -16,6 +16,5 @@ module "ml_ecs_cluster" {
       }
     }
   }
-  cloudwatch_log_group_tags = var.tags
-  tags                      = var.tags
+  tags = var.tags
 }
