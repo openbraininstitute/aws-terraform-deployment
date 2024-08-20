@@ -1,0 +1,105 @@
+
+        body {
+            margin: 0;
+            padding: 0;
+            /**background-image: url("hippocampus-4.png");**/
+            background-size: cover;
+            background: linear-gradient(153deg, rgba(2,0,36,1) 0%, rgba(0,39,102,1) 100%);
+            font-family: 'Titillium Web', sans-serif;
+            color: white;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+
+        header {
+            display: inline-block;
+            background-image: url('hippocampus-light.png'); /* fallback for non image-set browser */
+            background-image: -webkit-image-set(
+                url("hippocampus-light.avif") 1x /* type("image/avif") */,
+                url("hippocampus-light.webp") 1x /* type("image/webp") */,
+                url("hippocampus-light.png") 1x /* type("image/png") */
+            );
+            background-image: image-set(
+                url("hippocampus-light.avif") 1x,
+                url("hippocampus-light.webp") 1x,
+                url("hippocampus-light.png") 1x
+            );
+            background-size: cover;
+            width: 100%;
+            height: 100%;
+        }
+
+        .centered-content {
+            text-align: center;
+        }
+
+
+        h1 {
+            margin: 0;
+            font-size: 5em;
+            font-weight: 600;
+            line-height: 1.1em;
+            filter: drop-shadow(0px 0px 18px #0f1862);
+        }
+
+         h2 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 500;
+            filter: drop-shadow(2px 2px 5px #0f1862);
+        }
+
+
+        h3 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 500;
+            filter: drop-shadow(2px 2px 10px #0f1862);
+        }
+        }
+
+        p {
+            text-align: left;
+            padding: 0 6em 0 6em;
+            font-size: 1.1em;
+            background-color:;
+        }
+
+
+        section {
+            padding: 6em;
+            /**max-width: 80%;**/
+        }
+
+        .flex-container {
+          display: flex;
+          padding: 0 6em 0 6em;
+        }
+
+        .flex-container > div {
+
+          padding: 20px 10px 20px 30px;
+          font-size: 30px;
+          text-align: left;
+        }
+
+        .explore    {
+            background: #021c54;
+            width: 50%;
+
+        }
+
+        .build {
+            background: #032a7b;
+            width: 50%;
+
+        }
+
+        .simulate {
+            background: #063da6;
+            width: 100%;
+
+        }

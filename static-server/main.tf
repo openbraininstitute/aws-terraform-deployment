@@ -160,14 +160,29 @@ locals {
       content_type = "text/html"
     },
     {
+      key          = "static/coming-soon/css/BBOPLogo.png"
+      source       = "${path.module}/coming-soon-page/css/BBOPLogo.png"
+      content_type = "text/png"
+    },
+    {
       key          = "static/coming-soon/css/styles.css"
-      source       = "${path.module}/coming-soon-page/styles.css"
+      source       = "${path.module}/coming-soon-page/css/styles.css"
       content_type = "text/css"
     },
     {
-      key          = "static/coming-soon/css/background.jpg"
-      source       = "${path.module}/coming-soon-page/background.jpg"
-      content_type = "image/jpeg"
+      key          = "static/coming-soon/css/hippocampus-light.avif"
+      source       = "${path.module}/coming-soon-page/css/hippocampus-light.avif"
+      content_type = "image/avif"
+    },
+    {
+      key          = "static/coming-soon/css/hippocampus-light.png"
+      source       = "${path.module}/coming-soon-page/css/hippocampus-light.png"
+      content_type = "image/png"
+    },
+    {
+      key          = "static/coming-soon/css/hippocampus-light.webp"
+      source       = "${path.module}/coming-soon-page/css/hippocampus-light.webp"
+      content_type = "image/webp"
     }
   ]
 }
