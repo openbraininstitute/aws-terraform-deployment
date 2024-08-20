@@ -1,3 +1,4 @@
+#tfsec:ignore:aws-ecs-enable-container-insight
 module "ml_ecs_cluster" {
   source       = "terraform-aws-modules/ecs/aws//modules/cluster"
   cluster_name = "ml-ecs-cluster"
@@ -16,5 +17,6 @@ module "ml_ecs_cluster" {
       }
     }
   }
-  tags = var.tags
+  cluster_settings = [{ "name" : "containerInsights", "value" : "disabled" }]
+  tags             = var.tags
 }
