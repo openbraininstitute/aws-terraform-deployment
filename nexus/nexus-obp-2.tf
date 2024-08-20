@@ -112,7 +112,7 @@ module "nexus_delta_obp_2" {
   ecs_task_execution_role_arn              = module.iam.nexus_ecs_task_execution_role_arn
   nexus_secrets_arn                        = var.nexus_secrets_arn
 
-  delta_target_group_arn    = module.obp_delta_target_group.lb_target_group_arn
+  delta_target_group_arn    = module.obp_delta_target_group_2.lb_target_group_arn
   dockerhub_credentials_arn = module.iam.dockerhub_credentials_arn
 
   postgres_host        = module.postgres_cluster_obp.writer_endpoint

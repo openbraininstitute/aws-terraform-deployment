@@ -58,10 +58,10 @@ module "obp_delta_target_group_2" {
     aws = aws.nexus_delta_tags
   }
 
-  target_port          = 8080
-  base_path            = "/api/nexus2"
-  health_check_path    = "/api/nexus2/v1/version"
-  health_check_enabled = "false"
+  target_port       = 8080
+  base_path         = "/api/nexus2"
+  health_check_path = "/api/nexus2/v1/version"
+  health_check_code = "200-499"
 
   allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
   public_lb_listener_https_arn  = var.public_lb_listener_https_arn
