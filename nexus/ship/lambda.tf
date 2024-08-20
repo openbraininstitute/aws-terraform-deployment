@@ -28,3 +28,10 @@ resource "aws_lambda_function" "launch_ship" {
     mode = "Active"
   }
 }
+
+resource "aws_cloudwatch_log_group" "launch_ship" {
+  name              = "nexus_launch_ship_task"
+  skip_destroy      = false
+  retention_in_days = 7
+  kms_key_id        = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
+}
