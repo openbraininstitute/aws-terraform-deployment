@@ -125,7 +125,7 @@ module "ml_ecs_service_backend" {
       log_configuration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = "ml_backend"
+          /*awslogs-group         = "ml_backend"*/
           awslogs-region        = "us-east-1"
           awslogs-create-group  = "true"
           awslogs-stream-prefix = "ml_backend"
