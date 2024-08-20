@@ -43,8 +43,11 @@ resource "aws_ecs_cluster" "this" {
     name  = "containerInsights"
     value = "enabled"
   }
-  tags       = var.tags
-  depends_on = [aws_cloudwatch_log_group.ecs]
+  tags = var.tags
+  depends_on = [
+    aws_cloudwatch_log_group.ecs,
+    aws_cloudwatch_log_group.ecs_container_insights
+  ]
 }
 
 resource "aws_ecs_capacity_provider" "this" {
@@ -68,6 +71,13 @@ resource "aws_ecs_cluster_capacity_providers" "this" {
     base              = 0
     weight            = 1
   }
+}
+
+#tfsec:ignore:aws-cloudwatch-log-group-customer-key
+resource "aws_cloudwatch_log_group" "ecs_container_insights" {
+  name              = "/aws/ecs/containerinsights/${local.cluster_name}/performance"
+  retention_in_days = 1
+  tags              = var.tags
 }
 
 #tfsec:ignore:aws-cloudwatch-log-group-customer-key
