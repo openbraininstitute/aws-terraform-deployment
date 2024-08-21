@@ -1,6 +1,6 @@
 locals {
-  clustername = "thumbnail_generation_api_cluster"
-  servicename = "thumbnail-generation-api-service"
+  clustername = "cell_svc_ecs_cluster"
+  servicename = "cell_svc_ecs_service"
 }
 
 resource "aws_cloudwatch_dashboard" "main" {

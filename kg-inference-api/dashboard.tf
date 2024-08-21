@@ -1,10 +1,10 @@
 locals {
-  clustername = "thumbnail_generation_api_cluster"
-  servicename = "thumbnail-generation-api-service"
+  clustername = "kg_inference_api_cluster"
+  servicename = "kg-inference-api-service"
 }
 
 resource "aws_cloudwatch_dashboard" "main" {
-  dashboard_name = "Thumbnail-Generation"
+  dashboard_name = "KG-Inference"
 
   dashboard_body = jsonencode({
     widgets = [
