@@ -113,15 +113,6 @@ module "ml_ecs_task_producer" {
         credentialsParameter = var.dockerhub_credentials_arn
       }
       readonly_root_filesystem = false
-      logConfiguration = {
-        logDriver = "awslogs"
-        options = {
-          awslogs-group         = "ml_producer"
-          awslogs-region        = "us-east-1"
-          awslogs-create-group  = "true"
-          awslogs-stream-prefix = "ml_producer"
-        }
-      }
     }
   }
   tasks_iam_role_policies = {

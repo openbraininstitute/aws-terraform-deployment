@@ -42,15 +42,6 @@ module "ml_ecs_service_etl" {
           value = "http://${var.private_alb_dns}:3000"
         }
       ]
-      log_configuration = {
-        logDriver = "awslogs"
-        options = {
-          awslogs-group         = "ml_etl"
-          awslogs-region        = "us-east-1"
-          awslogs-create-group  = "true"
-          awslogs-stream-prefix = "ml_etl"
-        }
-      }
     }
   }
 

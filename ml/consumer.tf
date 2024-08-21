@@ -31,15 +31,6 @@ module "ml_ecs_service_consumer" {
       }
       entrypoint               = ["pu-consumer", "${aws_opensearch_domain.ml_opensearch.endpoint}:443", "http://${var.private_alb_dns}:3000", module.ml_sqs.queue_url, "-b", "100", "-l", 60, "-u", 3000, "--use-ssl", "-v"]
       readonly_root_filesystem = false
-      logConfiguration = {
-        logDriver = "awslogs"
-        options = {
-          awslogs-group         = "ml_consumer"
-          awslogs-region        = "us-east-1"
-          awslogs-create-group  = "true"
-          awslogs-stream-prefix = "ml_consumer"
-        }
-      }
     }
   }
   tasks_iam_role_policies = {

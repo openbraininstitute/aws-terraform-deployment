@@ -136,15 +136,6 @@ module "ecs_service_agent" {
           valueFrom = "${var.secret_manager_arn}:KEYCLOAK_PASSWORD::"
         },
       ]
-      logConfiguration = {
-        logDriver = "awslogs"
-        options = {
-          awslogs-group         = "ml_agent"
-          awslogs-region        = "us-east-1"
-          awslogs-create-group  = "true"
-          awslogs-stream-prefix = "ml_agent"
-        }
-      }
       readonly_root_filesystem = false
     }
   }

@@ -89,8 +89,7 @@ module "ml_ecs_service_backend" {
         {
           name  = "SCHOLARAG__REDIS__PORT"
           value = aws_elasticache_cluster.ml_redis_cluster.port
-        },
-        */
+        }, */
         {
           name  = "SCHOLARAG__KEYCLOAK__ISSUER"
           value = "https://openbluebrain.com/auth/realms/SBO"
@@ -122,15 +121,6 @@ module "ml_ecs_service_backend" {
           valueFrom = "${var.secret_manager_arn}:SENTRY_DSN::"
         },
       ]
-      log_configuration = {
-        logDriver = "awslogs"
-        options = {
-          awslogs-group         = "ml_backend"
-          awslogs-region        = "us-east-1"
-          awslogs-create-group  = "true"
-          awslogs-stream-prefix = "ml_backend"
-        }
-      }
     }
   }
   task_exec_iam_role_policies = {

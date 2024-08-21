@@ -31,15 +31,6 @@ module "ml-ecs_service_grobid" {
           protocol      = "tcp"
         }
       ]
-      logConfiguration = {
-        logDriver = "awslogs"
-        options = {
-          awslogs-group         = "ml_grobid"
-          awslogs-region        = "us-east-1"
-          awslogs-create-group  = "true"
-          awslogs-stream-prefix = "ml_grobid"
-        }
-      }
     }
   }
 
