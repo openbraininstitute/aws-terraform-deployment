@@ -116,7 +116,7 @@ module "nexus_delta_obp_2" {
   dockerhub_credentials_arn = module.iam.dockerhub_credentials_arn
 
   postgres_host        = module.postgres_cluster_obp.writer_endpoint
-  postgres_reader_host = module.postgres_cluster_obp.writer_endpoint
+  postgres_reader_host = module.postgres_cluster_obp.reader_endpoint
 
   elasticsearch_endpoint = module.elasticsearch_obp_2.http_endpoint
   elastic_password_arn   = module.elasticsearch_obp_2.elastic_user_credentials_secret_arn
