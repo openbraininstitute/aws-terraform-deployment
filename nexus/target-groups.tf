@@ -66,7 +66,7 @@ module "obp_delta_target_group_2" {
   allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
   public_lb_listener_https_arn  = var.public_lb_listener_https_arn
   target_group_prefix           = "nxdt2"
-  unique_listener_priority      = 105
+  unique_listener_priority      = 111
   nat_gateway_id                = var.nat_gateway_id
   vpc_id                        = var.vpc_id
 }
