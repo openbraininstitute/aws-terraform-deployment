@@ -154,3 +154,10 @@ variable "viz_brayns_ecs_number_of_containers" {
   sensitive   = false
   description = "Number of containers for the Brayns renderer service"
 }
+
+variable "tags" {
+  type        = map(string)
+  description = "Tags"
+  default     = { SBO_Billing = "viz" }
+}
+
