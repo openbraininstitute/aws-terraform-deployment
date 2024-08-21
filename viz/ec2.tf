@@ -91,7 +91,7 @@ data "template_file" "viz_ec2_ecs_user_data" {
 
   vars = {
     ecs_cluster_name = aws_ecs_cluster.viz.name
-    ecs_cluster_tags = join(",", [for k, v in var.tags : "${k}:${v}"])
+    ecs_cluster_tags = join(",", [for k, v in var.tags : "\"${k}\": \"${v}\""])
   }
 }
 
