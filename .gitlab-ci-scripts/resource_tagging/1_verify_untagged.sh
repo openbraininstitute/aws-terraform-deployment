@@ -240,10 +240,27 @@ function get_untagged_kms_key {
 function get_untagged_ecs_ci {
     local ecs_ci_arns=($(get_arn_list "ecs:container-instance"))
 
-    # Try to guess the tag by the name of the resource
+    # Try to guess the tag by using the subnet attachment or the name of the resource
     for ecs_ci_arn in ${ecs_ci_arns[@]}; do
-        # aws ecs describe-container-instances --cluster single_cell --container-instances 0318bb9... << Description may be useful in the future
-        output "${ecs_ci_arn}" "$(resource_to_tag "${ecs_ci_arn}")"
+        local ecs_ci_cluster=$(echo ${ecs_ci_arn} | sed -r "s|^.*container-instance/([^/]+)/.+$|\1|")
+        local ecs_ci_description=$(aws ecs describe-container-instances --cluster ${ecs_ci_cluster} \
+                                                                        --container-instances "${ecs_ci_arn}" 2>/dev/null)
+
+        # Add suffix to ARN on already finished instances (i.e., Resource Explorer requires time to update)
+        if [[ ${ecs_ci_description} == *"\"reason\": \"MISSING\""* ]]; then
+            ecs_ci_arn="${ecs_ci_arn}${ARN_UNKNOWN_SUFFIX}"
+        else
+            local ecs_ci_subnet=$(echo ${ecs_ci_description} | jq -r ".containerInstances[].attachments[0].details[] | select(.name == \"subnetId\") | .value" 2>/dev/null)
+            local ecs_ci_subnet_tags=$(aws ec2 describe-tags --filters Name=resource-id,Values=${ecs_ci_subnet})
+
+            local tag=$(echo ${ecs_ci_subnet_tags} | jq -r ".Tags[] | select(.Key == \"${TAG_KEY}\") | .Value" 2>/dev/null)
+        fi
+
+        # If we reach this point and we still don't have a tag, let's try to guess it from the ARN
+        [[ -z ${tag} ]] && tag=$(resource_to_tag "${ecs_ci_arn}")
+
+        output "${ecs_ci_arn}" "${tag}"
+        unset tag  # Prevents assigning incorrect tags to missing resources
     done
 }
 
@@ -280,17 +297,17 @@ function get_untagged_ecache_usr {
 # Function to get the list of untagged Elastic Load Balancing Listener Rules and their potential owner
 function get_untagged_elb_lr {
     local lr_arns=($(get_arn_list "elasticloadbalancing:listener-rule/app"))
-    local l_arns=($(echo ${lr_arns[@]} | tr ' ' '\n' | sed -r "s|(^.*elasticloadbalancing.*listener)-rule(.*)/[^/]+$|\1\2|"))
-    local l_tags=$(aws elbv2 describe-tags --resource-arns ${l_arns[@]})
 
-    for i in $(seq 0 1 $((${#l_arns[@]}-1))); do
-        local lr_arn=${lr_arns[$i]}
-        local l_arn=${l_arns[$i]}
+    for lr_arn in ${lr_arns[@]}; do
+        local l_arn=$(echo ${lr_arn} | sed -r "s|(^.*elasticloadbalancing.*listener)-rule(.*)/[^/]+$|\1\2|")
+        local l_tags=$(aws elbv2 describe-tags --resource-arns "${l_arn}" 2>/dev/null)
+
+        # Add suffix to ARN on already deleted ELB Listeners (i.e., Resource Explorer requires time to update)
+        [[ -z ${l_tags} ]] && lr_arn="${lr_arn}${ARN_UNKNOWN_SUFFIX}"
 
         # Check whether or not the Listener itself contains the tag key
-        local tag=$(echo ${l_tags} | jq -r ".TagDescriptions[] | select(.ResourceArn == \"${l_arn}\") | \
-                                            .Tags[] | select(.Key == \"${TAG_KEY}\") | .Value" 2>/dev/null)
-        
+        local tag=$(echo ${l_tags} | jq -r ".TagDescriptions[] | .Tags[] | select(.Key == \"${TAG_KEY}\") | .Value" 2>/dev/null)
+
         # If we reach this point and we still don't have a tag, let's try to guess it from the ARN
         [[ -z ${tag} ]] && tag=$(resource_to_tag "${lr_arn}")
 
@@ -481,7 +498,7 @@ function get_untagged_vol {
 run_script_fns "tag verification" "get_untagged_"
 
 # Include the list of non-supported / erroneous resources
-arn_filter="$(echo -n $(cat ${OUTPUT_FILE_TMP} | cut -d${CSV_SEP} -f1) | tr ' ' '|')"
+arn_filter="$(echo -n $(cat ${OUTPUT_FILE_TMP} | cut -d${CSV_SEP} -f1 | sed "s|${ARN_UNKNOWN_SUFFIX}||g") | tr ' ' '|')"
 echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[].Arn" | grep -v -E "${arn_filter}" | \
                              sed -r "s|(.*)|\1${CSV_SEP}${TAG_IGNORED}|" >> ${OUTPUT_FILE_TMP}
 

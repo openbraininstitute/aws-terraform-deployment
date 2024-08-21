@@ -8,6 +8,7 @@ TAG_KEY="SBO_Billing"
 AUTOTAG_KEY="SBO_Billing:auto-tag"
 TAG_UNKNOWN="unknown"
 TAG_IGNORED="ignored/error"
+ARN_UNKNOWN_SUFFIX="##__DELETED__##"
 CSV_SEP=','
 CSV_HEADER="ARN${CSV_SEP}Owner"
 TIMESTAMP=$(date +%s)
@@ -40,7 +41,7 @@ function resource_to_tag {
         *"virtual_lab_manager"*) echo "virtual_lab_manager";;
         *"viz"*) echo "viz";;
         *"ml"* | *"machinelearning"*) echo "machinelearning";;  # Note: The order is on purpose
-        *"common"* | *"default"*) echo "common";;
+        *"common"* | *"default"* | *"sbo"*) echo "common";;
         *"bbp"*) echo "bbp:unknown";;
         *) echo ${TAG_UNKNOWN};;
     esac
