@@ -25,8 +25,8 @@ resource "aws_iam_instance_profile" "ec2" {
 data "template_file" "ec2_user_data" {
   template = file("${path.module}/ec2-user-data.sh")
   vars = {
-    ecs_cluster_name = local.cluster_name
-    ecs_cluster_tags = join(",", [for k, v in var.tags : "${k}:${v}"])
+    ecs_cluster_name   = local.cluster_name
+    ecs_container_tags = join(",", [for k, v in var.tags : "\"${k}\": \"${v}\""])
   }
 }
 
