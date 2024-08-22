@@ -48,8 +48,11 @@ variables:
   stage: build
   script:
     - cd "${TF_ROOT}"
-    - gitlab-terraform plan
+    - echo "Start of build job, gitlab-terraform plan starting at `date`"
+    - gitlab-terraform plan -parallelism=30
+    - echo "gitlab-terraform plan-json starting at `date`"
     - gitlab-terraform plan-json
+    - echo "End of build job at `date`"
   resource_group: ${TF_STATE_NAME}
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"

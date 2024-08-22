@@ -30,6 +30,9 @@ validate:
 
 build:
   variables:
+    KUBERNETES_CPU_REQUEST: 4000m
+    KUBERNETES_CPU_LIMIT: 6000m
+    KUBERNETES_MEMORY_REQUEST: 4G
     KUBERNETES_MEMORY_LIMIT: 6G
   before_script:
     - export TF_VAR_common_token_name=$COMMON_REPO_TOKEN_NAME
@@ -127,6 +130,9 @@ check_compliance:
   stage: validate
   allow_failure: true
   variables:
+    KUBERNETES_CPU_REQUEST: 4000m
+    KUBERNETES_CPU_LIMIT: 6000m
+    KUBERNETES_MEMORY_REQUEST: 4G
     KUBERNETES_MEMORY_LIMIT: 6G
     TF_STATE_NAME: ${TF_STATE_NAME}
   before_script:
@@ -137,7 +143,7 @@ check_compliance:
     - ls -la terraform-compliance
     - rm gitlab-config.tf
     - terraform init
-    - terraform plan -out=plan.tfplan > /dev/null && terraform show -json plan.tfplan > plan.json
+    - terraform plan -parallelism=30 -out=plan.tfplan > /dev/null && terraform show -json plan.tfplan > plan.json
     - terraform-compliance -f ./terraform-compliance -p ./plan.json
 
 #puppet_bolt:
