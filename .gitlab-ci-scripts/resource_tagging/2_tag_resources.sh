@@ -74,6 +74,19 @@ function update_untagged_sgr {
     _update_untagged_base "ec2" "security-group-rule"
 }
 
+# Function to update the untagged Elastic Load Balancing Listener Rules (default) with their owner
+function update_untagged_elb_lr_default {
+    function _tag_resource_fn {
+        local is_default=$(aws elbv2 describe-rules --rule-arns ${arn} | jq -r ".Rules[].IsDefault")
+        [[ ${is_default} != "true" ]] && return 1
+
+        aws elbv2 add-tags --resource-arns "${arn}" --tags "${tags_json}"
+        return $?
+    }
+
+    _update_untagged_base "elasticloadbalancing" "listener-rule"
+}
+
 
 ######################
 # Main Functionality #

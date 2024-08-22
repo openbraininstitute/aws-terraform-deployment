@@ -8,6 +8,7 @@ TAG_KEY="SBO_Billing"
 AUTOTAG_KEY="SBO_Billing:auto-tag"
 TAG_UNKNOWN="unknown"
 TAG_IGNORED="ignored/error"
+RESOURCE_VALID_THRESHOLD=172800  # 48 hours (in seconds)
 ARN_UNKNOWN_SUFFIX="##__DELETED__##"
 CSV_SEP=','
 CSV_HEADER="ARN${CSV_SEP}Owner"
@@ -36,7 +37,7 @@ function resource_to_tag {
         *"me_model"*) echo "me_model_analysis";;
         *"nexus"*) echo "nexus";;
         *"pcluster"* | *"parallelcluster"* | *"fsx"*) echo "hpc:parallelcluster";;
-        *"single_cell"*) echo "bluenaas_single_cell";;
+        *"bluenaas"* | *"single_cell"*) echo "bluenaas";;
         *"thumbnail_generation_api"*) echo "thumbnail_generation_api";;
         *"virtual_lab_manager"*) echo "virtual_lab_manager";;
         *"viz"*) echo "viz";;

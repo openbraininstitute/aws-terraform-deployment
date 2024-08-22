@@ -15,12 +15,20 @@ function get_arn_list {
     echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.ResourceType == \"${1}\") | .Arn" | replace_spaces
 }
 
+# Helper function to determine if a resource is valid after a threshold from the last reported date
+function is_resource_valid {
+    local last_reported_date=$(echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.Arn == \"${1}\") | .LastReportedAt")
+    local elapsed=$(($(date +%s) - $(date -d "${last_reported_date}" +%s)))
+    
+    [[ ${elapsed} -le ${RESOURCE_VALID_THRESHOLD} ]] && return 0 || return 1
+}
+
 # Helper function to support the retrieval of untagged EC2-related resources
 function _get_untagged_ec2_base {
     # Retrieve the list of EC2 resources (e.g., ENI) and their metadata (e.g., security group, VPC, etc.)
     local arns=($(get_arn_list "${1}"))
     local ids=$(echo $(echo ${arns[@]} | tr ' ' '\n' | cut -d'/' -f2) | tr ' ' ',')
-    local list=$(aws ec2 ${2} --filters Name=${3},Values=${ids})
+    local list=$(aws ec2 ${2} --filters Name=${3},Values=${ids} 2>/dev/null)
     local list_size=$(echo ${list} | jq ".${4}[].${5}" | wc -l)
 
     # Try to guess the tag by selecting the Security Group and VPC IDs
@@ -246,8 +254,11 @@ function get_untagged_ecs_ci {
         local ecs_ci_description=$(aws ecs describe-container-instances --cluster ${ecs_ci_cluster} \
                                                                         --container-instances "${ecs_ci_arn}" 2>/dev/null)
 
-        # Add suffix to ARN on already finished instances (i.e., Resource Explorer requires time to update)
+        # If the instance is not running, ensure it is not older than a threshold (i.e., Resource Explorer requires time to update)
         if [[ ${ecs_ci_description} == *"\"reason\": \"MISSING\""* ]]; then
+            is_resource_valid "${ecs_ci_arn}" || continue  # Ignore entry if not valid
+
+            # Within the threshold, add suffix to ARN for further verification
             ecs_ci_arn="${ecs_ci_arn}${ARN_UNKNOWN_SUFFIX}"
         else
             local ecs_ci_subnet=$(echo ${ecs_ci_description} | jq -r ".containerInstances[].attachments[0].details[] | select(.name == \"subnetId\") | .value" 2>/dev/null)
@@ -302,8 +313,13 @@ function get_untagged_elb_lr {
         local l_arn=$(echo ${lr_arn} | sed -r "s|(^.*elasticloadbalancing.*listener)-rule(.*)/[^/]+$|\1\2|")
         local l_tags=$(aws elbv2 describe-tags --resource-arns "${l_arn}" 2>/dev/null)
 
-        # Add suffix to ARN on already deleted ELB Listeners (i.e., Resource Explorer requires time to update)
-        [[ -z ${l_tags} ]] && lr_arn="${lr_arn}${ARN_UNKNOWN_SUFFIX}"
+        # If the rule no longer exists, ensure it is not older than a threshold (i.e., Resource Explorer requires time to update)
+        if [[ -z ${l_tags} ]]; then
+            is_resource_valid "${lr_arn}" || continue  # Ignore entry if not valid
+
+            # Within the threshold, add suffix to ARN for further verification
+            lr_arn="${lr_arn}${ARN_UNKNOWN_SUFFIX}"
+        fi
 
         # Check whether or not the Listener itself contains the tag key
         local tag=$(echo ${l_tags} | jq -r ".TagDescriptions[] | .Tags[] | select(.Key == \"${TAG_KEY}\") | .Value" 2>/dev/null)
