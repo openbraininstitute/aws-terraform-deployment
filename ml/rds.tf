@@ -32,6 +32,10 @@ module "ml_rds_postgres" {
   port                        = var.rds_port
   skip_final_snapshot         = true
 
+  manage_master_user_password_rotation                   = true
+  master_user_password_rotation_automatically_after_days = 1
+
+
   vpc_security_group_ids = [aws_security_group.ml_rds.id]
 
   maintenance_window          = "Mon:00:00-Mon:03:00"
