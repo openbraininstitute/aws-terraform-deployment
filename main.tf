@@ -130,8 +130,24 @@ module "nse" {
   amazon_linux_ecs_ami_id   = data.aws_ami.amazon_linux_2_ecs.id
   route_table_id            = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
 
-  single_cell_docker_image_url       = "bluebrain/blue-naas-single-cell:latest"
   me_model_analysis_docker_image_url = "bluebrain/me-model-analysis:latest"
+}
+
+module "bluenaas_svc" {
+  source = "./bluenaas_svc"
+
+  aws_account_id = data.aws_caller_identity.current.account_id
+
+  aws_region                 = var.aws_region
+  vpc_id                     = data.terraform_remote_state.common.outputs.vpc_id
+  alb_listener_arn           = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  alb_listener_rule_priority = 750
+  internet_access_route_id   = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+
+  dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
+  dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
+
+  base_path = "/api/bluenaas"
 }
 
 module "hpc" {

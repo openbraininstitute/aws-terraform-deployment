@@ -14,10 +14,6 @@ variable "dockerhub_credentials_arn" {
   type = string
 }
 
-variable "single_cell_docker_image_url" {
-  type = string
-}
-
 variable "me_model_analysis_docker_image_url" {
   type = string
 }
