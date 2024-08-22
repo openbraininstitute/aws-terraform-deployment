@@ -32,9 +32,7 @@ module "ml_rds_postgres" {
   port                        = var.rds_port
   skip_final_snapshot         = true
 
-  manage_master_user_password_rotation                   = true
-  master_user_password_rotation_automatically_after_days = 1
-  master_user_password_rotate_immediately                = true
+  manage_master_user_password_rotation = false
 
 
   vpc_security_group_ids = [aws_security_group.ml_rds.id]
