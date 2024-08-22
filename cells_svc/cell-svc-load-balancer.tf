@@ -4,7 +4,8 @@ resource "aws_acm_certificate" "cell_svc" {
   lifecycle {
     create_before_destroy = true
   }
-  tags = { SBO_Billing = "cell_svc" }
+
+  tags = var.tags
 }
 
 resource "aws_route53_record" "cell_svc_validation" {
@@ -47,7 +48,8 @@ resource "aws_lb_target_group" "cell_svc" {
     healthy_threshold   = 2
     unhealthy_threshold = 3
   }
-  tags = { SBO_Billing = "cell_svc" }
+
+  tags = var.tags
 }
 
 resource "aws_lb_listener_certificate" "cell_svc" {
@@ -76,7 +78,7 @@ resource "aws_lb_listener_rule" "cell_svc_https" {
     }
   }
 
-  tags = { SBO_Billing = "cell_svc" }
+  tags = var.tags
 }
 
 resource "aws_route53_record" "cell_svc" {

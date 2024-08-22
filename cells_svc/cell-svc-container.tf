@@ -13,7 +13,7 @@
 resource "aws_security_group" "cell_svc_ec2_ecs_instance_sg" {
   vpc_id      = var.vpc_id
   description = "Sec group for SBO cell svc EC2 instance"
-  tags        = { SBO_Billing = "cell_svc" }
+  tags        = var.tags
 }
 
 resource "aws_vpc_security_group_ingress_rule" "cell_svc_ec2_ecs_instance_sg_ingress_tcp_udp" {
@@ -21,7 +21,7 @@ resource "aws_vpc_security_group_ingress_rule" "cell_svc_ec2_ecs_instance_sg_ing
   ip_protocol       = -1
   cidr_ipv4         = var.vpc_cidr_block
   description       = "Allow port * TCP/UDP ingress"
-  tags              = { SBO_Billing = "cell_svc" }
+  tags              = var.tags
 }
 
 resource "aws_vpc_security_group_egress_rule" "cell_svc_ec2_ecs_instance_sg_egress_tcp_udp" {
@@ -32,7 +32,7 @@ resource "aws_vpc_security_group_egress_rule" "cell_svc_ec2_ecs_instance_sg_egre
   cidr_ipv4   = "0.0.0.0/0"
   #cidr_ipv4   = var.vpc_cidr_block
   description = "Allow all TCP/UDP egress"
-  tags        = { SBO_Billing = "cell_svc" }
+  tags        = var.tags
 }
 
 # { IAM Role for the EC2 instances which will be used for the cells ECS
@@ -40,7 +40,7 @@ resource "aws_vpc_security_group_egress_rule" "cell_svc_ec2_ecs_instance_sg_egre
 resource "aws_iam_role" "cells_ec2_instance_role" {
   name_prefix        = "cl_ec2"
   assume_role_policy = data.aws_iam_policy_document.cells_ec2_instance_role_policy.json
-  tags               = { SBO_Billing = "cell_svc" }
+  tags               = var.tags
 }
 
 # Attach policy to role for ec2 instances for cells ecs cluster
@@ -60,7 +60,7 @@ resource "aws_iam_role_policy_attachment" "cells_ec2_instance_role_s3_policy" {
 resource "aws_iam_instance_profile" "cells_ec2_instance_role_profile" {
   name_prefix = "cl_ins"
   role        = aws_iam_role.cells_ec2_instance_role.name
-  tags        = { SBO_Billing = "cell_svc" }
+  tags        = var.tags
 }
 
 # The iam policy doc to create the IAM role for the ec2 instances for the cells cluster
@@ -101,7 +101,8 @@ resource "aws_launch_template" "cells_svc_ec2_launch_template" {
   monitoring {
     enabled = true
   }
-  tags = { SBO_Billing = "cell_svc" }
+
+  tags = var.tags
 }
 
 # The template for the user data script of the EC2 machines that will be used to run the cells ECS cluster
@@ -110,6 +111,7 @@ data "template_file" "cells_ec2_ecs_user_data" {
 
   vars = {
     ecs_cluster_name = aws_ecs_cluster.cell_svc_ecs_cluster.name
+    ecs_cluster_tags = join(",", [for k, v in var.tags : "\"${k}\": \"${v}\""])
   }
 }
 
@@ -121,10 +123,7 @@ resource "aws_cloudwatch_log_group" "cell_svc" {
 
   kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
 
-  tags = {
-    Application = "cell_svc"
-    SBO_Billing = "cell_svc"
-  }
+  tags = merge(var.tags, { Application = "cell_svc" })
 }
 
 # TODO check: not used?
@@ -136,20 +135,15 @@ resource "aws_cloudwatch_log_group" "cell_svc_ecs" {
 
   kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
 
-  tags = {
-    Application = "cell_svc"
-    SBO_Billing = "cell_svc"
-  }
+  tags = merge(var.tags, { Application = "cell_svc" })
 }
 
 # ECS cluster for cells
 resource "aws_ecs_cluster" "cell_svc_ecs_cluster" {
   name = "cell_svc_ecs_cluster"
 
-  tags = {
-    Application = "cell_svc"
-    SBO_Billing = "cell_svc"
-  }
+  tags = merge(var.tags, { Application = "cell_svc" })
+
   lifecycle {
     create_before_destroy = true
   }
@@ -167,10 +161,7 @@ resource "aws_security_group" "cell_svc_ecs_task" {
   vpc_id      = var.vpc_id
   description = "Sec group for SBO cell svc ECS task"
 
-  tags = {
-    Name        = "cell_svc_secgroup"
-    SBO_Billing = "cell_svc"
-  }
+  tags = merge(var.tags, { Name = "cell_svc_secgroup" })
 }
 
 resource "aws_vpc_security_group_ingress_rule" "cell_svc_task_ingress_port_8000" {
@@ -180,7 +171,7 @@ resource "aws_vpc_security_group_ingress_rule" "cell_svc_task_ingress_port_8000"
   to_port           = 8000
   cidr_ipv4         = var.vpc_cidr_block
   description       = "Allow port 8000 tcp for SBO cell svc ECS task"
-  tags              = { SBO_Billing = "cell_svc" }
+  tags              = var.tags
 }
 
 resource "aws_vpc_security_group_egress_rule" "cell_svc_task_egress_tcp_udp" {
@@ -191,7 +182,7 @@ resource "aws_vpc_security_group_egress_rule" "cell_svc_task_egress_tcp_udp" {
   cidr_ipv4   = "0.0.0.0/0"
   #cidr_ipv4   = var.vpc_cidr_block
   description = "Allow all TCP/UDP egress"
-  tags        = { SBO_Billing = "cell_svc" }
+  tags        = var.tags
 }
 # } ECS Task network
 
@@ -203,11 +194,6 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
   task_role_arn      = aws_iam_role.ecs_cell_svc_task_role.arn
 
   network_mode = "awsvpc"
-
-  volume {
-    name      = "sbo-project-data"
-    host_path = "/sbo/data/project"
-  }
 
   container_definitions = jsonencode([
     {
@@ -257,7 +243,7 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
   cpu    = 256
   memory = 1024
 
-  tags = { SBO_Billing = "cell_svc" }
+  tags = var.tags
 }
 
 resource "aws_ecs_service" "cell_svc_ecs_service" {
@@ -301,8 +287,8 @@ resource "aws_ecs_service" "cell_svc_ecs_service" {
   lifecycle {
     ignore_changes = [desired_count]
   }
-  tags           = { SBO_Billing = "cell_svc" }
   propagate_tags = "SERVICE"
+  tags           = var.tags
 }
 
 # { Used by the ECS service to manage the cells ECS cluster
@@ -310,7 +296,7 @@ resource "aws_ecs_service" "cell_svc_ecs_service" {
 resource "aws_iam_role" "cells_ecs_service_role" {
   name_prefix        = "cl_ecs"
   assume_role_policy = data.aws_iam_policy_document.cells_ecs_service_policy.json
-  tags               = { SBO_Billing = "cell_svc" }
+  tags               = var.tags
 }
 
 data "aws_iam_policy_document" "cells_ecs_service_policy" {
@@ -361,13 +347,13 @@ data "aws_iam_policy_document" "cells_ecs_service_role_policy" {
 resource "aws_iam_role" "ecs_cell_svc_task_execution_role" {
   name_prefix        = "cl_exe"
   assume_role_policy = data.aws_iam_policy_document.cells_ecs_task_assume_role_policy.json
-  tags               = { SBO_Billing = "cell_svc" }
+  tags               = var.tags
 }
 
 resource "aws_iam_role" "ecs_cell_svc_task_role" {
   name_prefix        = "cl_svc"
   assume_role_policy = data.aws_iam_policy_document.cells_ecs_task_assume_role_policy.json
-  tags               = { SBO_Billing = "cell_svc" }
+  tags               = var.tags
 }
 
 data "aws_iam_policy_document" "cells_ecs_task_assume_role_policy" {
@@ -385,7 +371,6 @@ data "aws_iam_policy_document" "cells_ecs_task_assume_role_policy" {
 resource "aws_iam_policy" "cloudwatch_write_policy" {
   name        = "cl_cloudwatch_write_policy"
   description = "A policy that grants write access to Cloudwatch logs"
-  tags        = { SBO_Billing = "cell_svc" }
 
   policy = jsonencode(
     {
@@ -406,6 +391,8 @@ resource "aws_iam_policy" "cloudwatch_write_policy" {
       ]
     }
   )
+
+  tags = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_cell_svc_task_execution_role_policy_attachment" {
@@ -440,7 +427,7 @@ resource "aws_ecs_capacity_provider" "cells_cas" {
     }
   }
 
-  tags = { SBO_Billing = "cell_svc" }
+  tags = var.tags
 }
 
 resource "aws_ecs_cluster_capacity_providers" "cas" {
@@ -456,7 +443,7 @@ resource "aws_appautoscaling_target" "cells_ecs_target" {
   resource_id        = "service/${aws_ecs_cluster.cell_svc_ecs_cluster.name}/${aws_ecs_service.cell_svc_ecs_service.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
-  tags               = { SBO_Billing = "cell_svc" }
+  tags               = var.tags
 }
 
 ## Policy for CPU tracking

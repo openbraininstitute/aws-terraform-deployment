@@ -1,9 +1,6 @@
 provider "aws" {
   default_tags {
-    tags = {
-      SBO_Billing = "cell_svc"
-    }
+    tags = var.tags
   }
   region = var.aws_region
 }
-

@@ -73,3 +73,9 @@ variable "amazon_linux_ecs_ami_id" {
 variable "allowed_source_ip_cidr_blocks" {
   type = list(string)
 }
+
+variable "tags" {
+  description = "Tags"
+  default     = { SBO_Billing = "cell_svc" }
+  type        = map(string)
+}

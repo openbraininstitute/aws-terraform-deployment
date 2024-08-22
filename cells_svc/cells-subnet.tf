@@ -5,10 +5,7 @@ resource "aws_subnet" "cells" {
   cidr_block              = "10.0.6.0/24"
   map_public_ip_on_launch = false
 
-  tags = {
-    Name        = "cells"
-    SBO_Billing = "cell_svc"
-  }
+  tags = merge(var.tags, { Name = "cells" })
 }
 
 # Link route table to cells network
@@ -66,8 +63,6 @@ resource "aws_network_acl" "cells" {
     from_port  = 0
     to_port    = 0
   }
-  tags = {
-    Name        = "cells_acl"
-    SBO_Billing = "cell_svc"
-  }
+
+  tags = merge(var.tags, { Name = "cells_acl" })
 }
