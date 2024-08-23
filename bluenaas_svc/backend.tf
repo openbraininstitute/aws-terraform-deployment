@@ -139,8 +139,35 @@ resource "aws_ecs_task_definition" "bluenaas_ecs_definition" {
 
       environment = [
         {
+          name  = "APP_DEBUG"
+          value = "${var.debug}"
+        },
+        {
           name  = "BASE_PATH"
           value = "${var.base_path}"
+        },
+        {
+          name  = "KC_SERVER_URI"
+          value = "${var.keycloak_server_url}"
+        },
+        {
+          name  = "KC_REALM_NAME"
+          value = "SBO"
+        },
+        {
+          name  = "DEPLOYMENT_ENV"
+          value = "${var.deployment_env}"
+        },
+      ]
+
+      secrets = [
+        {
+          name      = "KC_CLIENT_ID"
+          valueFrom = "${var.secrets_arn}:KC_CLIENT_ID::"
+        },
+        {
+          name      = "KC_CLIENT_SECRET"
+          valueFrom = "${var.secrets_arn}:KC_CLIENT_SECRET::"
         }
       ]
 
@@ -280,6 +307,11 @@ resource "aws_iam_policy" "ecs_task_logs_bluenaas" {
 resource "aws_iam_role_policy_attachment" "dockerhub" {
   role       = aws_iam_role.ecs_bluenaas_task_execution_role.name
   policy_arn = var.dockerhub_access_iam_policy_arn
+}
+
+resource "aws_iam_role_policy_attachment" "secrets" {
+  role       = aws_iam_role.ecs_bluenaas_task_execution_role.name
+  policy_arn = aws_iam_policy.secrets_access.arn
 }
 
 resource "aws_iam_role_policy_attachment" "execution_logs" {

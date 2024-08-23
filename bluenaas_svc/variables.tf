@@ -40,6 +40,28 @@ variable "dockerhub_access_iam_policy_arn" {
   type        = string
 }
 
+variable "secrets_arn" {
+  description = "ARN of the secret containing secrets for BlueNaaS service"
+  type        = string
+}
+
+variable "deployment_env" {
+  description = "Environment in which the service is deployed"
+  type        = string
+  default     = "production"
+}
+
+variable "keycloak_server_url" {
+  description = "URL of the Keycloak server"
+  type        = string
+}
+
+variable "debug" {
+  description = "Debug flag"
+  type        = string
+  default     = "false"
+}
+
 variable "internet_access_route_id" {
   type = string
 }
