@@ -275,3 +275,13 @@ module "thumbnail_generation_api" {
   thumbnail_generation_api_base_path        = "/api/thumbnail-generation"
   thumbnail_generation_api_log_group_name   = "thumbnail_generation_api"
 }
+
+module "dashboards" {
+  source = "./dashboards"
+
+  aws_region       = var.aws_region
+  load_balancer_id = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  load_balancer_target_suffixes = {
+    "AccountingService" = module.accounting_svc.accounting_lb_rule_suffix
+  }
+}
