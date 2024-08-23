@@ -2,7 +2,8 @@
 
 source "$(dirname ${0})/common.sh"
 
-OUTPUT_FILE=${1:-"untagged_resources.csv"}
+OUTPUT_FILE_U=${1:-"untagged_resources.csv"}
+OUTPUT_FILE_I=${2:-"ignored_resources.csv"}
 UNTAGGED_RESOURCES=$(aws resource-explorer-2 search --query-string="region:us-east-1 -tag.key:${TAG_KEY}")
 
 
@@ -513,16 +514,22 @@ function get_untagged_vol {
 # Append the output from each 'get_untagged_*' function into a temporary file
 run_script_fns "tag verification" "get_untagged_"
 
-# Include the list of non-supported / erroneous resources
-arn_filter="$(echo -n $(cat ${OUTPUT_FILE_TMP} | cut -d${CSV_SEP} -f1 | sed "s|${ARN_UNKNOWN_SUFFIX}||g") | tr ' ' '|')"
-echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[].Arn" | grep -v -E "${arn_filter}" | \
-                             sed -r "s|(.*)|\1${CSV_SEP}${TAG_IGNORED}|" >> ${OUTPUT_FILE_TMP}
+# Generate the output CSV with all of the deducted tags, if any
+output_result_csv ${OUTPUT_FILE_U}
 
-# Generate the output CSV with all of the deducted tags
-output_result_csv ${OUTPUT_FILE}
+# Generate the output CSV with all of the ignored/erroneous resources, if any
+if [[ -f ${OUTPUT_FILE_U} ]]; then
+    arn_filter="$(echo -n $(sed 1d ${OUTPUT_FILE_U} | cut -d${CSV_SEP} -f1 | sed "s|${ARN_UNKNOWN_SUFFIX}||g") | tr ' ' '|')"
+    echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[].Arn" | grep -v -E "${arn_filter}" | \
+                                 sed -r "s|(.*)|\1${CSV_SEP}${TAG_IGNORED}|" > ${OUTPUT_FILE_TMP}
+else
+    echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[].Arn" | sed -r "s|(.*)|\1${CSV_SEP}${TAG_IGNORED}|" > ${OUTPUT_FILE_TMP}
+fi
+
+output_result_csv ${OUTPUT_FILE_I}
 
 # Finally, provide a summary of the results obtained
-num_resources_untagged=$(sed 1d ${OUTPUT_FILE} 2>/dev/null | grep -v "${TAG_IGNORED}" | wc -l)
-num_resources_ignored=$(grep "${TAG_IGNORED}" ${OUTPUT_FILE} 2>/dev/null | wc -l)
-echo -e "\n\n\nFound ${num_resources_untagged} resources untagged, including ${num_resources_ignored} additional resources" \
+num_resources_untagged=$(sed 1d ${OUTPUT_FILE_U} 2>/dev/null | wc -l)
+num_resources_ignored=$(sed 1d ${OUTPUT_FILE_I}  2>/dev/null | wc -l)
+echo -e "\n\n\nFound ${num_resources_untagged} resources untagged and ${num_resources_ignored} additional resources" \
         "ignored / not available.\nSee next CI jobs for further information and downloadable artifacts."

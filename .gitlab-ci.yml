@@ -63,10 +63,11 @@ deploy:
   dependencies:
     - deploy
   script:
-    - bash .gitlab-ci-scripts/resource_tagging/1_verify_untagged.sh $OUTPUT_UNTAGGED
+    - bash .gitlab-ci-scripts/resource_tagging/1_verify_untagged.sh $OUTPUT_UNTAGGED $OUTPUT_IGNORED
   artifacts:
     paths:
       - $OUTPUT_UNTAGGED
+      - $OUTPUT_IGNORED
     expire_in: 2 hrs
     public: false
 
@@ -91,12 +92,12 @@ deploy:
     - job: 2_tag_resources
       artifacts: true
   script:
-    - bash .gitlab-ci-scripts/resource_tagging/3_generate_report.sh $OUTPUT_UNTAGGED $OUTPUT_MODIFIED $OUTPUT_IGNORED $OUTPUT_TAGGED
+    - bash .gitlab-ci-scripts/resource_tagging/3_generate_report.sh $OUTPUT_UNTAGGED $OUTPUT_IGNORED $OUTPUT_MODIFIED $OUTPUT_TAGGED
   artifacts:
     paths:
       - $OUTPUT_UNTAGGED
-      - $OUTPUT_MODIFIED
       - $OUTPUT_IGNORED
+      - $OUTPUT_MODIFIED
       - $OUTPUT_TAGGED
     expire_in: 1 week
 
