@@ -234,6 +234,7 @@ locals {
       "Ecs:StartTask",
       "ecs:StopTask",
       "ssm:StartSession",
+      "ecs:TagResource"
     ]
     Resource = "*"
   })
