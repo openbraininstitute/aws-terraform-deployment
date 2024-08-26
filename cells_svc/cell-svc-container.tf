@@ -227,10 +227,10 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
         }
       ]
       healthcheck = {
-        command     = ["CMD-SHELL", "exit 0"] // TODO: not exit 0
+        command     = ["CMD", "/code/scripts/healthcheck.sh"]
         interval    = 30
         timeout     = 5
-        startPeriod = 60
+        startPeriod = 5
         retries     = 3
       }
       logConfiguration = {

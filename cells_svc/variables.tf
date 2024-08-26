@@ -13,7 +13,7 @@ variable "cell_svc_log_group_name" {
 }
 
 variable "cell_svc_docker_image_url" {
-  default     = "bluebrain/obp-sonata-cell-position@sha256:b38f6a6a7236dd5e7a89d2355ab4ad8eb635c701bd62285a1548fa9b22a24d1e"
+  default     = "bluebrain/obp-sonata-cell-position:2024.8.2"
   type        = string
   description = "docker image for the sonata-cell-service"
   sensitive   = false
