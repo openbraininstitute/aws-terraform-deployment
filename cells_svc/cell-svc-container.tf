@@ -214,7 +214,13 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
           protocol      = "tcp"
         }
       ]
-      mountPoints = []
+      mountPoints = [
+        {
+          readOnly      = true
+          sourceVolume  = "sbo-project-data"
+          containerPath = "/sbo/data/project"
+        }
+      ]
       healthcheck = {
         command     = ["CMD-SHELL", "exit 0"] // TODO: not exit 0
         interval    = 30
