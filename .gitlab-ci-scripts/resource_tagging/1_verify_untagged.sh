@@ -19,7 +19,7 @@ function get_arn_list {
 # Helper function to determine if a resource is valid after a threshold from the last reported date
 function is_resource_valid {
     local last_reported_date=$(echo ${UNTAGGED_RESOURCES} | jq -r ".Resources[] | select(.Arn == \"${1}\") | .LastReportedAt")
-    local elapsed=$(($(date +%s) - $(date -d "${last_reported_date}" +%s)))
+    local elapsed=$(get_elapsed "${last_reported_date}")
     
     [[ ${elapsed} -le ${RESOURCE_VALID_THRESHOLD} ]] && return 0 || return 1
 }

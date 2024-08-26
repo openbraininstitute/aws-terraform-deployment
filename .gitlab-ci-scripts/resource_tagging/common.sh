@@ -8,7 +8,8 @@ TAG_KEY="SBO_Billing"
 AUTOTAG_KEY="SBO_Billing:auto-tag"
 TAG_UNKNOWN="unknown"
 TAG_IGNORED="ignored/error"
-RESOURCE_VALID_THRESHOLD=172800  # 48 hours (in seconds)
+RESOURCE_VALID_THRESHOLD=$((48 * 3600))  # 48 hours (in seconds)
+COMMENT_UPDATE_THRESHOLD=$((24 * 3600))  # 24 hours (in seconds)
 ARN_UNKNOWN_SUFFIX="##__DELETED__##"
 CSV_SEP=','
 CSV_HEADER="ARN${CSV_SEP}Owner"
@@ -82,6 +83,11 @@ function restore_spaces {
             echo "${input}" | sed "s|${SPACE_KEYWORD}| |g"
         done
     fi
+}
+
+# Helper function to calculate the elapsed time (in seconds) since a given date
+function get_elapsed {
+    echo -n $(($(date +%s) - $(date -d "${1}" +%s)))
 }
 
 # Helper function to run the specific functions from each script
