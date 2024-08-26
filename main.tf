@@ -282,6 +282,9 @@ module "dashboards" {
   aws_region       = var.aws_region
   load_balancer_id = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
   load_balancer_target_suffixes = {
-    "AccountingService" = module.accounting_svc.accounting_lb_rule_suffix
+    "AccountingService"  = module.accounting_svc.lb_rule_suffix
+    "SonataCellService"  = module.cells_svc.lb_rule_suffix
+    "KGInference"        = module.kg_inference_api.lb_rule_suffix
+    "ThumbnailGenerator" = module.thumbnail_generation_api.lb_rule_suffix
   }
 }
