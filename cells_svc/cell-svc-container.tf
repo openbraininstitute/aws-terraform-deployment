@@ -195,6 +195,11 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
 
   network_mode = "awsvpc"
 
+  volume {
+    name      = "sbo-project-data"
+    host_path = "/sbo/data/project"
+  }
+
   container_definitions = jsonencode([
     {
       memory      = 1024
