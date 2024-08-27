@@ -12,7 +12,10 @@ module "ml_ecs_service_backend" {
 
   # Enables ECS Exec
   enable_execute_command = true
-  enable_autoscaling     = false
+
+  enable_autoscaling       = true
+  autoscaling_max_capacity = 5
+  autoscaling_min_capacity = 1
 
   # Container definition(s)
   container_definitions = {
