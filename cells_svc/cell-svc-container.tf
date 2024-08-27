@@ -1,7 +1,7 @@
 # Definition for sonata-cell-service
 
 # Instead of running on Fargate, it currently runs on an EC2 instance
-# (`cells_svc_ec2_launch_template`) which is an called an "ECS Instance"
+# (`cells_svc_ec2_launch_template`) which is called an "ECS Instance"
 # This then hosts ECS "tasks"; which are the containers
 
 # For now, only public data is used, and it is stored on the s3 bucket:
@@ -190,6 +190,8 @@ resource "aws_vpc_security_group_egress_rule" "cell_svc_task_egress_tcp_udp" {
 resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
   family = "cell_svc_task_family"
 
+  requires_compatibilities = ["EC2"]
+
   execution_role_arn = aws_iam_role.ecs_cell_svc_task_execution_role.arn
   task_role_arn      = aws_iam_role.ecs_cell_svc_task_role.arn
 
@@ -198,6 +200,10 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
   volume {
     name      = "sbo-project-data"
     host_path = "/sbo/data/project"
+  }
+  volume {
+    name      = "in-memory"
+    host_path = "/dev/shm"
   }
 
   container_definitions = jsonencode([
@@ -224,8 +230,21 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
           readOnly      = true
           sourceVolume  = "sbo-project-data"
           containerPath = "/sbo/data/project"
+        },
+        {
+          sourceVolume  = "in-memory"
+          containerPath = "/tmp"
         }
       ]
+      linuxParameters = {
+        tmpfs = [
+          {
+            containerPath = "/tmp"
+            size          = 262144 # size in KiB
+            mountOptions  = ["rw", "noexec", "nosuid"]
+          }
+        ]
+      }
       healthcheck = {
         command     = ["CMD", "/code/scripts/healthcheck.sh"]
         interval    = 30
@@ -246,7 +265,7 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
   ])
 
   cpu    = 256
-  memory = 1024
+  memory = 1280
 
   tags = var.tags
 }
