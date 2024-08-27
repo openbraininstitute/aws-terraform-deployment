@@ -286,5 +286,8 @@ module "dashboards" {
     "SonataCellService"  = module.cells_svc.lb_rule_suffix
     "KGInference"        = module.kg_inference_api.lb_rule_suffix
     "ThumbnailGenerator" = module.thumbnail_generation_api.lb_rule_suffix
+    "KeyCloak"           = module.thumbnail_generation_api.lb_rule_suffix
+    "NexusFusion"        = module.nexus.fusion_lb_rule_suffix
+    "NexusDelta"         = module.nexus.delta_lb_rule_suffix
   }
 }
