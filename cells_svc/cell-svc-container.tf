@@ -201,14 +201,10 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
     name      = "sbo-project-data"
     host_path = "/sbo/data/project"
   }
-  volume {
-    name      = "in-memory"
-    host_path = "/dev/shm"
-  }
 
   container_definitions = jsonencode([
     {
-      memory      = 1024
+      memory      = 1536
       cpu         = 256
       networkMode = "awsvpc"
       family      = "sbocellsvc"
@@ -230,17 +226,13 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
           readOnly      = true
           sourceVolume  = "sbo-project-data"
           containerPath = "/sbo/data/project"
-        },
-        {
-          sourceVolume  = "in-memory"
-          containerPath = "/tmp"
         }
       ]
       linuxParameters = {
         tmpfs = [
           {
             containerPath = "/tmp"
-            size          = 262144 # size in KiB
+            size          = 512 # size in MiB
             mountOptions  = ["rw", "noexec", "nosuid"]
           }
         ]
@@ -265,7 +257,7 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
   ])
 
   cpu    = 256
-  memory = 1280
+  memory = 1536
 
   tags = var.tags
 }
