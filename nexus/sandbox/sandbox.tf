@@ -121,6 +121,8 @@ module "blazegraph" {
   subnet_security_group_id    = module.networking.main_subnet_sg_id
   ecs_task_execution_role_arn = module.iam.nexus_ecs_task_execution_role_arn
 
+  dockerhub_credentials_arn = module.iam.dockerhub_credentials_arn
+
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
 

@@ -36,6 +36,8 @@ module "blazegraph_obp_bg" {
   blazegraph_efs_name      = "blazegraph-obp-bg"
   efs_blazegraph_data_dir  = "/bg-data"
 
+  dockerhub_credentials_arn = module.iam.dockerhub_credentials_arn
+
   subnet_id                   = module.networking.subnet_id
   subnet_security_group_id    = module.networking.main_subnet_sg_id
   ecs_task_execution_role_arn = module.iam.nexus_ecs_task_execution_role_arn
@@ -61,6 +63,8 @@ module "blazegraph_obp_composite" {
   blazegraph_instance_name = "blazegraph-obp-composite"
   blazegraph_efs_name      = "blazegraph-obp-composite"
   efs_blazegraph_data_dir  = "/bg-data"
+
+  dockerhub_credentials_arn = module.iam.dockerhub_credentials_arn
 
   subnet_id                   = module.networking.subnet_id
   subnet_security_group_id    = module.networking.main_subnet_sg_id

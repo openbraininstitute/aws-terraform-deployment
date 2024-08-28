@@ -27,6 +27,11 @@ variable "ecs_task_execution_role_arn" {
   description = "The ARN of the ECS task execution role that is used by the ECS agent"
 }
 
+variable "dockerhub_credentials_arn" {
+  type        = string
+  description = "ARN of the secret that contains valid Dockerhub credentials to pull docker images while authenticated."
+}
+
 # Blazegraph specific
 
 variable "blazegraph_cpu" {

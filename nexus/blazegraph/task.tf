@@ -65,6 +65,9 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
           condition     = "COMPLETE"
         }
       ]
+      repositoryCredentials = {
+        credentialsParameter = var.dockerhub_credentials_arn
+      }
     },
     {
       name      = "blazegraph-config"
@@ -94,6 +97,9 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
           containerPath = "/var/lib/blazegraph/config"
         }
       ]
+      repositoryCredentials = {
+        credentialsParameter = var.dockerhub_credentials_arn
+      }
     }
   ])
 
