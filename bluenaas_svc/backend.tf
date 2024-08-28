@@ -1,6 +1,6 @@
 locals {
-  cpu    = 1024
-  memory = 2048
+  cpu    = 4096
+  memory = 8192
 }
 
 resource "aws_cloudwatch_log_group" "bluenaas_ecs_task_logs" {
@@ -168,6 +168,10 @@ resource "aws_ecs_task_definition" "bluenaas_ecs_definition" {
         {
           name      = "KC_CLIENT_SECRET"
           valueFrom = "${var.secrets_arn}:KC_CLIENT_SECRET::"
+        },
+        {
+          name      = "SENTRY_DSN"
+          valueFrom = "${var.secrets_arn}:SENTRY_DSN::"
         }
       ]
 
