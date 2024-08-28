@@ -19,6 +19,31 @@ EOF
 }
 
 #tfsec:ignore:aws-iam-no-policy-wildcards
+resource "aws_iam_policy" "nexus_ecs_execute_command" {
+  name = "nexus-ecsTaskExecutionRole"
+  policy = jsonencode({
+    "Version" = "2012-10-17",
+    "Statement" = [
+      {
+        "Effect" = "Allow",
+        "Action" = [
+          "ssmmessages:CreateControlChannel",
+          "ssmmessages:CreateDataChannel",
+          "ssmmessages:OpenControlChannel",
+          "ssmmessages:OpenDataChannel"
+        ],
+        "Resource" = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "nexus_execute_command_access" {
+  role       = aws_iam_role.nexus_ecs_task_execution.name
+  policy_arn = aws_iam_policy.nexus_ecs_execute_command.arn
+}
+
+#tfsec:ignore:aws-iam-no-policy-wildcards
 resource "aws_iam_policy" "cloudwatch_write_policy" {
   name        = "NexusCloudwatchWritePolicy"
   description = "A policy that grants write access to Cloudwatch logs"
