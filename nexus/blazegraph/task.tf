@@ -101,14 +101,17 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
   memory                   = var.blazegraph_memory
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = var.ecs_task_execution_role_arn
+  ephemeral_storage {
+    size_in_gib = 25
+  }
 
   volume {
     name = "efs-blazegraph-config"
     efs_volume_configuration {
-      file_system_id     = aws_efs_file_system.blazegraph.id
+      file_system_id     = aws_efs_file_system.blazegraph_config.id
       transit_encryption = "ENABLED"
       authorization_config {
-        access_point_id = aws_efs_access_point.blazegraph.id
+        access_point_id = aws_efs_access_point.blazegraph_config.id
         iam             = "DISABLED"
       }
     }

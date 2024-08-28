@@ -151,10 +151,11 @@ module "delta" {
   delta_cpu    = 1024
   delta_memory = 2048
 
-  delta_instance_name = "delta-sandbox"
-  delta_efs_name      = "delta-sandbox" # legacy name so that the efs doesn't get modified
-  s3_bucket_arn       = aws_s3_bucket.nexus_delta.arn
-  delta_java_opts     = ""
+  delta_instance_name        = "delta-sandbox"
+  delta_docker_image_version = "latest"
+  delta_efs_name             = "delta-sandbox" # legacy name so that the efs doesn't get modified
+  s3_bucket_arn              = aws_s3_bucket.nexus_delta.arn
+  delta_java_opts            = ""
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn

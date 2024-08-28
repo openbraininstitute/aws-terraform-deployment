@@ -15,7 +15,7 @@ module "postgres_cluster_obp" {
 }
 
 # Blazegraph instance dedicated to Blazegraph views
-module "blazegraph_obp_bg_2" {
+module "blazegraph_obp_bg_3" {
   source = "./blazegraph"
 
   providers = {
@@ -25,10 +25,10 @@ module "blazegraph_obp_bg_2" {
   blazegraph_cpu              = 4096
   blazegraph_memory           = 10240
   blazegraph_docker_image_url = "bluebrain/blazegraph-nexus:2.1.6-RC-21-jre"
-  blazegraph_java_opts        = "-Djava.awt.headless=true -Djetty.maxFormContentSize=40000000 -XX:MaxDirectMemorySize=600m -Xms5g -Xmx5g -XX:+UseG1GC "
+  blazegraph_java_opts        = "-Djava.awt.headless=true -Djetty.maxFormContentSize=80000000 -XX:MaxDirectMemorySize=600m -Xms5g -Xmx5g -XX:+UseG1GC "
 
-  blazegraph_instance_name = "blazegraph-obp-bg-2"
-  blazegraph_efs_name      = "blazegraph-obp-bg-2"
+  blazegraph_instance_name = "blazegraph-obp-bg-3"
+  blazegraph_efs_name      = "blazegraph-obp-bg-3"
   efs_blazegraph_data_dir  = "/bg-data"
 
   subnet_id                   = module.networking.subnet_id
@@ -42,7 +42,7 @@ module "blazegraph_obp_bg_2" {
 }
 
 # Blazegraph instance dedicated to composite views
-module "blazegraph_obp_composite_2" {
+module "blazegraph_obp_composite_3" {
   source = "./blazegraph"
 
   providers = {
@@ -52,10 +52,10 @@ module "blazegraph_obp_composite_2" {
   blazegraph_cpu              = 4096
   blazegraph_memory           = 10240
   blazegraph_docker_image_url = "bluebrain/blazegraph-nexus:2.1.6-RC-21-jre"
-  blazegraph_java_opts        = "-Djava.awt.headless=true -Djetty.maxFormContentSize=40000000 -XX:MaxDirectMemorySize=600m -Xms5g -Xmx5g -XX:+UseG1GC "
+  blazegraph_java_opts        = "-Djava.awt.headless=true -Djetty.maxFormContentSize=80000000 -XX:MaxDirectMemorySize=600m -Xms5g -Xmx5g -XX:+UseG1GC "
 
-  blazegraph_instance_name = "blazegraph-obp-composite-2"
-  blazegraph_efs_name      = "blazegraph-obp-composite-2"
+  blazegraph_instance_name = "blazegraph-obp-composite-3"
+  blazegraph_efs_name      = "blazegraph-obp-composite-3"
   efs_blazegraph_data_dir  = "/bg-data"
 
   subnet_id                   = module.networking.subnet_id
@@ -121,8 +121,8 @@ module "nexus_delta_obp_2" {
   elasticsearch_endpoint = module.elasticsearch_obp_2.http_endpoint
   elastic_password_arn   = module.elasticsearch_obp_2.elastic_user_credentials_secret_arn
 
-  blazegraph_endpoint           = module.blazegraph_obp_bg_2.http_endpoint
-  blazegraph_composite_endpoint = module.blazegraph_obp_composite_2.http_endpoint
+  blazegraph_endpoint           = module.blazegraph_obp_bg_3.http_endpoint
+  blazegraph_composite_endpoint = module.blazegraph_obp_composite_3.http_endpoint
 
   delta_search_config_commit = "a8a05d1ee7aa0a2d89231c9f55f38f934dc24153"
   delta_config_file          = "delta-obp-2.conf"
