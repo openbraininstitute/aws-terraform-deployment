@@ -7,6 +7,8 @@ resource "aws_ecs_service" "blazegraph_ecs_service" {
   cluster     = var.ecs_cluster_arn
   launch_type = "FARGATE"
 
+  enable_execute_command = true
+
   task_definition = aws_ecs_task_definition.blazegraph_ecs_definition.arn
   desired_count   = 1
 
