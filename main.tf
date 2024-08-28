@@ -91,7 +91,8 @@ module "viz" {
 
   domain_zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
   nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
-
+  alb_listener_arn               = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  # TODO remove after migrations
   aws_lb_alb_arn                 = data.terraform_remote_state.common.outputs.public_alb_arn
   aws_security_group_alb_id      = data.terraform_remote_state.common.outputs.public_alb_sg_id
   route_table_private_subnets_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id

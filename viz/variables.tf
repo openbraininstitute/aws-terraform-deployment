@@ -29,6 +29,10 @@ variable "domain_zone_id" {
   default = ""
 }
 
+variable "alb_listener_arn" {
+  type = string
+}
+
 variable "epfl_cidr" {
   type        = string
   default     = "128.178.0.0/15"
@@ -99,11 +103,6 @@ variable "viz_postgresql_admin_username" {
   default   = "admin"
   sensitive = false
 }
-variable "aws_lb_alb_arn" {
-  type      = string
-  sensitive = false
-  default   = ""
-}
 
 variable "aws_security_group_alb_id" {
   type      = string
@@ -127,19 +126,34 @@ variable "viz_vsm_proxy_log_group_name" {
   sensitive   = false
 }
 
-variable "viz_vsm_hostname" {
-  default     = "sbo-vsm.shapes-registry.org"
+variable "vsm_base_path" {
+  default     = "/vsm/master"
   type        = string
-  description = "Hostname at which VSM container can be reached via the ALB"
+  description = "Basepath at which VSM container can be reached via the ALB"
   sensitive   = false
 }
+
+variable "vsm_proxy_base_path" {
+  default     = "/vsm/proxy"
+  type        = string
+  description = "Basepath  at which VSM container can be reached via the ALB"
+  sensitive   = false
+}
+
+# TODO REMOVE AFTER MIGRATIONS
+variable "aws_lb_alb_arn" {
+  type      = string
+  sensitive = false
+  default   = ""
+}
+
 
 variable "viz_vsm_proxy_hostname" {
   default     = "sbo-vsm-proxy.shapes-registry.org"
   type        = string
   description = "Hostname at which VSM-Proxy container can be reached via the ALB"
   sensitive   = false
-}
+ }
 
 variable "viz_vsm_docker_image_url" {
   type        = string
