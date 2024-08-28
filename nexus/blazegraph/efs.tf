@@ -48,6 +48,12 @@ resource "aws_efs_file_system" "blazegraph_config" {
   }
 }
 
+resource "aws_efs_mount_target" "efs_for_blazegraph_config" {
+  file_system_id  = aws_efs_file_system.blazegraph_config.id
+  subnet_id       = var.subnet_id
+  security_groups = [var.subnet_security_group_id]
+}
+
 resource "aws_efs_backup_policy" "policy_config" {
   file_system_id = aws_efs_file_system.blazegraph_config.id
 
