@@ -153,7 +153,7 @@ variable "viz_vsm_proxy_hostname" {
   type        = string
   description = "Hostname at which VSM-Proxy container can be reached via the ALB"
   sensitive   = false
- }
+}
 
 variable "viz_vsm_docker_image_url" {
   type        = string

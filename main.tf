@@ -89,9 +89,9 @@ module "viz" {
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
   secret_dockerhub_arn            = module.dockerhub_secret.dockerhub_credentials_arn
 
-  domain_zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
-  nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
-  alb_listener_arn               = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  domain_zone_id   = data.terraform_remote_state.common.outputs.domain_zone_id
+  nat_gateway_id   = data.terraform_remote_state.common.outputs.nat_gateway_id
+  alb_listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
   # TODO remove after migrations
   aws_lb_alb_arn                 = data.terraform_remote_state.common.outputs.public_alb_arn
   aws_security_group_alb_id      = data.terraform_remote_state.common.outputs.public_alb_sg_id
