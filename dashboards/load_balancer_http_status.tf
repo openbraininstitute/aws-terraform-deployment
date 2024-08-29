@@ -3,10 +3,7 @@ locals {
     "HTTPCode_Target_2XX_Count",
     "HTTPCode_Target_4XX_Count",
     "HTTPCode_Target_5XX_Count",
-    "TargetResponseTime",
   ]
-
-  load_balancer_suffix = join("/", slice(split("/", var.load_balancer_id), 1, 4))
 }
 
 resource "aws_cloudwatch_dashboard" "load_balancer_http_status" {
@@ -26,6 +23,8 @@ resource "aws_cloudwatch_dashboard" "load_balancer_http_status" {
           "region" : var.aws_region,
           "stat" : "Sum",
           "period" : 300
+          "yAxis" : { "left" : { "min" : 0 }
+          }
         }
       }
     ]
