@@ -87,6 +87,19 @@ function update_untagged_elb_lr_default {
     _update_untagged_base "elasticloadbalancing" "listener-rule"
 }
 
+# Function to update the untagged EC2 Launch Templates (ParallelCluster) with their owner
+function update_untagged_lt_pcluster {
+    function _tag_resource_fn {
+        [[ ${tag} != "hpc:parallelcluster" ]] && return 1
+
+        local lt_id=$(echo ${arn} | cut -d'/' -f2)
+        aws ec2 create-tags --resources "${lt_id}" --tags "${tags_json}"
+        return $?
+    }
+
+    _update_untagged_base "ec2" "launch-template"
+}
+
 
 ######################
 # Main Functionality #
