@@ -48,7 +48,7 @@ module "ml" {
   route_table_private_subnets_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
 
   dockerhub_credentials_arn = module.dockerhub_secret.dockerhub_credentials_arn
-  backend_image_url         = "bluebrain/scholarag:v0.0.4"
+  backend_image_url         = "bluebrain/scholarag:v0.0.5"
   etl_image_url             = "bluebrain/scholaretl:v0.0.5"
   agent_image_url           = "bluebrain/agents:v0.7.0"
   grobid_image_url          = "lfoppiano/grobid:0.8.0"
