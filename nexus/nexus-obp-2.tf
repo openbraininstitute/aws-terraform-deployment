@@ -15,7 +15,7 @@ module "postgres_cluster_obp" {
 }
 
 # Blazegraph instance dedicated to Blazegraph views
-module "blazegraph_obp_bg_3" {
+module "blazegraph_obp_bg_4" {
   source = "./blazegraph"
 
   providers = {
@@ -27,8 +27,8 @@ module "blazegraph_obp_bg_3" {
   blazegraph_docker_image_url = "bluebrain/blazegraph-nexus:2.1.6-RC-21-jre"
   blazegraph_java_opts        = "-Djava.awt.headless=true -Djetty.maxFormContentSize=80000000 -XX:MaxDirectMemorySize=600m -Xms5g -Xmx5g -XX:+UseG1GC "
 
-  blazegraph_instance_name = "blazegraph-obp-bg-3"
-  blazegraph_efs_name      = "blazegraph-obp-bg-3"
+  blazegraph_instance_name = "blazegraph-obp-bg-4"
+  blazegraph_efs_name      = "blazegraph-obp-bg-4"
   efs_blazegraph_data_dir  = "/bg-data"
 
   dockerhub_credentials_arn = module.iam.dockerhub_credentials_arn
@@ -44,7 +44,7 @@ module "blazegraph_obp_bg_3" {
 }
 
 # Blazegraph instance dedicated to composite views
-module "blazegraph_obp_composite_3" {
+module "blazegraph_obp_composite_4" {
   source = "./blazegraph"
 
   providers = {
@@ -54,10 +54,10 @@ module "blazegraph_obp_composite_3" {
   blazegraph_cpu              = 4096
   blazegraph_memory           = 10240
   blazegraph_docker_image_url = "bluebrain/blazegraph-nexus:2.1.6-RC-21-jre"
-  blazegraph_java_opts        = "-Djava.awt.headless=true -Djetty.maxFormContentSize=80000000 -XX:MaxDirectMemorySize=600m -Xms5g -Xmx5g -XX:+UseG1GC "
+  blazegraph_java_opts        = "-Djetty.maxFormContentSize=80000000 -XX:MaxDirectMemorySize=600m -Xms5g -Xmx5g -XX:+UseG1GC "
 
-  blazegraph_instance_name = "blazegraph-obp-composite-3"
-  blazegraph_efs_name      = "blazegraph-obp-composite-3"
+  blazegraph_instance_name = "blazegraph-obp-composite-4"
+  blazegraph_efs_name      = "blazegraph-obp-composite-4"
   efs_blazegraph_data_dir  = "/bg-data"
 
   dockerhub_credentials_arn = module.iam.dockerhub_credentials_arn
@@ -103,8 +103,8 @@ module "nexus_delta_obp_2" {
   subnet_security_group_id = module.networking.main_subnet_sg_id
 
   delta_cpu       = 4096
-  delta_memory    = 8192
-  delta_java_opts = "-Xms4g -Xmx4g"
+  delta_memory    = 10240
+  delta_java_opts = "-Xss2m -Xms5g -Xmx5g"
 
   delta_instance_name        = "nexus-delta-obp-2"
   delta_docker_image_version = "1.10.0-M17"
@@ -125,8 +125,8 @@ module "nexus_delta_obp_2" {
   elasticsearch_endpoint = module.elasticsearch_obp_2.http_endpoint
   elastic_password_arn   = module.elasticsearch_obp_2.elastic_user_credentials_secret_arn
 
-  blazegraph_endpoint           = module.blazegraph_obp_bg_3.http_endpoint
-  blazegraph_composite_endpoint = module.blazegraph_obp_composite_3.http_endpoint
+  blazegraph_endpoint           = module.blazegraph_obp_bg_4.http_endpoint
+  blazegraph_composite_endpoint = module.blazegraph_obp_composite_4.http_endpoint
 
   delta_search_config_commit = "a8a05d1ee7aa0a2d89231c9f55f38f934dc24153"
   delta_config_file          = "delta-obp-2.conf"

@@ -39,6 +39,10 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
           value = "/opt/delta-config/delta.conf"
         },
         {
+          name  = "JAVA_OPTS"
+          value = var.delta_java_opts
+        },
+        {
           name  = "POSTGRES_HOST"
           value = var.postgres_host
         },
