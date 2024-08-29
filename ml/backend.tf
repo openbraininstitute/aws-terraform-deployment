@@ -4,7 +4,7 @@ module "ml_ecs_service_backend" {
 
   name                  = "ml-ecs-service-backend"
   cluster_arn           = local.ecs_cluster_arn
-  task_exec_secret_arns = [var.secret_manager_arn, var.dockerhub_credentials_arn]
+  task_exec_secret_arns = [var.secret_manager_arn]
 
 
   cpu    = 1024
@@ -20,16 +20,13 @@ module "ml_ecs_service_backend" {
   # Container definition(s)
   container_definitions = {
     ml_backend = {
-      cpu         = 1024
-      memory      = 4096
-      networkMode = "awsvpc"
-      family      = "ml_backend"
-      essential   = true
-      image       = var.backend_image_url
-      name        = "ml_backend"
-      repository_credentials = {
-        credentialsParameter = var.dockerhub_credentials_arn
-      }
+      cpu                      = 1024
+      memory                   = 4096
+      networkMode              = "awsvpc"
+      family                   = "ml_backend"
+      essential                = true
+      image                    = var.backend_image_url
+      name                     = "ml_backend"
       readonly_root_filesystem = false
       port_mappings = [
         {
