@@ -107,6 +107,7 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
   memory                   = var.blazegraph_memory
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = var.ecs_task_execution_role_arn
+  task_role_arn            = var.ecs_task_execution_role_arn
   ephemeral_storage {
     size_in_gib = 25
   }

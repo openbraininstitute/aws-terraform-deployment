@@ -110,6 +110,7 @@ resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
   cpu                      = local.fusion_cpu
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = var.ecs_task_execution_role_arn
+  task_role_arn            = var.ecs_task_execution_role_arn
 }
 
 
