@@ -14,6 +14,5 @@ module "ship" {
   target_base_uri             = "https://openbluebrain.com/api/delta/v1"
   target_bucket               = "nexus-obp-production"
   target_bucket_arn           = aws_s3_bucket.nexus_obp.arn
-  second_target_bucket_arn    = aws_s3_bucket.nexus.arn
   aws_region                  = var.aws_region
 }

@@ -37,8 +37,7 @@ resource "aws_iam_policy" "ship_target_bucket_access" {
         ]
         Effect = "Allow"
         Resource = [
-          var.target_bucket_arn, "${var.target_bucket_arn}/*",
-          var.second_target_bucket_arn, "${var.second_target_bucket_arn}/*"
+          var.target_bucket_arn, "${var.target_bucket_arn}/*"
         ]
       },
     ]
