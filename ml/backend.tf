@@ -81,7 +81,6 @@ module "ml_ecs_service_backend" {
           name  = "SENTRY_ENVIRONMENT"
           value = "AWS_prod"
         },
-        /*
         {
           name  = "SCHOLARAG__REDIS__HOST"
           value = aws_elasticache_cluster.ml_redis_cluster.cache_nodes[0].address
@@ -89,7 +88,7 @@ module "ml_ecs_service_backend" {
         {
           name  = "SCHOLARAG__REDIS__PORT"
           value = aws_elasticache_cluster.ml_redis_cluster.port
-        }, */
+        },
         {
           name  = "SCHOLARAG__KEYCLOAK__ISSUER"
           value = "https://openbluebrain.com/auth/realms/SBO"
