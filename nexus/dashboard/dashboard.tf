@@ -11,10 +11,14 @@ resource "aws_cloudwatch_dashboard" "main" {
         height = 5
 
         properties = {
-          metrics = [
-            ["AWS/ECS", "CPUUtilization", "ServiceName", var.delta_service_name, "ClusterName", var.cluster_name, { region = var.aws_region }],
-            ["AWS/ECS", "CPUUtilization", "ServiceName", var.delta_service_name, "ClusterName", var.cluster_name, { region = var.aws_region }],
-          ]
+          "metrics" : [
+            [
+              "AWS/ECS", "CPUUtilization", "ServiceName", var.delta_service_name, "ClusterName", var.cluster_name,
+              { "stat" : "Minimum", "region" : var.aws_region }
+            ],
+            ["...", { "stat" : "Maximum", "region" : var.aws_region }],
+            ["...", { "stat" : "Average", "region" : var.aws_region }]
+          ],
           view    = "timeSeries"
           stacked = false
           region  = var.aws_region
@@ -31,14 +35,18 @@ resource "aws_cloudwatch_dashboard" "main" {
         height = 5
 
         properties = {
-          metrics = [
-            ["AWS/ECS", "MemoryUtilization", "ServiceName", var.delta_service_name, "ClusterName", var.cluster_name, { region = var.aws_region }],
-            ["AWS/ECS", "MemoryUtilization", "ServiceName", var.delta_service_name, "ClusterName", var.cluster_name, { region = var.aws_region }],
-          ]
+          "metrics" : [
+            [
+              "AWS/ECS", "MemoryUtilization", "ServiceName", var.delta_service_name, "ClusterName", var.cluster_name,
+              { "stat" : "Minimum", "region" : var.aws_region }
+            ],
+            ["...", { "stat" : "Maximum", "region" : var.aws_region }],
+            ["...", { "stat" : "Average", "region" : var.aws_region }]
+          ],
           view    = "timeSeries"
           stacked = false
           region  = var.aws_region
-          title   = "MemoryUtilization: Average"
+          title   = "Delta Memory"
           period  = 300
           yAxis   = { left = { min = 0 } }
         }
@@ -51,18 +59,31 @@ resource "aws_cloudwatch_dashboard" "main" {
         height = 5
 
         properties = {
-          metrics = [
-            ["AWS/RDS", "CPUUtilization", "DBClusterIdentifier", var.database, { "stat" : "Average", "region" : var.aws_region }]
-          ]
-          legend   = { position = "hidden" }
-          region   = var.aws_region
-          liveData = false
-          timezone = "UTC"
-          title    = "Postgres CPU"
-          view     = "timeSeries"
-          stacked  = false
-          period   = 300
-          yAxis    = { left = { min = 0, max = 100 } }
+          "period" : 300,
+          "metrics" : [
+            [
+              "AWS/RDS", "CPUUtilization", "DBClusterIdentifier", var.database,
+              { "label" : var.database, "region" : var.aws_region }
+            ],
+            [
+              "...", "DBInstanceIdentifier", "${var.database}-instance-1",
+              { "label" : "${var.database}-instance-1", "region" : var.aws_region }
+            ],
+            [
+              "...", "${var.database}-instance-2", { "label" : "${var.database}-instance-2", "region" : var.aws_region }
+            ],
+            ["...", "${var.database}-instance-3", { "label" : "${var.database}-instance-3", "region" : var.aws_region }]
+          ],
+          "region" : var.aws_region,
+          "stat" : "Average",
+          "title" : "Database CPUUtilization",
+          "yAxis" : {
+            "left" : {
+              "min" : 0
+            }
+          },
+          "view" : "timeSeries",
+          "stacked" : false
         }
       },
       {
@@ -73,18 +94,31 @@ resource "aws_cloudwatch_dashboard" "main" {
         height = 5
 
         properties = {
-          metrics = [
-            ["AWS/RDS", "FreeableMemory", "DBClusterIdentifier", var.database, { "stat" : "Average", "region" : var.aws_region }]
-          ]
-          legend   = { position = "hidden" }
-          region   = var.aws_region
-          liveData = false
-          timezone = "UTC"
-          title    = "Postgres Freeable Memory"
-          view     = "timeSeries"
-          stacked  = false
-          period   = 300
-          yAxis    = { left = { min = 0 } }
+          "period" : 300,
+          "metrics" : [
+            [
+              "AWS/RDS", "DatabaseConnections", "DBClusterIdentifier", var.database,
+              { "label" : var.database, "region" : var.aws_region }
+            ],
+            [
+              "...", "DBInstanceIdentifier", "${var.database}-1",
+              { "label" : "${var.database}-instance-1", "region" : var.aws_region }
+            ],
+            [
+              "...", "${var.database}-instance-2", { "label" : "${var.database}-instance-2", "region" : var.aws_region }
+            ],
+            ["...", "${var.database}-instance-3", { "label" : "${var.database}-instance-3", "region" : var.aws_region }]
+          ],
+          "region" : var.aws_region,
+          "stat" : "Average",
+          "title" : "Database Connections",
+          "yAxis" : {
+            "left" : {
+              "min" : 0
+            }
+          },
+          "view" : "timeSeries",
+          "stacked" : false
         }
       },
       {
@@ -95,20 +129,19 @@ resource "aws_cloudwatch_dashboard" "main" {
         height = 5
 
         properties = {
-          metrics = [
-            ["AWS/ECS", "CPUUtilization", "ClusterName", var.cluster_name, "ServiceName", var.blazegraph_service_name, { "stat" : "Average", "region" : var.aws_region }],
-            ["AWS/ECS", "CPUUtilization", "ClusterName", var.cluster_name, "ServiceName", var.blazegraph_composite_service_name, { "stat" : "Average", "region" : var.aws_region }],
-            ["AWS/ECS", "CPUUtilization", "ClusterName", var.cluster_name, "ServiceName", var.blazegraph_service_name, { "stat" : "Average", "region" : var.aws_region }],
-          ]
-          legend   = { position = "bottom" }
-          region   = var.aws_region
-          liveData = false
-          timezone = "UTC"
-          title    = "BlazeGraph CPU"
-          view     = "timeSeries"
-          stacked  = false
-          period   = 300
-          yAxis    = { left = { min = 0, max = 100 } }
+          "metrics" : [
+            [
+              "AWS/ECS", "CPUUtilization", "ServiceName", var.blazegraph_service_name, "ClusterName", var.cluster_name,
+              { "stat" : "Minimum", "region" : var.aws_region }
+            ],
+            ["...", { "stat" : "Maximum", "region" : var.aws_region }],
+            ["...", { "stat" : "Average", "region" : var.aws_region }]
+          ],
+          "period" : 300,
+          "region" : var.aws_region,
+          "stacked" : false,
+          "title" : "Blazegraph CPU utilization",
+          "view" : "timeSeries"
         }
       },
       {
@@ -119,20 +152,19 @@ resource "aws_cloudwatch_dashboard" "main" {
         height = 5
 
         properties = {
-          metrics = [
-            ["AWS/ECS", "MemoryUtilization", "ClusterName", var.cluster_name, "ServiceName", var.blazegraph_service_name, { "stat" : "Average", "region" : var.aws_region }],
-            ["...", var.blazegraph_composite_service_name, { "stat" : "Average", "region" : var.aws_region }],
-            ["...", var.blazegraph_service_name, { "stat" : "Average", "region" : var.aws_region }]
-          ]
-          legend   = { position = "bottom" }
-          region   = var.aws_region
-          liveData = false
-          timezone = "UTC"
-          title    = "BlazeGraph Memory"
-          view     = "timeSeries"
-          stacked  = false
-          period   = 300
-          yAxis    = { left = { min = 0, max = 100 } }
+          "metrics" : [
+            [
+              "AWS/ECS", "MemoryUtilization", "ServiceName", var.blazegraph_service_name, "ClusterName",
+              var.cluster_name, { "stat" : "Minimum", "region" : var.aws_region }
+            ],
+            ["...", { "stat" : "Maximum", "region" : var.aws_region }],
+            ["...", { "stat" : "Average", "region" : var.aws_region }]
+          ],
+          "period" : 300,
+          "region" : var.aws_region,
+          "stacked" : false,
+          "title" : "Blazegraph Memory utilization",
+          "view" : "timeSeries"
         }
       },
       {
@@ -143,8 +175,57 @@ resource "aws_cloudwatch_dashboard" "main" {
         height = 5
 
         properties = {
+          "metrics" : [
+            [
+              "AWS/ECS", "CPUUtilization", "ServiceName", var.blazegraph_composite_service_name, "ClusterName",
+              var.cluster_name, { "stat" : "Minimum", "region" : var.aws_region }
+            ],
+            ["...", { "stat" : "Maximum", "region" : var.aws_region }],
+            ["...", { "stat" : "Average", "region" : var.aws_region }]
+          ],
+          "period" : 300,
+          "region" : var.aws_region,
+          "stacked" : false,
+          "title" : "Blazegraph Search CPU utilization",
+          "view" : "timeSeries"
+        }
+      },
+      {
+        type   = "metric"
+        x      = 10
+        y      = 15
+        width  = 10
+        height = 5
+
+        properties = {
+          "metrics" : [
+            [
+              "AWS/ECS", "MemoryUtilization", "ServiceName", var.blazegraph_composite_service_name, "ClusterName",
+              var.cluster_name, { "stat" : "Minimum", "region" : var.aws_region }
+            ],
+            ["...", { "stat" : "Maximum", "region" : var.aws_region }],
+            ["...", { "stat" : "Average", "region" : var.aws_region }]
+          ],
+          "period" : 300,
+          "region" : var.aws_region,
+          "stacked" : false,
+          "title" : "Blazegraph Search Memory utilization",
+          "view" : "timeSeries"
+        }
+      },
+      {
+        type   = "metric"
+        x      = 0
+        y      = 20
+        width  = 10
+        height = 5
+
+        properties = {
           metrics = [
-            ["AWS/S3", "BucketSizeBytes", "BucketName", var.s3_bucket, "StorageType", "StandardStorage", { "stat" : "Average", "region" : var.aws_region }]
+            [
+              "AWS/S3", "BucketSizeBytes", "BucketName", var.s3_bucket, "StorageType", "StandardStorage",
+              { "stat" : "Average", "region" : var.aws_region }
+            ]
           ]
           legend   = { position = "hidden" }
           region   = var.aws_region
@@ -162,14 +243,20 @@ resource "aws_cloudwatch_dashboard" "main" {
       {
         type   = "metric"
         x      = 10
-        y      = 15
+        y      = 20
         width  = 10
         height = 5
 
         properties = {
           metrics = [
-            ["AWS/S3", "BytesDownloaded", "BucketName", var.s3_bucket, "FilterId", "EntireBucket", { region = var.aws_region }],
-            ["AWS/S3", "BytesUploaded", "BucketName", var.s3_bucket, "FilterId", "EntireBucket", { region = var.aws_region }],
+            [
+              "AWS/S3", "BytesDownloaded", "BucketName", var.s3_bucket, "FilterId", "EntireBucket",
+              { region = var.aws_region }
+            ],
+            [
+              "AWS/S3", "BytesUploaded", "BucketName", var.s3_bucket, "FilterId", "EntireBucket",
+              { region = var.aws_region }
+            ],
           ]
           legend   = { position = "hidden" }
           region   = var.aws_region
@@ -186,13 +273,16 @@ resource "aws_cloudwatch_dashboard" "main" {
       {
         type   = "metric"
         x      = 0
-        y      = 20
+        y      = 25
         width  = 10
         height = 5
 
         properties = {
           metrics = [
-            ["AWS/ECS", "CPUUtilization", "ClusterName", var.cluster_name, "ServiceName", var.fusion_service_name, { "stat" : "Average", "region" : var.aws_region }],
+            [
+              "AWS/ECS", "CPUUtilization", "ClusterName", var.cluster_name, "ServiceName", var.fusion_service_name,
+              { "stat" : "Average", "region" : var.aws_region }
+            ],
             ["...", var.fusion_service_name, { "stat" : "Average", "region" : var.aws_region }]
           ]
           legend   = { position = "bottom" }
@@ -209,13 +299,16 @@ resource "aws_cloudwatch_dashboard" "main" {
       {
         type   = "metric"
         x      = 10
-        y      = 20
+        y      = 25
         width  = 10
         height = 5
 
         properties = {
           metrics = [
-            ["AWS/ECS", "MemoryUtilization", "ClusterName", var.cluster_name, "ServiceName", var.fusion_service_name, { "stat" : "Average", "region" : var.aws_region }],
+            [
+              "AWS/ECS", "MemoryUtilization", "ClusterName", var.cluster_name, "ServiceName", var.fusion_service_name,
+              { "stat" : "Average", "region" : var.aws_region }
+            ],
             ["...", var.fusion_service_name, { "stat" : "Average", "region" : var.aws_region }]
           ]
           legend   = { position = "bottom" }
