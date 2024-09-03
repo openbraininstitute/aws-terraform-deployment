@@ -23,7 +23,7 @@ module "ml_ecs_service_etl" {
       image                    = var.etl_image_url
       name                     = "ml_etl"
       readonly_root_filesystem = false
-      command                  = ["scholaretl-api", "--port", "3000"]
+      entrypoint               = ["scholaretl-api", "--port", "3000"]
 
       port_mappings = [
         {
