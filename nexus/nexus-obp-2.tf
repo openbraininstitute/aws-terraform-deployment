@@ -111,7 +111,7 @@ module "nexus_delta_obp_2" {
   delta_java_opts = "-Xss2m -Xms5g -Xmx5g"
 
   delta_instance_name        = "nexus-delta-obp-2"
-  delta_docker_image_version = "1.10.0-M17"
+  delta_docker_image_version = "1.10.0-M18"
   delta_efs_name             = "delta-obp-2"
   s3_bucket_arn              = aws_s3_bucket.nexus_obp.arn
 
@@ -132,7 +132,7 @@ module "nexus_delta_obp_2" {
   blazegraph_endpoint           = module.blazegraph_obp_bg_4.http_endpoint
   blazegraph_composite_endpoint = module.blazegraph_obp_composite_4.http_endpoint
 
-  delta_search_config_commit = "a8a05d1ee7aa0a2d89231c9f55f38f934dc24153"
+  delta_search_config_commit = "c13aafaac2c4ba9fa296fdfbc7bc6fa5a4d98fca"
   delta_config_file          = "delta-obp-2.conf"
 
   aws_region = var.aws_region
