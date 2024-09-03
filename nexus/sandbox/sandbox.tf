@@ -16,6 +16,8 @@ locals {
   psql_secret_arn             = "arn:aws:secretsmanager:us-east-1:058264116529:secret:nexus_postgresql_password-CPEAmn"
   ec_api_key_arn              = "arn:aws:secretsmanager:us-east-1:058264116529:secret:ec_api_key-ET0Y5u"
   nise_dockerhub_password_arn = "arn:aws:secretsmanager:us-east-1:058264116529:secret:nise_dockerhub_password-l7Bs4c"
+
+  database_id = "nexus-db"
 }
 
 data "aws_secretsmanager_secret_version" "nise_dockerhub_password" {
@@ -71,21 +73,17 @@ module "iam" {
   secret_recovery_window_in_days = 0
 }
 
-module "postgres_aurora" {
-  source = "../postgres_aurora"
+module "postgres" {
+  source = "../postgres"
 
-  nexus_database_password_arn = local.psql_secret_arn
+  database_identifier      = local.database_id
+  subnets_ids              = module.networking.psql_subnets_ids
+  subnet_security_group_id = module.networking.main_subnet_sg_id
+  instance_class           = "db.t4g.small"
 
-  nexus_postgresql_name          = "sandbox"
-  nexus_postgresql_database_name = "nexus_user"
-  nexus_database_username        = "nexus_user"
-  subnets_ids                    = module.networking.psql_subnets_ids
-  security_group_id              = module.networking.main_subnet_sg_id
-  vpc_id                         = local.vpc_id
+  nexus_postgresql_database_password_arn = local.psql_secret_arn
 
-
-  min_capacity = 1
-  max_capacity = 1
+  aws_region = local.aws_region
 }
 
 module "elasticcloud" {
@@ -167,8 +165,8 @@ module "delta" {
   delta_target_group_arn    = module.delta_target_group.lb_target_group_arn
   dockerhub_credentials_arn = module.iam.dockerhub_credentials_arn
 
-  postgres_host        = module.postgres_aurora.writer_endpoint
-  postgres_reader_host = module.postgres_aurora.reader_endpoint
+  postgres_host        = module.postgres.host
+  postgres_reader_host = module.postgres.host
 
   elasticsearch_endpoint = module.elasticcloud.http_endpoint
   elastic_password_arn   = module.elasticcloud.elastic_user_credentials_secret_arn
@@ -215,4 +213,16 @@ module "fusion" {
 
   nexus_delta_endpoint   = "https://openbluebrain.sandbox/api/nexus/v1"
   nexus_fusion_base_path = "/nexus/web/"
+}
+
+module "dashboard" {
+  source                            = "../dashboard"
+  blazegraph_composite_service_name = module.blazegraph.service_name
+  blazegraph_service_name           = module.blazegraph.service_name
+  database                          = local.database_id
+  delta_service_name                = module.delta.service_name
+  fusion_service_name               = module.fusion.service_name
+  s3_bucket                         = aws_s3_bucket.nexus_delta.bucket
+
+  aws_region = local.aws_region
 }

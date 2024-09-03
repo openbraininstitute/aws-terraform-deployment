@@ -101,3 +101,16 @@ provider "aws" {
   }
   region = var.aws_region
 }
+
+provider "aws" {
+  alias = "nexus_dashboard_tags"
+  default_tags {
+    tags = merge(
+      var.default_tags,
+      {
+        Nexus = "dashboard"
+      }
+    )
+  }
+  region = var.aws_region
+}

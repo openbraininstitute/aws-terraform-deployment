@@ -6,6 +6,10 @@ variable "instance_class" {
   type = string
 }
 
+variable "database_identifier" {
+  type = string
+}
+
 variable "nexus_postgresql_database_name" {
   type    = string
   default = "nexus_user"

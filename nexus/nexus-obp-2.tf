@@ -1,3 +1,7 @@
+locals {
+  database_id = "nexus-obp-db"
+}
+
 module "postgres_cluster_obp" {
   source = "./postgres_cluster"
 
@@ -5,7 +9,7 @@ module "postgres_cluster_obp" {
     aws = aws.nexus_postgres_tags
   }
 
-  cluster_identifier              = "nexus-obp-db"
+  cluster_identifier              = local.database_id
   subnets_ids                     = module.networking.psql_subnets_ids
   security_group_id               = module.networking.main_subnet_sg_id
   instance_class                  = "db.m5d.large"
@@ -130,6 +134,23 @@ module "nexus_delta_obp_2" {
 
   delta_search_config_commit = "a8a05d1ee7aa0a2d89231c9f55f38f934dc24153"
   delta_config_file          = "delta-obp-2.conf"
+
+  aws_region = var.aws_region
+}
+
+module "dashboard" {
+  source = "./dashboard"
+
+  providers = {
+    aws = aws.nexus_dashboard_tags
+  }
+
+  blazegraph_composite_service_name = module.blazegraph_obp_composite_4.service_name
+  blazegraph_service_name           = module.blazegraph_obp_bg_4.service_name
+  database                          = local.database_id
+  delta_service_name                = module.nexus_delta_obp_2.service_name
+  fusion_service_name               = module.nexus_fusion_obp.service_name
+  s3_bucket                         = aws_s3_bucket.nexus_obp.bucket
 
   aws_region = var.aws_region
 }

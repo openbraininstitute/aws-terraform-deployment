@@ -1,12 +1,3 @@
-locals {
-  clustername            = "nexus_ecs_cluster"
-  delta_servicename      = "delta_ecs_service"
-  blazegraph_servicename = "blazegraph-main_ecs_service"
-  fusion_servicename     = "fusion_ecs_service"
-  nexus_bucket           = "nexus-bucket-production"
-  DB_cluster             = "nexusobp"
-}
-
 resource "aws_cloudwatch_dashboard" "main" {
   dashboard_name = "Nexus"
 
@@ -21,8 +12,8 @@ resource "aws_cloudwatch_dashboard" "main" {
 
         properties = {
           metrics = [
-            ["AWS/ECS", "CPUUtilization", "ServiceName", local.delta_servicename, "ClusterName", local.clustername, { region = var.aws_region }],
-            ["AWS/ECS", "CPUUtilization", "ServiceName", "nexus-delta_ecs_service", "ClusterName", local.clustername, { region = var.aws_region }],
+            ["AWS/ECS", "CPUUtilization", "ServiceName", var.delta_service_name, "ClusterName", var.cluster_name, { region = var.aws_region }],
+            ["AWS/ECS", "CPUUtilization", "ServiceName", var.delta_service_name, "ClusterName", var.cluster_name, { region = var.aws_region }],
           ]
           view    = "timeSeries"
           stacked = false
@@ -41,8 +32,8 @@ resource "aws_cloudwatch_dashboard" "main" {
 
         properties = {
           metrics = [
-            ["AWS/ECS", "MemoryUtilization", "ServiceName", local.delta_servicename, "ClusterName", local.clustername, { region = var.aws_region }],
-            ["AWS/ECS", "MemoryUtilization", "ServiceName", "nexus-delta_ecs_service", "ClusterName", local.clustername, { region = var.aws_region }],
+            ["AWS/ECS", "MemoryUtilization", "ServiceName", var.delta_service_name, "ClusterName", var.cluster_name, { region = var.aws_region }],
+            ["AWS/ECS", "MemoryUtilization", "ServiceName", var.delta_service_name, "ClusterName", var.cluster_name, { region = var.aws_region }],
           ]
           view    = "timeSeries"
           stacked = false
@@ -61,7 +52,7 @@ resource "aws_cloudwatch_dashboard" "main" {
 
         properties = {
           metrics = [
-            ["AWS/RDS", "CPUUtilization", "DBClusterIdentifier", local.DB_cluster, { "stat" : "Average", "region" : "us-east-1" }]
+            ["AWS/RDS", "CPUUtilization", "DBClusterIdentifier", var.database, { "stat" : "Average", "region" : var.aws_region }]
           ]
           legend   = { position = "hidden" }
           region   = var.aws_region
@@ -83,7 +74,7 @@ resource "aws_cloudwatch_dashboard" "main" {
 
         properties = {
           metrics = [
-            ["AWS/RDS", "FreeableMemory", "DBClusterIdentifier", local.DB_cluster, { "stat" : "Average", "region" : "us-east-1" }]
+            ["AWS/RDS", "FreeableMemory", "DBClusterIdentifier", var.database, { "stat" : "Average", "region" : var.aws_region }]
           ]
           legend   = { position = "hidden" }
           region   = var.aws_region
@@ -105,9 +96,9 @@ resource "aws_cloudwatch_dashboard" "main" {
 
         properties = {
           metrics = [
-            ["AWS/ECS", "CPUUtilization", "ClusterName", local.clustername, "ServiceName", local.blazegraph_servicename, { "stat" : "Average", "region" : "us-east-1" }],
-            ["AWS/ECS", "CPUUtilization", "ClusterName", local.clustername, "ServiceName", "blazegraph-composite_ecs_service", { "stat" : "Average", "region" : "us-east-1" }],
-            ["AWS/ECS", "CPUUtilization", "ClusterName", local.clustername, "ServiceName", "blazegraph_ecs_service", { "stat" : "Average", "region" : "us-east-1" }],
+            ["AWS/ECS", "CPUUtilization", "ClusterName", var.cluster_name, "ServiceName", var.blazegraph_service_name, { "stat" : "Average", "region" : var.aws_region }],
+            ["AWS/ECS", "CPUUtilization", "ClusterName", var.cluster_name, "ServiceName", var.blazegraph_composite_service_name, { "stat" : "Average", "region" : var.aws_region }],
+            ["AWS/ECS", "CPUUtilization", "ClusterName", var.cluster_name, "ServiceName", var.blazegraph_service_name, { "stat" : "Average", "region" : var.aws_region }],
           ]
           legend   = { position = "bottom" }
           region   = var.aws_region
@@ -129,9 +120,9 @@ resource "aws_cloudwatch_dashboard" "main" {
 
         properties = {
           metrics = [
-            ["AWS/ECS", "MemoryUtilization", "ClusterName", local.clustername, "ServiceName", local.blazegraph_servicename, { "stat" : "Average", "region" : "us-east-1" }],
-            ["...", "blazegraph-composite_ecs_service", { "stat" : "Average", "region" : "us-east-1" }],
-            ["...", "blazegraph_ecs_service", { "stat" : "Average", "region" : "us-east-1" }]
+            ["AWS/ECS", "MemoryUtilization", "ClusterName", var.cluster_name, "ServiceName", var.blazegraph_service_name, { "stat" : "Average", "region" : var.aws_region }],
+            ["...", var.blazegraph_composite_service_name, { "stat" : "Average", "region" : var.aws_region }],
+            ["...", var.blazegraph_service_name, { "stat" : "Average", "region" : var.aws_region }]
           ]
           legend   = { position = "bottom" }
           region   = var.aws_region
@@ -153,10 +144,10 @@ resource "aws_cloudwatch_dashboard" "main" {
 
         properties = {
           metrics = [
-            ["AWS/S3", "BucketSizeBytes", "BucketName", local.nexus_bucket, "StorageType", "StandardStorage", { "stat" : "Average", "region" : "us-east-1" }]
+            ["AWS/S3", "BucketSizeBytes", "BucketName", var.s3_bucket, "StorageType", "StandardStorage", { "stat" : "Average", "region" : var.aws_region }]
           ]
           legend   = { position = "hidden" }
-          region   = "us-east-1"
+          region   = var.aws_region
           liveData = false
           timezone = "UTC"
           start    = "-PT168H"
@@ -177,11 +168,11 @@ resource "aws_cloudwatch_dashboard" "main" {
 
         properties = {
           metrics = [
-            ["AWS/S3", "BytesDownloaded", "BucketName", local.nexus_bucket, "FilterId", "EntireBucket", { region = var.aws_region }],
-            ["AWS/S3", "BytesUploaded", "BucketName", local.nexus_bucket, "FilterId", "EntireBucket", { region = var.aws_region }],
+            ["AWS/S3", "BytesDownloaded", "BucketName", var.s3_bucket, "FilterId", "EntireBucket", { region = var.aws_region }],
+            ["AWS/S3", "BytesUploaded", "BucketName", var.s3_bucket, "FilterId", "EntireBucket", { region = var.aws_region }],
           ]
           legend   = { position = "hidden" }
-          region   = "us-east-1"
+          region   = var.aws_region
           liveData = false
           timezone = "UTC"
           title    = "S3 Bytes Transferred"
@@ -201,8 +192,8 @@ resource "aws_cloudwatch_dashboard" "main" {
 
         properties = {
           metrics = [
-            ["AWS/ECS", "CPUUtilization", "ClusterName", local.clustername, "ServiceName", local.fusion_servicename, { "stat" : "Average", "region" : "us-east-1" }],
-            ["...", "nexus_fusion_ecs_service", { "stat" : "Average", "region" : "us-east-1" }]
+            ["AWS/ECS", "CPUUtilization", "ClusterName", var.cluster_name, "ServiceName", var.fusion_service_name, { "stat" : "Average", "region" : var.aws_region }],
+            ["...", var.fusion_service_name, { "stat" : "Average", "region" : var.aws_region }]
           ]
           legend   = { position = "bottom" }
           region   = var.aws_region
@@ -224,8 +215,8 @@ resource "aws_cloudwatch_dashboard" "main" {
 
         properties = {
           metrics = [
-            ["AWS/ECS", "MemoryUtilization", "ClusterName", local.clustername, "ServiceName", local.fusion_servicename, { "stat" : "Average", "region" : "us-east-1" }],
-            ["...", "nexus_fusion_ecs_service", { "stat" : "Average", "region" : "us-east-1" }]
+            ["AWS/ECS", "MemoryUtilization", "ClusterName", var.cluster_name, "ServiceName", var.fusion_service_name, { "stat" : "Average", "region" : var.aws_region }],
+            ["...", var.fusion_service_name, { "stat" : "Average", "region" : var.aws_region }]
           ]
           legend   = { position = "bottom" }
           region   = var.aws_region

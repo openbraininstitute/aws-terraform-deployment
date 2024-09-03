@@ -9,3 +9,7 @@ locals {
 output "http_endpoint" {
   value = "http://${local.blazegraph_dns_name}:${var.blazegraph_port}/blazegraph"
 }
+
+output "service_name" {
+  value = aws_ecs_service.blazegraph_ecs_service.name
+}
