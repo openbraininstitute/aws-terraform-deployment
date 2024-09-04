@@ -6,7 +6,7 @@ module "ml_ecs_service_etl" {
   cluster_arn = local.ecs_cluster_arn
 
   cpu    = 1024
-  memory = 2048
+  memory = 1024
 
   # Enables ECS Exec
   enable_execute_command = true
@@ -15,7 +15,7 @@ module "ml_ecs_service_etl" {
   # Container definition(s)
   container_definitions = {
     ml_etl = {
-      memory                   = 2048
+      memory                   = 1024
       cpu                      = 1024
       networkMode              = "awsvpc"
       family                   = "ml_etl"
