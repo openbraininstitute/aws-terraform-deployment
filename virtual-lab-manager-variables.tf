@@ -90,7 +90,7 @@ variable "virtual_lab_manager_deployment_namespace" {
 }
 
 variable "virtual_lab_manager_cross_project_resolvers" {
-  default     = ["public/ephys","public/thalamus","public/ngv","public/multi-vesicular-release","public/hippocampus","public/topological-sampling","bbp/lnmce","public/ngv-anatomy","bbp-external/seu","public/forge","public/sscx","bbp/mouselight","public/morphologies","neurosciencegraph/datamodels","bbp/mmb-point-neuron-framework-model"]
+  default     = ["public/ephys","public/thalamus","public/ngv","public/multi-vesicular-release","public/hippocampus","public/topological-sampling","bbp/lnmce","public/ngv-anatomy","bbp-external/seu","public/forge","public/sscx","bbp/mouselight","public/morphologies","neurosciencegraph/datamodels","bbp/mmb-point-neuron-framework-model", "neurosciencegraph/data"]
   type        = list(string)
   description = "cross project resolver projects for project creation"
   sensitive   = false
