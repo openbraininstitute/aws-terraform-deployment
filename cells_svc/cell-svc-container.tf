@@ -103,6 +103,11 @@ resource "aws_launch_template" "cells_svc_ec2_launch_template" {
   }
 
   tags = var.tags
+
+  tag_specifications {
+    resource_type = "instance"
+    tags          = var.tags
+  }
 }
 
 # The template for the user data script of the EC2 machines that will be used to run the cells ECS cluster
