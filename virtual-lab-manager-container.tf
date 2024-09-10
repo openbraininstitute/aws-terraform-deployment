@@ -219,6 +219,10 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
           name  = "DEPLOYMENT_NAMESPACE"
           value = var.virtual_lab_manager_deployment_namespace
         },
+        {
+          name  = "NEXUS_CROSS_RESOLVER_PROJECTS"
+          value = "${jsonencode(var.virtual_lab_manager_cross_project_resolvers)}"
+        },
       ]
       secrets = [
         {

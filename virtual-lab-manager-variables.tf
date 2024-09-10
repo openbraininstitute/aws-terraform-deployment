@@ -88,3 +88,10 @@ variable "virtual_lab_manager_deployment_namespace" {
   description = "deployment domain use for nexus project base path"
   sensitive   = false
 }
+
+variable "virtual_lab_manager_cross_project_resolvers" {
+  default     = ["public/ephys","public/thalamus","public/ngv","public/multi-vesicular-release","public/hippocampus","public/topological-sampling","bbp/lnmce","public/ngv-anatomy","bbp-external/seu","public/forge","public/sscx","bbp/mouselight","public/morphologies","neurosciencegraph/datamodels","bbp/mmb-point-neuron-framework-model"]
+  type        = list(string)
+  description = "cross project resolver projects for project creation"
+  sensitive   = false
+}
