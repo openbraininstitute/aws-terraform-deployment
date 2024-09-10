@@ -5,8 +5,8 @@ module "ml_ecs_service_etl" {
   name        = "ml-ecs-service-etl"
   cluster_arn = local.ecs_cluster_arn
 
-  cpu    = 512
-  memory = 1024
+  cpu    = 1024
+  memory = 2048
 
   # Enables ECS Exec
   enable_execute_command = true
@@ -15,8 +15,8 @@ module "ml_ecs_service_etl" {
   # Container definition(s)
   container_definitions = {
     ml_etl = {
-      memory                   = 1024
-      cpu                      = 512
+      memory                   = 2048
+      cpu                      = 1024
       networkMode              = "awsvpc"
       family                   = "ml_etl"
       essential                = true
@@ -120,7 +120,7 @@ resource "aws_lb_listener_rule" "ml_etl_rule_private" {
 
   condition {
     path_pattern {
-      values = ["/jats_xml", "/tei_xml", "/xocs_xml", "/core_json", "/grobid_pdf"]
+      values = var.sqs_etl_parser_list
     }
   }
   tags = var.tags

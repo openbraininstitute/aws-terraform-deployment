@@ -144,7 +144,7 @@ variable "ec_param_group" {
 variable "sqs_etl_parser_list" {
   description = "List of parsers deployed behind the load balancer"
   type        = list(string)
-  default     = ["jats_xml", "xocs_xml", "core_json", "grobid_pdf", "pubmed_xml"]
+  default     = ["jats_xml", "xocs_xml", "tei_xml", "grobid_pdf", "pubmed_xml"]
 }
 
 variable "private_alb_dns" {
