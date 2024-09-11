@@ -228,7 +228,7 @@ resource "aws_lb_listener_rule" "ml_backend_listener_rule" {
 
   condition {
     source_ip {
-      values = ["128.178.0.0/15", "192.33.211.0/26"] # EPFL CIDR, BBP DMZ CIDR
+      values = ["0.0.0.0/0"]
     }
   }
   tags = var.tags

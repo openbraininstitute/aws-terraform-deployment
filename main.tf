@@ -74,7 +74,7 @@ module "nexus" {
   domain_zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
   nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
 
-  allowed_source_ip_cidr_blocks = [var.epfl_cidr, data.terraform_remote_state.common.outputs.vpc_cidr_block, var.bbp_dmz_cidr]
+  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 
   public_load_balancer_dns_name = data.terraform_remote_state.common.outputs.public_alb_dns_name
   public_lb_listener_https_arn  = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
@@ -117,7 +117,7 @@ module "cells_svc" {
 
   aws_coreservices_ssh_key_id = module.coreservices_key.key_pair_id
 
-  allowed_source_ip_cidr_blocks = [var.epfl_cidr, var.bbp_dmz_cidr]
+  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 
   amazon_linux_ecs_ami_id = data.aws_ami.amazon_linux_2_ecs.id
 }
@@ -204,7 +204,7 @@ module "core_webapp" {
   dockerhub_credentials_arn            = module.dockerhub_secret.dockerhub_credentials_arn
   core_webapp_base_path                = "/mmb-beta"
   route_table_id                       = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
-  allowed_source_ip_cidr_blocks        = [var.epfl_cidr, data.terraform_remote_state.common.outputs.vpc_cidr_block, var.bbp_dmz_cidr]
+  allowed_source_ip_cidr_blocks        = ["0.0.0.0/0"]
   vpc_cidr_block                       = data.terraform_remote_state.common.outputs.vpc_cidr_block
 
   env_DEBUG = "true"
@@ -250,7 +250,7 @@ module "kg_inference_api" {
 
 
   aws_region                        = var.aws_region
-  allowed_source_ip_cidr_blocks     = [var.epfl_cidr, var.bbp_dmz_cidr]
+  allowed_source_ip_cidr_blocks     = ["0.0.0.0/0"]
   kg_inference_api_docker_image_url = "bluebrain/kg-inference-api:latest"
   kg_inference_api_base_path        = "/api/kg-inference"
   kg_inference_api_log_group_name   = "kg_inference_api"
@@ -271,7 +271,7 @@ module "thumbnail_generation_api" {
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
 
   aws_region                                = var.aws_region
-  allowed_source_ip_cidr_blocks             = [var.epfl_cidr, var.bbp_dmz_cidr]
+  allowed_source_ip_cidr_blocks             = ["0.0.0.0/0"]
   thumbnail_generation_api_docker_image_url = "bluebrain/thumbnail-generation-api:latest"
   thumbnail_generation_api_base_path        = "/api/thumbnail-generation"
   thumbnail_generation_api_log_group_name   = "thumbnail_generation_api"

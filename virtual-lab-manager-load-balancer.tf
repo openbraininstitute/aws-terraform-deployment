@@ -42,7 +42,7 @@ resource "aws_lb_listener_rule" "virtual_lab_manager" {
 
   condition {
     source_ip {
-      values = [var.epfl_cidr, var.bbp_dmz_cidr, format("%s/32", data.aws_nat_gateway.nat_gateway.public_ip)]
+      values = ["0.0.0.0/0"]
     }
   }
 
