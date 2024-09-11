@@ -221,10 +221,11 @@ module "accounting_svc" {
 
   aws_account_id = data.aws_caller_identity.current.account_id
 
-  aws_region               = var.aws_region
-  vpc_id                   = data.terraform_remote_state.common.outputs.vpc_id
-  alb_listener_arn         = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
-  internet_access_route_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  aws_region                    = var.aws_region
+  vpc_id                        = data.terraform_remote_state.common.outputs.vpc_id
+  alb_listener_arn              = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  internet_access_route_id      = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  allowed_source_ip_cidr_blocks = [var.epfl_cidr, var.bbp_dmz_cidr, data.terraform_remote_state.common.outputs.vpc_cidr_block, ]
 
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
