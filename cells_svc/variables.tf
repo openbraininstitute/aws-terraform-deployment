@@ -1,10 +1,3 @@
-variable "cell_svc_hostname" {
-  default     = "sbo-cell-svc.shapes-registry.org"
-  type        = string
-  description = "The hostname for the cell svc"
-  sensitive   = false
-}
-
 variable "cell_svc_log_group_name" {
   default     = "cell_svc"
   type        = string
@@ -46,16 +39,13 @@ variable "dockerhub_credentials_arn" {
   type = string
 }
 
-variable "domain_zone_id" {
-  type = string
-}
-
 variable "public_alb_https_listener_arn" {
   type = string
 }
 
-variable "public_alb_dns_name" {
-  type = string
+variable "root_path" {
+  description = "Base path for the API"
+  type        = string
 }
 
 variable "route_table_private_subnets_id" {

@@ -109,13 +109,12 @@ module "cells_svc" {
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
 
-  domain_zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
-
   public_alb_https_listener_arn  = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
-  public_alb_dns_name            = data.terraform_remote_state.common.outputs.public_alb_dns_name
   route_table_private_subnets_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
 
   aws_coreservices_ssh_key_id = module.coreservices_key.key_pair_id
+
+  root_path = "/api/circuit"
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 

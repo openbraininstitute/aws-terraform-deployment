@@ -105,8 +105,7 @@ resource "aws_launch_template" "cells_svc_ec2_launch_template" {
   tags = var.tags
 
   tag_specifications {
-    resource_type = "instance"
-    tags          = var.tags
+    tags = var.tags
   }
 }
 
@@ -216,9 +215,11 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
       essential   = true
       image       = var.cell_svc_docker_image_url
       name        = "cell_svc"
+
       repositoryCredentials = {
         credentialsParameter = var.dockerhub_credentials_arn
       }
+
       portMappings = [
         {
           hostPort      = 8000
@@ -226,6 +227,7 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
           protocol      = "tcp"
         }
       ]
+
       mountPoints = [
         {
           readOnly      = true
@@ -233,6 +235,7 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
           containerPath = "/sbo/data/project"
         }
       ]
+
       linuxParameters = {
         tmpfs = [
           {
@@ -242,6 +245,14 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
           }
         ]
       }
+
+      environment = [
+        {
+          name  = "ROOT_PATH"
+          value = "${var.root_path}"
+        }
+      ]
+
       healthcheck = {
         command     = ["CMD", "/code/scripts/healthcheck.sh"]
         interval    = 30
@@ -249,6 +260,7 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
         startPeriod = 5
         retries     = 3
       }
+
       logConfiguration = {
         logDriver = "awslogs"
         options = {
