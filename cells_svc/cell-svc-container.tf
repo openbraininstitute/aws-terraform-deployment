@@ -105,7 +105,13 @@ resource "aws_launch_template" "cells_svc_ec2_launch_template" {
   tags = var.tags
 
   tag_specifications {
-    tags = var.tags
+    resource_type = "instance"
+    tags          = var.tags
+  }
+
+  tag_specifications {
+    resource_type = "volume"
+    tags          = var.tags
   }
 }
 
