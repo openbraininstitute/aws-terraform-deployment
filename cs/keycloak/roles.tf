@@ -18,6 +18,30 @@ resource "aws_iam_role" "datasync_s3_role" {
   }
 }
 
+#tfsec:ignore:aws-iam-no-policy-wildcards
+resource "aws_iam_policy" "keycloak_ecs_execute_command" {
+  name = "keycloak-ecsTaskExecutionRole"
+  policy = jsonencode({
+    "Version" = "2012-10-17",
+    "Statement" = [
+      {
+        "Effect" = "Allow",
+        "Action" = [
+          "ssmmessages:CreateControlChannel",
+          "ssmmessages:CreateDataChannel",
+          "ssmmessages:OpenControlChannel",
+          "ssmmessages:OpenDataChannel"
+        ],
+        "Resource" = "*"
+      }
+    ]
+  })
+
+  tags = {
+    SBO_Billing = "keycloak"
+  }
+}
+
 resource "aws_iam_policy" "ecsTaskLogs" {
   name        = "keycloak-ecsTaskLogs"
   description = "Allows ECS tasks to create log streams and log groups in CloudWatch Logs"
