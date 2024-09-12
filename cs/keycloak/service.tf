@@ -14,6 +14,8 @@ resource "aws_ecs_service" "keycloak_service_terraform" {
     container_port   = 8081
   }
 
+  enable_execute_command = true
+
   tags = {
     SBO_Billing = "keycloak"
   }
