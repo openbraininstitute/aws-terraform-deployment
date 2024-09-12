@@ -2,6 +2,14 @@ variable "aws_region" {
   type = string
 }
 
+variable "account_id" {
+  type = string
+}
+
+variable "sbo_billing" {
+  type = string
+}
+
 variable "create_jumphost" {
   type    = bool
   default = false

@@ -11,7 +11,7 @@ provider "aws" {
   default_tags {
     tags = {
       SBO_Billing  = var.sbo_billing
-      "obp:module" = "hpc"
+      "obp:module" = var.sbo_billing
     }
   }
   region = var.aws_region
@@ -71,6 +71,8 @@ module "compute-cluster" {
   source = "./compute-cluster"
 
   aws_region               = var.aws_region
+  account_id               = var.account_id
+  sbo_billing              = var.sbo_billing
   compute_subnet_public_id = module.networking.compute_subnet_public_id
   compute_subnet_id        = var.create_compute_instances ? module.networking.compute_subnet_ids[0] : ""
   compute_hpc_sg_id        = module.security.compute_hpc_sg_id
