@@ -90,6 +90,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
     ]
     TASK_DEFINITION
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_task_execution_role.arn
   volume {
     name = "keycloak-volume"
     efs_volume_configuration {
