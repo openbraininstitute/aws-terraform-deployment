@@ -4,7 +4,7 @@ locals {
 }
 
 resource "aws_cloudwatch_dashboard" "main" {
-  dashboard_name = "Thumbnail-Generation"
+  dashboard_name = "Cells"
 
   dashboard_body = jsonencode({
     widgets = [
