@@ -72,6 +72,11 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
                     "sourceVolume": "keycloak-theme-volume",
                     "containerPath": "/opt/keycloak/themes",
                     "readOnly": false
+                },
+                {
+                    "sourceVolume": "keycloak-providers-volume",
+                    "containerPath": "/opt/keycloak/providers",
+                    "readOnly": false
                 }
             ],
             "volumesFrom": [],
@@ -102,6 +107,13 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
     name = "keycloak-theme-volume"
     efs_volume_configuration {
       file_system_id = aws_efs_file_system.keycloak-theme.id
+      root_directory = "/"
+    }
+  }
+  volume {
+    name = "keycloak-providers-volume"
+    efs_volume_configuration {
+      file_system_id = aws_efs_file_system.keycloak-providers.id
       root_directory = "/"
     }
   }

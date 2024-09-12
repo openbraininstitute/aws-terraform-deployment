@@ -40,6 +40,23 @@ resource "aws_efs_mount_target" "keycloak-theme-mt" {
   subnet_id       = var.efs_mt_subnets[count.index]
 }
 
+resource "aws_efs_file_system" "keycloak-providers" {
+  performance_mode = "generalPurpose"
+  throughput_mode  = "bursting"
+  encrypted        = "false" #tfsec:ignore:aws-efs-enable-at-rest-encryption
+  tags = {
+    Name        = "keycloak-providers"
+    SBO_Billing = "keycloak"
+  }
+}
+
+resource "aws_efs_mount_target" "keycloak-providers-mt" {
+  count           = length(var.efs_mt_subnets)
+  file_system_id  = aws_efs_file_system.keycloak-providers.id
+  security_groups = var.security_groups
+  subnet_id       = var.efs_mt_subnets[count.index]
+}
+
 ### Create S3 bucket to upload certs and conf files
 #tfsec:ignore:aws-s3-enable-bucket-encryption tfsec:ignore:aws-s3-encryption-customer-key tfsec:ignore:aws-s3-enable-bucket-logging tfsec:ignore:aws-s3-enable-versioning
 resource "aws_s3_bucket" "core-services-keycloak" {
