@@ -1,6 +1,6 @@
 locals {
   clustername = "cell_svc_ecs_cluster"
-  servicename = "cell_svc_ecs_service"
+  servicename = "cells_ecs_service"
 }
 
 resource "aws_cloudwatch_dashboard" "main" {
