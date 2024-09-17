@@ -202,6 +202,13 @@ resource "aws_ecs_service" "core_webapp_ecs_service" {
     container_port   = 8000
   }
 
+  load_balancer {
+    target_group_arn = aws_lb_target_group.core_webapp_private.arn
+    container_name   = "core_webapp"
+    container_port   = 8000
+  }
+
+
   network_configuration {
     security_groups  = [aws_security_group.core_webapp_ecs_task.id]
     subnets          = [aws_subnet.core_webapp.id]
