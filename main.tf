@@ -197,6 +197,7 @@ module "core_webapp" {
   vpc_id                               = data.terraform_remote_state.common.outputs.vpc_id
   core_webapp_ecs_number_of_containers = 1
   public_alb_https_listener_arn        = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  private_alb_https_listener_arn       = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
   aws_region                           = var.aws_region
   core_webapp_docker_image_url         = "bluebrain/sbo-core-web-app:latest"
   dockerhub_access_iam_policy_arn      = module.dockerhub_secret.dockerhub_access_iam_policy_arn

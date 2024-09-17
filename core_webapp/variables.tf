@@ -25,6 +25,11 @@ variable "public_alb_https_listener_arn" {
   description = "alb listener to which the https listener rule should be added"
   sensitive   = false
 }
+variable "private_alb_https_listener_arn" {
+  type        = string
+  description = "nlb listener to which the https listener rule should be added"
+  sensitive   = false
+}
 #variable "public_alb_dns_name" {
 #  type        = string
 #  description = "public hostname of the alb, which the poc hostname should be an alias of"
@@ -95,4 +100,3 @@ variable "env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL" {
   sensitive   = false
   description = "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY environment value for the webapp"
 }
-
