@@ -31,8 +31,9 @@ module "cs" {
   db_instance_class   = "db.t3.micro"
   public_alb_listener = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
 
-  preferred_hostname = "openbluebrain.com"
-  redirect_hostnames = ["openbluebrain.ch", "openbrainplatform.org", "openbrainplatform.com"]
+  preferred_hostname   = "openbluebrain.com"
+  redirect_hostnames   = ["openbluebrain.ch", "openbrainplatform.org", "openbrainplatform.com"]
+  keycloak_bucket_name = "core-services-keycloak"
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 }
@@ -52,6 +53,8 @@ module "ml" {
   etl_image_url             = "bluebrain/scholaretl:v0.0.5"
   agent_image_url           = "bluebrain/agents:v0.7.0"
   grobid_image_url          = "lfoppiano/grobid:0.8.0"
+
+  paper_bucket_name = "ml-paper-bucket"
 
   alb_security_group_id = data.terraform_remote_state.common.outputs.public_alb_sg_id
   alb_listener_arn      = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
@@ -76,6 +79,8 @@ module "nexus" {
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 
+  nexus_obp_bucket_name = "nexus-obp-production"
+
   public_load_balancer_dns_name = data.terraform_remote_state.common.outputs.public_alb_dns_name
   public_lb_listener_https_arn  = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
 }
@@ -88,6 +93,8 @@ module "viz" {
 
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
   secret_dockerhub_arn            = module.dockerhub_secret.dockerhub_credentials_arn
+
+  scientific_data_bucket_name = "important-scientific-data"
 
   domain_zone_id   = data.terraform_remote_state.common.outputs.domain_zone_id
   nat_gateway_id   = data.terraform_remote_state.common.outputs.nat_gateway_id

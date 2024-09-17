@@ -10,6 +10,7 @@ locals {
   public_lb_listener_https_arn  = module.nexus_sandbox_setup.public_lb_listener_http_arn
   public_load_balancer_dns_name = module.nexus_sandbox_setup.public_load_balancer_dns_name
   vpc_id                        = module.nexus_sandbox_setup.vpc_id
+  bucket_name                   = "nexus-delta-sandbox"
 
   # All needed secrets from secret manager below
   nexus_secrets_arn           = "arn:aws:secretsmanager:us-east-1:058264116529:secret:nexus-25Vd68"
@@ -40,7 +41,7 @@ resource "aws_service_discovery_http_namespace" "nexus" {
 }
 
 resource "aws_s3_bucket" "nexus_delta" {
-  bucket = "nexus-delta-sandbox"
+  bucket = local.bucket_name
 }
 resource "aws_s3_bucket_public_access_block" "nexus_delta" {
   bucket = aws_s3_bucket.nexus_delta.id

@@ -21,9 +21,8 @@ module "ml_sqs" {
 #tfsec:ignore:aws-s3-encryption-customer-key
 #tfsec:ignore:aws-s3-enable-bucket-logging
 resource "aws_s3_bucket" "ml_paper_bucket" {
-  bucket = "ml-paper-bucket"
-
-  tags = var.tags
+  bucket = var.paper_bucket_name
+  tags   = var.tags
 }
 
 resource "aws_s3_bucket_metric" "ml_paper_metrics" {

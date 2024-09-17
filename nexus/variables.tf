@@ -20,6 +20,10 @@ variable "dockerhub_username" {
   default = "bbpcinisedeploy"
 }
 
+variable "nexus_obp_bucket_name" {
+  type = string
+}
+
 variable "dockerhub_password" {
   type      = string
   sensitive = true

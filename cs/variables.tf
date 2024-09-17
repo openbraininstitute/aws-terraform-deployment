@@ -16,6 +16,10 @@ variable "db_instance_class" {
   type = string
 }
 
+variable "keycloak_bucket_name" {
+  type = string
+}
+
 variable "public_alb_listener" {
   type = string
 }

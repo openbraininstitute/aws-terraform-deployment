@@ -16,7 +16,7 @@ locals {
 #tfsec:ignore:aws-s3-enable-versioning
 #tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket" "nexus_obp" {
-  bucket = "nexus-obp-production"
+  bucket = var.nexus_obp_bucket_name
   tags   = local.s3_tags
 }
 

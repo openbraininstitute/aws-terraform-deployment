@@ -60,7 +60,7 @@ resource "aws_efs_mount_target" "keycloak-providers-mt" {
 ### Create S3 bucket to upload certs and conf files
 #tfsec:ignore:aws-s3-enable-bucket-encryption tfsec:ignore:aws-s3-encryption-customer-key tfsec:ignore:aws-s3-enable-bucket-logging tfsec:ignore:aws-s3-enable-versioning
 resource "aws_s3_bucket" "core-services-keycloak" {
-  bucket = "core-services-keycloak"
+  bucket = var.keycloak_bucket_name
   tags = {
     Name        = "CS Keycloak"
     SBO_Billing = "keycloak"

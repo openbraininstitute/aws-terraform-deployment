@@ -14,6 +14,8 @@ module "keycloak" {
   preferred_hostname = "openbluebrain.com"
   redirect_hostnames = ["openbluebrain.ch", "openbrainplatform.org", "openbrainplatform.com"]
 
+  keycloak_bucket_name = var.keycloak_bucket_name
+
   efs_mt_subnets = module.networking.keycloak_private_subnets
 
   allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks

@@ -8,6 +8,10 @@ variable "vpc_id" {
   type = string
 }
 
+variable "keycloak_bucket_name" {
+  type = string
+}
+
 variable "allowed_source_ip_cidr_blocks" {
   type = list(string)
 }

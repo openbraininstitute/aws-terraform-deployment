@@ -14,6 +14,10 @@ variable "secret_dockerhub_arn" {
   default = ""
 }
 
+variable "scientific_data_bucket_name" {
+  type = string
+}
+
 variable "dockerhub_access_iam_policy_arn" {
   type    = string
   default = ""

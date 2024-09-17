@@ -1,6 +1,6 @@
 resource "aws_s3_bucket" "isd" {
   count  = local.sandbox_resource_count
-  bucket = "important-scientific-data"
+  bucket = var.scientific_data_bucket_name
   tags = {
     Name = "FAKES3"
   }
