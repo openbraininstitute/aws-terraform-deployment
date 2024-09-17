@@ -1,3 +1,7 @@
+locals {
+  nexus_launch_ship_name = "nexus_launch_ship_task"
+}
+
 data "archive_file" "python_lambda_package" {
   type        = "zip"
   source_file = "${path.module}/lambda_function.py"
@@ -15,7 +19,7 @@ resource "random_string" "r" {
 }
 
 resource "aws_lambda_function" "launch_ship" {
-  function_name    = "nexus_launch_ship_task"
+  function_name    = local.nexus_launch_ship_name
   filename         = "${path.module}/lambda_package.zip"
   source_code_hash = data.archive_file.python_lambda_package.output_base64sha256
   role             = aws_iam_role.nexus_ship_lambda.arn
@@ -24,13 +28,18 @@ resource "aws_lambda_function" "launch_ship" {
   handler          = "lambda_function.lambda_handler"
   timeout          = 10
 
+  depends_on = [
+    aws_iam_role_policy_attachment.run_ship_logging_role,
+    aws_cloudwatch_log_group.launch_ship,
+  ]
+
   tracing_config {
     mode = "Active"
   }
 }
 
 resource "aws_cloudwatch_log_group" "launch_ship" {
-  name              = "nexus_launch_ship_task"
+  name              = local.nexus_launch_ship_name
   skip_destroy      = false
   retention_in_days = 7
   kms_key_id        = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key

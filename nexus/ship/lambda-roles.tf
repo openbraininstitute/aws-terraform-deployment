@@ -58,6 +58,32 @@ resource "aws_iam_policy" "run_ship_ecs_task" {
   })
 }
 
+#tfsec:ignore:aws-iam-no-policy-wildcards
+resource "aws_iam_policy" "run_ship_cloudwatch_write" {
+  name        = "NexusRunShipCloudwatchWritePolicy"
+  description = "A policy that grants write access to Cloudwatch logs"
+
+  policy = jsonencode(
+    {
+      "Version" : "2012-10-17",
+      "Statement" : [
+        {
+          "Effect" : "Allow",
+          "Action" : [
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents",
+            "logs:DescribeLogStreams"
+          ],
+          "Resource" : [
+            "arn:aws:logs:*:*:*"
+          ]
+        }
+      ]
+    }
+  )
+}
+
 resource "aws_iam_role_policy_attachment" "AWSLambdaBasicExecutionRole" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
   role       = aws_iam_role.nexus_ship_lambda.name
@@ -75,5 +101,10 @@ resource "aws_iam_role_policy_attachment" "nexus_ship_pass_role" {
 
 resource "aws_iam_role_policy_attachment" "run_ship_ecs_task" {
   policy_arn = aws_iam_policy.run_ship_ecs_task.arn
+  role       = aws_iam_role.nexus_ship_lambda.name
+}
+
+resource "aws_iam_role_policy_attachment" "run_ship_logging_role" {
+  policy_arn = aws_iam_policy.run_ship_cloudwatch_write.arn
   role       = aws_iam_role.nexus_ship_lambda.name
 }
