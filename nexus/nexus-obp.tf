@@ -111,9 +111,10 @@ module "nexus_delta_obp_2" {
   delta_java_opts = "-Xss2m -Xms5g -Xmx5g"
 
   delta_instance_name        = "nexus-delta-obp-2"
-  delta_docker_image_version = "1.10.0-M18"
+  delta_docker_image_version = "latest"
   delta_efs_name             = "delta-obp-2"
   s3_bucket_arn              = aws_s3_bucket.nexus_obp.arn
+  s3_bucket_name             = var.nexus_obp_bucket_name
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn

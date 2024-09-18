@@ -61,6 +61,10 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
         {
           name  = "BLAZEGRAPH_COMPOSITE_ENDPOINT"
           value = var.blazegraph_composite_endpoint
+        },
+        {
+          name  = "DEFAULT_S3_BUCKET"
+          value = var.s3_bucket_name
         }
       ]
       secrets = [

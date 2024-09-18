@@ -49,6 +49,11 @@ variable "s3_bucket_arn" {
   description = "ARN of the S3 Bucket that Delta will use for S3 Storage."
 }
 
+variable "s3_bucket_name" {
+  type        = string
+  description = "Name of the S3 Bucket that Delta will use for S3 Storage."
+}
+
 variable "postgres_host" {
   type        = string
   description = "Address of the postgres instance delta should use; specified using the $POSTGRES_PASSWORD variable in the delta config"

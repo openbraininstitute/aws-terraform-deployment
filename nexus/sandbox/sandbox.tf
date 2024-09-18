@@ -156,6 +156,7 @@ module "delta" {
   delta_docker_image_version = "latest"
   delta_efs_name             = "delta-sandbox" # legacy name so that the efs doesn't get modified
   s3_bucket_arn              = aws_s3_bucket.nexus_delta.arn
+  s3_bucket_name             = local.bucket_name
   delta_java_opts            = ""
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
