@@ -298,5 +298,8 @@ module "dashboards" {
     "KeyCloak"           = module.thumbnail_generation_api.lb_rule_suffix
     "NexusFusion"        = module.nexus.fusion_lb_rule_suffix
     "NexusDelta"         = module.nexus.delta_lb_rule_suffix
+    "BlueNaaS"           = module.bluenaas_svc.lb_rule_suffix
+    "CoreWebApp"         = module.core_webapp.lb_rule_suffix
+    "VLabManager"        = aws_lb_target_group.virtual_lab_manager.arn_suffix
   }
 }
