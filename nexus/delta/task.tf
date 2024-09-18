@@ -161,7 +161,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
         },
         {
           name  = "GITHUB_SEARCH_CONFIG_BASE"
-          value = "https://raw.githubusercontent.com/BlueBrain/nexus/${var.delta_search_config_commit}/tests/docker/config"
+          value = "https://raw.githubusercontent.com/BlueBrain/nexus/${var.delta_search_config_commit}/tests/docker/config/search"
         }
       ],
       mountPoints = [
