@@ -63,6 +63,20 @@ function update_untagged_eni {
     _update_untagged_base "ec2" "network-interface"
 }
 
+# Function to update the untagged Security Groups (Launch Wizard-only) with their owner
+function update_untagged_sg_lwizard {
+    function _tag_resource_fn {
+        local sg_id=$(echo -n ${arn} | cut -d'/' -f2)
+        local sg_name=$(aws ec2 describe-security-groups --filters Name=group-id,Values=${sg_id} | jq -r ".SecurityGroups[].GroupName")
+        [[ ${sg_name} != "launch-wizard-"* ]] && return 1
+
+        aws ec2 create-tags --resources "${sg_id}" --tags "${tags_json}"
+        return $?
+    }
+
+    _update_untagged_base "ec2" "security-group"
+}
+
 # Function to update the untagged Security Group Rules with their owner
 function update_untagged_sgr {
     function _tag_resource_fn {
@@ -87,7 +101,7 @@ function update_untagged_elb_lr_default {
     _update_untagged_base "elasticloadbalancing" "listener-rule"
 }
 
-# Function to update the untagged EC2 Launch Templates (ParallelCluster) with their owner
+# Function to update the untagged EC2 Launch Templates (ParallelCluster-only) with their owner
 function update_untagged_lt_pcluster {
     function _tag_resource_fn {
         [[ ${tag} != "hpc:parallelcluster" ]] && return 1
