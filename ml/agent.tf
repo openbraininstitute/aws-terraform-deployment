@@ -4,7 +4,7 @@ module "ecs_service_agent" {
 
   name                  = "ecs-service-agent"
   cluster_arn           = local.ecs_cluster_arn
-  task_exec_secret_arns = [var.secret_manager_arn, var.dockerhub_credentials_arn, module.ml_rds_postgres.db_instance_master_user_secret_arn]
+  task_exec_secret_arns = [var.secret_manager_arn, module.ml_rds_postgres.db_instance_master_user_secret_arn]
 
 
   cpu    = 1024
@@ -27,9 +27,7 @@ module "ecs_service_agent" {
       essential   = true
       image       = var.agent_image_url
       name        = "ml_agent"
-      repository_credentials = {
-        credentialsParameter = var.dockerhub_credentials_arn
-      }
+
       readonly_root_filesystem = false
       port_mappings = [
         {
@@ -41,101 +39,101 @@ module "ecs_service_agent" {
       ]
       environment = [
         {
-          name  = "AGENT_TOOLS__LITERATURE__URL"
+          name  = "NEUROAGENT_TOOLS__LITERATURE__URL"
           value = "http://${var.private_alb_dns}:3000/api/literature/retrieval/"
         },
         {
-          name  = "AGENT_KNOWLEDGE_GRAPH__BASE_URL"
+          name  = "NEUROAGENT_KNOWLEDGE_GRAPH__BASE_URL"
           value = "https://openbluebrain.com/api/nexus/v1"
         },
         {
-          name  = "AGENT_AGENT__MODEL"
+          name  = "NEUROAGENT_AGENT__MODEL"
           value = "simple"
         },
         {
-          name  = "AGENT_GENERATIVE__LLM_TYPE"
-          value = "openai"
-        },
-        {
-          name  = "AGENT_GENERATIVE__OPENAI__MODEL"
+          name  = "NEUROAGENT_OPENAI__MODEL"
           value = "gpt-4o-mini"
         },
         {
-          name  = "AGENT_TOOLS__MORPHO__SEARCH_SIZE"
+          name  = "NEUROAGENT_TOOLS__MORPHO__SEARCH_SIZE"
           value = "10"
         },
         {
-          name  = "AGENT_TOOLS__KG_MORPHO__SEARCH_SIZE"
+          name  = "NEUROAGENT_TOOLS__KG_MORPHO__SEARCH_SIZE"
           value = "6"
         },
         {
-          name  = "AGENT_TOOLS__TRACE__SEARCH_SIZE"
+          name  = "NEUROAGENT_TOOLS__TRACE__SEARCH_SIZE"
           value = "10"
         },
         {
-          name  = "AGENT_TOOLS__LITERATURE__RERANKER_K"
+          name  = "NEUROAGENT_TOOLS__LITERATURE__RERANKER_K"
           value = "8"
         },
         {
-          name  = "AGENT_KEYCLOAK__VALIDATE_TOKEN"
+          name  = "NEUROAGENT_KEYCLOAK__VALIDATE_TOKEN"
           value = "true"
         },
         {
-          name  = "AGENT_KEYCLOAK__ISSUER"
+          name  = "NEUROAGENT_KEYCLOAK__ISSUER"
           value = "https://openbluebrain.com/auth/realms/SBO"
         },
         {
-          name  = "AGENT_KNOWLEDGE_GRAPH__DOWNLOAD_HIERARCHY"
+          name  = "NEUROAGENT_KNOWLEDGE_GRAPH__DOWNLOAD_HIERARCHY"
           value = "true"
         },
         {
-          name  = "AGENT_KEYCLOAK__CLIENT_ID"
+          name  = "NEUROAGENT_KEYCLOAK__CLIENT_ID"
           value = "obp-ml-agent"
         },
         {
-          name  = "AGENT_KEYCLOAK__USERNAME"
+          name  = "NEUROAGENT_KEYCLOAK__USERNAME"
           value = "sbo-ml"
         },
         {
-          name  = "AGENT_DB__PREFIX"
+          name  = "NEUROAGENT_DB__PREFIX"
           value = "postgresql://"
         },
         {
-          name  = "AGENT_DB__HOST"
+          name  = "NEUROAGENT_DB__HOST"
           value = module.ml_rds_postgres.db_instance_address
         },
         {
-          name  = "AGENT_DB__PORT"
+          name  = "NEUROAGENT_DB__PORT"
           value = module.ml_rds_postgres.db_instance_port
         },
         {
-          name  = "AGENT_DB__USER"
+          name  = "NEUROAGENT_DB__USER"
           value = module.ml_rds_postgres.db_instance_username
         },
         {
-          name  = "AGENT_MISC__APPLICATION_PREFIX"
+          name  = "NEUROAGENT_MISC__APPLICATION_PREFIX"
           value = "/api/agent"
         },
         {
-          name  = "AGENT_MISC__CORS_ORIGINS"
+          name  = "NEUROAGENT_MISC__CORS_ORIGINS"
           value = "https://openbrainplatform.org, https://bbp.epfl.ch"
+        },
+        {
+          name  = "NEUROAGENT_KNOWLEDGE_GRAPH__BR_SAVING_PATH"
+          value = "src/neuroagent/app"
+        },
+        {
+          name  = "NEUROAGENT_KNOWLEDGE_GRAPH__CT_SAVING_PATH"
+          value = "src/neuroagent/app"
         },
       ]
       secrets = [
         {
-          name      = "AGENT_GENERATIVE__OPENAI__TOKEN"
+          name      = "NEUROAGENT_OPENAI__TOKEN"
           valueFrom = "${var.secret_manager_arn}:OPENAI_API_KEY::"
         },
         {
-          name      = "AGENT_COHERE__TOKEN"
-          valueFrom = "${var.secret_manager_arn}:COHERE_TOKEN::"
-        },
-        {
-          name      = "AGENT_DB__PASSWORD"
+          name      = "NEUROAGENT_DB__PASSWORD"
           valueFrom = "${module.ml_rds_postgres.db_instance_master_user_secret_arn}:password::"
         },
         {
-          name      = "AGENT_KEYCLOAK__PASSWORD"
+          name      = "NEUROAGENT_KEYCLOAK__PASSWORD"
           valueFrom = "${var.secret_manager_arn}:KEYCLOAK_PASSWORD::"
         },
       ]
