@@ -38,6 +38,10 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
                     "value": "postgres"
                 },
                 {
+                    "name": "JAVA_OPTS_KC_HEAP",
+                    "value": "-Xms512m -Xmx2g"
+                },
+                {
                     "name": "KEYCLOAK_ADMIN",
                     "value": "admin"
                 },
