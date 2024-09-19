@@ -1,3 +1,8 @@
+locals {
+  cpu    = 512
+  memory = 1024
+}
+
 resource "aws_cloudwatch_log_group" "virtual_lab_manager" {
   # TODO check if the logs can be encrypted
   name              = var.virtual_lab_manager_log_group_name
@@ -103,8 +108,8 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
 
   container_definitions = jsonencode([
     {
-      cpu         = 256
-      memory      = 512
+      cpu         = local.cpu
+      memory      = local.memory
       networkMode = "awsvpc"
       family      = "virtuallabmanager"
       essential   = true
@@ -270,8 +275,8 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
     }
   ])
 
-  cpu                      = 256
-  memory                   = 512
+  cpu                      = local.cpu
+  memory                   = local.memory
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = aws_iam_role.ecs_virtual_lab_manager_task_execution_role[0].arn
   task_role_arn            = aws_iam_role.ecs_virtual_lab_manager_task_role[0].arn
