@@ -13,6 +13,7 @@ bluenaas_svc/ @nise
 ml/ @ml
 cells_svc/ @nse
 accounting_svc/ @nse
+core_webapp/ @nse
 nse/ @nse
 static-server/ @nse
 viz/ @viz
