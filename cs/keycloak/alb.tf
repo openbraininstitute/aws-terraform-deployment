@@ -36,7 +36,7 @@ resource "aws_lb_listener_rule" "keycloak_redirect" {
   action {
     type = "redirect"
     redirect {
-      protocol    = "HTTP"
+      protocol    = "HTTPS"
       host        = var.preferred_hostname
       path        = "/#{path}"
       status_code = "HTTP_302"
