@@ -22,7 +22,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
             ],
             "essential": true,
             "command": [
-                "--config-file=/docker-keycloak/keycloak.conf  start --https-port=8081 --https-certificate-file=/docker-keycloak/keycloak-server.crt.pem --https-certificate-key-file=/docker-keycloak/keycloak-server.key.pem"
+                "--config-file=/docker-keycloak/keycloak.conf  start --http-enabled=true --http-port=8081"
             ],
             "environment": [
                 {

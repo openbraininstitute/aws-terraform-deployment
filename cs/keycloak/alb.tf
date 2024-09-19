@@ -2,7 +2,7 @@
 resource "aws_lb_target_group" "keycloak_target_group" {
   name        = "keycloak-target-group"
   port        = 8081
-  protocol    = "HTTPS"
+  protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = var.vpc_id
   tags = {
@@ -12,7 +12,7 @@ resource "aws_lb_target_group" "keycloak_target_group" {
   health_check {
     path                = "/auth/health"
     port                = "8081"
-    protocol            = "HTTPS"
+    protocol            = "HTTP"
     interval            = 30
     timeout             = 5
     healthy_threshold   = 2
@@ -36,7 +36,7 @@ resource "aws_lb_listener_rule" "keycloak_redirect" {
   action {
     type = "redirect"
     redirect {
-      protocol    = "HTTPS"
+      protocol    = "HTTP"
       host        = var.preferred_hostname
       path        = "/#{path}"
       status_code = "HTTP_302"
