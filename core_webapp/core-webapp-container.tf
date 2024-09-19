@@ -1,3 +1,8 @@
+locals {
+  cpu    = 1024
+  memory = 2048
+}
+
 resource "aws_cloudwatch_log_group" "core_webapp" {
   # TODO check if the logs can be encrypted
   name              = var.core_webapp_log_group_name
@@ -103,8 +108,8 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
 
   container_definitions = jsonencode([
     {
-      memory      = 1024
-      cpu         = 512
+      cpu         = local.cpu
+      memory      = local.memory
       networkMode = "awsvpc"
       family      = "sbocorewebapp"
       essential   = true
@@ -175,8 +180,8 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
     }
   ])
 
-  cpu                      = 512
-  memory                   = 1024
+  cpu                      = local.cpu
+  memory                   = local.memory
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = aws_iam_role.ecs_core_webapp_task_execution_role[0].arn
   task_role_arn            = aws_iam_role.ecs_core_webapp_task_role[0].arn
