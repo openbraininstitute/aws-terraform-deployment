@@ -1,6 +1,6 @@
 locals {
-  cpu    = 4096
-  memory = 8192
+  cpu    = 16384 # 16 vCPU
+  memory = 32768 # 32 GB
 }
 
 resource "aws_cloudwatch_log_group" "bluenaas_ecs_task_logs" {
