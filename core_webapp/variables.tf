@@ -25,11 +25,13 @@ variable "public_alb_https_listener_arn" {
   description = "alb listener to which the https listener rule should be added"
   sensitive   = false
 }
-variable "private_alb_https_listener_arn" {
-  type        = string
-  description = "nlb listener to which the https listener rule should be added"
-  sensitive   = false
-}
+# TODO: re-enable for NLB/private ALB architecture change
+# variable "private_alb_https_listener_arn" {
+#   type        = string
+#   description = "nlb listener to which the https listener rule should be added"
+#   sensitive   = false
+# }
+# ################################################################################
 #variable "public_alb_dns_name" {
 #  type        = string
 #  description = "public hostname of the alb, which the poc hostname should be an alias of"
