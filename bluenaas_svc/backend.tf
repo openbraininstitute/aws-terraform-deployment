@@ -103,6 +103,20 @@ resource "aws_ecs_task_definition" "bluenaas_ecs_definition" {
   family       = "bluenaas_task_family"
   network_mode = "awsvpc"
 
+  cpu    = local.cpu
+  memory = local.memory
+
+  requires_compatibilities = ["FARGATE"]
+
+  volume {
+    name = "model-cache"
+    efs_volume_configuration {
+      file_system_id     = aws_efs_file_system.model_cache_efs.id
+      root_directory     = "/"
+      transit_encryption = "ENABLED"
+    }
+  }
+
   container_definitions = jsonencode([
     {
       name   = "bluenaas"
@@ -128,6 +142,13 @@ resource "aws_ecs_task_definition" "bluenaas_ecs_definition" {
           protocol      = "tcp"
         }
       ]
+
+      mountPoints = [
+        {
+          containerPath = "/opt/bluenaas/models",
+          sourceVolume  = "model-cache"
+        }
+      ],
 
       healthcheck = {
         command     = ["CMD-SHELL", "exit 0"] // TODO: add a proper health check.
@@ -186,11 +207,6 @@ resource "aws_ecs_task_definition" "bluenaas_ecs_definition" {
       }
     }
   ])
-
-  cpu    = local.cpu
-  memory = local.memory
-
-  requires_compatibilities = ["FARGATE"]
 
   execution_role_arn = aws_iam_role.ecs_bluenaas_task_execution_role.arn
   task_role_arn      = aws_iam_role.ecs_bluenaas_task_role.arn
@@ -253,14 +269,14 @@ resource "aws_iam_role" "ecs_bluenaas_task_execution_role" {
   }
   EOT
 
+  managed_policy_arns = [
+    "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
+    "arn:aws:iam::aws:policy/AmazonElasticFileSystemClientFullAccess"
+  ]
+
   tags = {
     SBO_Billing = "bluenaas"
   }
-}
-
-resource "aws_iam_role_policy_attachment" "ecs_bluenaas_task_execution_role_policy_attachment" {
-  role       = aws_iam_role.ecs_bluenaas_task_execution_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 resource "aws_iam_role" "ecs_bluenaas_task_role" {
