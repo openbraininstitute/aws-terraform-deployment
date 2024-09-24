@@ -253,26 +253,19 @@ resource "aws_ecs_service" "bluenaas_ecs_service" {
 resource "aws_iam_role" "ecs_bluenaas_task_execution_role" {
   name_prefix = "bluenaas_ecs"
 
-  assume_role_policy = <<-EOT
-  {
-    "Version": "2012-10-17",
-    "Statement": [
+  assume_role_policy = jsonencode({
+    Version : "2012-10-17",
+    Statement : [
       {
-        "Action": "sts:AssumeRole",
-        "Principal": {
-          "Service": "ecs-tasks.amazonaws.com"
+        Action : "sts:AssumeRole",
+        Principal : {
+          Service : "ecs-tasks.amazonaws.com"
         },
-        "Effect": "Allow",
-        "Sid": ""
+        Effect : "Allow",
+        Sid : ""
       }
     ]
-  }
-  EOT
-
-  managed_policy_arns = [
-    "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
-    "arn:aws:iam::aws:policy/AmazonElasticFileSystemClientFullAccess"
-  ]
+  })
 
   tags = {
     SBO_Billing = "bluenaas"
@@ -282,21 +275,19 @@ resource "aws_iam_role" "ecs_bluenaas_task_execution_role" {
 resource "aws_iam_role" "ecs_bluenaas_task_role" {
   name_prefix = "bluenaas_ecs"
 
-  assume_role_policy = <<-EOT
-  {
-    "Version": "2012-10-17",
-    "Statement": [
+  assume_role_policy = jsonencode({
+    Version : "2012-10-17",
+    Statement : [
       {
-        "Action": "sts:AssumeRole",
-        "Principal": {
-          "Service": "ecs-tasks.amazonaws.com"
+        Action : "sts:AssumeRole",
+        Principal : {
+          Service : "ecs-tasks.amazonaws.com"
         },
-        "Effect": "Allow",
-        "Sid": ""
+        Effect : "Allow",
+        Sid : ""
       }
     ]
-  }
-  EOT
+  })
 
   tags = {
     SBO_Billing = "bluenaas"
@@ -337,4 +328,14 @@ resource "aws_iam_role_policy_attachment" "secrets" {
 resource "aws_iam_role_policy_attachment" "execution_logs" {
   role       = aws_iam_role.ecs_bluenaas_task_execution_role.name
   policy_arn = aws_iam_policy.ecs_task_logs_bluenaas.arn
+}
+
+resource "aws_iam_role_policy_attachment" "ecs" {
+  role       = aws_iam_role.ecs_bluenaas_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+resource "aws_iam_role_policy_attachment" "efs" {
+  role       = aws_iam_role.ecs_bluenaas_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonElasticFileSystemClientFullAccess"
 }
