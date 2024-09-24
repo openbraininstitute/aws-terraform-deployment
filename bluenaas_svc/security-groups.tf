@@ -1,8 +1,8 @@
 resource "aws_security_group" "main_sg" {
   vpc_id = var.vpc_id
 
-  name        = "main_bluenaas_sg"
-  description = "main secruity group for bluenaas resources"
+  name        = "bluenaas_sg"
+  description = "Main secruity group for bluenaas resources"
 
   tags = {
     SBO_Billing = "bluenaas"
