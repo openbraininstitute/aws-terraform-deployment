@@ -24,6 +24,8 @@ resource "aws_rds_cluster" "nexus" {
   backup_retention_period = 7 # in days
   storage_encrypted       = false
 
+  apply_immediately = true
+
   performance_insights_enabled = true
 
   skip_final_snapshot = true
