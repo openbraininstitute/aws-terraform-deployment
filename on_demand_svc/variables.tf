@@ -30,7 +30,7 @@ variable "ecs_subnet_id" {
 variable "ecs_cpu" {
   type        = number
   description = "ECS cpu units per task."
-  default     = 512
+  default     = 1024
 }
 variable "ecs_memory" {
   type        = number
