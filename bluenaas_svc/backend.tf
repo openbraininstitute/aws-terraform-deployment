@@ -145,7 +145,7 @@ resource "aws_ecs_task_definition" "bluenaas_ecs_definition" {
 
       mountPoints = [
         {
-          containerPath = "/opt/bluenaas/models",
+          containerPath = "/opt/blue-naas/models",
           sourceVolume  = "model-cache"
         }
       ],
