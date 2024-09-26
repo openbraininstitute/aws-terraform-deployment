@@ -261,6 +261,10 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         {
           name      = "STRIPE_WEBHOOK_SECRET"
           valueFrom = "${var.virtual_lab_manager_secrets_arn}:STRIPE_WEBHOOK_SECRET::"
+        },
+        {
+          name      = "SENTRY_DSN"
+          valueFrom = "${var.virtual_lab_manager_secrets_arn}:SENTRY_DSN::"
         }
       ]
       logConfiguration = {
