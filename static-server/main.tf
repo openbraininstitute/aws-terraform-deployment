@@ -197,3 +197,42 @@ resource "aws_s3_object" "coming_soon_page" {
 
   etag = filemd5(local.coming_soon_page_files[count.index].source)
 }
+
+locals {
+  favicon = [
+    {
+      key          = "static/favicon.ico"
+      source       = "${path.module}/favicon.ico"
+      content_type = "image/vnd.microsoft.icon"
+    },
+  ]
+}
+
+resource "aws_s3_object" "favicon" {
+  count  = length(local.favicon)
+  bucket = var.domain_name
+
+  key          = local.favicon[count.index].key
+  source       = local.favicon[count.index].source
+  content_type = local.favicon[count.index].content_type
+
+  etag = filemd5(local.favicon[count.index].source)
+}
+
+resource "aws_lb_listener_rule" "favicon" {
+
+  listener_arn = var.alb_listener_arn
+  priority     = var.alb_listener_rule_priority + 1
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.static_data_tg.arn
+  }
+
+  condition {
+    path_pattern {
+      values = ["/favicon.ico"]
+    }
+  }
+
+}
