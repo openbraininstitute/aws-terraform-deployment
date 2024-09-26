@@ -225,8 +225,15 @@ resource "aws_lb_listener_rule" "favicon" {
   priority     = var.alb_listener_rule_priority + 1
 
   action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.static_data_tg.arn
+    type = "redirect"
+    redirect {
+      host        = "s3.amazonaws.com"
+      path        = "/${var.domain_name}/static/favicon.ico"
+      query       = ""
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
   }
 
   condition {
