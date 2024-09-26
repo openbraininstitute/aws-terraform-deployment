@@ -66,7 +66,7 @@ module "ml" {
   dockerhub_credentials_arn = module.dockerhub_secret.dockerhub_credentials_arn
   backend_image_url         = "bluebrain/scholarag:v0.0.6"
   etl_image_url             = "bluebrain/scholaretl:v0.0.5"
-  agent_image_url           = "bluebrain/neuroagent:v0.1.0"
+  agent_image_url           = "bluebrain/neuroagent:v0.1.1"
   grobid_image_url          = "lfoppiano/grobid:0.8.0"
 
   paper_bucket_name = "ml-paper-bucket"
