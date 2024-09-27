@@ -15,3 +15,64 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-cpu-alarm" {
     ClusterName = "nexus_ecs_cluster"
   }
 }
+
+resource "aws_cloudwatch_log_metric_filter" "blazegraph-query-timeout-metric" {
+  name           = "blazegraph-query-timeout-exception"
+  pattern        = "com.bigdata.bop.engine.QueryTimeoutException"
+  log_group_name = "blazegraph-obp-composite-4_app"
+
+  metric_transformation {
+    name      = "QueryTimeoutException"
+    namespace = "blazegraph"
+    value     = "1"
+  }
+}
+
+resource "aws_cloudwatch_log_metric_filter" "blazegraph-out-of-memory-error-metric" {
+  name           = "blazegraph-out-of-memory-error"
+  pattern        = "java.lang.OutOfMemoryError"
+  log_group_name = "blazegraph-obp-composite-4_app"
+
+  metric_transformation {
+    name      = "OutOfMemoryError"
+    namespace = "blazegraph"
+    value     = "1"
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "blazegraph-search-query-timeout-alarm" {
+  alarm_name                = "blazegraph-search-query-timeout-alarm"
+  comparison_operator       = "GreaterThanThreshold"
+  evaluation_periods        = 2
+  metric_name               = aws_cloudwatch_log_metric_filter.blazegraph-query-timeout-metric.name
+  namespace                 = "AWS/ECS"
+  period                    = 60
+  statistic                 = "Average"
+  threshold                 = 5
+  alarm_description         = "QueryTimeoutExceptions for Blazegraph Search"
+  insufficient_data_actions = []
+  alarm_actions             = ["arn:aws:sns:us-east-1:671250183987:sns_no_reply_openbrainplatform_org"]
+  dimensions = {
+    ServiceName = "blazegraph-obp-composite-4_ecs_service"
+    ClusterName = "nexus_ecs_cluster"
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "blazegraph-search-out-of-memory-alarm" {
+  alarm_name                = "blazegraph-search-out-of-memory-alarm"
+  comparison_operator       = "GreaterThanThreshold"
+  evaluation_periods        = 2
+  metric_name               = aws_cloudwatch_log_metric_filter.blazegraph-out-of-memory-error-metric.name
+  namespace                 = "AWS/ECS"
+  period                    = 60
+  statistic                 = "Average"
+  threshold                 = 5
+  alarm_description         = "OutOfMemoryErrors for Blazegraph Search"
+  insufficient_data_actions = []
+  alarm_actions             = ["arn:aws:sns:us-east-1:671250183987:sns_no_reply_openbrainplatform_org"]
+  dimensions = {
+    ServiceName = "blazegraph-obp-composite-4_ecs_service"
+    ClusterName = "nexus_ecs_cluster"
+  }
+}
+
