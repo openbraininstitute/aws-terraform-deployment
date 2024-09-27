@@ -1,22 +1,23 @@
-resource "aws_lb_target_group" "core_webapp_private" {
-  #ts:skip=AC_AWS_0492
-  name        = "core-webapp-private"
-  port        = 8000
-  protocol    = "HTTP"
-  target_type = "ip"
-  vpc_id      = var.vpc_id
-  #lifecycle {
-  #  create_before_destroy = true
-  #}
-  health_check {
-    enabled  = true
-    path     = "/mmb-beta"
-    protocol = "HTTP"
-  }
-  tags = {
-    SBO_Billing = "core_webapp"
-  }
-}
+# TODO: re-enable for NLB/private ALB architecture change
+# resource "aws_lb_target_group" "core_webapp_private" {
+#   #ts:skip=AC_AWS_0492
+#   name        = "core-webapp-private"
+#   port        = 8000
+#   protocol    = "HTTP"
+#   target_type = "ip"
+#   vpc_id      = var.vpc_id
+#   #lifecycle {
+#   #  create_before_destroy = true
+#   #}
+#   health_check {
+#     enabled  = true
+#     path     = "/mmb-beta"
+#     protocol = "HTTP"
+#   }
+#   tags = {
+#     SBO_Billing = "core_webapp"
+#   }
+# }
 
 resource "aws_lb_target_group" "core_webapp" {
   #ts:skip=AC_AWS_0492
