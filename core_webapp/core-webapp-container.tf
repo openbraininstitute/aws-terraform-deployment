@@ -166,6 +166,14 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
         {
           name      = "KEYCLOAK_CLIENT_ID"
           valueFrom = "${var.sbo_core_webapp_secrets_arn}:cognito_client_id::"
+        },
+        {
+          name      = "MAILCHIMP_API_KEY"
+          valueFrom = "${var.sbo_core_webapp_secrets_arn}:MAILCHIMP_API_KEY::"
+        },
+        {
+          name      = "MAILCHIMP_AUDIENCE_ID"
+          valueFrom = "${var.sbo_core_webapp_secrets_arn}:MAILCHIMP_AUDIENCE_ID::"
         }
       ]
       logConfiguration = {
