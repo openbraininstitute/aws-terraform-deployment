@@ -109,6 +109,32 @@ resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_s
   permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_s3_rights.arn
 }
 
+resource "aws_ssoadmin_permission_set" "readonly_with_additional_waframework_rights" {
+  name         = "ReadOnlyWithAdditionalWAFRights"
+  description  = "Read only access but with full Well-Architected Framework Tool access"
+  instance_arn = var.aws_iam_identity_center_arn
+
+  session_duration = "PT2H"
+
+  tags = {
+    SBO_Billing = "common"
+  }
+}
+
+resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_waframework_rights" {
+  inline_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      jsondecode(local.readonly_access_policy_statement_part1),
+      jsondecode(local.readonly_access_policy_statement_part2),
+      jsondecode(local.waframework_access_policy_statement),
+    ]
+  })
+
+  instance_arn       = var.aws_iam_identity_center_arn
+  permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_waframework_rights.arn
+}
+
 resource "aws_ssoadmin_permission_set" "readonly_with_additional_dashboard_rights" {
   name         = "ReadOnlyWithDashboardRights"
   description  = "Read only access but with full dashboard access"
@@ -274,6 +300,12 @@ locals {
       "s3:*",
       "s3express:*",
     ]
+    Resource = "*",
+    Effect   = "Allow"
+  })
+
+  waframework_access_policy_statement = jsonencode({
+    Action   = "wellarchitected:*"
     Resource = "*",
     Effect   = "Allow"
   })
