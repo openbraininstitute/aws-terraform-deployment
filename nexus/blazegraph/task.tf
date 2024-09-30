@@ -41,7 +41,7 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
         }
       }
       healthcheck = {
-        command     = ["CMD-SHELL", "exit 0"] // TODO: not exit 0
+        command     = ["CMD", "curl", "-f", "http://localhost:9999/blazegraph/"]
         interval    = 30
         timeout     = 5
         startPeriod = 60
