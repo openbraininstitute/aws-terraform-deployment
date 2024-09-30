@@ -36,6 +36,7 @@ module "cs" {
   keycloak_bucket_name = "core-services-keycloak"
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
+  account_id                    = data.aws_caller_identity.current.account_id
 }
 
 module "ml" {
@@ -70,7 +71,7 @@ module "nexus" {
   source = "./nexus"
 
   aws_region         = var.aws_region
-  aws_account_id     = data.aws_caller_identity.current.account_id
+  account_id         = data.aws_caller_identity.current.account_id
   vpc_id             = data.terraform_remote_state.common.outputs.vpc_id
   dockerhub_password = var.nise_dockerhub_password
 
@@ -89,6 +90,7 @@ module "viz" {
   source = "./viz"
 
   aws_region = var.aws_region
+  account_id = data.aws_caller_identity.current.account_id
   vpc_id     = data.terraform_remote_state.common.outputs.vpc_id
 
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
@@ -99,6 +101,7 @@ module "viz" {
   domain_zone_id   = data.terraform_remote_state.common.outputs.domain_zone_id
   nat_gateway_id   = data.terraform_remote_state.common.outputs.nat_gateway_id
   alb_listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+
   # TODO remove after migrations
   aws_lb_alb_arn                 = data.terraform_remote_state.common.outputs.public_alb_arn
   aws_security_group_alb_id      = data.terraform_remote_state.common.outputs.public_alb_sg_id
@@ -144,9 +147,8 @@ module "nse" {
 module "bluenaas_svc" {
   source = "./bluenaas_svc"
 
-  aws_account_id = data.aws_caller_identity.current.account_id
-
   aws_region                 = var.aws_region
+  account_id                 = data.aws_caller_identity.current.account_id
   vpc_id                     = data.terraform_remote_state.common.outputs.vpc_id
   alb_listener_arn           = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
   alb_listener_rule_priority = 750
@@ -166,6 +168,7 @@ module "hpc" {
   source = "./hpc"
 
   aws_region                   = var.aws_region
+  account_id                   = data.aws_caller_identity.current.account_id
   obp_vpc_id                   = "vpc-08aa04757a326969b"
   obp_vpc_default_sg_id        = "sg-07356e862875b0e81"
   sbo_billing                  = "hpc"
@@ -181,7 +184,6 @@ module "hpc" {
   av_zone_suffixes             = ["a"]
   peering_route_tables         = ["rtb-0e4eb2a1cbab24423"]
   existing_route_targets       = ["10.0.0.0/16"]
-  account_id                   = "671250183987"
   lambda_subnet_cidr           = "10.0.16.0/24"
   existing_public_subnet_cidrs = ["10.0.1.0/25", "10.0.1.128/25"]
 }
@@ -190,6 +192,7 @@ module "static-server" {
   source = "./static-server"
 
   aws_region                 = var.aws_region
+  account_id                 = data.aws_caller_identity.current.account_id
   vpc_id                     = data.terraform_remote_state.common.outputs.vpc_id
   public_subnet_ids          = [data.terraform_remote_state.common.outputs.public_a_subnet_id, data.terraform_remote_state.common.outputs.public_b_subnet_id]
   domain_name                = data.terraform_remote_state.common.outputs.primary_domain
@@ -207,6 +210,7 @@ module "core_webapp" {
   # TODO: re-enable for NLB/private ALB architecture change
   # private_alb_https_listener_arn       = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
   aws_region                      = var.aws_region
+  account_id                      = data.aws_caller_identity.current.account_id
   core_webapp_docker_image_url    = "bluebrain/sbo-core-web-app:latest"
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
@@ -227,9 +231,8 @@ module "core_webapp" {
 module "accounting_svc" {
   source = "./accounting_svc"
 
-  aws_account_id = data.aws_caller_identity.current.account_id
-
   aws_region                    = var.aws_region
+  account_id                    = data.aws_caller_identity.current.account_id
   vpc_id                        = data.terraform_remote_state.common.outputs.vpc_id
   alb_listener_arn              = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
   internet_access_route_id      = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
@@ -257,8 +260,8 @@ module "kg_inference_api" {
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
 
-
   aws_region                        = var.aws_region
+  account_id                        = data.aws_caller_identity.current.account_id
   allowed_source_ip_cidr_blocks     = ["0.0.0.0/0"]
   kg_inference_api_docker_image_url = "bluebrain/kg-inference-api:latest"
   kg_inference_api_base_path        = "/api/kg-inference"
@@ -280,6 +283,7 @@ module "thumbnail_generation_api" {
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
 
   aws_region                                = var.aws_region
+  account_id                                = data.aws_caller_identity.current.account_id
   allowed_source_ip_cidr_blocks             = ["0.0.0.0/0"]
   thumbnail_generation_api_docker_image_url = "bluebrain/thumbnail-generation-api:latest"
   thumbnail_generation_api_base_path        = "/api/thumbnail-generation"
@@ -289,7 +293,9 @@ module "thumbnail_generation_api" {
 module "dashboards" {
   source = "./dashboards"
 
-  aws_region       = var.aws_region
+  aws_region = var.aws_region
+  account_id = data.aws_caller_identity.current.account_id
+
   load_balancer_id = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
   load_balancer_target_suffixes = {
     "AccountingService"  = module.accounting_svc.lb_rule_suffix

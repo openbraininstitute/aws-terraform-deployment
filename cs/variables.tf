@@ -20,6 +20,11 @@ variable "keycloak_bucket_name" {
   type = string
 }
 
+variable "account_id" {
+  description = "AWS account id."
+  type        = string
+}
+
 variable "public_alb_listener" {
   type = string
 }

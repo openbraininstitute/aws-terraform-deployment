@@ -3,6 +3,11 @@ variable "aws_region" {
   type = string
 }
 
+variable "account_id" {
+  description = "AWS account id."
+  type        = string
+}
+
 variable "obp_vpc_id" {
   type = string
 }
@@ -61,10 +66,6 @@ variable "peering_route_tables" {
 
 variable "existing_route_targets" {
   type = list(string)
-}
-
-variable "account_id" {
-  type = string
 }
 
 variable "lambda_subnet_cidr" {

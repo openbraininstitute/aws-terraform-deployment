@@ -19,6 +19,12 @@ variable "aws_region" {
   type      = string
   sensitive = false
 }
+
+variable "account_id" {
+  description = "AWS account id."
+  type        = string
+}
+
 variable "primary_domain_hostname" {
   type      = string
   sensitive = false

@@ -3,6 +3,11 @@ variable "aws_region" {
   type        = string
 }
 
+variable "account_id" {
+  description = "AWS account id."
+  type        = string
+}
+
 variable "domain_name" {
   description = "The domain name for the static website"
   type        = string

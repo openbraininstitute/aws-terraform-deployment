@@ -7,7 +7,8 @@ variable "vpc_id" {
 }
 
 variable "account_id" {
-  type = string
+  description = "AWS account id."
+  type        = string
 }
 
 variable "dockerhub_credentials_arn" {
