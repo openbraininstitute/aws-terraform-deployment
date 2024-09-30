@@ -43,12 +43,12 @@ resource "aws_cloudwatch_log_metric_filter" "blazegraph-out-of-memory-error-metr
 resource "aws_cloudwatch_metric_alarm" "blazegraph-search-query-timeout-alarm" {
   alarm_name                = "blazegraph-search-query-timeout-alarm"
   comparison_operator       = "GreaterThanThreshold"
-  evaluation_periods        = 2
+  evaluation_periods        = 1
   metric_name               = aws_cloudwatch_log_metric_filter.blazegraph-query-timeout-metric.name
   namespace                 = "AWS/ECS"
   period                    = 60
   statistic                 = "Average"
-  threshold                 = 5
+  threshold                 = 1
   alarm_description         = "QueryTimeoutExceptions for Blazegraph Search"
   insufficient_data_actions = []
   alarm_actions             = ["arn:aws:sns:us-east-1:671250183987:sns_no_reply_openbrainplatform_org"]
@@ -61,12 +61,12 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-query-timeout-alarm" {
 resource "aws_cloudwatch_metric_alarm" "blazegraph-search-out-of-memory-alarm" {
   alarm_name                = "blazegraph-search-out-of-memory-alarm"
   comparison_operator       = "GreaterThanThreshold"
-  evaluation_periods        = 2
+  evaluation_periods        = 1
   metric_name               = aws_cloudwatch_log_metric_filter.blazegraph-out-of-memory-error-metric.name
   namespace                 = "AWS/ECS"
   period                    = 60
   statistic                 = "Average"
-  threshold                 = 5
+  threshold                 = 1
   alarm_description         = "OutOfMemoryErrors for Blazegraph Search"
   insufficient_data_actions = []
   alarm_actions             = ["arn:aws:sns:us-east-1:671250183987:sns_no_reply_openbrainplatform_org"]
