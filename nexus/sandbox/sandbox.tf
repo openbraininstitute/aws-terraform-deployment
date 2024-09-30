@@ -5,7 +5,7 @@ module "nexus_sandbox_setup" {
 locals {
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
   aws_region                    = "us-east-1"
-  aws_account_id                = "058264116529"
+  account_id                    = "058264116529"
   nat_gateway_id                = module.nexus_sandbox_setup.nat_gateway_id
   public_lb_listener_https_arn  = module.nexus_sandbox_setup.public_lb_listener_http_arn
   public_load_balancer_dns_name = module.nexus_sandbox_setup.public_load_balancer_dns_name
@@ -65,8 +65,8 @@ module "networking" {
 module "iam" {
   source = "../iam"
 
-  aws_account_id = local.aws_account_id
-  aws_region     = local.aws_region
+  account_id = local.account_id
+  aws_region = local.aws_region
 
   nexus_secrets_arn  = local.nexus_secrets_arn
   dockerhub_password = data.aws_secretsmanager_secret_version.nise_dockerhub_password.secret_string

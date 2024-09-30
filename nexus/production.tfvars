@@ -1,5 +1,5 @@
-aws_region     = "us-east-1"
-aws_account_id = "671250183987"
+aws_region = "us-east-1"
+account_id = "671250183987"
 
 vpc_id = "vpc-08aa04757a326969b"
 

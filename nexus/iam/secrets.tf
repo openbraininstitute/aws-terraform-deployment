@@ -20,7 +20,7 @@ resource "aws_iam_policy" "access_nexus_secrets" {
         "secretsmanager:GetSecretValue"
       ],
       "Resource": [
-        "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:nexus*"
+        "arn:aws:secretsmanager:${var.aws_region}:${var.account_id}:secret:nexus*"
       ]
     }
   ]

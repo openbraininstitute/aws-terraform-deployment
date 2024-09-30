@@ -17,8 +17,8 @@ module "iam" {
     aws = aws.nexus_iam_tags
   }
 
-  aws_region     = var.aws_region
-  aws_account_id = var.aws_account_id
+  aws_region = var.aws_region
+  account_id = var.account_id
 
   nexus_secrets_arn  = var.nexus_secrets_arn
   dockerhub_password = var.dockerhub_password
