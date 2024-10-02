@@ -17,7 +17,7 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-cpu-alarm" {
   namespace                 = "AWS/ECS"
   period                    = 60
   statistic                 = "Average"
-  threshold                 = 10.1
+  threshold                 = 0.4
   alarm_description         = "CPU utilization for Blazegraph Search"
   insufficient_data_actions = []
   alarm_actions             = ["arn:aws:sns:us-east-1:671250183987:sns_no_reply_openbrainplatform_org", aws_sns_topic.nexus_alerts.arn]
@@ -53,7 +53,7 @@ resource "aws_cloudwatch_log_metric_filter" "blazegraph-out-of-memory-error-metr
 
 resource "aws_cloudwatch_log_metric_filter" "blazegraph-test-log-metric" {
   name           = "blazegraph-test-log"
-  pattern        = "schema"
+  pattern        = "DatasetNotFoundException"
   log_group_name = "blazegraph-obp-composite-4_app"
 
   metric_transformation {
