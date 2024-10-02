@@ -1,5 +1,10 @@
 locals {
   stats = [
+    "p25",
+    "p50",
+    "p75",
+    "p90",
+    "p99",
     "Average",
     "Maximum",
   ]
