@@ -31,7 +31,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
                 },
                 {
                     "name": "DB_ADDR",
-                    "value": "keycloak-db.ctydazornca3.us-east-1.rds.amazonaws.com"
+                    "value": "keycloak-db.ctydazornca3.${var.aws_region}.rds.amazonaws.com"
                 },
                 {
                     "name": "DB_VENDOR",
@@ -89,7 +89,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
                 "options": {
                     "awslogs-create-group": "true",
                     "awslogs-group": "/ecs/keycloak-task",
-                    "awslogs-region": "us-east-1",
+                    "awslogs-region": "${var.aws_region}",
                     "awslogs-stream-prefix": "ecs"
                 },
                 "secretOptions": []

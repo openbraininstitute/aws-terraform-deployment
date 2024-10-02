@@ -26,7 +26,7 @@ resource "aws_cloudwatch_dashboard" "main" {
           "legend" : {
             "position" : "hidden"
           },
-          "region" : "us-east-1",
+          "region" : "${var.aws_region}",
           "liveData" : false,
           "timezone" : "UTC",
           "title" : "CPUUtilization: Average",
@@ -60,7 +60,7 @@ resource "aws_cloudwatch_dashboard" "main" {
           "legend" : {
             "position" : "hidden"
           },
-          "region" : "us-east-1",
+          "region" : "${var.aws_region}",
           "liveData" : false,
           "timezone" : "UTC",
           "title" : "MemoryUtilization: Average",
@@ -145,7 +145,7 @@ resource "aws_cloudwatch_dashboard" "main" {
           },
           "period" : 300,
           "splitBy" : "",
-          "region" : "us-east-1",
+          "region" : "${var.aws_region}",
           "title" : "RDS"
         }
       },
@@ -205,7 +205,7 @@ resource "aws_cloudwatch_dashboard" "main" {
           },
           "period" : 300,
           "splitBy" : "",
-          "region" : "us-east-1",
+          "region" : "${var.aws_region}",
           "title" : "EFS"
         }
       },
@@ -217,13 +217,13 @@ resource "aws_cloudwatch_dashboard" "main" {
         "type" : "metric",
         "properties" : {
           "metrics" : [
-            ["AWS/ApplicationELB", "RequestCount", "TargetGroup", "targetgroup/keycloak-target-group/7313a40c4197f53e", "AvailabilityZone", "us-east-1b", "LoadBalancer", "app/public-alb/669f0a64726948c5", { "region" : "us-east-1", "id" : "m5" }]
+            ["AWS/ApplicationELB", "RequestCount", "TargetGroup", "targetgroup/keycloak-target-group/7313a40c4197f53e", "AvailabilityZone", "${var.aws_region}b", "LoadBalancer", "app/public-alb/669f0a64726948c5", { "region" : "${var.aws_region}", "id" : "m5" }]
           ],
           "legend" : {
             "position" : "hidden"
           },
           "title" : "RequestCount: Sum",
-          "region" : "us-east-1",
+          "region" : "${var.aws_region}",
           "liveData" : false,
           "view" : "timeSeries",
           "stacked" : false,
@@ -244,16 +244,16 @@ resource "aws_cloudwatch_dashboard" "main" {
         "type" : "metric",
         "properties" : {
           "metrics" : [
-            ["AWS/ApplicationELB", "HTTPCode_Target_5XX_Count", "TargetGroup", "targetgroup/keycloak-target-group/7313a40c4197f53e", "AvailabilityZone", "us-east-1b", "LoadBalancer", "app/public-alb/669f0a64726948c5", { "region" : "us-east-1", "id" : "m1", "label" : "5XX", "color" : "#d62728" }],
-            [".", "HTTPCode_Target_4XX_Count", ".", ".", ".", ".", ".", ".", { "region" : "us-east-1", "id" : "m2", "label" : "4XX" }],
-            [".", "HTTPCode_Target_3XX_Count", ".", ".", ".", ".", ".", ".", { "region" : "us-east-1", "id" : "m3", "label" : "3XX", "color" : "#17becf" }],
-            [".", "HTTPCode_Target_2XX_Count", ".", ".", ".", ".", ".", ".", { "region" : "us-east-1", "id" : "m4", "label" : "2XX", "color" : "#2ca02c" }]
+            ["AWS/ApplicationELB", "HTTPCode_Target_5XX_Count", "TargetGroup", "targetgroup/keycloak-target-group/7313a40c4197f53e", "AvailabilityZone", "${var.aws_region}b", "LoadBalancer", "app/public-alb/669f0a64726948c5", { "region" : "${var.aws_region}", "id" : "m1", "label" : "5XX", "color" : "#d62728" }],
+            [".", "HTTPCode_Target_4XX_Count", ".", ".", ".", ".", ".", ".", { "region" : "${var.aws_region}", "id" : "m2", "label" : "4XX" }],
+            [".", "HTTPCode_Target_3XX_Count", ".", ".", ".", ".", ".", ".", { "region" : "${var.aws_region}", "id" : "m3", "label" : "3XX", "color" : "#17becf" }],
+            [".", "HTTPCode_Target_2XX_Count", ".", ".", ".", ".", ".", ".", { "region" : "${var.aws_region}", "id" : "m4", "label" : "2XX", "color" : "#2ca02c" }]
           ],
           "legend" : {
             "position" : "bottom"
           },
           "title" : "HTTPCodes_Target_Count: Sum",
-          "region" : "us-east-1",
+          "region" : "${var.aws_region}",
           "liveData" : false,
           "view" : "timeSeries",
           "stacked" : false,

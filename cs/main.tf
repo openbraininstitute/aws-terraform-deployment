@@ -15,8 +15,12 @@ module "keycloak" {
   redirect_hostnames = ["openbluebrain.ch", "openbrainplatform.org", "openbrainplatform.com"]
 
   keycloak_bucket_name = var.keycloak_bucket_name
+  datasync_subnet_arn  = "arn:aws:ec2:${var.aws_region}:${var.account_id}:subnet/subnet-03e6e9df2641a2e47"
 
   efs_mt_subnets = module.networking.keycloak_private_subnets
 
   allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
+
+  aws_region = var.aws_region
+  account_id = var.account_id
 }

@@ -60,7 +60,7 @@ resource "aws_iam_policy" "ecsTaskLogs" {
           "logs:CreateLogStream",
           "logs:CreateLogGroup"
         ]
-        Resource = "arn:aws:logs:us-east-1:671250183987:log-group:*"
+        Resource = "arn:aws:logs:${var.aws_region}:${var.account_id}:log-group:*"
       }
     ]
   })
@@ -88,7 +88,7 @@ resource "aws_iam_policy" "datasync_s3_policy" {
         "Resource" : "arn:aws:s3:::core-services-keycloak",
         "Condition" : {
           "StringEquals" : {
-            "aws:ResourceAccount" : "671250183987"
+            "aws:ResourceAccount" : "${var.account_id}"
           }
         }
       },
@@ -109,7 +109,7 @@ resource "aws_iam_policy" "datasync_s3_policy" {
         "Resource" : "arn:aws:s3:::core-services-keycloak/*",
         "Condition" : {
           "StringEquals" : {
-            "aws:ResourceAccount" : "671250183987"
+            "aws:ResourceAccount" : "${var.account_id}"
           }
         }
       }

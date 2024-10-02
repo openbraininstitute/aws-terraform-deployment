@@ -1,7 +1,11 @@
 variable "aws_region" {
   description = "AWS region."
   type        = string
-  default     = "us-east-1"
+}
+
+variable "account_id" {
+  description = "AWS account id."
+  type        = string
 }
 
 variable "vpc_id" {
@@ -51,13 +55,7 @@ variable "security_groups" {
   default = ["sg-00d229cdb6f4e0dc6"]
 }
 
-#Subnet for datasync task - subnet-03e6e9df2641a2e47 - cs_subnet us-east-1a
+#Subnet for datasync task - subnet-03e6e9df2641a2e47 - cs_subnet ${var.aws_region}a
 variable "datasync_subnet_arn" {
-  type    = string
-  default = "arn:aws:ec2:us-east-1:671250183987:subnet/subnet-03e6e9df2641a2e47"
-}
-
-variable "keycloak_postgresql_database_password_arn" {
-  type    = string
-  default = "arn:aws:secretsmanager:us-east-1:671250183987:secret:keycloak_postgresql_password-o9Ybhb"
+  type = string
 }

@@ -9,8 +9,16 @@ resource "aws_db_subnet_group" "keycloak_db_subnet_group" {
   }
 }
 
+#tfsec:ignore:aws-ssm-secret-use-customer-key
+resource "aws_secretsmanager_secret" "keycloak_database_password" {
+  name        = "keycloak_database_password"
+  description = "Keycloak database password"
+}
+
 data "aws_secretsmanager_secret_version" "keycloak_database_password" {
-  secret_id = var.keycloak_postgresql_database_password_arn
+  # TODO danielfr: use aws_secretsmanager_secret.keycloak_database_password.id
+  #secret_id = aws_secretsmanager_secret.keycloak_database_password.id
+  secret_id = "arn:aws:secretsmanager:us-east-1:671250183987:secret:keycloak_postgresql_password-o9Ybhb"
 }
 
 #tfsec:ignore:aws-rds-specify-backup-retention tfsec:ignore:aws-rds-encrypt-instance-storage-data tfsec:ignore:aws-rds-enable-performance-insights-encryption
