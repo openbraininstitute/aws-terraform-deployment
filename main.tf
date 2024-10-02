@@ -31,9 +31,8 @@ module "cs" {
   db_instance_class   = "db.t3.micro"
   public_alb_listener = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
 
-  preferred_hostname   = "openbluebrain.com"
-  redirect_hostnames   = ["openbluebrain.ch", "openbrainplatform.org", "openbrainplatform.com"]
-  keycloak_bucket_name = "core-services-keycloak"
+  preferred_hostname = "openbluebrain.com"
+  redirect_hostnames = ["openbluebrain.ch", "openbrainplatform.org", "openbrainplatform.com"]
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
   account_id                    = data.aws_caller_identity.current.account_id

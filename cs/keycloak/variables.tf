@@ -12,10 +12,6 @@ variable "vpc_id" {
   type = string
 }
 
-variable "keycloak_bucket_name" {
-  type = string
-}
-
 variable "allowed_source_ip_cidr_blocks" {
   type = list(string)
 }
@@ -39,6 +35,7 @@ variable "redirect_hostnames" {
 variable "public_alb_listener" {
   type = string
 }
+
 variable "db_instance_class" {
   type = string
 }
@@ -53,9 +50,4 @@ variable "private_subnets" {
 variable "security_groups" {
   type    = list(string)
   default = ["sg-00d229cdb6f4e0dc6"]
-}
-
-#Subnet for datasync task - subnet-03e6e9df2641a2e47 - cs_subnet ${var.aws_region}a
-variable "datasync_subnet_arn" {
-  type = string
 }
