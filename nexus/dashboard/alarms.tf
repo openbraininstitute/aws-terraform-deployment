@@ -17,7 +17,7 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-cpu-alarm" {
   namespace                 = "AWS/ECS"
   period                    = 60
   statistic                 = "Average"
-  threshold                 = 0.4
+  threshold                 = 0.1
   alarm_description         = "CPU utilization for Blazegraph Search"
   insufficient_data_actions = []
   alarm_actions             = ["arn:aws:sns:us-east-1:671250183987:sns_no_reply_openbrainplatform_org", aws_sns_topic.nexus_alerts.arn]
