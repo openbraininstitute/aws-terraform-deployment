@@ -16,9 +16,31 @@ resource "aws_secretsmanager_secret" "keycloak_database_password" {
 }
 
 data "aws_secretsmanager_secret_version" "keycloak_database_password" {
-  # TODO danielfr: use aws_secretsmanager_secret.keycloak_database_password.id
-  #secret_id = aws_secretsmanager_secret.keycloak_database_password.id
-  secret_id = "arn:aws:secretsmanager:us-east-1:671250183987:secret:keycloak_postgresql_password-o9Ybhb"
+  secret_id = aws_secretsmanager_secret.keycloak_database_password.id
+}
+
+#tfsec:ignore:aws-iam-no-policy-wildcards
+resource "aws_iam_policy" "access_keycloak_secrets" {
+  name        = "keycloak-secrets-access-policy"
+  description = "Policy that gives access to the Keycloak secrets"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ssm:GetParameters",
+        "secretsmanager:GetSecretValue"
+      ],
+      "Resource": [
+        "${aws_secretsmanager_secret.keycloak_database_password.arn}"
+      ]
+    }
+  ]
+}
+EOF
 }
 
 #tfsec:ignore:aws-rds-specify-backup-retention tfsec:ignore:aws-rds-encrypt-instance-storage-data tfsec:ignore:aws-rds-enable-performance-insights-encryption
@@ -37,7 +59,7 @@ resource "aws_db_instance" "postgres" {
   password                     = data.aws_secretsmanager_secret_version.keycloak_database_password.secret_string
   publicly_accessible          = false
   multi_az                     = true
-  vpc_security_group_ids       = ["sg-05a6965a825b46067"]
+  vpc_security_group_ids       = [aws_security_group.main_sg.id]
   db_subnet_group_name         = aws_db_subnet_group.keycloak_db_subnet_group.name
   copy_tags_to_snapshot        = true
   tags = {

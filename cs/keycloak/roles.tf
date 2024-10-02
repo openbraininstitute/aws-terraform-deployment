@@ -47,6 +47,12 @@ resource "aws_iam_role_policy_attachment" "keycloak_execute_command_access" {
   policy_arn = aws_iam_policy.keycloak_ecs_execute_command.arn
 }
 
+
+resource "aws_iam_role_policy_attachment" "keycloak_secret_access" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = aws_iam_policy.access_keycloak_secrets.arn
+}
+
 resource "aws_iam_policy" "ecsTaskLogs" {
   name        = "keycloak-ecsTaskLogs"
   description = "Allows ECS tasks to create log streams and log groups in CloudWatch Logs"
