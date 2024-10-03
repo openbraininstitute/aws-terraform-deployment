@@ -3,9 +3,21 @@ resource "aws_sns_topic" "nexus_alerts" {
   name = "nexus_alerts_sns_topic"
 }
 
-resource "aws_sns_topic_subscription" "nexus_alerts" {
+resource "aws_sns_topic_subscription" "nexus_alerts_erik_heeren" {
   topic_arn = aws_sns_topic.nexus_alerts.arn
   endpoint  = "erik.heeren@epfl.ch"
+  protocol  = "email"
+}
+
+resource "aws_sns_topic_subscription" "nexus_alerts_jdc" {
+  topic_arn = aws_sns_topic.nexus_alerts.arn
+  endpoint  = "jean-denis.courcol@epfl.ch"
+  protocol  = "email"
+}
+
+resource "aws_sns_topic_subscription" "nexus_alerts_nise" {
+  topic_arn = aws_sns_topic.nexus_alerts.arn
+  endpoint  = "bbp-ou-nise@groupes.epfl.ch"
   protocol  = "email"
 }
 
@@ -17,7 +29,7 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-cpu-alarm" {
   namespace                 = "AWS/ECS"
   period                    = 60
   statistic                 = "Average"
-  threshold                 = 0.1
+  threshold                 = 90
   alarm_description         = "CPU utilization for Blazegraph Search"
   insufficient_data_actions = []
   alarm_actions             = ["arn:aws:sns:us-east-1:671250183987:sns_no_reply_openbrainplatform_org", aws_sns_topic.nexus_alerts.arn]
@@ -33,9 +45,10 @@ resource "aws_cloudwatch_log_metric_filter" "blazegraph-query-timeout-metric" {
   log_group_name = "blazegraph-obp-composite-4_app"
 
   metric_transformation {
-    name      = "QueryTimeoutException"
-    namespace = "blazegraph"
-    value     = "1"
+    name          = "QueryTimeoutException"
+    namespace     = "blazegraph"
+    default_value = "0"
+    value         = "1"
   }
 }
 
@@ -45,9 +58,10 @@ resource "aws_cloudwatch_log_metric_filter" "blazegraph-out-of-memory-error-metr
   log_group_name = "blazegraph-obp-composite-4_app"
 
   metric_transformation {
-    name      = "OutOfMemoryError"
-    namespace = "blazegraph"
-    value     = "1"
+    name          = "OutOfMemoryError"
+    namespace     = "blazegraph"
+    default_value = "0"
+    value         = "1"
   }
 }
 
@@ -57,9 +71,10 @@ resource "aws_cloudwatch_log_metric_filter" "blazegraph-test-log-metric" {
   log_group_name = "blazegraph-obp-composite-4_app"
 
   metric_transformation {
-    name      = "TestLogMetric"
-    namespace = "blazegraph"
-    value     = "1"
+    name          = "TestLogMetric"
+    namespace     = "blazegraph"
+    default_value = "0"
+    value         = "1"
   }
 }
 
