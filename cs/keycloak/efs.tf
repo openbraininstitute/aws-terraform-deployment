@@ -36,7 +36,7 @@ resource "aws_efs_file_system" "keycloak-theme" {
 resource "aws_efs_mount_target" "keycloak-theme-mt" {
   count           = length(var.efs_mt_subnets)
   file_system_id  = aws_efs_file_system.keycloak-theme.id
-  security_groups = var.security_groups
+  security_groups = [aws_security_group.efs_sg.id]
   subnet_id       = var.efs_mt_subnets[count.index]
 }
 
@@ -53,6 +53,6 @@ resource "aws_efs_file_system" "keycloak-providers" {
 resource "aws_efs_mount_target" "keycloak-providers-mt" {
   count           = length(var.efs_mt_subnets)
   file_system_id  = aws_efs_file_system.keycloak-providers.id
-  security_groups = var.security_groups
+  security_groups = [aws_security_group.efs_sg.id]
   subnet_id       = var.efs_mt_subnets[count.index]
 }

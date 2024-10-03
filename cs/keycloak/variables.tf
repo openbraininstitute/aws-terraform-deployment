@@ -42,12 +42,5 @@ variable "db_instance_class" {
 
 # This is the subnet where ECS service will be running
 variable "private_subnets" {
-  type    = list(string)
-  default = ["subnet-03e6e9df2641a2e47"]
-}
-
-# Currently using opened SG, the same one as used for efs (efs_sg) - hardcoded in service.tf, not in use
-variable "security_groups" {
-  type    = list(string)
-  default = ["sg-00d229cdb6f4e0dc6"]
+  type = list(string)
 }

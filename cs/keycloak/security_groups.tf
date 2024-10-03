@@ -3,6 +3,7 @@ resource "aws_security_group" "efs_sg" {
   name        = "efs-sg"
   description = "Security group for EFS"
   vpc_id      = var.vpc_id
+
   # Allow all inbound traffic on NFS port (2049) from any source
   ingress {
     description = "Allow ingress from anywhere"
@@ -23,17 +24,18 @@ resource "aws_security_group" "efs_sg" {
 
   tags = {
     SBO_Billing = "keycloak"
+    Name        = "keycloak_efs_sg"
   }
 }
 
 resource "aws_security_group" "main_sg" {
-  vpc_id = var.vpc_id
-
+  vpc_id      = var.vpc_id
   name        = "keycloak_db_sg"
   description = "main secruity group for keycloak db"
 
   tags = {
     SBO_Billing = "keycloak"
+    Name        = "keycloak_db_sg"
   }
 }
 
@@ -49,6 +51,7 @@ resource "aws_vpc_security_group_ingress_rule" "main_subnet_ingress" {
     SBO_Billing = "keycloak"
   }
 }
+
 resource "aws_vpc_security_group_egress_rule" "main_subnet_egress" {
   security_group_id = aws_security_group.main_sg.id
   description       = "Allow everything outgoing"
