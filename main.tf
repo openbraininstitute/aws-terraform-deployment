@@ -1,3 +1,18 @@
+locals {
+  account_id = data.aws_caller_identity.current.account_id
+  aws_region = data.terraform_remote_state.common.outputs.aws_region
+  vpc_id     = data.terraform_remote_state.common.outputs.vpc_id
+
+  public_alb_https_listener_arn  = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  route_table_private_subnets_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+
+  public_alb_sg_id = data.terraform_remote_state.common.outputs.public_alb_sg_id
+  domain_zone_id   = data.terraform_remote_state.common.outputs.domain_zone_id
+  nat_gateway_id   = data.terraform_remote_state.common.outputs.nat_gateway_id
+
+  vpc_cidr_block = data.terraform_remote_state.common.outputs.vpc_cidr_block
+}
+
 module "dockerhub_secret" {
   source = "./dockerhub_secret"
 }
@@ -16,37 +31,37 @@ module "coreservices_key" {
 module "networking" {
   source = "./networking"
 
-  vpc_id         = data.terraform_remote_state.common.outputs.vpc_id
-  aws_region     = data.terraform_remote_state.common.outputs.aws_region
-  vpc_cidr_block = data.terraform_remote_state.common.outputs.vpc_cidr_block
-  route_table_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  vpc_id         = local.vpc_id
+  aws_region     = local.aws_region
+  vpc_cidr_block = local.vpc_cidr_block
+  route_table_id = local.route_table_private_subnets_id
 }
 
 module "cs" {
   source = "./cs"
 
-  vpc_id              = data.terraform_remote_state.common.outputs.vpc_id
-  aws_region          = data.terraform_remote_state.common.outputs.aws_region
-  route_table_id      = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  vpc_id              = local.vpc_id
+  aws_region          = local.aws_region
+  route_table_id      = local.route_table_private_subnets_id
   db_instance_class   = "db.t3.micro"
-  public_alb_listener = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  public_alb_listener = local.public_alb_https_listener_arn
 
   preferred_hostname = "openbluebrain.com"
   redirect_hostnames = ["openbluebrain.ch", "openbrainplatform.org", "openbrainplatform.com"]
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
-  account_id                    = data.aws_caller_identity.current.account_id
+  account_id                    = local.account_id
 }
 
 module "ml" {
   source = "./ml"
 
-  aws_region = data.terraform_remote_state.common.outputs.aws_region
-  account_id = data.aws_caller_identity.current.account_id
+  aws_region = local.aws_region
+  account_id = local.account_id
 
-  vpc_id                         = data.terraform_remote_state.common.outputs.vpc_id
-  vpc_cidr_block                 = data.terraform_remote_state.common.outputs.vpc_cidr_block
-  route_table_private_subnets_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  vpc_id                         = local.vpc_id
+  vpc_cidr_block                 = local.vpc_cidr_block
+  route_table_private_subnets_id = local.route_table_private_subnets_id
 
   dockerhub_credentials_arn = module.dockerhub_secret.dockerhub_credentials_arn
   backend_image_url         = "bluebrain/scholarag:v0.0.6"
@@ -56,8 +71,8 @@ module "ml" {
 
   paper_bucket_name = "ml-paper-bucket"
 
-  alb_security_group_id = data.terraform_remote_state.common.outputs.public_alb_sg_id
-  alb_listener_arn      = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  alb_security_group_id = local.public_alb_sg_id
+  alb_listener_arn      = local.public_alb_https_listener_arn
 
   private_alb_security_group_id = "sg-0a2007eb7704cc303"
   private_alb_listener_arn      = data.terraform_remote_state.common.outputs.private_alb_listener_3000_arn
@@ -70,41 +85,41 @@ module "nexus" {
   source = "./nexus"
 
   aws_region         = var.aws_region
-  account_id         = data.aws_caller_identity.current.account_id
-  vpc_id             = data.terraform_remote_state.common.outputs.vpc_id
+  account_id         = local.account_id
+  vpc_id             = local.vpc_id
   dockerhub_password = var.nise_dockerhub_password
 
-  domain_zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
-  nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
+  domain_zone_id = local.domain_zone_id
+  nat_gateway_id = local.nat_gateway_id
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 
   nexus_obp_bucket_name = "nexus-obp-production"
 
   public_load_balancer_dns_name = data.terraform_remote_state.common.outputs.public_alb_dns_name
-  public_lb_listener_https_arn  = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  public_lb_listener_https_arn  = local.public_alb_https_listener_arn
 }
 
 module "viz" {
   source = "./viz"
 
   aws_region = var.aws_region
-  account_id = data.aws_caller_identity.current.account_id
-  vpc_id     = data.terraform_remote_state.common.outputs.vpc_id
+  account_id = local.account_id
+  vpc_id     = local.vpc_id
 
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
   secret_dockerhub_arn            = module.dockerhub_secret.dockerhub_credentials_arn
 
   scientific_data_bucket_name = "important-scientific-data"
 
-  domain_zone_id   = data.terraform_remote_state.common.outputs.domain_zone_id
-  nat_gateway_id   = data.terraform_remote_state.common.outputs.nat_gateway_id
-  alb_listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  domain_zone_id   = local.domain_zone_id
+  nat_gateway_id   = local.nat_gateway_id
+  alb_listener_arn = local.public_alb_https_listener_arn
 
   # TODO remove after migrations
   aws_lb_alb_arn                 = data.terraform_remote_state.common.outputs.public_alb_arn
-  aws_security_group_alb_id      = data.terraform_remote_state.common.outputs.public_alb_sg_id
-  route_table_private_subnets_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  aws_security_group_alb_id      = local.public_alb_sg_id
+  route_table_private_subnets_id = local.route_table_private_subnets_id
 }
 
 module "cells_svc" {
@@ -112,14 +127,14 @@ module "cells_svc" {
 
   aws_region = var.aws_region
 
-  vpc_id         = data.terraform_remote_state.common.outputs.vpc_id
-  vpc_cidr_block = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  vpc_id         = local.vpc_id
+  vpc_cidr_block = local.vpc_cidr_block
 
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
 
-  public_alb_https_listener_arn  = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
-  route_table_private_subnets_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  public_alb_https_listener_arn  = local.public_alb_https_listener_arn
+  route_table_private_subnets_id = local.route_table_private_subnets_id
 
   aws_coreservices_ssh_key_id = module.coreservices_key.key_pair_id
 
@@ -134,11 +149,11 @@ module "nse" {
   source = "./nse"
 
   aws_region                = var.aws_region
-  account_id                = data.aws_caller_identity.current.account_id
-  vpc_id                    = data.terraform_remote_state.common.outputs.vpc_id
+  account_id                = local.account_id
+  vpc_id                    = local.vpc_id
   dockerhub_credentials_arn = module.dockerhub_secret.dockerhub_credentials_arn
   amazon_linux_ecs_ami_id   = data.aws_ami.amazon_linux_2_ecs.id
-  route_table_id            = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  route_table_id            = local.route_table_private_subnets_id
 
   me_model_analysis_docker_image_url = "bluebrain/me-model-analysis:latest"
 }
@@ -147,11 +162,11 @@ module "bluenaas_svc" {
   source = "./bluenaas_svc"
 
   aws_region                 = var.aws_region
-  account_id                 = data.aws_caller_identity.current.account_id
-  vpc_id                     = data.terraform_remote_state.common.outputs.vpc_id
-  alb_listener_arn           = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  account_id                 = local.account_id
+  vpc_id                     = local.vpc_id
+  alb_listener_arn           = local.public_alb_https_listener_arn
   alb_listener_rule_priority = 750
-  internet_access_route_id   = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  internet_access_route_id   = local.route_table_private_subnets_id
 
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
@@ -167,7 +182,7 @@ module "hpc" {
   source = "./hpc"
 
   aws_region                   = var.aws_region
-  account_id                   = data.aws_caller_identity.current.account_id
+  account_id                   = local.account_id
   obp_vpc_id                   = "vpc-08aa04757a326969b"
   obp_vpc_default_sg_id        = "sg-07356e862875b0e81"
   sbo_billing                  = "hpc"
@@ -191,11 +206,11 @@ module "static-server" {
   source = "./static-server"
 
   aws_region                 = var.aws_region
-  account_id                 = data.aws_caller_identity.current.account_id
-  vpc_id                     = data.terraform_remote_state.common.outputs.vpc_id
+  account_id                 = local.account_id
+  vpc_id                     = local.vpc_id
   public_subnet_ids          = [data.terraform_remote_state.common.outputs.public_a_subnet_id, data.terraform_remote_state.common.outputs.public_b_subnet_id]
   domain_name                = data.terraform_remote_state.common.outputs.primary_domain
-  alb_listener_arn           = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  alb_listener_arn           = local.public_alb_https_listener_arn
   alb_listener_rule_priority = 600
 }
 
@@ -203,20 +218,20 @@ module "core_webapp" {
   source = "./core_webapp"
 
   core_webapp_log_group_name           = "core_webapp"
-  vpc_id                               = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id                               = local.vpc_id
   core_webapp_ecs_number_of_containers = 1
-  public_alb_https_listener_arn        = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  public_alb_https_listener_arn        = local.public_alb_https_listener_arn
   # TODO: re-enable for NLB/private ALB architecture change
   # private_alb_https_listener_arn       = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
   aws_region                      = var.aws_region
-  account_id                      = data.aws_caller_identity.current.account_id
+  account_id                      = local.account_id
   core_webapp_docker_image_url    = "bluebrain/sbo-core-web-app:latest"
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
   core_webapp_base_path           = "/mmb-beta"
-  route_table_id                  = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  route_table_id                  = local.route_table_private_subnets_id
   allowed_source_ip_cidr_blocks   = ["0.0.0.0/0"]
-  vpc_cidr_block                  = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  vpc_cidr_block                  = local.vpc_cidr_block
 
   env_DEBUG = "true"
   # TODO Switch to data.terraform_remote_state.common.outputs.primary_domain once the CI in deployment-common works.
@@ -231,11 +246,11 @@ module "accounting_svc" {
   source = "./accounting_svc"
 
   aws_region                    = var.aws_region
-  account_id                    = data.aws_caller_identity.current.account_id
-  vpc_id                        = data.terraform_remote_state.common.outputs.vpc_id
-  alb_listener_arn              = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
-  internet_access_route_id      = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
-  allowed_source_ip_cidr_blocks = [var.epfl_cidr, var.bbp_dmz_cidr, data.terraform_remote_state.common.outputs.vpc_cidr_block, ]
+  account_id                    = local.account_id
+  vpc_id                        = local.vpc_id
+  alb_listener_arn              = local.public_alb_https_listener_arn
+  internet_access_route_id      = local.route_table_private_subnets_id
+  allowed_source_ip_cidr_blocks = [var.epfl_cidr, var.bbp_dmz_cidr, local.vpc_cidr_block, ]
 
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
@@ -249,18 +264,18 @@ module "kg_inference_api" {
   source = "./kg-inference-api"
 
   # public_alb_dns_name           = data.terraform_remote_state.common.outputs.public_alb_dns_name
-  # domain_zone_id                = data.terraform_remote_state.common.outputs.domain_zone_id
-  public_alb_https_listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
-  route_table_id                = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
-  vpc_cidr_block                = data.terraform_remote_state.common.outputs.vpc_cidr_block
-  vpc_id                        = data.terraform_remote_state.common.outputs.vpc_id
+  # domain_zone_id                = local.domain_zone_id
+  public_alb_https_listener_arn = local.public_alb_https_listener_arn
+  route_table_id                = local.route_table_private_subnets_id
+  vpc_cidr_block                = local.vpc_cidr_block
+  vpc_id                        = local.vpc_id
   primary_domain_hostname       = "openbrainplatform.org"
 
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
 
   aws_region                        = var.aws_region
-  account_id                        = data.aws_caller_identity.current.account_id
+  account_id                        = local.account_id
   allowed_source_ip_cidr_blocks     = ["0.0.0.0/0"]
   kg_inference_api_docker_image_url = "bluebrain/kg-inference-api:latest"
   kg_inference_api_base_path        = "/api/kg-inference"
@@ -271,18 +286,18 @@ module "thumbnail_generation_api" {
   source = "./thumbnail-generation-api"
 
   #public_alb_dns_name           = data.terraform_remote_state.common.outputs.public_alb_dns_name
-  #domain_zone_id                = data.terraform_remote_state.common.outputs.domain_zone_id
-  public_alb_https_listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
-  route_table_id                = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
-  vpc_cidr_block                = data.terraform_remote_state.common.outputs.vpc_cidr_block
-  vpc_id                        = data.terraform_remote_state.common.outputs.vpc_id
+  #domain_zone_id                = local.domain_zone_id
+  public_alb_https_listener_arn = local.public_alb_https_listener_arn
+  route_table_id                = local.route_table_private_subnets_id
+  vpc_cidr_block                = local.vpc_cidr_block
+  vpc_id                        = local.vpc_id
   primary_domain_hostname       = "openbrainplatform.org"
 
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
 
   aws_region                                = var.aws_region
-  account_id                                = data.aws_caller_identity.current.account_id
+  account_id                                = local.account_id
   allowed_source_ip_cidr_blocks             = ["0.0.0.0/0"]
   thumbnail_generation_api_docker_image_url = "bluebrain/thumbnail-generation-api:latest"
   thumbnail_generation_api_base_path        = "/api/thumbnail-generation"
@@ -293,9 +308,9 @@ module "dashboards" {
   source = "./dashboards"
 
   aws_region = var.aws_region
-  account_id = data.aws_caller_identity.current.account_id
+  account_id = local.account_id
 
-  load_balancer_id = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  load_balancer_id = local.public_alb_https_listener_arn
   load_balancer_target_suffixes = {
     "AccountingService"  = module.accounting_svc.lb_rule_suffix
     "SonataCellService"  = module.cells_svc.lb_rule_suffix
