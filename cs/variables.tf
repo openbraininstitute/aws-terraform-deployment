@@ -21,7 +21,7 @@ variable "account_id" {
   type        = string
 }
 
-variable "public_alb_listener" {
+variable "public_alb_https_listener_arn" {
   type = string
 }
 

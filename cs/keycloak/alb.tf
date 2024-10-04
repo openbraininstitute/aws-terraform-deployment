@@ -30,7 +30,7 @@ resource "aws_lb_listener_rule" "keycloak_redirect" {
   # Generates a set [0, 1, 2, ..] with an index for each entry in var.redirect_hostnames
   for_each = toset(formatlist("%s", range(length(var.redirect_hostnames))))
 
-  listener_arn = var.public_alb_listener
+  listener_arn = var.public_alb_https_listener_arn
   priority     = 555 + each.value
 
   action {
@@ -66,7 +66,7 @@ resource "aws_lb_listener_rule" "keycloak_redirect" {
 }
 
 resource "aws_lb_listener_rule" "keycloak_https" {
-  listener_arn = var.public_alb_listener
+  listener_arn = var.public_alb_https_listener_arn
   priority     = 565
   action {
     type             = "forward"

@@ -32,7 +32,7 @@ variable "redirect_hostnames" {
   sensitive   = false
 }
 
-variable "public_alb_listener" {
+variable "public_alb_https_listener_arn" {
   type = string
 }
 

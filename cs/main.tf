@@ -5,11 +5,11 @@ module "networking" {
 }
 
 module "keycloak" {
-  source              = "./keycloak"
-  private_subnets     = module.networking.keycloak_private_subnets
-  vpc_id              = var.vpc_id
-  db_instance_class   = var.db_instance_class
-  public_alb_listener = var.public_alb_listener
+  source                        = "./keycloak"
+  private_subnets               = module.networking.keycloak_private_subnets
+  vpc_id                        = var.vpc_id
+  db_instance_class             = var.db_instance_class
+  public_alb_https_listener_arn = var.public_alb_https_listener_arn
 
   preferred_hostname = "openbluebrain.com"
   redirect_hostnames = ["openbluebrain.ch", "openbrainplatform.org", "openbrainplatform.com"]

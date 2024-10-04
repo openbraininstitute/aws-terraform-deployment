@@ -40,11 +40,11 @@ module "networking" {
 module "cs" {
   source = "./cs"
 
-  vpc_id              = local.vpc_id
-  aws_region          = local.aws_region
-  route_table_id      = local.route_table_private_subnets_id
-  db_instance_class   = "db.t3.micro"
-  public_alb_listener = local.public_alb_https_listener_arn
+  vpc_id                        = local.vpc_id
+  aws_region                    = local.aws_region
+  route_table_id                = local.route_table_private_subnets_id
+  db_instance_class             = "db.t3.micro"
+  public_alb_https_listener_arn = local.public_alb_https_listener_arn
 
   preferred_hostname = "openbluebrain.com"
   redirect_hostnames = ["openbluebrain.ch", "openbrainplatform.org", "openbrainplatform.com"]
