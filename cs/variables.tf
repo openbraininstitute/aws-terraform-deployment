@@ -8,7 +8,7 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
-variable "route_table_id" {
+variable "route_table_private_subnets_id" {
   type = string
 }
 

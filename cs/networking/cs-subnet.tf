@@ -23,13 +23,14 @@ resource "aws_subnet" "cs_subnet_b" {
   }
 }
 
-# Link route table to cs_subnet network
+# Link VPC route private table to cs_subnet a network
 resource "aws_route_table_association" "cs_subnet_a" {
   subnet_id      = aws_subnet.cs_subnet_a.id
-  route_table_id = var.route_table_id
+  route_table_id = var.route_table_private_subnets_id
 }
 
+# Link VPC route private table to cs_subnet b network
 resource "aws_route_table_association" "cs_subnet_b" {
   subnet_id      = aws_subnet.cs_subnet_b.id
-  route_table_id = var.route_table_id
+  route_table_id = var.route_table_private_subnets_id
 }
