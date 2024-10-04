@@ -11,8 +11,8 @@ module "keycloak" {
   db_instance_class             = var.db_instance_class
   public_alb_https_listener_arn = var.public_alb_https_listener_arn
 
-  preferred_hostname = "openbluebrain.com"
-  redirect_hostnames = ["openbluebrain.ch", "openbrainplatform.org", "openbrainplatform.com"]
+  preferred_hostname = var.preferred_hostname
+  redirect_hostnames = var.redirect_hostnames
 
   efs_mt_subnets = module.networking.keycloak_private_subnets
 
