@@ -116,11 +116,11 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_KNOWLEDGE_GRAPH__BR_SAVING_PATH"
-          value = "/"
+          value = "/brainregion_hierarchy.json"
         },
         {
           name  = "NEUROAGENT_KNOWLEDGE_GRAPH__CT_SAVING_PATH"
-          value = "/"
+          value = "/celltypes_hierarchy.json"
         },
       ]
       secrets = [
