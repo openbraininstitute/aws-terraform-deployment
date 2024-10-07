@@ -116,11 +116,11 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_KNOWLEDGE_GRAPH__BR_SAVING_PATH"
-          value = "src/neuroagent/app"
+          value = "/"
         },
         {
           name  = "NEUROAGENT_KNOWLEDGE_GRAPH__CT_SAVING_PATH"
-          value = "src/neuroagent/app"
+          value = "/"
         },
       ]
       secrets = [
