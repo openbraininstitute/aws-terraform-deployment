@@ -1,6 +1,6 @@
 locals {
   account_id = data.aws_caller_identity.current.account_id
-  aws_region = data.terraform_remote_state.common.outputs.aws_region
+  aws_region = data.aws_region.current.name
   vpc_id     = data.terraform_remote_state.common.outputs.vpc_id
 
   public_alb_https_listener_arn  = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
@@ -84,7 +84,7 @@ module "ml" {
 module "nexus" {
   source = "./nexus"
 
-  aws_region         = var.aws_region
+  aws_region         = local.aws_region
   account_id         = local.account_id
   vpc_id             = local.vpc_id
   dockerhub_password = var.nise_dockerhub_password
@@ -103,7 +103,7 @@ module "nexus" {
 module "viz" {
   source = "./viz"
 
-  aws_region = var.aws_region
+  aws_region = local.aws_region
   account_id = local.account_id
   vpc_id     = local.vpc_id
 
@@ -125,7 +125,7 @@ module "viz" {
 module "cells_svc" {
   source = "./cells_svc"
 
-  aws_region = var.aws_region
+  aws_region = local.aws_region
 
   vpc_id         = local.vpc_id
   vpc_cidr_block = local.vpc_cidr_block
@@ -148,7 +148,7 @@ module "cells_svc" {
 module "nse" {
   source = "./nse"
 
-  aws_region                = var.aws_region
+  aws_region                = local.aws_region
   account_id                = local.account_id
   vpc_id                    = local.vpc_id
   dockerhub_credentials_arn = module.dockerhub_secret.dockerhub_credentials_arn
@@ -161,7 +161,7 @@ module "nse" {
 module "bluenaas_svc" {
   source = "./bluenaas_svc"
 
-  aws_region                 = var.aws_region
+  aws_region                 = local.aws_region
   account_id                 = local.account_id
   vpc_id                     = local.vpc_id
   alb_listener_arn           = local.public_alb_https_listener_arn
@@ -181,7 +181,7 @@ module "bluenaas_svc" {
 module "hpc" {
   source = "./hpc"
 
-  aws_region                   = var.aws_region
+  aws_region                   = local.aws_region
   account_id                   = local.account_id
   obp_vpc_id                   = "vpc-08aa04757a326969b"
   obp_vpc_default_sg_id        = "sg-07356e862875b0e81"
@@ -205,7 +205,7 @@ module "hpc" {
 module "static-server" {
   source = "./static-server"
 
-  aws_region                 = var.aws_region
+  aws_region                 = local.aws_region
   account_id                 = local.account_id
   vpc_id                     = local.vpc_id
   public_subnet_ids          = [data.terraform_remote_state.common.outputs.public_a_subnet_id, data.terraform_remote_state.common.outputs.public_b_subnet_id]
@@ -223,7 +223,7 @@ module "core_webapp" {
   public_alb_https_listener_arn        = local.public_alb_https_listener_arn
   # TODO: re-enable for NLB/private ALB architecture change
   # private_alb_https_listener_arn       = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
-  aws_region                      = var.aws_region
+  aws_region                      = local.aws_region
   account_id                      = local.account_id
   core_webapp_docker_image_url    = "bluebrain/sbo-core-web-app:latest"
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
@@ -245,7 +245,7 @@ module "core_webapp" {
 module "accounting_svc" {
   source = "./accounting_svc"
 
-  aws_region                    = var.aws_region
+  aws_region                    = local.aws_region
   account_id                    = local.account_id
   vpc_id                        = local.vpc_id
   alb_listener_arn              = local.public_alb_https_listener_arn
@@ -274,7 +274,7 @@ module "kg_inference_api" {
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
 
-  aws_region                        = var.aws_region
+  aws_region                        = local.aws_region
   account_id                        = local.account_id
   allowed_source_ip_cidr_blocks     = ["0.0.0.0/0"]
   kg_inference_api_docker_image_url = "bluebrain/kg-inference-api:latest"
@@ -296,7 +296,7 @@ module "thumbnail_generation_api" {
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
 
-  aws_region                                = var.aws_region
+  aws_region                                = local.aws_region
   account_id                                = local.account_id
   allowed_source_ip_cidr_blocks             = ["0.0.0.0/0"]
   thumbnail_generation_api_docker_image_url = "bluebrain/thumbnail-generation-api:latest"
@@ -307,7 +307,7 @@ module "thumbnail_generation_api" {
 module "dashboards" {
   source = "./dashboards"
 
-  aws_region = var.aws_region
+  aws_region = local.aws_region
   account_id = local.account_id
 
   load_balancer_id = local.public_alb_https_listener_arn
