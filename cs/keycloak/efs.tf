@@ -12,9 +12,10 @@ resource "aws_efs_file_system" "keycloakfs" {
 
 ### Create mount target for EFS for each subnet
 resource "aws_efs_mount_target" "efs-mt" {
-  count          = length(var.efs_mt_subnets)
-  file_system_id = aws_efs_file_system.keycloakfs.id
-  subnet_id      = var.efs_mt_subnets[count.index]
+  count           = length(var.efs_mt_subnets)
+  file_system_id  = aws_efs_file_system.keycloakfs.id
+  security_groups = [aws_security_group.efs_sg.id]
+  subnet_id       = var.efs_mt_subnets[count.index]
 }
 
 output "efs_arn" {

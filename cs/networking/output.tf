@@ -5,11 +5,11 @@ output "keycloak_private_subnets" {
 data "aws_subnets" "all" {
   filter {
     name   = "availability-zone"
-    values = ["us-east-1a"]
+    values = ["${var.aws_region}a"]
   }
   filter {
     name   = "vpc-id"
-    values = ["vpc-08aa04757a326969b"]
+    values = ["${var.vpc_id}"]
   }
 }
 
