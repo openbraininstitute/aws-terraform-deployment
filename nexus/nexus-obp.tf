@@ -29,7 +29,7 @@ module "blazegraph_obp_bg_4" {
   blazegraph_cpu              = 4096
   blazegraph_memory           = 10240
   blazegraph_docker_image_url = "bluebrain/blazegraph-nexus:2.1.6-RC-21-jre"
-  blazegraph_java_opts        = "-Djava.awt.headless=true -Djetty.maxFormContentSize=80000000 -XX:MaxDirectMemorySize=600m -Xms5g -Xmx5g -XX:+UseG1GC "
+  blazegraph_java_opts        = "-Djava.awt.headless=true -Djetty.maxFormContentSize=80000000 -XX:MaxDirectMemorySize=600m -Xms6g -Xmx6g -XX:+UseG1GC "
 
   blazegraph_instance_name = "blazegraph-obp-bg-4"
   blazegraph_efs_name      = "blazegraph-obp-bg-4"
@@ -55,10 +55,10 @@ module "blazegraph_obp_composite_4" {
     aws = aws.nexus_blazegraph_tags
   }
 
-  blazegraph_cpu              = 8192
-  blazegraph_memory           = 16384
+  blazegraph_cpu              = 4096
+  blazegraph_memory           = 10240
   blazegraph_docker_image_url = "bluebrain/blazegraph-nexus:2.1.6-RC-21-jre"
-  blazegraph_java_opts        = "-Djetty.maxFormContentSize=80000000 -XX:MaxDirectMemorySize=2g -Xms10g -Xmx10g -XX:+UseG1GC "
+  blazegraph_java_opts        = "-Djetty.maxFormContentSize=80000000 -XX:MaxDirectMemorySize=600m -Xms6g -Xmx6g -XX:+UseG1GC "
 
   blazegraph_instance_name = "blazegraph-obp-composite-4"
   blazegraph_efs_name      = "blazegraph-obp-composite-4"
@@ -106,9 +106,9 @@ module "nexus_delta_obp_2" {
   subnet_id                = module.networking.subnet_id
   subnet_security_group_id = module.networking.main_subnet_sg_id
 
-  delta_cpu       = 8192
-  delta_memory    = 16384
-  delta_java_opts = "-Xss2m -Xms10g -Xmx10g"
+  delta_cpu       = 4096
+  delta_memory    = 10240
+  delta_java_opts = "-Xss2m -Xms6g -Xmx6g"
 
   delta_instance_name        = "nexus-delta-obp-2"
   delta_docker_image_version = "1.11.0-M1"
