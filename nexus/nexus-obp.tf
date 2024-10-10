@@ -83,7 +83,7 @@ module "elasticsearch_obp_2" {
   elastic_vpc_endpoint_id  = module.networking.elastic_vpc_endpoint_id
   elastic_hosted_zone_name = module.networking.elastic_hosted_zone_name
 
-  elasticsearch_version = "8.14.3"
+  elasticsearch_version = "8.15.2"
 
   hot_node_size  = "4g"
   hot_node_count = 2
