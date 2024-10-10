@@ -27,7 +27,6 @@ validate:
   variables:
     KUBERNETES_MEMORY_LIMIT: 6G
 
-
 build:
   variables:
     KUBERNETES_CPU_REQUEST: 4000m
@@ -53,10 +52,6 @@ deploy:
     - build
   environment:
     name: $TF_STATE_NAME
-  artifacts:
-    name: bolt-inventory
-    paths:
-      - ${TF_ROOT}/bolt-inventory.yaml
 
 1_verify_untagged:
   extends: .terraform:postdeploy
@@ -146,18 +141,3 @@ check_compliance:
     - terraform init
     - terraform plan -parallelism=30 -out=plan.tfplan > /dev/null && terraform show -json plan.tfplan > plan.json
     - terraform-compliance -f ./terraform-compliance -p ./plan.json
-
-#puppet_bolt:
-#  image: puppet/puppet-bolt
-#  stage: configure
-#  resource_group: ${TF_STATE_NAME}
-#  dependencies:
-#    - deploy
-#  rules:
-#    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-#  script:
-#    - cat bolt-inventory.yaml
-#    - bolt plan show aws_poc -v
-#    - bolt plan run aws_poc -v
-
-
