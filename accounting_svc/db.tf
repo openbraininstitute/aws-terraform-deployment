@@ -6,8 +6,16 @@ resource "aws_db_subnet_group" "accounting_db_cluster_subnet_group" {
   }
 }
 
+#tfsec:ignore:aws-ssm-secret-use-customer-key
+resource "aws_secretsmanager_secret" "accounting_database_password" {
+  name        = "accounting_database_password"
+  description = "Accounting database password"
+}
+
 data "aws_secretsmanager_secret_version" "accounting_database_password" {
   secret_id = var.secrets_arn
+  # TODO danielfr: replace secret_id by TF managed one
+  #secret_id = aws_secretsmanager_secret.accounting_database_password.id
 }
 
 # tfsec:ignore:aws-rds-enable-performance-insights-encryption

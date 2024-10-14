@@ -180,6 +180,8 @@ resource "aws_ecs_task_definition" "accounting_ecs_definition" {
         {
           name      = "DB_PASS"
           valueFrom = "${var.secrets_arn}"
+          # TODO danielfr: replace secret_id by TF managed one
+          #valueFrom = "${aws_secretsmanager_secret.accounting_database_password.arn}"
         }
       ]
 
