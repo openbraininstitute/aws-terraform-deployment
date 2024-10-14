@@ -82,8 +82,9 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-query-timeout-alarm" {
   alarm_name                = "blazegraph-search-query-timeout-alarm"
   comparison_operator       = "GreaterThanThreshold"
   evaluation_periods        = 1
+  datapoints_to_alarm       = 1
   metric_name               = aws_cloudwatch_log_metric_filter.blazegraph-query-timeout-metric.name
-  namespace                 = "AWS/ECS"
+  namespace                 = "blazegraph"
   period                    = 60
   statistic                 = "Average"
   threshold                 = 0
@@ -100,8 +101,9 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-out-of-memory-alarm" {
   alarm_name                = "blazegraph-search-out-of-memory-alarm"
   comparison_operator       = "GreaterThanThreshold"
   evaluation_periods        = 1
+  datapoints_to_alarm       = 1
   metric_name               = aws_cloudwatch_log_metric_filter.blazegraph-out-of-memory-error-metric.name
-  namespace                 = "AWS/ECS"
+  namespace                 = "blazegraph"
   period                    = 60
   statistic                 = "Average"
   threshold                 = 0
@@ -119,10 +121,11 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-test-log-alarm" {
   alarm_name                = "blazegraph-search-test-log-alarm"
   comparison_operator       = "GreaterThanThreshold"
   evaluation_periods        = 1
+  datapoints_to_alarm       = 1
   metric_name               = aws_cloudwatch_log_metric_filter.blazegraph-test-log-metric.name
-  namespace                 = "AWS/ECS"
+  namespace                 = "blazegraph"
   period                    = 60
-  statistic                 = "Average"
+  statistic                 = "Sum"
   threshold                 = 0
   alarm_description         = "Test Log Alarm for Blazegraph Search"
   insufficient_data_actions = []
