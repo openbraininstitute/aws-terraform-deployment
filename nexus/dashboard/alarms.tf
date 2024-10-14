@@ -23,7 +23,7 @@ resource "aws_sns_topic_subscription" "nexus_alerts_nise" {
 
 resource "aws_cloudwatch_metric_alarm" "blazegraph-search-cpu-alarm" {
   alarm_name                = "blazegraph-search-cpu-alarm"
-  comparison_operator       = "GreaterThanThreshold"
+  comparison_operator       = "GreaterThanOrEqualToThreshold"
   evaluation_periods        = 2
   metric_name               = "CPUUtilization"
   namespace                 = "AWS/ECS"
@@ -80,7 +80,7 @@ resource "aws_cloudwatch_log_metric_filter" "blazegraph-test-log-metric" {
 
 resource "aws_cloudwatch_metric_alarm" "blazegraph-search-query-timeout-alarm" {
   alarm_name                = "blazegraph-search-query-timeout-alarm"
-  comparison_operator       = "GreaterThanThreshold"
+  comparison_operator       = "GreaterThanOrEqualToThreshold"
   evaluation_periods        = 1
   metric_name               = aws_cloudwatch_log_metric_filter.blazegraph-query-timeout-metric.name
   namespace                 = "AWS/ECS"
@@ -98,7 +98,7 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-query-timeout-alarm" {
 
 resource "aws_cloudwatch_metric_alarm" "blazegraph-search-out-of-memory-alarm" {
   alarm_name                = "blazegraph-search-out-of-memory-alarm"
-  comparison_operator       = "GreaterThanThreshold"
+  comparison_operator       = "GreaterThanOrEqualToThreshold"
   evaluation_periods        = 1
   metric_name               = aws_cloudwatch_log_metric_filter.blazegraph-out-of-memory-error-metric.name
   namespace                 = "AWS/ECS"
@@ -117,7 +117,7 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-out-of-memory-alarm" {
 
 resource "aws_cloudwatch_metric_alarm" "blazegraph-search-test-log-alarm" {
   alarm_name                = "blazegraph-search-test-log-alarm"
-  comparison_operator       = "GreaterThanThreshold"
+  comparison_operator       = "GreaterThanOrEqualToThreshold"
   evaluation_periods        = 1
   metric_name               = aws_cloudwatch_log_metric_filter.blazegraph-test-log-metric.name
   namespace                 = "AWS/ECS"
