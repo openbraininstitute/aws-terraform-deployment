@@ -13,9 +13,7 @@ resource "aws_secretsmanager_secret" "accounting_database_password" {
 }
 
 data "aws_secretsmanager_secret_version" "accounting_database_password" {
-  secret_id = var.secrets_arn
-  # TODO danielfr: replace secret_id by TF managed one
-  #secret_id = aws_secretsmanager_secret.accounting_database_password.id
+  secret_id = aws_secretsmanager_secret.accounting_database_password.id
 }
 
 # tfsec:ignore:aws-rds-enable-performance-insights-encryption
