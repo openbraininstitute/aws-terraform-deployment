@@ -83,7 +83,7 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-query-timeout-alarm" {
   comparison_operator       = "GreaterThanThreshold"
   evaluation_periods        = 1
   datapoints_to_alarm       = 1
-  metric_name               = aws_cloudwatch_log_metric_filter.blazegraph-query-timeout-metric.name
+  metric_name               = "QueryTimeoutException"
   namespace                 = "blazegraph"
   period                    = 60
   statistic                 = "Average"
@@ -102,7 +102,7 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-out-of-memory-alarm" {
   comparison_operator       = "GreaterThanThreshold"
   evaluation_periods        = 1
   datapoints_to_alarm       = 1
-  metric_name               = aws_cloudwatch_log_metric_filter.blazegraph-out-of-memory-error-metric.name
+  metric_name               = "OutOfMemoryError"
   namespace                 = "blazegraph"
   period                    = 60
   statistic                 = "Average"
@@ -122,7 +122,7 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-test-log-alarm" {
   comparison_operator       = "GreaterThanThreshold"
   evaluation_periods        = 1
   datapoints_to_alarm       = 1
-  metric_name               = aws_cloudwatch_log_metric_filter.blazegraph-test-log-metric.name
+  metric_name               = "TestLogMetric"
   namespace                 = "blazegraph"
   period                    = 60
   statistic                 = "Sum"
