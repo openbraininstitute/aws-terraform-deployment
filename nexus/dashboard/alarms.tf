@@ -71,7 +71,7 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-query-timeout-alarm" {
   evaluation_periods        = 1
   datapoints_to_alarm       = 1
   metric_name               = aws_cloudwatch_log_metric_filter.blazegraph-query-timeout-metric.metric_transformation[0].name
-  namespace                 = "blazegraph"
+  namespace                 = aws_cloudwatch_log_metric_filter.blazegraph-query-timeout-metric.metric_transformation[0].namespace
   period                    = 60
   statistic                 = "Average"
   threshold                 = 0
@@ -86,7 +86,7 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-out-of-memory-alarm" {
   evaluation_periods        = 1
   datapoints_to_alarm       = 1
   metric_name               = aws_cloudwatch_log_metric_filter.blazegraph-out-of-memory-error-metric.metric_transformation[0].name
-  namespace                 = "blazegraph"
+  namespace                 = aws_cloudwatch_log_metric_filter.blazegraph-out-of-memory-error-metric.metric_transformation[0].namespace
   period                    = 60
   statistic                 = "Average"
   threshold                 = 0
