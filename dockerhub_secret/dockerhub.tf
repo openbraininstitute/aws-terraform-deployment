@@ -19,7 +19,7 @@ resource "aws_iam_policy" "dockerhub_access" {
         "secretsmanager:GetSecretValue"
       ],
       "Resource": [
-        "${var.dockerhub_credentials_arn}"
+        "${aws_secretsmanager_secret.dockerhub_bbpbuildbot_password.arn}"
       ]
     }
   ]

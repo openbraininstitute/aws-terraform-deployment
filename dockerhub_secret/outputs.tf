@@ -1,6 +1,6 @@
 output "dockerhub_credentials_arn" {
   description = "ARN of the secret containing the dockerhub credentials"
-  value       = var.dockerhub_credentials_arn
+  value       = aws_secretsmanager_secret.dockerhub_bbpbuildbot_password.arn
   sensitive   = false
 }
 
