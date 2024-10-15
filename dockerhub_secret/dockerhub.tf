@@ -1,3 +1,9 @@
+#tfsec:ignore:aws-ssm-secret-use-customer-key
+resource "aws_secretsmanager_secret" "dockerhub_bbpbuildbot_password" {
+  name        = "dockerhub_bbpbuildbot_password"
+  description = "dockerhub bbpbuildbot user password"
+}
+
 resource "aws_iam_policy" "dockerhub_access" {
   name        = "dockerhub-credentials-access-policy"
   description = "Policy that allows access to the dockerhub credentials"
