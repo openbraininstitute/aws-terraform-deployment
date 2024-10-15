@@ -83,7 +83,7 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-query-timeout-alarm" {
   comparison_operator       = "GreaterThanThreshold"
   evaluation_periods        = 1
   datapoints_to_alarm       = 1
-  metric_name               = "QueryTimeoutException"
+  metric_name               = aws_cloudwatch_log_metric_filter.blazegraph-query-timeout-metric.metric_transformation[0].name
   namespace                 = "blazegraph"
   period                    = 60
   statistic                 = "Average"
@@ -91,10 +91,6 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-query-timeout-alarm" {
   alarm_description         = "QueryTimeoutExceptions for Blazegraph Search"
   insufficient_data_actions = []
   alarm_actions             = ["arn:aws:sns:us-east-1:671250183987:sns_no_reply_openbrainplatform_org", aws_sns_topic.nexus_alerts.arn]
-  dimensions = {
-    ServiceName = "blazegraph-obp-composite-4_ecs_service"
-    ClusterName = "nexus_ecs_cluster"
-  }
 }
 
 resource "aws_cloudwatch_metric_alarm" "blazegraph-search-out-of-memory-alarm" {
@@ -102,7 +98,7 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-out-of-memory-alarm" {
   comparison_operator       = "GreaterThanThreshold"
   evaluation_periods        = 1
   datapoints_to_alarm       = 1
-  metric_name               = "OutOfMemoryError"
+  metric_name               = aws_cloudwatch_log_metric_filter.blazegraph-out-of-memory-error-metric.metric_transformation[0].name
   namespace                 = "blazegraph"
   period                    = 60
   statistic                 = "Average"
@@ -110,10 +106,6 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-out-of-memory-alarm" {
   alarm_description         = "OutOfMemoryErrors for Blazegraph Search"
   insufficient_data_actions = []
   alarm_actions             = ["arn:aws:sns:us-east-1:671250183987:sns_no_reply_openbrainplatform_org", aws_sns_topic.nexus_alerts.arn]
-  dimensions = {
-    ServiceName = "blazegraph-obp-composite-4_ecs_service"
-    ClusterName = "nexus_ecs_cluster"
-  }
 }
 
 
@@ -122,7 +114,7 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-test-log-alarm" {
   comparison_operator       = "GreaterThanThreshold"
   evaluation_periods        = 1
   datapoints_to_alarm       = 1
-  metric_name               = "TestLogMetric"
+  metric_name               = aws_cloudwatch_log_metric_filter.blazegraph-test-log-metric.metric_transformation[0].name
   namespace                 = "blazegraph"
   period                    = 60
   statistic                 = "Sum"
