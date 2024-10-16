@@ -64,16 +64,7 @@ variable "peering_route_tables" {
   type = list(string)
 }
 
-variable "existing_route_targets" {
-  type = list(string)
-}
-
 variable "lambda_subnet_cidr" {
   description = "CIDR for the subnet in which lambdas can be deployed"
   type        = string
-}
-
-variable "existing_public_subnet_cidrs" {
-  description = "Existing public subnet CIDR blocks for routing compute subnets to, if any. Mostly for debugging purposes."
-  type        = list(string)
 }

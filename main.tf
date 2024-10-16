@@ -10,7 +10,8 @@ locals {
   domain_zone_id   = data.terraform_remote_state.common.outputs.domain_zone_id
   nat_gateway_id   = data.terraform_remote_state.common.outputs.nat_gateway_id
 
-  vpc_cidr_block = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  vpc_cidr_block    = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  vpc_default_sg_id = data.terraform_remote_state.common.outputs.vpc_default_sg_id
 }
 
 module "dockerhub_secret" {
@@ -181,25 +182,23 @@ module "bluenaas_svc" {
 module "hpc" {
   source = "./hpc"
 
-  aws_region                   = local.aws_region
-  account_id                   = local.account_id
-  obp_vpc_id                   = "vpc-08aa04757a326969b"
-  obp_vpc_default_sg_id        = "sg-07356e862875b0e81"
-  sbo_billing                  = "hpc"
-  slurm_mysql_admin_username   = "slurm_admin"
-  slurm_mysql_admin_password   = "arn:aws:secretsmanager:us-east-1:671250183987:secret:hpc_slurm_db_password-6LNuBy"
-  create_compute_instances     = false
-  num_compute_instances        = 0
-  create_slurmdb               = false # TODO-SLURMDB: re-enable when redeploying the cluster
-  compute_instance_type        = "m7g.medium"
-  create_jumphost              = false
-  compute_nat_access           = false
-  compute_subnet_count         = 16
-  av_zone_suffixes             = ["a"]
-  peering_route_tables         = ["rtb-0e4eb2a1cbab24423"]
-  existing_route_targets       = ["10.0.0.0/16"]
-  lambda_subnet_cidr           = "10.0.16.0/24"
-  existing_public_subnet_cidrs = ["10.0.1.0/25", "10.0.1.128/25"]
+  aws_region                 = local.aws_region
+  account_id                 = local.account_id
+  obp_vpc_id                 = local.vpc_id
+  obp_vpc_default_sg_id      = local.vpc_default_sg_id
+  sbo_billing                = "hpc"
+  slurm_mysql_admin_username = "slurm_admin"
+  slurm_mysql_admin_password = "arn:aws:secretsmanager:us-east-1:671250183987:secret:hpc_slurm_db_password-6LNuBy"
+  create_compute_instances   = false
+  num_compute_instances      = 0
+  create_slurmdb             = false # TODO-SLURMDB: re-enable when redeploying the cluster
+  compute_instance_type      = "m7g.medium"
+  create_jumphost            = false
+  compute_nat_access         = false
+  compute_subnet_count       = 16
+  av_zone_suffixes           = ["a"]
+  peering_route_tables       = [local.route_table_private_subnets_id]
+  lambda_subnet_cidr         = "10.0.16.0/24"
 }
 
 module "static-server" {

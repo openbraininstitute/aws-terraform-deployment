@@ -220,7 +220,7 @@
         {
             "Effect": "Allow",
             "Action": "logs:CreateLogGroup",
-            "Resource": "arn:aws:logs:us-east-1:${account_id}:*"
+            "Resource": "arn:aws:logs:${aws_region}:${account_id}:*"
         },
         {
             "Effect": "Allow",
@@ -229,7 +229,7 @@
                 "logs:PutLogEvents"
             ],
             "Resource": [
-                "arn:aws:logs:us-east-1:${account_id}:log-group:/aws/lambda/*hpc-resource-provisioner*:*"
+                "arn:aws:logs:${aws_region}:${account_id}:log-group:/aws/lambda/*hpc-resource-provisioner*:*"
             ]
         },
         {

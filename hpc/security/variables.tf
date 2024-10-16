@@ -27,3 +27,7 @@ variable "create_slurmdb" {
 variable "account_id" {
   type = string
 }
+
+variable "aws_region" {
+  type = string
+}

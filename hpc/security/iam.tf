@@ -6,7 +6,7 @@ resource "aws_iam_role" "hpc_resource_provisioner_role" {
 
 resource "aws_iam_policy" "hpc_resource_provisioner_policy" {
   name   = "hpc_resource_provisioner_policy"
-  policy = templatefile("${path.module}/hpc_resource_provisioner_policy.tftpl", { "account_id" = var.account_id })
+  policy = templatefile("${path.module}/hpc_resource_provisioner_policy.tftpl", { "account_id" = var.account_id, "aws_region" = var.aws_region })
 }
 
 resource "aws_iam_role_policy_attachment" "hpc_resource_provisioner_role_policy_attachment" {

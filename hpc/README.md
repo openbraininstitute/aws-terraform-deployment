@@ -14,7 +14,6 @@ Variables to set
   * `compute_subnet_count`: how many compute subnets to create.
   * `av_zone_suffixes`: which availability zones (a, b, c, ...) to create the compute subnets in
   * `peering_route_tables`: which route tables need to get an extra route to the peering VPC
-  * `existing_route_targets`: which CIDRs should be reachable from the pcluster VPC
 
 Tags
 ====

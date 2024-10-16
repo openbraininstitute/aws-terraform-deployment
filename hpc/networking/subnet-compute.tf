@@ -79,12 +79,3 @@ resource "aws_route" "compute_to_public" {
   destination_cidr_block    = aws_subnet.public[0].cidr_block
   vpc_peering_connection_id = var.vpc_peering_connection_id
 }
-
-
-resource "aws_route" "compute_to_existing_public" {
-  count                     = length(var.existing_public_subnet_cidrs)
-  route_table_id            = aws_route_table.compute.id
-  destination_cidr_block    = var.existing_public_subnet_cidrs[count.index]
-  vpc_peering_connection_id = var.vpc_peering_connection_id
-}
-

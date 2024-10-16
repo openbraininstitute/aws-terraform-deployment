@@ -1,4 +1,5 @@
 aws_region                 = "us-east-1"
+account_id                 = "130659266700"
 obp_vpc_id                 = "vpc-06465039e2fbae370"
 sbo_billing                = "hpc"
 slurm_mysql_admin_username = "slurm_admin"
@@ -11,9 +12,5 @@ create_jumphost            = true
 compute_nat_access         = false
 compute_subnet_count       = 15
 av_zone_suffixes           = ["a"]
-# av_zone_suffixes             = ["a", "b", "c", "d"]
-peering_route_tables         = ["rtb-0e59fac620719ddc5"]
-existing_route_targets       = ["172.31.0.0/16"]
-account_id                   = "130659266700"
-lambda_subnet_cidr           = "172.31.2.0/24"
-existing_public_subnet_cidrs = []
+peering_route_tables       = ["rtb-0e59fac620719ddc5"]
+lambda_subnet_cidr         = "172.31.2.0/24"
