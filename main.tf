@@ -255,8 +255,6 @@ module "accounting_svc" {
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
 
-  secrets_arn = "arn:aws:secretsmanager:us-east-1:671250183987:secret:accounting_db-SJGtMG"
-
   root_path = "/api/accounting"
 }
 

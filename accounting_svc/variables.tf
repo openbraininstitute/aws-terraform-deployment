@@ -40,12 +40,6 @@ variable "dockerhub_access_iam_policy_arn" {
   type        = string
 }
 
-variable "secrets_arn" {
-  description = "ARN of the secret containing secrets for accounting service"
-  type        = string
-  default     = "arn:aws:secretsmanager:us-east-1:671250183987:secret:accounting_db-SJGtMG"
-}
-
 variable "db_name" {
   description = "Name of the database"
   type        = string
