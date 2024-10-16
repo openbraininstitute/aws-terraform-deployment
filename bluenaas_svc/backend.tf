@@ -99,6 +99,12 @@ resource "aws_vpc_security_group_egress_rule" "bluenaas_allow_outgoing_udp" {
   }
 }
 
+#tfsec:ignore:aws-ssm-secret-use-customer-key
+resource "aws_secretsmanager_secret" "bluenaas_secrets_manager" {
+  name        = "bluenaas_secrets_manager"
+  description = "bluenaas Secrets Manager"
+}
+
 resource "aws_ecs_task_definition" "bluenaas_ecs_definition" {
   family       = "bluenaas_task_family"
   network_mode = "awsvpc"
