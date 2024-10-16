@@ -172,8 +172,6 @@ module "bluenaas_svc" {
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
 
-  secrets_arn = "arn:aws:secretsmanager:us-east-1:671250183987:secret:bluenaas_service-WNJI2n"
-
   keycloak_server_url = var.keycloak_server_url
 
   base_path = "/api/bluenaas"

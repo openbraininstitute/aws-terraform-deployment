@@ -190,15 +190,15 @@ resource "aws_ecs_task_definition" "bluenaas_ecs_definition" {
       secrets = [
         {
           name      = "KC_CLIENT_ID"
-          valueFrom = "${var.secrets_arn}:KC_CLIENT_ID::"
+          valueFrom = "${aws_secretsmanager_secret.bluenaas_secrets_manager.arn}:KC_CLIENT_ID::"
         },
         {
           name      = "KC_CLIENT_SECRET"
-          valueFrom = "${var.secrets_arn}:KC_CLIENT_SECRET::"
+          valueFrom = "${aws_secretsmanager_secret.bluenaas_secrets_manager.arn}:KC_CLIENT_SECRET::"
         },
         {
           name      = "SENTRY_DSN"
-          valueFrom = "${var.secrets_arn}:SENTRY_DSN::"
+          valueFrom = "${aws_secretsmanager_secret.bluenaas_secrets_manager.arn}:SENTRY_DSN::"
         }
       ]
 

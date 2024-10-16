@@ -40,11 +40,6 @@ variable "dockerhub_access_iam_policy_arn" {
   type        = string
 }
 
-variable "secrets_arn" {
-  description = "ARN of the secret containing secrets for BlueNaaS service"
-  type        = string
-}
-
 variable "deployment_env" {
   description = "Environment in which the service is deployed"
   type        = string
