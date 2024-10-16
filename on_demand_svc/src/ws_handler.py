@@ -21,6 +21,7 @@ APIGW_REGION = os.environ["APIGW_REGION"]
 ECS_CLUSTER = os.environ["ECS_CLUSTER"]
 ECS_TASK_NAME = os.environ["ECS_TASK_NAME"]
 ECS_TASK_DEF = os.environ["ECS_TASK_DEF"]
+ECS_STOP_ON_WS_DISCONNECT = os.environ("ECS_STOP_ON_WS_DISCONNECT")
 SVC_SUBNET = os.environ["SVC_SUBNET"]
 SVC_SECURITY_GRP = os.environ["SVC_SECURITY_GRP"]
 SVC_BUCKET = os.environ["SVC_BUCKET"]
@@ -139,13 +140,13 @@ def disconnect(event, context):
     task_submit_time = datetime.fromisoformat(data["Attributes"]["task_submit_time"]["S"])
     ip = data["Attributes"]["ip"]["S"]
     task = data["Attributes"]["task"]["S"]
-    if ip:
+    if ip and ECS_STOP_ON_WS_DISCONNECT:
         try:
             # let shutdown cleanup task wait 10sec
             urlopen(Request(f"http://{ip}:8080/shutdown", method="POST"), timeout=10)
         except URLError as e:
             L.info("Shutting down svc error: %s.", e)
-    ECS.stop_task(cluster=ECS_CLUSTER, task=task)
+        ECS.stop_task(cluster=ECS_CLUSTER, task=task)
     # task accounting
     task_end_time = datetime.utcnow()
     if task_end_time - task_submit_time > timedelta(days=1):

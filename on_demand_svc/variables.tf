@@ -37,6 +37,11 @@ variable "ecs_memory" {
   description = "ECS memory units per task."
   default     = 512
 }
+variable "ecs_stop_on_ws_disconnect" {
+  type        = bool
+  description = "Stop ECS task on websocket disconnect."
+  default     = true
+}
 variable "dockerhub_creds_arn" {
   type        = string
   description = "Docker hub credentials secret ARN."

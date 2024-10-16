@@ -122,16 +122,17 @@ resource "aws_lambda_function" "ws_handler" {
   timeout          = each.value == "default" ? 29 : 10 # defalut route should wait for svc <29s(apigw ws timeout)
   environment {
     variables = {
-      "DDB_WS_CONN_TASK" = aws_dynamodb_table.ws_conn_task.name
-      "DDB_ECS_TASK_ACC" = aws_dynamodb_table.ecs_task_acc.name
-      "APIGW_ENDPOINT"   = "https://${aws_apigatewayv2_api.this.id}.execute-api.${var.aws_region}.amazonaws.com/${aws_apigatewayv2_stage.prod.name}"
-      "APIGW_REGION"     = var.aws_region
-      "ECS_CLUSTER"      = aws_ecs_cluster.this.name
-      "ECS_TASK_DEF"     = aws_ecs_task_definition.this.arn
-      "ECS_TASK_NAME"    = aws_ecs_task_definition.this.family
-      "SVC_SUBNET"       = var.ecs_subnet_id
-      "SVC_SECURITY_GRP" = aws_security_group.ecs.id
-      "SVC_BUCKET"       = var.svc_bucket
+      "DDB_WS_CONN_TASK"          = aws_dynamodb_table.ws_conn_task.name
+      "DDB_ECS_TASK_ACC"          = aws_dynamodb_table.ecs_task_acc.name
+      "APIGW_ENDPOINT"            = "https://${aws_apigatewayv2_api.this.id}.execute-api.${var.aws_region}.amazonaws.com/${aws_apigatewayv2_stage.prod.name}"
+      "APIGW_REGION"              = var.aws_region
+      "ECS_CLUSTER"               = aws_ecs_cluster.this.name
+      "ECS_TASK_DEF"              = aws_ecs_task_definition.this.arn
+      "ECS_TASK_NAME"             = aws_ecs_task_definition.this.family
+      "ECS_STOP_ON_WS_DISCONNECT" = var.ecs_stop_on_ws_disconnect ? "True" : ""
+      "SVC_SUBNET"                = var.ecs_subnet_id
+      "SVC_SECURITY_GRP"          = aws_security_group.ecs.id
+      "SVC_BUCKET"                = var.svc_bucket
     }
   }
   tracing_config {
