@@ -1,6 +1,6 @@
 resource "aws_security_group" "virtual_lab_manager_db_sg" {
   name   = "virtual_lab_manager_db_sg"
-  vpc_id = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id = var.vpc_id
 
   description = "Security group for virtual lab manager Postgresql database"
 
@@ -9,7 +9,7 @@ resource "aws_security_group" "virtual_lab_manager_db_sg" {
     from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
+    cidr_blocks = var.allowed_source_ip_cidr_blocks
   }
 
   tags = {
@@ -19,7 +19,7 @@ resource "aws_security_group" "virtual_lab_manager_db_sg" {
 
 resource "aws_db_subnet_group" "virtual_lab_manager_db_subnet_group" {
   name       = "virtual-lab-manager-db-subnet-group"
-  subnet_ids = [aws_subnet.core_svc_a.id, aws_subnet.core_svc_b.id]
+  subnet_ids = var.core_subnets
 
   tags = {
     SBO_Billing = "virtual_lab_manager"

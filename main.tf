@@ -298,6 +298,75 @@ module "thumbnail_generation_api" {
   thumbnail_generation_api_log_group_name   = "thumbnail_generation_api"
 }
 
+module "virtual_lab_manager" {
+  source = "./virtual-lab-manager"
+
+  vpc_id                        = data.terraform_remote_state.common.outputs.vpc_id
+  aws_region                    = data.terraform_remote_state.common.outputs.aws_region
+  vpc_cidr_block                = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  nat_gateway_id                = data.terraform_remote_state.common.outputs.nat_gateway_id
+  allowed_source_ip_cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
+  public_lb_listener_https_arn  = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+
+  invite_link = "https://${data.terraform_remote_state.common.outputs.primary_domain}/mmb-beta"
+  mail_from   = "noreply@${data.terraform_remote_state.common.outputs.primary_domain}"
+
+  virtual_lab_manager_postgres_db   = "vlm"
+  virtual_lab_manager_postgres_user = "vlm_user"
+  core_subnets                      = [aws_subnet.core_svc_a.id, aws_subnet.core_svc_b.id]
+
+  log_group_name = var.virtual_lab_manager_log_group_name
+
+  dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
+  dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
+
+  virtual_lab_manager_docker_image_url = var.virtual_lab_manager_docker_image_url
+
+  keycloak_server_url = var.keycloak_server_url
+
+  virtual_lab_manager_secrets_arn = "arn:aws:secretsmanager:${var.aws_region}:${data.aws_caller_identity.current.account_id}:secret:virtual_lab_manager-2Axecx"
+
+  ecs_number_of_containers = var.virtual_lab_manager_ecs_number_of_containers
+
+  virtual_lab_manager_depoloyment_env = "production"
+
+  virtual_lab_manager_nexus_delta_uri = "https://openbluebrain.com/api/nexus/v1"
+
+  virtual_lab_manager_invite_expiration = "7"
+
+  virtual_lab_manager_mail_username = "AKIAZYSNA64ZRY6UDRMA"
+  virtual_lab_manager_mail_server   = "email-smtp.us-east-1.amazonaws.com"
+  virtual_lab_manager_base_path     = var.virtual_lab_manager_base_path
+
+  virtual_lab_manager_mail_port = "25"
+
+  virtual_lab_manager_mail_starttls   = "True"
+  virtual_lab_manager_use_credentials = "True"
+  virtual_lab_manager_cors_origins    = ["http://localhost:3000"]
+
+  virtual_lab_manager_admin_base_path      = "{}/mmb-beta/virtual-lab/lab/{}/admin?panel=billing"
+  virtual_lab_manager_deployment_namespace = "https://openbluebrain.com"
+
+  virtual_lab_manager_cross_project_resolvers = [
+    "public/ephys",
+    "public/thalamus",
+    "public/ngv",
+    "public/multi-vesicular-release",
+    "public/hippocampus",
+    "public/topological-sampling",
+    "bbp/lnmce",
+    "public/ngv-anatomy",
+    "bbp-external/seu",
+    "public/forge",
+    "public/sscx",
+    "bbp/mouselight",
+    "public/morphologies",
+    "neurosciencegraph/datamodels",
+    "bbp/mmb-point-neuron-framework-model",
+    "neurosciencegraph/data",
+  ]
+}
+
 module "dashboards" {
   source = "./dashboards"
 
@@ -315,6 +384,6 @@ module "dashboards" {
     "NexusDelta"         = module.nexus.delta_lb_rule_suffix
     "BlueNaaS"           = module.bluenaas_svc.lb_rule_suffix
     "CoreWebApp"         = module.core_webapp.lb_rule_suffix
-    "VLabManager"        = aws_lb_target_group.virtual_lab_manager.arn_suffix
+    "VLabManager"        = module.virtual_lab_manager.arn_suffix
   }
 }

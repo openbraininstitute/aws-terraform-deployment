@@ -4,7 +4,7 @@ resource "aws_lb_target_group" "virtual_lab_manager" {
   port        = 8000
   protocol    = "HTTP"
   target_type = "ip"
-  vpc_id      = data.terraform_remote_state.common.outputs.vpc_id
+  vpc_id      = var.vpc_id
 
   lifecycle {
     create_before_destroy = true
@@ -22,11 +22,11 @@ resource "aws_lb_target_group" "virtual_lab_manager" {
 }
 
 data "aws_nat_gateway" "nat_gateway" {
-  id = data.terraform_remote_state.common.outputs.nat_gateway_id
+  id = var.nat_gateway_id
 }
 
 resource "aws_lb_listener_rule" "virtual_lab_manager" {
-  listener_arn = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  listener_arn = var.public_lb_listener_https_arn
   priority     = 203
 
   action {
