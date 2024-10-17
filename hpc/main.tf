@@ -60,7 +60,6 @@ module "slurmdb" {
   source = "./slurmdb"
 
   slurm_mysql_admin_username = var.slurm_mysql_admin_username
-  slurm_mysql_admin_password = var.slurm_mysql_admin_password
   slurm_db_subnets_ids       = module.networking.slurm_db_subnets_ids
   slurm_db_sg_id             = module.security.slurm_db_sg_id
   create_slurmdb             = var.create_slurmdb

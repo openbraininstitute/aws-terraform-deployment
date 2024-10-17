@@ -20,7 +20,7 @@ resource "aws_secretsmanager_secret" "slurm_database_secret_manager" {
 
 # Data source to retrieve the password from AWS Secrets Manager
 data "aws_secretsmanager_secret_version" "slurm_database_password" {
-  secret_id = var.slurm_mysql_admin_password
+  secret_id = aws_secretsmanager_secret.slurm_database_secret_manager.id
 }
 
 # tfsec:ignore:aws-rds-enable-performance-insights-encryption

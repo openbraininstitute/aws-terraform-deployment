@@ -24,10 +24,6 @@ variable "slurm_mysql_admin_username" {
   type = string
 }
 
-variable "slurm_mysql_admin_password" {
-  type = string
-}
-
 variable "create_compute_instances" {
   type = bool
 }
