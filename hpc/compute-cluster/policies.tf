@@ -24,7 +24,7 @@ resource "aws_iam_policy" "parallelcluster_cwlogs_policy" {
       {
         "Effect" : "Allow",
         "Action" : "logs:TagLogGroup",
-        "Resource" : "arn:aws:logs:${var.aws_region}:${var.account_id}:log-group:/aws/parallelcluster/*.slurm-jobs"
+        "Resource" : "arn:aws:logs:${var.aws_region}:${var.account_id}:log-group:/aws/parallelcluster/*"
       }
     ]
   })
