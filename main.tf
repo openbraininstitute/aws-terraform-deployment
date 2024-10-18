@@ -217,17 +217,16 @@ module "core_webapp" {
   vpc_id                               = local.vpc_id
   core_webapp_ecs_number_of_containers = 1
   public_alb_https_listener_arn        = local.public_alb_https_listener_arn
-  # TODO: re-enable for NLB/private ALB architecture change
-  # private_alb_https_listener_arn       = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
-  aws_region                      = local.aws_region
-  account_id                      = local.account_id
-  core_webapp_docker_image_url    = "bluebrain/sbo-core-web-app:latest"
-  dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
-  dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
-  core_webapp_base_path           = "/mmb-beta"
-  route_table_id                  = local.route_table_private_subnets_id
-  allowed_source_ip_cidr_blocks   = ["0.0.0.0/0"]
-  vpc_cidr_block                  = local.vpc_cidr_block
+  private_alb_https_listener_arn       = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
+  aws_region                           = local.aws_region
+  account_id                           = local.account_id
+  core_webapp_docker_image_url         = "bluebrain/sbo-core-web-app:latest"
+  dockerhub_access_iam_policy_arn      = module.dockerhub_secret.dockerhub_access_iam_policy_arn
+  dockerhub_credentials_arn            = module.dockerhub_secret.dockerhub_credentials_arn
+  core_webapp_base_path                = "/mmb-beta"
+  route_table_id                       = local.route_table_private_subnets_id
+  allowed_source_ip_cidr_blocks        = ["0.0.0.0/0"]
+  vpc_cidr_block                       = local.vpc_cidr_block
 
   env_DEBUG = "true"
   # TODO Switch to data.terraform_remote_state.common.outputs.primary_domain once the CI in deployment-common works.
