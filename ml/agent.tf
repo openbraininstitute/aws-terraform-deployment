@@ -4,7 +4,7 @@ module "ecs_service_agent" {
 
   name                  = "ecs-service-agent"
   cluster_arn           = local.ecs_cluster_arn
-  task_exec_secret_arns = [var.secret_manager_arn, module.ml_rds_postgres.db_instance_master_user_secret_arn]
+  task_exec_secret_arns = [aws_secretsmanager_secret.ml_secrets_manager.arn, module.ml_rds_postgres.db_instance_master_user_secret_arn]
 
 
   cpu    = 1024
@@ -126,7 +126,7 @@ module "ecs_service_agent" {
       secrets = [
         {
           name      = "NEUROAGENT_OPENAI__TOKEN"
-          valueFrom = "${var.secret_manager_arn}:OPENAI_API_KEY::"
+          valueFrom = "${aws_secretsmanager_secret.ml_secrets_manager.arn}:OPENAI_API_KEY::"
         },
         {
           name      = "NEUROAGENT_DB__PASSWORD"
@@ -134,7 +134,7 @@ module "ecs_service_agent" {
         },
         {
           name      = "NEUROAGENT_KEYCLOAK__PASSWORD"
-          valueFrom = "${var.secret_manager_arn}:KEYCLOAK_PASSWORD::"
+          valueFrom = "${aws_secretsmanager_secret.ml_secrets_manager.arn}:KEYCLOAK_PASSWORD::"
         },
       ]
       readonly_root_filesystem = false

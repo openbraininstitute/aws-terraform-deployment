@@ -78,8 +78,6 @@ module "ml" {
   private_alb_security_group_id = "sg-0a2007eb7704cc303"
   private_alb_listener_arn      = data.terraform_remote_state.common.outputs.private_alb_listener_3000_arn
   private_alb_dns               = data.terraform_remote_state.common.outputs.private_alb_dns_name
-
-  secret_manager_arn = "arn:aws:secretsmanager:us-east-1:671250183987:secret:ml_secrets-uEWnHv"
 }
 
 module "nexus" {

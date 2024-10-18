@@ -80,10 +80,6 @@ variable "private_alb_security_group_id" {
   type        = string
 }
 
-variable "secret_manager_arn" {
-  description = "ARN of the secret manager"
-}
-
 variable "os_domain_name" {
   description = "Name of the OS instance"
   type        = string

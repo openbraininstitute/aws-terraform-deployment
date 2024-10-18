@@ -4,7 +4,7 @@ module "ml_ecs_service_backend" {
 
   name                  = "ml-ecs-service-backend"
   cluster_arn           = local.ecs_cluster_arn
-  task_exec_secret_arns = [var.secret_manager_arn]
+  task_exec_secret_arns = [aws_secretsmanager_secret.ml_secrets_manager.arn]
 
 
   cpu    = 1024
@@ -109,15 +109,15 @@ module "ml_ecs_service_backend" {
       secrets = [
         {
           name      = "SCHOLARAG__GENERATIVE__OPENAI__TOKEN"
-          valueFrom = "${var.secret_manager_arn}:OPENAI_API_KEY::"
+          valueFrom = "${aws_secretsmanager_secret.ml_secrets_manager.arn}:OPENAI_API_KEY::"
         },
         {
           name      = "SCHOLARAG__RERANKING__COHERE_TOKEN"
-          valueFrom = "${var.secret_manager_arn}:COHERE_TOKEN::"
+          valueFrom = "${aws_secretsmanager_secret.ml_secrets_manager.arn}:COHERE_TOKEN::"
         },
         {
           name      = "SENTRY_DSN"
-          valueFrom = "${var.secret_manager_arn}:SENTRY_DSN::"
+          valueFrom = "${aws_secretsmanager_secret.ml_secrets_manager.arn}:SENTRY_DSN::"
         },
       ]
     }
