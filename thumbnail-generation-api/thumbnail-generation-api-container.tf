@@ -208,18 +208,8 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
             awslogs-stream-prefix = "thumbnail_generation_api"
           }
         }
-      },
+      }
   ])
-
-  # Volume definition for EFS
-  volume {
-    name = "nginx-reverse-proxy-volume"
-    efs_volume_configuration {
-      file_system_id     = aws_efs_file_system.thumbnail_generation_api_efs_instance.id
-      root_directory     = "/etc/nginx"
-      transit_encryption = "ENABLED"
-    }
-  }
 }
 
 # Service
@@ -235,7 +225,7 @@ resource "aws_ecs_service" "thumbnail_generation_api_service" {
   # Load Balancer configuration
   load_balancer {
     target_group_arn = aws_lb_target_group.thumbnail_generation_api_tg.arn
-    container_name   = "nginx-reverse-proxy-container"
+    container_name   = "thumbnail-generation-api-container"
     container_port   = 80
   }
 
