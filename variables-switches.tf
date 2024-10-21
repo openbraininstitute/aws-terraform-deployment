@@ -23,10 +23,3 @@ variable "virtual_lab_manager_ecs_number_of_containers" {
   sensitive   = false
   description = "Number of containers for the virtual lab manager"
 }
-
-variable "workflow_ecs_number_of_containers" {
-  type        = number
-  default     = 0
-  sensitive   = false
-  description = "Number of containers for BBP-Workflow"
-}

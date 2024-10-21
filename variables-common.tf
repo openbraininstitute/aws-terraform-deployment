@@ -65,43 +65,6 @@ variable "virtual_lab_manager_docker_image_url" {
   sensitive   = false
 }
 
-### BBP Workflow ###
-
-variable "workflow_log_group_name" {
-  default     = "bbp-workflow"
-  type        = string
-  description = "The log name within cloudwatch for bbp-workflow"
-  sensitive   = false
-}
-
-variable "workflow_docker_image_url" {
-  description = "docker url for bbp-workflow on dockerhub"
-  type        = string
-  default     = "bluebrain/bbp-workflow:latest"
-  sensitive   = false
-}
-
-variable "bbp_workflow_hostname" {
-  default     = "bbp-workflow.shapes-registry.org"
-  type        = string
-  description = "Hostname bbp-workflow"
-  sensitive   = false
-}
-
-variable "bbp_workflow_api_hostname" {
-  default     = "bbp-workflow-api.shapes-registry.org"
-  type        = string
-  description = "Hostname bbp-workflow-api"
-  sensitive   = false
-}
-
-variable "bbp_workflow_web_hostname" {
-  default     = "bbp-workflow-web.shapes-registry.org"
-  type        = string
-  description = "Hostname bbp-workflow-web"
-  sensitive   = false
-}
-
 ### Virtual Lab Manager ###
 
 variable "keycloak_server_url" {
