@@ -175,7 +175,7 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
         essential = true,
         portMappings = [
           {
-            containerPort = 8080,
+            containerPort = 80,
             protocol      = "tcp"
           }
         ],
@@ -209,25 +209,6 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
           }
         }
       },
-      {
-        name      = "nginx-reverse-proxy-container",
-        image     = "nginx:latest",
-        essential = true,
-        portMappings = [
-          {
-            containerPort = 80,
-            protocol      = "tcp"
-          }
-        ],
-        mountPoints = [
-          {
-            containerPath = "/etc/nginx",
-            sourceVolume  = "nginx-reverse-proxy-volume"
-          }
-        ],
-        memory = 2048
-        cpu    = 1024
-      }
   ])
 
   # Volume definition for EFS
