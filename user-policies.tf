@@ -1,15 +1,7 @@
 # Additional policies for users
 
-# IAM Identity Center ARN
-# Old name: IAM Single Sign-on
-# Often confused with 'IAM', which is a separate thing
-variable "aws_iam_identity_center_arn" {
-  default     = "arn:aws:sso:::instance/ssoins-7223effe437e4dbf"
-  type        = string
-  description = "ARN of the IAM Identity Center"
-  sensitive   = false
-}
-
+# get aws_iam_identity_center_arn "arn:aws:sso:::instance/ssoins-7223effe437XXXXX"
+data "aws_ssoadmin_instances" "ssoadmin_instances" {}
 
 # example full policy
 #resource "aws_iam_policy" "sbo_ec2_serial_console_access" {
@@ -41,16 +33,15 @@ variable "aws_iam_identity_center_arn" {
 resource "aws_identitystore_group" "sbo_hpc_users" {
     display_name      = "hpcusers"
     #description       = "HPC users with read only access and additional rights such as access to serial consoles"
-    identity_store_id = var.aws_iam_identity_center_arn
-
+    identity_store_id = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.identity_store_ids)[0]
 }
 
 resource "aws_ssoadmin_account_assignment" "sbo_hpc_users" {
-    instance_arn       = var.aws_iam_identity_center_arn
+    instance_arn       = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
     permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_hpc_rights.arn
     principal_id       = aws_identitystore_group.sbo_hpc_users.group_id
     principal_type     = "GROUP"
-    target_id          = "671250183987"
+    target_id          = data.aws_caller_identity.current.account_id
     target_type        = "AWS_ACCOUNT"
 }
 */
@@ -58,7 +49,7 @@ resource "aws_ssoadmin_account_assignment" "sbo_hpc_users" {
 resource "aws_ssoadmin_permission_set" "readonly_with_additional_hpc_rights" {
   name         = "ReadOnlyWithAdditionalHPCRights"
   description  = "Read only access and also HPC extras such as serial console access"
-  instance_arn = var.aws_iam_identity_center_arn
+  instance_arn = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
 
   #relay_state      = "https://s3.console.aws.amazon.com/s3/home?region=us-east-1#"
   session_duration = "PT2H"
@@ -78,14 +69,14 @@ resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_h
     ]
   })
 
-  instance_arn       = var.aws_iam_identity_center_arn
+  instance_arn       = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
   permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_hpc_rights.arn
 }
 
 resource "aws_ssoadmin_permission_set" "readonly_with_additional_s3_rights" {
   name         = "ReadOnlyWithAdditionalS3Rights"
   description  = "Read only access but with full S3 access"
-  instance_arn = var.aws_iam_identity_center_arn
+  instance_arn = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
 
   #relay_state      = "https://s3.console.aws.amazon.com/s3/home?region=us-east-1#"
   session_duration = "PT2H"
@@ -105,14 +96,14 @@ resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_s
     ]
   })
 
-  instance_arn       = var.aws_iam_identity_center_arn
+  instance_arn       = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
   permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_s3_rights.arn
 }
 
 resource "aws_ssoadmin_permission_set" "readonly_with_additional_waframework_rights" {
   name         = "ReadOnlyWithAdditionalWAFRights"
   description  = "Read only access but with full Well-Architected Framework Tool access"
-  instance_arn = var.aws_iam_identity_center_arn
+  instance_arn = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
 
   session_duration = "PT2H"
 
@@ -131,14 +122,14 @@ resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_w
     ]
   })
 
-  instance_arn       = var.aws_iam_identity_center_arn
+  instance_arn       = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
   permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_waframework_rights.arn
 }
 
 resource "aws_ssoadmin_permission_set" "readonly_with_additional_dashboard_rights" {
   name         = "ReadOnlyWithDashboardRights"
   description  = "Read only access but with full dashboard access"
-  instance_arn = var.aws_iam_identity_center_arn
+  instance_arn = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
 
   #relay_state      = "https://s3.console.aws.amazon.com/s3/home?region=us-east-1#"
   session_duration = "PT2H"
@@ -158,7 +149,7 @@ resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_d
     ]
   })
 
-  instance_arn       = var.aws_iam_identity_center_arn
+  instance_arn       = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
   permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_dashboard_rights.arn
 }
 
@@ -166,7 +157,7 @@ resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_d
 resource "aws_ssoadmin_permission_set" "readonly_with_additional_billing_rights" {
   name         = "FullBillingAndPaymentsAccess"
   description  = "Read only access for most but full access for billing, payments, budgets, ..."
-  instance_arn = var.aws_iam_identity_center_arn
+  instance_arn = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
 
   #relay_state      = "https://s3.console.aws.amazon.com/s3/home?region=us-east-1#"
   session_duration = "PT2H"
@@ -186,14 +177,14 @@ resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_b
     ]
   })
 
-  instance_arn       = var.aws_iam_identity_center_arn
+  instance_arn       = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
   permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_billing_rights.arn
 }
 
 resource "aws_ssoadmin_permission_set" "readonly_with_additional_ecs_rights" {
   name         = "FullECSContainersAccess"
   description  = "Read only access for most but full access to ECS so containers can be managed"
-  instance_arn = var.aws_iam_identity_center_arn
+  instance_arn = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
 
   #relay_state      = "https://s3.console.aws.amazon.com/s3/home?region=us-east-1#"
   session_duration = "PT2H"
@@ -215,7 +206,7 @@ resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_e
     ]
   })
 
-  instance_arn       = var.aws_iam_identity_center_arn
+  instance_arn       = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
   permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_ecs_rights.arn
 }
 
