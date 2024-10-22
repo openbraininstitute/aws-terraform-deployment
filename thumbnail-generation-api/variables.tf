@@ -24,24 +24,23 @@ variable "account_id" {
   type        = string
 }
 
-variable "primary_domain_hostname" {
-  type      = string
-  sensitive = false
-}
 variable "public_alb_https_listener_arn" {
   type        = string
   description = "alb listener to which the https listener rule should be added"
   sensitive   = false
 }
+
 variable "route_table_id" {
   type        = string
   description = "route table for private networks"
   sensitive   = false
 }
+
 variable "vpc_cidr_block" {
   description = "CIDR block of the vpc"
   type        = string
 }
+
 variable "vpc_id" {
   type        = string
   sensitive   = false
@@ -68,10 +67,12 @@ variable "thumbnail_generation_api_log_group_name" {
   description = "The log name within cloudwatch for the thumbnail generation api"
   sensitive   = false
 }
+
 variable "dockerhub_access_iam_policy_arn" {
   type      = string
   sensitive = false
 }
+
 variable "dockerhub_credentials_arn" {
   type      = string
   sensitive = false
