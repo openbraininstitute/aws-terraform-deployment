@@ -238,6 +238,12 @@ resource "aws_ecs_service" "bluenaas_ecs_service" {
     container_port   = 8000
   }
 
+  load_balancer {
+    target_group_arn = aws_lb_target_group.bluenaas_private_tg.arn
+    container_name   = "bluenaas"
+    container_port   = 8000
+  }
+
   network_configuration {
     security_groups  = [aws_security_group.bluenaas_ecs_task.id]
     subnets          = [aws_subnet.bluenaas_ecs_a.id, aws_subnet.bluenaas_ecs_b.id]

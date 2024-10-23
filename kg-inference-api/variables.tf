@@ -34,6 +34,11 @@ variable "public_alb_https_listener_arn" {
   description = "alb listener to which the https listener rule should be added"
   sensitive   = false
 }
+variable "private_alb_https_listener_arn" {
+  type        = string
+  description = "private alb listener to which the https listener rule should be added"
+  sensitive   = false
+}
 variable "route_table_id" {
   type        = string
   description = "route table for private networks"

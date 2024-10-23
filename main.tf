@@ -4,6 +4,7 @@ locals {
   vpc_id     = data.terraform_remote_state.common.outputs.vpc_id
 
   public_alb_https_listener_arn  = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  private_alb_https_listener_arn = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
   route_table_private_subnets_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
 
   public_alb_sg_id = data.terraform_remote_state.common.outputs.public_alb_sg_id
@@ -46,6 +47,7 @@ module "cs" {
   route_table_private_subnets_id = local.route_table_private_subnets_id
   db_instance_class              = "db.t3.micro"
   public_alb_https_listener_arn  = local.public_alb_https_listener_arn
+  private_alb_https_listener_arn = local.private_alb_https_listener_arn
 
   preferred_hostname = "openbluebrain.com"
   redirect_hostnames = ["openbluebrain.ch", "openbrainplatform.org", "openbrainplatform.com"]
@@ -97,6 +99,7 @@ module "nexus" {
 
   public_load_balancer_dns_name = data.terraform_remote_state.common.outputs.public_alb_dns_name
   public_lb_listener_https_arn  = local.public_alb_https_listener_arn
+  private_lb_listener_https_arn = local.private_alb_https_listener_arn
 }
 
 module "viz" {
@@ -111,9 +114,10 @@ module "viz" {
 
   scientific_data_bucket_name = "important-scientific-data"
 
-  domain_zone_id   = local.domain_zone_id
-  nat_gateway_id   = local.nat_gateway_id
-  alb_listener_arn = local.public_alb_https_listener_arn
+  domain_zone_id           = local.domain_zone_id
+  nat_gateway_id           = local.nat_gateway_id
+  alb_listener_arn         = local.public_alb_https_listener_arn
+  private_alb_listener_arn = local.private_alb_https_listener_arn
 
   # TODO remove after migrations
   aws_lb_alb_arn                 = data.terraform_remote_state.common.outputs.public_alb_arn
@@ -133,6 +137,7 @@ module "cells_svc" {
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
 
   public_alb_https_listener_arn  = local.public_alb_https_listener_arn
+  private_alb_https_listener_arn = local.private_alb_https_listener_arn
   route_table_private_subnets_id = local.route_table_private_subnets_id
 
   aws_coreservices_ssh_key_id = module.coreservices_key.key_pair_id
@@ -164,6 +169,7 @@ module "bluenaas_svc" {
   account_id                 = local.account_id
   vpc_id                     = local.vpc_id
   alb_listener_arn           = local.public_alb_https_listener_arn
+  private_alb_listener_arn   = local.private_alb_https_listener_arn
   alb_listener_rule_priority = 750
   internet_access_route_id   = local.route_table_private_subnets_id
 
@@ -242,6 +248,7 @@ module "accounting_svc" {
   account_id                    = local.account_id
   vpc_id                        = local.vpc_id
   alb_listener_arn              = local.public_alb_https_listener_arn
+  private_alb_listener_arn      = local.private_alb_https_listener_arn
   internet_access_route_id      = local.route_table_private_subnets_id
   allowed_source_ip_cidr_blocks = [var.epfl_cidr, var.bbp_dmz_cidr, local.vpc_cidr_block, ]
 
@@ -256,11 +263,12 @@ module "kg_inference_api" {
 
   # public_alb_dns_name           = data.terraform_remote_state.common.outputs.public_alb_dns_name
   # domain_zone_id                = local.domain_zone_id
-  public_alb_https_listener_arn = local.public_alb_https_listener_arn
-  route_table_id                = local.route_table_private_subnets_id
-  vpc_cidr_block                = local.vpc_cidr_block
-  vpc_id                        = local.vpc_id
-  primary_domain_hostname       = "openbrainplatform.org"
+  public_alb_https_listener_arn  = local.public_alb_https_listener_arn
+  private_alb_https_listener_arn = local.private_alb_https_listener_arn
+  route_table_id                 = local.route_table_private_subnets_id
+  vpc_cidr_block                 = local.vpc_cidr_block
+  vpc_id                         = local.vpc_id
+  primary_domain_hostname        = "openbrainplatform.org"
 
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
@@ -278,10 +286,11 @@ module "thumbnail_generation_api" {
 
   #public_alb_dns_name           = data.terraform_remote_state.common.outputs.public_alb_dns_name
   #domain_zone_id                = local.domain_zone_id
-  public_alb_https_listener_arn = local.public_alb_https_listener_arn
-  route_table_id                = local.route_table_private_subnets_id
-  vpc_cidr_block                = local.vpc_cidr_block
-  vpc_id                        = local.vpc_id
+  public_alb_https_listener_arn  = local.public_alb_https_listener_arn
+  private_alb_https_listener_arn = local.private_alb_https_listener_arn
+  route_table_id                 = local.route_table_private_subnets_id
+  vpc_cidr_block                 = local.vpc_cidr_block
+  vpc_id                         = local.vpc_id
 
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
@@ -303,6 +312,7 @@ module "virtual_lab_manager" {
   nat_gateway_id                = data.terraform_remote_state.common.outputs.nat_gateway_id
   allowed_source_ip_cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
   public_lb_listener_https_arn  = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
+  private_lb_listener_https_arn = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
 
   invite_link = "https://${data.terraform_remote_state.common.outputs.primary_domain}/mmb-beta"
   mail_from   = "noreply@${data.terraform_remote_state.common.outputs.primary_domain}"
@@ -369,7 +379,8 @@ module "dashboards" {
   aws_region = local.aws_region
   account_id = local.account_id
 
-  load_balancer_id = local.public_alb_https_listener_arn
+  load_balancer_id         = local.public_alb_https_listener_arn
+  private_load_balancer_id = local.private_alb_https_listener_arn
   load_balancer_target_suffixes = {
     "AccountingService"  = module.accounting_svc.lb_rule_suffix
     "SonataCellService"  = module.cells_svc.lb_rule_suffix
@@ -381,5 +392,17 @@ module "dashboards" {
     "BlueNaaS"           = module.bluenaas_svc.lb_rule_suffix
     "CoreWebApp"         = module.core_webapp.lb_rule_suffix
     "VLabManager"        = module.virtual_lab_manager.arn_suffix
+  }
+  private_load_balancer_target_suffixes = {
+    "AccountingService"  = module.accounting_svc.private_lb_rule_suffix
+    "SonataCellService"  = module.cells_svc.private_lb_rule_suffix
+    "KGInference"        = module.kg_inference_api.private_lb_rule_suffix
+    "ThumbnailGenerator" = module.thumbnail_generation_api.private_lb_rule_suffix
+    "KeyCloak"           = module.cs.private_keycloak_lb_rule_suffix
+    "NexusFusion"        = module.nexus.private_fusion_lb_rule_suffix
+    "NexusDelta"         = module.nexus.private_delta_lb_rule_suffix
+    "BlueNaaS"           = module.bluenaas_svc.private_lb_rule_suffix
+    "CoreWebApp"         = module.core_webapp.private_lb_rule_suffix
+    "VLabManager"        = module.virtual_lab_manager.private_arn_suffix
   }
 }

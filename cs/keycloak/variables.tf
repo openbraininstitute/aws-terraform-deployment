@@ -36,6 +36,10 @@ variable "public_alb_https_listener_arn" {
   type = string
 }
 
+variable "private_alb_https_listener_arn" {
+  type = string
+}
+
 variable "db_instance_class" {
   type = string
 }

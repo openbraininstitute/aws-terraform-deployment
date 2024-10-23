@@ -15,6 +15,10 @@ variable "alb_listener_arn" {
   type = string
 }
 
+variable "private_alb_listener_arn" {
+  type = string
+}
+
 variable "alb_listener_rule_priority" {
   type = number
 }

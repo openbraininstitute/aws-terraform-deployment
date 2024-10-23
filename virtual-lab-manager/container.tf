@@ -305,6 +305,12 @@ resource "aws_ecs_service" "virtual_lab_manager_ecs_service" {
     container_port   = 8000
   }
 
+  load_balancer {
+    target_group_arn = aws_lb_target_group.virtual_lab_manager_private.arn
+    container_name   = "virtual_lab_manager"
+    container_port   = 8000
+  }
+
   network_configuration {
     security_groups  = [aws_security_group.virtual_lab_manager_ecs_task.id]
     subnets          = var.core_subnets

@@ -176,6 +176,62 @@ resource "aws_cloudwatch_dashboard" "scholarag" {
           title  = "Public Load Balancer Response Time"
         }
       },
+      {
+        type   = "metric"
+        x      = 0
+        y      = 12
+        width  = 12
+        height = 6
+
+        properties = {
+          metrics = [
+            [
+              "AWS/ApplicationELB",
+              "HTTPCode_Target_2XX_Count",
+              "TargetGroup", aws_lb_target_group.ml_target_group_backend_private.arn_suffix,
+              "LoadBalancer", join("/", slice(split("/", var.alb_listener_arn), 1, 4)),
+            ],
+            [
+              "AWS/ApplicationELB",
+              "HTTPCode_Target_4XX_Count",
+              "TargetGroup", aws_lb_target_group.ml_target_group_backend_private.arn_suffix,
+              "LoadBalancer", join("/", slice(split("/", var.alb_listener_arn), 1, 4)),
+            ],
+            [
+              "AWS/ApplicationELB",
+              "HTTPCode_Target_5XX_Count",
+              "TargetGroup", aws_lb_target_group.ml_target_group_backend_private.arn_suffix,
+              "LoadBalancer", join("/", slice(split("/", var.alb_listener_arn), 1, 4)),
+            ]
+          ]
+          period = 300
+          stat   = "Average"
+          region = var.aws_region
+          title  = "Private Load Balancer Target Count"
+        }
+      },
+      {
+        type   = "metric"
+        x      = 12
+        y      = 10
+        width  = 12
+        height = 6
+
+        properties = {
+          metrics = [
+            [
+              "AWS/ApplicationELB",
+              "TargetResponseTime",
+              "TargetGroup", aws_lb_target_group.ml_target_group_backend_private.arn_suffix,
+              "LoadBalancer", join("/", slice(split("/", var.alb_listener_arn), 1, 4)),
+            ],
+          ]
+          period = 300
+          stat   = "Average"
+          region = var.aws_region
+          title  = "Private Load Balancer Response Time"
+        }
+      },
     ]
     }
   )
@@ -381,3 +437,4 @@ resource "aws_cloudwatch_dashboard" "neuroagent" {
     }
   )
 }
+

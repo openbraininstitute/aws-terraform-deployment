@@ -22,6 +22,11 @@ variable "public_lb_listener_https_arn" {
   description = "ARN of the public listener (used by the public load balancer)"
 }
 
+variable "private_lb_listener_https_arn" {
+  type        = string
+  description = "ARN of the private listener (used by the private load balancer)"
+}
+
 variable "allowed_source_ip_cidr_blocks" {
   type = list(string)
 }

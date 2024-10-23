@@ -208,6 +208,11 @@ resource "aws_ecs_service" "viz_vsm" {
     container_name   = "viz_vsm"
     container_port   = 4444
   }
+  load_balancer {
+    target_group_arn = aws_lb_target_group.private_viz_vsm.arn
+    container_name   = "viz_vsm"
+    container_port   = 4444
+  }
   force_new_deployment = true
   tags = {
     SBO_Billing = "viz"
@@ -317,3 +322,4 @@ resource "aws_iam_role_policy_attachment" "viz_vsm_ecs_task_dynamodb" {
   role       = aws_iam_role.viz_vsm_ecs_task_role.name
   policy_arn = aws_iam_policy.viz_dynamodb_rw.arn
 }
+

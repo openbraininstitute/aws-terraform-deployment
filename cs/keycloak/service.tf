@@ -14,6 +14,12 @@ resource "aws_ecs_service" "keycloak_service_terraform" {
     container_port   = 8081
   }
 
+  load_balancer {
+    target_group_arn = aws_lb_target_group.private_keycloak_target_group.arn
+    container_name   = "keycloak-container"
+    container_port   = 8081
+  }
+
   enable_execute_command = true
 
   tags = {

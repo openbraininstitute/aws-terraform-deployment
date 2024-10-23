@@ -274,6 +274,12 @@ resource "aws_ecs_service" "kg_inference_api_service" {
     container_port   = 80
   }
 
+  load_balancer {
+    target_group_arn = aws_lb_target_group.private_kg_inference_api_tg.arn
+    container_name   = "nginx-reverse-proxy-container"
+    container_port   = 80
+  }
+
   network_configuration {
     security_groups  = [aws_security_group.kg_inference_api_sec_group.id]
     subnets          = [aws_subnet.kg_inference_api.id]

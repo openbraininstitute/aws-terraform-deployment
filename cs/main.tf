@@ -5,11 +5,12 @@ module "networking" {
 }
 
 module "keycloak" {
-  source                        = "./keycloak"
-  private_subnets               = module.networking.keycloak_private_subnets
-  vpc_id                        = var.vpc_id
-  db_instance_class             = var.db_instance_class
-  public_alb_https_listener_arn = var.public_alb_https_listener_arn
+  source                         = "./keycloak"
+  private_subnets                = module.networking.keycloak_private_subnets
+  vpc_id                         = var.vpc_id
+  db_instance_class              = var.db_instance_class
+  public_alb_https_listener_arn  = var.public_alb_https_listener_arn
+  private_alb_https_listener_arn = var.private_alb_https_listener_arn
 
   preferred_hostname = var.preferred_hostname
   redirect_hostnames = var.redirect_hostnames

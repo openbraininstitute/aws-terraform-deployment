@@ -43,6 +43,10 @@ variable "alb_listener_arn" {
   type = string
 }
 
+variable "private_alb_listener_arn" {
+  type = string
+}
+
 variable "epfl_cidr" {
   type        = string
   default     = "128.178.0.0/15"
