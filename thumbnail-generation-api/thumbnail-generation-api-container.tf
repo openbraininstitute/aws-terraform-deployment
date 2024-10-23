@@ -101,19 +101,6 @@ resource "aws_security_group" "thumbnail_generation_api_sec_group" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "thumbnail_generation_api_allow_port_8080" {
-  security_group_id = aws_security_group.thumbnail_generation_api_sec_group.id
-
-  ip_protocol = "tcp"
-  from_port   = 8080
-  to_port     = 8080
-  cidr_ipv4   = var.vpc_cidr_block
-  description = "Allow port 8080 http"
-  tags = {
-    SBO_Billing = "thumbnail_generation_api"
-  }
-}
-
 resource "aws_vpc_security_group_ingress_rule" "thumbnail_generation_api_allow_port_80" {
   security_group_id = aws_security_group.thumbnail_generation_api_sec_group.id
 
