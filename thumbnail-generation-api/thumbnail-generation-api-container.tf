@@ -218,7 +218,7 @@ resource "aws_ecs_service" "thumbnail_generation_api_service" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.thumbnail_generation_api_private_tg.arn
-    container_name   = "nginx-reverse-proxy-container"
+    container_name   = "thumbnail-generation-api-container"
     container_port   = 80
   }
 
