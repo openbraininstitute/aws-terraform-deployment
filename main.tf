@@ -210,6 +210,7 @@ module "static-server" {
   vpc_id                     = local.vpc_id
   public_subnet_ids          = [data.terraform_remote_state.common.outputs.public_a_subnet_id, data.terraform_remote_state.common.outputs.public_b_subnet_id]
   domain_name                = data.terraform_remote_state.common.outputs.primary_domain
+  static_content_bucket_name = data.terraform_remote_state.common.outputs.primary_domain
   alb_listener_arn           = local.public_alb_https_listener_arn
   alb_listener_rule_priority = 600
 }

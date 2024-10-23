@@ -74,7 +74,7 @@ resource "aws_lb_target_group_attachment" "s3_vpc_endpoint_eip" {
 #tfsec:ignore:aws-s3-enable-versioning
 #tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket" "static_storage" {
-  bucket = var.domain_name
+  bucket = var.static_content_bucket_name
   # TODO: Make sure force_destroy is not used for production deployments.
   force_destroy = true
 }
@@ -105,25 +105,25 @@ resource "aws_s3_bucket_policy" "static_storage" {
           "Effect":"Allow",
           "Principal": "*",
           "Action":["s3:GetObject"],
-          "Resource":["arn:aws:s3:::${var.domain_name}/*"]
+          "Resource":["arn:aws:s3:::${var.static_content_bucket_name}/*"]
         },
         {
           "Sid": "Write",
           "Effect": "Allow",
           "Principal": {
-              "AWS": "arn:aws:iam::671250183987:user/cell_svc_bucket_user"
+              "AWS": "arn:aws:iam::${var.account_id}:user/cell_svc_bucket_user"
           },
           "Action": ["s3:*Object"],
-          "Resource":["arn:aws:s3:::${var.domain_name}/*"]
+          "Resource":["arn:aws:s3:::${var.static_content_bucket_name}/*"]
         },
         {
           "Sid": "List",
           "Effect": "Allow",
           "Principal": {
-              "AWS": "arn:aws:iam::671250183987:user/cell_svc_bucket_user"
+              "AWS": "arn:aws:iam::${var.account_id}:user/cell_svc_bucket_user"
           },
           "Action": ["s3:ListBucket"],
-          "Resource":["arn:aws:s3:::${var.domain_name}"]
+          "Resource":["arn:aws:s3:::${var.static_content_bucket_name}"]
         }
       ]
     }
@@ -189,7 +189,7 @@ locals {
 
 resource "aws_s3_object" "coming_soon_page" {
   count  = length(local.coming_soon_page_files)
-  bucket = var.domain_name
+  bucket = var.static_content_bucket_name
 
   key          = local.coming_soon_page_files[count.index].key
   source       = local.coming_soon_page_files[count.index].source
@@ -210,7 +210,7 @@ locals {
 
 resource "aws_s3_object" "favicon" {
   count  = length(local.favicon)
-  bucket = var.domain_name
+  bucket = var.static_content_bucket_name
 
   key          = local.favicon[count.index].key
   source       = local.favicon[count.index].source
@@ -220,7 +220,6 @@ resource "aws_s3_object" "favicon" {
 }
 
 resource "aws_lb_listener_rule" "favicon" {
-
   listener_arn = var.alb_listener_arn
   priority     = var.alb_listener_rule_priority + 1
 
@@ -241,5 +240,4 @@ resource "aws_lb_listener_rule" "favicon" {
       values = ["/favicon.ico"]
     }
   }
-
 }

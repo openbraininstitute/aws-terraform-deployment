@@ -32,3 +32,8 @@ variable "alb_listener_rule_priority" {
   description = "Priority of the listener rule"
   type        = number
 }
+
+variable "static_content_bucket_name" {
+  description = "S3 Bucket to store static content"
+  type        = string
+}
