@@ -77,7 +77,7 @@ module "ml" {
   alb_security_group_id = local.public_alb_sg_id
   alb_listener_arn      = local.public_alb_https_listener_arn
 
-  private_alb_security_group_id = "sg-0a2007eb7704cc303"
+  private_alb_security_group_id = data.terraform_remote_state.common.outputs.private_alb_security_group_id
   private_alb_listener_arn      = data.terraform_remote_state.common.outputs.private_alb_listener_3000_arn
   private_alb_dns               = data.terraform_remote_state.common.outputs.private_alb_dns_name
 }
