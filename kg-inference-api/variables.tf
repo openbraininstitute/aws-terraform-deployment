@@ -25,10 +25,6 @@ variable "account_id" {
   type        = string
 }
 
-variable "primary_domain_hostname" {
-  type      = string
-  sensitive = false
-}
 variable "public_alb_https_listener_arn" {
   type        = string
   description = "alb listener to which the https listener rule should be added"

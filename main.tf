@@ -269,7 +269,6 @@ module "kg_inference_api" {
   route_table_id                 = local.route_table_private_subnets_id
   vpc_cidr_block                 = local.vpc_cidr_block
   vpc_id                         = local.vpc_id
-  primary_domain_hostname        = local.primary_domain
 
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn

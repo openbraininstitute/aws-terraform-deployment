@@ -34,7 +34,6 @@ resource "aws_iam_role" "kg_inference_api_ecs_task_execution_role" {
   }
 }
 
-
 resource "aws_iam_role_policy_attachment" "kg_inference_api_ecs_task_execution_role_policy_attachment" {
   role       = aws_iam_role.kg_inference_api_ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
@@ -101,19 +100,6 @@ resource "aws_security_group" "kg_inference_api_sec_group" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "kg_inference_api_allow_port_8080" {
-  security_group_id = aws_security_group.kg_inference_api_sec_group.id
-
-  ip_protocol = "tcp"
-  from_port   = 8080
-  to_port     = 8080
-  cidr_ipv4   = var.vpc_cidr_block
-  description = "Allow port 8080 http"
-  tags = {
-    SBO_Billing = "kg_inference_api"
-  }
-}
-
 resource "aws_vpc_security_group_ingress_rule" "kg_inference_api_allow_port_80" {
   security_group_id = aws_security_group.kg_inference_api_sec_group.id
 
@@ -175,7 +161,7 @@ resource "aws_ecs_task_definition" "kg_inference_api_task_definition" {
         essential = true,
         portMappings = [
           {
-            containerPort = 8080,
+            containerPort = 80,
             protocol      = "tcp"
           }
         ],
@@ -224,37 +210,8 @@ resource "aws_ecs_task_definition" "kg_inference_api_task_definition" {
             awslogs-stream-prefix = "kg_inference_api"
           }
         }
-      },
-      {
-        name      = "nginx-reverse-proxy-container",
-        image     = "nginx:latest",
-        essential = true,
-        portMappings = [
-          {
-            containerPort = 80,
-            protocol      = "tcp"
-          }
-        ],
-        mountPoints = [
-          {
-            containerPath = "/etc/nginx",
-            sourceVolume  = "nginx-reverse-proxy-volume"
-          }
-        ],
-        memory = 2048
-        cpu    = 1024
       }
   ])
-
-  # Volume definition for EFS
-  volume {
-    name = "nginx-reverse-proxy-volume"
-    efs_volume_configuration {
-      file_system_id     = aws_efs_file_system.kg_inference_api_efs_instance.id
-      root_directory     = "/etc/nginx"
-      transit_encryption = "ENABLED"
-    }
-  }
 }
 
 # Service
@@ -270,13 +227,13 @@ resource "aws_ecs_service" "kg_inference_api_service" {
   # Load Balancer configuration
   load_balancer {
     target_group_arn = aws_lb_target_group.kg_inference_api_tg.arn
-    container_name   = "nginx-reverse-proxy-container"
+    container_name   = "kg-inference-api-container"
     container_port   = 80
   }
 
   load_balancer {
     target_group_arn = aws_lb_target_group.private_kg_inference_api_tg.arn
-    container_name   = "nginx-reverse-proxy-container"
+    container_name   = "kg-inference-api-container"
     container_port   = 80
   }
 
