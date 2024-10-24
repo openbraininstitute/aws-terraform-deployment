@@ -17,6 +17,12 @@ resource "aws_ecs_service" "nexus_fusion_ecs_service" {
     container_port   = 8000
   }
 
+  load_balancer {
+    target_group_arn = var.private_aws_lb_target_group_nexus_fusion_arn
+    container_name   = var.fusion_instance_name
+    container_port   = 8000
+  }
+
   service_connect_configuration {
     enabled   = false
     namespace = var.aws_service_discovery_http_namespace_arn

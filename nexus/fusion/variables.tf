@@ -53,6 +53,10 @@ variable "aws_lb_target_group_nexus_fusion_arn" {
   type = string
 }
 
+variable "private_aws_lb_target_group_nexus_fusion_arn" {
+  type = string
+}
+
 variable "dockerhub_credentials_arn" {
   type = string
 }
@@ -60,3 +64,4 @@ variable "dockerhub_credentials_arn" {
 variable "fusion_instance_name" {
   type = string
 }
+
