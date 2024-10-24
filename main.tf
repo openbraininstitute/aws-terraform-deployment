@@ -13,6 +13,8 @@ locals {
 
   vpc_cidr_block    = data.terraform_remote_state.common.outputs.vpc_cidr_block
   vpc_default_sg_id = data.terraform_remote_state.common.outputs.vpc_default_sg_id
+
+  primary_domain = data.terraform_remote_state.common.outputs.primary_domain
 }
 
 module "dockerhub_secret" {
@@ -49,7 +51,7 @@ module "cs" {
   public_alb_https_listener_arn  = local.public_alb_https_listener_arn
   private_alb_https_listener_arn = local.private_alb_https_listener_arn
 
-  preferred_hostname = "openbluebrain.com"
+  preferred_hostname = local.primary_domain
   redirect_hostnames = ["openbluebrain.ch", "openbrainplatform.org", "openbrainplatform.com"]
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
@@ -209,8 +211,8 @@ module "static-server" {
   account_id                 = local.account_id
   vpc_id                     = local.vpc_id
   public_subnet_ids          = [data.terraform_remote_state.common.outputs.public_a_subnet_id, data.terraform_remote_state.common.outputs.public_b_subnet_id]
-  domain_name                = data.terraform_remote_state.common.outputs.primary_domain
-  static_content_bucket_name = data.terraform_remote_state.common.outputs.primary_domain
+  domain_name                = local.primary_domain
+  static_content_bucket_name = local.primary_domain
   alb_listener_arn           = local.public_alb_https_listener_arn
   alb_listener_rule_priority = 600
 }
@@ -233,11 +235,9 @@ module "core_webapp" {
   allowed_source_ip_cidr_blocks        = ["0.0.0.0/0"]
   vpc_cidr_block                       = local.vpc_cidr_block
 
-  env_DEBUG = "true"
-  # TODO Switch to data.terraform_remote_state.common.outputs.primary_domain once the CI in deployment-common works.
-  # env_NEXTAUTH_URL                        = "https://${data.terraform_remote_state.common.outputs.primary_domain}/mmb-beta/api/auth"
-  env_NEXTAUTH_URL                        = "https://openbluebrain.com/mmb-beta/api/auth"
-  env_KEYCLOAK_ISSUER                     = "https://openbluebrain.com/auth/realms/SBO"
+  env_DEBUG                               = "true"
+  env_NEXTAUTH_URL                        = "https://${local.primary_domain}/mmb-beta/api/auth"
+  env_KEYCLOAK_ISSUER                     = "https://${local.primary_domain}/auth/realms/SBO"
   env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY  = "pk_test_51P6uAFFE4Bi50cLlatJIc0fUPsP0jQkaCCJ8TTkIYOOLIrLzxX1M9p1kVD11drNqsF9p7yiaumWJ8UHb3ptJJRXB00y3qjYReV"
   env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL = "http://${data.terraform_remote_state.common.outputs.private_alb_dns_name}:3000/api/literature"
 }
@@ -269,7 +269,7 @@ module "kg_inference_api" {
   route_table_id                 = local.route_table_private_subnets_id
   vpc_cidr_block                 = local.vpc_cidr_block
   vpc_id                         = local.vpc_id
-  primary_domain_hostname        = "openbrainplatform.org"
+  primary_domain_hostname        = local.primary_domain
 
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
@@ -315,8 +315,8 @@ module "virtual_lab_manager" {
   public_lb_listener_https_arn  = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
   private_lb_listener_https_arn = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
 
-  invite_link = "https://${data.terraform_remote_state.common.outputs.primary_domain}/mmb-beta"
-  mail_from   = "noreply@${data.terraform_remote_state.common.outputs.primary_domain}"
+  invite_link = "https://${local.primary_domain}/mmb-beta"
+  mail_from   = "noreply@${local.primary_domain}"
 
   virtual_lab_manager_postgres_db   = "vlm"
   virtual_lab_manager_postgres_user = "vlm_user"
@@ -337,7 +337,7 @@ module "virtual_lab_manager" {
 
   virtual_lab_manager_depoloyment_env = "production"
 
-  virtual_lab_manager_nexus_delta_uri = "https://openbluebrain.com/api/nexus/v1"
+  virtual_lab_manager_nexus_delta_uri = "https://${local.primary_domain}/api/nexus/v1"
 
   virtual_lab_manager_invite_expiration = "7"
 
@@ -352,7 +352,7 @@ module "virtual_lab_manager" {
   virtual_lab_manager_cors_origins    = ["http://localhost:3000"]
 
   virtual_lab_manager_admin_base_path      = "{}/mmb-beta/virtual-lab/lab/{}/admin?panel=billing"
-  virtual_lab_manager_deployment_namespace = "https://openbluebrain.com"
+  virtual_lab_manager_deployment_namespace = "https://${local.primary_domain}"
 
   virtual_lab_manager_cross_project_resolvers = [
     "public/ephys",
