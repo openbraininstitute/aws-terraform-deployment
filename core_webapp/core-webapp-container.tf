@@ -157,23 +157,23 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
       secrets = [
         {
           name      = "KEYCLOAK_CLIENT_SECRET"
-          valueFrom = "${var.sbo_core_webapp_secrets_arn}:cognito_client_secret::"
+          valueFrom = "${aws_secretsmanager_secret.core_webapp_secrets.arn}:cognito_client_secret::"
         },
         {
           name      = "NEXTAUTH_SECRET"
-          valueFrom = "${var.sbo_core_webapp_secrets_arn}:nextauth_secret::"
+          valueFrom = "${aws_secretsmanager_secret.core_webapp_secrets.arn}:nextauth_secret::"
         },
         {
           name      = "KEYCLOAK_CLIENT_ID"
-          valueFrom = "${var.sbo_core_webapp_secrets_arn}:cognito_client_id::"
+          valueFrom = "${aws_secretsmanager_secret.core_webapp_secrets.arn}:cognito_client_id::"
         },
         {
           name      = "MAILCHIMP_API_KEY"
-          valueFrom = "${var.sbo_core_webapp_secrets_arn}:MAILCHIMP_API_KEY::"
+          valueFrom = "${aws_secretsmanager_secret.core_webapp_secrets.arn}:MAILCHIMP_API_KEY::"
         },
         {
           name      = "MAILCHIMP_AUDIENCE_ID"
-          valueFrom = "${var.sbo_core_webapp_secrets_arn}:MAILCHIMP_AUDIENCE_ID::"
+          valueFrom = "${aws_secretsmanager_secret.core_webapp_secrets.arn}:MAILCHIMP_AUDIENCE_ID::"
         }
       ]
       logConfiguration = {
