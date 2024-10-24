@@ -103,6 +103,11 @@ variable "delta_target_group_arn" {
   type        = string
   description = "ARN of the target group that the ECS Service will be targeted by."
 }
+variable "private_delta_target_group_arn" {
+  type        = string
+  description = "ARN of the private ALB target group that the ECS Service will be targeted by."
+}
+
 
 variable "delta_search_config_commit" {
   type        = string
@@ -129,3 +134,4 @@ variable "aws_region" {
   type        = string
   description = "The AWS region in which the resources will be created."
 }
+

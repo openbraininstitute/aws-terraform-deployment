@@ -17,6 +17,12 @@ resource "aws_ecs_service" "nexus_app_ecs_service" {
     container_port   = 8080
   }
 
+  load_balancer {
+    target_group_arn = var.private_delta_target_group_arn
+    container_name   = var.delta_instance_name
+    container_port   = 8080
+  }
+
   service_connect_configuration {
     enabled   = true
     namespace = var.aws_service_discovery_http_namespace_arn
@@ -45,3 +51,4 @@ resource "aws_ecs_service" "nexus_app_ecs_service" {
   }
   propagate_tags = "SERVICE"
 }
+
