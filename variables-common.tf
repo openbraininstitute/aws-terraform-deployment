@@ -65,15 +65,6 @@ variable "virtual_lab_manager_docker_image_url" {
   sensitive   = false
 }
 
-### Virtual Lab Manager ###
-
-variable "keycloak_server_url" {
-  default     = "https://openbluebrain.com/auth/"
-  type        = string
-  description = "The URL of the Keycloak server"
-  sensitive   = false
-}
-
 ### Nexus ###
 
 variable "nise_dockerhub_password" {

@@ -178,7 +178,7 @@ module "bluenaas_svc" {
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
 
-  keycloak_server_url = var.keycloak_server_url
+  keycloak_server_url = "https://${local.primary_domain}/auth/"
 
   base_path = "/api/bluenaas"
 }
@@ -328,7 +328,7 @@ module "virtual_lab_manager" {
 
   virtual_lab_manager_docker_image_url = var.virtual_lab_manager_docker_image_url
 
-  keycloak_server_url = var.keycloak_server_url
+  keycloak_server_url = "https://${local.primary_domain}/auth/"
 
   virtual_lab_manager_secrets_arn = "arn:aws:secretsmanager:${var.aws_region}:${data.aws_caller_identity.current.account_id}:secret:virtual_lab_manager-2Axecx"
 
