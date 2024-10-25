@@ -90,7 +90,7 @@ resource "aws_iam_user_policy" "nexus_rds_access" {
       {
         Action : "rds:*",
         Effect : "Allow",
-        Resource : "arn:aws:rds:us-east-1:671250183987:*:nexus*"
+        Resource : "arn:aws:rds:${var.aws_region}:${var.account_id}:*:nexus*"
       }
     ]
   })
@@ -107,7 +107,7 @@ resource "aws_iam_user_policy" "nexus_lambda_access" {
       {
         Action : "lambda:*"
         Effect : "Allow"
-        Resource : "arn:aws:lambda:us-east-1:671250183987:function:nexus*"
+        Resource : "arn:aws:lambda:${var.aws_region}:${var.account_id}:function:nexus*"
       }
     ]
   })
