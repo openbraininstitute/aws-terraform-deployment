@@ -217,6 +217,28 @@ resource "aws_lb_listener_rule" "agent_rule" {
   }
 }
 
+resource "aws_lb_listener_rule" "generic_private_agent_rule" {
+  listener_arn = var.generic_private_alb_listener_arn
+  priority     = 575
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.ml_target_group_agent.arn
+  }
+
+  condition {
+    path_pattern {
+      values = ["/api/agent/*"]
+    }
+  }
+
+  condition {
+    source_ip {
+      values = ["128.178.0.0/15", "192.33.211.0/26"] # EPFL CIDR, BBP DMZ CIDR
+    }
+  }
+}
+
 resource "aws_lb_target_group" "ml_target_group_agent" {
   name        = "ml-target-group-agent"
   port        = 8078

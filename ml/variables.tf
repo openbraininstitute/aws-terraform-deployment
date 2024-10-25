@@ -43,6 +43,11 @@ variable "private_alb_listener_arn" {
   type        = string
 }
 
+variable "generic_private_alb_listener_arn" {
+  description = "ARN of the Load Balancer Listener that the public NLB forwards to."
+  type        = string
+}
+
 variable "backend_image_url" {
   description = "Url of the docker image to use in the ECS container for the backend (format repo:tag)"
   type        = string

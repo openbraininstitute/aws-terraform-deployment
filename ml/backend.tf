@@ -234,6 +234,29 @@ resource "aws_lb_listener_rule" "ml_backend_listener_rule" {
   tags = var.tags
 }
 
+resource "aws_lb_listener_rule" "generic_private_ml_backend_listener_rule" {
+  listener_arn = var.generic_private_alb_listener_arn
+  priority     = 550
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.ml_target_group_backend.arn
+  }
+
+  condition {
+    path_pattern {
+      values = ["/api/literature/*"]
+    }
+  }
+
+  condition {
+    source_ip {
+      values = ["0.0.0.0/0"]
+    }
+  }
+  tags = var.tags
+}
+
 resource "aws_lb_listener_rule" "ml_backend_listener_rule_private" {
   listener_arn = var.private_alb_listener_arn
   priority     = 200
