@@ -21,3 +21,7 @@ variable "aws_region" {
 variable "account_id" {
   type = string
 }
+
+variable "hpc_resource_provisioner_image_sha" {
+  type = string
+}

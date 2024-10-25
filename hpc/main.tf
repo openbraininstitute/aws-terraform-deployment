@@ -101,7 +101,8 @@ module "resource-provisioner" {
   source = "./resource-provisioner/"
 
   hpc_resource_provisioner_role       = module.security.resource_provisioner_iam_role_arn
-  hpc_resource_provisioner_image_uri  = "${var.account_id}.dkr.ecr.${var.aws_region}.amazonaws.com/hpc-resource-provisioner:latest"
+  hpc_resource_provisioner_image_uri  = "bluebrain/hpc-resource-provisioner:latest"
+  hpc_resource_provisioner_image_sha  = "472f4f25b73e302c59946e16e7e33f0e9e154904b8e6d86fb0df782d343ff358"
   hpc_resource_provisioner_subnet_ids = [module.networking.lambda_subnet_id]
   hpc_resource_provisioner_sg_ids     = [var.obp_vpc_default_sg_id, module.security.vpc_peering_security_group_id]
   aws_region                          = var.aws_region

@@ -1,8 +1,3 @@
-data "aws_ecr_image" "hpc_resource_provisioner_image" {
-  repository_name = "hpc-resource-provisioner"
-  image_tag       = "latest"
-}
-
 resource "aws_lambda_permission" "hpc_resource_provisioner_permission_post" {
   statement_id  = "AllowAPIGatewayInvokePOST"
   action        = "lambda:InvokeFunction"
@@ -20,7 +15,7 @@ resource "aws_lambda_function" "hpc_resource_provisioner_lambda" {
   architectures    = ["x86_64"]
   timeout          = 90
   memory_size      = 1024
-  source_code_hash = trimprefix(data.aws_ecr_image.hpc_resource_provisioner_image.id, "sha256:")
+  source_code_hash = var.hpc_resource_provisioner_image_sha
   vpc_config {
     security_group_ids = var.hpc_resource_provisioner_sg_ids
     subnet_ids         = var.hpc_resource_provisioner_subnet_ids
@@ -36,7 +31,7 @@ resource "aws_lambda_function" "hpc_resource_provisioner_async_lambda" {
   architectures    = ["x86_64"]
   timeout          = 300
   memory_size      = 1024
-  source_code_hash = trimprefix(data.aws_ecr_image.hpc_resource_provisioner_image.id, "sha256:")
+  source_code_hash = var.hpc_resource_provisioner_image_sha
   image_config {
     command = ["hpc_provisioner.handlers.pcluster_do_create_handler"]
   }
