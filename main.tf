@@ -83,6 +83,9 @@ module "ml" {
   private_alb_listener_arn         = data.terraform_remote_state.common.outputs.private_alb_listener_3000_arn
   generic_private_alb_listener_arn = local.private_alb_https_listener_arn
   private_alb_dns                  = data.terraform_remote_state.common.outputs.private_alb_dns_name
+
+  epfl_cidr    = var.epfl_cidr
+  bbp_dmz_cidr = var.bbp_dmz_cidr
 }
 
 module "nexus" {

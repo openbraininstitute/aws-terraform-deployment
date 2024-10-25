@@ -199,6 +199,18 @@ resource "aws_lb_target_group" "ml_target_group_backend" {
   }
 }
 
+resource "aws_lb_target_group" "generic_private_ml_target_group_backend" {
+  name        = "generic-private-tg-ml-backend"
+  port        = 8080
+  protocol    = "HTTP"
+  target_type = "ip"
+  vpc_id      = var.vpc_id
+  tags        = var.tags
+  health_check {
+    path = "/healthz"
+  }
+}
+
 resource "aws_lb_target_group" "ml_target_group_backend_private" {
   name        = "target-group-backend-private"
   port        = 3000
@@ -240,7 +252,7 @@ resource "aws_lb_listener_rule" "generic_private_ml_backend_listener_rule" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.ml_target_group_backend.arn
+    target_group_arn = aws_lb_target_group.generic_private_ml_target_group_backend.arn
   }
 
   condition {
