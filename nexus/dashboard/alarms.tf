@@ -32,7 +32,7 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-cpu-alarm" {
   threshold                 = 90
   alarm_description         = "CPU utilization for Blazegraph Search"
   insufficient_data_actions = []
-  alarm_actions             = ["arn:aws:sns:us-east-1:671250183987:sns_no_reply_openbrainplatform_org", aws_sns_topic.nexus_alerts.arn]
+  alarm_actions             = ["arn:aws:sns:${var.aws_region}:${var.account_id}:sns_no_reply_openbrainplatform_org", aws_sns_topic.nexus_alerts.arn]
   dimensions = {
     ServiceName = "blazegraph-obp-composite-4_ecs_service"
     ClusterName = "nexus_ecs_cluster"
@@ -77,7 +77,7 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-query-timeout-alarm" {
   threshold                 = 0
   alarm_description         = "QueryTimeoutExceptions for Blazegraph Search"
   insufficient_data_actions = []
-  alarm_actions             = ["arn:aws:sns:us-east-1:671250183987:sns_no_reply_openbrainplatform_org", aws_sns_topic.nexus_alerts.arn]
+  alarm_actions             = ["arn:aws:sns:${var.aws_region}:${var.account_id}:sns_no_reply_openbrainplatform_org", aws_sns_topic.nexus_alerts.arn]
 }
 
 resource "aws_cloudwatch_metric_alarm" "blazegraph-search-out-of-memory-alarm" {
@@ -92,5 +92,5 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-out-of-memory-alarm" {
   threshold                 = 0
   alarm_description         = "OutOfMemoryErrors for Blazegraph Search"
   insufficient_data_actions = []
-  alarm_actions             = ["arn:aws:sns:us-east-1:671250183987:sns_no_reply_openbrainplatform_org", aws_sns_topic.nexus_alerts.arn]
+  alarm_actions             = ["arn:aws:sns:${var.aws_region}:${var.account_id}:sns_no_reply_openbrainplatform_org", aws_sns_topic.nexus_alerts.arn]
 }

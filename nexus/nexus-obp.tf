@@ -181,4 +181,5 @@ module "dashboard" {
   s3_bucket                         = aws_s3_bucket.nexus_obp.bucket
 
   aws_region = var.aws_region
+  account_id = var.account_id
 }

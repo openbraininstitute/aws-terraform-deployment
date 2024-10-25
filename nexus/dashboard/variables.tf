@@ -38,3 +38,8 @@ variable "aws_region" {
   type        = string
   description = "The AWS region in which the resources will be created."
 }
+
+variable "account_id" {
+  type        = string
+  description = "The ID of the AWS Account in which all components will be deployed."
+}
