@@ -1,7 +1,7 @@
 # Subnets for the SBO core svc
 resource "aws_subnet" "core_svc_a" {
   vpc_id                  = data.terraform_remote_state.common.outputs.vpc_id
-  availability_zone       = "${var.aws_region}a"
+  availability_zone       = "${data.aws_region.current.name}a"
   cidr_block              = "10.0.5.0/28"
   map_public_ip_on_launch = false
 
@@ -13,7 +13,7 @@ resource "aws_subnet" "core_svc_a" {
 
 resource "aws_subnet" "core_svc_b" {
   vpc_id                  = data.terraform_remote_state.common.outputs.vpc_id
-  availability_zone       = "${var.aws_region}b"
+  availability_zone       = "${data.aws_region.current.name}b"
   cidr_block              = "10.0.5.16/28"
   map_public_ip_on_launch = false
 

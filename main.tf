@@ -306,13 +306,14 @@ module "thumbnail_generation_api" {
 module "virtual_lab_manager" {
   source = "./virtual-lab-manager"
 
-  vpc_id                        = data.terraform_remote_state.common.outputs.vpc_id
-  aws_region                    = data.terraform_remote_state.common.outputs.aws_region
-  vpc_cidr_block                = data.terraform_remote_state.common.outputs.vpc_cidr_block
-  nat_gateway_id                = data.terraform_remote_state.common.outputs.nat_gateway_id
-  allowed_source_ip_cidr_blocks = [data.terraform_remote_state.common.outputs.vpc_cidr_block]
-  public_lb_listener_https_arn  = data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
-  private_lb_listener_https_arn = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
+  vpc_id                        = local.vpc_id
+  aws_region                    = local.aws_region
+  account_id                    = local.account_id
+  vpc_cidr_block                = local.vpc_cidr_block
+  nat_gateway_id                = local.nat_gateway_id
+  allowed_source_ip_cidr_blocks = [local.vpc_cidr_block]
+  public_lb_listener_https_arn  = local.public_alb_https_listener_arn
+  private_lb_listener_https_arn = local.private_alb_https_listener_arn
 
   invite_link = "https://${local.primary_domain}/mmb-beta"
   mail_from   = "noreply@${local.primary_domain}"
@@ -330,7 +331,7 @@ module "virtual_lab_manager" {
 
   keycloak_server_url = "https://${local.primary_domain}/auth/"
 
-  virtual_lab_manager_secrets_arn = "arn:aws:secretsmanager:${var.aws_region}:${data.aws_caller_identity.current.account_id}:secret:virtual_lab_manager-2Axecx"
+  virtual_lab_manager_secrets_arn = "arn:aws:secretsmanager:${local.aws_region}:${local.account_id}:secret:virtual_lab_manager-2Axecx"
 
   ecs_number_of_containers = var.virtual_lab_manager_ecs_number_of_containers
 
@@ -341,7 +342,7 @@ module "virtual_lab_manager" {
   virtual_lab_manager_invite_expiration = "7"
 
   virtual_lab_manager_mail_username = "AKIAZYSNA64ZRY6UDRMA"
-  virtual_lab_manager_mail_server   = "email-smtp.us-east-1.amazonaws.com"
+  virtual_lab_manager_mail_server   = "email-smtp.${local.aws_region}.amazonaws.com"
   virtual_lab_manager_base_path     = var.virtual_lab_manager_base_path
 
   virtual_lab_manager_mail_port = "25"

@@ -403,7 +403,7 @@ resource "aws_iam_policy" "ecsTaskLogs_virtuallab" {
           "logs:CreateLogStream",
           "logs:CreateLogGroup"
         ]
-        Resource = "arn:aws:logs:us-east-1:671250183987:log-group:*"
+        Resource = "arn:aws:logs:${var.aws_region}:${var.account_id}:log-group:*"
       }
     ]
   })

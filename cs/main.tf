@@ -2,6 +2,7 @@ module "networking" {
   source                         = "./networking"
   vpc_id                         = var.vpc_id
   route_table_private_subnets_id = var.route_table_private_subnets_id
+  aws_region                     = var.aws_region
 }
 
 module "keycloak" {

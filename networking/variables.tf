@@ -7,8 +7,7 @@ variable "vpc_cidr_block" {
 }
 
 variable "aws_region" {
-  type    = string
-  default = "us-east-1"
+  type = string
 }
 
 variable "route_table_id" {

@@ -72,7 +72,7 @@ resource "aws_iam_policy" "kg_inference_api_ecs_task_logs" {
           "logs:CreateLogStream",
           "logs:CreateLogGroup"
         ]
-        Resource = "arn:aws:logs:us-east-1:671250183987:log-group:*"
+        Resource = "arn:aws:logs:${var.aws_region}:${var.account_id}:log-group:*"
       }
     ]
   })

@@ -7,6 +7,11 @@ variable "aws_region" {
   sensitive = false
 }
 
+variable "account_id" {
+  description = "AWS account id."
+  type        = string
+}
+
 variable "vpc_cidr_block" {
   description = "CIDR block of the vpc"
   type        = string
@@ -174,4 +179,3 @@ variable "virtual_lab_manager_secrets_arn" {
   description = "The ARN of the virtual lab manager secrets"
   sensitive   = false
 }
-
