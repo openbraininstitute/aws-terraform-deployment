@@ -143,6 +143,11 @@ module "ml_ecs_service_backend" {
       container_name   = "ml_backend"
       container_port   = 8080
     }
+    generic_private_service = {
+      target_group_arn = aws_lb_target_group.generic_private_ml_target_group_backend.arn
+      container_name   = "ml_backend"
+      container_port   = 8080
+    }
     private_service = {
       target_group_arn = aws_lb_target_group.ml_target_group_backend_private.arn
       container_name   = "ml_backend"

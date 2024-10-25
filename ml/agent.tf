@@ -163,6 +163,12 @@ module "ecs_service_agent" {
       container_name   = "ml_agent"
       container_port   = 8078
     }
+
+    generic_private_service = {
+      target_group_arn = aws_lb_target_group.generic_private_ml_target_group_agent.arn
+      container_name   = "ml_agent"
+      container_port   = 8078
+    }
   }
 
   subnet_ids = local.private_subnet_ids
