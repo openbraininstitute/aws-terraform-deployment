@@ -22,45 +22,65 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
             ],
             "essential": true,
             "command": [
-                "--config-file=/docker-keycloak/keycloak.conf  start --http-enabled=true --http-port=8081"
+                "start"
             ],
             "environment": [
                 {
-                    "name": "KC_PROXY",
-                    "value": "edge"
+                    "name": "KC_DB",
+                    "value": "${aws_db_instance.keycloak_database.engine}"
                 },
                 {
-                    "name": "DB_ADDR",
-                    "value": "keycloak-db.ctydazornca3.${var.aws_region}.rds.amazonaws.com"
+                    "name": "KC_DB_URL_HOST",
+                    "value": "${aws_db_instance.keycloak_database.address}"
                 },
                 {
-                    "name": "DB_VENDOR",
-                    "value": "postgres"
+                    "name": "KC_DB_URL_DATABASE",
+                    "value": "${aws_db_instance.keycloak_database.db_name}"
                 },
                 {
-                    "name": "JAVA_OPTS_APPEND",
-                    "value": "-Xms512m -Xmx2g"
+                    "name": "KC_DB_USERNAME",
+                    "value": "${aws_db_instance.keycloak_database.username}"
                 },
-                {
-                    "name": "KEYCLOAK_ADMIN",
-                    "value": "admin"
-                },
-                {
-                    "name": "DB_USER",
-                    "value": "keycloak_sbo"
-                },
+	        {
+                    "name": "KC_DB_PASSWORD",
+	            "value": "${data.aws_secretsmanager_secret_version.keycloak_database_password.secret_string}"
+	        },
                 {
                     "name": "KC_HOSTNAME_STRICT",
                     "value": "false"
-                },
-                {
-                    "name": "DB_DATABASE",
-                    "value": "keycloak_sbo"
                 },
 	        {
  	            "name": "KC_HEALTH_ENABLED",
 	            "value": "true"
 	        },
+	        {
+                    "name": "KC_HTTP_ENABLED",
+	            "value": "true"
+	        },
+	        {
+                    "name": "KC_HTTP_RELATIVE_PATH",
+	            "value": "/auth"
+	        },
+	        {
+                    "name": "KC_HTTP_PORT",
+                    "value": "8081"
+	        },
+                {
+                    "name": "KC_PROXY",
+                    "value": "edge"
+                },
+                {
+                    "name": "KEYCLOAK_ADMIN",
+                    "value": "admin"
+                },
+	        {
+                    "name": "KEYCLOAK_ADMIN_PASSWORD",
+	            "value": "${data.aws_secretsmanager_secret_version.keycloak_database_password.secret_string}"
+	        },
+                {
+                    "name": "JAVA_OPTS_APPEND",
+                    "value": "-Xms512m -Xmx2g"
+                },
 	        {
 	            "name": "PROXY_ADDRESS_FORWARDING",
 	            "value": "true"
