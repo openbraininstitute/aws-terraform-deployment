@@ -41,10 +41,6 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
                     "name": "KC_DB_USERNAME",
                     "value": "${aws_db_instance.keycloak_database.username}"
                 },
-	        {
-                    "name": "KC_DB_PASSWORD",
-	            "value": "${data.aws_secretsmanager_secret_version.keycloak_database_password.secret_string}"
-	        },
                 {
                     "name": "KC_HOSTNAME_STRICT",
                     "value": "false"
@@ -73,10 +69,6 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
                     "name": "KEYCLOAK_ADMIN",
                     "value": "admin"
                 },
-	        {
-                    "name": "KEYCLOAK_ADMIN_PASSWORD",
-	            "value": "${data.aws_secretsmanager_secret_version.keycloak_database_password.secret_string}"
-	        },
                 {
                     "name": "JAVA_OPTS_APPEND",
                     "value": "-Xms512m -Xmx2g"
@@ -84,6 +76,16 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
 	        {
 	            "name": "PROXY_ADDRESS_FORWARDING",
 	            "value": "true"
+	        }
+            ],
+            "secrets": [
+	        {
+                    "name": "KEYCLOAK_ADMIN_PASSWORD",
+                    "valueFrom": "${aws_secretsmanager_secret.keycloak_database_password.arn}"
+	        },
+	        {
+                    "name": "KC_DB_PASSWORD",
+                    "valueFrom": "${aws_secretsmanager_secret.keycloak_database_password.arn}"
 	        }
             ],
             "mountPoints": [
