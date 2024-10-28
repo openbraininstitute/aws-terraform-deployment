@@ -90,11 +90,6 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
             ],
             "mountPoints": [
                 {
-                    "sourceVolume": "keycloak-volume",
-                    "containerPath": "/docker-keycloak",
-                    "readOnly": false
-                },
-                {
                     "sourceVolume": "keycloak-theme-volume",
                     "containerPath": "/opt/keycloak/themes",
                     "readOnly": false
@@ -122,13 +117,6 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
     TASK_DEFINITION
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn            = aws_iam_role.ecs_task_execution_role.arn
-  volume {
-    name = "keycloak-volume"
-    efs_volume_configuration {
-      file_system_id = aws_efs_file_system.keycloakfs.id
-      root_directory = "/"
-    }
-  }
   volume {
     name = "keycloak-theme-volume"
     efs_volume_configuration {
