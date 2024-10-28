@@ -48,6 +48,11 @@ variable "generic_private_alb_listener_arn" {
   type        = string
 }
 
+variable "generic_private_alb_security_group_id" {
+  description = "ARN of the Load Balancer security group id."
+  type        = string
+}
+
 variable "backend_image_url" {
   description = "Url of the docker image to use in the ECS container for the backend (format repo:tag)"
   type        = string

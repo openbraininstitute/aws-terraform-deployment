@@ -173,6 +173,14 @@ module "ml_ecs_service_backend" {
       description              = "Service port"
       source_security_group_id = var.private_alb_security_group_id
     }
+    generic_private_alb = {
+      type                     = "ingress"
+      from_port                = 8080
+      to_port                  = 8080
+      protocol                 = "tcp"
+      description              = "Service port"
+      source_security_group_id = var.generic_private_alb_security_group_id
+    }
     egress_all = {
       type        = "egress"
       from_port   = 0

@@ -181,6 +181,15 @@ module "ecs_service_agent" {
       description              = "Service port"
       source_security_group_id = var.alb_security_group_id
     }
+    generic_private_alb = {
+      type                     = "ingress"
+      from_port                = 8078
+      to_port                  = 8078
+      protocol                 = "tcp"
+      description              = "Service port"
+      source_security_group_id = var.generic_private_alb_security_group_id
+    }
+
     egress_all = {
       type        = "egress"
       from_port   = 0

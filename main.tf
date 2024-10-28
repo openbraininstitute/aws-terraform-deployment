@@ -76,13 +76,19 @@ module "ml" {
 
   paper_bucket_name = "ml-paper-bucket"
 
+  # OLD PUBLIC ALB
   alb_security_group_id = local.public_alb_sg_id
   alb_listener_arn      = local.public_alb_https_listener_arn
 
-  private_alb_security_group_id    = data.terraform_remote_state.common.outputs.private_alb_security_group_id
-  private_alb_listener_arn         = data.terraform_remote_state.common.outputs.private_alb_listener_3000_arn
-  generic_private_alb_listener_arn = local.private_alb_https_listener_arn
-  private_alb_dns                  = data.terraform_remote_state.common.outputs.private_alb_dns_name
+
+  # OLD PRIVATE ALB
+  private_alb_security_group_id = data.terraform_remote_state.common.outputs.private_alb_security_group_id
+  private_alb_listener_arn      = data.terraform_remote_state.common.outputs.private_alb_listener_3000_arn
+  private_alb_dns               = data.terraform_remote_state.common.outputs.private_alb_dns_name
+
+  # NEW PRIVATE ALB
+  generic_private_alb_listener_arn      = local.private_alb_https_listener_arn
+  generic_private_alb_security_group_id = data.terraform_remote_state.common.outputs.generic_private_alb_security_group_id
 
   epfl_cidr    = var.epfl_cidr
   bbp_dmz_cidr = var.bbp_dmz_cidr
