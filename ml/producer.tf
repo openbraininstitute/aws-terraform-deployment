@@ -87,9 +87,8 @@ module "ml_producer_eventbridge" {
 module "ml_ecs_task_producer" {
   source = "terraform-aws-modules/ecs/aws//modules/service"
 
-  name                  = "ml-ecs-task-producer"
-  cluster_arn           = local.ecs_cluster_arn
-  task_exec_secret_arns = [var.dockerhub_credentials_arn]
+  name        = "ml-ecs-task-producer"
+  cluster_arn = local.ecs_cluster_arn
 
   cpu    = 256
   memory = 512
@@ -102,16 +101,13 @@ module "ml_ecs_task_producer" {
   # Container definition(s)
   container_definitions = {
     ml_producer = {
-      cpu         = 256
-      memory      = 512
-      networkMode = "awsvpc"
-      family      = "ml_producer"
-      essential   = true
-      image       = var.backend_image_url
-      name        = "ml_producer"
-      repository_credentials = {
-        credentialsParameter = var.dockerhub_credentials_arn
-      }
+      cpu                      = 256
+      memory                   = 512
+      networkMode              = "awsvpc"
+      family                   = "ml_producer"
+      essential                = true
+      image                    = "${module.ml_ecr.repository_url}:${var.backend_image_tag}"
+      name                     = "ml_producer"
       readonly_root_filesystem = false
     }
   }

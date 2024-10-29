@@ -2,8 +2,10 @@
 module "ml-ecs_service_grobid" {
   source = "terraform-aws-modules/ecs/aws//modules/service"
 
-  name        = "ml-ecs-service-grobid"
-  cluster_arn = local.ecs_cluster_arn
+  name                  = "ml-ecs-service-grobid"
+  cluster_arn           = local.ecs_cluster_arn
+  task_exec_secret_arns = [var.dockerhub_credentials_arn]
+
 
   cpu    = 1024
   memory = 4096
@@ -23,6 +25,9 @@ module "ml-ecs_service_grobid" {
       image                    = var.grobid_image_url
       name                     = "ml_grobid"
       readonly_root_filesystem = false
+      repository_credentials = {
+        credentialsParameter = var.dockerhub_credentials_arn
+      }
       port_mappings = [
         {
           name          = "ml_grobid"

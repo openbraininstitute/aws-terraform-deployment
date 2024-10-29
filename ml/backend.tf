@@ -25,7 +25,7 @@ module "ml_ecs_service_backend" {
       networkMode              = "awsvpc"
       family                   = "ml_backend"
       essential                = true
-      image                    = var.backend_image_url
+      image                    = "${module.ml_ecr.repository_url}:${var.backend_image_tag}"
       name                     = "ml_backend"
       readonly_root_filesystem = false
       port_mappings = [

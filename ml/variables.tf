@@ -53,17 +53,17 @@ variable "generic_private_alb_security_group_id" {
   type        = string
 }
 
-variable "backend_image_url" {
+variable "backend_image_tag" {
   description = "Url of the docker image to use in the ECS container for the backend (format repo:tag)"
   type        = string
 }
 
-variable "etl_image_url" {
+variable "etl_image_tag" {
   description = "Url of the docker image to use in the ECS container for etl (format repo:tag)"
   type        = string
 }
 
-variable "agent_image_url" {
+variable "agent_image_tag" {
   description = "Url of the ECR imageof the agent (format repo:tag)"
   type        = string
 }
@@ -201,6 +201,11 @@ variable "rds_storage_type" {
   description = "Type of storage (e.g. gp2 or gp3...)"
   default     = "gp2"
 
+}
+
+variable "github_repos" {
+  description = "List of github repos that should be allowed to use ML's ECR"
+  type        = list(string)
 }
 
 variable "tags" {

@@ -20,14 +20,13 @@ module "ecs_service_agent" {
   # Container definition(s)
   container_definitions = {
     ml_agent = {
-      memory      = 2048
-      cpu         = 1024
-      networkMode = "awsvpc"
-      family      = "ml_agent"
-      essential   = true
-      image       = var.agent_image_url
-      name        = "ml_agent"
-
+      memory                   = 2048
+      cpu                      = 1024
+      networkMode              = "awsvpc"
+      family                   = "ml_agent"
+      essential                = true
+      image                    = "${module.ml_ecr.repository_url}:${var.agent_image_tag}"
+      name                     = "ml_agent"
       readonly_root_filesystem = false
       port_mappings = [
         {

@@ -2,9 +2,8 @@
 module "ml_ecs_service_consumer" {
   source = "terraform-aws-modules/ecs/aws//modules/service"
 
-  name                  = "ml-ecs-service-consumer"
-  cluster_arn           = local.ecs_cluster_arn
-  task_exec_secret_arns = [var.dockerhub_credentials_arn]
+  name        = "ml-ecs-service-consumer"
+  cluster_arn = local.ecs_cluster_arn
 
   cpu    = 512
   memory = 1024
@@ -19,16 +18,13 @@ module "ml_ecs_service_consumer" {
   # Container definition(s)
   container_definitions = {
     ml_consumer = {
-      cpu         = 512
-      memory      = 1024
-      networkMode = "awsvpc"
-      family      = "ml_consumer"
-      essential   = true
-      image       = var.backend_image_url
-      name        = "ml_consumer"
-      repository_credentials = {
-        credentialsParameter = var.dockerhub_credentials_arn
-      }
+      cpu                      = 512
+      memory                   = 1024
+      networkMode              = "awsvpc"
+      family                   = "ml_consumer"
+      essential                = true
+      image                    = "${module.ml_ecr.repository_url}:${var.backend_image_tag}"
+      name                     = "ml_consumer"
       entrypoint               = ["pu-consumer", "${aws_opensearch_domain.ml_opensearch.endpoint}:443", "http://${var.private_alb_dns}:3000", module.ml_sqs.queue_url, "-b", "100", "-l", 60, "-u", 3000, "--use-ssl", "-v"]
       readonly_root_filesystem = false
     }

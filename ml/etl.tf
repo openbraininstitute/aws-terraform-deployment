@@ -20,7 +20,7 @@ module "ml_ecs_service_etl" {
       networkMode              = "awsvpc"
       family                   = "ml_etl"
       essential                = true
-      image                    = var.etl_image_url
+      image                    = "${module.ml_ecr.repository_url}:${var.etl_image_tag}"
       name                     = "ml_etl"
       readonly_root_filesystem = false
       entrypoint               = ["scholaretl-api", "--port", "3000"]
