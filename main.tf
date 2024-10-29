@@ -108,7 +108,8 @@ module "nexus" {
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 
-  nexus_obp_bucket_name = "nexus-obp-production"
+  nexus_obp_bucket_name  = "nexus-obp-production"
+  nexus_ship_bucket_name = "nexus-ship-production"
 
   public_load_balancer_dns_name = data.terraform_remote_state.common.outputs.public_alb_dns_name
   public_lb_listener_https_arn  = local.public_alb_https_listener_arn

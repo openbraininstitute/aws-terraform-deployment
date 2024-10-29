@@ -3,7 +3,7 @@
 #tfsec:ignore:aws-s3-enable-versioning
 #tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket" "nexus_ship" {
-  bucket = "nexus-ship-production"
+  bucket = var.nexus_ship_bucket_name
 }
 resource "aws_s3_bucket_public_access_block" "nexus_ship" {
   bucket = aws_s3_bucket.nexus_ship.id

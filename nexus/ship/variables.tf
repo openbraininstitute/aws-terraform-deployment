@@ -20,6 +20,11 @@ variable "target_bucket" {
   description = "The destination bucket for physical files"
 }
 
+variable "nexus_ship_bucket_name" {
+  type        = string
+  description = "The Nexus Ship bucket"
+}
+
 variable "dockerhub_credentials_arn" {
   type = string
 }

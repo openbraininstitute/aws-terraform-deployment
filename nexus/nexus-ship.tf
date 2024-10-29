@@ -12,7 +12,8 @@ module "ship" {
   postgres_database           = "nexusobp"
   postgres_username           = "nexusobp"
   target_base_uri             = "https://openbluebrain.com/api/delta/v1"
-  target_bucket               = "nexus-obp-production"
+  target_bucket               = aws_s3_bucket.nexus_obp.id
   target_bucket_arn           = aws_s3_bucket.nexus_obp.arn
+  nexus_ship_bucket_name      = var.nexus_ship_bucket_name
   aws_region                  = var.aws_region
 }
