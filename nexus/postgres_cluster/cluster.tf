@@ -3,10 +3,9 @@ resource "aws_db_subnet_group" "nexus_cluster_subnet_group" {
   subnet_ids = var.subnets_ids
 }
 
-# TODO the secret should be defined in the code
 # Data source to retrieve the password from AWS Secrets Manager
 data "aws_secretsmanager_secret_version" "nexus_database_password" {
-  secret_id = var.nexus_postgresql_database_password_arn
+  secret_id = var.nexus_secrets_arn
 }
 
 # tfsec:ignore:aws-rds-encrypt-cluster-storage-data
@@ -34,7 +33,7 @@ resource "aws_rds_cluster" "nexus" {
   vpc_security_group_ids = [var.security_group_id]
 
   master_username = var.nexus_postgresql_database_username
-  master_password = data.aws_secretsmanager_secret_version.nexus_database_password.secret_string
+  master_password = jsondecode(data.aws_secretsmanager_secret_version.nexus_database_password.secret_string)["postgres_password"]
 
   copy_tags_to_snapshot = true
 }

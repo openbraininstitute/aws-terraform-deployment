@@ -25,10 +25,9 @@ variable "nexus_postgresql_database_username" {
   default = "nexus_user"
 }
 
-variable "nexus_postgresql_database_password_arn" {
+variable "nexus_secrets_arn" {
   type        = string
   description = "the arn of the secret containing the password for the nexus database"
-  default     = "arn:aws:secretsmanager:us-east-1:671250183987:secret:nexus_postgresql_password-jRsJRc"
 }
 
 variable "security_group_id" {

@@ -7,10 +7,9 @@ resource "aws_db_subnet_group" "nexus_db_subnet_group" {
   }
 }
 
-# TODO the secret should be defined in the code
 # Data source to retrieve the password from AWS Secrets Manager
 data "aws_secretsmanager_secret_version" "nexus_database_password" {
-  secret_id = var.nexus_postgresql_database_password_arn
+  secret_id = var.nexus_secrets_arn
 }
 
 # tfsec:ignore:aws-rds-enable-performance-insights-encryption
@@ -33,7 +32,7 @@ resource "aws_db_instance" "nexusdb" {
   db_name    = var.nexus_postgresql_database_name
 
   username = var.nexus_postgresql_database_username
-  password = data.aws_secretsmanager_secret_version.nexus_database_password.secret_string
+  password = jsondecode(data.aws_secretsmanager_secret_version.nexus_database_password.secret_string)["postgres_password"]
 
   publicly_accessible          = false
   performance_insights_enabled = true

@@ -20,6 +20,6 @@ module "iam" {
   aws_region = var.aws_region
   account_id = var.account_id
 
-  nexus_secrets_arn  = var.nexus_secrets_arn
+  nexus_secrets_arn  = aws_secretsmanager_secret.nexus_secrets.arn
   dockerhub_password = var.dockerhub_password
 }
