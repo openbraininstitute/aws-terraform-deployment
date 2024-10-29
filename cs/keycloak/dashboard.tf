@@ -7,7 +7,7 @@ resource "aws_cloudwatch_dashboard" "main" {
   dashboard_name = "Keycloak"
 
   dashboard_body = jsonencode({
-    "widgets" = [
+    "widgets" : [
       {
         "height" : 6,
         "width" : 6,
@@ -15,17 +15,18 @@ resource "aws_cloudwatch_dashboard" "main" {
         "x" : 0,
         "type" : "metric",
         "properties" : {
-          "metrics" = [
-            ["AWS/ECS",
+          "metrics" : [
+            [
+              "AWS/ECS",
               "CPUUtilization",
-              "ClusterName", local.clustername,
-              "ServiceName", local.servicename,
-              { "stat" : "Average",
-            "region" : var.aws_region }]
+              "ClusterName",
+              local.clustername,
+              "ServiceName",
+              local.servicename,
+              { "stat" : "Average", "region" : var.aws_region },
+            ]
           ],
-          "legend" : {
-            "position" : "hidden"
-          },
+          "legend" : { "position" : "hidden" },
           "region" : "${var.aws_region}",
           "liveData" : false,
           "timezone" : "UTC",
@@ -33,14 +34,8 @@ resource "aws_cloudwatch_dashboard" "main" {
           "view" : "timeSeries",
           "stacked" : false,
           "period" : 300,
-          "yAxis" : {
-            "left" : {
-              "min" : 0,
-              "max" : 100,
-              "label" : ""
-            }
-          }
-        }
+          "yAxis" : { "left" : { "min" : 0, "max" : 100, "label" : "" } },
+        },
       },
       {
         "height" : 6,
@@ -49,25 +44,26 @@ resource "aws_cloudwatch_dashboard" "main" {
         "x" : 6,
         "type" : "metric",
         "properties" : {
-          "metrics" = [
-            ["AWS/ECS",
+          "metrics" : [
+            [
+              "AWS/ECS",
               "CPUUtilization",
-              "ClusterName", local.clustername,
-              "ServiceName", local.servicename,
-              { "stat" : "Average",
-            "region" : var.aws_region }]
+              "ClusterName",
+              local.clustername,
+              "ServiceName",
+              local.servicename,
+              { "stat" : "Average", "region" : var.aws_region },
+            ]
           ],
-          "legend" : {
-            "position" : "hidden"
-          },
+          "legend" : { "position" : "hidden" },
           "region" : "${var.aws_region}",
           "liveData" : false,
           "timezone" : "UTC",
           "title" : "MemoryUtilization: Average",
           "view" : "timeSeries",
           "stacked" : false,
-          "period" : 300
-        }
+          "period" : 300,
+        },
       },
       {
         "height" : 15,
@@ -80,74 +76,67 @@ resource "aws_cloudwatch_dashboard" "main" {
             {
               "metricName" : "CPUUtilization",
               "resourceType" : "AWS::RDS::DBInstance",
-              "stat" : "Average"
+              "stat" : "Average",
             },
             {
               "metricName" : "ReadLatency",
               "resourceType" : "AWS::RDS::DBInstance",
-              "stat" : "Average"
+              "stat" : "Average",
             },
             {
               "metricName" : "DatabaseConnections",
               "resourceType" : "AWS::RDS::DBInstance",
-              "stat" : "Sum"
+              "stat" : "Sum",
             },
             {
               "metricName" : "FreeStorageSpace",
               "resourceType" : "AWS::RDS::DBInstance",
-              "stat" : "Average"
+              "stat" : "Average",
             },
             {
               "metricName" : "FreeableMemory",
               "resourceType" : "AWS::RDS::DBInstance",
-              "stat" : "Average"
+              "stat" : "Average",
             },
             {
               "metricName" : "ReadThroughput",
               "resourceType" : "AWS::RDS::DBInstance",
-              "stat" : "Average"
+              "stat" : "Average",
             },
             {
               "metricName" : "ReadIOPS",
               "resourceType" : "AWS::RDS::DBInstance",
-              "stat" : "Average"
+              "stat" : "Average",
             },
             {
               "metricName" : "WriteLatency",
               "resourceType" : "AWS::RDS::DBInstance",
-              "stat" : "Average"
+              "stat" : "Average",
             },
             {
               "metricName" : "WriteThroughput",
               "resourceType" : "AWS::RDS::DBInstance",
-              "stat" : "Average"
+              "stat" : "Average",
             },
             {
               "metricName" : "WriteIOPS",
               "resourceType" : "AWS::RDS::DBInstance",
-              "stat" : "Average"
-            }
-          ],
-          "labels" : [
-            {
-              "key" : "SBO_Billing",
-              "value" : "keycloak"
-            }
-          ],
-          "widgetOptions" : {
-            "legend" : {
-              "position" : "bottom"
+              "stat" : "Average",
             },
+          ],
+          "labels" : [{ "key" : "SBO_Billing", "value" : "keycloak" }],
+          "widgetOptions" : {
+            "legend" : { "position" : "bottom" },
             "view" : "timeSeries",
             "stacked" : false,
             "rowsPerPage" : 50,
-            "widgetsPerRow" : 2
+            "widgetsPerRow" : 2,
           },
           "period" : 300,
           "splitBy" : "",
           "region" : "${var.aws_region}",
-          "title" : "RDS"
-        }
+          "title" : "RDS",
+        },
       },
       {
         "height" : 15,
@@ -160,54 +149,47 @@ resource "aws_cloudwatch_dashboard" "main" {
             {
               "metricName" : "ClientConnections",
               "resourceType" : "AWS::EFS::FileSystem",
-              "stat" : "Sum"
+              "stat" : "Sum",
             },
             {
               "metricName" : "DataReadIOBytes",
               "resourceType" : "AWS::EFS::FileSystem",
-              "stat" : "Average"
+              "stat" : "Average",
             },
             {
               "metricName" : "DataWriteIOBytes",
               "resourceType" : "AWS::EFS::FileSystem",
-              "stat" : "Average"
+              "stat" : "Average",
             },
             {
               "metricName" : "BurstCreditBalance",
               "resourceType" : "AWS::EFS::FileSystem",
-              "stat" : "Average"
+              "stat" : "Average",
             },
             {
               "metricName" : "PercentIOLimit",
               "resourceType" : "AWS::EFS::FileSystem",
-              "stat" : "Average"
+              "stat" : "Average",
             },
             {
               "metricName" : "PermittedThroughput",
               "resourceType" : "AWS::EFS::FileSystem",
-              "stat" : "Average"
-            }
-          ],
-          "labels" : [
-            {
-              "key" : "SBO_Billing",
-              "value" : "keycloak"
-            }
-          ],
-          "widgetOptions" : {
-            "legend" : {
-              "position" : "bottom"
+              "stat" : "Average",
             },
+          ],
+          "labels" : [{ "key" : "SBO_Billing", "value" : "keycloak" }],
+          "widgetOptions" : {
+            "legend" : { "position" : "bottom" },
             "view" : "timeSeries",
             "stacked" : false,
             "rowsPerPage" : 50,
-            "widgetsPerRow" : 2
+            "widgetsPerRow" : 2,
           },
           "period" : 300,
           "splitBy" : "",
           "region" : "${var.aws_region}",
-          "title" : "EFS"
-        }
+          "title" : "EFS",
+        },
       },
       {
         "height" : 6,
@@ -217,11 +199,22 @@ resource "aws_cloudwatch_dashboard" "main" {
         "type" : "metric",
         "properties" : {
           "metrics" : [
-            ["AWS/ApplicationELB", "RequestCount", "TargetGroup", "targetgroup/keycloak-target-group/7313a40c4197f53e", "AvailabilityZone", "${var.aws_region}b", "LoadBalancer", "app/public-alb/669f0a64726948c5", { "region" : "${var.aws_region}", "id" : "m5" }]
+            [
+              "AWS/ApplicationELB",
+              "RequestCount",
+              "TargetGroup",
+              aws_lb_target_group.keycloak_target_group.arn_suffix,
+              "LoadBalancer",
+              join(
+                "/",
+                slice(split("/", var.public_alb_https_listener_arn), 1, 4),
+              ),
+              "AvailabilityZone",
+              "${var.aws_region}b",
+              { "region" : "${var.aws_region}", "id" : "m5" },
+            ]
           ],
-          "legend" : {
-            "position" : "hidden"
-          },
+          "legend" : { "position" : "hidden" },
           "title" : "RequestCount: Sum",
           "region" : "${var.aws_region}",
           "liveData" : false,
@@ -229,12 +222,8 @@ resource "aws_cloudwatch_dashboard" "main" {
           "stacked" : false,
           "stat" : "Sum",
           "period" : 300,
-          "yAxis" : {
-            "left" : {
-              "min" : 0
-            }
-          }
-        }
+          "yAxis" : { "left" : { "min" : 0 } },
+        },
       },
       {
         "height" : 6,
@@ -244,14 +233,70 @@ resource "aws_cloudwatch_dashboard" "main" {
         "type" : "metric",
         "properties" : {
           "metrics" : [
-            ["AWS/ApplicationELB", "HTTPCode_Target_5XX_Count", "TargetGroup", "targetgroup/keycloak-target-group/7313a40c4197f53e", "AvailabilityZone", "${var.aws_region}b", "LoadBalancer", "app/public-alb/669f0a64726948c5", { "region" : "${var.aws_region}", "id" : "m1", "label" : "5XX", "color" : "#d62728" }],
-            [".", "HTTPCode_Target_4XX_Count", ".", ".", ".", ".", ".", ".", { "region" : "${var.aws_region}", "id" : "m2", "label" : "4XX" }],
-            [".", "HTTPCode_Target_3XX_Count", ".", ".", ".", ".", ".", ".", { "region" : "${var.aws_region}", "id" : "m3", "label" : "3XX", "color" : "#17becf" }],
-            [".", "HTTPCode_Target_2XX_Count", ".", ".", ".", ".", ".", ".", { "region" : "${var.aws_region}", "id" : "m4", "label" : "2XX", "color" : "#2ca02c" }]
+            [
+              "AWS/ApplicationELB",
+              "HTTPCode_Target_5XX_Count",
+              "TargetGroup",
+              aws_lb_target_group.keycloak_target_group.arn_suffix,
+              "LoadBalancer",
+              join(
+                "/",
+                slice(split("/", var.public_alb_https_listener_arn), 1, 4),
+              ),
+              "AvailabilityZone",
+              "${var.aws_region}b",
+              {
+                "region" : "${var.aws_region}",
+                "id" : "m1",
+                "label" : "5XX",
+                "color" : "#d62728",
+              },
+            ],
+            [
+              ".",
+              "HTTPCode_Target_4XX_Count",
+              ".",
+              ".",
+              ".",
+              ".",
+              ".",
+              ".",
+              { "region" : "${var.aws_region}", "id" : "m2", "label" : "4XX" },
+            ],
+            [
+              ".",
+              "HTTPCode_Target_3XX_Count",
+              ".",
+              ".",
+              ".",
+              ".",
+              ".",
+              ".",
+              {
+                "region" : "${var.aws_region}",
+                "id" : "m3",
+                "label" : "3XX",
+                "color" : "#17becf",
+              },
+            ],
+            [
+              ".",
+              "HTTPCode_Target_2XX_Count",
+              ".",
+              ".",
+              ".",
+              ".",
+              ".",
+              ".",
+              {
+                "region" : "${var.aws_region}",
+                "id" : "m4",
+                "label" : "2XX",
+                "color" : "#2ca02c",
+              },
+            ],
           ],
-          "legend" : {
-            "position" : "bottom"
-          },
+          "legend" : { "position" : "bottom" },
           "title" : "HTTPCodes_Target_Count: Sum",
           "region" : "${var.aws_region}",
           "liveData" : false,
@@ -259,13 +304,9 @@ resource "aws_cloudwatch_dashboard" "main" {
           "stacked" : false,
           "stat" : "Sum",
           "period" : 300,
-          "yAxis" : {
-            "left" : {
-              "min" : 0
-            }
-          }
-        }
-      }
+          "yAxis" : { "left" : { "min" : 0 } },
+        },
+      },
     ]
   })
 }
