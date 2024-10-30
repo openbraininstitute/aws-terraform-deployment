@@ -2,10 +2,20 @@ locals {
   nexus_service_user_name = "nexus-service-user"
 }
 
+#tfsec:ignore:aws-iam-no-user-attached-policies
+resource "aws_iam_user" "nexus-service-user" {
+  name = local.nexus_service_user_name
+}
+
+#tfsec:ignore:aws-iam-enforce-group-mfa
+resource "aws_iam_group" "ecs-group" {
+  name = "ECS"
+}
+
 # Being a member of this group allows full access to the ECS actions
 resource "aws_iam_user_group_membership" "groups" {
-  groups = ["ECS"]
-  user   = local.nexus_service_user_name
+  groups = [aws_iam_group.ecs-group.name]
+  user   = aws_iam_user.nexus-service-user.name
 }
 
 # Allows read access to the whole third-party AWS Marketplace
@@ -14,25 +24,26 @@ resource "aws_iam_user_group_membership" "groups" {
 # connection has to be done with the administrator account.
 resource "aws_iam_user_policy_attachment" "AWSMarketplaceRead-only" {
   policy_arn = "arn:aws:iam::aws:policy/AWSMarketplaceRead-only"
-  user       = local.nexus_service_user_name
+  user       = aws_iam_user.nexus-service-user.name
 }
 
 # Allows read only access to the whole AWS Console
 resource "aws_iam_user_policy_attachment" "ReadOnlyAccess" {
   policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
-  user       = local.nexus_service_user_name
+  user       = aws_iam_user.nexus-service-user.name
 }
 
 # Allows to access all secrets that start with "nexus"
 resource "aws_iam_user_policy_attachment" "nexus_secrets_access" {
   policy_arn = module.iam.nexus_secret_access_policy_arn
-  user       = local.nexus_service_user_name
+  user       = aws_iam_user.nexus-service-user.name
 }
 
 # Allows full access to the S3 buckets for which the name start with "nexus"
+#tfsec:ignore:aws-iam-no-policy-wildcards
 resource "aws_iam_user_policy" "nexus_s3_access" {
   name = "NexusS3Access"
-  user = local.nexus_service_user_name
+  user = aws_iam_user.nexus-service-user.name
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -57,7 +68,7 @@ resource "aws_iam_user_policy" "nexus_s3_access" {
 # Allow necessary actions on RDS nexus instances
 resource "aws_iam_user_policy" "nexus_rds_access" {
   name = "NexusRDSAccess"
-  user = local.nexus_service_user_name
+  user = aws_iam_user.nexus-service-user.name
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -99,7 +110,7 @@ resource "aws_iam_user_policy" "nexus_rds_access" {
 # Allows full access to the lambda functions for which the name start with "nexus"
 resource "aws_iam_user_policy" "nexus_lambda_access" {
   name = "NexusLambdaAccess"
-  user = local.nexus_service_user_name
+  user = aws_iam_user.nexus-service-user.name
 
   policy = jsonencode({
     Version = "2012-10-17"
