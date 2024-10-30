@@ -90,10 +90,10 @@ variable "env_NEXTAUTH_URL" {
   sensitive   = false
   description = "NEXTAUTH_URL environment value for the webapp"
 }
-variable "env_NEXT_PUBLIC_KEYCLOAK_ISSUER" {
+variable "env_KEYCLOAK_ISSUER" {
   type        = string
   sensitive   = false
-  description = "NEXT_PUBLIC_KEYCLOAK_ISSUER environment value for the webapp"
+  description = "KEYCLOAK_ISSUER environment value for the webapp"
 }
 variable "env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" {
   type        = string

@@ -142,8 +142,8 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
           value = var.env_NEXTAUTH_URL
         },
         {
-          name  = "NEXT_PUBLIC_KEYCLOAK_ISSUER"
-          value = var.env_NEXT_PUBLIC_KEYCLOAK_ISSUER
+          name  = "KEYCLOAK_ISSUER"
+          value = var.env_KEYCLOAK_ISSUER
         },
         {
           name  = "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"
