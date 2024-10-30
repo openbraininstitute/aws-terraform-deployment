@@ -55,9 +55,10 @@ resource "aws_s3_object" "ml_parser_folders" {
 }
 
 resource "aws_vpc_endpoint" "sqs_endpoint" {
-  vpc_id            = var.vpc_id
-  service_name      = "com.amazonaws.${var.aws_region}.sqs"
-  subnet_ids        = local.private_subnet_ids
-  tags              = merge(var.tags, { Name = "SQS Endpoint" })
-  vpc_endpoint_type = "Interface"
+  vpc_id              = var.vpc_id
+  service_name        = "com.amazonaws.${var.aws_region}.sqs"
+  subnet_ids          = local.private_subnet_ids
+  tags                = merge(var.tags, { Name = "SQS Endpoint" })
+  vpc_endpoint_type   = "Interface"
+  private_dns_enabled = true
 }

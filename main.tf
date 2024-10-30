@@ -69,9 +69,9 @@ module "ml" {
   route_table_private_subnets_id = local.route_table_private_subnets_id
 
   dockerhub_credentials_arn = module.dockerhub_secret.dockerhub_credentials_arn
-  backend_image_tag         = "scholarag-v0.0.6"
-  etl_image_tag             = "scholaretl-v0.0.5"
-  agent_image_tag           = "neuroagent-v0.1.1"
+  backend_image_tag         = "scholarag-v0.0.7"
+  etl_image_tag             = "scholaretl-v0.0.6"
+  agent_image_tag           = "neuroagent-v0.3.3"
   grobid_image_url          = "lfoppiano/grobid:0.8.0"
 
   paper_bucket_name = "ml-paper-bucket"

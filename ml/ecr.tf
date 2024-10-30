@@ -95,5 +95,6 @@ resource "aws_vpc_endpoint" "ecr" {
   vpc_endpoint_type   = "Interface"
   vpc_id              = var.vpc_id
   subnet_ids          = [aws_subnet.ml_subnet_a.id, aws_subnet.ml_subnet_b.id]
+  tags                = merge(var.tags, { Name = "ECR Endpoint" })
   private_dns_enabled = true
 }
