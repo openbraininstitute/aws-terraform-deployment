@@ -248,7 +248,7 @@ module "core_webapp" {
 
   env_DEBUG                               = "true"
   env_NEXTAUTH_URL                        = "https://${local.primary_domain}/mmb-beta/api/auth"
-  env_KEYCLOAK_ISSUER                     = "https://${local.primary_domain}/auth/realms/SBO"
+  env_NEXT_PUBLIC_KEYCLOAK_ISSUER         = "https://${local.primary_domain}/auth/realms/SBO"
   env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY  = "pk_test_51P6uAFFE4Bi50cLlatJIc0fUPsP0jQkaCCJ8TTkIYOOLIrLzxX1M9p1kVD11drNqsF9p7yiaumWJ8UHb3ptJJRXB00y3qjYReV"
   env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL = "http://${data.terraform_remote_state.common.outputs.private_alb_dns_name}:3000/api/literature"
 }
