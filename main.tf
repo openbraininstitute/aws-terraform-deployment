@@ -90,9 +90,12 @@ module "ml" {
   generic_private_alb_listener_arn      = local.private_alb_https_listener_arn
   generic_private_alb_security_group_id = data.terraform_remote_state.common.outputs.generic_private_alb_security_group_id
 
-  github_repos = ["BlueBrain/neuroagent", "BlueBrain/scholarag", "BlueBrain/scholaretl"]
-  epfl_cidr    = var.epfl_cidr
-  bbp_dmz_cidr = var.bbp_dmz_cidr
+  github_repos                           = ["BlueBrain/neuroagent", "BlueBrain/scholarag", "BlueBrain/scholaretl"]
+  epfl_cidr                              = var.epfl_cidr
+  bbp_dmz_cidr                           = var.bbp_dmz_cidr
+  readonly_access_policy_statement_part1 = local.readonly_access_policy_statement_part1
+  readonly_access_policy_statement_part2 = local.readonly_access_policy_statement_part2
+  aws_ssoadmin_instances_arns            = data.aws_ssoadmin_instances.ssoadmin_instances.arns
 }
 
 module "nexus" {
