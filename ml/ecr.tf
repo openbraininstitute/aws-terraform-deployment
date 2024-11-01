@@ -89,22 +89,3 @@ module "ml_github_oidc" {
   repositories              = var.github_repos
   oidc_role_attach_policies = [aws_iam_policy.ml_gh_policy.arn]
 }
-
-
-resource "aws_vpc_endpoint" "ecr_dkr" {
-  service_name        = "com.amazonaws.${var.aws_region}.ecr.dkr"
-  vpc_endpoint_type   = "Interface"
-  vpc_id              = var.vpc_id
-  subnet_ids          = [aws_subnet.ml_subnet_a.id, aws_subnet.ml_subnet_b.id]
-  tags                = merge(var.tags, { Name = "ECR DKR Endpoint" })
-  private_dns_enabled = true
-}
-
-resource "aws_vpc_endpoint" "ecr_api" {
-  service_name        = "com.amazonaws.${var.aws_region}.ecr.api"
-  vpc_endpoint_type   = "Interface"
-  vpc_id              = var.vpc_id
-  subnet_ids          = [aws_subnet.ml_subnet_a.id, aws_subnet.ml_subnet_b.id]
-  tags                = merge(var.tags, { Name = "ECR API Endpoint" })
-  private_dns_enabled = true
-}
