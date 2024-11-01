@@ -109,7 +109,7 @@ resource "aws_vpc_endpoint" "cloudwatch" {
   vpc_id              = var.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
   security_group_ids  = [aws_security_group.aws_endpoints_sg.id]
-  private_dns_enabled = true
+  private_dns_enabled = false
   tags                = { Name = "CloudWatch Endpoint" }
 }
 
@@ -119,7 +119,7 @@ resource "aws_vpc_endpoint" "cloudwatch_logs" {
   vpc_id              = var.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
   security_group_ids  = [aws_security_group.aws_endpoints_sg.id]
-  private_dns_enabled = true
+  private_dns_enabled = false
   tags                = { Name = "CloudWatch Logs Endpoint" }
 }
 
