@@ -104,6 +104,7 @@ module "nexus" {
   aws_region         = local.aws_region
   account_id         = local.account_id
   vpc_id             = local.vpc_id
+  domain_name        = local.primary_domain
   dockerhub_password = var.nise_dockerhub_password
 
   domain_zone_id = local.domain_zone_id

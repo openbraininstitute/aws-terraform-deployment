@@ -95,6 +95,10 @@ resource "aws_ecs_task_definition" "delta_nginx_ecs_definition" {
         {
           name  = "NGINX_CONFIG"
           value = base64encode(file("${path.module}/nginx.conf"))
+        },
+        {
+          name  = "DOMAIN_NAME"
+          value = "var.domain_name"
         }
       ],
       mountPoints = [

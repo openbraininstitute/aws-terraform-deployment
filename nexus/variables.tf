@@ -20,6 +20,10 @@ variable "dockerhub_username" {
   default = "bbpcinisedeploy"
 }
 
+variable "domain_name" {
+  type = string
+}
+
 variable "nexus_obp_bucket_name" {
   type = string
 }

@@ -39,6 +39,10 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
           value = "/opt/delta-config/delta.conf"
         },
         {
+          name  = "DOMAIN_NAME"
+          value = var.domain_name
+        },
+        {
           name  = "JAVA_OPTS"
           value = var.delta_java_opts
         },
@@ -154,6 +158,10 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
         {
           name  = "DELTA_CONFIG"
           value = base64encode(file("${path.module}/${var.delta_config_file}"))
+        },
+        {
+          name  = "DOMAIN_NAME"
+          value = var.domain_name
         },
         {
           name  = "LOGBACK_CONFIG"

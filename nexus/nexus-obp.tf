@@ -107,6 +107,8 @@ module "nexus_delta_obp_2" {
   subnet_id                = module.networking.subnet_id
   subnet_security_group_id = module.networking.main_subnet_sg_id
 
+  domain_name = var.domain_name
+
   delta_cpu       = 4096
   delta_memory    = 10240
   delta_java_opts = "-Xss2m -Xms6g -Xmx6g"
@@ -149,9 +151,9 @@ module "nexus_fusion_obp" {
 
   fusion_instance_name = "nexus-fusion-obp"
 
-  nexus_fusion_hostname  = "openbluebrain.com"
+  nexus_fusion_hostname  = var.domain_name
   nexus_fusion_base_path = "/web/fusion/"
-  nexus_delta_endpoint   = "https://openbluebrain.com/api/nexus/v1"
+  nexus_delta_endpoint   = "https://${var.domain_name}/api/nexus/v1"
 
 
   aws_region               = var.aws_region
