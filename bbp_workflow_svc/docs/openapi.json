@@ -1,0 +1,227 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "FastAPI",
+        "version": "0.1.0"
+    },
+    "paths": {
+        "/": {
+            "options": {
+                "summary": "Options",
+                "description": "Sets CORS headers.",
+                "operationId": "options__options",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/session": {
+            "get": {
+                "summary": "Session",
+                "description": "Starts user bbp-workflow instance(if not already running) and sets session cookie.\n\nShould be the first endpoint invoked by UI to establish session.",
+                "operationId": "session_session_get",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "header",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Keycloak token.",
+                            "title": "Authorization"
+                        },
+                        "description": "Keycloak token."
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                }
+            }
+        },
+        "/auth": {
+            "get": {
+                "summary": "Auth",
+                "description": "Ensures token is present for the workflow.\n\nShould be the second endpoint invoked by UI to make sure bbp-workflow service\nis healthy and contains valid token. When invoked, should include credentials(session cookie).\n\nIf service is not yet available, return status code: 503 with retry-after header.",
+                "operationId": "auth_auth_get",
+                "parameters": [
+                    {
+                        "name": "url",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "This endpoint might redircet to keycloak for authentication if there is no SSO session, else redirect to this query param URL.",
+                            "title": "Url"
+                        },
+                        "description": "This endpoint might redircet to keycloak for authentication if there is no SSO session, else redirect to this query param URL."
+                    },
+                    {
+                        "name": "sessionid",
+                        "in": "cookie",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Session id cookie.",
+                            "title": "Sessionid"
+                        },
+                        "description": "Session id cookie."
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful Response"
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    },
+                    "503": {
+                        "description": "Service not ready, retry."
+                    }
+                }
+            }
+        },
+        "/launch/{task}/": {
+            "post": {
+                "summary": "Launch",
+                "description": "Launches workflow.",
+                "operationId": "launch_launch__task___post",
+                "parameters": [
+                    {
+                        "name": "task",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Fully qualified name of the luigi task(e.g. package.module.TaskClass).",
+                            "title": "Task"
+                        },
+                        "description": "Fully qualified name of the luigi task(e.g. package.module.TaskClass)."
+                    },
+                    {
+                        "name": "virtual_lab",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Virtual lab id.",
+                            "title": "Virtual Lab"
+                        },
+                        "description": "Virtual lab id."
+                    },
+                    {
+                        "name": "project",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Project id.",
+                            "title": "Project"
+                        },
+                        "description": "Project id."
+                    },
+                    {
+                        "name": "sessionid",
+                        "in": "cookie",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Session id cookie.",
+                            "title": "Sessionid"
+                        },
+                        "description": "Session id cookie."
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body_launch_launch__task___post"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "WorkflowExecution URL",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                },
+                                "examples": {
+                                    "WorkflowExecution": {
+                                        "value": "https://host/path/workflow-execution-resource-id"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                }
+            }
+        },
+        "/{proxy+}": {
+            "get": {
+                "summary": "Default",
+                "description": "Forwards to user bbp-workflow instance.",
+                "operationId": "default__proxy___get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Body_launch_launch__task___post": {
+                "properties": {
+                    "cfg_name": {
+                        "type": "string",
+                        "title": "Cfg Name",
+                        "description": "Configuration file name from the attached form files."
+                    },
+                    "files": {
+                        "items": {
+                            "type": "string",
+                            "format": "binary"
+                        },
+                        "type": "array",
+                        "title": "Files",
+                        "description": "Attached form files required by the workflow."
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "cfg_name",
+                    "files"
+                ],
+                "title": "Body_launch_launch__task___post"
+            }
+        }
+    }
+}
