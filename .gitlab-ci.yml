@@ -27,6 +27,17 @@ validate:
   variables:
     KUBERNETES_MEMORY_LIMIT: 6G
 
+download-hpc-resource-provisioner:
+  image: ubuntu:22.04
+  script:
+    - wget https://github.com/bluebrain/hpc-resource-provisioner/releases/latest/download/hpc_resource_provisioner.zip
+    - wget https://github.com/bluebrain/hpc-resource-provisioner/releases/latest/download/hpc_resource_creator.zip
+  artifacts:
+    when: on_success
+    paths:
+      - ./hpc_resource_provisioner.zip
+      - ./hpc_resource_creator.zip
+
 build:
   variables:
     KUBERNETES_CPU_REQUEST: 4000m
@@ -51,6 +62,7 @@ deploy:
   extends: .terraform:deploy
   dependencies:
     - build
+    - download-hpc-resource-provisioner
   environment:
     name: $TF_STATE_NAME
 

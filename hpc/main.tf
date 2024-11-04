@@ -93,10 +93,6 @@ module "efs" {
   av_zone_suffixes         = var.av_zone_suffixes
 }
 
-module "ecr" {
-  source = "./ecr/"
-}
-
 module "resource-provisioner" {
   source = "./resource-provisioner/"
 
