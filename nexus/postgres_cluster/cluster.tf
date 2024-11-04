@@ -15,6 +15,7 @@ resource "aws_rds_cluster" "nexus" {
   engine                    = "postgres"
   engine_version            = var.nexus_postgresql_engine_version
   db_cluster_instance_class = var.instance_class
+  database_name             = var.nexus_postgresql_database_name
   storage_type              = "io1"
   allocated_storage         = 100
   iops                      = 1000
