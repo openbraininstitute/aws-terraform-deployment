@@ -40,6 +40,7 @@ build:
   artifacts:
     paths:
      - ${TF_ROOT}/on_demand_svc/src/*.zip
+     - ${TF_ROOT}/bbp_workflow_svc/src/*.zip
      - ${TF_ROOT}/plan.cache
     reports:
       terraform: ${TF_ROOT}/plan.json
