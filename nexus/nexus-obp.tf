@@ -128,8 +128,8 @@ module "nexus_delta_obp_2" {
   private_delta_target_group_arn = module.obp_delta_target_group.private_lb_target_group_arn
   dockerhub_credentials_arn      = module.iam.dockerhub_credentials_arn
 
-  postgres_host        = module.postgres_cluster_obp.writer_endpoint
-  postgres_reader_host = module.postgres_cluster_obp.reader_endpoint
+  postgres_host        = "nexus-obp-db-restore.cluster-ctydazornca3.us-east-1.rds.amazonaws.com"
+  postgres_reader_host = "nexus-obp-db-restore.cluster-ro-ctydazornca3.us-east-1.rds.amazonaws.com"
 
   elasticsearch_endpoint = module.elasticsearch_obp_2.http_endpoint
   elastic_password_arn   = module.elasticsearch_obp_2.elastic_user_credentials_secret_arn
