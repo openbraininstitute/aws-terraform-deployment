@@ -1,7 +1,7 @@
 resource "aws_subnet" "bbp_workflow_svc" {
   vpc_id            = local.vpc_id
   availability_zone = "${local.aws_region}a"
-  cidr_block        = "172.31.112.0/20"
+  cidr_block        = "10.0.19.0/24"
 
   tags = {
     Name        = "bbp-workflow-svc"
