@@ -30,6 +30,7 @@ validate:
 download-hpc-resource-provisioner:
   image: ubuntu:22.04
   script:
+    - apt-get update && apt-get install -y -q wget
     - wget https://github.com/bluebrain/hpc-resource-provisioner/releases/latest/download/hpc_resource_provisioner.zip
     - wget https://github.com/bluebrain/hpc-resource-provisioner/releases/latest/download/hpc_resource_creator.zip
   artifacts:
