@@ -120,7 +120,7 @@ resource "aws_lb_listener_rule" "ml_etl_rule_private" {
 
   condition {
     path_pattern {
-      values = var.sqs_etl_parser_list
+      values = formatlist("/%s", var.sqs_etl_parser_list)
     }
   }
   tags = var.tags
