@@ -226,12 +226,6 @@ resource "aws_ecs_service" "kg_inference_api_service" {
 
   # Load Balancer configuration
   load_balancer {
-    target_group_arn = aws_lb_target_group.kg_inference_api_tg.arn
-    container_name   = "kg-inference-api-container"
-    container_port   = 80
-  }
-
-  load_balancer {
     target_group_arn = aws_lb_target_group.private_kg_inference_api_tg.arn
     container_name   = "kg-inference-api-container"
     container_port   = 80

@@ -13,13 +13,9 @@ resource "aws_lb" "alb" {
   }
 }
 
-data "aws_lb" "alb" {
-  arn = var.viz_enable_sandbox ? aws_lb.alb[0].arn : var.aws_lb_alb_arn
-
-}
 
 data "aws_security_group" "alb_selected" {
-  id = var.viz_enable_sandbox ? aws_security_group.alb[0].id : var.aws_security_group_alb_id
+  id = var.viz_enable_sandbox ? aws_security_group.alb[0].id : var.aws_security_group_nlb_id
 }
 
 
@@ -115,9 +111,4 @@ resource "aws_vpc_security_group_ingress_rule" "alb_allow_https_epfl" {
   tags = {
     Name = "alb_allow_https_epfl"
   }
-}
-
-
-output "alb_dns_name" {
-  value = data.aws_lb.alb.dns_name
 }

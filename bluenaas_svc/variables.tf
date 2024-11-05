@@ -11,10 +11,6 @@ variable "vpc_id" {
   type = string
 }
 
-variable "alb_listener_arn" {
-  type = string
-}
-
 variable "private_alb_listener_arn" {
   type = string
 }

@@ -204,11 +204,6 @@ resource "aws_ecs_service" "viz_vsm" {
     ignore_changes = [desired_count]
   }
   load_balancer {
-    target_group_arn = aws_lb_target_group.viz_vsm.arn
-    container_name   = "viz_vsm"
-    container_port   = 4444
-  }
-  load_balancer {
     target_group_arn = aws_lb_target_group.private_viz_vsm.arn
     container_name   = "viz_vsm"
     container_port   = 4444

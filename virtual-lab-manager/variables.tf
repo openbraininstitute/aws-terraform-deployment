@@ -22,11 +22,6 @@ variable "nat_gateway_id" {
   description = "The ID of the NAT gateway that is used when routing traffic out of the AWS Network."
 }
 
-variable "public_lb_listener_https_arn" {
-  type        = string
-  description = "ARN of the public listener (used by the public load balancer)"
-}
-
 variable "private_lb_listener_https_arn" {
   type        = string
   description = "ARN of the private listener (used by the private load balancer)"

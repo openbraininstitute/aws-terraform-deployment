@@ -39,10 +39,6 @@ variable "domain_zone_id" {
   default = ""
 }
 
-variable "alb_listener_arn" {
-  type = string
-}
-
 variable "private_alb_listener_arn" {
   type = string
 }
@@ -118,7 +114,7 @@ variable "viz_postgresql_admin_username" {
   sensitive = false
 }
 
-variable "aws_security_group_alb_id" {
+variable "aws_security_group_nlb_id" {
   type      = string
   sensitive = false
   default   = ""
@@ -153,14 +149,6 @@ variable "vsm_proxy_base_path" {
   description = "Basepath  at which VSM container can be reached via the ALB"
   sensitive   = false
 }
-
-# TODO REMOVE AFTER MIGRATIONS
-variable "aws_lb_alb_arn" {
-  type      = string
-  sensitive = false
-  default   = ""
-}
-
 
 variable "viz_vsm_proxy_hostname" {
   default     = "sbo-vsm-proxy.shapes-registry.org"

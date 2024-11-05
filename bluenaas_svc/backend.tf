@@ -233,12 +233,6 @@ resource "aws_ecs_service" "bluenaas_ecs_service" {
   task_definition = aws_ecs_task_definition.bluenaas_ecs_definition.arn
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.bluenaas.arn
-    container_name   = "bluenaas"
-    container_port   = 8000
-  }
-
-  load_balancer {
     target_group_arn = aws_lb_target_group.bluenaas_private_tg.arn
     container_name   = "bluenaas"
     container_port   = 8000

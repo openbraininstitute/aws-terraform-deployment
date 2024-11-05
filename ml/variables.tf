@@ -33,11 +33,6 @@ variable "route_table_private_subnets_id" {
   description = "ID of the route table for the private subnets"
 }
 
-variable "alb_listener_arn" {
-  description = "ARN of the Load Balancer Listener"
-  type        = string
-}
-
 variable "private_alb_listener_arn" {
   description = "ARN of the Load Balancer Listener on Private subnets."
   type        = string
@@ -78,7 +73,7 @@ variable "dockerhub_credentials_arn" {
   type        = string
 }
 
-variable "alb_security_group_id" {
+variable "nlb_security_group_id" {
   description = "ID of the security group attached to the public load balancer."
   type        = string
 }

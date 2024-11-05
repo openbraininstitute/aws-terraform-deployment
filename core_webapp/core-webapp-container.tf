@@ -210,12 +210,6 @@ resource "aws_ecs_service" "core_webapp_ecs_service" {
   #iam_role        = "${var.ecs_iam_role_name}"
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.core_webapp.arn
-    container_name   = "core_webapp"
-    container_port   = 8000
-  }
-
-  load_balancer {
     target_group_arn = aws_lb_target_group.core_webapp_private.arn
     container_name   = "core_webapp"
     container_port   = 8000

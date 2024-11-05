@@ -49,10 +49,6 @@ variable "ecs_task_execution_role_arn" {
   description = "The ARN of the ECS task execution role that is used by the ECS agent"
 }
 
-variable "aws_lb_target_group_nexus_fusion_arn" {
-  type = string
-}
-
 variable "private_aws_lb_target_group_nexus_fusion_arn" {
   type = string
 }

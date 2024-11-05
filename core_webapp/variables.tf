@@ -20,22 +20,12 @@ variable "core_webapp_ecs_number_of_containers" {
 #  description = "zone id of the domain where the poc hostname should be added"
 #  sensitive   = false
 #}
-variable "public_alb_https_listener_arn" {
-  type        = string
-  description = "alb listener to which the https listener rule should be added"
-  sensitive   = false
-}
 variable "private_alb_https_listener_arn" {
   type        = string
   description = "nlb listener to which the https listener rule should be added"
   sensitive   = false
 }
 
-#variable "public_alb_dns_name" {
-#  type        = string
-#  description = "public hostname of the alb, which the poc hostname should be an alias of"
-#  sensitive   = false
-#}
 variable "aws_region" {
   type      = string
   sensitive = false

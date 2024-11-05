@@ -157,12 +157,6 @@ module "ecs_service_agent" {
   }
 
   load_balancer = {
-    service = {
-      target_group_arn = aws_lb_target_group.ml_target_group_agent.arn
-      container_name   = "ml_agent"
-      container_port   = 8078
-    }
-
     generic_private_service = {
       target_group_arn = aws_lb_target_group.generic_private_ml_target_group_agent.arn
       container_name   = "ml_agent"
@@ -178,7 +172,7 @@ module "ecs_service_agent" {
       to_port                  = 8078
       protocol                 = "tcp"
       description              = "Service port"
-      source_security_group_id = var.alb_security_group_id
+      source_security_group_id = var.nlb_security_group_id
     }
     generic_private_alb = {
       type                     = "ingress"
@@ -209,28 +203,6 @@ resource "aws_service_discovery_http_namespace" "ml_agent" {
   tags = var.tags
 }
 
-resource "aws_lb_listener_rule" "agent_rule" {
-  listener_arn = var.alb_listener_arn
-  priority     = 575
-
-  action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.ml_target_group_agent.arn
-  }
-
-  condition {
-    path_pattern {
-      values = ["/api/agent/*"]
-    }
-  }
-
-  condition {
-    source_ip {
-      values = [var.epfl_cidr, var.bbp_dmz_cidr]
-    }
-  }
-}
-
 resource "aws_lb_listener_rule" "generic_private_agent_rule" {
   listener_arn = var.generic_private_alb_listener_arn
   priority     = 575
@@ -250,17 +222,6 @@ resource "aws_lb_listener_rule" "generic_private_agent_rule" {
     source_ip {
       values = [var.epfl_cidr, var.bbp_dmz_cidr]
     }
-  }
-}
-
-resource "aws_lb_target_group" "ml_target_group_agent" {
-  name        = "ml-target-group-agent"
-  port        = 8078
-  protocol    = "HTTP"
-  target_type = "ip"
-  vpc_id      = var.vpc_id
-  health_check {
-    path = "/healthz"
   }
 }
 

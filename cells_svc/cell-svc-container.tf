@@ -303,12 +303,6 @@ resource "aws_ecs_service" "cell_svc_ecs_service" {
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.cell_svc.arn
-    container_name   = "cell_svc"
-    container_port   = 8000
-  }
-
-  load_balancer {
     target_group_arn = aws_lb_target_group.private_cell_svc.arn
     container_name   = "cell_svc"
     container_port   = 8000

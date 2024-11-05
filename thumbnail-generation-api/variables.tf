@@ -5,7 +5,6 @@
 #thumbnail_generation_api_log_group_name
 
 # data.terraform_remote_state.common.outputs.primary_domain
-# data.terraform_remote_state.common.outputs.public_alb_https_listener_arn
 # data.terraform_remote_state.common.outputs.route_table_private_subnets_id
 # data.terraform_remote_state.common.outputs.vpc_cidr_block
 # data.terraform_remote_state.common.outputs.vpc_id
@@ -24,11 +23,6 @@ variable "account_id" {
   type        = string
 }
 
-variable "public_alb_https_listener_arn" {
-  type        = string
-  description = "alb listener to which the https listener rule should be added"
-  sensitive   = false
-}
 variable "private_alb_https_listener_arn" {
   type        = string
   description = "alb listener to which the https listener rule should be added"

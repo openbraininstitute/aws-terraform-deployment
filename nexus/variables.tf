@@ -53,16 +53,6 @@ variable "allowed_source_ip_cidr_blocks" {
   description = "A list of allowed CIDR blocks. This is used in order to restrict which ranges can make calls to Nexus Delta and Nexus Fusion."
 }
 
-variable "public_load_balancer_dns_name" {
-  type        = string
-  description = "DNS name of the public load balancer. We use this DNS name when creating records for Delta and Fusion; a CNAME record to resolve Delta & Fusion records to the public load balancer DNS."
-}
-
-variable "public_lb_listener_https_arn" {
-  type        = string
-  description = "ARN of the public listener (used by the public load balancer). We attach to this listener different listener rules which define when a request that hits the load balancer should be forwarded to Delta or Fusion."
-}
-
 variable "private_lb_listener_https_arn" {
   type        = string
   description = "ARN of the private listener (used by the private load balancer). We attach to this listener different listener rules which define when a request that hits the load balancer should be forwarded to Delta or Fusion."

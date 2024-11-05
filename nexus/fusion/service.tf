@@ -12,12 +12,6 @@ resource "aws_ecs_service" "nexus_fusion_ecs_service" {
   deployment_minimum_healthy_percent = 0
 
   load_balancer {
-    target_group_arn = var.aws_lb_target_group_nexus_fusion_arn
-    container_name   = var.fusion_instance_name
-    container_port   = 8000
-  }
-
-  load_balancer {
     target_group_arn = var.private_aws_lb_target_group_nexus_fusion_arn
     container_name   = var.fusion_instance_name
     container_port   = 8000

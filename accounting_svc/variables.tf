@@ -15,10 +15,6 @@ variable "allowed_source_ip_cidr_blocks" {
   type = list(string)
 }
 
-variable "alb_listener_arn" {
-  type = string
-}
-
 variable "private_alb_listener_arn" {
   type = string
 }

@@ -10,7 +10,6 @@ module "obp_delta_target_group" {
   health_check_path = "/api/nexus/v1/version"
 
   allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
-  public_lb_listener_https_arn  = var.public_lb_listener_https_arn
   private_lb_listener_https_arn = var.private_lb_listener_https_arn
   target_group_prefix           = "obpdlt"
   unique_listener_priority      = 101
@@ -30,7 +29,6 @@ module "obp_fusion_target_group" {
   health_check_path = "/web/fusion/status"
 
   allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
-  public_lb_listener_https_arn  = var.public_lb_listener_https_arn
   private_lb_listener_https_arn = var.private_lb_listener_https_arn
   target_group_prefix           = "obpfus"
   unique_listener_priority      = 301

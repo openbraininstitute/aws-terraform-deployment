@@ -21,11 +21,6 @@ output "queue_storage_event_name" {
   value       = module.storage_event_queue_set.main_queue_name
 }
 
-output "lb_rule_suffix" {
-  description = "Accounting Loadbalancer Rule Suffix"
-  value       = aws_lb_target_group.accounting.arn_suffix
-}
-
 output "private_lb_rule_suffix" {
   description = "Accounting Private Loadbalancer Rule Suffix"
   value       = aws_lb_target_group.accounting_private_tg.arn_suffix

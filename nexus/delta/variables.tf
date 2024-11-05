@@ -99,11 +99,6 @@ variable "elastic_password_arn" {
   description = "ARN of the secret that contains the elastic user password. The password needs to be under the 'password' key."
 }
 
-variable "delta_target_group_arn" {
-  type        = string
-  description = "ARN of the target group that the ECS Service will be targeted by."
-}
-
 variable "private_delta_target_group_arn" {
   type        = string
   description = "ARN of the private ALB target group that the ECS Service will be targeted by."

@@ -39,10 +39,6 @@ variable "dockerhub_credentials_arn" {
   type = string
 }
 
-variable "public_alb_https_listener_arn" {
-  type = string
-}
-
 variable "private_alb_https_listener_arn" {
   type = string
 }
