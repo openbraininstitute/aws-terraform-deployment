@@ -74,8 +74,6 @@ module "ml" {
 
   paper_bucket_name = "ml-paper-bucket"
 
-  nlb_security_group_id = local.public_nlb_sg_id
-
 
   # OLD PRIVATE ALB
   private_alb_security_group_id = data.terraform_remote_state.common.outputs.private_alb_security_group_id

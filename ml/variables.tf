@@ -73,11 +73,6 @@ variable "dockerhub_credentials_arn" {
   type        = string
 }
 
-variable "nlb_security_group_id" {
-  description = "ID of the security group attached to the public load balancer."
-  type        = string
-}
-
 variable "private_alb_security_group_id" {
   description = "ID of the security group attached to the private load balancer."
   type        = string
@@ -232,3 +227,4 @@ variable "aws_ssoadmin_instances_arns" {
   type        = list(string)
 
 }
+

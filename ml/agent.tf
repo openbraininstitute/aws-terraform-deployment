@@ -166,14 +166,6 @@ module "ecs_service_agent" {
 
   subnet_ids = local.private_subnet_ids
   security_group_rules = {
-    alb_ingress_3000 = {
-      type                     = "ingress"
-      from_port                = 8078
-      to_port                  = 8078
-      protocol                 = "tcp"
-      description              = "Service port"
-      source_security_group_id = var.nlb_security_group_id
-    }
     generic_private_alb = {
       type                     = "ingress"
       from_port                = 8078

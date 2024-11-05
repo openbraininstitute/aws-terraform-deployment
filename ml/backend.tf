@@ -152,14 +152,6 @@ module "ml_ecs_service_backend" {
 
   subnet_ids = local.private_subnet_ids
   security_group_rules = {
-    nlb_ingress_3000 = {
-      type                     = "ingress"
-      from_port                = 8080
-      to_port                  = 8080
-      protocol                 = "tcp"
-      description              = "Service port"
-      source_security_group_id = var.nlb_security_group_id
-    }
     private_alb_ingress_3000 = {
       type                     = "ingress"
       from_port                = 8080
