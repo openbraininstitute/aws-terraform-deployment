@@ -17,21 +17,6 @@ resource "aws_cloudwatch_log_group" "core_webapp" {
   }
 }
 
-# TODO check: not used?
-resource "aws_cloudwatch_log_group" "core_webapp_ecs" {
-  # TODO check if the logs can be encrypted
-  name              = "core_webapp_ecs"
-  skip_destroy      = false
-  retention_in_days = 5
-
-  kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
-
-  tags = {
-    Application = "core_webapp"
-    SBO_Billing = "core_webapp"
-  }
-}
-
 resource "aws_ecs_cluster" "core_webapp" {
   name = "core_webapp_ecs_cluster"
 
