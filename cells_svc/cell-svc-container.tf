@@ -5,7 +5,7 @@
 # This then hosts ECS "tasks"; which are the containers
 
 # For now, only public data is used, and it is stored on the s3 bucket:
-# sbo-cell-svc-perf-test; this is mounted by sbo-cell-svc-perf-test
+# ${var.cell_svc_perf_bucket_name}; this is mounted by sbo-cell-svc-perf-test
 # and then made available to all ECS tasks.
 
 # { EC2 Instance
@@ -120,8 +120,9 @@ data "template_file" "cells_ec2_ecs_user_data" {
   template = file("${path.module}/cells_ec2_ecs_user_data.sh")
 
   vars = {
-    ecs_cluster_name = aws_ecs_cluster.cell_svc_ecs_cluster.name
-    ecs_cluster_tags = join(",", [for k, v in var.tags : "\"${k}\": \"${v}\""])
+    cell_svc_perf_bucket_name = var.cell_svc_perf_bucket_name
+    ecs_cluster_name          = aws_ecs_cluster.cell_svc_ecs_cluster.name
+    ecs_cluster_tags          = join(",", [for k, v in var.tags : "\"${k}\": \"${v}\""])
   }
 }
 

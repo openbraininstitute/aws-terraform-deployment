@@ -19,6 +19,10 @@ variable "cell_svc_ecs_number_of_containers" {
   description = "Number of containers for the SBO sonata-cell-position service"
 }
 
+variable "cell_svc_perf_bucket_name" {
+  type = string
+}
+
 variable "aws_region" {
   type = string
 }

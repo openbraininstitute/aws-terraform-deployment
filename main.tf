@@ -146,6 +146,8 @@ module "cells_svc" {
   private_alb_https_listener_arn = local.private_alb_https_listener_arn
   route_table_private_subnets_id = local.route_table_private_subnets_id
 
+  cell_svc_perf_bucket_name = aws_s3_bucket.sbo-cell-svc-perf-test.id
+
   aws_coreservices_ssh_key_id = module.coreservices_key.key_pair_id
 
   root_path = "/api/circuit"

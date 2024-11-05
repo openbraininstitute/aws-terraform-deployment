@@ -27,7 +27,7 @@ AssertPathIsDirectory=/sbo/data/project
 Type=forking
 User=root
 Group=root
-ExecStart=/bin/mount-s3 --read-only --allow-other sbo-cell-svc-perf-test /sbo/data/project
+ExecStart=/bin/mount-s3 --read-only --allow-other ${cell_svc_perf_bucket_name} /sbo/data/project
 ExecStop=/usr/bin/fusermount -u /sbo/data/project
 
 [Install]
