@@ -129,7 +129,7 @@ resource "aws_vpc_endpoint" "cloudformation" {
   vpc_id              = var.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
   security_group_ids  = [aws_security_group.aws_endpoints_sg.id]
-  private_dns_enabled = true
+  private_dns_enabled = false
   tags                = { Name = "CloudFormation Endpoint" }
 }
 
@@ -139,7 +139,7 @@ resource "aws_vpc_endpoint" "ec2" {
   vpc_id              = var.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
   security_group_ids  = [aws_security_group.aws_endpoints_sg.id]
-  private_dns_enabled = true
+  private_dns_enabled = false
   tags                = { Name = "EC2 Endpoint" }
 }
 
@@ -149,7 +149,7 @@ resource "aws_vpc_endpoint" "efs" {
   vpc_id              = var.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
   security_group_ids  = [aws_security_group.aws_endpoints_sg.id]
-  private_dns_enabled = true
+  private_dns_enabled = false
   tags                = { Name = "EFS Endpoint" }
 }
 
@@ -183,7 +183,7 @@ resource "aws_vpc_endpoint" "ssm" {
   vpc_id              = var.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
   security_group_ids  = [aws_security_group.aws_endpoints_sg.id]
-  private_dns_enabled = true
+  private_dns_enabled = false
   tags                = { Name = "SSM Endpoint" }
 }
 
