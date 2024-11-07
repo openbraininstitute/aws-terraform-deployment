@@ -12,9 +12,13 @@ data "aws_iam_policy_document" "apigw" {
 }
 
 resource "aws_iam_role" "apigw_cloudwatch" {
-  name                = "api-gateway-cloudwatch-global"
-  assume_role_policy  = data.aws_iam_policy_document.apigw.json
-  managed_policy_arns = ["arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"]
+  name               = "api-gateway-cloudwatch-global"
+  assume_role_policy = data.aws_iam_policy_document.apigw.json
+}
+
+resource "aws_iam_role_policy_attachments_exclusive" "apigw_cloudwatch_policy_attachment" {
+  role_name   = aws_iam_role.apigw_cloudwatch.name
+  policy_arns = ["arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"]
 }
 
 resource "aws_api_gateway_account" "this" {
