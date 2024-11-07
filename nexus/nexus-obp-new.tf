@@ -7,9 +7,9 @@ module "blazegraph_obp_bg" {
   }
 
   blazegraph_cpu              = 4096
-  blazegraph_memory           = 10240
+  blazegraph_memory           = 16384
   blazegraph_docker_image_url = "bluebrain/blazegraph-nexus:2.1.6-RC-21-jre"
-  blazegraph_java_opts        = "-Djava.awt.headless=true -Djetty.maxFormContentSize=80000000 -XX:MaxDirectMemorySize=600m -Xms6g -Xmx6g -XX:+UseG1GC "
+  blazegraph_java_opts        = "-Djava.awt.headless=true -Djetty.maxFormContentSize=80000000 -XX:MaxDirectMemorySize=600m -Xms10g -Xmx10g -XX:+UseG1GC "
 
   blazegraph_instance_name = "blazegraph-obp-bg"
   blazegraph_efs_name      = "blazegraph-obp-bg"
@@ -36,9 +36,9 @@ module "blazegraph_obp_composite" {
   }
 
   blazegraph_cpu              = 4096
-  blazegraph_memory           = 10240
+  blazegraph_memory           = 16384
   blazegraph_docker_image_url = "bluebrain/blazegraph-nexus:2.1.6-RC-21-jre"
-  blazegraph_java_opts        = "-Djetty.maxFormContentSize=80000000 -XX:MaxDirectMemorySize=600m -Xms6g -Xmx6g -XX:+UseG1GC "
+  blazegraph_java_opts        = "-Djetty.maxFormContentSize=80000000 -XX:MaxDirectMemorySize=600m -Xms10g -Xmx10g -XX:+UseG1GC "
 
   blazegraph_instance_name = "blazegraph-obp-composite"
   blazegraph_efs_name      = "blazegraph-obp-composite"
@@ -93,7 +93,7 @@ module "nexus_delta_obp" {
   delta_java_opts = "-Xss2m -Xms10g -Xmx10g"
 
   delta_instance_name        = "nexus-delta-obp"
-  delta_docker_image_version = "1.11.0-M5"
+  delta_docker_image_version = "1.11.0-M6"
   delta_efs_name             = "delta-obp"
   s3_bucket_arn              = aws_s3_bucket.nexus_obp.arn
   s3_bucket_name             = var.nexus_obp_bucket_name
