@@ -64,3 +64,10 @@ variable "lambda_subnet_cidr" {
   description = "CIDR for the subnet in which lambdas can be deployed"
   type        = string
 }
+
+variable "is_production" {
+  type        = bool
+  default     = true
+  sensitive   = false
+  description = "Whether deployment is happening in production or not"
+}

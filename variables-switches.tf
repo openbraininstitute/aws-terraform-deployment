@@ -23,3 +23,10 @@ variable "virtual_lab_manager_ecs_number_of_containers" {
   sensitive   = false
   description = "Number of containers for the virtual lab manager"
 }
+
+variable "is_production" {
+  type        = bool
+  default     = true
+  sensitive   = false
+  description = "Whether deployment is happening in production or not"
+}

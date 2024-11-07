@@ -106,5 +106,6 @@ module "resource-provisioner" {
 }
 
 module "dynamodb" {
-  source = "./dynamodb/"
+  source        = "./dynamodb/"
+  is_production = var.is_production
 }

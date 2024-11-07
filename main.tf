@@ -207,6 +207,7 @@ module "hpc" {
   av_zone_suffixes           = ["a"]
   peering_route_tables       = [local.route_table_private_subnets_id]
   lambda_subnet_cidr         = "10.0.16.0/24"
+  is_production              = var.is_production
 }
 
 module "static-server" {

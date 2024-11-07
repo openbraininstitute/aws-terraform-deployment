@@ -26,6 +26,6 @@ resource "aws_dynamodb_table" "pcluster_subnets_dynamo_table" {
     type = "S"
   }
   billing_mode                = "PAY_PER_REQUEST"
-  deletion_protection_enabled = true
+  deletion_protection_enabled = var.is_production
   hash_key                    = "subnet_id"
 }
