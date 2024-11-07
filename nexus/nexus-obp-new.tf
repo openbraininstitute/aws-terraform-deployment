@@ -88,9 +88,9 @@ module "nexus_delta_obp" {
 
   domain_name = var.domain_name
 
-  delta_cpu       = 4096
-  delta_memory    = 10240
-  delta_java_opts = "-Xss2m -Xms6g -Xmx6g"
+  delta_cpu       = 8192
+  delta_memory    = 16384
+  delta_java_opts = "-Xss2m -Xms10g -Xmx10g"
 
   delta_instance_name        = "nexus-delta-obp"
   delta_docker_image_version = "1.11.0-M5"
