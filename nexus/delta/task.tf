@@ -39,8 +39,12 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
           value = "/opt/delta-config/delta.conf"
         },
         {
-          name  = "DOMAIN_NAME"
-          value = var.domain_name
+          name  = "FUSION_ENDPOINT_URL"
+          value = "https://${var.domain_name}/web/fusion"
+        },
+        {
+          name  = "NEXUS_API_URL"
+          value = "https://${var.domain_name}/api/nexus/v1"
         },
         {
           name  = "JAVA_OPTS"
@@ -158,10 +162,6 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
         {
           name  = "DELTA_CONFIG"
           value = base64encode(file("${path.module}/${var.delta_config_file}"))
-        },
-        {
-          name  = "DOMAIN_NAME"
-          value = var.domain_name
         },
         {
           name  = "LOGBACK_CONFIG"
