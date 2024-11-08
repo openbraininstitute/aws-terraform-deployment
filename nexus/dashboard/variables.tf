@@ -29,6 +29,11 @@ variable "blazegraph_composite_service_name" {
   description = "The name of the blazegraph composite service."
 }
 
+variable "blazegraph_composite_log_group" {
+  type        = string
+  description = "The log group of the blazegraph composite service."
+}
+
 variable "fusion_service_name" {
   type        = string
   description = "The name of the fusion service."

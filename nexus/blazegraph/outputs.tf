@@ -13,3 +13,7 @@ output "http_endpoint" {
 output "service_name" {
   value = aws_ecs_service.blazegraph_ecs_service.name
 }
+
+output "log_group" {
+  value = local.blazegraph_app_log_group_name
+}

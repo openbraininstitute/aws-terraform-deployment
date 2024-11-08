@@ -34,7 +34,7 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-cpu-alarm" {
   insufficient_data_actions = []
   alarm_actions             = ["arn:aws:sns:${var.aws_region}:${var.account_id}:sns_no_reply_openbrainplatform_org", aws_sns_topic.nexus_alerts.arn]
   dimensions = {
-    ServiceName = "blazegraph-obp-composite-4_ecs_service"
+    ServiceName = var.blazegraph_composite_service_name
     ClusterName = "nexus_ecs_cluster"
   }
 }
@@ -42,7 +42,7 @@ resource "aws_cloudwatch_metric_alarm" "blazegraph-search-cpu-alarm" {
 resource "aws_cloudwatch_log_metric_filter" "blazegraph-query-timeout-metric" {
   name           = "blazegraph-query-timeout-exception"
   pattern        = "com.bigdata.bop.engine.QueryTimeoutException"
-  log_group_name = "blazegraph-obp-composite-4_app"
+  log_group_name = var.blazegraph_composite_log_group
 
   metric_transformation {
     name          = "QueryTimeoutException"
@@ -55,7 +55,7 @@ resource "aws_cloudwatch_log_metric_filter" "blazegraph-query-timeout-metric" {
 resource "aws_cloudwatch_log_metric_filter" "blazegraph-out-of-memory-error-metric" {
   name           = "blazegraph-out-of-memory-error"
   pattern        = "java.lang.OutOfMemoryError"
-  log_group_name = "blazegraph-obp-composite-4_app"
+  log_group_name = var.blazegraph_composite_log_group
 
   metric_transformation {
     name          = "OutOfMemoryError"

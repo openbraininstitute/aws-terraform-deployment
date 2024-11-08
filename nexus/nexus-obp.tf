@@ -176,6 +176,7 @@ module "dashboard" {
   }
 
   blazegraph_composite_service_name = module.blazegraph_obp_composite.service_name
+  blazegraph_composite_log_group    = module.blazegraph_obp_composite.log_group
   blazegraph_service_name           = module.blazegraph_obp_bg.service_name
   database                          = local.database_id
   delta_service_name                = module.nexus_delta_obp.service_name
