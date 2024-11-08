@@ -51,9 +51,8 @@ resource "aws_ssoadmin_permission_set" "readonly_with_additional_hpc_rights" {
   description  = "Read only access and also HPC extras such as serial console access"
   instance_arn = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
 
-  #relay_state      = "https://s3.console.aws.amazon.com/s3/home?region=us-east-1#"
   session_duration = "PT2H"
-
+  count            = var.is_production ? 1 : 0
   tags = {
     SBO_Billing = "common"
   }
@@ -70,7 +69,8 @@ resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_h
   })
 
   instance_arn       = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
-  permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_hpc_rights.arn
+  permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_hpc_rights[0].arn
+  count              = var.is_production ? 1 : 0
 }
 
 resource "aws_ssoadmin_permission_set" "readonly_with_additional_s3_rights" {
@@ -78,8 +78,8 @@ resource "aws_ssoadmin_permission_set" "readonly_with_additional_s3_rights" {
   description  = "Read only access but with full S3 access"
   instance_arn = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
 
-  #relay_state      = "https://s3.console.aws.amazon.com/s3/home?region=us-east-1#"
   session_duration = "PT2H"
+  count            = var.is_production ? 1 : 0
 
   tags = {
     SBO_Billing = "common"
@@ -97,7 +97,8 @@ resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_s
   })
 
   instance_arn       = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
-  permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_s3_rights.arn
+  permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_s3_rights[0].arn
+  count              = var.is_production ? 1 : 0
 }
 
 resource "aws_ssoadmin_permission_set" "readonly_with_additional_waframework_rights" {
@@ -106,6 +107,7 @@ resource "aws_ssoadmin_permission_set" "readonly_with_additional_waframework_rig
   instance_arn = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
 
   session_duration = "PT2H"
+  count            = var.is_production ? 1 : 0
 
   tags = {
     SBO_Billing = "common"
@@ -123,7 +125,8 @@ resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_w
   })
 
   instance_arn       = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
-  permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_waframework_rights.arn
+  permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_waframework_rights[0].arn
+  count              = var.is_production ? 1 : 0
 }
 
 resource "aws_ssoadmin_permission_set" "readonly_with_additional_dashboard_rights" {
@@ -131,8 +134,8 @@ resource "aws_ssoadmin_permission_set" "readonly_with_additional_dashboard_right
   description  = "Read only access but with full dashboard access"
   instance_arn = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
 
-  #relay_state      = "https://s3.console.aws.amazon.com/s3/home?region=us-east-1#"
   session_duration = "PT2H"
+  count            = var.is_production ? 1 : 0
 
   tags = {
     SBO_Billing = "common"
@@ -150,7 +153,8 @@ resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_d
   })
 
   instance_arn       = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
-  permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_dashboard_rights.arn
+  permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_dashboard_rights[0].arn
+  count              = var.is_production ? 1 : 0
 }
 
 
@@ -159,8 +163,8 @@ resource "aws_ssoadmin_permission_set" "readonly_with_additional_billing_rights"
   description  = "Read only access for most but full access for billing, payments, budgets, ..."
   instance_arn = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
 
-  #relay_state      = "https://s3.console.aws.amazon.com/s3/home?region=us-east-1#"
   session_duration = "PT2H"
+  count            = var.is_production ? 1 : 0
 
   tags = {
     SBO_Billing = "common"
@@ -178,7 +182,8 @@ resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_b
   })
 
   instance_arn       = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
-  permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_billing_rights.arn
+  permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_billing_rights[0].arn
+  count              = var.is_production ? 1 : 0
 }
 
 resource "aws_ssoadmin_permission_set" "readonly_with_additional_ecs_rights" {
@@ -186,8 +191,8 @@ resource "aws_ssoadmin_permission_set" "readonly_with_additional_ecs_rights" {
   description  = "Read only access for most but full access to ECS so containers can be managed"
   instance_arn = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
 
-  #relay_state      = "https://s3.console.aws.amazon.com/s3/home?region=us-east-1#"
   session_duration = "PT2H"
+  count            = var.is_production ? 1 : 0
 
   tags = {
     SBO_Billing = "common"
@@ -195,6 +200,7 @@ resource "aws_ssoadmin_permission_set" "readonly_with_additional_ecs_rights" {
 }
 
 resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_ecs_rights" {
+  count = var.is_production ? 1 : 0
   inline_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -207,7 +213,7 @@ resource "aws_ssoadmin_permission_set_inline_policy" "readonly_with_additional_e
   })
 
   instance_arn       = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
-  permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_ecs_rights.arn
+  permission_set_arn = aws_ssoadmin_permission_set.readonly_with_additional_ecs_rights[0].arn
 }
 
 locals {

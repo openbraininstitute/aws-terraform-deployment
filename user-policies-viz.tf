@@ -10,6 +10,7 @@ resource "aws_ssoadmin_permission_set" "write_read_access_viz_secrets" {
   description      = "Write and Read access for Viz VSM secrets"
   instance_arn     = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
   session_duration = "PT2H"
+  count            = var.is_production ? 1 : 0
   tags = {
     SBO_Billing = "common"
   }
@@ -25,7 +26,8 @@ resource "aws_ssoadmin_permission_set_inline_policy" "write_read_access_viz_secr
     ]
   })
   instance_arn       = tolist(data.aws_ssoadmin_instances.ssoadmin_instances.arns)[0]
-  permission_set_arn = aws_ssoadmin_permission_set.write_read_access_viz_secrets.arn
+  permission_set_arn = aws_ssoadmin_permission_set.write_read_access_viz_secrets[0].arn
+  count              = var.is_production ? 1 : 0
 }
 
 locals {
