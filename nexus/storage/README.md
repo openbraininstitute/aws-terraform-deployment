@@ -1,4 +1,0 @@
-# [DEPRECATED] Nexus Storage Service
-The Nexus Storage Service is currently running on the AWS parallel cluster, see [here](https://bbpgitlab.epfl.ch/cs/cloud/aws/parallel-cluster/-/blob/staging/scripts/s3/setup_nexus_storage_service.sh?ref_type=heads) for infrastructure code. For transparency we've copied this configuration to this repo, alongside the rest of the nexus stack.
-
-For OBP launch this parallel cluster instance of the service will be removed in favour of direct uploads through Nexus Delta and S3. See [here](https://bbpteam.epfl.ch/project/spaces/display/BBPP154/Architecture+to+Manage+Data+in+Lustre+FSx+and+Nexus+Integration) and [here](https://bbpteam.epfl.ch/project/spaces/pages/viewpage.action?pageId=173211936) for more details about the plan. Long term, the only storage service remaining will be on-premises in Kubernetes. 
