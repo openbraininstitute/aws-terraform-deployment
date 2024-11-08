@@ -62,6 +62,8 @@ module "ml" {
   aws_region = local.aws_region
   account_id = local.account_id
 
+  is_production = var.is_production
+
   vpc_id                         = local.vpc_id
   vpc_cidr_block                 = local.vpc_cidr_block
   route_table_private_subnets_id = local.route_table_private_subnets_id

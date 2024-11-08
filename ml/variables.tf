@@ -13,11 +13,15 @@ variable "aws_region" {
 variable "account_id" {
   description = "AWS account id."
   type        = string
-
 }
+
 variable "vpc_id" {
   description = "ID of the vpc"
   type        = string
+}
+
+variable "is_production" {
+  type = bool
 }
 
 variable "paper_bucket_name" {
