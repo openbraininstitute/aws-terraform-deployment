@@ -31,6 +31,7 @@ resource "aws_apigatewayv2_api" "this" {
     allow_credentials = true
     max_age           = 300
   }
+  tags = { SBO_Billing = "bbp_workflow_svc" }
 }
 
 module "bbp_workflow_svc" {

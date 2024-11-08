@@ -42,7 +42,15 @@
                 ],
                 "responses": {
                     "204": {
-                        "description": "Successful Response"
+                        "description": "Session successfully established.",
+                        "headers": {
+                            "Set-Cookie": {
+                                "schema": {
+                                    "type": "UUID"
+                                },
+                                "description": "sessionid"
+                            }
+                        }
                     },
                     "422": {
                         "description": "Unprocessable Entity"

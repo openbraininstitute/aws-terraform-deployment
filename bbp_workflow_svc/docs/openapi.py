@@ -13,7 +13,11 @@ def options() -> None:
     pass
 
 
-@app.get("/session", response_model=None, status_code=204, responses={422: {"model": None}})
+@app.get("/session", response_model=None, status_code=204,
+         responses={204: {"description": "Session successfully established.",
+                          "headers": {"Set-Cookie": {"schema": {"type": "UUID"},
+                                                     "description": "sessionid"}}},
+                    422: {"model": None}})
 def session(authorization: Annotated[str, Header(description="Keycloak token.")]) -> None:
     """Starts user bbp-workflow instance(if not already running) and sets session cookie.
 
