@@ -28,7 +28,10 @@ resource "aws_rds_cluster" "nexus" {
 
   performance_insights_enabled = true
 
-  skip_final_snapshot = true
+  final_snapshot_identifier = "${var.cluster_identifier}-final"
+  skip_final_snapshot       = false
+
+  deletion_protection = true
 
   db_subnet_group_name   = aws_db_subnet_group.nexus_cluster_subnet_group.name
   vpc_security_group_ids = [var.security_group_id]
