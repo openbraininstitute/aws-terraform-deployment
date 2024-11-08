@@ -36,25 +36,6 @@ module "obp_fusion_target_group" {
   vpc_id                        = var.vpc_id
 }
 
-module "obp_delta_target_group_new" {
-  source = "./path_target_group"
-
-  providers = {
-    aws = aws.nexus_delta_tags
-  }
-
-  target_port       = 8080
-  base_path         = "/api/nexus2"
-  health_check_path = "/api/nexus2/v1/version"
-  health_check_code = "200-499"
-
-  allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
-  private_lb_listener_https_arn = var.private_lb_listener_https_arn
-  target_group_prefix           = "nxdtn"
-  unique_listener_priority      = 111
-  nat_gateway_id                = var.nat_gateway_id
-  vpc_id                        = var.vpc_id
-}
 
 
 

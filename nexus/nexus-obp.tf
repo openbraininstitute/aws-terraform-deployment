@@ -20,7 +20,7 @@ module "postgres_cluster_obp" {
 }
 
 # Blazegraph instance dedicated to Blazegraph views
-module "blazegraph_obp_bg_4" {
+module "blazegraph_obp_bg" {
   source = "./blazegraph"
 
   providers = {
@@ -28,12 +28,12 @@ module "blazegraph_obp_bg_4" {
   }
 
   blazegraph_cpu              = 4096
-  blazegraph_memory           = 10240
+  blazegraph_memory           = 16384
   blazegraph_docker_image_url = "bluebrain/blazegraph-nexus:2.1.6-RC-21-jre"
-  blazegraph_java_opts        = "-Djava.awt.headless=true -Djetty.maxFormContentSize=80000000 -XX:MaxDirectMemorySize=600m -Xms6g -Xmx6g -XX:+UseG1GC "
+  blazegraph_java_opts        = "-Djava.awt.headless=true -Djetty.maxFormContentSize=80000000 -XX:MaxDirectMemorySize=600m -Xms10g -Xmx10g -XX:+UseG1GC "
 
-  blazegraph_instance_name = "blazegraph-obp-bg-4"
-  blazegraph_efs_name      = "blazegraph-obp-bg-4"
+  blazegraph_instance_name = "blazegraph-obp-bg"
+  blazegraph_efs_name      = "blazegraph-obp-bg"
   efs_blazegraph_data_dir  = "/bg-data"
 
   dockerhub_credentials_arn = module.iam.dockerhub_credentials_arn
@@ -49,7 +49,7 @@ module "blazegraph_obp_bg_4" {
 }
 
 # Blazegraph instance dedicated to composite views
-module "blazegraph_obp_composite_4" {
+module "blazegraph_obp_composite" {
   source = "./blazegraph"
 
   providers = {
@@ -57,12 +57,12 @@ module "blazegraph_obp_composite_4" {
   }
 
   blazegraph_cpu              = 4096
-  blazegraph_memory           = 10240
+  blazegraph_memory           = 16384
   blazegraph_docker_image_url = "bluebrain/blazegraph-nexus:2.1.6-RC-21-jre"
-  blazegraph_java_opts        = "-Djetty.maxFormContentSize=80000000 -XX:MaxDirectMemorySize=600m -Xms6g -Xmx6g -XX:+UseG1GC "
+  blazegraph_java_opts        = "-Djetty.maxFormContentSize=80000000 -XX:MaxDirectMemorySize=600m -Xms10g -Xmx10g -XX:+UseG1GC "
 
-  blazegraph_instance_name = "blazegraph-obp-composite-4"
-  blazegraph_efs_name      = "blazegraph-obp-composite-4"
+  blazegraph_instance_name = "blazegraph-obp-composite"
+  blazegraph_efs_name      = "blazegraph-obp-composite"
   efs_blazegraph_data_dir  = "/bg-data"
 
   dockerhub_credentials_arn = module.iam.dockerhub_credentials_arn
@@ -77,19 +77,19 @@ module "blazegraph_obp_composite_4" {
   aws_region = var.aws_region
 }
 
-module "elasticsearch_obp_2" {
+module "elasticsearch_obp" {
   source = "./elasticcloud"
 
   aws_region               = var.aws_region
   elastic_vpc_endpoint_id  = module.networking.elastic_vpc_endpoint_id
   elastic_hosted_zone_name = module.networking.elastic_hosted_zone_name
 
-  elasticsearch_version = "8.15.2"
+  elasticsearch_version = "8.15.3"
 
   hot_node_size  = "4g"
   hot_node_count = 2
 
-  deployment_name = "nexus-obp-elasticsearch-2"
+  deployment_name = "nexus-obp-elasticsearch"
 
   aws_tags = {
     Nexus       = "elastic",
@@ -97,7 +97,7 @@ module "elasticsearch_obp_2" {
   }
 }
 
-module "nexus_delta_obp_2" {
+module "nexus_delta_obp" {
   source = "./delta"
 
   providers = {
@@ -113,9 +113,9 @@ module "nexus_delta_obp_2" {
   delta_memory    = 10240
   delta_java_opts = "-Xss2m -Xms6g -Xmx6g"
 
-  delta_instance_name        = "nexus-delta-obp-2"
-  delta_docker_image_version = "1.11.0-M4"
-  delta_efs_name             = "delta-obp-2"
+  delta_instance_name        = "nexus-delta-obp"
+  delta_docker_image_version = "1.11.0-M6"
+  delta_efs_name             = "delta-obp"
   s3_bucket_arn              = aws_s3_bucket.nexus_obp.arn
   s3_bucket_name             = var.nexus_obp_bucket_name
 
@@ -127,20 +127,21 @@ module "nexus_delta_obp_2" {
   private_delta_target_group_arn = module.obp_delta_target_group.private_lb_target_group_arn
   dockerhub_credentials_arn      = module.iam.dockerhub_credentials_arn
 
-  postgres_host        = "nexus-obp-db-restore.cluster-ctydazornca3.us-east-1.rds.amazonaws.com"
-  postgres_reader_host = "nexus-obp-db-restore.cluster-ro-ctydazornca3.us-east-1.rds.amazonaws.com"
+  postgres_host        = module.postgres_cluster_obp.writer_endpoint
+  postgres_reader_host = module.postgres_cluster_obp.reader_endpoint
 
-  elasticsearch_endpoint = module.elasticsearch_obp_2.http_endpoint
-  elastic_password_arn   = module.elasticsearch_obp_2.elastic_user_credentials_secret_arn
+  elasticsearch_endpoint = module.elasticsearch_obp.http_endpoint
+  elastic_password_arn   = module.elasticsearch_obp.elastic_user_credentials_secret_arn
 
-  blazegraph_endpoint           = module.blazegraph_obp_bg_4.http_endpoint
-  blazegraph_composite_endpoint = module.blazegraph_obp_composite_4.http_endpoint
+  blazegraph_endpoint           = module.blazegraph_obp_bg.http_endpoint
+  blazegraph_composite_endpoint = module.blazegraph_obp_composite.http_endpoint
 
-  delta_search_config_commit = "2c042d052bb2a58fb77aaf01323b59c9ce132c96"
-  delta_config_file          = "delta-obp-2.conf"
+  delta_search_config_commit = "b44315f7e078e4d0ae34d6bd3a596197e5a2b325"
+  delta_config_file          = "delta-obp.conf"
 
   aws_region = var.aws_region
 }
+
 
 module "nexus_fusion_obp" {
   source = "./fusion"
@@ -174,10 +175,10 @@ module "dashboard" {
     aws = aws.nexus_dashboard_tags
   }
 
-  blazegraph_composite_service_name = module.blazegraph_obp_composite_4.service_name
-  blazegraph_service_name           = module.blazegraph_obp_bg_4.service_name
+  blazegraph_composite_service_name = module.blazegraph_obp_composite.service_name
+  blazegraph_service_name           = module.blazegraph_obp_bg.service_name
   database                          = local.database_id
-  delta_service_name                = module.nexus_delta_obp_2.service_name
+  delta_service_name                = module.nexus_delta_obp.service_name
   fusion_service_name               = module.nexus_fusion_obp.service_name
   s3_bucket                         = aws_s3_bucket.nexus_obp.bucket
 
