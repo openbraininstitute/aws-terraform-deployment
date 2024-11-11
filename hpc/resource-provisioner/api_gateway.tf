@@ -60,6 +60,12 @@ resource "aws_api_gateway_integration" "hpc_resource_provisioner_version_integra
 
 resource "aws_api_gateway_deployment" "hpc_resource_provisioner_api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.hpc_resource_provisioner_api.id
+  depends_on = [
+    aws_api_gateway_method.hpc_resource_provisioner_pcluster_method,
+    aws_api_gateway_method.hpc_resource_provisioner_version_method,
+    aws_api_gateway_integration.hpc_resource_provisioner_pcluster_integration,
+    aws_api_gateway_integration.hpc_resource_provisioner_version_integration
+  ]
   triggers = {
     # redeploy when the api or its methods change, but also serves to declare a dependency
     # if omitted, terraform may deploy the deployment before the methods
