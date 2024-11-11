@@ -1,3 +1,8 @@
+variable "dashboard_name" {
+  type        = string
+  description = "The name of the dashboard."
+}
+
 variable "cluster_name" {
   type        = string
   description = "The name of the cluster the Nexus stack is running on."

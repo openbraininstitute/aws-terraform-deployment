@@ -175,6 +175,8 @@ module "dashboard" {
     aws = aws.nexus_dashboard_tags
   }
 
+  dashboard_name = "Nexus-OBP"
+
   blazegraph_composite_service_name = module.blazegraph_obp_composite.service_name
   blazegraph_composite_log_group    = module.blazegraph_obp_composite.log_group
   blazegraph_service_name           = module.blazegraph_obp_bg.service_name
