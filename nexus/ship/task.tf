@@ -40,6 +40,10 @@ resource "aws_ecs_task_definition" "nexus_ship" {
         {
           name  = "TARGET_BUCKET"
           value = var.target_bucket
+        },
+        {
+          name  = "IMPORT_BUCKET"
+          value = aws_s3_bucket.nexus_ship.id
         }
       ]
       secrets = [
