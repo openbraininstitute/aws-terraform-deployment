@@ -13,7 +13,7 @@
 resource "aws_security_group" "cell_svc_ec2_ecs_instance_sg" {
   vpc_id      = var.vpc_id
   description = "Sec group for SBO cell svc EC2 instance"
-  tags        = var.tags
+  tags        = merge(var.tags, { Name = "cell_svc_ec2_ecs_instance_sg" })
 }
 
 resource "aws_vpc_security_group_ingress_rule" "cell_svc_ec2_ecs_instance_sg_ingress_tcp_udp" {
@@ -172,7 +172,7 @@ resource "aws_security_group" "cell_svc_ecs_task" {
   vpc_id      = var.vpc_id
   description = "Sec group for SBO cell svc ECS task"
 
-  tags = merge(var.tags, { Name = "cell_svc_secgroup" })
+  tags = merge(var.tags, { Name = "cell_svc_ecs_task" })
 }
 
 resource "aws_vpc_security_group_ingress_rule" "cell_svc_task_ingress_port_8000" {

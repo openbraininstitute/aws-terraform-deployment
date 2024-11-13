@@ -17,6 +17,14 @@ resource "aws_s3_bucket" "sbo-cell-svc-perf-test" {
   }
 }
 
+resource "aws_s3_object" "sbo-cell-svc-perf-test-directory" {
+  count        = 1
+  bucket       = aws_s3_bucket.sbo-cell-svc-perf-test.id
+  key          = "bbp.cscs.ch"
+  content_type = "application/x-directory"
+  content      = ""
+}
+
 resource "aws_s3_bucket_metric" "sbo-cell-svc-perf-test-metrics" {
   bucket = aws_s3_bucket.sbo-cell-svc-perf-test.id
   name   = "EntireBucket"
