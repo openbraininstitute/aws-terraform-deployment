@@ -4,6 +4,12 @@ variable "default_tags" {
   }
 }
 
+variable "openscience" {
+  default = {
+    SBO_Billing = "nexus-openscience"
+  }
+}
+
 provider "aws" {
   default_tags {
     tags = var.default_tags
@@ -81,6 +87,19 @@ provider "aws" {
   default_tags {
     tags = merge(
       var.default_tags,
+      {
+        Nexus = "postgres"
+      }
+    )
+  }
+  region = var.aws_region
+}
+
+provider "aws" {
+  alias = "nexus_openscience_postgres_tags"
+  default_tags {
+    tags = merge(
+      var.openscience,
       {
         Nexus = "postgres"
       }
