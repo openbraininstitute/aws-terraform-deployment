@@ -23,7 +23,7 @@ resource "aws_iam_policy" "ship_import_bucket_access" {
 #tfsec:ignore:aws-iam-no-policy-wildcards
 resource "aws_iam_policy" "ship_target_bucket_access" {
   name        = "NexusShipTargetBucketAccess"
-  description = "A policy that grants read-only access to the ship S3 bucket"
+  description = "A policy that grants read/write access to the target buckets"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -37,7 +37,8 @@ resource "aws_iam_policy" "ship_target_bucket_access" {
         ]
         Effect = "Allow"
         Resource = [
-          var.target_bucket_arn, "${var.target_bucket_arn}/*"
+          var.target_bucket_arn, "${var.target_bucket_arn}/*",
+          var.second_target_bucket_arn, "${var.second_target_bucket_arn}/*"
         ]
       },
     ]
