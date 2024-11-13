@@ -307,7 +307,7 @@ resource "aws_ecs_service" "virtual_lab_manager_ecs_service" {
 
   network_configuration {
     security_groups  = [aws_security_group.virtual_lab_manager_ecs_task.id]
-    subnets          = var.core_subnets
+    subnets          = [aws_subnet.virtual_lab_manager_a.id, aws_subnet.virtual_lab_manager_b.id]
     assign_public_ip = false
   }
   depends_on = [

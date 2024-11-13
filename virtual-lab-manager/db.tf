@@ -19,7 +19,7 @@ resource "aws_security_group" "virtual_lab_manager_db_sg" {
 
 resource "aws_db_subnet_group" "virtual_lab_manager_db_subnet_group" {
   name       = "virtual-lab-manager-db-subnet-group"
-  subnet_ids = var.core_subnets
+  subnet_ids = [aws_subnet.virtual_lab_manager_a.id, aws_subnet.virtual_lab_manager_b.id]
 
   tags = {
     SBO_Billing = "virtual_lab_manager"

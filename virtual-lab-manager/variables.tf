@@ -27,6 +27,10 @@ variable "private_lb_listener_https_arn" {
   description = "ARN of the private listener (used by the private load balancer)"
 }
 
+variable "route_table_private_subnets_id" {
+  type = string
+}
+
 variable "allowed_source_ip_cidr_blocks" {
   type = list(string)
 }
@@ -51,10 +55,6 @@ variable "virtual_lab_manager_postgres_user" {
   type        = string
   description = "Postgres database username used by virtual lab manager"
   sensitive   = false
-}
-
-variable "core_subnets" {
-  type = list(string)
 }
 
 variable "virtual_lab_manager_depoloyment_env" {

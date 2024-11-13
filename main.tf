@@ -309,20 +309,20 @@ module "thumbnail_generation_api" {
 module "virtual_lab_manager" {
   source = "./virtual-lab-manager"
 
-  vpc_id                        = local.vpc_id
-  aws_region                    = local.aws_region
-  account_id                    = local.account_id
-  vpc_cidr_block                = local.vpc_cidr_block
-  nat_gateway_id                = local.nat_gateway_id
-  allowed_source_ip_cidr_blocks = [local.vpc_cidr_block]
-  private_lb_listener_https_arn = local.private_alb_https_listener_arn
+  vpc_id                         = local.vpc_id
+  aws_region                     = local.aws_region
+  account_id                     = local.account_id
+  vpc_cidr_block                 = local.vpc_cidr_block
+  nat_gateway_id                 = local.nat_gateway_id
+  allowed_source_ip_cidr_blocks  = [local.vpc_cidr_block]
+  private_lb_listener_https_arn  = local.private_alb_https_listener_arn
+  route_table_private_subnets_id = local.route_table_private_subnets_id
 
   invite_link = "https://${local.primary_domain}/mmb-beta"
   mail_from   = "noreply@${local.primary_domain}"
 
   virtual_lab_manager_postgres_db   = "vlm"
   virtual_lab_manager_postgres_user = "vlm_user"
-  core_subnets                      = [aws_subnet.core_svc_a.id, aws_subnet.core_svc_b.id]
 
   log_group_name = var.virtual_lab_manager_log_group_name
 
