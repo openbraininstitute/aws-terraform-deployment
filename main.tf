@@ -113,6 +113,12 @@ module "nexus" {
   nexus_ship_bucket_name        = "nexus-ship-production"
 
   private_lb_listener_https_arn = local.private_alb_https_listener_arn
+
+  readonly_access_policy_statement_part1 = local.readonly_access_policy_statement_part1
+  readonly_access_policy_statement_part2 = local.readonly_access_policy_statement_part2
+  aws_ssoadmin_instances_arns            = data.aws_ssoadmin_instances.ssoadmin_instances.arns
+  is_production                          = var.is_production
+
 }
 
 module "viz" {
