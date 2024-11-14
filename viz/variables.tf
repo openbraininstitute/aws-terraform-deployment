@@ -177,3 +177,21 @@ variable "tags" {
   default     = { SBO_Billing = "viz" }
 }
 
+variable "readonly_access_policy_statement_part1" {
+  description = "Policy for read-only permission pt1"
+  type        = string
+}
+
+variable "readonly_access_policy_statement_part2" {
+  description = "Policy for read-only permission pt2"
+  type        = string
+}
+
+variable "aws_ssoadmin_instances_arns" {
+  description = "ARN of the ssoadmin instances"
+  type        = list(string)
+}
+
+variable "is_production" {
+  type = bool
+}
