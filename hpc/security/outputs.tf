@@ -21,3 +21,7 @@ output "vpc_peering_security_group_id" {
 output "resource_provisioner_iam_role_arn" {
   value = aws_iam_role.hpc_resource_provisioner_role.arn
 }
+
+output "resource_provisioner_security_group_id" {
+  value = aws_security_group.hpc_resource_provisioner.id
+}

@@ -1,13 +1,11 @@
+---
 # Based on the template at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.gitlab-ci.yml
-
 variables:
-  TF_AUTO_DEPLOY: "true"
-
+  TF_AUTO_DEPLOY: 'true'
 include:
   - local: templates/tf/Base.latest.gitlab-ci.yml
   # See https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Terraform/
-
 stages:
   - validate
   - test
@@ -16,29 +14,17 @@ stages:
   - postdeploy
   - configure
   - cleanup
-
 fmt:
   extends: .terraform:fmt
   needs: []
-
 validate:
   extends: .terraform:validate
   needs: []
   variables:
     KUBERNETES_MEMORY_LIMIT: 6G
-
-download-hpc-resource-provisioner:
+sync-hpc-resource-provisioner-container:
   image: ubuntu:22.04
-  script:
-    - apt-get update && apt-get install -y -q wget
-    - wget https://github.com/bluebrain/hpc-resource-provisioner/releases/latest/download/hpc_resource_provisioner.zip
-    - wget https://github.com/bluebrain/hpc-resource-provisioner/releases/latest/download/hpc_resource_creator.zip
-  artifacts:
-    when: on_success
-    paths:
-      - ./hpc_resource_provisioner.zip
-      - ./hpc_resource_creator.zip
-
+  script: [./.gitlab-ci-scripts/container_sync/sync_resource_provisioner.sh]
 build:
   variables:
     KUBERNETES_CPU_REQUEST: 4000m
@@ -51,48 +37,40 @@ build:
   extends: .terraform:build
   artifacts:
     paths:
-     - ${TF_ROOT}/on_demand_svc/src/*.zip
-     - ${TF_ROOT}/bbp_workflow_svc/src/*.zip
-     - ${TF_ROOT}/plan.cache
+      - ${TF_ROOT}/on_demand_svc/src/*.zip
+      - ${TF_ROOT}/bbp_workflow_svc/src/*.zip
+      - ${TF_ROOT}/plan.cache
     reports:
       terraform: ${TF_ROOT}/plan.json
-
 deploy:
   variables:
     KUBERNETES_MEMORY_LIMIT: 6G
   extends: .terraform:deploy
-  dependencies:
-    - build
-    - download-hpc-resource-provisioner
+  dependencies: [build, sync-hpc-resource-provisioner-container]
   environment:
     name: $TF_STATE_NAME
-
 1_verify_untagged:
   extends: .terraform:postdeploy
-  dependencies:
-    - deploy
+  dependencies: [deploy]
   script:
-    - bash .gitlab-ci-scripts/resource_tagging/1_verify_untagged.sh $OUTPUT_UNTAGGED $OUTPUT_IGNORED
+    - bash .gitlab-ci-scripts/resource_tagging/1_verify_untagged.sh $OUTPUT_UNTAGGED
+      $OUTPUT_IGNORED
   artifacts:
-    paths:
-      - $OUTPUT_UNTAGGED
-      - $OUTPUT_IGNORED
+    paths: [$OUTPUT_UNTAGGED, $OUTPUT_IGNORED]
     expire_in: 2 hrs
     public: false
-
 2_tag_resources:
   extends: .terraform:postdeploy
   needs:
     - job: 1_verify_untagged
       artifacts: true
   script:
-    - bash .gitlab-ci-scripts/resource_tagging/2_tag_resources.sh $OUTPUT_UNTAGGED $OUTPUT_MODIFIED
+    - bash .gitlab-ci-scripts/resource_tagging/2_tag_resources.sh $OUTPUT_UNTAGGED
+      $OUTPUT_MODIFIED
   artifacts:
-    paths:
-      - $OUTPUT_MODIFIED
+    paths: [$OUTPUT_MODIFIED]
     expire_in: 2 hrs
     public: false
-
 3_generate_report:
   extends: .terraform:postdeploy
   needs:
@@ -101,7 +79,8 @@ deploy:
     - job: 2_tag_resources
       artifacts: true
   script:
-    - bash .gitlab-ci-scripts/resource_tagging/3_generate_report.sh $OUTPUT_UNTAGGED $OUTPUT_IGNORED $OUTPUT_MODIFIED $OUTPUT_TAGGED
+    - bash .gitlab-ci-scripts/resource_tagging/3_generate_report.sh $OUTPUT_UNTAGGED
+      $OUTPUT_IGNORED $OUTPUT_MODIFIED $OUTPUT_TAGGED
   artifacts:
     paths:
       - $OUTPUT_UNTAGGED
@@ -109,22 +88,20 @@ deploy:
       - $OUTPUT_MODIFIED
       - $OUTPUT_TAGGED
     expire_in: 1 week
-
 tfsec:
   image: aquasec/tfsec:v1.28.0
   stage: validate
   script:
     - cd "${TF_ROOT}"
-    - rm -f import-statements.tf # tfsec can't handle the new import statements
+    - rm -f import-statements.tf  # tfsec can't handle the new import statements
     - /usr/bin/tfsec
   allow_failure: false
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
       when: never
-    - if: $CI_COMMIT_BRANCH        # If there's no open merge request, add it to a *branch* pipeline instead.
-
-#terrascan:
+    - if: $CI_COMMIT_BRANCH  # If there's no open merge request, add it to a *branch* pipeline instead.
+# terrascan:
 #  image: tenable/terrascan
 #  stage: validate
 #  script:
@@ -133,8 +110,7 @@ tfsec:
 #    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
 #    - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
 #      when: never
-#    - if: $CI_COMMIT_BRANCH        # If there's no open merge request, add it to a *branch* pipeline instead.
-
+#    - if: $CI_COMMIT_BRANCH  # If there's no open merge request, add it to a *branch* pipeline instead.
 check_compliance:
   image: eerkunt/terraform-compliance
   stage: validate
@@ -153,5 +129,6 @@ check_compliance:
     - ls -la terraform-compliance
     - rm gitlab-config.tf
     - terraform init
-    - terraform plan -parallelism=30 -out=plan.tfplan > /dev/null && terraform show -json plan.tfplan > plan.json
+    - terraform plan -parallelism=30 -out=plan.tfplan > /dev/null && terraform show
+      -json plan.tfplan > plan.json
     - terraform-compliance -f ./terraform-compliance -p ./plan.json

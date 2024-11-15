@@ -77,7 +77,7 @@ resource "aws_vpc_security_group_ingress_rule" "aws_endpoints_sgr_ingress" {
   security_group_id = aws_security_group.aws_endpoints_sg.id
   description       = "Allow all incoming from VPC"
   from_port         = 0
-  to_port           = 0
+  to_port           = 65535
   ip_protocol       = "tcp"
   cidr_ipv4         = var.vpc_cidr_block
   tags              = { Name = "VPC Endpoints Security Group Rule - Ingress" }

@@ -58,3 +58,9 @@ variable "lambda_subnet_cidr" {
   description = "CIDR for the subnet in which lambdas can be deployed"
   type        = string
 }
+
+variable "endpoints_route_table_id" {
+  type        = string
+  description = "ID for the route table that allows connecting to endpoints"
+
+}

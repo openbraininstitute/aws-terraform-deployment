@@ -31,3 +31,7 @@ variable "account_id" {
 variable "aws_region" {
   type = string
 }
+
+variable "aws_endpoints_subnet_cidr" {
+  type = string
+}

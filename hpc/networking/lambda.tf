@@ -6,3 +6,8 @@ resource "aws_subnet" "lambda" {
     Name = "lambda"
   }
 }
+
+resource "aws_route_table_association" "aws_endpoints" {
+  subnet_id      = aws_subnet.lambda.id
+  route_table_id = var.endpoints_route_table_id
+}

@@ -223,6 +223,8 @@ module "hpc" {
   peering_route_tables       = [local.route_table_private_subnets_id]
   lambda_subnet_cidr         = "10.0.16.0/24"
   is_production              = var.is_production
+  aws_endpoints_subnet_cidr  = module.networking.endpoints_subnet_cidr
+  endpoints_route_table_id   = local.route_table_private_subnets_id
 }
 
 module "static-server" {

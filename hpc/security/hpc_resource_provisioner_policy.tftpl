@@ -31,6 +31,7 @@
                 "ec2:AuthorizeSecurityGroupEgress",
                 "ec2:AuthorizeSecurityGroupIngress",
                 "ec2:CreateFleet",
+                "ec2:CreateKeyPair",
                 "ec2:CreateLaunchTemplate",
                 "ec2:CreateLaunchTemplateVersion",
                 "ec2:CreateNetworkInterface",
@@ -40,6 +41,7 @@
                 "ec2:CreateTags",
                 "ec2:DeleteTags",
                 "ec2:CreateVolume",
+                "ec2:DeleteKeyPair",
                 "ec2:DeleteLaunchTemplate",
                 "ec2:DeleteNetworkInterface",
                 "ec2:DeletePlacementGroup",
@@ -266,6 +268,17 @@
             "Effect": "Allow",
             "Action": [
                 "fsx:DescribeFileCaches"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "AllowCreateSecretsManagerSecret",
+            "Effect": "Allow",
+            "Action": [
+              "secretsmanager:CreateSecret",
+              "secretsmanager:DeleteSecret",
+              "secretsmanager:ListSecrets",
+              "secretsmanager:TagResource"
             ],
             "Resource": "*"
         }

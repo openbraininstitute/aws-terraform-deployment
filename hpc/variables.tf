@@ -71,3 +71,12 @@ variable "is_production" {
   sensitive   = false
   description = "Whether deployment is happening in production or not"
 }
+
+variable "aws_endpoints_subnet_cidr" {
+  type = string
+}
+
+variable "endpoints_route_table_id" {
+  type        = string
+  description = "ID for the route table that allows connecting to endpoints"
+}

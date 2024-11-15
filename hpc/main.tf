@@ -41,19 +41,21 @@ module "networking" {
   security_groups           = [module.security.compute_hpc_sg_id]
   obp_vpc_default_sg_id     = var.obp_vpc_default_sg_id
   lambda_subnet_cidr        = var.lambda_subnet_cidr
+  endpoints_route_table_id  = var.endpoints_route_table_id
 }
 
 module "security" {
   source = "./security"
 
-  pcluster_vpc_id          = module.vpc.pcluster_vpc_id
-  obp_vpc_id               = var.obp_vpc_id
-  create_compute_instances = var.create_compute_instances
-  create_jumphost          = var.create_jumphost
-  create_slurmdb           = var.create_slurmdb
-  slurm_db_a_subnet_id     = module.networking.slurm_db_a_subnet_id
-  account_id               = var.account_id
-  aws_region               = var.aws_region
+  pcluster_vpc_id           = module.vpc.pcluster_vpc_id
+  obp_vpc_id                = var.obp_vpc_id
+  create_compute_instances  = var.create_compute_instances
+  create_jumphost           = var.create_jumphost
+  create_slurmdb            = var.create_slurmdb
+  slurm_db_a_subnet_id      = module.networking.slurm_db_a_subnet_id
+  account_id                = var.account_id
+  aws_region                = var.aws_region
+  aws_endpoints_subnet_cidr = var.aws_endpoints_subnet_cidr
 }
 
 module "slurmdb" {
@@ -97,10 +99,8 @@ module "resource-provisioner" {
   source = "./resource-provisioner/"
 
   hpc_resource_provisioner_role       = module.security.resource_provisioner_iam_role_arn
-  hpc_resource_provisioner_image_uri  = "docker.io/bluebrain/hpc-resource-provisioner:latest"
-  hpc_resource_provisioner_image_sha  = "472f4f25b73e302c59946e16e7e33f0e9e154904b8e6d86fb0df782d343ff358"
   hpc_resource_provisioner_subnet_ids = [module.networking.lambda_subnet_id]
-  hpc_resource_provisioner_sg_ids     = [var.obp_vpc_default_sg_id, module.security.vpc_peering_security_group_id]
+  hpc_resource_provisioner_sg_ids     = [var.obp_vpc_default_sg_id, module.security.vpc_peering_security_group_id, module.security.resource_provisioner_security_group_id]
   aws_region                          = var.aws_region
   account_id                          = var.account_id
 }
