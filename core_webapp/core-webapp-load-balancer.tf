@@ -10,7 +10,7 @@ resource "aws_lb_target_group" "core_webapp_private" {
   #}
   health_check {
     enabled  = true
-    path     = "/mmb-beta"
+    path     = "/app"
     protocol = "HTTP"
   }
   tags = {
@@ -56,7 +56,7 @@ resource "aws_lb_listener_rule" "private_core_webapp_redirect" {
   action {
     type = "redirect"
     redirect {
-      path        = "/mmb-beta"
+      path        = "/app"
       status_code = "HTTP_302"
     }
   }

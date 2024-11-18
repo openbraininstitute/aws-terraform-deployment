@@ -252,13 +252,13 @@ module "core_webapp" {
   core_webapp_docker_image_url         = "bluebrain/sbo-core-web-app:latest"
   dockerhub_access_iam_policy_arn      = module.dockerhub_secret.dockerhub_access_iam_policy_arn
   dockerhub_credentials_arn            = module.dockerhub_secret.dockerhub_credentials_arn
-  core_webapp_base_path                = "/mmb-beta"
+  core_webapp_base_path                = "/app"
   route_table_id                       = local.route_table_private_subnets_id
   allowed_source_ip_cidr_blocks        = ["0.0.0.0/0"]
   vpc_cidr_block                       = local.vpc_cidr_block
 
   env_DEBUG                               = "true"
-  env_NEXTAUTH_URL                        = "https://${local.primary_domain}/mmb-beta/api/auth"
+  env_NEXTAUTH_URL                        = "https://${local.primary_domain}/app/api/auth"
   env_KEYCLOAK_ISSUER                     = "https://${local.primary_domain}/auth/realms/SBO"
   env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY  = "pk_test_51P6uAFFE4Bi50cLlatJIc0fUPsP0jQkaCCJ8TTkIYOOLIrLzxX1M9p1kVD11drNqsF9p7yiaumWJ8UHb3ptJJRXB00y3qjYReV"
   env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL = "http://${data.terraform_remote_state.common.outputs.private_alb_dns_name}:3000/api/literature"
@@ -332,7 +332,7 @@ module "virtual_lab_manager" {
   private_lb_listener_https_arn  = local.private_alb_https_listener_arn
   route_table_private_subnets_id = local.route_table_private_subnets_id
 
-  invite_link = "https://${local.primary_domain}/mmb-beta"
+  invite_link = "https://${local.primary_domain}/app"
   mail_from   = "noreply@${local.primary_domain}"
 
   virtual_lab_manager_postgres_db   = "vlm"
@@ -367,7 +367,7 @@ module "virtual_lab_manager" {
   virtual_lab_manager_use_credentials = "True"
   virtual_lab_manager_cors_origins    = ["http://localhost:3000"]
 
-  virtual_lab_manager_admin_base_path      = "{}/mmb-beta/virtual-lab/lab/{}/admin?panel=billing"
+  virtual_lab_manager_admin_base_path      = "{}/app/virtual-lab/lab/{}/admin?panel=billing"
   virtual_lab_manager_deployment_namespace = "https://${local.primary_domain}"
 
   virtual_lab_manager_cross_project_resolvers = [
