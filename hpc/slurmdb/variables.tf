@@ -13,3 +13,7 @@ variable "slurm_db_sg_id" {
 variable "create_slurmdb" {
   type = bool
 }
+
+variable "hpc_slurm_secrets_arn" {
+  type = string
+}

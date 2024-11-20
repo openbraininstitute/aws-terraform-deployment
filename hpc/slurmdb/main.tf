@@ -12,15 +12,9 @@ resource "aws_db_subnet_group" "slurm_db_subnet_group" {
   subnet_ids = var.slurm_db_subnets_ids
 }
 
-#tfsec:ignore:aws-ssm-secret-use-customer-key
-resource "aws_secretsmanager_secret" "slurm_database_secret_manager" {
-  name        = "slurm_database_password"
-  description = "Slurm database password"
-}
-
 # Data source to retrieve the password from AWS Secrets Manager
 data "aws_secretsmanager_secret_version" "slurm_database_password" {
-  secret_id = aws_secretsmanager_secret.slurm_database_secret_manager.id
+  secret_id = var.hpc_slurm_secrets_arn
 }
 
 # tfsec:ignore:aws-rds-enable-performance-insights-encryption

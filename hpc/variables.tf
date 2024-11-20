@@ -80,3 +80,7 @@ variable "endpoints_route_table_id" {
   type        = string
   description = "ID for the route table that allows connecting to endpoints"
 }
+
+variable "hpc_slurm_secrets_arn" {
+  type = string
+}

@@ -21,6 +21,7 @@ locals {
   ml_secrets_arn                  = data.terraform_remote_state.common.outputs.ml_secrets_arn
   bluenaas_service_secrets_arn    = data.terraform_remote_state.common.outputs.bluenaas_service_secrets_arn
   accounting_service_secrets_arn  = data.terraform_remote_state.common.outputs.accounting_service_secrets_arn
+  hpc_slurm_secrets_arn           = data.terraform_remote_state.common.outputs.hpc_slurm_secrets_arn
 }
 
 module "dockerhub_secret" {
@@ -237,6 +238,7 @@ module "hpc" {
   is_production              = var.is_production
   aws_endpoints_subnet_cidr  = module.networking.endpoints_subnet_cidr
   endpoints_route_table_id   = local.route_table_private_subnets_id
+  hpc_slurm_secrets_arn      = local.hpc_slurm_secrets_arn
 }
 
 module "static-server" {

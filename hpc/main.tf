@@ -65,6 +65,7 @@ module "slurmdb" {
   slurm_db_subnets_ids       = module.networking.slurm_db_subnets_ids
   slurm_db_sg_id             = module.security.slurm_db_sg_id
   create_slurmdb             = var.create_slurmdb
+  hpc_slurm_secrets_arn      = var.hpc_slurm_secrets_arn
 }
 
 module "compute-cluster" {
