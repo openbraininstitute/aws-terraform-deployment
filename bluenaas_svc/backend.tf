@@ -99,12 +99,6 @@ resource "aws_vpc_security_group_egress_rule" "bluenaas_allow_outgoing_udp" {
   }
 }
 
-#tfsec:ignore:aws-ssm-secret-use-customer-key
-resource "aws_secretsmanager_secret" "bluenaas_secrets_manager" {
-  name        = "bluenaas_secrets_manager"
-  description = "bluenaas Secrets Manager"
-}
-
 resource "aws_ecs_task_definition" "bluenaas_ecs_definition" {
   family       = "bluenaas_task_family"
   network_mode = "awsvpc"
@@ -190,15 +184,15 @@ resource "aws_ecs_task_definition" "bluenaas_ecs_definition" {
       secrets = [
         {
           name      = "KC_CLIENT_ID"
-          valueFrom = "${aws_secretsmanager_secret.bluenaas_secrets_manager.arn}:KC_CLIENT_ID::"
+          valueFrom = "${var.bluenaas_service_secrets_arn}:KC_CLIENT_ID::"
         },
         {
           name      = "KC_CLIENT_SECRET"
-          valueFrom = "${aws_secretsmanager_secret.bluenaas_secrets_manager.arn}:KC_CLIENT_SECRET::"
+          valueFrom = "${var.bluenaas_service_secrets_arn}:KC_CLIENT_SECRET::"
         },
         {
           name      = "SENTRY_DSN"
-          valueFrom = "${aws_secretsmanager_secret.bluenaas_secrets_manager.arn}:SENTRY_DSN::"
+          valueFrom = "${var.bluenaas_service_secrets_arn}:SENTRY_DSN::"
         }
       ]
 

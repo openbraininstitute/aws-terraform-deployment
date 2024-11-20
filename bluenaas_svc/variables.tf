@@ -60,3 +60,7 @@ variable "debug" {
 variable "internet_access_route_id" {
   type = string
 }
+
+variable "bluenaas_service_secrets_arn" {
+  type = string
+}

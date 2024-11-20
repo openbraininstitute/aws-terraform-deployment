@@ -19,6 +19,7 @@ locals {
   keycloak_secrets_arn            = data.terraform_remote_state.common.outputs.keycloak_secrets_arn
   core_webapp_secrets_arn         = data.terraform_remote_state.common.outputs.core_webapp_secrets_arn
   ml_secrets_arn                  = data.terraform_remote_state.common.outputs.ml_secrets_arn
+  bluenaas_service_secrets_arn    = data.terraform_remote_state.common.outputs.bluenaas_service_secrets_arn
   accounting_service_secrets_arn  = data.terraform_remote_state.common.outputs.accounting_service_secrets_arn
 }
 
@@ -203,6 +204,8 @@ module "bluenaas_svc" {
   private_alb_listener_arn   = local.private_alb_https_listener_arn
   alb_listener_rule_priority = 750
   internet_access_route_id   = local.route_table_private_subnets_id
+
+  bluenaas_service_secrets_arn = local.bluenaas_service_secrets_arn
 
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
