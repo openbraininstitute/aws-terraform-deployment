@@ -15,18 +15,16 @@ locals {
 
   primary_domain = data.terraform_remote_state.common.outputs.primary_domain
 
-  virtual_lab_manager_secrets_arn = data.terraform_remote_state.common.outputs.virtual_lab_manager_secrets_arn
-  keycloak_secrets_arn            = data.terraform_remote_state.common.outputs.keycloak_secrets_arn
-  core_webapp_secrets_arn         = data.terraform_remote_state.common.outputs.core_webapp_secrets_arn
-  ml_secrets_arn                  = data.terraform_remote_state.common.outputs.ml_secrets_arn
-  bluenaas_service_secrets_arn    = data.terraform_remote_state.common.outputs.bluenaas_service_secrets_arn
-  accounting_service_secrets_arn  = data.terraform_remote_state.common.outputs.accounting_service_secrets_arn
-  hpc_slurm_secrets_arn           = data.terraform_remote_state.common.outputs.hpc_slurm_secrets_arn
-  nexus_secrets_arn               = data.terraform_remote_state.common.outputs.nexus_secrets_arn
-}
-
-module "dockerhub_secret" {
-  source = "./dockerhub_secret"
+  virtual_lab_manager_secrets_arn  = data.terraform_remote_state.common.outputs.virtual_lab_manager_secrets_arn
+  keycloak_secrets_arn             = data.terraform_remote_state.common.outputs.keycloak_secrets_arn
+  core_webapp_secrets_arn          = data.terraform_remote_state.common.outputs.core_webapp_secrets_arn
+  ml_secrets_arn                   = data.terraform_remote_state.common.outputs.ml_secrets_arn
+  bluenaas_service_secrets_arn     = data.terraform_remote_state.common.outputs.bluenaas_service_secrets_arn
+  accounting_service_secrets_arn   = data.terraform_remote_state.common.outputs.accounting_service_secrets_arn
+  hpc_slurm_secrets_arn            = data.terraform_remote_state.common.outputs.hpc_slurm_secrets_arn
+  nexus_secrets_arn                = data.terraform_remote_state.common.outputs.nexus_secrets_arn
+  dockerhub_bbpbuildbot_secret_arn = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_secret_arn
+  dockerhub_bbpbuildbot_policy_arn = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_policy_arn
 }
 
 module "coreservices_key" {
@@ -80,7 +78,7 @@ module "ml" {
   vpc_cidr_block                 = local.vpc_cidr_block
   route_table_private_subnets_id = local.route_table_private_subnets_id
 
-  dockerhub_credentials_arn = module.dockerhub_secret.dockerhub_credentials_arn
+  dockerhub_credentials_arn = local.dockerhub_bbpbuildbot_secret_arn
   backend_image_tag         = "scholarag-v0.0.7"
   etl_image_tag             = "scholaretl-v0.0.6"
   agent_image_tag           = "neuroagent-v0.3.3"
@@ -141,8 +139,8 @@ module "viz" {
   account_id = local.account_id
   vpc_id     = local.vpc_id
 
-  dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
-  secret_dockerhub_arn            = module.dockerhub_secret.dockerhub_credentials_arn
+  dockerhub_access_iam_policy_arn = local.dockerhub_bbpbuildbot_policy_arn
+  secret_dockerhub_arn            = local.dockerhub_bbpbuildbot_secret_arn
 
   scientific_data_bucket_name = "important-scientific-data"
 
@@ -168,8 +166,8 @@ module "cells_svc" {
   vpc_id         = local.vpc_id
   vpc_cidr_block = local.vpc_cidr_block
 
-  dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
-  dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
+  dockerhub_access_iam_policy_arn = local.dockerhub_bbpbuildbot_policy_arn
+  dockerhub_credentials_arn       = local.dockerhub_bbpbuildbot_secret_arn
 
   private_alb_https_listener_arn = local.private_alb_https_listener_arn
   route_table_private_subnets_id = local.route_table_private_subnets_id
@@ -191,7 +189,7 @@ module "nse" {
   aws_region                = local.aws_region
   account_id                = local.account_id
   vpc_id                    = local.vpc_id
-  dockerhub_credentials_arn = module.dockerhub_secret.dockerhub_credentials_arn
+  dockerhub_credentials_arn = local.dockerhub_bbpbuildbot_secret_arn
   amazon_linux_ecs_ami_id   = data.aws_ami.amazon_linux_2_ecs.id
   route_table_id            = local.route_table_private_subnets_id
 
@@ -210,8 +208,8 @@ module "bluenaas_svc" {
 
   bluenaas_service_secrets_arn = local.bluenaas_service_secrets_arn
 
-  dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
-  dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
+  dockerhub_credentials_arn       = local.dockerhub_bbpbuildbot_secret_arn
+  dockerhub_access_iam_policy_arn = local.dockerhub_bbpbuildbot_policy_arn
 
   keycloak_server_url = "https://${local.primary_domain}/auth/"
 
@@ -266,8 +264,8 @@ module "core_webapp" {
   aws_region                           = local.aws_region
   account_id                           = local.account_id
   core_webapp_docker_image_url         = "bluebrain/sbo-core-web-app:latest"
-  dockerhub_access_iam_policy_arn      = module.dockerhub_secret.dockerhub_access_iam_policy_arn
-  dockerhub_credentials_arn            = module.dockerhub_secret.dockerhub_credentials_arn
+  dockerhub_access_iam_policy_arn      = local.dockerhub_bbpbuildbot_policy_arn
+  dockerhub_credentials_arn            = local.dockerhub_bbpbuildbot_secret_arn
   core_webapp_base_path                = "/app"
   route_table_id                       = local.route_table_private_subnets_id
   allowed_source_ip_cidr_blocks        = ["0.0.0.0/0"]
@@ -293,8 +291,8 @@ module "accounting_svc" {
 
   accounting_service_secrets_arn = local.accounting_service_secrets_arn
 
-  dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
-  dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
+  dockerhub_credentials_arn       = local.dockerhub_bbpbuildbot_secret_arn
+  dockerhub_access_iam_policy_arn = local.dockerhub_bbpbuildbot_policy_arn
 
   root_path = "/api/accounting"
 }
@@ -308,8 +306,8 @@ module "kg_inference_api" {
   vpc_cidr_block                 = local.vpc_cidr_block
   vpc_id                         = local.vpc_id
 
-  dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
-  dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
+  dockerhub_access_iam_policy_arn = local.dockerhub_bbpbuildbot_policy_arn
+  dockerhub_credentials_arn       = local.dockerhub_bbpbuildbot_secret_arn
 
   aws_region                        = local.aws_region
   account_id                        = local.account_id
@@ -328,8 +326,8 @@ module "thumbnail_generation_api" {
   vpc_cidr_block                 = local.vpc_cidr_block
   vpc_id                         = local.vpc_id
 
-  dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
-  dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
+  dockerhub_access_iam_policy_arn = local.dockerhub_bbpbuildbot_policy_arn
+  dockerhub_credentials_arn       = local.dockerhub_bbpbuildbot_secret_arn
 
   aws_region                                = local.aws_region
   account_id                                = local.account_id
@@ -359,8 +357,8 @@ module "virtual_lab_manager" {
 
   log_group_name = var.virtual_lab_manager_log_group_name
 
-  dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn
-  dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
+  dockerhub_access_iam_policy_arn = local.dockerhub_bbpbuildbot_policy_arn
+  dockerhub_credentials_arn       = local.dockerhub_bbpbuildbot_secret_arn
 
   virtual_lab_manager_docker_image_url = var.virtual_lab_manager_docker_image_url
 
