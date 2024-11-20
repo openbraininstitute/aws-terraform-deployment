@@ -18,6 +18,7 @@ locals {
   virtual_lab_manager_secrets_arn = data.terraform_remote_state.common.outputs.virtual_lab_manager_secrets_arn
   keycloak_secrets_arn            = data.terraform_remote_state.common.outputs.keycloak_secrets_arn
   core_webapp_secrets_arn         = data.terraform_remote_state.common.outputs.core_webapp_secrets_arn
+  ml_secrets_arn                  = data.terraform_remote_state.common.outputs.ml_secrets_arn
 }
 
 module "dockerhub_secret" {
@@ -68,6 +69,8 @@ module "ml" {
   account_id = local.account_id
 
   is_production = var.is_production
+
+  ml_secrets_arn = local.ml_secrets_arn
 
   vpc_id                         = local.vpc_id
   vpc_cidr_block                 = local.vpc_cidr_block

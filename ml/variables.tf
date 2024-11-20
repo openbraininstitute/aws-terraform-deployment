@@ -229,6 +229,9 @@ variable "readonly_access_policy_statement_part2" {
 variable "aws_ssoadmin_instances_arns" {
   description = "ARN of the ssoadmin instances"
   type        = list(string)
-
 }
 
+variable "ml_secrets_arn" {
+  description = "ARN of the ML secrets manager"
+  type        = string
+}
