@@ -51,6 +51,7 @@ module "cs" {
   route_table_private_subnets_id = local.route_table_private_subnets_id
   db_instance_class              = "db.t3.micro"
   private_alb_https_listener_arn = local.private_alb_https_listener_arn
+  keycloak_secrets_arn           = local.keycloak_secrets_arn
 
   preferred_hostname = local.primary_domain
   redirect_hostnames = ["openbluebrain.ch", "openbrainplatform.org", "openbrainplatform.com"]

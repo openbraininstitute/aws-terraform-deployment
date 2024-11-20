@@ -44,3 +44,9 @@ variable "db_instance_class" {
 variable "private_subnets" {
   type = list(string)
 }
+
+variable "keycloak_secrets_arn" {
+  type        = string
+  description = "ARN of the Keycloak secrets manager"
+  sensitive   = false
+}

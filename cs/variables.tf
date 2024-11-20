@@ -39,3 +39,9 @@ variable "redirect_hostnames" {
   description = "hostnames which should be redirected to the preferred hostname if there's a request for /auth"
   sensitive   = false
 }
+
+variable "keycloak_secrets_arn" {
+  type        = string
+  description = "ARN of the Keycloak secrets manager"
+  sensitive   = false
+}

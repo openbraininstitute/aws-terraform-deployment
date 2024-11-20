@@ -9,14 +9,8 @@ resource "aws_db_subnet_group" "keycloak_db_subnet_group" {
   }
 }
 
-#tfsec:ignore:aws-ssm-secret-use-customer-key
-resource "aws_secretsmanager_secret" "keycloak_database_password" {
-  name        = "keycloak_database_password"
-  description = "Keycloak database password"
-}
-
 data "aws_secretsmanager_secret_version" "keycloak_database_password" {
-  secret_id = aws_secretsmanager_secret.keycloak_database_password.id
+  secret_id = var.keycloak_secrets_arn
 }
 
 #tfsec:ignore:aws-iam-no-policy-wildcards
@@ -35,7 +29,7 @@ resource "aws_iam_policy" "access_keycloak_secrets" {
         "secretsmanager:GetSecretValue"
       ],
       "Resource": [
-        "${aws_secretsmanager_secret.keycloak_database_password.arn}"
+        "${var.keycloak_secrets_arn}"
       ]
     }
   ]

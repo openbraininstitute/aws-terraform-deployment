@@ -81,11 +81,11 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
             "secrets": [
 	        {
                     "name": "KEYCLOAK_ADMIN_PASSWORD",
-                    "valueFrom": "${aws_secretsmanager_secret.keycloak_database_password.arn}"
+                    "valueFrom": "${var.keycloak_secrets_arn}"
 	        },
 	        {
                     "name": "KC_DB_PASSWORD",
-                    "valueFrom": "${aws_secretsmanager_secret.keycloak_database_password.arn}"
+                    "valueFrom": "${var.keycloak_secrets_arn}"
 	        }
             ],
             "mountPoints": [
