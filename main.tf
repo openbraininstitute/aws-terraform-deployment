@@ -14,6 +14,9 @@ locals {
   vpc_default_sg_id = data.terraform_remote_state.common.outputs.vpc_default_sg_id
 
   primary_domain = data.terraform_remote_state.common.outputs.primary_domain
+
+  virtual_lab_manager_secrets_arn = data.terraform_remote_state.common.outputs.virtual_lab_manager_secrets_arn
+  keycloak_secrets_arn            = data.terraform_remote_state.common.outputs.keycloak_secrets_arn
 }
 
 module "dockerhub_secret" {
@@ -347,7 +350,7 @@ module "virtual_lab_manager" {
 
   keycloak_server_url = "https://${local.primary_domain}/auth/"
 
-  virtual_lab_manager_secrets_arn = "arn:aws:secretsmanager:${local.aws_region}:${local.account_id}:secret:virtual_lab_manager-2Axecx"
+  virtual_lab_manager_secrets_arn = local.virtual_lab_manager_secrets_arn
 
   ecs_number_of_containers = var.virtual_lab_manager_ecs_number_of_containers
 
