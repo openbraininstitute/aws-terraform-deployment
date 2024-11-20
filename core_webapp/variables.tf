@@ -4,17 +4,20 @@ variable "core_webapp_log_group_name" {
   description = "The log name within cloudwatch for the core webapp"
   sensitive   = false
 }
+
 variable "vpc_id" {
   type        = string
   sensitive   = false
   description = "ID of the VPC"
 }
+
 variable "core_webapp_ecs_number_of_containers" {
   type        = number
   default     = 1
   sensitive   = false
   description = "Number of containers for the SBO core webapp"
 }
+
 #variable "domain_zone_id" {
 #  type        = string
 #  description = "zone id of the domain where the poc hostname should be added"
@@ -40,11 +43,13 @@ variable "vpc_cidr_block" {
   description = "CIDR block of the vpc"
   type        = string
 }
+
 variable "core_webapp_docker_image_url" {
   type        = string
   description = "docker image for the core webapp"
   sensitive   = false
 }
+
 variable "dockerhub_access_iam_policy_arn" {
   type      = string
   sensitive = false
@@ -61,13 +66,21 @@ variable "core_webapp_base_path" {
   description = "The base path for the core webapp"
   sensitive   = false
 }
+
 variable "route_table_id" {
   type        = string
   description = "route table for private networks"
   sensitive   = false
 }
+
 variable "allowed_source_ip_cidr_blocks" {
   type = list(string)
+}
+
+variable "core_webapp_secrets_arn" {
+  type        = string
+  description = "coreweb-app secrets ARN"
+  sensitive   = false
 }
 
 variable "env_DEBUG" {
@@ -75,16 +88,19 @@ variable "env_DEBUG" {
   sensitive   = false
   description = "DEBUG environment value for the webapp"
 }
+
 variable "env_NEXTAUTH_URL" {
   type        = string
   sensitive   = false
   description = "NEXTAUTH_URL environment value for the webapp"
 }
+
 variable "env_KEYCLOAK_ISSUER" {
   type        = string
   sensitive   = false
   description = "KEYCLOAK_ISSUER environment value for the webapp"
 }
+
 variable "env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" {
   type        = string
   sensitive   = false

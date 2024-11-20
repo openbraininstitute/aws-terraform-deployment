@@ -17,6 +17,7 @@ locals {
 
   virtual_lab_manager_secrets_arn = data.terraform_remote_state.common.outputs.virtual_lab_manager_secrets_arn
   keycloak_secrets_arn            = data.terraform_remote_state.common.outputs.keycloak_secrets_arn
+  core_webapp_secrets_arn         = data.terraform_remote_state.common.outputs.core_webapp_secrets_arn
 }
 
 module "dockerhub_secret" {
@@ -260,6 +261,7 @@ module "core_webapp" {
   route_table_id                       = local.route_table_private_subnets_id
   allowed_source_ip_cidr_blocks        = ["0.0.0.0/0"]
   vpc_cidr_block                       = local.vpc_cidr_block
+  core_webapp_secrets_arn              = local.core_webapp_secrets_arn
 
   env_DEBUG                               = "true"
   env_NEXTAUTH_URL                        = "https://${local.primary_domain}/app/api/auth"
