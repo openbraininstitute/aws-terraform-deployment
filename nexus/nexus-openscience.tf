@@ -14,7 +14,7 @@ module "postgres_cluster_openscience" {
   security_group_id               = module.networking.main_subnet_sg_id
   instance_class                  = "db.m5d.large"
   nexus_postgresql_engine_version = "16"
-  nexus_secrets_arn               = aws_secretsmanager_secret.nexus_secrets.arn
+  nexus_secrets_arn               = var.nexus_secrets_arn
 
   aws_region = var.aws_region
 }

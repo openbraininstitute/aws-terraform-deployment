@@ -22,6 +22,7 @@ locals {
   bluenaas_service_secrets_arn    = data.terraform_remote_state.common.outputs.bluenaas_service_secrets_arn
   accounting_service_secrets_arn  = data.terraform_remote_state.common.outputs.accounting_service_secrets_arn
   hpc_slurm_secrets_arn           = data.terraform_remote_state.common.outputs.hpc_slurm_secrets_arn
+  nexus_secrets_arn               = data.terraform_remote_state.common.outputs.nexus_secrets_arn
 }
 
 module "dockerhub_secret" {
@@ -113,6 +114,7 @@ module "nexus" {
   vpc_id             = local.vpc_id
   domain_name        = local.primary_domain
   dockerhub_password = var.nise_dockerhub_password
+  nexus_secrets_arn  = local.nexus_secrets_arn
 
   domain_zone_id = local.domain_zone_id
   nat_gateway_id = local.nat_gateway_id

@@ -14,7 +14,7 @@ module "postgres_cluster_obp" {
   security_group_id               = module.networking.main_subnet_sg_id
   instance_class                  = "db.m5d.large"
   nexus_postgresql_engine_version = "16"
-  nexus_secrets_arn               = aws_secretsmanager_secret.nexus_secrets.arn
+  nexus_secrets_arn               = var.nexus_secrets_arn
 
   aws_region = var.aws_region
 }
@@ -122,7 +122,7 @@ module "nexus_delta_obp" {
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
   ecs_task_execution_role_arn              = module.iam.nexus_ecs_task_execution_role_arn
-  nexus_secrets_arn                        = aws_secretsmanager_secret.nexus_secrets.arn
+  nexus_secrets_arn                        = var.nexus_secrets_arn
 
   private_delta_target_group_arn = module.obp_delta_target_group.private_lb_target_group_arn
   dockerhub_credentials_arn      = module.iam.dockerhub_credentials_arn

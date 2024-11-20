@@ -80,3 +80,7 @@ variable "aws_ssoadmin_instances_arns" {
 variable "is_production" {
   type = bool
 }
+
+variable "nexus_secrets_arn" {
+  type = string
+}
