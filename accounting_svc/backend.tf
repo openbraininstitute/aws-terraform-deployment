@@ -179,7 +179,7 @@ resource "aws_ecs_task_definition" "accounting_ecs_definition" {
       secrets = [
         {
           name      = "DB_PASS"
-          valueFrom = "${aws_secretsmanager_secret.accounting_database_password.arn}"
+          valueFrom = "${var.accounting_service_secrets_arn}"
         }
       ]
 

@@ -19,6 +19,7 @@ locals {
   keycloak_secrets_arn            = data.terraform_remote_state.common.outputs.keycloak_secrets_arn
   core_webapp_secrets_arn         = data.terraform_remote_state.common.outputs.core_webapp_secrets_arn
   ml_secrets_arn                  = data.terraform_remote_state.common.outputs.ml_secrets_arn
+  accounting_service_secrets_arn  = data.terraform_remote_state.common.outputs.accounting_service_secrets_arn
 }
 
 module "dockerhub_secret" {
@@ -282,6 +283,8 @@ module "accounting_svc" {
   private_alb_listener_arn      = local.private_alb_https_listener_arn
   internet_access_route_id      = local.route_table_private_subnets_id
   allowed_source_ip_cidr_blocks = [var.epfl_cidr, var.bbp_dmz_cidr, local.vpc_cidr_block, ]
+
+  accounting_service_secrets_arn = local.accounting_service_secrets_arn
 
   dockerhub_credentials_arn       = module.dockerhub_secret.dockerhub_credentials_arn
   dockerhub_access_iam_policy_arn = module.dockerhub_secret.dockerhub_access_iam_policy_arn

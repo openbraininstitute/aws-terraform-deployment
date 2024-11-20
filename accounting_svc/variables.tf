@@ -55,3 +55,7 @@ variable "db_username" {
 variable "internet_access_route_id" {
   type = string
 }
+
+variable "accounting_service_secrets_arn" {
+  type = string
+}

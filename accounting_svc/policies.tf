@@ -13,7 +13,7 @@ resource "aws_iam_policy" "secrets_access" {
           "secretsmanager:GetSecretValue"
         ],
         "Resource": [
-          "${aws_secretsmanager_secret.accounting_database_password.arn}"
+          "${var.accounting_service_secrets_arn}"
         ]
       }
     ]
