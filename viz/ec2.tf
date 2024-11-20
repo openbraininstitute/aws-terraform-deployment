@@ -53,10 +53,13 @@ resource "aws_iam_instance_profile" "ec2_instance_role_profile" {
 }
 
 resource "aws_launch_template" "ecs_launch_template" {
-  name                   = "viz_EC2_LaunchTemplate"
-  image_id               = data.aws_ami.amazon_linux_2_ecs.id
-  instance_type          = "t3.medium"
-  user_data              = base64encode(data.template_file.viz_ec2_ecs_user_data.rendered)
+  name          = "viz_EC2_LaunchTemplate"
+  image_id      = data.aws_ami.amazon_linux_2_ecs.id
+  instance_type = "t3.medium"
+  user_data = base64encode(templatefile(local.viz_user_data, {
+    ecs_cluster_name = aws_ecs_cluster.viz.name,
+    ecs_cluster_tags = join(",", [for k, v in var.tags : "\"${k}\": \"${v}\""])
+  }))
   vpc_security_group_ids = [aws_security_group.viz_ec2.id]
 
   metadata_options {
@@ -84,15 +87,6 @@ resource "aws_launch_template" "ecs_launch_template" {
 
 locals {
   viz_user_data = var.viz_enable_sandbox ? "viz_ec2_ecs_user_data.sh" : "viz/viz_ec2_ecs_user_data.sh"
-}
-
-data "template_file" "viz_ec2_ecs_user_data" {
-  template = file(local.viz_user_data)
-
-  vars = {
-    ecs_cluster_name = aws_ecs_cluster.viz.name
-    ecs_cluster_tags = join(",", [for k, v in var.tags : "\"${k}\": \"${v}\""])
-  }
 }
 
 resource "aws_security_group" "viz_ec2" {

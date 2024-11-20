@@ -82,11 +82,15 @@ data "aws_iam_policy_document" "cells_ec2_instance_role_policy" {
 
 # Launch template for the EC2 machines that will be used to run the ECS cluster/containers
 resource "aws_launch_template" "cells_svc_ec2_launch_template" {
-  name                   = "cells_svc_ec2_launch_template"
-  image_id               = var.amazon_linux_ecs_ami_id
-  instance_type          = "t2.medium"
-  key_name               = var.aws_coreservices_ssh_key_id
-  user_data              = base64encode(data.template_file.cells_ec2_ecs_user_data.rendered)
+  name          = "cells_svc_ec2_launch_template"
+  image_id      = var.amazon_linux_ecs_ami_id
+  instance_type = "t2.medium"
+  key_name      = var.aws_coreservices_ssh_key_id
+  user_data = base64encode(templatefile("${path.module}/cells_ec2_ecs_user_data.sh", {
+    cell_svc_perf_bucket_name = var.cell_svc_perf_bucket_name,
+    ecs_cluster_name          = aws_ecs_cluster.cell_svc_ecs_cluster.name,
+    ecs_cluster_tags          = join(",", [for k, v in var.tags : "\"${k}\": \"${v}\""])
+  }))
   vpc_security_group_ids = [aws_security_group.cell_svc_ec2_ecs_instance_sg.id]
   update_default_version = true
 
@@ -112,17 +116,6 @@ resource "aws_launch_template" "cells_svc_ec2_launch_template" {
   tag_specifications {
     resource_type = "volume"
     tags          = var.tags
-  }
-}
-
-# The template for the user data script of the EC2 machines that will be used to run the cells ECS cluster
-data "template_file" "cells_ec2_ecs_user_data" {
-  template = file("${path.module}/cells_ec2_ecs_user_data.sh")
-
-  vars = {
-    cell_svc_perf_bucket_name = var.cell_svc_perf_bucket_name
-    ecs_cluster_name          = aws_ecs_cluster.cell_svc_ecs_cluster.name
-    ecs_cluster_tags          = join(",", [for k, v in var.tags : "\"${k}\": \"${v}\""])
   }
 }
 

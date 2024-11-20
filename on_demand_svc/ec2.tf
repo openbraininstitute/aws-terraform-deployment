@@ -22,19 +22,14 @@ resource "aws_iam_instance_profile" "ec2" {
   tags = var.tags
 }
 
-data "template_file" "ec2_user_data" {
-  template = file("${path.module}/ec2-user-data.sh")
-  vars = {
-    ecs_cluster_name   = local.cluster_name
-    ecs_container_tags = join(",", [for k, v in var.tags : "\"${k}\": \"${v}\""])
-  }
-}
-
 resource "aws_launch_template" "this" {
   name          = var.svc_name
   image_id      = var.ec2_image_id
   instance_type = var.ec2_instance_type
-  user_data     = base64encode(data.template_file.ec2_user_data.rendered)
+  user_data = base64encode(templatefile("${path.module}/ec2-user-data.sh", {
+    ecs_cluster_name   = local.cluster_name,
+    ecs_container_tags = join(",", [for k, v in var.tags : "\"${k}\": \"${v}\""])
+  }))
   iam_instance_profile { arn = aws_iam_instance_profile.ec2.arn }
   monitoring { enabled = true }
   metadata_options { http_tokens = "required" }
