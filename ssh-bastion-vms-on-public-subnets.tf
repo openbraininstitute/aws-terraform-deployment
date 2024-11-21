@@ -4,7 +4,7 @@ resource "aws_instance" "ssh_bastion_a" {
   instance_type               = "t3.medium"
   count                       = var.create_ssh_bastion_vm_on_public_a_network ? 1 : 0
   subnet_id                   = data.terraform_remote_state.common.outputs.public_a_subnet_id
-  key_name                    = data.terraform_remote_state.common.outputs.aws_coreservices_ssh_key_id
+  key_name                    = module.coreservices_key.key_pair_id
   vpc_security_group_ids      = [aws_security_group.ssh_bastion_hosts.id]
   associate_public_ip_address = true
   user_data_replace_on_change = true
