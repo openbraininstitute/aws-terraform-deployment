@@ -18,11 +18,6 @@ variable "aws_region" {
   sensitive = false
 }
 
-variable "account_id" {
-  description = "AWS account id."
-  type        = string
-}
-
 variable "private_alb_https_listener_arn" {
   type        = string
   description = "alb listener to which the https listener rule should be added"

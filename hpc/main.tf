@@ -31,7 +31,6 @@ module "networking" {
   obp_vpc_id                = var.obp_vpc_id
   vpc_peering_connection_id = module.vpc.peering_connection_id
   aws_region                = var.aws_region
-  create_compute_instances  = var.create_compute_instances
   create_slurmdb            = var.create_slurmdb
   create_jumphost           = var.create_jumphost
   compute_nat_access        = var.compute_nat_access
@@ -39,7 +38,6 @@ module "networking" {
   av_zone_suffixes          = var.av_zone_suffixes
   peering_route_tables      = var.peering_route_tables
   security_groups           = [module.security.compute_hpc_sg_id]
-  obp_vpc_default_sg_id     = var.obp_vpc_default_sg_id
   lambda_subnet_cidr        = var.lambda_subnet_cidr
   endpoints_route_table_id  = var.endpoints_route_table_id
 }
@@ -49,10 +47,8 @@ module "security" {
 
   pcluster_vpc_id           = module.vpc.pcluster_vpc_id
   obp_vpc_id                = var.obp_vpc_id
-  create_compute_instances  = var.create_compute_instances
   create_jumphost           = var.create_jumphost
   create_slurmdb            = var.create_slurmdb
-  slurm_db_a_subnet_id      = module.networking.slurm_db_a_subnet_id
   account_id                = var.account_id
   aws_region                = var.aws_region
   aws_endpoints_subnet_cidr = var.aws_endpoints_subnet_cidr
@@ -87,13 +83,9 @@ module "compute-cluster" {
 module "efs" {
   source = "./efs"
 
-  aws_region               = var.aws_region
-  compute_subnet_a_id      = var.create_compute_instances ? module.networking.compute_subnet_ids[0] : ""
-  compute_efs_sg_id        = module.security.compute_efs_sg_id
-  create_compute_instances = var.create_compute_instances
-  compute_subnet_ids       = module.networking.compute_subnet_ids
-  compute_subnet_efs_ids   = module.networking.compute_subnet_efs_ids
-  av_zone_suffixes         = var.av_zone_suffixes
+  compute_efs_sg_id      = module.security.compute_efs_sg_id
+  compute_subnet_efs_ids = module.networking.compute_subnet_efs_ids
+  av_zone_suffixes       = var.av_zone_suffixes
 }
 
 module "resource-provisioner" {

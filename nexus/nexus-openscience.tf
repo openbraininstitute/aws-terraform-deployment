@@ -15,6 +15,4 @@ module "postgres_cluster_openscience" {
   instance_class                  = "db.m5d.large"
   nexus_postgresql_engine_version = "16"
   nexus_secrets_arn               = var.nexus_secrets_arn
-
-  aws_region = var.aws_region
 }

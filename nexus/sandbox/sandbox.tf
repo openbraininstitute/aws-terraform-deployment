@@ -8,7 +8,6 @@ locals {
   account_id                    = "058264116529"
   nat_gateway_id                = module.nexus_sandbox_setup.nat_gateway_id
   public_lb_listener_https_arn  = module.nexus_sandbox_setup.public_lb_listener_http_arn
-  public_load_balancer_dns_name = module.nexus_sandbox_setup.public_load_balancer_dns_name
   vpc_id                        = module.nexus_sandbox_setup.vpc_id
   bucket_name                   = "nexus-delta-sandbox"
 

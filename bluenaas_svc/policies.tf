@@ -12,7 +12,7 @@ resource "aws_iam_policy" "secrets_access" {
           "secretsmanager:GetSecretValue"
         ],
         Resource : [
-          "${var.bluenaas_service_secrets_arn}"
+          var.bluenaas_service_secrets_arn
         ]
       }
     ]

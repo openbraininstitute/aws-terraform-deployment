@@ -161,15 +161,15 @@ resource "aws_ecs_task_definition" "bluenaas_ecs_definition" {
       environment = [
         {
           name  = "APP_DEBUG"
-          value = "${var.debug}"
+          value = var.debug
         },
         {
           name  = "BASE_PATH"
-          value = "${var.base_path}"
+          value = var.base_path
         },
         {
           name  = "KC_SERVER_URI"
-          value = "${var.keycloak_server_url}"
+          value = var.keycloak_server_url
         },
         {
           name  = "KC_REALM_NAME"
@@ -177,7 +177,7 @@ resource "aws_ecs_task_definition" "bluenaas_ecs_definition" {
         },
         {
           name  = "DEPLOYMENT_ENV"
-          value = "${var.deployment_env}"
+          value = var.deployment_env
         },
       ]
 

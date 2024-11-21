@@ -34,11 +34,6 @@ variable "aws_region" {
   sensitive = false
 }
 
-variable "account_id" {
-  description = "AWS account id."
-  type        = string
-}
-
 variable "vpc_cidr_block" {
   description = "CIDR block of the vpc"
   type        = string

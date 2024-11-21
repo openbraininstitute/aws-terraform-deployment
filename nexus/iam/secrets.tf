@@ -1,8 +1,3 @@
-# Created in AWS secret manager
-variable "nexus_secrets_arn" {
-  type        = string
-  description = "The ARN of the SBO nexus app secrets"
-}
 
 #tfsec:ignore:aws-iam-no-policy-wildcards
 resource "aws_iam_policy" "access_nexus_secrets" {

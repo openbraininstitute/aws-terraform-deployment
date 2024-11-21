@@ -30,7 +30,3 @@ variable "subnet_security_group_id" {
   description = "security group applied to the resource which should describe how the resource can communicate inside the subnet"
 }
 
-variable "aws_region" {
-  type        = string
-  description = "The AWS region in which the resources will be created."
-}

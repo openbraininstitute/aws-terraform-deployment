@@ -16,5 +16,4 @@ module "ship" {
   target_bucket_arn           = aws_s3_bucket.nexus_obp.arn
   second_target_bucket_arn    = aws_s3_bucket.nexus_openscience.arn
   nexus_ship_bucket_name      = var.nexus_ship_bucket_name
-  aws_region                  = var.aws_region
 }

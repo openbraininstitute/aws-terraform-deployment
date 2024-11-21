@@ -1,6 +1,3 @@
-data "aws_nat_gateway" "nat_gateway" {
-  id = var.nat_gateway_id
-}
 
 resource "aws_lb_target_group" "virtual_lab_manager_private" {
   #ts:skip=AC_AWS_0492

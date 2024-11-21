@@ -1,9 +1,7 @@
 locals {
-  aws_subnet_slurm_db_a_id         = one(aws_subnet.slurm_db_a[*].id)
-  aws_subnet_slurm_db_b_id         = one(aws_subnet.slurm_db_b[*].id)
-  aws_subnet_slurm_db_a_cidr_block = one(aws_subnet.slurm_db_a[*].cidr_block)
-  aws_subnet_slurm_db_b_cidr_block = one(aws_subnet.slurm_db_b[*].cidr_block)
-  aws_route_table_slurmdb_id       = one(aws_route_table.slurmdb[*].id)
+  aws_subnet_slurm_db_a_id   = one(aws_subnet.slurm_db_a[*].id)
+  aws_subnet_slurm_db_b_id   = one(aws_subnet.slurm_db_b[*].id)
+  aws_route_table_slurmdb_id = one(aws_route_table.slurmdb[*].id)
 }
 
 # Subnet for RDS MySQL DB for SLURM on AZ a

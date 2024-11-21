@@ -173,7 +173,7 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
           },
           {
             name  = "BASE_PATH"
-            value = "${var.thumbnail_generation_api_base_path}"
+            value = var.thumbnail_generation_api_base_path
           },
           {
             name  = "ENVIRONMENT"

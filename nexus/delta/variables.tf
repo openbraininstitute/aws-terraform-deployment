@@ -125,11 +125,6 @@ variable "blazegraph_composite_endpoint" {
   description = "Endpoint of the blazegraph instance delta should use for the composite views; unused if the delta config does not use the $BLAZEGRAPH_COMPOSITE_ENDPOINT. Leave a blank string if this is not necessary."
 }
 
-variable "aws_region" {
-  type        = string
-  description = "The AWS region in which the resources will be created."
-}
-
 variable "domain_name" {
   type = string
 }

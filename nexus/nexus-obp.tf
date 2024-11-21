@@ -15,8 +15,6 @@ module "postgres_cluster_obp" {
   instance_class                  = "db.m5d.large"
   nexus_postgresql_engine_version = "16"
   nexus_secrets_arn               = var.nexus_secrets_arn
-
-  aws_region = var.aws_region
 }
 
 # Blazegraph instance dedicated to Blazegraph views
@@ -44,8 +42,6 @@ module "blazegraph_obp_bg" {
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
-
-  aws_region = var.aws_region
 }
 
 # Blazegraph instance dedicated to composite views
@@ -73,8 +69,6 @@ module "blazegraph_obp_composite" {
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
-
-  aws_region = var.aws_region
 }
 
 module "elasticsearch_obp" {
@@ -138,8 +132,6 @@ module "nexus_delta_obp" {
 
   delta_search_config_commit = "b44315f7e078e4d0ae34d6bd3a596197e5a2b325"
   delta_config_file          = "delta-obp.conf"
-
-  aws_region = var.aws_region
 }
 
 

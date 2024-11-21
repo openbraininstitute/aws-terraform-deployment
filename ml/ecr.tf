@@ -64,7 +64,7 @@ resource "aws_iam_policy" "ml_gh_policy" {
           "ecr:UploadLayerPart",
         ]
         Effect   = "Allow"
-        Resource = "${module.ml_ecr.repository_arn}"
+        Resource = module.ml_ecr.repository_arn
       },
       {
         Action = [

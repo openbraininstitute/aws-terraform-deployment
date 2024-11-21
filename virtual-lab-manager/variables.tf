@@ -17,11 +17,6 @@ variable "vpc_cidr_block" {
   type        = string
 }
 
-variable "nat_gateway_id" {
-  type        = string
-  description = "The ID of the NAT gateway that is used when routing traffic out of the AWS Network."
-}
-
 variable "private_lb_listener_https_arn" {
   type        = string
   description = "ARN of the private listener (used by the private load balancer)"

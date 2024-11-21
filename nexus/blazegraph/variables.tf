@@ -1,7 +1,3 @@
-variable "aws_region" {
-  type        = string
-  description = "The AWS region in which the resources will be created."
-}
 
 variable "subnet_id" {
   type        = string

@@ -34,8 +34,8 @@ locals {
       "secretsmanager:UpdateSecret"
     ],
     "Resource" : [
-      "${var.ml_secrets_arn}",
-      "${module.ml_rds_postgres.db_instance_master_user_secret_arn}",
+      var.ml_secrets_arn,
+      module.ml_rds_postgres.db_instance_master_user_secret_arn,
     ]
   })
 }

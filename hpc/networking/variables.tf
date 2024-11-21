@@ -20,10 +20,6 @@ variable "create_jumphost" {
   type = bool
 }
 
-variable "create_compute_instances" {
-  type = bool
-}
-
 variable "create_slurmdb" {
   type = bool
 }
@@ -47,11 +43,6 @@ variable "peering_route_tables" {
 variable "security_groups" {
   description = "Security groups to add to the Interface endpoints"
   type        = list(string)
-}
-
-variable "obp_vpc_default_sg_id" {
-  description = "ID for the default security group in the OBP VPC"
-  type        = string
 }
 
 variable "lambda_subnet_cidr" {

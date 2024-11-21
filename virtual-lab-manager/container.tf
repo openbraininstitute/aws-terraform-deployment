@@ -142,11 +142,11 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         },
         {
           name  = "BASE_PATH"
-          value = "${var.virtual_lab_manager_base_path}"
+          value = var.virtual_lab_manager_base_path
         },
         {
           name  = "KC_SERVER_URI"
-          value = "${var.keycloak_server_url}"
+          value = var.keycloak_server_url
         },
         {
           name  = "KC_REALM_NAME"
@@ -214,7 +214,7 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         },
         {
           name  = "CORS_ORIGINS"
-          value = "${jsonencode(var.virtual_lab_manager_cors_origins)}"
+          value = jsonencode(var.virtual_lab_manager_cors_origins)
         },
         {
           name  = "VLAB_ADMIN_PATH"
@@ -226,7 +226,7 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         },
         {
           name  = "NEXUS_CROSS_RESOLVER_PROJECTS"
-          value = "${jsonencode(var.virtual_lab_manager_cross_project_resolvers)}"
+          value = jsonencode(var.virtual_lab_manager_cross_project_resolvers)
         },
       ]
       secrets = [

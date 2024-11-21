@@ -34,11 +34,6 @@ variable "route_table_private_subnets_id" {
   default = ""
 }
 
-variable "domain_zone_id" {
-  type    = string
-  default = ""
-}
-
 variable "private_alb_listener_arn" {
   type = string
 }
@@ -57,27 +52,12 @@ variable "viz_enable_sandbox" {
   sensitive   = false
 }
 
-# Created in AWS secret manager
-variable "viz_vsm_db_password_arn" {
-  default     = "arn:aws:secretsmanager:us-east-1:671250183987:secret:viz_vsm_db_password-HpmfWe"
-  type        = string
-  description = "The ARN of the viz vsm secret"
-  sensitive   = false
-}
-
 ### VIZ Brayns renderer service ###
 
 variable "viz_brayns_log_group_name" {
   default     = "viz_brayns"
   type        = string
   description = "The log name within cloudwatch for Brayns"
-  sensitive   = false
-}
-#TODO DEL?
-variable "viz_brayns_hostname" {
-  default     = "private-alb-sbo-brayns.shapes-registry.org"
-  type        = string
-  description = "Hostname at which Brayns containers can be reached via the private ALB"
   sensitive   = false
 }
 
@@ -90,11 +70,6 @@ variable "viz_brayns_docker_image_url" {
 
 ## VIZ PostgreSQL ###
 
-variable "viz_postgresql_database_port" {
-  default   = 5432
-  type      = number
-  sensitive = false
-}
 
 variable "viz_postgresql_database_name" {
   type      = string
@@ -105,12 +80,6 @@ variable "viz_postgresql_database_name" {
 variable "viz_postgresql_database_username" {
   type      = string
   default   = "vsm"
-  sensitive = false
-}
-
-variable "viz_postgresql_admin_username" {
-  type      = string
-  default   = "admin"
   sensitive = false
 }
 
@@ -150,25 +119,11 @@ variable "vsm_proxy_base_path" {
   sensitive   = false
 }
 
-variable "viz_vsm_proxy_hostname" {
-  default     = "sbo-vsm-proxy.shapes-registry.org"
-  type        = string
-  description = "Hostname at which VSM-Proxy container can be reached via the ALB"
-  sensitive   = false
-}
-
 variable "viz_vsm_docker_image_url" {
   type        = string
   default     = "bluebrain/vsm:latest"
   description = "Docker image for VSM services"
   sensitive   = false
-}
-
-variable "viz_brayns_ecs_number_of_containers" {
-  type        = number
-  default     = 1
-  sensitive   = false
-  description = "Number of containers for the Brayns renderer service"
 }
 
 variable "tags" {

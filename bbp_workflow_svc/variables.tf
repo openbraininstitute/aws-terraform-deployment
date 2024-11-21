@@ -6,10 +6,6 @@ variable "aws_region" {
   type        = string
   description = "AWS region where the service will be deployed."
 }
-variable "vpc_id" {
-  type        = string
-  description = "AWS VPC where the service will be deployed."
-}
 variable "ecs_subnet_id" {
   type        = string
   description = "Subnet where the service ECS components will be deployed."
@@ -33,10 +29,6 @@ variable "tags" {
 variable "apigw_id" {
   type        = string
   description = "Tmp to get fixed url, remove."
-}
-variable "primary_domain" {
-  type        = string
-  description = "Primary domain name of the platform."
 }
 variable "kc_scr" {
   type        = string

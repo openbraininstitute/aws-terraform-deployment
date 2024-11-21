@@ -144,7 +144,7 @@ resource "aws_ecs_task_definition" "accounting_ecs_definition" {
         },
         {
           name  = "ROOT_PATH"
-          value = "${var.root_path}"
+          value = var.root_path
         },
         {
           name  = "DB_HOST"
@@ -179,7 +179,7 @@ resource "aws_ecs_task_definition" "accounting_ecs_definition" {
       secrets = [
         {
           name      = "DB_PASS"
-          valueFrom = "${var.accounting_service_secrets_arn}"
+          valueFrom = var.accounting_service_secrets_arn
         }
       ]
 

@@ -15,11 +15,6 @@ variable "vpc_id" {
   description = "The ID of the VPC in which all Nexus components will be deployed."
 }
 
-variable "dockerhub_username" {
-  type    = string
-  default = "bbpcinisedeploy"
-}
-
 variable "domain_name" {
   type = string
 }
@@ -45,11 +40,6 @@ variable "dockerhub_password" {
 variable "nat_gateway_id" {
   type        = string
   description = "The ID of the NAT gateway that is used when routing traffic out of the AWS Network."
-}
-
-variable "domain_zone_id" {
-  type        = string
-  description = "The ID of the Domain Zone (AWS Route53) in which to register the domain records."
 }
 
 variable "allowed_source_ip_cidr_blocks" {

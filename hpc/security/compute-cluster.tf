@@ -15,11 +15,6 @@ resource "aws_default_security_group" "default" {
   }
 }
 
-data "aws_subnet" "slurm_db_a" {
-  id    = var.slurm_db_a_subnet_id
-  count = var.create_slurmdb ? 1 : 0
-}
-
 resource "aws_security_group" "jumphost" {
   name        = "jumphost"
   count       = var.create_jumphost ? 1 : 0

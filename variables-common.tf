@@ -29,13 +29,6 @@ variable "bbpssh_cidr" {
   sensitive   = false
 }
 
-variable "sbo_https_test_hostname" {
-  default     = "sbo-https-test.shapes-registry.org"
-  type        = string
-  description = "The default endpoint for the application load balancer"
-  sensitive   = false
-}
-
 ### Virtual Lab Manager service ###
 
 variable "virtual_lab_manager_base_path" {

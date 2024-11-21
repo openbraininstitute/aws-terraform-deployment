@@ -1,6 +1,5 @@
 locals {
   cluster_name = replace(var.svc_name, "-", "_")
-  sidecar_name = replace("${var.svc_name}_sc", "-", "_")
 }
 
 # data "aws_subnet" "ecs" {

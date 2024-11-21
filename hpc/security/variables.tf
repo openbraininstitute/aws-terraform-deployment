@@ -8,14 +8,6 @@ variable "obp_vpc_id" {
   description = "ID of the OBP VPC"
 }
 
-variable "slurm_db_a_subnet_id" {
-  type = string
-}
-
-variable "create_compute_instances" {
-  type = bool
-}
-
 variable "create_jumphost" {
   type = bool
 }

@@ -249,7 +249,7 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
       environment = [
         {
           name  = "ROOT_PATH"
-          value = "${var.root_path}"
+          value = var.root_path
         }
       ]
 

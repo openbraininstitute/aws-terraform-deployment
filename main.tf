@@ -114,7 +114,6 @@ module "nexus" {
   dockerhub_password = var.nise_dockerhub_password
   nexus_secrets_arn  = local.nexus_secrets_arn
 
-  domain_zone_id = local.domain_zone_id
   nat_gateway_id = local.nat_gateway_id
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
@@ -144,7 +143,6 @@ module "viz" {
 
   scientific_data_bucket_name = "important-scientific-data"
 
-  domain_zone_id           = local.domain_zone_id
   nat_gateway_id           = local.nat_gateway_id
   private_alb_listener_arn = local.private_alb_https_listener_arn
 
@@ -200,7 +198,6 @@ module "bluenaas_svc" {
   source = "./bluenaas_svc"
 
   aws_region                 = local.aws_region
-  account_id                 = local.account_id
   vpc_id                     = local.vpc_id
   private_alb_listener_arn   = local.private_alb_https_listener_arn
   alb_listener_rule_priority = 750
@@ -262,7 +259,6 @@ module "core_webapp" {
   core_webapp_ecs_number_of_containers = 1
   private_alb_https_listener_arn       = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
   aws_region                           = local.aws_region
-  account_id                           = local.account_id
   core_webapp_docker_image_url         = "bluebrain/sbo-core-web-app:latest"
   dockerhub_access_iam_policy_arn      = local.dockerhub_bbpbuildbot_policy_arn
   dockerhub_credentials_arn            = local.dockerhub_bbpbuildbot_secret_arn
@@ -283,7 +279,6 @@ module "accounting_svc" {
   source = "./accounting_svc"
 
   aws_region                    = local.aws_region
-  account_id                    = local.account_id
   vpc_id                        = local.vpc_id
   private_alb_listener_arn      = local.private_alb_https_listener_arn
   internet_access_route_id      = local.route_table_private_subnets_id
@@ -330,7 +325,6 @@ module "thumbnail_generation_api" {
   dockerhub_credentials_arn       = local.dockerhub_bbpbuildbot_secret_arn
 
   aws_region                                = local.aws_region
-  account_id                                = local.account_id
   allowed_source_ip_cidr_blocks             = ["0.0.0.0/0"]
   thumbnail_generation_api_docker_image_url = "bluebrain/thumbnail-generation-api:latest"
   thumbnail_generation_api_base_path        = "/api/thumbnail-generation"
@@ -344,7 +338,6 @@ module "virtual_lab_manager" {
   aws_region                     = local.aws_region
   account_id                     = local.account_id
   vpc_cidr_block                 = local.vpc_cidr_block
-  nat_gateway_id                 = local.nat_gateway_id
   allowed_source_ip_cidr_blocks  = [local.vpc_cidr_block]
   private_lb_listener_https_arn  = local.private_alb_https_listener_arn
   route_table_private_subnets_id = local.route_table_private_subnets_id
@@ -411,7 +404,6 @@ module "dashboards" {
   source = "./dashboards"
 
   aws_region = local.aws_region
-  account_id = local.account_id
 
   private_load_balancer_id = local.private_alb_https_listener_arn
   private_load_balancer_target_suffixes = {

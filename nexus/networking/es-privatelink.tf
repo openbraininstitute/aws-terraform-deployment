@@ -40,7 +40,7 @@ resource "aws_route53_record" "nexus_es_record" {
 
   name    = "*"
   type    = "CNAME"
-  records = [lookup(aws_vpc_endpoint.nexus_es_vpc_ep.dns_entry[0], "dns_name")]
+  records = [aws_vpc_endpoint.nexus_es_vpc_ep.dns_entry[0]["dns_name"]]
 
   ttl = 300
 }

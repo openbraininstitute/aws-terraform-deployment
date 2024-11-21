@@ -196,7 +196,7 @@ resource "aws_ecs_task_definition" "kg_inference_api_task_definition" {
           },
           {
             name  = "BASE_PATH"
-            value = "${var.kg_inference_api_base_path}"
+            value = var.kg_inference_api_base_path
           }
         ],
         memory = 2048

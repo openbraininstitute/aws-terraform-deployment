@@ -1,6 +1,5 @@
 locals {
   sandbox_resource_count = var.viz_enable_sandbox ? 1 : 0
-  prod_resource_count    = var.viz_enable_sandbox ? 0 : 1
 }
 
 resource "aws_vpc" "viz_sandbox" {
