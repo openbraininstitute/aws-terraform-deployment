@@ -3,13 +3,15 @@
 set -ex
 
 apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get -qy install podman skopeo curl jq awscli
+DEBIAN_FRONTEND=noninteractive apt-get -qy install podman skopeo jq awscli
 
-export ECR_URL=$(curl -H "PRIVATE-TOKEN:${GITLAB_API_READ_TOKEN}" https://bbpgitlab.epfl.ch/api/v4/projects/2295/terraform/state/default |  jq -r .outputs.resource_provisioner_ecr_url.value)
+AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
+AWS_REGION=$(aws configure list | grep region | awk '{print $2}')
+export ECR_URL="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/hpc/resource-provisioner"
 
 # aws ecr get-login-password reads credentials either from ~/.aws/credentials or from AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables
-aws ecr get-login-password --region us-east-1 | podman login --username AWS --password-stdin ${ECR_URL}
-aws ecr get-login-password --region us-east-1 | skopeo login --username AWS --password-stdin ${ECR_URL}
+aws ecr get-login-password --region ${AWS_REGION} | podman login --username AWS --password-stdin ${ECR_URL}
+aws ecr get-login-password --region ${AWS_REGION} | skopeo login --username AWS --password-stdin ${ECR_URL}
 
 # try to check the ECR repo to make sure we actually need to pull first
 DOCKERHUB_CONTAINER_INFO=$(skopeo inspect docker://bluebrain/hpc-resource-provisioner:latest)
