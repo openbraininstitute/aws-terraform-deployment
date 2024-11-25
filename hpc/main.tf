@@ -67,19 +67,17 @@ module "slurmdb" {
 module "compute-cluster" {
   source = "./compute-cluster"
 
-  aws_region                = var.aws_region
-  account_id                = var.account_id
-  sbo_billing               = var.sbo_billing
-  domain_zone_id            = var.domain_zone_id
-  compute_subnet_public_id  = module.networking.compute_subnet_public_id
-  compute_subnet_id         = var.create_compute_instances ? module.networking.compute_subnet_ids[0] : ""
-  compute_hpc_sg_id         = module.security.compute_hpc_sg_id
-  jumphost_sg_id            = module.security.jumphost_sg_id
-  create_jumphost           = var.create_jumphost
-  create_compute_instances  = var.create_compute_instances
-  num_compute_instances     = var.num_compute_instances
-  compute_instance_type     = var.compute_instance_type
-  efs_mount_target_dns_name = module.efs.efs_mount_target_dns_name
+  aws_region               = var.aws_region
+  account_id               = var.account_id
+  sbo_billing              = var.sbo_billing
+  compute_subnet_public_id = module.networking.compute_subnet_public_id
+  compute_subnet_id        = var.create_compute_instances ? module.networking.compute_subnet_ids[0] : ""
+  compute_hpc_sg_id        = module.security.compute_hpc_sg_id
+  jumphost_sg_id           = module.security.jumphost_sg_id
+  create_jumphost          = var.create_jumphost
+  create_compute_instances = var.create_compute_instances
+  num_compute_instances    = var.num_compute_instances
+  compute_instance_type    = var.compute_instance_type
 }
 
 module "efs" {

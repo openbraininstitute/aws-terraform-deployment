@@ -85,12 +85,10 @@ resource "aws_ec2_instance_state" "compute" {
 #   records = [aws_instance.compute[count.index].private_ip]
 # }
 #
-
-# Needed for https://github.com/BlueBrain/aws-puppet-bolt-configuration/blob/main/manifests/filesystem_compute_efs.pp#L19
-resource "aws_route53_record" "compute_efs" {
-  zone_id = var.domain_zone_id
-  name    = "compute-efs.shapes-registry.org"
-  type    = "CNAME"
-  ttl     = 60
-  records = [var.efs_mount_target_dns_name]
-}
+# resource "aws_route53_record" "compute_efs" {
+#   zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
+#   name    = "compute-efs.shapes-registry.org"
+#   type    = "CNAME"
+#   ttl     = 60
+#   records = [aws_efs_mount_target.compute_efs.dns_name]
+# }
