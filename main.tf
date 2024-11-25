@@ -220,6 +220,7 @@ module "hpc" {
   account_id                 = local.account_id
   obp_vpc_id                 = local.vpc_id
   obp_vpc_default_sg_id      = local.vpc_default_sg_id
+  domain_zone_id             = local.domain_zone_id
   sbo_billing                = "hpc"
   slurm_mysql_admin_username = "slurm_admin"
   create_compute_instances   = false

@@ -34,6 +34,10 @@ variable "compute_subnet_id" {
   type = string
 }
 
+variable "efs_mount_target_dns_name" {
+  type = string
+}
+
 variable "compute_hpc_sg_id" {
   type = string
 }
@@ -43,5 +47,9 @@ variable "jumphost_sg_id" {
 }
 
 variable "compute_subnet_public_id" {
+  type = string
+}
+
+variable "domain_zone_id" {
   type = string
 }
