@@ -18,11 +18,6 @@ variable "core_webapp_ecs_number_of_containers" {
   description = "Number of containers for the SBO core webapp"
 }
 
-#variable "domain_zone_id" {
-#  type        = string
-#  description = "zone id of the domain where the poc hostname should be added"
-#  sensitive   = false
-#}
 variable "private_alb_https_listener_arn" {
   type        = string
   description = "nlb listener to which the https listener rule should be added"

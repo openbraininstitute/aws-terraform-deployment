@@ -74,21 +74,3 @@ resource "aws_ec2_instance_state" "compute" {
   state = "stopped"
   count = var.create_compute_instances ? var.num_compute_instances : 0
 }
-
-# TODO let's not do this just yet
-# resource "aws_route53_record" "compute" {
-#   count   = var.create_compute_instances ? var.num_compute_instances : 0
-#   zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
-#   name    = "sbo-poc-compute${count.index + 1}.shapes-registry.org"
-#   type    = "A"
-#   ttl     = 60
-#   records = [aws_instance.compute[count.index].private_ip]
-# }
-#
-# resource "aws_route53_record" "compute_efs" {
-#   zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
-#   name    = "compute-efs.shapes-registry.org"
-#   type    = "CNAME"
-#   ttl     = 60
-#   records = [aws_efs_mount_target.compute_efs.dns_name]
-# }

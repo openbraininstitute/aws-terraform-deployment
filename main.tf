@@ -7,7 +7,6 @@ locals {
   route_table_private_subnets_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
 
   public_nlb_sg_id = data.terraform_remote_state.common.outputs.public_nlb_sg_id
-  domain_zone_id   = data.terraform_remote_state.common.outputs.domain_zone_id
   nat_gateway_id   = data.terraform_remote_state.common.outputs.nat_gateway_id
 
   vpc_cidr_block    = data.terraform_remote_state.common.outputs.vpc_cidr_block
@@ -295,7 +294,6 @@ module "accounting_svc" {
 module "kg_inference_api" {
   source = "./kg-inference-api"
 
-  # domain_zone_id                = local.domain_zone_id
   private_alb_https_listener_arn = local.private_alb_https_listener_arn
   route_table_id                 = local.route_table_private_subnets_id
   vpc_cidr_block                 = local.vpc_cidr_block
@@ -315,7 +313,6 @@ module "kg_inference_api" {
 module "thumbnail_generation_api" {
   source = "./thumbnail-generation-api"
 
-  #domain_zone_id                = local.domain_zone_id
   private_alb_https_listener_arn = local.private_alb_https_listener_arn
   route_table_id                 = local.route_table_private_subnets_id
   vpc_cidr_block                 = local.vpc_cidr_block

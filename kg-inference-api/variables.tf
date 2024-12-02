@@ -1,18 +1,8 @@
-# data.terraform_remote_state.common.outputs.domain_zone_id
-# data.terraform_remote_state.common.outputs.route_table_private_subnets_id
-# data.terraform_remote_state.common.outputs.vpc_cidr_block
-# data.terraform_remote_state.common.outputs.vpc_id
-
-# aws_region
-# allowed_source_ip_cidr_blocks
-# kg_inference_api_docker_image_url
-# kg_inference_api_base_path
-# kg_inference_api_log_group_name
-
 variable "allowed_source_ip_cidr_blocks" {
   sensitive = false
   type      = list(string)
 }
+
 variable "aws_region" {
   type      = string
   sensitive = false
@@ -28,15 +18,18 @@ variable "private_alb_https_listener_arn" {
   description = "private alb listener to which the https listener rule should be added"
   sensitive   = false
 }
+
 variable "route_table_id" {
   type        = string
   description = "route table for private networks"
   sensitive   = false
 }
+
 variable "vpc_cidr_block" {
   description = "CIDR block of the vpc"
   type        = string
 }
+
 variable "vpc_id" {
   type        = string
   sensitive   = false
@@ -63,10 +56,12 @@ variable "kg_inference_api_log_group_name" {
   description = "The log name within cloudwatch for the kg inference api"
   sensitive   = false
 }
+
 variable "dockerhub_access_iam_policy_arn" {
   type      = string
   sensitive = false
 }
+
 variable "dockerhub_credentials_arn" {
   type      = string
   sensitive = false
