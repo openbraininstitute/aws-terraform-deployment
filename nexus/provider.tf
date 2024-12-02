@@ -153,3 +153,16 @@ provider "aws" {
   }
   region = var.aws_region
 }
+
+provider "aws" {
+  alias = "nexus_openscience_delta_tags"
+  default_tags {
+    tags = merge(
+      var.openscience,
+      {
+        Nexus = "delta"
+      }
+    )
+  }
+  region = var.aws_region
+}

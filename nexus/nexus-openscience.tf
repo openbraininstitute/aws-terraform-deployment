@@ -90,3 +90,46 @@ module "elasticsearch_openscience" {
     SBO_Billing = "nexus-openscience"
   }
 }
+
+module "nexus_delta_openscience" {
+  source = "./delta"
+
+  providers = {
+    aws = aws.nexus_openscience_delta_tags
+  }
+
+  subnet_id                = module.networking.subnet_id
+  subnet_security_group_id = module.networking.main_subnet_sg_id
+
+  domain_name = var.domain_name
+
+  delta_cpu       = 8192
+  delta_memory    = 16384
+  delta_java_opts = "-Xss2m -Xms10g -Xmx10g"
+
+  delta_instance_name        = "nexus-delta-openscience"
+  delta_docker_image_version = "1.11.0-M7"
+  delta_efs_name             = "delta-openscience"
+  s3_bucket_arn              = aws_s3_bucket.nexus_openscience.arn
+  s3_bucket_name             = var.nexus_openscience_bucket_name
+
+  ecs_cluster_arn                          = aws_ecs_cluster.nexus_openscience.arn
+  aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus_openscience.arn
+  ecs_task_execution_role_arn              = module.iam.nexus_ecs_task_execution_role_arn
+  nexus_secrets_arn                        = var.nexus_secrets_arn
+
+  private_delta_target_group_arn = module.openscience_delta_target_group.private_lb_target_group_arn
+  dockerhub_credentials_arn      = module.iam.dockerhub_credentials_arn
+
+  postgres_host        = module.postgres_cluster_openscience.writer_endpoint
+  postgres_reader_host = module.postgres_cluster_openscience.reader_endpoint
+
+  elasticsearch_endpoint = module.elasticsearch_openscience.http_endpoint
+  elastic_password_arn   = module.elasticsearch_openscience.elastic_user_credentials_secret_arn
+
+  blazegraph_endpoint           = module.blazegraph_openscience_bg.http_endpoint
+  blazegraph_composite_endpoint = module.blazegraph_openscience_composite.http_endpoint
+
+  delta_search_config_commit = "b44315f7e078e4d0ae34d6bd3a596197e5a2b325"
+  delta_config_file          = "delta-openscience.conf"
+}
