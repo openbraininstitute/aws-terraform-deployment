@@ -10,6 +10,9 @@ variable "openscience" {
   }
 }
 
+#########
+## OBP ##
+#########
 provider "aws" {
   default_tags {
     tags = var.default_tags
@@ -96,19 +99,6 @@ provider "aws" {
 }
 
 provider "aws" {
-  alias = "nexus_openscience_postgres_tags"
-  default_tags {
-    tags = merge(
-      var.openscience,
-      {
-        Nexus = "postgres"
-      }
-    )
-  }
-  region = var.aws_region
-}
-
-provider "aws" {
   alias = "nexus_ship_tags"
   default_tags {
     tags = merge(
@@ -128,6 +118,36 @@ provider "aws" {
       var.default_tags,
       {
         Nexus = "dashboard"
+      }
+    )
+  }
+  region = var.aws_region
+}
+
+#################
+## Openscience ##
+#################
+
+provider "aws" {
+  alias = "nexus_openscience_postgres_tags"
+  default_tags {
+    tags = merge(
+      var.openscience,
+      {
+        Nexus = "postgres"
+      }
+    )
+  }
+  region = var.aws_region
+}
+
+provider "aws" {
+  alias = "nexus_openscience_blazegraph_tags"
+  default_tags {
+    tags = merge(
+      var.openscience,
+      {
+        Nexus = "blazegraph"
       }
     )
   }
