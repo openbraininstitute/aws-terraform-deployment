@@ -130,7 +130,7 @@ module "nexus_delta_obp" {
   blazegraph_endpoint           = module.blazegraph_obp_bg.http_endpoint
   blazegraph_composite_endpoint = module.blazegraph_obp_composite.http_endpoint
 
-  delta_search_config_commit = "b44315f7e078e4d0ae34d6bd3a596197e5a2b325"
+  delta_search_config_commit = "566e436e3cbd9b62fa8b710e3a52effcbf106b8f"
   delta_config_file          = "delta-obp.conf"
 }
 
