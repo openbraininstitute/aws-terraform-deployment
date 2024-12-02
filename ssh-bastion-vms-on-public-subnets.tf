@@ -31,8 +31,8 @@ echo "to be replaced with creation of user logins"
 
 resource "aws_route53_record" "ssh_bastion_a" {
   count   = var.create_ssh_bastion_vm_on_public_a_network ? 1 : 0
-  zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
-  name    = "ssh_a.shapes-registry.org"
+  zone_id = data.terraform_remote_state.common.outputs.primary_domain_zone_id
+  name    = "ssh_a.${data.terraform_remote_state.common.outputs.primary_domain}"
   type    = "A"
   ttl     = 60
   records = [aws_instance.ssh_bastion_a[0].public_ip]
@@ -40,8 +40,8 @@ resource "aws_route53_record" "ssh_bastion_a" {
 
 resource "aws_route53_record" "ssh_bastion" {
   count   = var.create_ssh_bastion_vm_on_public_a_network ? 1 : 0
-  zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
-  name    = "ssh.shapes-registry.org"
+  zone_id = data.terraform_remote_state.common.outputs.primary_domain_zone_id
+  name    = "ssh.${data.terraform_remote_state.common.outputs.primary_domain}"
   type    = "A"
   ttl     = 60
   records = [aws_instance.ssh_bastion_a[0].public_ip]
@@ -80,8 +80,8 @@ echo "to be replaced with creation of user logins"
 
 resource "aws_route53_record" "ssh_bastion_b" {
   count   = var.create_ssh_bastion_vm_on_public_b_network ? 1 : 0
-  zone_id = data.terraform_remote_state.common.outputs.domain_zone_id
-  name    = "ssh_b.shapes-registry.org"
+  zone_id = data.terraform_remote_state.common.outputs.primary_domain_zone_id
+  name    = "ssh_b.${data.terraform_remote_state.common.outputs.primary_domain}"
   type    = "A"
   ttl     = 60
   records = [aws_instance.ssh_bastion_b[0].public_ip]
