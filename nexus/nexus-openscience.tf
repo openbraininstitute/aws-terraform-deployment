@@ -12,7 +12,7 @@ module "postgres_cluster_openscience" {
   cluster_identifier              = local.openscience_database_id
   subnets_ids                     = module.networking.psql_subnets_ids
   security_group_id               = module.networking.main_subnet_sg_id
-  instance_class                  = "db.m5d.large"
+  instance_class                  = "db.m5d.xlarge"
   nexus_postgresql_engine_version = "16"
   nexus_secrets_arn               = var.nexus_secrets_arn
 }
