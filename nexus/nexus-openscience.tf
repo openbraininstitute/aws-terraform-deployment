@@ -70,3 +70,23 @@ module "blazegraph_openscience_composite" {
   ecs_cluster_arn                          = aws_ecs_cluster.nexus_openscience.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus_openscience.arn
 }
+
+module "elasticsearch_openscience" {
+  source = "./elasticcloud"
+
+  aws_region               = var.aws_region
+  elastic_vpc_endpoint_id  = module.networking.elastic_vpc_endpoint_id
+  elastic_hosted_zone_name = module.networking.elastic_hosted_zone_name
+
+  elasticsearch_version = "8.16.1"
+
+  hot_node_size  = "4g"
+  hot_node_count = 3
+
+  deployment_name = "nexus-openscience-elasticsearch"
+
+  aws_tags = {
+    Nexus       = "elastic",
+    SBO_Billing = "nexus-openscience"
+  }
+}
