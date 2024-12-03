@@ -166,3 +166,16 @@ provider "aws" {
   }
   region = var.aws_region
 }
+
+provider "aws" {
+  alias = "nexus_openscience_fusion_tags"
+  default_tags {
+    tags = merge(
+      var.openscience,
+      {
+        Nexus = "fusion"
+      }
+    )
+  }
+  region = var.aws_region
+}
