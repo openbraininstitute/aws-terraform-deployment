@@ -146,6 +146,7 @@ module "nexus_fusion_obp" {
   nexus_fusion_hostname  = var.domain_name
   nexus_fusion_base_path = "/web/fusion/"
   nexus_delta_endpoint   = "https://${var.domain_name}/api/nexus/v1"
+  nexus_fusion_client_id = "nexus-delta"
 
 
   aws_region               = var.aws_region

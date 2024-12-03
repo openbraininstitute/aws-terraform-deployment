@@ -145,6 +145,7 @@ module "nexus_fusion_openscience" {
   nexus_fusion_hostname  = "https://openbrainplatform.org"
   nexus_fusion_base_path = "/web/openscience/fusion/"
   nexus_delta_endpoint   = "https://openbrainplatform.org/api/openscience/nexus/v1"
+  nexus_fusion_client_id = "nexus-openscience"
 
   aws_region               = var.aws_region
   subnet_id                = module.networking.subnet_id

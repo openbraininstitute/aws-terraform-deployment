@@ -23,7 +23,7 @@ resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
         },
         {
           name  = "CLIENT_ID"
-          value = "nexus-delta"
+          value = var.nexus_fusion_client_id
         },
         {
           name  = "API_ENDPOINT"

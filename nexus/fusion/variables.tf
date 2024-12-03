@@ -34,9 +34,13 @@ variable "nexus_fusion_base_path" {
 }
 
 variable "nexus_fusion_docker_image_url" {
-  default   = "bluebrain/nexus-web:1.10.0-M2-resource-validation"
+  default   = "bluebrain/nexus-web:2.0.0"
   sensitive = false
   type      = string
+}
+
+variable "nexus_fusion_client_id" {
+  type = string
 }
 
 variable "nexus_delta_endpoint" {
