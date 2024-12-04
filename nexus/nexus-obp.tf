@@ -108,7 +108,7 @@ module "nexus_delta_obp" {
   delta_java_opts = "-Xss2m -Xms6g -Xmx6g"
 
   delta_instance_name        = "nexus-delta-obp"
-  delta_docker_image_version = "1.11.0-M6"
+  delta_docker_image_version = "1.11.0-M8"
   delta_efs_name             = "delta-obp"
   s3_bucket_arn              = aws_s3_bucket.nexus_obp.arn
   s3_bucket_name             = var.nexus_obp_bucket_name
