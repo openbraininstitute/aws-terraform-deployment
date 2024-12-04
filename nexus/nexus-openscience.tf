@@ -142,7 +142,7 @@ module "nexus_fusion_openscience" {
 
   fusion_instance_name = "nexus-fusion-openscience"
 
-  nexus_fusion_hostname  = "https://openbrainplatform.org"
+  nexus_fusion_hostname  = "openbrainplatform.org"
   nexus_fusion_base_path = "/web/openscience/fusion/"
   nexus_delta_endpoint   = "https://openbrainplatform.org/api/openscience/nexus/v1"
   nexus_fusion_client_id = "nexus-openscience"
