@@ -12,7 +12,7 @@ module "postgres_cluster_openscience" {
   cluster_identifier              = local.openscience_database_id
   subnets_ids                     = module.networking.psql_subnets_ids
   security_group_id               = module.networking.main_subnet_sg_id
-  instance_class                  = "db.m5d.xlarge"
+  instance_class                  = "db.m5d.large"
   nexus_postgresql_engine_version = "16"
   nexus_secrets_arn               = var.nexus_secrets_arn
 }
@@ -25,7 +25,7 @@ module "blazegraph_openscience_bg" {
     aws = aws.nexus_openscience_blazegraph_tags
   }
 
-  blazegraph_cpu              = 8192
+  blazegraph_cpu              = 4096
   blazegraph_memory           = 16384
   blazegraph_docker_image_url = "bluebrain/blazegraph-nexus:2.1.6-RC-21-jre"
   blazegraph_java_opts        = "-Djava.awt.headless=true -Djetty.maxFormContentSize=80000000 -XX:MaxDirectMemorySize=600m -Xms10g -Xmx10g -XX:+UseG1GC "
@@ -52,7 +52,7 @@ module "blazegraph_openscience_composite" {
     aws = aws.nexus_openscience_blazegraph_tags
   }
 
-  blazegraph_cpu              = 8192
+  blazegraph_cpu              = 4096
   blazegraph_memory           = 16384
   blazegraph_docker_image_url = "bluebrain/blazegraph-nexus:2.1.6-RC-21-jre"
   blazegraph_java_opts        = "-Djetty.maxFormContentSize=80000000 -XX:MaxDirectMemorySize=600m -Xms10g -Xmx10g -XX:+UseG1GC "
@@ -81,7 +81,7 @@ module "elasticsearch_openscience" {
   elasticsearch_version = "8.16.1"
 
   hot_node_size  = "4g"
-  hot_node_count = 3
+  hot_node_count = 2
 
   deployment_name = "nexus-openscience-elasticsearch"
 
@@ -103,12 +103,12 @@ module "nexus_delta_openscience" {
 
   domain_name = var.domain_name
 
-  delta_cpu       = 8192
-  delta_memory    = 16384
-  delta_java_opts = "-Xss2m -Xms10g -Xmx10g"
+  delta_cpu       = 4096
+  delta_memory    = 10240
+  delta_java_opts = "-Xss2m -Xms6g -Xmx6g"
 
   delta_instance_name        = "nexus-delta-openscience"
-  delta_docker_image_version = "1.11.0-M7"
+  delta_docker_image_version = "1.11.0-M8"
   delta_efs_name             = "delta-openscience"
   s3_bucket_arn              = aws_s3_bucket.nexus_openscience.arn
   s3_bucket_name             = var.nexus_openscience_bucket_name
