@@ -201,7 +201,7 @@ resource "aws_ecs_task_definition" "this" {
         { name : "HPC_PATH_PREFIX", value : "/sbo/data/scratch" },
         { name : "HPC_DATA_PREFIX", value : "/sbo/data/project" },
         { name : "HPC_SIF_PREFIX", value : "/sbo/data/containers" },
-        { name : "NEXUS_BASE", value : "https://{var.primary_domain}/api/nexus/v1" },
+        { name : "NEXUS_BASE", value : "https://${var.nexus_domain_name}/api/nexus/v1" },
       ],
       secrets = [
         { name = "KC_SCR", valueFrom = var.kc_scr },

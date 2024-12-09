@@ -235,3 +235,8 @@ variable "ml_secrets_arn" {
   description = "ARN of the ML secrets manager"
   type        = string
 }
+
+variable "nexus_domain_name" {
+  type        = string
+  description = "Nexus service domain name"
+}

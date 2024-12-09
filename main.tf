@@ -84,6 +84,7 @@ module "ml" {
   grobid_image_url          = "lfoppiano/grobid:0.8.0"
 
   paper_bucket_name = "ml-paper-bucket"
+  nexus_domain_name = module.nexus.nexus_domain_name
 
 
   # OLD PRIVATE ALB
@@ -305,6 +306,7 @@ module "kg_inference_api" {
   aws_region                        = local.aws_region
   account_id                        = local.account_id
   allowed_source_ip_cidr_blocks     = ["0.0.0.0/0"]
+  nexus_domain_name                 = module.nexus.nexus_domain_name
   kg_inference_api_docker_image_url = "bluebrain/kg-inference-api:latest"
   kg_inference_api_base_path        = "/api/kg-inference"
   kg_inference_api_log_group_name   = "kg_inference_api"
@@ -360,7 +362,7 @@ module "virtual_lab_manager" {
 
   virtual_lab_manager_depoloyment_env = "production"
 
-  virtual_lab_manager_nexus_delta_uri = "https://${local.primary_domain}/api/nexus/v1"
+  virtual_lab_manager_nexus_delta_uri = "https://${module.nexus.nexus_domain_name}/api/nexus/v1"
 
   virtual_lab_manager_invite_expiration = "7"
 

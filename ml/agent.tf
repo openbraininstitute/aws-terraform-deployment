@@ -43,7 +43,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_KNOWLEDGE_GRAPH__BASE_URL"
-          value = "https://openbluebrain.com/api/nexus/v1"
+          value = "https://${var.nexus_domain_name}/api/nexus/v1"
         },
         {
           name  = "NEUROAGENT_AGENT__MODEL"
