@@ -57,7 +57,7 @@ module "cs" {
   keycloak_secrets_arn           = local.keycloak_secrets_arn
 
   preferred_hostname = local.primary_domain
-  redirect_hostnames = ["openbluebrain.ch", "openbrainplatform.org", "openbrainplatform.com"]
+  redirect_hostnames = ["openbluebrain.ch", "openbrainplatform.org", "openbluebrain.com"]
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
   account_id                    = local.account_id
