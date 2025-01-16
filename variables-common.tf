@@ -1,6 +1,18 @@
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
+variable "terraform_remote_state_bucket_name" {
+  type        = string
+  description = "Bucket name storing the deployment-common tfstate"
+  sensitive   = false
+}
+
+variable "terraform_remote_state_dynamodb_table" {
+  type        = string
+  description = "dynamodb table that stores the remote lock"
+  sensitive   = false
+}
+
 variable "epfl_cidr" {
   type        = string
   default     = "128.178.0.0/15"
