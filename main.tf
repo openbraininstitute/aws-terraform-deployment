@@ -83,9 +83,8 @@ module "ml" {
   agent_image_tag           = "neuroagent-v0.3.3"
   grobid_image_url          = "lfoppiano/grobid:0.8.0"
 
-  paper_bucket_name = "ml-paper-bucket"
+  paper_bucket_name = var.ml_paper_bucket_name
   nexus_domain_name = module.nexus.nexus_domain_name
-
 
   # OLD PRIVATE ALB
   private_alb_security_group_id = data.terraform_remote_state.common.outputs.private_alb_security_group_id
@@ -110,7 +109,7 @@ module "nexus" {
   aws_region         = local.aws_region
   account_id         = local.account_id
   vpc_id             = local.vpc_id
-  domain_name        = "openbluebrain.com" # TODO move nexus to local.primary_domain
+  domain_name        = var.nexus_domain_name # TODO move nexus to local.primary_domain
   dockerhub_password = var.nise_dockerhub_password
   nexus_secrets_arn  = local.nexus_secrets_arn
 
@@ -118,9 +117,9 @@ module "nexus" {
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 
-  nexus_obp_bucket_name         = "nexus-obp-production"
-  nexus_openscience_bucket_name = "nexus-openscience-production"
-  nexus_ship_bucket_name        = "nexus-ship-production"
+  nexus_obp_bucket_name         = var.nexus_obp_bucket_name
+  nexus_ship_bucket_name        = var.nexus_ship_bucket_name
+  nexus_openscience_bucket_name = var.nexus_openscience_bucket_name
 
   private_lb_listener_https_arn = local.private_alb_https_listener_arn
 
@@ -141,7 +140,7 @@ module "viz" {
   dockerhub_access_iam_policy_arn = local.dockerhub_bbpbuildbot_policy_arn
   secret_dockerhub_arn            = local.dockerhub_bbpbuildbot_secret_arn
 
-  scientific_data_bucket_name = "important-scientific-data"
+  scientific_data_bucket_name = var.viz_scientific_data_bucket_name
 
   nat_gateway_id           = local.nat_gateway_id
   private_alb_listener_arn = local.private_alb_https_listener_arn

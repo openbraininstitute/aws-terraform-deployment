@@ -23,4 +23,5 @@ provider "aws" {
 }
 
 provider "ec" {
+  apikey = var.ec_apikey
 }

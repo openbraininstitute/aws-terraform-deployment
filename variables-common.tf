@@ -13,6 +13,46 @@ variable "terraform_remote_state_dynamodb_table" {
   sensitive   = false
 }
 
+variable "cell_svc_bucket_name" {
+  type      = string
+  sensitive = false
+}
+
+variable "ml_paper_bucket_name" {
+  type      = string
+  sensitive = false
+}
+
+variable "nexus_domain_name" {
+  type      = string
+  sensitive = false
+}
+
+variable "nexus_obp_bucket_name" {
+  type      = string
+  sensitive = false
+}
+
+variable "nexus_ship_bucket_name" {
+  type      = string
+  sensitive = false
+}
+
+variable "nexus_openscience_bucket_name" {
+  type      = string
+  sensitive = false
+}
+
+variable "viz_scientific_data_bucket_name" {
+  type      = string
+  sensitive = false
+}
+
+variable "ec_apikey" {
+  type      = string
+  sensitive = true
+}
+
 variable "epfl_cidr" {
   type        = string
   default     = "128.178.0.0/15"

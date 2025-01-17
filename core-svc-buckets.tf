@@ -1,10 +1,6 @@
 # ---------------------------------------------------
 # Bucket configuration
 # ---------------------------------------------------
-variable "cell_svc_bucket_name" {
-  type    = string
-  default = "sbo-cell-svc-perf-test"
-}
 
 #tfsec:ignore:aws-s3-enable-bucket-encryption
 #tfsec:ignore:aws-s3-enable-bucket-logging
