@@ -235,6 +235,17 @@ resource "aws_vpc_security_group_ingress_rule" "ssh_bastion_hosts_allow_ssh_vpc_
   }
 }
 
+resource "aws_vpc_security_group_ingress_rule" "ssh_bastion_hosts_allow_ssh_external" {
+  security_group_id = aws_security_group.ssh_bastion_hosts.id
+  description       = "Allow SSH from everywhere"
+  from_port         = 22
+  to_port           = 22
+  ip_protocol       = "tcp"
+  cidr_ipv4         = "0.0.0.0/0"
+  tags = {
+    Name = "ssh_bastion_hosts_allow_ssh_external"
+  }
+}
 resource "aws_vpc_security_group_egress_rule" "ssh_bastion_hosts_allow_everything_outgoing" {
   security_group_id = aws_security_group.ssh_bastion_hosts.id
   description       = "Allow everything outgoing"

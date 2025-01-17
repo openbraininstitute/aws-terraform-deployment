@@ -5,6 +5,7 @@ locals {
 
   private_alb_https_listener_arn = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
   route_table_private_subnets_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  route_table_public_id          = data.terraform_remote_state.common.outputs.route_table_public_id
 
   public_nlb_sg_id = data.terraform_remote_state.common.outputs.public_nlb_sg_id
   nat_gateway_id   = data.terraform_remote_state.common.outputs.nat_gateway_id
@@ -229,7 +230,7 @@ module "hpc" {
   compute_nat_access         = false
   compute_subnet_count       = 16
   av_zone_suffixes           = ["a"]
-  peering_route_tables       = [local.route_table_private_subnets_id]
+  peering_route_tables       = [local.route_table_private_subnets_id, local.route_table_public_id]
   lambda_subnet_cidr         = "10.0.16.0/24"
   is_production              = var.is_production
   aws_endpoints_subnet_cidr  = module.networking.endpoints_subnet_cidr
