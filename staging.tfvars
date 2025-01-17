@@ -1,3 +1,11 @@
+is_production                         = false
 terraform_remote_state_dynamodb_table = "terraform-state-lock-table-staging"
 terraform_remote_state_bucket_name    = "obi-tfstate-staging"
 nise_dockerhub_password               = "placeholder"
+cell_svc_bucket_name                  = "sbo-cell-svc-perf-test-staging"
+ml_paper_bucket_name                  = "ml-paper-bucket-staging-test"
+nexus_domain_name                     = "staging.openbluebrain.com"
+nexus_obp_bucket_name                 = "nexus-obp-production-staging-test"
+nexus_ship_bucket_name                = "nexus-ship-production-staging-test"
+nexus_openscience_bucket_name         = "nexus-openscience-production-staging-test"
+viz_scientific_data_bucket_name       = "important-scientific-data-staging"
