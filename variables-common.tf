@@ -85,6 +85,12 @@ variable "bbpssh_cidr" {
   sensitive   = false
 }
 
+variable "core_web_app_docker_image_url" {
+  type        = string
+  description = "docker image for the core-web-app"
+  sensitive   = false
+}
+
 ### Virtual Lab Manager service ###
 
 variable "virtual_lab_manager_base_path" {
