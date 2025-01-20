@@ -43,6 +43,10 @@ variable "nexus_openscience_bucket_name" {
   sensitive = false
 }
 
+variable "nexus_az_letter_id" {
+  type = string
+}
+
 variable "viz_scientific_data_bucket_name" {
   type      = string
   sensitive = false

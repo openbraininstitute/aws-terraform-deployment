@@ -32,6 +32,10 @@ variable "nexus_ship_bucket_name" {
   description = "The Nexus Ship bucket"
 }
 
+variable "nexus_az_letter_id" {
+  type = string
+}
+
 variable "dockerhub_password" {
   type      = string
   sensitive = true

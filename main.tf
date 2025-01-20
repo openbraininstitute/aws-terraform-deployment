@@ -112,6 +112,7 @@ module "nexus" {
   domain_name        = var.nexus_domain_name # TODO move nexus to local.primary_domain
   dockerhub_password = var.nise_dockerhub_password
   nexus_secrets_arn  = local.nexus_secrets_arn
+  nexus_az_letter_id = var.nexus_az_letter_id
 
   nat_gateway_id = local.nat_gateway_id
 
