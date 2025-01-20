@@ -104,6 +104,13 @@ variable "virtual_lab_manager_docker_image_url" {
   sensitive   = false
 }
 
+variable "coreservices_public_key" {
+  type        = string
+  description = "Public SSH key for the coreservices team"
+  sensitive   = true
+
+}
+
 ### Nexus ###
 
 variable "nise_dockerhub_password" {
