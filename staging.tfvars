@@ -1,7 +1,6 @@
 is_production                         = false
 terraform_remote_state_dynamodb_table = "terraform-state-lock-table-staging"
 terraform_remote_state_bucket_name    = "obi-tfstate-staging"
-nise_dockerhub_password               = "placeholder"
 cell_svc_bucket_name                  = "sbo-cell-svc-perf-test-staging"
 ml_paper_bucket_name                  = "ml-paper-bucket-staging-test"
 nexus_domain_name                     = "staging.openbluebrain.com"
