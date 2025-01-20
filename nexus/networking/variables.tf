@@ -8,6 +8,10 @@ variable "vpc_id" {
   description = "The ID of the provided VPC in which all Nexus components will be deployed."
 }
 
+variable "nexus_az_letter_id" {
+  type = string
+}
+
 variable "nat_gateway_id" {
   type        = string
   default     = ""

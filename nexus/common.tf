@@ -1,6 +1,8 @@
 module "networking" {
   source = "./networking"
 
+  nexus_az_letter_id = var.nexus_az_letter_id
+
   providers = {
     aws = aws.nexus_networking_tags
   }
