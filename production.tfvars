@@ -1,0 +1,11 @@
+is_production                         = true
+terraform_remote_state_dynamodb_table = "terraform-state-lock-table-production"
+terraform_remote_state_bucket_name    = "obi-tfstate-production"
+cell_svc_bucket_name                  = "sbo-cell-svc-perf"
+ml_paper_bucket_name                  = "ml-paper-bucket"
+nexus_domain_name                     = "openbluebrain.com"
+nexus_obp_bucket_name                 = "nexus-obp-production"
+nexus_ship_bucket_name                = "nexus-ship-production"
+nexus_openscience_bucket_name         = "nexus-openscience-production"
+viz_scientific_data_bucket_name       = "important-scientific-data"
+nexus_az_letter_id                    = "b"
