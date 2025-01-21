@@ -137,6 +137,19 @@ resource "aws_iam_role" "task" {
       }]
     })
   }
+  inline_policy {
+    name = "${var.svc_name}-api-gateway-access"
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [{
+        Action = [
+          "execute-api:Invoke"
+        ]
+        Effect = "Allow"
+        Resource = "*"
+      }]
+    })
+  }
 }
 
 resource "aws_iam_role" "task_exec" {
