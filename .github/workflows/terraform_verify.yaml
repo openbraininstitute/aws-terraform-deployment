@@ -2,10 +2,12 @@ name: Terraform verify
 on:
   pull_request:
     branches:
-      - [production, staging]
+      - production
+      - staging
 
 jobs:
   terraform_verify:
+    environment: ${{ github.base_ref }}
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -13,7 +15,7 @@ jobs:
       TF_VAR_nise_dockerhub_password: ${{ secrets.NISE_DOCKERHUB_PASS }}
 
     runs-on: ubuntu-latest
-    name: Verify & plan terraform change
+    name: Verify & plan terraform code
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
