@@ -171,19 +171,6 @@ resource "aws_vpc_security_group_ingress_rule" "ssh_bastion_hosts_allow_https_in
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "ssh_bastion_hosts_allow_ssh_bbpproxy" {
-  security_group_id = aws_security_group.ssh_bastion_hosts.id
-  description       = "Allow SSH from bbpproxy"
-  from_port         = 22
-  to_port           = 22
-  ip_protocol       = "tcp"
-  cidr_ipv4         = data.terraform_remote_state.common.outputs.bbpproxy_cidr
-
-  tags = {
-    Name = "ssh_bastion_hosts_allow_ssh_bbpproxy"
-  }
-}
-
 resource "aws_vpc_security_group_ingress_rule" "ssh_bastion_hosts_allow_ssh_epfl" {
   security_group_id = aws_security_group.ssh_bastion_hosts.id
   description       = "Allow SSH from EPFL"
