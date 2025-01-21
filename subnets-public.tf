@@ -46,15 +46,6 @@ resource "aws_network_acl" "public" {
     from_port  = 22
     to_port    = 22
   }
-  # Allow port 22 from bbpproxy
-  ingress {
-    protocol   = "tcp"
-    rule_no    = 120
-    action     = "allow"
-    cidr_block = data.terraform_remote_state.common.outputs.bbpproxy_cidr
-    from_port  = 22
-    to_port    = 22
-  }
   # Allow port 22 from BBP SSH Bastion
   ingress {
     protocol   = "tcp"
