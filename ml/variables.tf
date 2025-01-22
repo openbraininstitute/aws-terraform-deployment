@@ -208,10 +208,6 @@ variable "tags" {
   default     = { SBO_Billing = "machinelearning" }
 }
 
-variable "epfl_cidr" {
-  type = string
-}
-
 variable "bbp_dmz_cidr" {
   type = string
 }

@@ -212,7 +212,7 @@ resource "aws_lb_listener_rule" "generic_private_agent_rule" {
 
   condition {
     source_ip {
-      values = [var.epfl_cidr, var.bbp_dmz_cidr]
+      values = [var.bbp_dmz_cidr]
     }
   }
 }
