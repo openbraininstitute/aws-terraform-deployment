@@ -119,19 +119,6 @@ resource "aws_security_group" "ssh_bastion_hosts" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "ssh_bastion_hosts_allow_http_epfl" {
-  security_group_id = aws_security_group.ssh_bastion_hosts.id
-  description       = "Allow HTTP from EPFL"
-  from_port         = 80
-  to_port           = 80
-  ip_protocol       = "tcp"
-  cidr_ipv4         = var.epfl_cidr
-
-  tags = {
-    Name = "ssh_bastion_hosts_allow_http_epfl"
-  }
-}
-
 resource "aws_vpc_security_group_ingress_rule" "ssh_bastion_hosts_allow_http_internal" {
   security_group_id = aws_security_group.ssh_bastion_hosts.id
   description       = "Allow HTTP from internal"
@@ -145,19 +132,6 @@ resource "aws_vpc_security_group_ingress_rule" "ssh_bastion_hosts_allow_http_int
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "ssh_bastion_hosts_allow_https_epfl" {
-  security_group_id = aws_security_group.ssh_bastion_hosts.id
-  description       = "Allow HTTPS from EPFL"
-  from_port         = 443
-  to_port           = 443
-  ip_protocol       = "tcp"
-  cidr_ipv4         = var.epfl_cidr
-
-  tags = {
-    Name = "ssh_bastion_hosts_allow_https_epfl"
-  }
-}
-
 resource "aws_vpc_security_group_ingress_rule" "ssh_bastion_hosts_allow_https_internal" {
   security_group_id = aws_security_group.ssh_bastion_hosts.id
   description       = "Allow HTTPS from internal"
@@ -168,19 +142,6 @@ resource "aws_vpc_security_group_ingress_rule" "ssh_bastion_hosts_allow_https_in
 
   tags = {
     Name = "ssh_bastion_hosts_allow_https_internal"
-  }
-}
-
-resource "aws_vpc_security_group_ingress_rule" "ssh_bastion_hosts_allow_ssh_epfl" {
-  security_group_id = aws_security_group.ssh_bastion_hosts.id
-  description       = "Allow SSH from EPFL"
-  from_port         = 22
-  to_port           = 22
-  ip_protocol       = "tcp"
-  cidr_ipv4         = var.epfl_cidr
-
-  tags = {
-    Name = "ssh_bastion_hosts_allow_ssh_epfl"
   }
 }
 

@@ -57,13 +57,6 @@ variable "ec_apikey" {
   sensitive = true
 }
 
-variable "epfl_cidr" {
-  type        = string
-  default     = "128.178.0.0/15"
-  description = "CIDR of the network range used by EPFL"
-  sensitive   = false
-}
-
 variable "bbp_dmz_cidr" {
   type        = string
   default     = "192.33.211.0/26"

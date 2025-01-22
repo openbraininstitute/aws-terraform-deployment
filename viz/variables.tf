@@ -38,13 +38,6 @@ variable "private_alb_listener_arn" {
   type = string
 }
 
-variable "epfl_cidr" {
-  type        = string
-  default     = "128.178.0.0/15"
-  description = "CIDR of the network range used by EPFL"
-  sensitive   = false
-}
-
 variable "viz_enable_sandbox" {
   default     = false
   type        = bool
