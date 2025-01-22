@@ -1,4 +1,4 @@
-name: Apply changes
+name: Auto - Apply changes on Merge
 
 # only trigger on pull request closed events
 on:
@@ -18,7 +18,7 @@ jobs:
       TF_VAR_nise_dockerhub_password: ${{ secrets.NISE_DOCKERHUB_PASS }}
 
     runs-on: ubuntu-latest
-    name: Apply terraform code
+    name: Auto Apply terraform code
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

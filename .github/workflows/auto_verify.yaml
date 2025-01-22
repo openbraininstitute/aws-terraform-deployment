@@ -1,4 +1,4 @@
-name: Terraform verify
+name: Auto - Verify & plan
 on:
   pull_request:
     branches:
@@ -15,7 +15,7 @@ jobs:
       TF_VAR_nise_dockerhub_password: ${{ secrets.NISE_DOCKERHUB_PASS }}
 
     runs-on: ubuntu-latest
-    name: Verify & plan terraform code
+    name: Auto Verify & plan terraform code
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
