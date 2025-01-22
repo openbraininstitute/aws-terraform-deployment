@@ -208,10 +208,6 @@ variable "tags" {
   default     = { SBO_Billing = "machinelearning" }
 }
 
-variable "bbp_dmz_cidr" {
-  type = string
-}
-
 variable "readonly_access_policy_statement_part1" {
   description = "Policy for read-only permission pt2"
   type        = string
