@@ -145,32 +145,6 @@ resource "aws_vpc_security_group_ingress_rule" "ssh_bastion_hosts_allow_https_in
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "ssh_bastion_hosts_allow_bb5_login_nodes" {
-  security_group_id = aws_security_group.ssh_bastion_hosts.id
-  description       = "Allow SSH from BB5 Login nodes"
-  from_port         = 22
-  to_port           = 22
-  ip_protocol       = "tcp"
-  cidr_ipv4         = var.bb5_login_nodes_cidr
-
-  tags = {
-    Name = "ssh_bastion_hosts_allow_bb5_login_nodes"
-  }
-}
-
-resource "aws_vpc_security_group_ingress_rule" "ssh_bastion_hosts_allow_bbpssh" {
-  security_group_id = aws_security_group.ssh_bastion_hosts.id
-  description       = "Allow SSH from BBP SSH Bastion host (Jumphost)"
-  from_port         = 22
-  to_port           = 22
-  ip_protocol       = "tcp"
-  cidr_ipv4         = var.bbpssh_cidr
-
-  tags = {
-    Name = "ssh_bastion_hosts_allow_bbpssh"
-  }
-}
-
 resource "aws_vpc_security_group_ingress_rule" "ssh_bastion_hosts_allow_ssh_vpc_us_east_1" {
   security_group_id = aws_security_group.ssh_bastion_hosts.id
   description       = "Allow SSH from internal"

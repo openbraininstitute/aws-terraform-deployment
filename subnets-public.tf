@@ -37,24 +37,6 @@ resource "aws_network_acl" "public" {
     from_port  = 443
     to_port    = 443
   }
-  # Allow port 22 from BBP SSH Bastion
-  ingress {
-    protocol   = "tcp"
-    rule_no    = 125
-    action     = "allow"
-    cidr_block = var.bbpssh_cidr
-    from_port  = 22
-    to_port    = 22
-  }
-  # Allow port 22 from BB5 Login Nodes
-  ingress {
-    protocol   = "tcp"
-    rule_no    = 130
-    action     = "allow"
-    cidr_block = var.bb5_login_nodes_cidr
-    from_port  = 22
-    to_port    = 22
-  }
   # Deny port 5000 (Brayns) from all other IPs
   ingress {
     protocol   = "tcp"

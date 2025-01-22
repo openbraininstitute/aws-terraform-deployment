@@ -96,7 +96,6 @@ module "ml" {
   generic_private_alb_security_group_id = data.terraform_remote_state.common.outputs.generic_private_alb_security_group_id
 
   github_repos                           = ["BlueBrain/neuroagent", "BlueBrain/scholarag", "BlueBrain/scholaretl"]
-  bbp_dmz_cidr                           = var.bbp_dmz_cidr
   readonly_access_policy_statement_part1 = local.readonly_access_policy_statement_part1
   readonly_access_policy_statement_part2 = local.readonly_access_policy_statement_part2
   aws_ssoadmin_instances_arns            = data.aws_ssoadmin_instances.ssoadmin_instances.arns
@@ -281,7 +280,7 @@ module "accounting_svc" {
   vpc_id                        = local.vpc_id
   private_alb_listener_arn      = local.private_alb_https_listener_arn
   internet_access_route_id      = local.route_table_private_subnets_id
-  allowed_source_ip_cidr_blocks = [var.bbp_dmz_cidr, local.vpc_cidr_block, ]
+  allowed_source_ip_cidr_blocks = [local.vpc_cidr_block]
 
   accounting_service_secrets_arn = local.accounting_service_secrets_arn
 
