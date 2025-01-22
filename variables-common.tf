@@ -57,27 +57,6 @@ variable "ec_apikey" {
   sensitive = true
 }
 
-variable "bbp_dmz_cidr" {
-  type        = string
-  default     = "192.33.211.0/26"
-  description = "CIDR of the BBP DMZ, containing bbpproxy, bbpssh bastion host and the proxy for SauceLabs"
-  sensitive   = false
-}
-
-variable "bb5_login_nodes_cidr" {
-  type        = string
-  default     = "192.33.194.8/29"
-  description = "CIDR of the network range used by BB5 Login Nodes (bbpv1, bbpv2)"
-  sensitive   = false
-}
-
-variable "bbpssh_cidr" {
-  type        = string
-  default     = "192.33.211.12/32"
-  description = "CIDR of the network range used by SSH Bastion host (BBP SSH Jumphost)"
-  sensitive   = false
-}
-
 variable "core_web_app_docker_image_url" {
   type        = string
   description = "docker image for the core-web-app"
