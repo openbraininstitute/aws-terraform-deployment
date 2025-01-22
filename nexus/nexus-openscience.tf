@@ -4,6 +4,7 @@ locals {
 
 module "postgres_cluster_openscience" {
   source = "./postgres_cluster"
+  count  = var.is_production ? 1 : 0
 
   providers = {
     aws = aws.nexus_openscience_postgres_tags
@@ -20,6 +21,7 @@ module "postgres_cluster_openscience" {
 # Blazegraph instance dedicated to Blazegraph views
 module "blazegraph_openscience_bg" {
   source = "./blazegraph"
+  count  = var.is_production ? 1 : 0
 
   providers = {
     aws = aws.nexus_openscience_blazegraph_tags
@@ -47,6 +49,7 @@ module "blazegraph_openscience_bg" {
 # Blazegraph instance dedicated to composite views
 module "blazegraph_openscience_composite" {
   source = "./blazegraph"
+  count  = var.is_production ? 1 : 0
 
   providers = {
     aws = aws.nexus_openscience_blazegraph_tags
@@ -73,6 +76,7 @@ module "blazegraph_openscience_composite" {
 
 module "elasticsearch_openscience" {
   source = "./elasticcloud"
+  count  = var.is_production ? 1 : 0
 
   aws_region               = var.aws_region
   elastic_vpc_endpoint_id  = module.networking.elastic_vpc_endpoint_id
@@ -93,6 +97,7 @@ module "elasticsearch_openscience" {
 
 module "nexus_delta_openscience" {
   source = "./delta"
+  count  = var.is_production ? 1 : 0
 
   providers = {
     aws = aws.nexus_openscience_delta_tags
@@ -121,14 +126,14 @@ module "nexus_delta_openscience" {
   private_delta_target_group_arn = module.openscience_delta_target_group.private_lb_target_group_arn
   dockerhub_credentials_arn      = module.iam.dockerhub_credentials_arn
 
-  postgres_host        = module.postgres_cluster_openscience.writer_endpoint
-  postgres_reader_host = module.postgres_cluster_openscience.reader_endpoint
+  postgres_host        = module.postgres_cluster_openscience[0].writer_endpoint
+  postgres_reader_host = module.postgres_cluster_openscience[0].reader_endpoint
 
-  elasticsearch_endpoint = module.elasticsearch_openscience.http_endpoint
-  elastic_password_arn   = module.elasticsearch_openscience.elastic_user_credentials_secret_arn
+  elasticsearch_endpoint = module.elasticsearch_openscience[0].http_endpoint
+  elastic_password_arn   = module.elasticsearch_openscience[0].elastic_user_credentials_secret_arn
 
-  blazegraph_endpoint           = module.blazegraph_openscience_bg.http_endpoint
-  blazegraph_composite_endpoint = module.blazegraph_openscience_composite.http_endpoint
+  blazegraph_endpoint           = module.blazegraph_openscience_bg[0].http_endpoint
+  blazegraph_composite_endpoint = module.blazegraph_openscience_composite[0].http_endpoint
 
   delta_search_config_commit = "b44315f7e078e4d0ae34d6bd3a596197e5a2b325"
   delta_config_file          = "delta-openscience.conf"
@@ -136,6 +141,8 @@ module "nexus_delta_openscience" {
 
 module "nexus_fusion_openscience" {
   source = "./fusion"
+  count  = var.is_production ? 1 : 0
+
   providers = {
     aws = aws.nexus_openscience_fusion_tags
   }
