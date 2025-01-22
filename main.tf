@@ -410,6 +410,7 @@ module "bbp_workflow_svc" {
   kc_scr                         = "${local.workflow_service_secrets_arn}:keycloak_client_secret::"
   id_rsa_scr                     = "${local.workflow_service_secrets_arn}:id_rsa_scr::"
   hpc_head_node                  = "127.0.0.1" # FIXME
+  hpc_provisioner_url            = module.hpc.resource_provisioner_api_url
   tags                           = { SBO_Billing = "bbp_workflow_svc" }
 }
 
