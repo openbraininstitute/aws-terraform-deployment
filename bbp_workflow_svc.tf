@@ -35,17 +35,18 @@ resource "aws_apigatewayv2_api" "this" {
 }
 
 module "bbp_workflow_svc" {
-  source            = "./bbp_workflow_svc"
-  svc_name          = "bbp-workflow-svc"
-  aws_region        = local.aws_region
-  ecs_subnet_id     = aws_subnet.bbp_workflow_svc.id
-  ecs_secgrp_id     = aws_security_group.bbp_workflow_svc.id
-  account_id        = local.account_id
-  nexus_domain_name = module.nexus.nexus_domain_name
-  svc_image         = "bluebrain/bbp-workflow:latest"
-  apigw_id          = aws_apigatewayv2_api.this.id
-  kc_scr            = "arn:aws:secretsmanager:eu-north-1:381492195897:secret:bbp-workflow-YJKyMV" # FIXME
-  id_rsa_scr        = "arn:aws:secretsmanager:eu-north-1:381492195897:secret:hpc-id-rsa-2NNpPK"   # FIXME
-  hpc_head_node     = "127.0.0.1"                                                                 # FIXME
-  tags              = { SBO_Billing = "bbp_workflow_svc" }
+  source              = "./bbp_workflow_svc"
+  svc_name            = "bbp-workflow-svc"
+  aws_region          = local.aws_region
+  ecs_subnet_id       = aws_subnet.bbp_workflow_svc.id
+  ecs_secgrp_id       = aws_security_group.bbp_workflow_svc.id
+  account_id          = local.account_id
+  nexus_domain_name   = module.nexus.nexus_domain_name
+  svc_image           = "bluebrain/bbp-workflow:latest"
+  apigw_id            = aws_apigatewayv2_api.this.id
+  kc_scr              = "arn:aws:secretsmanager:eu-north-1:381492195897:secret:bbp-workflow-YJKyMV" # FIXME
+  id_rsa_scr          = "arn:aws:secretsmanager:eu-north-1:381492195897:secret:hpc-id-rsa-2NNpPK"   # FIXME
+  hpc_head_node       = "127.0.0.1"                                                                 # FIXME
+  hpc_provisioner_url = module.hpc.resource_provisioner_api_url
+  tags                = { SBO_Billing = "bbp_workflow_svc" }
 }
