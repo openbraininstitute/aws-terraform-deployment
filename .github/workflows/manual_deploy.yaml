@@ -1,4 +1,4 @@
-name: Terraform apply
+name: Manual - Apply changes
 on:
   workflow_dispatch:
     inputs:
@@ -16,7 +16,7 @@ jobs:
       TF_VAR_nise_dockerhub_password: ${{ secrets.NISE_DOCKERHUB_PASS }}
 
     runs-on: ubuntu-latest
-    name: Run terraform verify
+    name: Manual run terraform apply
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
