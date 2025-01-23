@@ -47,11 +47,6 @@ variable "nexus_az_letter_id" {
   type = string
 }
 
-variable "viz_scientific_data_bucket_name" {
-  type      = string
-  sensitive = false
-}
-
 variable "ec_apikey" {
   type      = string
   sensitive = true
