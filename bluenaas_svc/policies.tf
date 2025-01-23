@@ -17,8 +17,4 @@ resource "aws_iam_policy" "secrets_access" {
       }
     ]
   })
-
-  tags = {
-    SBO_Billing = "bluenaas"
-  }
 }

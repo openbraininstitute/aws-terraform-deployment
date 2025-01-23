@@ -15,10 +15,6 @@ resource "aws_lb_target_group" "bluenaas_private_tg" {
     path     = "${var.base_path}/health"
     protocol = "HTTP"
   }
-
-  tags = {
-    SBO_Billing = "bluenaas"
-  }
 }
 
 resource "aws_lb_listener_rule" "bluenaas_private_listener_rule" {
@@ -34,9 +30,5 @@ resource "aws_lb_listener_rule" "bluenaas_private_listener_rule" {
     path_pattern {
       values = ["${var.base_path}*"]
     }
-  }
-
-  tags = {
-    SBO_Billing = "bluenaas"
   }
 }
