@@ -3,8 +3,7 @@ resource "aws_subnet" "bluenaas_ecs_a" {
   availability_zone = "${var.aws_region}a"
   cidr_block        = "10.0.18.0/27"
   tags = {
-    Name          = "bluenaas_ecs_a"
-    "SBO_Billing" = "bluenaas"
+    Name = "bluenaas_ecs_a"
   }
 }
 
@@ -13,8 +12,7 @@ resource "aws_subnet" "bluenaas_ecs_b" {
   availability_zone = "${var.aws_region}b"
   cidr_block        = "10.0.18.32/27"
   tags = {
-    Name          = "bluenaas_ecs_b"
-    "SBO_Billing" = "bluenaas"
+    Name = "bluenaas_ecs_b"
   }
 }
 
