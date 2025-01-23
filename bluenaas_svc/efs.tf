@@ -4,8 +4,7 @@ resource "aws_efs_file_system" "model_cache_efs" {
   encrypted        = false #tfsec:ignore:aws-efs-enable-at-rest-encryption
 
   tags = {
-    Name        = "bluenaas_efs"
-    SBO_Billing = "bluenaas"
+    Name = "bluenaas_efs"
   }
 }
 

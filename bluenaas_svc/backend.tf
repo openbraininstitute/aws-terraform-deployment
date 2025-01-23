@@ -12,8 +12,7 @@ resource "aws_cloudwatch_log_group" "bluenaas_ecs_task_logs" {
   kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
 
   tags = {
-    Name        = "bluenaas"
-    SBO_Billing = "bluenaas"
+    Name = "bluenaas"
   }
 }
 
@@ -21,8 +20,7 @@ resource "aws_ecs_cluster" "bluenaas" {
   name = "bluenaas_ecs_cluster"
 
   tags = {
-    Name        = "bluenaas"
-    SBO_Billing = "bluenaas"
+    Name = "bluenaas"
   }
 
   setting {
@@ -38,8 +36,7 @@ resource "aws_security_group" "bluenaas_ecs_task" {
   description = "Sec group for bluenaas service"
 
   tags = {
-    Name        = "bluenaas_secgroup"
-    SBO_Billing = "bluenaas"
+    Name = "bluenaas_secgroup"
   }
 }
 
@@ -51,10 +48,6 @@ resource "aws_vpc_security_group_ingress_rule" "bluenaas_allow_port_8000" {
   to_port     = 8000
   cidr_ipv4   = data.aws_vpc.main.cidr_block
   description = "Allow port 8000 http"
-
-  tags = {
-    SBO_Billing = "bluenaas"
-  }
 }
 
 resource "aws_vpc_security_group_ingress_rule" "bluenaas_allow_in_tcp" {
@@ -65,10 +58,6 @@ resource "aws_vpc_security_group_ingress_rule" "bluenaas_allow_in_tcp" {
   to_port     = 65535
   cidr_ipv4   = "0.0.0.0/0"
   description = "Allow all TCP"
-
-  tags = {
-    SBO_Billing = "bluenaas"
-  }
 }
 
 resource "aws_vpc_security_group_egress_rule" "bluenaas_allow_outgoing_tcp" {
@@ -79,10 +68,6 @@ resource "aws_vpc_security_group_egress_rule" "bluenaas_allow_outgoing_tcp" {
   to_port     = 65535
   cidr_ipv4   = "0.0.0.0/0"
   description = "Allow all TCP"
-
-  tags = {
-    SBO_Billing = "bluenaas"
-  }
 }
 
 resource "aws_vpc_security_group_egress_rule" "bluenaas_allow_outgoing_udp" {
@@ -93,10 +78,6 @@ resource "aws_vpc_security_group_egress_rule" "bluenaas_allow_outgoing_udp" {
   to_port     = 65535
   cidr_ipv4   = "0.0.0.0/0"
   description = "Allow all UDP"
-
-  tags = {
-    SBO_Billing = "bluenaas"
-  }
 }
 
 resource "aws_ecs_task_definition" "bluenaas_ecs_definition" {
@@ -214,10 +195,6 @@ resource "aws_ecs_task_definition" "bluenaas_ecs_definition" {
   depends_on = [
     aws_cloudwatch_log_group.bluenaas_ecs_task_logs,
   ]
-
-  tags = {
-    SBO_Billing = "bluenaas"
-  }
 }
 
 resource "aws_ecs_service" "bluenaas_ecs_service" {
@@ -245,9 +222,7 @@ resource "aws_ecs_service" "bluenaas_ecs_service" {
   force_new_deployment = true
   desired_count        = 1
 
-  tags = {
-    SBO_Billing = "bluenaas"
-  }
+  propagate_tags = "SERVICE"
 }
 
 resource "aws_iam_role" "ecs_bluenaas_task_execution_role" {
@@ -266,10 +241,6 @@ resource "aws_iam_role" "ecs_bluenaas_task_execution_role" {
       }
     ]
   })
-
-  tags = {
-    SBO_Billing = "bluenaas"
-  }
 }
 
 resource "aws_iam_role" "ecs_bluenaas_task_role" {
@@ -288,10 +259,6 @@ resource "aws_iam_role" "ecs_bluenaas_task_role" {
       }
     ]
   })
-
-  tags = {
-    SBO_Billing = "bluenaas"
-  }
 }
 
 resource "aws_iam_policy" "ecs_task_logs_bluenaas" {
