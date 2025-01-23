@@ -3,8 +3,7 @@ resource "aws_subnet" "accounting_db_a" {
   availability_zone = "${var.aws_region}a"
   cidr_block        = "10.0.17.0/28"
   tags = {
-    Name          = "accounting_db_a"
-    "SBO_Billing" = "accounting"
+    Name = "accounting_db_a"
   }
 }
 
@@ -13,8 +12,7 @@ resource "aws_subnet" "accounting_db_b" {
   availability_zone = "${var.aws_region}b"
   cidr_block        = "10.0.17.16/28"
   tags = {
-    Name          = "accounting_db_b"
-    "SBO_Billing" = "accounting"
+    Name = "accounting_db_b"
   }
 }
 
@@ -23,8 +21,7 @@ resource "aws_subnet" "accounting_ecs_a" {
   availability_zone = "${var.aws_region}a"
   cidr_block        = "10.0.17.32/27"
   tags = {
-    Name          = "accounting_ecs_a"
-    "SBO_Billing" = "accounting"
+    Name = "accounting_ecs_a"
   }
 }
 
@@ -33,8 +30,7 @@ resource "aws_subnet" "accounting_ecs_b" {
   availability_zone = "${var.aws_region}b"
   cidr_block        = "10.0.17.64/27"
   tags = {
-    Name          = "accounting_ecs_b"
-    "SBO_Billing" = "accounting"
+    Name = "accounting_ecs_b"
   }
 }
 

@@ -3,10 +3,6 @@ resource "aws_security_group" "acc_sg" {
 
   name        = "main_accounting_sg"
   description = "main secruity group for accounting resources"
-
-  tags = {
-    SBO_Billing = "accounting"
-  }
 }
 
 resource "aws_vpc_security_group_ingress_rule" "main_subnet_ingress" {
@@ -16,10 +12,6 @@ resource "aws_vpc_security_group_ingress_rule" "main_subnet_ingress" {
   cidr_ipv4         = data.aws_vpc.main.cidr_block
   from_port         = -1
   to_port           = -1
-
-  tags = {
-    SBO_Billing = "accounting"
-  }
 }
 
 resource "aws_vpc_security_group_egress_rule" "main_subnet_egress" {
@@ -29,8 +21,4 @@ resource "aws_vpc_security_group_egress_rule" "main_subnet_egress" {
   cidr_ipv4         = "0.0.0.0/0"
   from_port         = -1
   to_port           = -1
-
-  tags = {
-    SBO_Billing = "accounting"
-  }
 }

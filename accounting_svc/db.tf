@@ -1,9 +1,6 @@
 resource "aws_db_subnet_group" "accounting_db_cluster_subnet_group" {
   name       = "accounting-db-cluster-group"
   subnet_ids = [aws_subnet.accounting_db_a.id, aws_subnet.accounting_db_b.id]
-  tags = {
-    SBO_Billing = "accounting"
-  }
 }
 
 data "aws_secretsmanager_secret_version" "accounting_database_password" {
@@ -46,7 +43,6 @@ resource "aws_db_instance" "accounting" {
   copy_tags_to_snapshot = true
 
   tags = {
-    Name        = "accounting-db"
-    SBO_Billing = "accounting"
+    Name = "accounting-db"
   }
 }

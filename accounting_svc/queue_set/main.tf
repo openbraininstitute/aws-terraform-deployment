@@ -14,8 +14,7 @@ resource "aws_sqs_queue" "main_queue" {
   })
 
   tags = {
-    Name        = var.main_queue_name
-    SBO_Billing = "accounting"
+    Name = var.main_queue_name
   }
 }
 
@@ -27,8 +26,7 @@ resource "aws_sqs_queue" "dlq" {
   message_retention_seconds   = 1209600
 
   tags = {
-    Name        = var.dlq_name
-    SBO_Billing = "accounting"
+    Name = var.dlq_name
   }
 }
 

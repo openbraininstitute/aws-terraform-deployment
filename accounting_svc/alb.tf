@@ -15,10 +15,6 @@ resource "aws_lb_target_group" "accounting_private_tg" {
     path     = "${var.root_path}/health"
     protocol = "HTTP"
   }
-
-  tags = {
-    SBO_Billing = "accounting"
-  }
 }
 
 resource "aws_lb_listener_rule" "accounting_private_listener_rule" {
@@ -40,9 +36,5 @@ resource "aws_lb_listener_rule" "accounting_private_listener_rule" {
     source_ip {
       values = var.allowed_source_ip_cidr_blocks
     }
-  }
-
-  tags = {
-    SBO_Billing = "accounting"
   }
 }
