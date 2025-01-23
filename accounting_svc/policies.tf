@@ -19,10 +19,6 @@ resource "aws_iam_policy" "secrets_access" {
     ]
   }
   EOT
-
-  tags = {
-    SBO_Billing = "accounting"
-  }
 }
 
 resource "aws_iam_policy" "writing_queues" {
