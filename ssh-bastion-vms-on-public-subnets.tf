@@ -145,15 +145,15 @@ resource "aws_vpc_security_group_ingress_rule" "ssh_bastion_hosts_allow_https_in
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "ssh_bastion_hosts_allow_ssh_vpc_us_east_1" {
+resource "aws_vpc_security_group_ingress_rule" "ssh_bastion_hosts_allow_ssh_external" {
   security_group_id = aws_security_group.ssh_bastion_hosts.id
-  description       = "Allow SSH from internal"
+  description       = "Allow SSH from everywhere"
   from_port         = 22
   to_port           = 22
   ip_protocol       = "tcp"
-  cidr_ipv4         = data.terraform_remote_state.common.outputs.vpc_cidr_block
+  cidr_ipv4         = "0.0.0.0/0"
   tags = {
-    Name = "ssh_bastion_hosts_allow_ssh_us_east_1"
+    Name = "ssh_bastion_hosts_allow_ssh_external"
   }
 }
 
