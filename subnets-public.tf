@@ -19,6 +19,15 @@ resource "aws_network_acl" "public" {
     from_port  = 0
     to_port    = 0
   }
+  # Allow ssh port 22 from anywhere
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 102
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 22
+    to_port    = 22
+  }
   # Allow port 80 from anywhere
   ingress {
     protocol   = "tcp"
