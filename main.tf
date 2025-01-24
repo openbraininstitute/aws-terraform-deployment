@@ -131,27 +131,6 @@ module "nexus" {
 
 module "viz" {
   source = "./viz"
-
-  aws_region = local.aws_region
-  account_id = local.account_id
-  vpc_id     = local.vpc_id
-
-  dockerhub_access_iam_policy_arn = local.dockerhub_bbpbuildbot_policy_arn
-  secret_dockerhub_arn            = local.dockerhub_bbpbuildbot_secret_arn
-
-  scientific_data_bucket_name = var.viz_scientific_data_bucket_name
-
-  nat_gateway_id           = local.nat_gateway_id
-  private_alb_listener_arn = local.private_alb_https_listener_arn
-
-  aws_security_group_nlb_id      = local.public_nlb_sg_id
-  route_table_private_subnets_id = local.route_table_private_subnets_id
-
-  readonly_access_policy_statement_part1 = local.readonly_access_policy_statement_part1
-  readonly_access_policy_statement_part2 = local.readonly_access_policy_statement_part2
-  aws_ssoadmin_instances_arns            = data.aws_ssoadmin_instances.ssoadmin_instances.arns
-  is_production                          = var.is_production
-
 }
 
 module "cells_svc" {

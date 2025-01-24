@@ -4,7 +4,7 @@ provider "aws" {
       SBO_Billing = "viz"
     }
   }
-  region = var.aws_region
+  region = "us-east-1"
 }
 
 terraform {
