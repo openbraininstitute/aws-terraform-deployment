@@ -33,21 +33,46 @@ def generateAllow(principalId, resource):
 def generateDeny(principalId, resource):
     return generatePolicy(principalId, "Deny", resource)
 
+
 def token(event, context):
+    """AWS Lambda authorizer function that validates a JWT token against the keycloak endpoint.
+
+    Args:
+        event (dict): Lambda event containing:
+            - identitySource[0]: JWT token to validate
+            - headers: Request headers
+            - routeArn: AWS resource ARN for the API route
+        context (LambdaContext): AWS Lambda context object (unused)
+
+    Returns:
+        dict: IAM policy response with structure:
+            - Allow: Grants access if token is valid, includes KC_SUB in context
+            - Deny: Denies access if token is invalid or validation fails
+    """
     token = event["identitySource"][0]
     headers = event["headers"]
-    ip = ip_address(headers["x-forwarded-for"])
-    epfl_cidr = ip_network("128.178.0.0/15", False)
-    bbp_dmz_cidr = ip_network("192.33.211.0/26", False)
+    route_arn = event["routeArn"]
 
-    if ip in epfl_cidr or ip in bbp_dmz_cidr:
-        user_info = os.environ["USER_INFO"]
-        with urlopen(Request(user_info, headers={"authorization": token}), timeout=2) as response:
+    user_info = os.environ["USER_INFO"]
+
+    if not user_info:
+        return generateDeny("me", route_arn)
+
+    try:
+        request = Request(user_info, headers={"authorization": token})
+    except URLError:
+        return generateDeny("me", route_arn)
+
+    try:
+        with urlopen(request, timeout=2) as response:
             sub = json.load(response)["sub"]
-            authResponse = generateAllow("me", event["routeArn"])
-            authResponse["context"] = {"KC_SUB": sub}
-            return authResponse
-    return generateDeny("me", event["routeArn"])
+    except (HTTPError, json.JSONDecodeError, KeyError):
+        return generateDeny("me", route_arn)
+
+    authResponse = generateAllow("me", route_arn)
+    authResponse["context"] = {"KC_SUB": sub}
+
+    return authResponse
 
 
 def get_session_id(cookies: str) -> str | None:
