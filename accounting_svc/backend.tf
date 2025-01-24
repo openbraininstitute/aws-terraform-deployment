@@ -12,8 +12,7 @@ resource "aws_cloudwatch_log_group" "accounting_ecs_task_logs" {
   kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
 
   tags = {
-    Name        = "accounting"
-    SBO_Billing = "accounting"
+    Name = "accounting"
   }
 }
 
@@ -21,8 +20,7 @@ resource "aws_ecs_cluster" "accounting" {
   name = "accounting_ecs_cluster"
 
   tags = {
-    Name        = "accounting"
-    SBO_Billing = "accounting"
+    Name = "accounting"
   }
 
   setting {
@@ -38,8 +36,7 @@ resource "aws_security_group" "accounting_ecs_task" {
   description = "Sec group for accounting service"
 
   tags = {
-    Name        = "accounting_secgroup"
-    SBO_Billing = "accounting"
+    Name = "accounting_secgroup"
   }
 }
 
@@ -51,10 +48,6 @@ resource "aws_vpc_security_group_ingress_rule" "accounting_allow_port_8000" {
   to_port     = 8000
   cidr_ipv4   = data.aws_vpc.main.cidr_block
   description = "Allow port 8000 http"
-
-  tags = {
-    SBO_Billing = "accounting"
-  }
 }
 
 resource "aws_vpc_security_group_ingress_rule" "accounting_allow_in_tcp" {
@@ -65,10 +58,6 @@ resource "aws_vpc_security_group_ingress_rule" "accounting_allow_in_tcp" {
   to_port     = 65535
   cidr_ipv4   = "0.0.0.0/0"
   description = "Allow all TCP"
-
-  tags = {
-    SBO_Billing = "accounting"
-  }
 }
 
 resource "aws_vpc_security_group_egress_rule" "accounting_allow_outgoing_tcp" {
@@ -79,10 +68,6 @@ resource "aws_vpc_security_group_egress_rule" "accounting_allow_outgoing_tcp" {
   to_port     = 65535
   cidr_ipv4   = "0.0.0.0/0"
   description = "Allow all TCP"
-
-  tags = {
-    SBO_Billing = "accounting"
-  }
 }
 
 resource "aws_vpc_security_group_egress_rule" "accounting_allow_outgoing_udp" {
@@ -93,10 +78,6 @@ resource "aws_vpc_security_group_egress_rule" "accounting_allow_outgoing_udp" {
   to_port     = 65535
   cidr_ipv4   = "0.0.0.0/0"
   description = "Allow all UDP"
-
-  tags = {
-    SBO_Billing = "accounting"
-  }
 }
 
 resource "aws_ecs_task_definition" "accounting_ecs_definition" {
@@ -206,10 +187,6 @@ resource "aws_ecs_task_definition" "accounting_ecs_definition" {
   depends_on = [
     aws_cloudwatch_log_group.accounting_ecs_task_logs,
   ]
-
-  tags = {
-    SBO_Billing = "accounting"
-  }
 }
 
 resource "aws_ecs_service" "accounting_ecs_service" {
@@ -239,9 +216,7 @@ resource "aws_ecs_service" "accounting_ecs_service" {
   force_new_deployment = true
   desired_count        = 1
 
-  tags = {
-    SBO_Billing = "accounting"
-  }
+  propagate_tags = "SERVICE"
 }
 
 resource "aws_iam_role" "ecs_accounting_task_execution_role" {
@@ -262,10 +237,6 @@ resource "aws_iam_role" "ecs_accounting_task_execution_role" {
     ]
   }
   EOT
-
-  tags = {
-    SBO_Billing = "accounting"
-  }
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_accounting_task_execution_role_policy_attachment" {
@@ -291,10 +262,6 @@ resource "aws_iam_role" "ecs_accounting_task_role" {
     ]
   }
   EOT
-
-  tags = {
-    SBO_Billing = "accounting"
-  }
 }
 
 resource "aws_iam_policy" "ecs_task_logs_accounting" {
