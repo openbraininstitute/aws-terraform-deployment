@@ -78,3 +78,9 @@ variable "is_production" {
 variable "nexus_secrets_arn" {
   type = string
 }
+
+variable "is_nexus_openscience_running" {
+  description = "Whether OpenScience nexus should be running"
+  type        = bool
+  default     = true
+}
