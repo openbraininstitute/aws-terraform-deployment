@@ -79,6 +79,18 @@ resource "aws_s3_bucket" "static_storage" {
   force_destroy = true
 }
 
+resource "aws_s3_bucket_lifecycle_configuration" "static_storage" {
+  bucket = aws_s3_bucket.static_storage.id
+  rule {
+    id     = "DeleteOldMultipartUploads"
+    status = "Enabled"
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+  }
+}
+
 resource "aws_s3_bucket_metric" "static_storage_metrics" {
   bucket = aws_s3_bucket.static_storage.id
   name   = "EntireBucket"

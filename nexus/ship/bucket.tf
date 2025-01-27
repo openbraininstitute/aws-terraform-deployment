@@ -5,6 +5,19 @@
 resource "aws_s3_bucket" "nexus_ship" {
   bucket = var.nexus_ship_bucket_name
 }
+
+resource "aws_s3_bucket_lifecycle_configuration" "nexus_ship" {
+  bucket = aws_s3_bucket.nexus_ship.id
+  rule {
+    id     = "DeleteOldMultipartUploads"
+    status = "Enabled"
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+  }
+}
+
 resource "aws_s3_bucket_public_access_block" "nexus_ship" {
   bucket = aws_s3_bucket.nexus_ship.id
 

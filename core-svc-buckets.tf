@@ -13,6 +13,18 @@ resource "aws_s3_bucket" "sbo-cell-svc-perf-test" {
   }
 }
 
+resource "aws_s3_bucket_lifecycle_configuration" "sbo-cell-svc-perf-test" {
+  bucket = aws_s3_bucket.sbo-cell-svc-perf-test.id
+  rule {
+    id     = "DeleteOldMultipartUploads"
+    status = "Enabled"
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+  }
+}
+
 resource "aws_s3_object" "sbo-cell-svc-perf-test-directory" {
   count        = 1
   bucket       = aws_s3_bucket.sbo-cell-svc-perf-test.id
