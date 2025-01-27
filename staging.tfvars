@@ -9,3 +9,5 @@ nexus_ship_bucket_name                = "nexus-ship-production-staging-test"
 nexus_openscience_bucket_name         = "nexus-openscience-production-staging-test"
 nexus_az_letter_id                    = "a"
 core_web_app_docker_image_url         = "bluebrain/sbo-core-web-app:staging"
+is_nexus_openscience_running          = false
+is_nexus_obp_running                  = true

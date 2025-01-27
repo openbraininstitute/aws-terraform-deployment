@@ -20,6 +20,7 @@ module "postgres_cluster_obp" {
 # Blazegraph instance dedicated to Blazegraph views
 module "blazegraph_obp_bg" {
   source = "./blazegraph"
+  count  = var.is_nexus_obp_running ? 1 : 0
 
   providers = {
     aws = aws.nexus_blazegraph_tags
@@ -47,6 +48,7 @@ module "blazegraph_obp_bg" {
 # Blazegraph instance dedicated to composite views
 module "blazegraph_obp_composite" {
   source = "./blazegraph"
+  count  = var.is_nexus_obp_running ? 1 : 0
 
   providers = {
     aws = aws.nexus_blazegraph_tags
@@ -93,6 +95,7 @@ module "elasticsearch_obp" {
 
 module "nexus_delta_obp" {
   source = "./delta"
+  count  = var.is_nexus_obp_running ? 1 : 0
 
   providers = {
     aws = aws.nexus_delta_tags
@@ -127,8 +130,8 @@ module "nexus_delta_obp" {
   elasticsearch_endpoint = module.elasticsearch_obp.http_endpoint
   elastic_password_arn   = module.elasticsearch_obp.elastic_user_credentials_secret_arn
 
-  blazegraph_endpoint           = module.blazegraph_obp_bg.http_endpoint
-  blazegraph_composite_endpoint = module.blazegraph_obp_composite.http_endpoint
+  blazegraph_endpoint           = module.blazegraph_obp_bg[0].http_endpoint
+  blazegraph_composite_endpoint = module.blazegraph_obp_composite[0].http_endpoint
 
   delta_search_config_commit = "566e436e3cbd9b62fa8b710e3a52effcbf106b8f"
   delta_config_file          = "delta-obp.conf"
@@ -137,6 +140,7 @@ module "nexus_delta_obp" {
 
 module "nexus_fusion_obp" {
   source = "./fusion"
+  count  = var.is_nexus_obp_running ? 1 : 0
   providers = {
     aws = aws.nexus_fusion_tags
   }
@@ -170,12 +174,12 @@ module "dashboard" {
 
   dashboard_name = "Nexus-OBP"
 
-  blazegraph_composite_service_name = module.blazegraph_obp_composite.service_name
-  blazegraph_composite_log_group    = module.blazegraph_obp_composite.log_group
-  blazegraph_service_name           = module.blazegraph_obp_bg.service_name
+  blazegraph_composite_service_name = module.blazegraph_obp_composite[0].service_name
+  blazegraph_composite_log_group    = module.blazegraph_obp_composite[0].log_group
+  blazegraph_service_name           = module.blazegraph_obp_bg[0].service_name
   database                          = local.database_id
-  delta_service_name                = module.nexus_delta_obp.service_name
-  fusion_service_name               = module.nexus_fusion_obp.service_name
+  delta_service_name                = module.nexus_delta_obp[0].service_name
+  fusion_service_name               = module.nexus_fusion_obp[0].service_name
   s3_bucket                         = aws_s3_bucket.nexus_obp.bucket
 
   aws_region = var.aws_region
