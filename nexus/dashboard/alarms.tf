@@ -9,11 +9,11 @@ resource "aws_sns_topic_subscription" "nexus_alerts_erik_heeren" {
   protocol  = "email"
 }
 
-resource "aws_sns_topic_subscription" "nexus_alerts_jdc" {
-  topic_arn = aws_sns_topic.nexus_alerts.arn
-  endpoint  = "jean-denis.courcol@epfl.ch"
-  protocol  = "email"
-}
+#resource "aws_sns_topic_subscription" "nexus_alerts_jdc" {
+#  topic_arn = aws_sns_topic.nexus_alerts.arn
+#  endpoint  = "jean-denis.courcol@epfl.ch"
+#  protocol  = "email"
+#}
 
 resource "aws_sns_topic_subscription" "nexus_alerts_nise" {
   topic_arn = aws_sns_topic.nexus_alerts.arn
