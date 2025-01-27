@@ -26,11 +26,11 @@ resource "aws_cloudwatch_log_group" "apigw" {
 }
 
 #tfsec:ignore:aws-cloudwatch-log-group-customer-key
-# resource "aws_cloudwatch_log_group" "apigw_access_log" {
-#   name              = "/aws/apigateway/${local.cluster_name}_access_log"
-#   retention_in_days = 3
-#   tags              = var.tags
-# }
+resource "aws_cloudwatch_log_group" "apigw_access_log" {
+  name              = "/aws/apigateway/${data.aws_apigatewayv2_api.this.name}_access_log"
+  retention_in_days = 3
+  tags              = var.tags
+}
 
 #tfsec:ignore:aws-api-gateway-enable-access-logging
 resource "aws_apigatewayv2_stage" "this" {
@@ -44,16 +44,20 @@ resource "aws_apigatewayv2_stage" "this" {
     throttling_burst_limit = 10
     throttling_rate_limit  = 12
   }
-  # access_log_settings {
-  #   destination_arn = resource.aws_cloudwatch_log_group.apigw_access_log.arn
-  #   format = jsonencode({
-  #     requestId   = "$context.requestId"
-  #     ip          = "$context.identity.sourceIp"
-  #     requestTime = "$context.requestTime"
-  #     routeKey    = "$context.routeKey"
-  #     status      = "$context.status"
-  #   })
-  # }
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.apigw_access_log.arn
+    format = jsonencode({
+      requestId               = "$context.requestId"
+      ip                     = "$context.identity.sourceIp"
+      requestTime            = "$context.requestTime"
+      httpMethod             = "$context.httpMethod"
+      routeKey               = "$context.routeKey"
+      status                 = "$context.status"
+      protocol               = "$context.protocol"
+      responseLength         = "$context.responseLength"
+      integrationErrorMessage = "$context.integrationErrorMessage"
+    })
+  }
   tags = var.tags
 }
 
