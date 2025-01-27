@@ -20,6 +20,7 @@ module "postgres_cluster_obp" {
 # Blazegraph instance dedicated to Blazegraph views
 module "blazegraph_obp_bg" {
   source = "./blazegraph"
+  count  = var.is_nexus_obp_running ? 1 : 0
 
   providers = {
     aws = aws.nexus_blazegraph_tags
@@ -42,12 +43,12 @@ module "blazegraph_obp_bg" {
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
-  is_nexus_running                         = var.is_nexus_obp_running
 }
 
 # Blazegraph instance dedicated to composite views
 module "blazegraph_obp_composite" {
   source = "./blazegraph"
+  count  = var.is_nexus_obp_running ? 1 : 0
 
   providers = {
     aws = aws.nexus_blazegraph_tags
@@ -70,7 +71,6 @@ module "blazegraph_obp_composite" {
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
-  is_nexus_running                         = var.is_nexus_obp_running
 }
 
 module "elasticsearch_obp" {
@@ -95,6 +95,7 @@ module "elasticsearch_obp" {
 
 module "nexus_delta_obp" {
   source = "./delta"
+  count  = var.is_nexus_obp_running ? 1 : 0
 
   providers = {
     aws = aws.nexus_delta_tags
@@ -134,12 +135,12 @@ module "nexus_delta_obp" {
 
   delta_search_config_commit = "566e436e3cbd9b62fa8b710e3a52effcbf106b8f"
   delta_config_file          = "delta-obp.conf"
-  is_nexus_running           = var.is_nexus_obp_running
 }
 
 
 module "nexus_fusion_obp" {
   source = "./fusion"
+  count  = var.is_nexus_obp_running ? 1 : 0
   providers = {
     aws = aws.nexus_fusion_tags
   }
@@ -162,7 +163,6 @@ module "nexus_fusion_obp" {
 
   private_aws_lb_target_group_nexus_fusion_arn = module.obp_fusion_target_group.private_lb_target_group_arn
   dockerhub_credentials_arn                    = module.iam.dockerhub_credentials_arn
-  is_nexus_running                             = var.is_nexus_obp_running
 }
 
 module "dashboard" {
