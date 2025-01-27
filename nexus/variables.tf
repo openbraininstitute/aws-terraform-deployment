@@ -84,3 +84,9 @@ variable "is_nexus_openscience_running" {
   type        = bool
   default     = true
 }
+
+variable "is_nexus_obp_running" {
+  description = "Whether OBP nexus should be running"
+  type        = bool
+  default     = true
+}
