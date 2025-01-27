@@ -21,7 +21,7 @@ module "postgres_cluster_openscience" {
 # Blazegraph instance dedicated to Blazegraph views
 module "blazegraph_openscience_bg" {
   source = "./blazegraph"
-  count  = var.is_production ? 1 : 0
+  count  = var.is_nexus_openscience_running ? 1 : 0
 
   providers = {
     aws = aws.nexus_openscience_blazegraph_tags
@@ -44,13 +44,12 @@ module "blazegraph_openscience_bg" {
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus_openscience.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus_openscience.arn
-  is_nexus_running                         = var.is_nexus_openscience_running
 }
 
 # Blazegraph instance dedicated to composite views
 module "blazegraph_openscience_composite" {
   source = "./blazegraph"
-  count  = var.is_production ? 1 : 0
+  count  = var.is_nexus_openscience_running ? 1 : 0
 
   providers = {
     aws = aws.nexus_openscience_blazegraph_tags
@@ -73,7 +72,6 @@ module "blazegraph_openscience_composite" {
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus_openscience.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus_openscience.arn
-  is_nexus_running                         = var.is_nexus_openscience_running
 }
 
 module "elasticsearch_openscience" {
@@ -99,7 +97,7 @@ module "elasticsearch_openscience" {
 
 module "nexus_delta_openscience" {
   source = "./delta"
-  count  = var.is_production ? 1 : 0
+  count  = var.is_nexus_openscience_running ? 1 : 0
 
   providers = {
     aws = aws.nexus_openscience_delta_tags
@@ -140,12 +138,11 @@ module "nexus_delta_openscience" {
   delta_search_config_commit = "b44315f7e078e4d0ae34d6bd3a596197e5a2b325"
   delta_config_file          = "delta-openscience.conf"
 
-  is_nexus_running = var.is_nexus_openscience_running
 }
 
 module "nexus_fusion_openscience" {
   source = "./fusion"
-  count  = var.is_production ? 1 : 0
+  count  = var.is_nexus_openscience_running ? 1 : 0
 
   providers = {
     aws = aws.nexus_openscience_fusion_tags
@@ -168,5 +165,4 @@ module "nexus_fusion_openscience" {
 
   private_aws_lb_target_group_nexus_fusion_arn = module.openscience_fusion_target_group.private_lb_target_group_arn
   dockerhub_credentials_arn                    = module.iam.dockerhub_credentials_arn
-  is_nexus_running                             = var.is_nexus_openscience_running
 }
