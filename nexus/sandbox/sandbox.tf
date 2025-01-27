@@ -42,6 +42,19 @@ resource "aws_service_discovery_http_namespace" "nexus" {
 resource "aws_s3_bucket" "nexus_delta" {
   bucket = local.bucket_name
 }
+
+resource "aws_s3_bucket_lifecycle_configuration" "nexus_delta" {
+  bucket = aws_s3_bucket.nexus_delta.id
+  rule {
+    id     = "DeleteOldMultipartUploads"
+    status = "Enabled"
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+  }
+}
+
 resource "aws_s3_bucket_public_access_block" "nexus_delta" {
   bucket = aws_s3_bucket.nexus_delta.id
 
