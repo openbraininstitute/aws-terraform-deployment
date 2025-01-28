@@ -24,3 +24,15 @@ variable "is_production" {
   sensitive   = false
   description = "Whether deployment is happening in production or not"
 }
+
+variable "is_nexus_openscience_running" {
+  description = "Whether OpenScience nexus should be running"
+  type        = bool
+  default     = true
+}
+
+variable "is_nexus_obp_running" {
+  description = "Whether OBP nexus should be running"
+  type        = bool
+  default     = true
+}

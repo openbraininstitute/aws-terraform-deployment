@@ -128,6 +128,9 @@ module "nexus" {
   aws_ssoadmin_instances_arns            = data.aws_ssoadmin_instances.ssoadmin_instances.arns
   is_production                          = var.is_production
 
+  is_nexus_openscience_running = var.is_nexus_openscience_running
+  is_nexus_obp_running         = var.is_nexus_obp_running
+
 }
 
 module "viz" {
