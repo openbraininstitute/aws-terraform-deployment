@@ -1,4 +1,4 @@
-name: Auto - Apply changes on Merge
+name: Auto - Apply changes on Merge to staging
 
 # only trigger on pull request closed events
 on:
@@ -18,7 +18,7 @@ jobs:
       TF_VAR_nise_dockerhub_password: ${{ secrets.NISE_DOCKERHUB_PASS }}
 
     runs-on: ubuntu-latest
-    name: Auto Apply terraform code
+    name: Auto Apply terraform code to staging
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
