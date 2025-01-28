@@ -24,7 +24,7 @@ resource "aws_cloudwatch_dashboard" "this" {
         "type" : "metric",
         "properties" : {
           "metrics" : [
-            ["AWS/ApiGateway", "4xx", "Stage", "$default", "ApiId", var.apigw_id],
+            ["AWS/ApiGateway", "4xx", "Stage", "$default", "ApiId", aws_apigatewayv2_api.this.id],
             [".", "5xx", ".", ".", ".", "."],
           ],
           "period" : 300,
@@ -38,7 +38,7 @@ resource "aws_cloudwatch_dashboard" "this" {
         "type" : "metric",
         "properties" : {
           "metrics" : [
-            ["AWS/ApiGateway", "Count", "Stage", "$default", "ApiId", var.apigw_id],
+            ["AWS/ApiGateway", "Count", "Stage", "$default", "ApiId", aws_apigatewayv2_api.this.id],
           ],
           "period" : 300,
           "region" : var.aws_region,
@@ -51,7 +51,7 @@ resource "aws_cloudwatch_dashboard" "this" {
         "type" : "metric",
         "properties" : {
           "metrics" : [
-            ["AWS/ApiGateway", "DataProcessed", "Stage", "$default", "ApiId", var.apigw_id],
+            ["AWS/ApiGateway", "DataProcessed", "Stage", "$default", "ApiId", aws_apigatewayv2_api.this.id],
             [".", "Latency", ".", ".", ".", "."],
           ],
           "period" : 300,
