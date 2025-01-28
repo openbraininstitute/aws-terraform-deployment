@@ -1,8 +1,8 @@
-name: Auto - Verify & plan
+name: Auto - Verify & plan branch environment
 on:
+  workflow_dispatch:
   pull_request:
     branches:
-      - production
       - staging
 
 jobs:
@@ -15,7 +15,7 @@ jobs:
       TF_VAR_nise_dockerhub_password: ${{ secrets.NISE_DOCKERHUB_PASS }}
 
     runs-on: ubuntu-latest
-    name: Auto Verify & plan terraform code
+    name: Auto Verify & plan terraform code for branch environment
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
