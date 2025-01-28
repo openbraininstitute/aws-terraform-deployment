@@ -1,5 +1,5 @@
 data "aws_apigatewayv2_api" "this" {
-  api_id = var.apigw_id
+  api_id = aws_apigatewayv2_api.this.id
 }
 
 # resource "aws_apigatewayv2_api" "this" {

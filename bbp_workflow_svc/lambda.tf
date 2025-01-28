@@ -140,16 +140,16 @@ resource "aws_lambda_function" "handler_session" {
       "DDB_ID_TASK"      = aws_dynamodb_table.this.name
       "ECS_CLUSTER"      = aws_ecs_cluster.this.name
       "ECS_TASK_DEF"     = aws_ecs_task_definition.this.arn
-      "SVC_SUBNET"       = var.ecs_subnet_id
-      "SVC_SECURITY_GRP" = var.ecs_secgrp_id
+      "SVC_SUBNET"       = aws_subnet.bbp_workflow_svc.id
+      "SVC_SECURITY_GRP" = aws_security_group.bbp_workflow_svc.id
     }
   }
   tracing_config {
     mode = "PassThrough" #tfsec:ignore:aws-lambda-enable-tracing
   }
   vpc_config {
-    security_group_ids = [var.ecs_secgrp_id]
-    subnet_ids         = [var.ecs_subnet_id]
+    security_group_ids = [aws_security_group.bbp_workflow_svc.id]
+    subnet_ids         = [aws_subnet.bbp_workflow_svc.id]
   }
   depends_on = [aws_cloudwatch_log_group.handler_default]
   tags       = var.tags
@@ -221,8 +221,8 @@ resource "aws_lambda_function" "handler_auth" {
     mode = "PassThrough" #tfsec:ignore:aws-lambda-enable-tracing
   }
   vpc_config {
-    security_group_ids = [var.ecs_secgrp_id]
-    subnet_ids         = [var.ecs_subnet_id]
+    security_group_ids = [aws_security_group.bbp_workflow_svc.id]
+    subnet_ids         = [aws_subnet.bbp_workflow_svc.id]
   }
   tags = var.tags
 }
@@ -293,8 +293,8 @@ resource "aws_lambda_function" "handler_launch" {
     mode = "PassThrough" #tfsec:ignore:aws-lambda-enable-tracing
   }
   vpc_config {
-    security_group_ids = [var.ecs_secgrp_id]
-    subnet_ids         = [var.ecs_subnet_id]
+    security_group_ids = [aws_security_group.bbp_workflow_svc.id]
+    subnet_ids         = [aws_subnet.bbp_workflow_svc.id]
   }
   tags = var.tags
 }
@@ -343,16 +343,16 @@ resource "aws_lambda_function" "handler_default" {
       "DDB_ID_TASK"      = aws_dynamodb_table.this.name
       "ECS_CLUSTER"      = aws_ecs_cluster.this.name
       "ECS_TASK_DEF"     = aws_ecs_task_definition.this.arn
-      "SVC_SUBNET"       = var.ecs_subnet_id
-      "SVC_SECURITY_GRP" = var.ecs_secgrp_id
+      "SVC_SUBNET"       = aws_subnet.bbp_workflow_svc.id
+      "SVC_SECURITY_GRP" = aws_security_group.bbp_workflow_svc.id
     }
   }
   tracing_config {
     mode = "PassThrough" #tfsec:ignore:aws-lambda-enable-tracing
   }
   vpc_config {
-    security_group_ids = [var.ecs_secgrp_id]
-    subnet_ids         = [var.ecs_subnet_id]
+    security_group_ids = [aws_security_group.bbp_workflow_svc.id]
+    subnet_ids         = [aws_subnet.bbp_workflow_svc.id]
   }
   depends_on = [aws_cloudwatch_log_group.handler_default]
   tags       = var.tags

@@ -22,6 +22,7 @@ locals {
   accounting_service_secrets_arn   = data.terraform_remote_state.common.outputs.accounting_service_secrets_arn
   hpc_slurm_secrets_arn            = data.terraform_remote_state.common.outputs.hpc_slurm_secrets_arn
   nexus_secrets_arn                = data.terraform_remote_state.common.outputs.nexus_secrets_arn
+  workflow_service_secrets_arn     = data.terraform_remote_state.common.outputs.workflow_service_secrets_arn
   dockerhub_bbpbuildbot_secret_arn = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_secret_arn
   dockerhub_bbpbuildbot_policy_arn = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_policy_arn
 }
@@ -374,6 +375,22 @@ module "virtual_lab_manager" {
     "bbp/mmb-point-neuron-framework-model",
     "neurosciencegraph/data",
   ]
+}
+
+module "bbp_workflow_svc" {
+  source                         = "./bbp_workflow_svc"
+  svc_name                       = "bbp-workflow-svc"
+  aws_region                     = local.aws_region
+  account_id                     = local.account_id
+  vpc_id                         = local.vpc_id
+  domain_name                    = local.primary_domain
+  route_table_private_subnets_id = local.route_table_private_subnets_id
+  nexus_domain_name              = module.nexus.nexus_domain_name
+  svc_image                      = "bluebrain/bbp-workflow:latest"
+  kc_scr                         = "${local.workflow_service_secrets_arn}:keycloak_client_secret::"
+  id_rsa_scr                     = "${local.workflow_service_secrets_arn}:id_rsa_scr::"
+  hpc_head_node                  = "127.0.0.1" # FIXME
+  tags                           = { SBO_Billing = "bbp_workflow_svc" }
 }
 
 module "dashboards" {
