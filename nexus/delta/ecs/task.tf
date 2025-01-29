@@ -202,7 +202,6 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
   volume {
     name = "efs-nexus-app-config"
     efs_volume_configuration {
-      #TODO: continue here - variables have been defined in variables.tf but that's it
       file_system_id     = var.aws_efs_file_system_delta_id
       transit_encryption = "ENABLED"
       authorization_config {
