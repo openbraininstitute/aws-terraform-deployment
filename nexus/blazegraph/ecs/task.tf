@@ -115,10 +115,10 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
   volume {
     name = "efs-blazegraph-config"
     efs_volume_configuration {
-      file_system_id     = aws_efs_file_system.blazegraph_config.id
+      file_system_id     = var.aws_efs_file_system_blazegraph_config_id
       transit_encryption = "ENABLED"
       authorization_config {
-        access_point_id = aws_efs_access_point.blazegraph_config.id
+        access_point_id = var.aws_efs_access_point_blazegraph_config_id
         iam             = "DISABLED"
       }
     }
@@ -127,10 +127,10 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
   volume {
     name = "efs-blazegraph-data"
     efs_volume_configuration {
-      file_system_id     = aws_efs_file_system.blazegraph.id
+      file_system_id     = var.aws_efs_file_system_blazegraph_id
       transit_encryption = "ENABLED"
       authorization_config {
-        access_point_id = aws_efs_access_point.blazegraph.id
+        access_point_id = var.aws_efs_access_point_blazegraph_id
         iam             = "DISABLED"
       }
     }

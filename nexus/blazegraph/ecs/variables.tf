@@ -60,3 +60,19 @@ variable "blazegraph_docker_image_url" {
   type    = string
   default = "bluebrain/blazegraph-nexus:2.1.6-RC"
 }
+
+variable "aws_efs_file_system_blazegraph_id" {
+  type = string
+}
+
+variable "aws_efs_file_system_blazegraph_config_id" {
+  type = string
+}
+
+variable "aws_efs_access_point_blazegraph_id" {
+  type = string
+}
+
+variable "aws_efs_access_point_blazegraph_config_id" {
+  type = string
+}
