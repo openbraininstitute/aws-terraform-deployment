@@ -54,3 +54,4 @@ resource "aws_cloudwatch_log_group" "blazegraph_app" {
 
   kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
 }
+
