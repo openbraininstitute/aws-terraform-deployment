@@ -42,6 +42,7 @@ module "blazegraph_obp_bg" {
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
+  is_blazegraph_running                    = var.is_nexus_obp_running
 }
 
 # Blazegraph instance dedicated to composite views
@@ -69,6 +70,7 @@ module "blazegraph_obp_composite" {
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus.arn
+  is_blazegraph_running                    = var.is_nexus_obp_running
 }
 
 module "elasticsearch_obp" {

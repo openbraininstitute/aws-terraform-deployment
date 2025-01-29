@@ -11,6 +11,8 @@ module "storage" {
 module "ecs" {
   source = "./ecs"
 
+  count = var.is_blazegraph_running ? 1 : 0
+
   subnet_id                                = var.subnet_id
   subnet_security_group_id                 = var.subnet_security_group_id
   ecs_cluster_arn                          = var.ecs_cluster_arn

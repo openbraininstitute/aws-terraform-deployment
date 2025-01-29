@@ -71,3 +71,8 @@ variable "efs_blazegraph_data_dir" {
   default     = "/blazegraph-data-dir"
   description = "The EFS directory that will be mounted to /var/lib/blazegraph/data on the Blazegraph container. This is where the Blazegraph journal is located."
 }
+
+variable "is_blazegraph_running" {
+  type        = bool
+  description = "Whether to deploy and start the Blazegraph ECS cluster"
+}
