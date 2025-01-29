@@ -43,6 +43,8 @@ module "blazegraph_openscience_bg" {
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus_openscience.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus_openscience.arn
+
+  is_blazegraph_running = var.is_nexus_openscience_running
 }
 
 # Blazegraph instance dedicated to composite views
@@ -70,6 +72,8 @@ module "blazegraph_openscience_composite" {
 
   ecs_cluster_arn                          = aws_ecs_cluster.nexus_openscience.arn
   aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus_openscience.arn
+
+  is_blazegraph_running = var.is_nexus_openscience_running
 }
 
 module "elasticsearch_openscience" {
