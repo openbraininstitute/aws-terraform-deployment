@@ -1,9 +1,9 @@
 output "efs_blazegraph_dns_name" {
-  value = aws_efs_mount_target.efs_for_blazegraph.dns_name
+  value = module.storage.aws_efs_mount_target_efs_for_blazegraph_dns_name
 }
 
 locals {
-  blazegraph_dns_name = aws_ecs_service.blazegraph_ecs_service.service_connect_configuration[0].service[0].client_alias[0].dns_name
+  blazegraph_dns_name = module.ecs.blazegraph_dns_name
 }
 
 output "http_endpoint" {
@@ -15,5 +15,5 @@ output "service_name" {
 }
 
 output "log_group" {
-  value = local.blazegraph_app_log_group_name
+  value = module.ecs.blazegraph_app_log_group_name
 }
