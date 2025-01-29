@@ -20,7 +20,6 @@ module "postgres_cluster_obp" {
 # Blazegraph instance dedicated to Blazegraph views
 module "blazegraph_obp_bg" {
   source = "./blazegraph"
-  count  = var.is_nexus_obp_running ? 1 : 0
 
   providers = {
     aws = aws.nexus_blazegraph_tags
@@ -48,7 +47,6 @@ module "blazegraph_obp_bg" {
 # Blazegraph instance dedicated to composite views
 module "blazegraph_obp_composite" {
   source = "./blazegraph"
-  count  = var.is_nexus_obp_running ? 1 : 0
 
   providers = {
     aws = aws.nexus_blazegraph_tags
@@ -95,7 +93,6 @@ module "elasticsearch_obp" {
 
 module "nexus_delta_obp" {
   source = "./delta"
-  count  = var.is_nexus_obp_running ? 1 : 0
 
   providers = {
     aws = aws.nexus_delta_tags
@@ -140,7 +137,6 @@ module "nexus_delta_obp" {
 
 module "nexus_fusion_obp" {
   source = "./fusion"
-  count  = var.is_nexus_obp_running ? 1 : 0
   providers = {
     aws = aws.nexus_fusion_tags
   }
