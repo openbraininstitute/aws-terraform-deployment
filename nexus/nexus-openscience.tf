@@ -18,6 +18,8 @@ module "postgres_cluster_openscience" {
   nexus_secrets_arn               = var.nexus_secrets_arn
 }
 
+# ecs_cluster module is called in nexus-obp.tf
+
 # Blazegraph instance dedicated to Blazegraph views
 module "blazegraph_openscience_bg" {
   source = "./blazegraph"
@@ -41,8 +43,8 @@ module "blazegraph_openscience_bg" {
   subnet_security_group_id    = module.networking.main_subnet_sg_id
   ecs_task_execution_role_arn = module.iam.nexus_ecs_task_execution_role_arn
 
-  ecs_cluster_arn                          = aws_ecs_cluster.nexus_openscience.arn
-  aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus_openscience.arn
+  ecs_cluster_arn                          = module.ecs_cluster.aws_ecs_cluster_nexus_openscience_arn
+  aws_service_discovery_http_namespace_arn = module.ecs_cluster.aws_service_discovery_http_namespace_nexus_openscience_arn
 
   is_blazegraph_running = var.is_nexus_openscience_running
 }
@@ -70,8 +72,8 @@ module "blazegraph_openscience_composite" {
   subnet_security_group_id    = module.networking.main_subnet_sg_id
   ecs_task_execution_role_arn = module.iam.nexus_ecs_task_execution_role_arn
 
-  ecs_cluster_arn                          = aws_ecs_cluster.nexus_openscience.arn
-  aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus_openscience.arn
+  ecs_cluster_arn                          = module.ecs_cluster.aws_ecs_cluster_nexus_openscience_arn
+  aws_service_discovery_http_namespace_arn = module.ecs_cluster.aws_service_discovery_http_namespace_nexus_openscience_arn
 
   is_blazegraph_running = var.is_nexus_openscience_running
 }
@@ -119,8 +121,8 @@ module "nexus_delta_openscience" {
   s3_bucket_arn              = aws_s3_bucket.nexus_openscience.arn
   s3_bucket_name             = var.nexus_openscience_bucket_name
 
-  ecs_cluster_arn                          = aws_ecs_cluster.nexus_openscience.arn
-  aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus_openscience.arn
+  ecs_cluster_arn                          = module.ecs_cluster.aws_ecs_cluster_nexus_openscience_arn
+  aws_service_discovery_http_namespace_arn = module.ecs_cluster.aws_service_discovery_http_namespace_nexus_openscience_arn
   ecs_task_execution_role_arn              = module.iam.nexus_ecs_task_execution_role_arn
   nexus_secrets_arn                        = var.nexus_secrets_arn
 
@@ -159,9 +161,9 @@ module "nexus_fusion_openscience" {
   subnet_id                = module.networking.subnet_id
   subnet_security_group_id = module.networking.main_subnet_sg_id
 
-  ecs_cluster_arn                          = aws_ecs_cluster.nexus_openscience.arn
+  ecs_cluster_arn                          = module.ecs_cluster.aws_ecs_cluster_nexus_openscience_arn
   ecs_task_execution_role_arn              = module.iam.nexus_ecs_task_execution_role_arn
-  aws_service_discovery_http_namespace_arn = aws_service_discovery_http_namespace.nexus_openscience.arn
+  aws_service_discovery_http_namespace_arn = module.ecs_cluster.aws_service_discovery_http_namespace_nexus_openscience_arn
 
   private_aws_lb_target_group_nexus_fusion_arn = module.openscience_fusion_target_group.private_lb_target_group_arn
   dockerhub_credentials_arn                    = module.iam.dockerhub_credentials_arn
