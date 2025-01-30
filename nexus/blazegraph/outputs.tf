@@ -3,7 +3,7 @@ output "efs_blazegraph_dns_name" {
 }
 
 locals {
-  blazegraph_dns_name = length(module.ecs) > 0 ? module.ecs[0].blazegraph_dns_name : null
+  blazegraph_dns_name = length(module.ecs) > 0 ? module.ecs[0].blazegraph_dns_name : ""
 }
 
 output "http_endpoint" {
