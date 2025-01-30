@@ -19,6 +19,9 @@ module "postgres_cluster_obp" {
 
 module "ecs_cluster" {
   source = "./ecs_cluster/"
+
+  is_nexus_obp_running         = var.is_nexus_obp_running
+  is_nexus_openscience_running = var.is_nexus_openscience_running
 }
 
 # Blazegraph instance dedicated to Blazegraph views
