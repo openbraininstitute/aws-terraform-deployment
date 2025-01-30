@@ -5,7 +5,3 @@ output "blazegraph_dns_name" {
 output "blazegraph_ecs_service_name" {
   value = aws_ecs_service.blazegraph_ecs_service.name
 }
-
-output "blazegraph_app_log_group_name" {
-  value = local.blazegraph_app_log_group_name
-}

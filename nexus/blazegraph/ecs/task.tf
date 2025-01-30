@@ -34,7 +34,7 @@ resource "aws_ecs_task_definition" "blazegraph_ecs_definition" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = local.blazegraph_app_log_group_name
+          awslogs-group         = var.blazegraph_log_group_name
           awslogs-region        = data.aws_region.current.name
           awslogs-create-group  = "true"
           awslogs-stream-prefix = "blazegraph_app"

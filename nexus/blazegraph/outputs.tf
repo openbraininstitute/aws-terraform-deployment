@@ -15,5 +15,6 @@ output "service_name" {
 }
 
 output "log_group" {
-  value = length(module.ecs) > 0 ? module.ecs[0].blazegraph_app_log_group_name : null
+  value = aws_cloudwatch_log_group.blazegraph_app.name
+
 }

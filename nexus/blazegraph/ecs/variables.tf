@@ -76,3 +76,7 @@ variable "aws_efs_access_point_blazegraph_id" {
 variable "aws_efs_access_point_blazegraph_config_id" {
   type = string
 }
+
+variable "blazegraph_log_group_name" {
+  type = string
+}

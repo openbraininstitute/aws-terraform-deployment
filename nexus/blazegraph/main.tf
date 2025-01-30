@@ -23,6 +23,7 @@ module "ecs" {
   blazegraph_memory                        = var.blazegraph_memory
   blazegraph_java_opts                     = var.blazegraph_java_opts
   blazegraph_instance_name                 = var.blazegraph_instance_name
+  blazegraph_log_group_name                = aws_cloudwatch_log_group.blazegraph_app.name
 
   blazegraph_port                           = var.blazegraph_port
   blazegraph_docker_image_url               = var.blazegraph_docker_image_url
@@ -32,3 +33,12 @@ module "ecs" {
   aws_efs_file_system_blazegraph_config_id = module.storage.aws_efs_file_system_blazegraph_config_id
   aws_efs_file_system_blazegraph_id        = module.storage.aws_efs_file_system_blazegraph_id
 }
+
+resource "aws_cloudwatch_log_group" "blazegraph_app" {
+  name              = "${var.blazegraph_instance_name}_app"
+  skip_destroy      = false
+  retention_in_days = 5
+
+  kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
+}
+

@@ -7,10 +7,6 @@ moved {
   to   = module.nexus.module.ecs_cluster.aws_service_discovery_http_namespace.nexus[0]
 }
 moved {
-  from = module.nexus.module.blazegraph_obp_bg.aws_cloudwatch_log_group.blazegraph_app
-  to   = module.nexus.module.blazegraph_obp_bg.module.ecs[0].aws_cloudwatch_log_group.blazegraph_app
-}
-moved {
   from = module.nexus.module.blazegraph_obp_bg.aws_ecs_service.blazegraph_ecs_service
   to   = module.nexus.module.blazegraph_obp_bg.module.ecs[0].aws_ecs_service.blazegraph_ecs_service
 }
@@ -49,10 +45,6 @@ moved {
 moved {
   from = module.nexus.module.blazegraph_obp_bg.aws_efs_mount_target.efs_for_blazegraph_config
   to   = module.nexus.module.blazegraph_obp_bg.module.storage.aws_efs_mount_target.efs_for_blazegraph_config
-}
-moved {
-  from = module.nexus.module.blazegraph_obp_composite.aws_cloudwatch_log_group.blazegraph_app
-  to   = module.nexus.module.blazegraph_obp_composite.module.ecs[0].aws_cloudwatch_log_group.blazegraph_app
 }
 moved {
   from = module.nexus.module.blazegraph_obp_composite.aws_ecs_service.blazegraph_ecs_service
