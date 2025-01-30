@@ -3,24 +3,6 @@ resource "aws_sns_topic" "nexus_alerts" {
   name = "nexus_alerts_sns_topic"
 }
 
-resource "aws_sns_topic_subscription" "nexus_alerts_erik_heeren" {
-  topic_arn = aws_sns_topic.nexus_alerts.arn
-  endpoint  = "erik.heeren@epfl.ch"
-  protocol  = "email"
-}
-
-# resource "aws_sns_topic_subscription" "nexus_alerts_jdc" {
-#   topic_arn = aws_sns_topic.nexus_alerts.arn
-#   endpoint  = "jean-denis.courcol@epfl.ch"
-#   protocol  = "email"
-# }
-
-resource "aws_sns_topic_subscription" "nexus_alerts_nise" {
-  topic_arn = aws_sns_topic.nexus_alerts.arn
-  endpoint  = "bbp-ou-nise@groupes.epfl.ch"
-  protocol  = "email"
-}
-
 resource "aws_cloudwatch_metric_alarm" "blazegraph-search-cpu-alarm" {
   alarm_name                = "blazegraph-search-cpu-alarm"
   comparison_operator       = "GreaterThanOrEqualToThreshold"
