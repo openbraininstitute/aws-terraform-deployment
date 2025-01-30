@@ -3,7 +3,7 @@ output "efs_blazegraph_dns_name" {
 }
 
 locals {
-  blazegraph_dns_name = module.ecs[0].blazegraph_dns_name
+  blazegraph_dns_name = length(module.ecs) > 0 ? module.ecs[0].blazegraph_dns_name : null
 }
 
 output "http_endpoint" {
@@ -11,9 +11,9 @@ output "http_endpoint" {
 }
 
 output "service_name" {
-  value = module.ecs[0].blazegraph_ecs_service_name
+  value = length(module.ecs) > 0 ? module.ecs[0].blazegraph_ecs_service_name : null
 }
 
 output "log_group" {
-  value = module.ecs[0].blazegraph_app_log_group_name
+  value = length(module.ecs) > 0 ? module.ecs[0].blazegraph_app_log_group_name : null
 }
