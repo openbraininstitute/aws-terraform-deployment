@@ -1,3 +1,5 @@
+data "aws_region" "current" {}
+
 # Blazegraph needs some storage for data
 resource "aws_efs_file_system" "blazegraph" {
   #ts:skip=AC_AWS_0097
@@ -74,3 +76,4 @@ resource "aws_efs_access_point" "blazegraph_config" {
     }
   }
 }
+

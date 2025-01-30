@@ -11,7 +11,7 @@ output "http_endpoint" {
 }
 
 output "service_name" {
-  value = aws_ecs_service.blazegraph_ecs_service.name
+  value = module.ecs[0].blazegraph_ecs_service_name
 }
 
 output "log_group" {
