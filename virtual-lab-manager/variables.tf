@@ -124,6 +124,12 @@ variable "virtual_lab_manager_cross_project_resolvers" {
   sensitive   = false
 }
 
+variable "accounting_base_url" {
+  type        = string
+  description = "Accounting service base URL"
+  sensitive   = false
+}
+
 variable "log_group_name" {
   type        = string
   description = "The log name within cloudwatch"

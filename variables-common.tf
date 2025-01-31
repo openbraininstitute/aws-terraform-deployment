@@ -80,6 +80,15 @@ variable "virtual_lab_manager_docker_image_url" {
   sensitive   = false
 }
 
+### Accounting service ###
+
+variable "accounting_base_path" {
+  default     = "/api/accounting"
+  type        = string
+  description = "The base path for the accounting service"
+  sensitive   = false
+}
+
 ### Nexus ###
 
 variable "nise_dockerhub_password" {
