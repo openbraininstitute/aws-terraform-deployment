@@ -144,6 +144,8 @@ module "nexus_delta_openscience" {
   delta_search_config_commit = "b44315f7e078e4d0ae34d6bd3a596197e5a2b325"
   delta_config_file          = "delta-openscience.conf"
 
+  is_delta_running = var.is_nexus_openscience_running
+
 }
 
 module "nexus_fusion_openscience" {

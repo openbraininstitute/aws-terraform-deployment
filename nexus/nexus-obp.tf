@@ -141,6 +141,8 @@ module "nexus_delta_obp" {
 
   delta_search_config_commit = "566e436e3cbd9b62fa8b710e3a52effcbf106b8f"
   delta_config_file          = "delta-obp.conf"
+
+  is_delta_running = var.is_nexus_obp_running
 }
 
 

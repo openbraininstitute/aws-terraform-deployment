@@ -9,6 +9,8 @@ module "storage" {
 module "ecs" {
   source = "./ecs"
 
+  count = var.is_delta_running ? 1 : 0
+
   subnet_id                                = var.subnet_id
   delta_instance_name                      = var.delta_instance_name
   delta_cpu                                = var.delta_cpu
