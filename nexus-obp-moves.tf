@@ -144,3 +144,23 @@ moved {
   from = module.nexus.module.nexus_delta_obp.module.ecs.aws_ecs_task_definition.nexus_app_ecs_definition
   to   = module.nexus.module.nexus_delta_obp.module.ecs[0].aws_ecs_task_definition.nexus_app_ecs_definition
 }
+moved {
+  from = module.nexus.module.nexus_fusion_obp.aws_ecs_service.nexus_fusion_ecs_service
+  to   = module.nexus.module.nexus_fusion_obp.module.ecs[0].aws_ecs_service.nexus_fusion_ecs_service
+}
+moved {
+  from = module.nexus.module.nexus_fusion_obp.aws_ecs_task_definition.nexus_fusion_ecs_definition
+  to   = module.nexus.module.nexus_fusion_obp.module.ecs[0].aws_ecs_task_definition.nexus_fusion_ecs_definition
+}
+moved {
+  from = module.nexus.module.nexus_delta_obp.module.ecs.aws_iam_policy.nexus_delta_s3_bucket_access
+  to   = module.nexus.module.nexus_delta_obp.module.ecs[0].aws_iam_policy.nexus_delta_s3_bucket_access
+}
+moved {
+  from = module.nexus.module.nexus_delta_obp.module.ecs.aws_iam_role.nexus_delta_ecs_task
+  to   = module.nexus.module.nexus_delta_obp.module.ecs[0].aws_iam_role.nexus_delta_ecs_task
+}
+moved {
+  from = module.nexus.module.nexus_delta_obp.module.ecs.aws_iam_role_policy_attachment.delta_ecs_task
+  to   = module.nexus.module.nexus_delta_obp.module.ecs[0].aws_iam_role_policy_attachment.delta_ecs_task
+}
