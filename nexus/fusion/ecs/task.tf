@@ -113,11 +113,3 @@ resource "aws_ecs_task_definition" "nexus_fusion_ecs_definition" {
   task_role_arn            = var.ecs_task_execution_role_arn
 }
 
-
-resource "aws_cloudwatch_log_group" "nexus_fusion" {
-  name              = var.fusion_instance_name
-  skip_destroy      = false
-  retention_in_days = 5
-
-  kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
-}

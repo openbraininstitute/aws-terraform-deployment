@@ -36,7 +36,7 @@ resource "aws_ecs_service" "nexus_app_ecs_service" {
     assign_public_ip = false
   }
   depends_on = [
-    aws_cloudwatch_log_group.nexus_app
+    var.nexus_app_log_group_name
   ]
   # force redeployment on each tf apply
   force_new_deployment = true

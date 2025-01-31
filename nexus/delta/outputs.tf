@@ -8,5 +8,5 @@ output "nexus_delta_bucket_arn" {
 }
 
 output "service_name" {
-  value = module.ecs.aws_ecs_service_nexus_app_ecs_service_name
+  value = length(module.ecs) > 0 ? module.ecs[0].aws_ecs_service_nexus_app_ecs_service_name : null
 }

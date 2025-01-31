@@ -128,3 +128,7 @@ variable "blazegraph_composite_endpoint" {
 variable "domain_name" {
   type = string
 }
+
+variable "is_delta_running" {
+  type = bool
+}

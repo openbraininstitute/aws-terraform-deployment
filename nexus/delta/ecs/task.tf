@@ -1,7 +1,6 @@
 locals {
-  nexus_delta_app_log_group_name = var.delta_instance_name
-  nexus_cpu                      = var.delta_cpu
-  nexus_memory                   = var.delta_memory
+  nexus_cpu    = var.delta_cpu
+  nexus_memory = var.delta_memory
 }
 
 data "aws_region" "current" {}
@@ -133,7 +132,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = local.nexus_delta_app_log_group_name
+          awslogs-group         = var.nexus_app_log_group_name
           awslogs-region        = data.aws_region.current.name
           awslogs-create-group  = "true"
           awslogs-stream-prefix = "nexus_delta"
@@ -181,7 +180,7 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = local.nexus_delta_app_log_group_name
+          awslogs-group         = var.nexus_app_log_group_name
           awslogs-region        = data.aws_region.current.name
           awslogs-create-group  = "true"
           awslogs-stream-prefix = "nexus_delta_config"
@@ -223,11 +222,3 @@ resource "aws_ecs_task_definition" "nexus_app_ecs_definition" {
   }
 }
 
-resource "aws_cloudwatch_log_group" "nexus_app" {
-  # TODO check if the logs can be encrypted
-  name              = local.nexus_delta_app_log_group_name
-  skip_destroy      = false
-  retention_in_days = 5
-
-  kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
-}
