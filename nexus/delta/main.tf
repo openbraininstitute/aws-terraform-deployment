@@ -36,8 +36,18 @@ module "ecs" {
   blazegraph_endpoint                      = var.blazegraph_endpoint
   blazegraph_composite_endpoint            = var.blazegraph_composite_endpoint
   domain_name                              = var.domain_name
+  nexus_app_log_group_name                 = aws_cloudwatch_log_group.nexus_app.name
 
   aws_efs_file_system_delta_id         = module.storage.aws_efs_file_system_delta_id
   aws_efs_access_point_delta_config_id = module.storage.aws_efs_access_point_delta_config_id
   aws_efs_access_point_disk_storage_id = module.storage.aws_efs_access_point_disk_storage_id
+}
+
+resource "aws_cloudwatch_log_group" "nexus_app" {
+  # TODO check if the logs can be encrypted
+  name              = var.delta_instance_name
+  skip_destroy      = false
+  retention_in_days = 5
+
+  kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
 }

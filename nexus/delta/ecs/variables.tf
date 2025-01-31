@@ -135,3 +135,7 @@ variable "aws_efs_access_point_delta_config_id" {
 variable "aws_efs_access_point_disk_storage_id" {
   type = string
 }
+
+variable "nexus_app_log_group_name" {
+  type = string
+}
