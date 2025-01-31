@@ -1,7 +1,3 @@
-locals {
-  blazegraph_app_log_group_name = "${var.blazegraph_instance_name}_app"
-}
-
 resource "aws_ecs_service" "blazegraph_ecs_service" {
   name        = "${var.blazegraph_instance_name}_ecs_service"
   cluster     = var.ecs_cluster_arn
@@ -35,7 +31,7 @@ resource "aws_ecs_service" "blazegraph_ecs_service" {
     assign_public_ip = false
   }
   depends_on = [
-    aws_cloudwatch_log_group.blazegraph_app
+    var.blazegraph_log_group_name
   ]
 
   # force redeployment on each tf apply
@@ -47,10 +43,3 @@ resource "aws_ecs_service" "blazegraph_ecs_service" {
   propagate_tags = "SERVICE"
 }
 
-resource "aws_cloudwatch_log_group" "blazegraph_app" {
-  name              = local.blazegraph_app_log_group_name
-  skip_destroy      = false
-  retention_in_days = 5
-
-  kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
-}

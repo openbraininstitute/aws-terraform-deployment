@@ -50,11 +50,6 @@ variable "blazegraph_instance_name" {
   description = "The unique name of this Blazegraph instance"
 }
 
-variable "blazegraph_efs_name" {
-  type        = string
-  description = "The unique name of the EFS for Blazegraph"
-}
-
 variable "blazegraph_port" {
   type        = number
   default     = 9999
@@ -66,13 +61,22 @@ variable "blazegraph_docker_image_url" {
   default = "bluebrain/blazegraph-nexus:2.1.6-RC"
 }
 
-variable "efs_blazegraph_data_dir" {
-  type        = string
-  default     = "/blazegraph-data-dir"
-  description = "The EFS directory that will be mounted to /var/lib/blazegraph/data on the Blazegraph container. This is where the Blazegraph journal is located."
+variable "aws_efs_file_system_blazegraph_id" {
+  type = string
 }
 
-variable "is_blazegraph_running" {
-  type        = bool
-  description = "Whether to deploy and start the Blazegraph ECS cluster"
+variable "aws_efs_file_system_blazegraph_config_id" {
+  type = string
+}
+
+variable "aws_efs_access_point_blazegraph_id" {
+  type = string
+}
+
+variable "aws_efs_access_point_blazegraph_config_id" {
+  type = string
+}
+
+variable "blazegraph_log_group_name" {
+  type = string
 }

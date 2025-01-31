@@ -1,3 +1,5 @@
+data "aws_region" "current" {}
+
 resource "aws_efs_file_system" "delta" {
   #ts:skip=AC_AWS_0097
   creation_token         = var.delta_efs_name
@@ -45,3 +47,4 @@ resource "aws_efs_access_point" "disk_storage" {
     }
   }
 }
+

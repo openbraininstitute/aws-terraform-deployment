@@ -1,9 +1,9 @@
 output "efs_blazegraph_dns_name" {
-  value = aws_efs_mount_target.efs_for_blazegraph.dns_name
+  value = module.storage.aws_efs_mount_target_efs_for_blazegraph_dns_name
 }
 
 locals {
-  blazegraph_dns_name = aws_ecs_service.blazegraph_ecs_service.service_connect_configuration[0].service[0].client_alias[0].dns_name
+  blazegraph_dns_name = length(module.ecs) > 0 ? module.ecs[0].blazegraph_dns_name : ""
 }
 
 output "http_endpoint" {
@@ -11,9 +11,10 @@ output "http_endpoint" {
 }
 
 output "service_name" {
-  value = aws_ecs_service.blazegraph_ecs_service.name
+  value = length(module.ecs) > 0 ? module.ecs[0].blazegraph_ecs_service_name : null
 }
 
 output "log_group" {
-  value = local.blazegraph_app_log_group_name
+  value = aws_cloudwatch_log_group.blazegraph_app.name
+
 }
