@@ -56,6 +56,12 @@ resource "aws_db_instance" "keycloak_database" {
   vpc_security_group_ids       = [aws_security_group.main_sg.id]
   db_subnet_group_name         = aws_db_subnet_group.keycloak_db_subnet_group.name
   copy_tags_to_snapshot        = true
+
+  # Enable automated backups
+  backup_retention_period = 15
+  backup_window           = "02:00-03:00"
+  maintenance_window      = "sun:01:00-sun:02:00"
+
   tags = {
     Name        = "keycloak-db"
     SBO_Billing = "keycloak"
