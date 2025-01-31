@@ -9,5 +9,6 @@ nexus_ship_bucket_name                = "nexus-ship-production"
 nexus_openscience_bucket_name         = "nexus-openscience-production"
 nexus_az_letter_id                    = "b"
 core_web_app_docker_image_url         = "bluebrain/sbo-core-web-app:2025.1.0-prod"
+virtual_lab_manager_docker_image_url  = "bluebrain/obp-virtual-lab-api:2025.1.0-prod"
 is_nexus_openscience_running          = true
 is_nexus_obp_running                  = true
