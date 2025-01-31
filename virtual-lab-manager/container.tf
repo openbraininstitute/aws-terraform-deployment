@@ -228,6 +228,10 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
           name  = "NEXUS_CROSS_RESOLVER_PROJECTS"
           value = jsonencode(var.virtual_lab_manager_cross_project_resolvers)
         },
+        {
+          name  = "ACCOUNTING_BASE_URL"
+          value = var.accounting_base_url
+        }
       ]
       secrets = [
         {

@@ -270,7 +270,7 @@ module "accounting_svc" {
   dockerhub_credentials_arn       = local.dockerhub_bbpbuildbot_secret_arn
   dockerhub_access_iam_policy_arn = local.dockerhub_bbpbuildbot_policy_arn
 
-  root_path = "/api/accounting"
+  root_path = var.accounting_base_path
 }
 
 module "kg_inference_api" {
@@ -378,6 +378,8 @@ module "virtual_lab_manager" {
     "bbp/mmb-point-neuron-framework-model",
     "neurosciencegraph/data",
   ]
+
+  accounting_base_url = "https://${local.primary_domain}${var.accounting_base_path}"
 }
 
 module "bbp_workflow_svc" {
