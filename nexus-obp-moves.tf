@@ -87,8 +87,8 @@ moved {
   to   = module.nexus.module.blazegraph_obp_composite.module.storage.aws_efs_mount_target.efs_for_blazegraph_config
 }
 moved {
-  from = module.nexus.module.nexus_delta_obp.aws_cloudwatch_log_group.nexus_app
-  to   = module.nexus.module.nexus_delta_obp.module.ecs.aws_cloudwatch_log_group.nexus_app
+  from = module.nexus.module.nexus_delta_obp.module.ecs.aws_cloudwatch_log_group.nexus_app
+  to   = module.nexus.module.nexus_delta_obp.aws_cloudwatch_log_group.nexus_app
 }
 moved {
   from = module.nexus.module.nexus_delta_obp.aws_ecs_service.nexus_app_ecs_service
@@ -129,10 +129,6 @@ moved {
 moved {
   from = module.nexus.module.nexus_delta_obp.aws_iam_role_policy_attachment.delta_ecs_task
   to   = module.nexus.module.nexus_delta_obp.module.ecs.aws_iam_role_policy_attachment.delta_ecs_task
-}
-moved {
-  from = module.nexus.module.nexus_delta_obp.module.ecs.aws_cloudwatch_log_group.nexus_app
-  to   = module.nexus.module.nexus_delta_obp.module.ecs[0].aws_cloudwatch_log_group.nexus_app
 }
 
 moved {
