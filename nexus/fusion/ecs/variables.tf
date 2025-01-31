@@ -65,6 +65,6 @@ variable "fusion_instance_name" {
   type = string
 }
 
-variable "is_fusion_running" {
-  type = bool
+variable "aws_cloudwatch_log_group_nexus_fusion_arn" {
+  type = string
 }

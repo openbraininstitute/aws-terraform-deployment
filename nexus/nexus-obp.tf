@@ -170,6 +170,8 @@ module "nexus_fusion_obp" {
 
   private_aws_lb_target_group_nexus_fusion_arn = module.obp_fusion_target_group.private_lb_target_group_arn
   dockerhub_credentials_arn                    = module.iam.dockerhub_credentials_arn
+
+  is_fusion_running = var.is_nexus_obp_running
 }
 
 module "dashboard" {

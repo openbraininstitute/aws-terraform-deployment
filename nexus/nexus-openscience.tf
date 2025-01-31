@@ -173,4 +173,6 @@ module "nexus_fusion_openscience" {
 
   private_aws_lb_target_group_nexus_fusion_arn = module.openscience_fusion_target_group.private_lb_target_group_arn
   dockerhub_credentials_arn                    = module.iam.dockerhub_credentials_arn
+
+  is_fusion_running = var.is_nexus_openscience_running
 }
