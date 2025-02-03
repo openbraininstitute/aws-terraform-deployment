@@ -191,6 +191,8 @@ module "bluenaas_svc" {
 
   keycloak_server_url = "https://${local.primary_domain}/auth/"
 
+  nexus_delta_uri = "https://${module.nexus.nexus_domain_name}/api/nexus/v1"
+
   base_path = "/api/bluenaas"
 }
 

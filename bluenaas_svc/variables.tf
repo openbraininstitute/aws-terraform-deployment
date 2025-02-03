@@ -59,3 +59,7 @@ variable "internet_access_route_id" {
 variable "bluenaas_service_secrets_arn" {
   type = string
 }
+
+variable "nexus_delta_uri" {
+  type = string
+}

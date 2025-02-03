@@ -160,6 +160,10 @@ resource "aws_ecs_task_definition" "bluenaas_ecs_definition" {
           name  = "DEPLOYMENT_ENV"
           value = var.deployment_env
         },
+        {
+          name  = "NEXUS_ROOT_URI"
+          value = var.nexus_delta_uri
+        }
       ]
 
       secrets = [
