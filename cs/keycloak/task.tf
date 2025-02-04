@@ -106,7 +106,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
                 "options": {
                     "awslogs-create-group": "true",
                     "awslogs-group": "/ecs/keycloak-task",
-                    "awslogs-region": "${var.aws_region}",
+                    "awslogs-region": "${data.aws_region.current.name}",
                     "awslogs-stream-prefix": "ecs"
                 },
                 "secretOptions": []

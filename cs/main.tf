@@ -2,7 +2,6 @@ module "networking" {
   source                         = "./networking"
   vpc_id                         = var.vpc_id
   route_table_private_subnets_id = var.route_table_private_subnets_id
-  aws_region                     = var.aws_region
 }
 
 module "keycloak" {
@@ -20,7 +19,4 @@ module "keycloak" {
   keycloak_secrets_arn = var.keycloak_secrets_arn
 
   allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
-
-  aws_region = var.aws_region
-  account_id = var.account_id
 }
