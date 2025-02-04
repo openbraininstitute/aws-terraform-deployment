@@ -1,8 +1,3 @@
-locals {
-  cpu    = 16384 # 16 vCPU
-  memory = 32768 # 32 GB
-}
-
 resource "aws_cloudwatch_log_group" "bluenaas_ecs_task_logs" {
   # TODO check if the logs can be encrypted
   name_prefix       = "bluenaas_ecs"
@@ -84,8 +79,8 @@ resource "aws_ecs_task_definition" "bluenaas_ecs_definition" {
   family       = "bluenaas_task_family"
   network_mode = "awsvpc"
 
-  cpu    = local.cpu
-  memory = local.memory
+  cpu    = var.task_size.cpu
+  memory = var.task_size.memory
 
   requires_compatibilities = ["FARGATE"]
 
@@ -103,8 +98,8 @@ resource "aws_ecs_task_definition" "bluenaas_ecs_definition" {
       name   = "bluenaas"
       family = "bluenaas"
 
-      cpu    = local.cpu
-      memory = local.memory
+      cpu    = var.task_size.cpu
+      memory = var.task_size.memory
 
       networkMode = "awsvpc"
 
@@ -163,6 +158,10 @@ resource "aws_ecs_task_definition" "bluenaas_ecs_definition" {
         {
           name  = "NEXUS_ROOT_URI"
           value = var.nexus_delta_uri
+        },
+        {
+          name  = "ACCOUNTING_BASE_URL"
+          value = var.accounting_base_url
         }
       ]
 

@@ -1,12 +1,5 @@
-variable "aws_region" {
-  description = "AWS region."
-  type        = string
-}
-
-variable "account_id" {
-  description = "AWS account id."
-  type        = string
-}
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
 
 variable "vpc_id" {
   type = string

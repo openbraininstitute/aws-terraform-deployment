@@ -52,7 +52,6 @@ module "cs" {
   source = "./cs"
 
   vpc_id                         = local.vpc_id
-  aws_region                     = local.aws_region
   route_table_private_subnets_id = local.route_table_private_subnets_id
   db_instance_class              = "db.t3.micro"
   private_alb_https_listener_arn = local.private_alb_https_listener_arn
@@ -62,7 +61,6 @@ module "cs" {
   redirect_hostnames = ["openbluebrain.ch", "openbrainplatform.org", "openbrainplatform.com"]
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
-  account_id                    = local.account_id
 }
 
 module "ml" {
@@ -195,6 +193,10 @@ module "bluenaas_svc" {
   nexus_delta_uri = "https://${module.nexus.nexus_domain_name}/api/nexus/v1"
 
   base_path = "/api/bluenaas"
+
+  accounting_base_url = "https://${local.primary_domain}${var.accounting_base_path}"
+
+  task_size = var.bluenaas_task_size
 }
 
 module "hpc" {
