@@ -4,6 +4,6 @@ provider "aws" {
       SBO_Billing = "common"
     }
   }
-  region = var.aws_region
+  region = data.aws_region.current.name
 }
 

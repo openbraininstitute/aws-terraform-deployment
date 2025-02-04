@@ -45,7 +45,7 @@ resource "aws_iam_policy" "ecsTaskLogs" {
           "logs:CreateLogStream",
           "logs:CreateLogGroup"
         ]
-        Resource = "arn:aws:logs:${var.aws_region}:${var.account_id}:log-group:*"
+        Resource = "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:*"
       }
     ]
   })
