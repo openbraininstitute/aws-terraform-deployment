@@ -194,6 +194,8 @@ module "bluenaas_svc" {
   base_path = "/api/bluenaas"
 
   accounting_base_url = "https://${local.primary_domain}${var.accounting_base_path}"
+
+  task_size = var.bluenaas_task_size
 }
 
 module "hpc" {

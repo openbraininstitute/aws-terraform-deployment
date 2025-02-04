@@ -96,3 +96,14 @@ variable "nise_dockerhub_password" {
   description = "Password for the NISE dockerhub access. Set via TF_VAR_nise_dockerhub_password variable."
   sensitive   = true
 }
+
+### BlueNaaS ###
+
+variable "bluenaas_task_size" {
+  type = object({
+    cpu    = any
+    memory = any
+  })
+
+  description = "CPU and memory limit for ECS task (number or string format)"
+}
