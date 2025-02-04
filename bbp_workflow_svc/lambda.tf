@@ -248,22 +248,26 @@ resource "aws_iam_role" "handler_launch" {
     })
   }
   inline_policy {
-    name = "${var.svc_name}-handler-launch-key-access"
+    name = "${var.svc_name}-handler-launch-ecs-tasks"
     policy = jsonencode({
       Version = "2012-10-17"
       Statement = [{
-        Action   = ["secretsmanager:GetSecretValue"]
+        Action   = ["ecs:RunTask"]
         Effect   = "Allow"
-        Resource = var.id_rsa_scr
+        Resource = aws_ecs_task_definition.this.arn
+        }, {
+        Action   = ["ecs:TagResource", "ecs:DescribeTasks"]
+        Effect   = "Allow"
+        Resource = "arn:aws:ecs:${var.aws_region}:${var.account_id}:task/${aws_ecs_task_definition.this.family}/*"
       }]
     })
   }
   inline_policy {
-    name = "${var.svc_name}-handler-launch-ddb-get-item"
+    name = "${var.svc_name}-handler-launch-ddb"
     policy = jsonencode({
       Version = "2012-10-17"
       Statement = [{
-        Action   = ["dynamodb:GetItem"]
+        Action   = ["dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:DeleteItem"]
         Effect   = "Allow"
         Resource = aws_dynamodb_table.this.arn
       }]
@@ -286,7 +290,6 @@ resource "aws_lambda_function" "handler_launch" {
   environment {
     variables = {
       "DDB_ID_TASK" = aws_dynamodb_table.this.name
-      "KEY_ARN"     = var.id_rsa_scr
     }
   }
   tracing_config {

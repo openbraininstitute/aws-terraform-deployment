@@ -195,6 +195,7 @@ resource "aws_ecs_task_definition" "this" {
       # family      = local.cluster_name
       essential = true
       image     = var.svc_image
+      imagePullBehavior = "prefer-cached"
       linuxParameters = {
         initProcessEnabled = true
       }
@@ -206,7 +207,6 @@ resource "aws_ecs_task_definition" "this" {
         { name : "KC_CLIENT_ID", value : "bbp-workflow" },
         { name : "WORKFLOWS_PATH", value : "/home/bbp-workflow/workflows" },
         { name : "HPC_ENVIRONMENT", value : "aws" },
-        { name : "HPC_HEAD_NODE", value : var.hpc_head_node },
         { name : "HPC_PATH_PREFIX", value : "/sbo/data/scratch" },
         { name : "HPC_DATA_PREFIX", value : "/sbo/data/project" },
         { name : "HPC_SIF_PREFIX", value : "/sbo/data/containers" },
@@ -215,7 +215,6 @@ resource "aws_ecs_task_definition" "this" {
       ],
       secrets = [
         { name = "KC_SCR", valueFrom = var.kc_scr },
-        # { name = "SSH_PRIVATE_KEY", valueFrom = var.id_rsa_scr },
       ]
       portMappings = [
         {

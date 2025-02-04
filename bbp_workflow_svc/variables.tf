@@ -41,15 +41,6 @@ variable "kc_scr" {
   description = "Tmp, remove."
 }
 
-variable "id_rsa_scr" {
-  type        = string
-  description = "Tmp, remove."
-}
-
-variable "hpc_head_node" {
-  type        = string
-  description = "Tmp, remove."
-}
 
 variable "nexus_domain_name" {
   type        = string
