@@ -151,7 +151,7 @@ resource "aws_lambda_function" "handler_session" {
     security_group_ids = [aws_security_group.bbp_workflow_svc.id]
     subnet_ids         = [aws_subnet.bbp_workflow_svc.id]
   }
-  depends_on = [aws_cloudwatch_log_group.handler_default]
+  depends_on = [aws_cloudwatch_log_group.handler_session]
   tags       = var.tags
 }
 
