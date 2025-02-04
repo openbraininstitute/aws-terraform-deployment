@@ -163,6 +163,10 @@ resource "aws_ecs_task_definition" "bluenaas_ecs_definition" {
         {
           name  = "NEXUS_ROOT_URI"
           value = var.nexus_delta_uri
+        },
+        {
+          name  = "ACCOUNTING_BASE_URL"
+          value = var.accounting_base_url
         }
       ]
 

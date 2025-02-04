@@ -194,6 +194,8 @@ module "bluenaas_svc" {
   nexus_delta_uri = "https://${module.nexus.nexus_domain_name}/api/nexus/v1"
 
   base_path = "/api/bluenaas"
+
+  accounting_base_url = "https://${local.primary_domain}${var.accounting_base_path}"
 }
 
 module "hpc" {
