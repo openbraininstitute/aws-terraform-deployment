@@ -1,7 +1,7 @@
 # Subnets for the SBO core svc
 resource "aws_subnet" "cs_subnet_a" {
   vpc_id                  = var.vpc_id
-  availability_zone       = "${var.aws_region}a"
+  availability_zone       = "${data.aws_region.current.name}a"
   cidr_block              = "10.0.13.0/25"
   map_public_ip_on_launch = false
 
@@ -13,7 +13,7 @@ resource "aws_subnet" "cs_subnet_a" {
 
 resource "aws_subnet" "cs_subnet_b" {
   vpc_id                  = var.vpc_id
-  availability_zone       = "${var.aws_region}b"
+  availability_zone       = "${data.aws_region.current.name}b"
   cidr_block              = "10.0.13.128/25"
   map_public_ip_on_launch = false
 
