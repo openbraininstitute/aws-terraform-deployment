@@ -69,3 +69,12 @@ variable "accounting_base_url" {
   description = "Accounting service base URL"
   sensitive   = false
 }
+
+variable "task_size" {
+  type = object({
+    cpu    = any
+    memory = any
+  })
+
+  description = "CPU and memory limit for ECS task (number or string format)"
+}
