@@ -1,4 +1,4 @@
-# Subnets for Keycloak svc
+# Subnets for the SBO core svc
 resource "aws_subnet" "cs_subnet_a" {
   vpc_id                  = var.vpc_id
   availability_zone       = "${data.aws_region.current.name}a"
