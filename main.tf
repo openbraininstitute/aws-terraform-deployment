@@ -279,7 +279,7 @@ module "accounting_svc" {
 }
 
 module "billing_cost_management" {
-  source     = "./billing_cost_management"
+  source = "./billing_cost_management"
 }
 
 module "kg_inference_api" {
