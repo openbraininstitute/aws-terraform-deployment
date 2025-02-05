@@ -146,6 +146,19 @@ resource "aws_iam_role" "task" {
       }]
     })
   }
+  inline_policy {
+    name = "${var.svc_name}-secrets-manager-access"
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [{
+        Action = [
+          "secretsmanager:GetSecretValue"
+        ]
+        Effect   = "Allow"
+        Resource = "*"  // You may want to restrict this to specific secrets
+      }]
+    })
+  }
 }
 
 resource "aws_iam_role" "task_exec" {
