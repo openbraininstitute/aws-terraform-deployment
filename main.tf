@@ -12,7 +12,8 @@ locals {
   vpc_cidr_block    = data.terraform_remote_state.common.outputs.vpc_cidr_block
   vpc_default_sg_id = data.terraform_remote_state.common.outputs.vpc_default_sg_id
 
-  primary_domain = data.terraform_remote_state.common.outputs.primary_domain
+  primary_domain    = data.terraform_remote_state.common.outputs.primary_domain
+  email_domain_name = data.terraform_remote_state.common.outputs.email_domain_name
 
   virtual_lab_manager_secrets_arn  = data.terraform_remote_state.common.outputs.virtual_lab_manager_secrets_arn
   keycloak_secrets_arn             = data.terraform_remote_state.common.outputs.keycloak_secrets_arn
@@ -327,7 +328,7 @@ module "virtual_lab_manager" {
   route_table_private_subnets_id = local.route_table_private_subnets_id
 
   invite_link = "https://${local.primary_domain}/app"
-  mail_from   = "noreply@${local.primary_domain}"
+  mail_from   = "no-reply@${local.email_domain_name}"
 
   virtual_lab_manager_postgres_db   = "vlm"
   virtual_lab_manager_postgres_user = "vlm_user"
