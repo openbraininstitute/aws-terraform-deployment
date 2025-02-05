@@ -24,7 +24,7 @@ resource "aws_lambda_function" "hpc_resource_provisioner_lambda" {
 
 data "aws_ecr_image" "hpc_resource_provisioner_image" {
   repository_name = "hpc/resource-provisioner"
-  image_tag       = "latest"
+  image_tag       = var.hpc_resource_provisioner_container_version
 }
 
 # tfsec:ignore:aws-lambda-enable-tracing
