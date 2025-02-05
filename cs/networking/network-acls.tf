@@ -16,6 +16,15 @@ resource "aws_network_acl" "cs_subnet" {
     to_port    = 0
   }
 
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 200
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 1024
+    to_port    = 65535
+  }
+
   egress {
     # TODO limit to dockerhub, secretsmanager, nexus...
     protocol   = -1
