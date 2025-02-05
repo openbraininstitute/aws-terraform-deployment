@@ -280,7 +280,6 @@ module "accounting_svc" {
 
 module "billing_cost_management" {
   source     = "./billing_cost_management"
-  aws_region = local.aws_region
 }
 
 module "kg_inference_api" {
