@@ -407,7 +407,7 @@ module "bbp_workflow_svc" {
   domain_name                    = local.primary_domain
   route_table_private_subnets_id = local.route_table_private_subnets_id
   nexus_domain_name              = module.nexus.nexus_domain_name
-  svc_image                      = "${local.account_id}.dkr.ecr.${local.aws_region}.amazonaws.com/bbp-workflow-svc:dev0"
+  svc_image                      = "${local.account_id}.dkr.ecr.${local.aws_region}.amazonaws.com/bbp-workflow-svc:dev1"
   #kc_scr                         = "${local.workflow_service_secrets_arn}:keycloak_client_secret::"
   # TODO: Replace with above when merged to staging/prod
   kc_scr              = "arn:aws:secretsmanager:us-east-1:130659266700:secret:bbp-workflow-svc-kc-scr-9c9pEO"
