@@ -226,7 +226,7 @@ module "hpc" {
   aws_endpoints_subnet_cidr                  = module.networking.endpoints_subnet_cidr
   endpoints_route_table_id                   = local.route_table_private_subnets_id
   hpc_slurm_secrets_arn                      = local.hpc_slurm_secrets_arn
-  hpc_resource_provisioner_container_version = "0.5.10.0.dev0"
+  hpc_resource_provisioner_container_version = var.hpc_resource_provisioner_container_version
 }
 
 module "static-server" {

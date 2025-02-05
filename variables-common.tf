@@ -130,3 +130,9 @@ variable "keycloak_task_size" {
 
   description = "CPU and memory limit for Keycloak's ECS task (number or string format)"
 }
+
+### HPC ###
+variable "hpc_resource_provisioner_container_version" {
+  type        = string
+  description = "Version of hpc-resource-provisioner to deploy"
+}
