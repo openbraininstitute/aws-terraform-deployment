@@ -248,17 +248,30 @@ resource "aws_iam_role" "handler_launch" {
     })
   }
   inline_policy {
+    name = "${var.svc_name}-handler-launch-pass-roles"
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [{
+        Action   = ["iam:PassRole"]
+        Effect   = "Allow"
+        Resource = [
+          aws_iam_role.task.arn,
+          aws_iam_role.task_exec.arn
+        ]
+      }]
+    })
+  }
+  inline_policy {
     name = "${var.svc_name}-handler-launch-ecs-tasks"
     policy = jsonencode({
       Version = "2012-10-17"
       Statement = [{
-        Action   = ["ecs:RunTask"]
+        Action   = ["ecs:TagResource", "ecs:DescribeTasks", "ecs:RunTask", "ecs:StopTask"]
         Effect   = "Allow"
-        Resource = aws_ecs_task_definition.this.arn
-        }, {
-        Action   = ["ecs:TagResource", "ecs:DescribeTasks"]
-        Effect   = "Allow"
-        Resource = "arn:aws:ecs:${var.aws_region}:${var.account_id}:task/${aws_ecs_task_definition.this.family}/*"
+        Resource = [
+          aws_ecs_task_definition.this.arn,
+          "arn:aws:ecs:${var.aws_region}:${var.account_id}:task/${aws_ecs_cluster.this.name}/*",
+        ]
       }]
     })
   }
@@ -267,7 +280,12 @@ resource "aws_iam_role" "handler_launch" {
     policy = jsonencode({
       Version = "2012-10-17"
       Statement = [{
-        Action   = ["dynamodb:GetItem", "dynamodb:PutItem", "dynamodb:DeleteItem"]
+        Action   = [
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:UpdateItem"
+        ]
         Effect   = "Allow"
         Resource = aws_dynamodb_table.this.arn
       }]
@@ -290,6 +308,10 @@ resource "aws_lambda_function" "handler_launch" {
   environment {
     variables = {
       "DDB_ID_TASK" = aws_dynamodb_table.this.name
+      "ECS_CLUSTER"      = aws_ecs_cluster.this.name
+      "ECS_TASK_DEF"     = aws_ecs_task_definition.this.arn
+      "SVC_SUBNET"       = aws_subnet.bbp_workflow_svc.id
+      "SVC_SECURITY_GRP" = aws_security_group.bbp_workflow_svc.id
     }
   }
   tracing_config {

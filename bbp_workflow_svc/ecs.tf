@@ -173,7 +173,9 @@ resource "aws_iam_role" "task_exec" {
         ]
         Effect = "Allow"
         # Resource = [var.kc_scr, var.id_rsa_scr]
-        Resource = [var.kc_scr]
+        # Resource = [var.kc_scr]
+        # TODO: Replace var.kc_scr above when merged to staging/prod
+        Resource = ["arn:aws:secretsmanager:us-east-1:130659266700:secret:bbp-workflow-svc-kc-scr-9c9pEO"]
       }]
     })
   }
