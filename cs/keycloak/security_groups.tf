@@ -17,8 +17,6 @@ resource "aws_vpc_security_group_egress_rule" "efs_sg_egress" {
   description       = "Allow egress to any destination"
   cidr_ipv4         = "0.0.0.0/0"
   ip_protocol       = "-1"
-  from_port         = 0
-  to_port           = 0
 
   tags = {
     SBO_Billing = "keycloak"
