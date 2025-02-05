@@ -76,6 +76,12 @@ variable "virtual_lab_manager_mail_username" {
   sensitive   = false
 }
 
+variable "virtual_lab_manager_mail_password" {
+  type        = string
+  description = "password for sending emails for invites"
+  sensitive   = true
+}
+
 variable "virtual_lab_manager_mail_server" {
   type        = string
   description = "Email server that sends email for invites"

@@ -352,9 +352,10 @@ module "virtual_lab_manager" {
 
   virtual_lab_manager_invite_expiration = "7"
 
-  virtual_lab_manager_mail_username = "AKIAZYSNA64ZRY6UDRMA"
+  virtual_lab_manager_mail_username = module.ses_user_virtuallab.access_key_id
   virtual_lab_manager_mail_server   = "email-smtp.${local.aws_region}.amazonaws.com"
   virtual_lab_manager_base_path     = var.virtual_lab_manager_base_path
+  virtual_lab_manager_mail_password = module.ses_user_virtuallab.secret_access_key
 
   virtual_lab_manager_mail_port = "25"
 
@@ -421,4 +422,11 @@ module "dashboards" {
     "CoreWebApp"         = module.core_webapp.private_lb_rule_suffix
     "VLabManager"        = module.virtual_lab_manager.private_arn_suffix
   }
+}
+
+
+module "ses_user_virtuallab" {
+  source = "./ses_user"
+
+  user_name = "ses-smtp-user.obp.virtuallabs"
 }
