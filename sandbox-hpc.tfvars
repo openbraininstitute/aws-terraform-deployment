@@ -18,3 +18,7 @@ nexus_az_letter_id                         = "a"
 core_web_app_docker_image_url              = "bluebrain/sbo-core-web-app:2025.1.0-prod"
 virtual_lab_manager_docker_image_url       = "bluebrain/obp-virtual-lab-api:2025.1.0-prod"
 hpc_resource_provisioner_container_version = "0.5.10.0.dev2"
+bluenaas_task_size = {
+  cpu    = 4096
+  memory = 8192
+}

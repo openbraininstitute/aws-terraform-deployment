@@ -1,0 +1,33 @@
+---
+name: Auto - Verify & plan sandbox environment
+on:
+  workflow_dispatch:
+  push:
+    branches: [sandbox-*]
+concurrency:
+  group: terraform-${{ github.ref }}
+jobs:
+  terraform_verify:
+    environment: ${{ github.ref_name }}
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    runs-on: ubuntu-latest
+    name: Auto Verify & plan terraform code for sandbox environment
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Configure Terraform
+        uses: hashicorp/setup-terraform@v3
+      - name: Terraform format check
+        run: terraform fmt -check -diff -recursive
+      - name: Initialize Terraform
+        run: terraform init -backend-config="./${{ github.ref_name }}.config"
+      - name: Run Terraform Plan
+        run: |-
+          if [ -e ./scripts/terraform_plan_${{ github.ref_name }}.sh ]
+          then
+            ./scripts/terraform_plan_${{ github.ref_name }}.sh
+          else
+            terraform plan -var-file="${{ github.ref_name }}.tfvars" -out plan.tfplan >/dev/null && terraform show plan.tfplan
+          fi

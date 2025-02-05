@@ -252,8 +252,8 @@ resource "aws_iam_role" "handler_launch" {
     policy = jsonencode({
       Version = "2012-10-17"
       Statement = [{
-        Action   = ["iam:PassRole"]
-        Effect   = "Allow"
+        Action = ["iam:PassRole"]
+        Effect = "Allow"
         Resource = [
           aws_iam_role.task.arn,
           aws_iam_role.task_exec.arn
@@ -266,8 +266,8 @@ resource "aws_iam_role" "handler_launch" {
     policy = jsonencode({
       Version = "2012-10-17"
       Statement = [{
-        Action   = ["ecs:TagResource", "ecs:DescribeTasks", "ecs:RunTask", "ecs:StopTask"]
-        Effect   = "Allow"
+        Action = ["ecs:TagResource", "ecs:DescribeTasks", "ecs:RunTask", "ecs:StopTask"]
+        Effect = "Allow"
         Resource = [
           aws_ecs_task_definition.this.arn,
           "arn:aws:ecs:${var.aws_region}:${var.account_id}:task/${aws_ecs_cluster.this.name}/*",
@@ -280,7 +280,7 @@ resource "aws_iam_role" "handler_launch" {
     policy = jsonencode({
       Version = "2012-10-17"
       Statement = [{
-        Action   = [
+        Action = [
           "dynamodb:GetItem",
           "dynamodb:PutItem",
           "dynamodb:DeleteItem",
@@ -307,7 +307,7 @@ resource "aws_lambda_function" "handler_launch" {
   runtime          = local.python_version
   environment {
     variables = {
-      "DDB_ID_TASK" = aws_dynamodb_table.this.name
+      "DDB_ID_TASK"      = aws_dynamodb_table.this.name
       "ECS_CLUSTER"      = aws_ecs_cluster.this.name
       "ECS_TASK_DEF"     = aws_ecs_task_definition.this.arn
       "SVC_SUBNET"       = aws_subnet.bbp_workflow_svc.id

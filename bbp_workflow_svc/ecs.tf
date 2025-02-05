@@ -141,7 +141,7 @@ resource "aws_iam_role" "task" {
         Action = [
           "execute-api:Invoke"
         ]
-        Effect = "Allow"
+        Effect   = "Allow"
         Resource = "*"
       }]
     })
@@ -155,7 +155,7 @@ resource "aws_iam_role" "task" {
           "secretsmanager:GetSecretValue"
         ]
         Effect   = "Allow"
-        Resource = "*"  // You may want to restrict this to specific secrets
+        Resource = "*" // You may want to restrict this to specific secrets
       }]
     })
   }
@@ -208,8 +208,8 @@ resource "aws_ecs_task_definition" "this" {
       name        = local.cluster_name
       networkMode = "awsvpc"
       # family      = local.cluster_name
-      essential = true
-      image     = var.svc_image
+      essential         = true
+      image             = var.svc_image
       imagePullBehavior = "prefer-cached"
       linuxParameters = {
         initProcessEnabled = true
@@ -225,7 +225,7 @@ resource "aws_ecs_task_definition" "this" {
         { name : "HPC_PATH_PREFIX", value : "/sbo/data/scratch" },
         { name : "HPC_DATA_PREFIX", value : "/sbo/data/project" },
         { name : "HPC_SIF_PREFIX", value : "/sbo/data/containers" },
-        { name : "HPC_RESOURCE_PROVISIONER_API_URL", value: var.hpc_provisioner_url },
+        { name : "HPC_RESOURCE_PROVISIONER_API_URL", value : var.hpc_provisioner_url },
         { name : "NEXUS_BASE", value : "https://${var.nexus_domain_name}/api/nexus/v1" },
       ],
       secrets = [
