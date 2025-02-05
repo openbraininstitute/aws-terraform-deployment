@@ -91,11 +91,12 @@ module "efs" {
 module "resource-provisioner" {
   source = "./resource-provisioner/"
 
-  hpc_resource_provisioner_role       = module.security.resource_provisioner_iam_role_arn
-  hpc_resource_provisioner_subnet_ids = [module.networking.lambda_subnet_id]
-  hpc_resource_provisioner_sg_ids     = [var.obp_vpc_default_sg_id, module.security.vpc_peering_security_group_id, module.security.resource_provisioner_security_group_id]
-  aws_region                          = var.aws_region
-  account_id                          = var.account_id
+  hpc_resource_provisioner_role              = module.security.resource_provisioner_iam_role_arn
+  hpc_resource_provisioner_subnet_ids        = [module.networking.lambda_subnet_id]
+  hpc_resource_provisioner_sg_ids            = [var.obp_vpc_default_sg_id, module.security.vpc_peering_security_group_id, module.security.resource_provisioner_security_group_id]
+  aws_region                                 = var.aws_region
+  account_id                                 = var.account_id
+  hpc_resource_provisioner_container_version = var.hpc_resource_provisioner_container_version
 }
 
 module "dynamodb" {

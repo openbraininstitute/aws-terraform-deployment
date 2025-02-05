@@ -206,26 +206,27 @@ module "bluenaas_svc" {
 module "hpc" {
   source = "./hpc"
 
-  aws_region                 = local.aws_region
-  account_id                 = local.account_id
-  obp_vpc_id                 = local.vpc_id
-  obp_vpc_default_sg_id      = local.vpc_default_sg_id
-  sbo_billing                = "hpc"
-  slurm_mysql_admin_username = "slurm_admin"
-  create_compute_instances   = false
-  num_compute_instances      = 0
-  create_slurmdb             = false # TODO-SLURMDB: re-enable when redeploying the cluster
-  compute_instance_type      = "m7g.medium"
-  create_jumphost            = false
-  compute_nat_access         = false
-  compute_subnet_count       = 16
-  av_zone_suffixes           = ["a"]
-  peering_route_tables       = [local.route_table_private_subnets_id, local.route_table_public_id]
-  lambda_subnet_cidr         = "10.0.16.0/24"
-  is_production              = var.is_production
-  aws_endpoints_subnet_cidr  = module.networking.endpoints_subnet_cidr
-  endpoints_route_table_id   = local.route_table_private_subnets_id
-  hpc_slurm_secrets_arn      = local.hpc_slurm_secrets_arn
+  aws_region                                 = local.aws_region
+  account_id                                 = local.account_id
+  obp_vpc_id                                 = local.vpc_id
+  obp_vpc_default_sg_id                      = local.vpc_default_sg_id
+  sbo_billing                                = "hpc"
+  slurm_mysql_admin_username                 = "slurm_admin"
+  create_compute_instances                   = false
+  num_compute_instances                      = 0
+  create_slurmdb                             = false # TODO-SLURMDB: re-enable when redeploying the cluster
+  compute_instance_type                      = "m7g.medium"
+  create_jumphost                            = false
+  compute_nat_access                         = false
+  compute_subnet_count                       = 16
+  av_zone_suffixes                           = ["a"]
+  peering_route_tables                       = [local.route_table_private_subnets_id, local.route_table_public_id]
+  lambda_subnet_cidr                         = "10.0.16.0/24"
+  is_production                              = var.is_production
+  aws_endpoints_subnet_cidr                  = module.networking.endpoints_subnet_cidr
+  endpoints_route_table_id                   = local.route_table_private_subnets_id
+  hpc_slurm_secrets_arn                      = local.hpc_slurm_secrets_arn
+  hpc_resource_provisioner_container_version = "0.5.10.0.dev0"
 }
 
 module "static-server" {
@@ -409,9 +410,9 @@ module "bbp_workflow_svc" {
   svc_image                      = "${local.account_id}.dkr.ecr.${local.aws_region}.amazonaws.com/bbp-workflow-svc:dev0"
   #kc_scr                         = "${local.workflow_service_secrets_arn}:keycloak_client_secret::"
   # TODO: Replace with above when merged to staging/prod
-  kc_scr                         = "arn:aws:secretsmanager:us-east-1:130659266700:secret:bbp-workflow-svc-kc-scr-9c9pEO"
-  hpc_provisioner_url            = module.hpc.resource_provisioner_api_url
-  tags                           = { SBO_Billing = "bbp_workflow_svc" }
+  kc_scr              = "arn:aws:secretsmanager:us-east-1:130659266700:secret:bbp-workflow-svc-kc-scr-9c9pEO"
+  hpc_provisioner_url = module.hpc.resource_provisioner_api_url
+  tags                = { SBO_Billing = "bbp_workflow_svc" }
 }
 
 module "dashboards" {
