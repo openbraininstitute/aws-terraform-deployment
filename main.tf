@@ -360,7 +360,7 @@ module "virtual_lab_manager" {
   virtual_lab_manager_mail_username = module.ses_user_virtuallab.access_key_id
   virtual_lab_manager_mail_server   = "email-smtp.${local.aws_region}.amazonaws.com"
   virtual_lab_manager_base_path     = var.virtual_lab_manager_base_path
-  virtual_lab_manager_mail_password = module.ses_user_virtuallab.secret_access_key
+  virtual_lab_manager_mail_password = module.ses_user_virtuallab.ses_smtp_password_v4
 
   virtual_lab_manager_mail_port = "587"
 
