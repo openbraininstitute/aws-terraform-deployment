@@ -1,7 +1,7 @@
 #  Configure ALB target group
 resource "aws_lb_target_group" "private_keycloak_target_group" {
   name        = "private-keycloak-target-group"
-  port        = 8081
+  port        = var.keycloak_port
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = var.vpc_id
@@ -11,7 +11,7 @@ resource "aws_lb_target_group" "private_keycloak_target_group" {
   }
   health_check {
     path                = "/auth/health"
-    port                = "8081"
+    port                = var.keycloak_management_port
     protocol            = "HTTP"
     interval            = 30
     timeout             = 5
