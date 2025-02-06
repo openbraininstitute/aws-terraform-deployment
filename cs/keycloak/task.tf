@@ -9,7 +9,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
   [
         {
             "name": "keycloak-container",
-            "image": "keycloak/keycloak:21.1.1",
+            "image": "keycloak/keycloak:25.0.6",
             "cpu": 2048,
             "memory": 4096,
             "portMappings": [
