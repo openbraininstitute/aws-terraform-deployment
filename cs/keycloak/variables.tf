@@ -33,6 +33,14 @@ variable "db_instance_class" {
   type = string
 }
 
+variable "keycloak_management_port" {
+  type = number
+}
+
+variable "keycloak_port" {
+  type = number
+}
+
 # This is the subnet where ECS service will be running
 variable "private_subnets" {
   type = list(string)

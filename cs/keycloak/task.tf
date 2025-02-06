@@ -14,9 +14,15 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
             "memory": 4096,
             "portMappings": [
                 {
-                    "name": "keycloak-container-8081-tcp",
-                    "containerPort": 8081,
-                    "hostPort": 8081,
+                    "name": "keycloak-container-port-tcp",
+                    "containerPort": ${var.keycloak_port},
+                    "hostPort": ${var.keycloak_port},
+                    "protocol": "tcp"
+                },
+                {
+                    "name": "keycloak-management-port-tcp",
+                    "containerPort": ${var.keycloak_management_port},
+                    "hostPort": ${var.keycloak_management_port},
                     "protocol": "tcp"
                 }
             ],
@@ -59,7 +65,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
 	        },
 	        {
                     "name": "KC_HTTP_PORT",
-                    "value": "8081"
+                    "value": "${var.keycloak_port}"
 	        },
                 {
                     "name": "KC_PROXY",

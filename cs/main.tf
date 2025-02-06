@@ -16,7 +16,9 @@ module "keycloak" {
 
   efs_mt_subnets = module.networking.keycloak_private_subnets
 
-  keycloak_secrets_arn = var.keycloak_secrets_arn
+  keycloak_secrets_arn     = var.keycloak_secrets_arn
+  keycloak_port            = 8081
+  keycloak_management_port = 9000
 
   allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
 }
