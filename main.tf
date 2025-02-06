@@ -357,7 +357,7 @@ module "virtual_lab_manager" {
   virtual_lab_manager_base_path     = var.virtual_lab_manager_base_path
   virtual_lab_manager_mail_password = module.ses_user_virtuallab.secret_access_key
 
-  virtual_lab_manager_mail_port = "25"
+  virtual_lab_manager_mail_port = "587"
 
   virtual_lab_manager_mail_starttls   = "True"
   virtual_lab_manager_use_credentials = "True"
