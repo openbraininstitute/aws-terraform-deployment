@@ -279,7 +279,9 @@ module "accounting_svc" {
 }
 
 module "billing_cost_management" {
-  source = "./billing_cost_management"
+  source        = "./billing_cost_management"
+  is_production = var.is_production
+  tags          = { SBO_Billing = "bill_cost_mgmt" }
 }
 
 module "kg_inference_api" {
