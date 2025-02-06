@@ -25,6 +25,7 @@ Deployment of the OBI platform in AWS with Terraform.
 |------|--------|---------|
 | <a name="module_accounting_svc"></a> [accounting\_svc](#module\_accounting\_svc) | ./accounting_svc | n/a |
 | <a name="module_bbp_workflow_svc"></a> [bbp\_workflow\_svc](#module\_bbp\_workflow\_svc) | ./bbp_workflow_svc | n/a |
+| <a name="module_billing_cost_management"></a> [billing\_cost\_management](#module\_billing\_cost\_management) | ./billing_cost_management | n/a |
 | <a name="module_bluenaas_svc"></a> [bluenaas\_svc](#module\_bluenaas\_svc) | ./bluenaas_svc | n/a |
 | <a name="module_cells_svc"></a> [cells\_svc](#module\_cells\_svc) | ./cells_svc | n/a |
 | <a name="module_core_webapp"></a> [core\_webapp](#module\_core\_webapp) | ./core_webapp | n/a |
