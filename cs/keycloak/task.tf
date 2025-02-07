@@ -32,6 +32,10 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
             ],
             "environment": [
                 {
+                    "name": "KC_HOSTNAME",
+                    "value": "${var.preferred_hostname}"
+                },
+                {
                     "name": "KC_DB",
                     "value": "${aws_db_instance.keycloak_database.engine}"
                 },
@@ -46,10 +50,6 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
                 {
                     "name": "KC_DB_USERNAME",
                     "value": "${aws_db_instance.keycloak_database.username}"
-                },
-                {
-                    "name": "KC_HOSTNAME_STRICT",
-                    "value": "false"
                 },
 	        {
  	            "name": "KC_HEALTH_ENABLED",
