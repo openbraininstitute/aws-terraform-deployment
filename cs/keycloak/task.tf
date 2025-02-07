@@ -3,15 +3,15 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
   family                   = "keycloak-task"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc" # Use AWS VPC networking mode
-  cpu                      = 2048
-  memory                   = 4096
+  cpu                      = var.keycloak_task_size.cpu
+  memory                   = var.keycloak_task_size.memory
   container_definitions    = <<TASK_DEFINITION
   [
         {
             "name": "keycloak-container",
             "image": "keycloak/keycloak:25.0.6",
-            "cpu": 2048,
-            "memory": 4096,
+            "cpu": ${var.keycloak_task_size.cpu},
+            "memory": ${var.keycloak_task_size.memory},
             "portMappings": [
                 {
                     "name": "keycloak-container-port-tcp",

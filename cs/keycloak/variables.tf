@@ -51,3 +51,12 @@ variable "keycloak_secrets_arn" {
   description = "ARN of the Keycloak secrets manager"
   sensitive   = false
 }
+
+variable "keycloak_task_size" {
+  type = object({
+    cpu    = number
+    memory = number
+  })
+
+  description = "CPU and memory limit for Keycloak's ECS task (number or string format)"
+}
