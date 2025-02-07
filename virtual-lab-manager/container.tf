@@ -18,21 +18,6 @@ resource "aws_cloudwatch_log_group" "virtual_lab_manager" {
   }
 }
 
-# TODO check: not used?
-resource "aws_cloudwatch_log_group" "virtual_lab_manager_ecs" {
-  # TODO check if the logs can be encrypted
-  name              = "virtual_lab_manager_ecs"
-  skip_destroy      = false
-  retention_in_days = 5
-
-  kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
-
-  tags = {
-    Application = "virtual_lab_manager"
-    SBO_Billing = "virtual_lab_manager"
-  }
-}
-
 resource "aws_ecs_cluster" "virtual_lab_manager" {
   name = "virtual_lab_manager_ecs_cluster"
 
