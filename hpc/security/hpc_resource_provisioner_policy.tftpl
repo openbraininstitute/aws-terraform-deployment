@@ -195,7 +195,8 @@
             ],
             "Resource": [
                 "arn:aws:s3:::parallelcluster-*",
-                "arn:aws:s3:::aws-parallelcluster-*"
+                "arn:aws:s3:::aws-parallelcluster-*",
+                "arn:aws:s3:::sbosandbox-lec3cn"
             ],
             "Effect": "Allow",
             "Sid": "S3ResourcesBucket"
@@ -205,7 +206,11 @@
                 "s3:Get*",
                 "s3:List*"
             ],
-            "Resource": "arn:aws:s3:::*-aws-parallelcluster*",
+            "Resource": [
+                "arn:aws:s3:::*-aws-parallelcluster*",
+                "arn:aws:s3:::sbonexusdata-*",
+                "arn:aws:s3:::sboinfrastructureassets-*"
+            ],
             "Effect": "Allow",
             "Sid": "S3ParallelClusterReadOnly"
         },
