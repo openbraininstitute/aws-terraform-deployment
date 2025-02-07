@@ -58,6 +58,13 @@ variable "core_web_app_docker_image_url" {
   sensitive   = false
 }
 
+### BlueNaaS service ###
+
+variable "bluenaas_docker_image_url" {
+  type        = string
+  description = "Docker image URL for the blue-naas service"
+}
+
 ### Virtual Lab Manager service ###
 
 variable "virtual_lab_manager_base_path" {

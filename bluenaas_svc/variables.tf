@@ -22,7 +22,6 @@ variable "base_path" {
 variable "docker_image_url" {
   description = "Docker image for the bluenaas service"
   type        = string
-  default     = "bluebrain/blue-naas-single-cell:latest"
 }
 
 variable "dockerhub_credentials_arn" {

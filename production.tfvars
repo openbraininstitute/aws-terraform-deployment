@@ -16,3 +16,5 @@ bluenaas_task_size = {
   cpu    = 4096
   memory = 8192
 }
+# TODO: replace tag below with a version tag when the CI is ready
+bluenaas_docker_image_url = "bluebrain/blue-naas-single-cell:latest"

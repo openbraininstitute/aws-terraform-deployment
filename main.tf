@@ -188,6 +188,8 @@ module "bluenaas_svc" {
   dockerhub_credentials_arn       = local.dockerhub_bbpbuildbot_secret_arn
   dockerhub_access_iam_policy_arn = local.dockerhub_bbpbuildbot_policy_arn
 
+  docker_image_url = var.bluenaas_docker_image_url
+
   keycloak_server_url = "https://${local.primary_domain}/auth/"
 
   nexus_delta_uri = "https://${module.nexus.nexus_domain_name}/api/nexus/v1"
