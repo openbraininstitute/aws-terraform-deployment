@@ -285,7 +285,10 @@
                 "fsx:DescribeFileSystems",
                 "fsx:TagResource"
             ],
-            "Resource": "arn:aws:fsx:${aws_region}:${account_id}:file-system/*"
+            "Resource": [
+                "arn:aws:fsx:${aws_region}:${account_id}:file-system/*",
+                "arn:aws:fsx:${aws_region}:${account_id}:association/*"
+                ]
         },
         {
             "Sid": "AllowCreateSecretsManagerSecret",
