@@ -19,6 +19,7 @@ module "keycloak" {
   keycloak_secrets_arn     = var.keycloak_secrets_arn
   keycloak_port            = 8081
   keycloak_management_port = 9000
+  keycloak_task_size       = var.keycloak_task_size
 
   allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
 }

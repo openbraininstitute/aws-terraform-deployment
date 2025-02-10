@@ -56,6 +56,7 @@ module "cs" {
   db_instance_class              = "db.t3.micro"
   private_alb_https_listener_arn = local.private_alb_https_listener_arn
   keycloak_secrets_arn           = local.keycloak_secrets_arn
+  keycloak_task_size             = var.keycloak_task_size
 
   preferred_hostname = local.primary_domain
   redirect_hostnames = ["openbluebrain.ch", "openbrainplatform.org", "openbrainplatform.com"]

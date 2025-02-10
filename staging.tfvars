@@ -12,8 +12,14 @@ core_web_app_docker_image_url         = "bluebrain/sbo-core-web-app:staging"
 virtual_lab_manager_docker_image_url  = "bluebrain/obp-virtual-lab-api:staging"
 is_nexus_openscience_running          = false
 is_nexus_obp_running                  = true
+
+bluenaas_docker_image_url = "bluebrain/blue-naas-single-cell:staging"
 bluenaas_task_size = {
   cpu    = 4096
   memory = 8192
 }
-bluenaas_docker_image_url = "bluebrain/blue-naas-single-cell:staging"
+
+keycloak_task_size = {
+  cpu    = 1024
+  memory = 2048
+}

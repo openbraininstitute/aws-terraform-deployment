@@ -12,9 +12,15 @@ core_web_app_docker_image_url         = "bluebrain/sbo-core-web-app:2025.1.0-pro
 virtual_lab_manager_docker_image_url  = "bluebrain/obp-virtual-lab-api:2025.1.0-prod"
 is_nexus_openscience_running          = false
 is_nexus_obp_running                  = true
+
+# TODO: replace tag below with a version tag when the CI is ready
+bluenaas_docker_image_url = "bluebrain/blue-naas-single-cell:latest"
 bluenaas_task_size = {
   cpu    = 4096
   memory = 8192
 }
-# TODO: replace tag below with a version tag when the CI is ready
-bluenaas_docker_image_url = "bluebrain/blue-naas-single-cell:latest"
+
+keycloak_task_size = {
+  cpu    = 2048
+  memory = 4096
+}

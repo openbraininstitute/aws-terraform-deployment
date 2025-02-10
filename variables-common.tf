@@ -114,3 +114,14 @@ variable "bluenaas_task_size" {
 
   description = "CPU and memory limit for ECS task (number or string format)"
 }
+
+### Keycloak ###
+
+variable "keycloak_task_size" {
+  type = object({
+    cpu    = number
+    memory = number
+  })
+
+  description = "CPU and memory limit for Keycloak's ECS task (number or string format)"
+}
