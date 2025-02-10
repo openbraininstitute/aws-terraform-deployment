@@ -23,3 +23,5 @@ bluenaas_task_size = {
   cpu    = 4096
   memory = 8192
 }
+bluenaas_docker_image_url       = "bluebrain/blue-naas-single-cell:staging"
+viz_scientific_data_bucket_name = "important-scientific-data-sandbox-hpc"
