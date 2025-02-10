@@ -277,6 +277,17 @@
             "Resource": "*"
         },
         {
+            "Sid": "AllowSfxCreation",
+            "Effect": "Allow",
+            "Action": [
+                "fsx:CreateDataRepositoryAssociation",
+                "fsx:CreateFileSystem",
+                "fsx:DescribeFileSystems",
+                "fsx:TagResource"
+            ],
+            "Resource": "arn:aws:fsx:${aws_region}:${account_id}:file-system/*"
+        },
+        {
             "Sid": "AllowCreateSecretsManagerSecret",
             "Effect": "Allow",
             "Action": [
