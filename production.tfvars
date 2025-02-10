@@ -1,3 +1,4 @@
+is_staging                            = false
 is_production                         = true
 terraform_remote_state_dynamodb_table = "terraform-state-lock-table-production"
 terraform_remote_state_bucket_name    = "obi-tfstate-production"

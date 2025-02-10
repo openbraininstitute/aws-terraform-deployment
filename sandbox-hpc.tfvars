@@ -14,6 +14,7 @@ keycloak_task_size = {
   cpu    = 1024
   memory = 2048
 }
+is_staging                                 = false
 nexus_az_letter_id                         = "a"
 core_web_app_docker_image_url              = "bluebrain/sbo-core-web-app:2025.1.0-prod"
 virtual_lab_manager_docker_image_url       = "bluebrain/obp-virtual-lab-api:2025.1.0-prod"
