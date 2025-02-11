@@ -18,6 +18,11 @@ variable "cell_svc_bucket_name" {
   sensitive = false
 }
 
+variable "cell_svc_docker_image_url" {
+  type      = string
+  sensitive = false
+}
+
 variable "ml_paper_bucket_name" {
   type      = string
   sensitive = false

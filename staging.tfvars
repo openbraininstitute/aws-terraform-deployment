@@ -11,6 +11,7 @@ nexus_openscience_bucket_name         = "nexus-openscience-production-staging-te
 nexus_az_letter_id                    = "a"
 core_web_app_docker_image_url         = "bluebrain/sbo-core-web-app:staging"
 virtual_lab_manager_docker_image_url  = "bluebrain/obp-virtual-lab-api:staging"
+cell_svc_docker_image_url             = "public.ecr.aws/f9p2m8x8/sonata-cell-position:ea78100-prod"
 is_nexus_openscience_running          = false
 is_nexus_obp_running                  = true
 
