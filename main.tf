@@ -5,6 +5,7 @@ locals {
 
   private_alb_https_listener_arn = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
   route_table_private_subnets_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
+  route_table_public_id          = data.terraform_remote_state.common.outputs.route_table_public_id
 
   public_nlb_sg_id = data.terraform_remote_state.common.outputs.public_nlb_sg_id
   nat_gateway_id   = data.terraform_remote_state.common.outputs.nat_gateway_id
@@ -36,7 +37,7 @@ module "coreservices_key" {
   # systems/services/external/aws/ssh/aws_coreservices_private_key
   # systems/services/external/aws/ssh/aws_coreservices_password
   name       = "aws_coreservices"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDO8QAh2WZ/WcZnNeojPNhadeodMO2l3PssaUFJWfvEFNzkuo5ci7nxb39M2FH6RyFAfqykV/v89KfDIg9K2ebJQZS+x6Enrqm7+ROmZjCdpYkFm7l2NCoKLus92DaPX6k1Tv5hcI76BqWN4nOKQxzb7ziJxFl5wzLgTwnXZvY33dA3Pu6aimksv071KnQ3hJKk6Omx/l7Hv/D7c0tU8vRCUefzHT3TkRpRgTTq+Wd8S0pGSmMB4drk5PiUzEVczxuIfmYGCWV2va6aT34yuMOw/6y2Cr9guCkyR2FkFm7q0MPw0aKGFBwTT05eiEWBWKQQbqi1qMtSwd6tp4qv6crN SSH key for AWS SBO POC"
+  public_key = var.coreservices_public_key
 }
 
 module "networking" {
@@ -205,26 +206,27 @@ module "bluenaas_svc" {
 module "hpc" {
   source = "./hpc"
 
-  aws_region                 = local.aws_region
-  account_id                 = local.account_id
-  obp_vpc_id                 = local.vpc_id
-  obp_vpc_default_sg_id      = local.vpc_default_sg_id
-  sbo_billing                = "hpc"
-  slurm_mysql_admin_username = "slurm_admin"
-  create_compute_instances   = false
-  num_compute_instances      = 0
-  create_slurmdb             = false # TODO-SLURMDB: re-enable when redeploying the cluster
-  compute_instance_type      = "m7g.medium"
-  create_jumphost            = false
-  compute_nat_access         = false
-  compute_subnet_count       = 16
-  av_zone_suffixes           = ["a"]
-  peering_route_tables       = [local.route_table_private_subnets_id]
-  lambda_subnet_cidr         = "10.0.16.0/24"
-  is_production              = var.is_production
-  aws_endpoints_subnet_cidr  = module.networking.endpoints_subnet_cidr
-  endpoints_route_table_id   = local.route_table_private_subnets_id
-  hpc_slurm_secrets_arn      = local.hpc_slurm_secrets_arn
+  aws_region                                 = local.aws_region
+  account_id                                 = local.account_id
+  obp_vpc_id                                 = local.vpc_id
+  obp_vpc_default_sg_id                      = local.vpc_default_sg_id
+  sbo_billing                                = "hpc"
+  slurm_mysql_admin_username                 = "slurm_admin"
+  create_compute_instances                   = false
+  num_compute_instances                      = 0
+  create_slurmdb                             = false # TODO-SLURMDB: re-enable when redeploying the cluster
+  compute_instance_type                      = "m7g.medium"
+  create_jumphost                            = false
+  compute_nat_access                         = false
+  compute_subnet_count                       = 16
+  av_zone_suffixes                           = ["a"]
+  peering_route_tables                       = [local.route_table_private_subnets_id, local.route_table_public_id]
+  lambda_subnet_cidr                         = "10.0.16.0/24"
+  is_production                              = var.is_production
+  aws_endpoints_subnet_cidr                  = module.networking.endpoints_subnet_cidr
+  endpoints_route_table_id                   = local.route_table_private_subnets_id
+  hpc_slurm_secrets_arn                      = local.hpc_slurm_secrets_arn
+  hpc_resource_provisioner_container_version = var.hpc_resource_provisioner_container_version
 }
 
 module "static-server" {
@@ -405,11 +407,15 @@ module "bbp_workflow_svc" {
   domain_name                    = local.primary_domain
   route_table_private_subnets_id = local.route_table_private_subnets_id
   nexus_domain_name              = module.nexus.nexus_domain_name
-  svc_image                      = "bluebrain/bbp-workflow:latest"
-  kc_scr                         = "${local.workflow_service_secrets_arn}:keycloak_client_secret::"
-  id_rsa_scr                     = "${local.workflow_service_secrets_arn}:id_rsa_scr::"
-  hpc_head_node                  = "127.0.0.1" # FIXME
-  tags                           = { SBO_Billing = "bbp_workflow_svc" }
+  svc_image                      = "${local.account_id}.dkr.ecr.${local.aws_region}.amazonaws.com/bbp-workflow-svc:0.1.dev19"
+  kc_scr = (var.is_staging || var.is_production) ? (
+    "${local.workflow_service_secrets_arn}:keycloak_client_secret::"
+    ) : (
+    "arn:aws:secretsmanager:us-east-1:130659266700:secret:bbp-workflow-svc-kc-scr-9c9pEO"
+  )
+  hpc_provisioner_url = module.hpc.resource_provisioner_api_url
+  tags                = { SBO_Billing = "bbp_workflow_svc" }
+  count               = (var.is_staging || var.is_production) ? 0 : 1
 }
 
 module "dashboards" {

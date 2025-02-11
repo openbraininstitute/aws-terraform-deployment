@@ -84,3 +84,8 @@ variable "endpoints_route_table_id" {
 variable "hpc_slurm_secrets_arn" {
   type = string
 }
+
+
+variable "hpc_resource_provisioner_container_version" {
+  type = string
+}
