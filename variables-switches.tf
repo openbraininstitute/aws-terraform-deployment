@@ -36,3 +36,9 @@ variable "is_nexus_obp_running" {
   type        = bool
   default     = true
 }
+
+variable "is_staging" {
+  description = "Whether deployment is happening in staging"
+  type        = bool
+  default     = false
+}

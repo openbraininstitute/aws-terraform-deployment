@@ -133,6 +133,32 @@ resource "aws_iam_role" "task" {
       }]
     })
   }
+  inline_policy {
+    name = "${var.svc_name}-api-gateway-access"
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [{
+        Action = [
+          "execute-api:Invoke"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      }]
+    })
+  }
+  inline_policy {
+    name = "${var.svc_name}-secrets-manager-access"
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [{
+        Action = [
+          "secretsmanager:GetSecretValue"
+        ]
+        Effect   = "Allow"
+        Resource = "*" // You may want to restrict this to specific secrets
+      }]
+    })
+  }
 }
 
 resource "aws_iam_role" "task_exec" {
@@ -160,7 +186,9 @@ resource "aws_iam_role" "task_exec" {
         ]
         Effect = "Allow"
         # Resource = [var.kc_scr, var.id_rsa_scr]
-        Resource = [var.kc_scr]
+        # Resource = [var.kc_scr]
+        # TODO: Replace var.kc_scr above when merged to staging/prod
+        Resource = ["arn:aws:secretsmanager:us-east-1:130659266700:secret:bbp-workflow-svc-kc-scr-9c9pEO"]
       }]
     })
   }
@@ -180,8 +208,9 @@ resource "aws_ecs_task_definition" "this" {
       name        = local.cluster_name
       networkMode = "awsvpc"
       # family      = local.cluster_name
-      essential = true
-      image     = var.svc_image
+      essential         = true
+      image             = var.svc_image
+      imagePullBehavior = "prefer-cached"
       linuxParameters = {
         initProcessEnabled = true
       }
@@ -193,15 +222,14 @@ resource "aws_ecs_task_definition" "this" {
         { name : "KC_CLIENT_ID", value : "bbp-workflow" },
         { name : "WORKFLOWS_PATH", value : "/home/bbp-workflow/workflows" },
         { name : "HPC_ENVIRONMENT", value : "aws" },
-        { name : "HPC_HEAD_NODE", value : var.hpc_head_node },
         { name : "HPC_PATH_PREFIX", value : "/sbo/data/scratch" },
         { name : "HPC_DATA_PREFIX", value : "/sbo/data/project" },
         { name : "HPC_SIF_PREFIX", value : "/sbo/data/containers" },
+        { name : "HPC_RESOURCE_PROVISIONER_API_URL", value : var.hpc_provisioner_url },
         { name : "NEXUS_BASE", value : "https://${var.nexus_domain_name}/api/nexus/v1" },
       ],
       secrets = [
         { name = "KC_SCR", valueFrom = var.kc_scr },
-        # { name = "SSH_PRIVATE_KEY", valueFrom = var.id_rsa_scr },
       ]
       portMappings = [
         {

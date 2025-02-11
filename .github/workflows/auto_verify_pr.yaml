@@ -5,6 +5,9 @@ on:
     branches:
       - staging
 
+concurrency:
+  group: terraform-${{ github.base_ref }}
+
 jobs:
   terraform_verify:
     environment: ${{ github.base_ref }}

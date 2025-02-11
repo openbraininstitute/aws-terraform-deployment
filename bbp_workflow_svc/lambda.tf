@@ -151,7 +151,7 @@ resource "aws_lambda_function" "handler_session" {
     security_group_ids = [aws_security_group.bbp_workflow_svc.id]
     subnet_ids         = [aws_subnet.bbp_workflow_svc.id]
   }
-  depends_on = [aws_cloudwatch_log_group.handler_default]
+  depends_on = [aws_cloudwatch_log_group.handler_session]
   tags       = var.tags
 }
 
@@ -248,22 +248,44 @@ resource "aws_iam_role" "handler_launch" {
     })
   }
   inline_policy {
-    name = "${var.svc_name}-handler-launch-key-access"
+    name = "${var.svc_name}-handler-launch-pass-roles"
     policy = jsonencode({
       Version = "2012-10-17"
       Statement = [{
-        Action   = ["secretsmanager:GetSecretValue"]
-        Effect   = "Allow"
-        Resource = var.id_rsa_scr
+        Action = ["iam:PassRole"]
+        Effect = "Allow"
+        Resource = [
+          aws_iam_role.task.arn,
+          aws_iam_role.task_exec.arn
+        ]
       }]
     })
   }
   inline_policy {
-    name = "${var.svc_name}-handler-launch-ddb-get-item"
+    name = "${var.svc_name}-handler-launch-ecs-tasks"
     policy = jsonencode({
       Version = "2012-10-17"
       Statement = [{
-        Action   = ["dynamodb:GetItem"]
+        Action = ["ecs:TagResource", "ecs:DescribeTasks", "ecs:RunTask", "ecs:StopTask"]
+        Effect = "Allow"
+        Resource = [
+          aws_ecs_task_definition.this.arn,
+          "arn:aws:ecs:${var.aws_region}:${var.account_id}:task/${aws_ecs_cluster.this.name}/*",
+        ]
+      }]
+    })
+  }
+  inline_policy {
+    name = "${var.svc_name}-handler-launch-ddb"
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [{
+        Action = [
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:UpdateItem"
+        ]
         Effect   = "Allow"
         Resource = aws_dynamodb_table.this.arn
       }]
@@ -285,8 +307,11 @@ resource "aws_lambda_function" "handler_launch" {
   runtime          = local.python_version
   environment {
     variables = {
-      "DDB_ID_TASK" = aws_dynamodb_table.this.name
-      "KEY_ARN"     = var.id_rsa_scr
+      "DDB_ID_TASK"      = aws_dynamodb_table.this.name
+      "ECS_CLUSTER"      = aws_ecs_cluster.this.name
+      "ECS_TASK_DEF"     = aws_ecs_task_definition.this.arn
+      "SVC_SUBNET"       = aws_subnet.bbp_workflow_svc.id
+      "SVC_SECURITY_GRP" = aws_security_group.bbp_workflow_svc.id
     }
   }
   tracing_config {

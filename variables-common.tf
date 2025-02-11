@@ -95,6 +95,11 @@ variable "accounting_base_path" {
   description = "The base path for the accounting service"
   sensitive   = false
 }
+variable "coreservices_public_key" {
+  type        = string
+  description = "Public SSH key for the coreservices team"
+  sensitive   = true
+}
 
 ### Nexus ###
 
@@ -124,4 +129,10 @@ variable "keycloak_task_size" {
   })
 
   description = "CPU and memory limit for Keycloak's ECS task (number or string format)"
+}
+
+### HPC ###
+variable "hpc_resource_provisioner_container_version" {
+  type        = string
+  description = "Version of hpc-resource-provisioner to deploy"
 }
