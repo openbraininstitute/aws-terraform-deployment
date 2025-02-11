@@ -27,4 +27,4 @@ keycloak_task_size = {
 }
 # TODO: replace tag below with a version tag when the CI is ready
 bluenaas_docker_image_url = "bluebrain/blue-naas-single-cell:latest"
-hpc_resource_provisioner_container_version = "0.5.10.0.dev2"
+hpc_resource_provisioner_container_version = "latest"
