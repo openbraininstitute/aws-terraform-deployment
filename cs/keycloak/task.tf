@@ -9,7 +9,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
     operating_system_family = "LINUX"
     cpu_architecture        = "ARM64"
   }
-  container_definitions    = <<TASK_DEFINITION
+  container_definitions = <<TASK_DEFINITION
   [
         {
             "name": "keycloak-container",
@@ -125,8 +125,8 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
         }
     ]
     TASK_DEFINITION
-  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
-  task_role_arn            = aws_iam_role.ecs_task_execution_role.arn
+  execution_role_arn    = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn         = aws_iam_role.ecs_task_execution_role.arn
   volume {
     name = "keycloak-theme-volume"
     efs_volume_configuration {
