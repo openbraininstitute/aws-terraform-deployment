@@ -1,27 +1,32 @@
+is_staging                            = false
 is_production                         = false
 terraform_remote_state_dynamodb_table = "terraform-state-lock-table-sandbox-hpc"
 terraform_remote_state_bucket_name    = "obi-tfstate-sandbox-hpc"
-nise_dockerhub_password               = "placeholder"
 cell_svc_bucket_name                  = "sbo-cell-svc-perf-test-sandbox-hpc"
 ml_paper_bucket_name                  = "ml-paper-bucket-sandbox-hpc-test"
 nexus_domain_name                     = "sandbox-hpc.openbluebrain.com"
 nexus_obp_bucket_name                 = "nexus-obp-sandbox-hpc-test"
 nexus_ship_bucket_name                = "nexus-ship-sandbox-hpc-test"
 nexus_openscience_bucket_name         = "nexus-openscience-sandbox-hpc-test"
-ec_apikey                             = "placeholder"
-coreservices_public_key               = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCy8UW1JdUjIuiiaI+xFId3smXFe6iwxdn6Klqi8y4E+cFHP/uQxW4AuCfJVoOjOQ2CNU0UIGRlCkw3IwUmZvwGjFZS1Vs6jt+KjWiDRdFzQQrz5+vuqPX2576wXlT+EHe0W6r7Qla5i1L6cjz6/E4u5yFZ3MJQSBYjLqXjT7Da4R72gPx9oiIoSH2JBu3vHyfkTEo3l6C+WJlYnUGOLnUxGGGnhJrBKmIRNMmtRNgQlBkPR4mnCAFABJfgpzgNf4bpqLbma5DabQGbvpX6qCLSAV5Zdd4gBQLIAJfS/a5pMWaIy9qDTWB2vy4Z39HI45k6efrLL+xgo+XYSRqn5jDT heeren@Mac"
-keycloak_task_size = {
-  cpu    = 1024
-  memory = 2048
-}
-is_staging                                 = false
-nexus_az_letter_id                         = "a"
-core_web_app_docker_image_url              = "bluebrain/sbo-core-web-app:2025.1.0-prod"
-virtual_lab_manager_docker_image_url       = "bluebrain/obp-virtual-lab-api:2025.1.0-prod"
-hpc_resource_provisioner_container_version = "0.5.10.dev36"
+nexus_az_letter_id                    = "a"
+core_web_app_docker_image_url         = "bluebrain/sbo-core-web-app:2025.1.0-prod"
+virtual_lab_manager_docker_image_url  = "bluebrain/obp-virtual-lab-api:2025.1.0-prod"
+cell_svc_docker_image_url             = "bluebrain/obp-sonata-cell-position:2024.11.1-prod"
+is_nexus_openscience_running          = false
+is_nexus_obp_running                  = true
+
+bluenaas_docker_image_url = "bluebrain/blue-naas-single-cell:staging"
 bluenaas_task_size = {
   cpu    = 4096
   memory = 8192
 }
-bluenaas_docker_image_url       = "bluebrain/blue-naas-single-cell:staging"
-viz_scientific_data_bucket_name = "important-scientific-data-sandbox-hpc"
+keycloak_task_size = {
+  cpu    = 1024
+  memory = 2048
+}
+coreservices_public_key                    = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCy8UW1JdUjIuiiaI+xFId3smXFe6iwxdn6Klqi8y4E+cFHP/uQxW4AuCfJVoOjOQ2CNU0UIGRlCkw3IwUmZvwGjFZS1Vs6jt+KjWiDRdFzQQrz5+vuqPX2576wXlT+EHe0W6r7Qla5i1L6cjz6/E4u5yFZ3MJQSBYjLqXjT7Da4R72gPx9oiIoSH2JBu3vHyfkTEo3l6C+WJlYnUGOLnUxGGGnhJrBKmIRNMmtRNgQlBkPR4mnCAFABJfgpzgNf4bpqLbma5DabQGbvpX6qCLSAV5Zdd4gBQLIAJfS/a5pMWaIy9qDTWB2vy4Z39HI45k6efrLL+xgo+XYSRqn5jDT heeren@Mac"
+hpc_resource_provisioner_container_version = "latest-dev"
+
+# Sandbox placeholders
+nise_dockerhub_password = "placeholder"
+ec_apikey               = "placeholder"

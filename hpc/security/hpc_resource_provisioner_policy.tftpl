@@ -16,6 +16,16 @@
             "Resource": "*"
         },
         {
+            "Sid": "FSXServiceLinkedRole",
+            "Action": [
+                "iam:AttachRolePolicy",
+                "iam:CreateServiceLinkedRole",
+                "iam:PutRolePolicy"
+            ],
+            "Resource": "arn:aws:iam::*:role/aws-service-role/s3.data-source.lustre.fsx.amazonaws.com/*",
+            "Effect": "Allow"
+        },
+        {
             "Action": [
                 "ec2:Describe*"
             ],
@@ -112,7 +122,8 @@
                 "cloudwatch:PutMetricAlarm",
                 "cloudwatch:DeleteAlarms",
                 "cloudwatch:DescribeAlarms",
-                "cloudwatch:PutCompositeAlarm"
+                "cloudwatch:PutCompositeAlarm",
+                "cloudwatch:TagResource"
             ],
             "Resource": "*",
             "Effect": "Allow",
@@ -282,6 +293,7 @@
             "Action": [
                 "fsx:CreateDataRepositoryAssociation",
                 "fsx:CreateFileSystem",
+                "fsx:DescribeDataRepositoryAssociations",
                 "fsx:DescribeFileSystems",
                 "fsx:TagResource"
             ],
