@@ -5,6 +5,10 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
   network_mode             = "awsvpc" # Use AWS VPC networking mode
   cpu                      = var.keycloak_task_size.cpu
   memory                   = var.keycloak_task_size.memory
+  runtime_platform {
+    operating_system_family = "LINUX"
+    cpu_architecture        = "ARM64"
+  }
   container_definitions    = <<TASK_DEFINITION
   [
         {
