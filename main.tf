@@ -87,6 +87,7 @@ module "ml" {
 
   paper_bucket_name = var.ml_paper_bucket_name
   nexus_domain_name = module.nexus.nexus_domain_name
+  primary_domain    = local.primary_domain
 
   # OLD PRIVATE ALB
   private_alb_security_group_id = data.terraform_remote_state.common.outputs.private_alb_security_group_id

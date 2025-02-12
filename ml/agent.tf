@@ -75,7 +75,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_KEYCLOAK__ISSUER"
-          value = "https://openbluebrain.com/auth/realms/SBO"
+          value = "https://${var.primary_domain}/auth/realms/SBO"
         },
         {
           name  = "NEUROAGENT_KNOWLEDGE_GRAPH__DOWNLOAD_HIERARCHY"

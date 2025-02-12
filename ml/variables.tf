@@ -232,3 +232,7 @@ variable "nexus_domain_name" {
   type        = string
   description = "Nexus service domain name"
 }
+
+variable "primary_domain" {
+  type = string
+}

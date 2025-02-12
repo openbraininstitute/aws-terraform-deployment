@@ -91,7 +91,7 @@ module "ml_ecs_service_backend" {
         },
         {
           name  = "SCHOLARAG__KEYCLOAK__ISSUER"
-          value = "https://openbluebrain.com/auth/realms/SBO"
+          value = "https://${var.primary_domain}/auth/realms/SBO"
         },
         {
           name  = "SCHOLARAG__KEYCLOAK__VALIDATE_TOKEN"
