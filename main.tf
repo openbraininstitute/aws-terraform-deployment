@@ -146,9 +146,6 @@ module "cells_svc" {
   vpc_id         = local.vpc_id
   vpc_cidr_block = local.vpc_cidr_block
 
-  dockerhub_access_iam_policy_arn = local.dockerhub_bbpbuildbot_policy_arn
-  dockerhub_credentials_arn       = local.dockerhub_bbpbuildbot_secret_arn
-
   private_alb_https_listener_arn = local.private_alb_https_listener_arn
   route_table_private_subnets_id = local.route_table_private_subnets_id
 

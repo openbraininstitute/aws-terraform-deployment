@@ -34,14 +34,6 @@ variable "vpc_cidr_block" {
   type = string
 }
 
-variable "dockerhub_access_iam_policy_arn" {
-  type = string
-}
-
-variable "dockerhub_credentials_arn" {
-  type = string
-}
-
 variable "private_alb_https_listener_arn" {
   type = string
 }
