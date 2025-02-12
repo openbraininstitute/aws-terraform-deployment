@@ -11,7 +11,7 @@ nexus_openscience_bucket_name         = "nexus-openscience-production"
 nexus_az_letter_id                    = "b"
 core_web_app_docker_image_url         = "bluebrain/sbo-core-web-app:2025.1.0-prod"
 virtual_lab_manager_docker_image_url  = "bluebrain/obp-virtual-lab-api:2025.1.0-prod"
-cell_svc_docker_image_url             = "bluebrain/obp-sonata-cell-position:2024.11.1-prod"
+cell_svc_docker_image_url             = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.1.1-prod"
 is_nexus_openscience_running          = false
 is_nexus_obp_running                  = true
 

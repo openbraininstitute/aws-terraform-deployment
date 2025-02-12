@@ -216,10 +216,6 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
       image       = var.cell_svc_docker_image_url
       name        = "cell_svc"
 
-      repositoryCredentials = {
-        credentialsParameter = var.dockerhub_credentials_arn
-      }
-
       portMappings = [
         {
           hostPort      = 8000
@@ -432,11 +428,6 @@ resource "aws_iam_role_policy_attachment" "ecs_cell_svc_task_execution_role_poli
   role       = aws_iam_role.ecs_cell_svc_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 
-}
-
-resource "aws_iam_role_policy_attachment" "ecs_cell_svc_task_role_dockerhub_policy_attachment" {
-  role       = aws_iam_role.ecs_cell_svc_task_execution_role.name
-  policy_arn = var.dockerhub_access_iam_policy_arn
 }
 
 resource "aws_iam_role_policy_attachment" "cloudwatch_write_logs" {
