@@ -58,9 +58,11 @@ module "cs" {
   private_alb_https_listener_arn = local.private_alb_https_listener_arn
   keycloak_secrets_arn           = local.keycloak_secrets_arn
   keycloak_task_size             = var.keycloak_task_size
+  aws_coreservices_ssh_key_id    = module.coreservices_key.key_pair_id
 
   preferred_hostname = local.primary_domain
   redirect_hostnames = ["openbluebrain.ch", "openbrainplatform.org", "openbrainplatform.com"]
+
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 }

@@ -23,6 +23,18 @@ resource "aws_subnet" "cs_subnet_b" {
   }
 }
 
+resource "aws_subnet" "cs_jupyterhub_subnet" {
+  vpc_id                  = var.vpc_id
+  availability_zone       = "${data.aws_region.current.name}a"
+  cidr_block              = "10.0.14.0/28"
+  map_public_ip_on_launch = false
+
+  tags = {
+    Name        = "cs_subnet"
+    SBO_Billing = "common"
+  }
+}
+
 # Link VPC route private table to cs_subnet a network
 resource "aws_route_table_association" "cs_subnet_a" {
   subnet_id      = aws_subnet.cs_subnet_a.id
@@ -32,5 +44,10 @@ resource "aws_route_table_association" "cs_subnet_a" {
 # Link VPC route private table to cs_subnet b network
 resource "aws_route_table_association" "cs_subnet_b" {
   subnet_id      = aws_subnet.cs_subnet_b.id
+  route_table_id = var.route_table_private_subnets_id
+}
+
+resource "aws_route_table_association" "cs_jupyterhub_subnet" {
+  subnet_id      = aws_subnet.cs_jupyterhub_subnet.id
   route_table_id = var.route_table_private_subnets_id
 }

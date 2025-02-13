@@ -12,6 +12,10 @@ variable "db_instance_class" {
   type = string
 }
 
+variable "aws_coreservices_ssh_key_id" {
+  type = string
+}
+
 variable "private_alb_https_listener_arn" {
   type = string
 }

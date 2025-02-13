@@ -4,6 +4,16 @@ module "networking" {
   route_table_private_subnets_id = var.route_table_private_subnets_id
 }
 
+module "jupyterhub" {
+  source                         = "./jupyterhub"
+  aws_coreservices_ssh_key_id    = var.aws_coreservices_ssh_key_id
+  vpc_id                         = var.vpc_id
+  private_alb_https_listener_arn = var.private_alb_https_listener_arn
+  preferred_hostname             = var.preferred_hostname
+  jupyterhub_private_subnet      = module.networking.jupyterhub_private_subnet
+  jupyterhub_port                = 80
+}
+
 module "keycloak" {
   source                         = "./keycloak"
   private_subnets                = module.networking.keycloak_private_subnets
