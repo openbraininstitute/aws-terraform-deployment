@@ -123,6 +123,10 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
           value = var.env_DEBUG
         },
         {
+          name  = "NEXT_PUBLIC_DEPLOYMENT_ENV"
+          value = var.env_NEXT_PUBLIC_DEPLOYMENT_ENV
+        },
+        {
           name  = "NEXTAUTH_URL"
           value = var.env_NEXTAUTH_URL
         },
@@ -159,6 +163,10 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
         {
           name      = "MAILCHIMP_AUDIENCE_ID"
           valueFrom = "${var.core_webapp_secrets_arn}:MAILCHIMP_AUDIENCE_ID::"
+        },
+        {
+          name      = "MAILCHIMP_API_SERVER"
+          valueFrom = "${var.core_webapp_secrets_arn}:MAILCHIMP_API_SERVER::"
         }
       ]
       logConfiguration = {
