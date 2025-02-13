@@ -98,7 +98,7 @@ module "ml" {
   generic_private_alb_listener_arn      = local.private_alb_https_listener_arn
   generic_private_alb_security_group_id = data.terraform_remote_state.common.outputs.generic_private_alb_security_group_id
 
-  github_repos                           = ["BlueBrain/neuroagent", "BlueBrain/scholarag", "BlueBrain/scholaretl"]
+  github_repos                           = ["openbraininstitute/neuroagent", "openbraininstitute/scholarag", "openbraininstitute/scholaretl"]
   readonly_access_policy_statement_part1 = local.readonly_access_policy_statement_part1
   readonly_access_policy_statement_part2 = local.readonly_access_policy_statement_part2
   aws_ssoadmin_instances_arns            = data.aws_ssoadmin_instances.ssoadmin_instances.arns
