@@ -62,6 +62,12 @@ variable "core_web_app_docker_image_url" {
   description = "docker image for the core-web-app"
   sensitive   = false
 }
+variable "core_web_app_deployment_env" {
+  default     = "production"
+  type        = string
+  description = "env core-web-app is deployed <staging|production>"
+  sensitive   = false
+}
 
 ### BlueNaaS service ###
 
