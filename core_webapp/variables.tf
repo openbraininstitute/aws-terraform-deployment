@@ -104,7 +104,6 @@ variable "env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL" {
 }
 
 variable "env_NEXT_PUBLIC_DEPLOYMENT_ENV" {
-  default     = "production"
   type        = string
   description = "env core-web-app is deployed <staging|production>"
   sensitive   = false
