@@ -3,7 +3,7 @@ resource "aws_lb_target_group" "private_jupyterhub_target_group" {
   name        = "private-jupyterhub-target-group"
   port        = var.jupyterhub_port
   protocol    = "HTTP"
-  target_type = "ip"
+  target_type = "instance"
   vpc_id      = var.vpc_id
   tags = {
     Name        = "Private JupyterHub Target Group"
