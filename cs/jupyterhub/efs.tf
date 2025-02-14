@@ -2,7 +2,6 @@
 resource "aws_efs_file_system" "jupyterhub_homedirs" {
   performance_mode = "generalPurpose"
   throughput_mode  = "bursting"
-  encrypted        = "false" #tfsec:ignore:aws-efs-enable-at-rest-encryption
   tags = {
     Name        = "jupyterhub_svc"
     SBO_Billing = "jupyterhub_svc"
