@@ -26,7 +26,7 @@ resource "aws_subnet" "cs_subnet_b" {
 resource "aws_subnet" "cs_jupyterhub_subnet" {
   vpc_id                  = var.vpc_id
   availability_zone       = "${data.aws_region.current.name}a"
-  cidr_block              = "10.0.14.0/28"
+  cidr_block              = "10.0.19.0/28"
   map_public_ip_on_launch = false
 
   tags = {
