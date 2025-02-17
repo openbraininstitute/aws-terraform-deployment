@@ -9,16 +9,16 @@ resource "aws_lb_target_group" "private_jupyterhub_target_group" {
     Name        = "Private JupyterHub Target Group"
     SBO_Billing = "jupyterhub_svc"
   }
-  #  health_check {
-  #    path                = "/jupyter/hub/login"
-  #    port                = var.jupyterhub_port
-  #    protocol            = "HTTP"
-  #    interval            = 30
-  #    timeout             = 5
-  #    healthy_threshold   = 2
-  #    unhealthy_threshold = 2
-  #    matcher             = "200-399"
-  #  }
+  health_check {
+    path                = "/"
+    port                = var.jupyterhub_port
+    protocol            = "HTTP"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+    matcher             = "200-399"
+  }
 }
 
 resource "aws_lb_target_group_attachment" "private_jupyterhub_target_group_attachment" {
