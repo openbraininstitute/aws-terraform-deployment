@@ -2,10 +2,17 @@
 resource "aws_efs_file_system" "jupyterhub_homedirs" {
   performance_mode = "generalPurpose"
   throughput_mode  = "bursting"
-  encrypted        = "false" #tfsec:ignore:aws-efs-enable-at-rest-encryption
   tags = {
     Name        = "jupyterhub_svc"
     SBO_Billing = "jupyterhub_svc"
+  }
+}
+
+resource "aws_efs_backup_policy" "jupyterhub_homedirs_backup_policy" {
+  file_system_id = aws_efs_file_system.jupyterhub_homedirs.id
+
+  backup_policy {
+    status = "ENABLED"
   }
 }
 
