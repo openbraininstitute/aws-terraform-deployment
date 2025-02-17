@@ -37,7 +37,7 @@ resource "aws_lb_listener_rule" "private_jupyterhub_https" {
 
   condition {
     path_pattern {
-      values = ["/jupyterhub*"]
+      values = ["/hub*"]
     }
   }
 
