@@ -2,6 +2,7 @@
 resource "aws_efs_file_system" "jupyterhub_homedirs" {
   performance_mode = "generalPurpose"
   throughput_mode  = "bursting"
+  encrypted        = true
   tags = {
     Name        = "jupyterhub_svc"
     SBO_Billing = "jupyterhub_svc"
