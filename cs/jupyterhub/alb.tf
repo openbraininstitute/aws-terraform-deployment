@@ -10,7 +10,7 @@ resource "aws_lb_target_group" "private_jupyterhub_target_group" {
     SBO_Billing = "jupyterhub_svc"
   }
   health_check {
-    path                = "/"
+    path                = var.jupyterhub_base_path
     port                = var.jupyterhub_port
     protocol            = "HTTP"
     interval            = 30
@@ -29,7 +29,7 @@ resource "aws_lb_target_group_attachment" "private_jupyterhub_target_group_attac
 
 resource "aws_lb_listener_rule" "private_jupyterhub_https" {
   listener_arn = var.private_alb_https_listener_arn
-  priority     = 100
+  priority     = 350
   action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.private_jupyterhub_target_group.arn
@@ -37,7 +37,7 @@ resource "aws_lb_listener_rule" "private_jupyterhub_https" {
 
   condition {
     path_pattern {
-      values = ["/hub*"]
+      values = ["${var.jupyterhub_base_path}*"]
     }
   }
 

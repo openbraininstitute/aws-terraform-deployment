@@ -21,6 +21,10 @@ variable "jupyterhub_port" {
   type = number
 }
 
+variable "jupyterhub_base_path" {
+  type = string
+}
+
 variable "jupyterhub_private_subnet" {
   type = string
 }

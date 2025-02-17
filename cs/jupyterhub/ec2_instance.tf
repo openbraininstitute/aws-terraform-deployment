@@ -34,10 +34,13 @@ resource "aws_instance" "jupyterhub_server" {
 #!/bin/bash
 sudo apt update
 sudo apt install nfs-common -y
-#sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${aws_efs_file_system.jupyterhub_homedirs.dns_name}:/ /home
+sudo mkdir -p /jupyterhub/home
+sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${aws_efs_file_system.jupyterhub_homedirs.dns_name}:/ /jupyterhub/home
 curl -L https://tljh.jupyter.org/bootstrap.py \
   | sudo python3 - \
     --admin obi-administrator
+sudo tljh-config set base_url ${var.jupyterhub_base_path}
+sudo tljh-config reload
 EOF
 
   tags = {
