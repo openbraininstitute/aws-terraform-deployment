@@ -12,6 +12,7 @@ module "jupyterhub" {
   preferred_hostname             = var.preferred_hostname
   jupyterhub_private_subnet      = module.networking.jupyterhub_private_subnet
   jupyterhub_port                = 80
+  jupyterhub_base_path           = "/jupyterhub"
 }
 
 module "keycloak" {

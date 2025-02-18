@@ -22,7 +22,7 @@ data "aws_ami" "ubuntu2404" {
 
 resource "aws_instance" "jupyterhub_server" {
   ami                         = data.aws_ami.ubuntu2404.id
-  instance_type               = "t3.medium"
+  instance_type               = "t3.large"
   subnet_id                   = var.jupyterhub_private_subnet
   key_name                    = var.aws_coreservices_ssh_key_id
   vpc_security_group_ids      = [aws_security_group.jupyterhub_sg.id]
@@ -34,10 +34,13 @@ resource "aws_instance" "jupyterhub_server" {
 #!/bin/bash
 sudo apt update
 sudo apt install nfs-common -y
-#sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${aws_efs_file_system.jupyterhub_homedirs.dns_name}:/ /home
+sudo mkdir -p /jupyterhub/home
+sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${aws_efs_file_system.jupyterhub_homedirs.dns_name}:/ /jupyterhub/home
 curl -L https://tljh.jupyter.org/bootstrap.py \
   | sudo python3 - \
     --admin obi-administrator
+sudo tljh-config set base_url ${var.jupyterhub_base_path}
+sudo tljh-config reload
 EOF
 
   tags = {
