@@ -69,9 +69,9 @@ resource "aws_vpc_security_group_ingress_rule" "jupyterhub_allow_ssh_external" {
   from_port         = 22
   to_port           = 22
   ip_protocol       = "tcp"
-  cidr_ipv4         = "0.0.0.0/0"
+  cidr_ipv4         = data.aws_vpc.main.cidr_block
   tags = {
-    Name = "jupyterhub_allow_ssh_external"
+    Name = "jupyterhub_allow_ssh_internal"
   }
 }
 
