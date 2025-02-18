@@ -2,6 +2,10 @@ data "aws_vpc" "main" {
   id = var.vpc_id
 }
 
+data "aws_subnet" "jupyterhub_subnet" {
+  id = var.jupyterhub_private_subnet
+}
+
 resource "aws_security_group" "jupyterhub_efs_sg" {
   name        = "jupyterhub-efs-sg"
   description = "Security group for JupyterHub EFS"
@@ -27,7 +31,7 @@ resource "aws_vpc_security_group_egress_rule" "jupyterhub_efs_sg_egress" {
 resource "aws_vpc_security_group_ingress_rule" "jupyterhub_efs_sg_ingress" {
   security_group_id = aws_security_group.jupyterhub_efs_sg.id
   description       = "Allow ingress to NFS port from VPC"
-  cidr_ipv4         = data.aws_vpc.main.cidr_block
+  cidr_ipv4         = data.aws_subnet.jupyterhub_subnet.cidr_block
   ip_protocol       = "tcp"
   from_port         = 2049
   to_port           = 2049
