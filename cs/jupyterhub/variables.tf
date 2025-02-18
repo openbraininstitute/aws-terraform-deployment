@@ -13,7 +13,7 @@ variable "private_alb_https_listener_arn" {
   type = string
 }
 
-variable "preferred_hostname" {
+variable "primary_domain" {
   type = string
 }
 
@@ -27,4 +27,10 @@ variable "jupyterhub_base_path" {
 
 variable "jupyterhub_private_subnet" {
   type = string
+}
+
+variable "jupyterhub_secrets_arn" {
+  type        = string
+  description = "ARN of the JupyterHub secrets manager"
+  sensitive   = false
 }

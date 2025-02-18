@@ -18,6 +18,7 @@ locals {
 
   virtual_lab_manager_secrets_arn  = data.terraform_remote_state.common.outputs.virtual_lab_manager_secrets_arn
   keycloak_secrets_arn             = data.terraform_remote_state.common.outputs.keycloak_secrets_arn
+  jupyterhub_secrets_arn           = data.terraform_remote_state.common.outputs.jupyterhub_secrets_arn
   core_webapp_secrets_arn          = data.terraform_remote_state.common.outputs.core_webapp_secrets_arn
   ml_secrets_arn                   = data.terraform_remote_state.common.outputs.ml_secrets_arn
   bluenaas_service_secrets_arn     = data.terraform_remote_state.common.outputs.bluenaas_service_secrets_arn
@@ -63,6 +64,7 @@ module "cs" {
   preferred_hostname = local.primary_domain
   redirect_hostnames = ["openbluebrain.ch", "openbrainplatform.org", "openbrainplatform.com"]
 
+  jupyterhub_secrets_arn = local.jupyterhub_secrets_arn
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 }

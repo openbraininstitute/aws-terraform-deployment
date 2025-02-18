@@ -50,3 +50,9 @@ variable "keycloak_task_size" {
 
   description = "CPU and memory limit for Keycloak's ECS task (number or string format)"
 }
+
+variable "jupyterhub_secrets_arn" {
+  type        = string
+  description = "ARN of the JupyterHub secrets manager"
+  sensitive   = false
+}

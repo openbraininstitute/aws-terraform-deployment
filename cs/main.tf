@@ -9,10 +9,11 @@ module "jupyterhub" {
   aws_coreservices_ssh_key_id    = var.aws_coreservices_ssh_key_id
   vpc_id                         = var.vpc_id
   private_alb_https_listener_arn = var.private_alb_https_listener_arn
-  preferred_hostname             = var.preferred_hostname
+  primary_domain                 = var.preferred_hostname
   jupyterhub_private_subnet      = module.networking.jupyterhub_private_subnet
   jupyterhub_port                = 80
   jupyterhub_base_path           = "/jupyterhub"
+  jupyterhub_secrets_arn         = var.jupyterhub_secrets_arn
 }
 
 module "keycloak" {
