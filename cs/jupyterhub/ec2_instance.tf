@@ -26,7 +26,8 @@ resource "aws_instance" "jupyterhub_server" {
   subnet_id                   = var.jupyterhub_private_subnet
   key_name                    = var.aws_coreservices_ssh_key_id
   vpc_security_group_ids      = [aws_security_group.jupyterhub_sg.id]
-  associate_public_ip_address = true
+  associate_public_ip_address = false
+
   user_data_replace_on_change = true
   monitoring                  = true
 
