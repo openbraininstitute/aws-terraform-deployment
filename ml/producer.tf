@@ -12,7 +12,7 @@ module "ml_producer_eventbridge" {
   # Fire every five minutes
   rules = {
     ml_producer_pmc = {
-      description = "Cron for producer aimed at pmc's s3 bucket."
+      description         = "Cron for producer aimed at pmc's s3 bucket."
       schedule_expression = "cron(0 2 * * ? *)"
       state               = "ENABLED"
     }
