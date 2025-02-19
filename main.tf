@@ -85,7 +85,7 @@ module "ml" {
 
   dockerhub_credentials_arn = local.dockerhub_bbpbuildbot_secret_arn
   backend_image_tag         = "scholarag-v0.0.9"
-  etl_image_tag             = "scholaretl-v0.0.6"
+  etl_image_tag             = "scholaretl-v0.0.7"
   agent_image_tag           = "neuroagent-v0.3.3"
   grobid_image_url          = "lfoppiano/grobid:0.8.0"
 
@@ -102,10 +102,7 @@ module "ml" {
   generic_private_alb_listener_arn      = local.private_alb_https_listener_arn
   generic_private_alb_security_group_id = data.terraform_remote_state.common.outputs.generic_private_alb_security_group_id
 
-  github_repos                           = ["openbraininstitute/neuroagent", "openbraininstitute/scholarag", "openbraininstitute/scholaretl"]
-  readonly_access_policy_statement_part1 = local.readonly_access_policy_statement_part1
-  readonly_access_policy_statement_part2 = local.readonly_access_policy_statement_part2
-  aws_ssoadmin_instances_arns            = data.aws_ssoadmin_instances.ssoadmin_instances.arns
+  github_repos = ["openbraininstitute/neuroagent", "openbraininstitute/scholarag", "openbraininstitute/scholaretl"]
 }
 
 module "nexus" {
@@ -129,10 +126,7 @@ module "nexus" {
 
   private_lb_listener_https_arn = local.private_alb_https_listener_arn
 
-  readonly_access_policy_statement_part1 = local.readonly_access_policy_statement_part1
-  readonly_access_policy_statement_part2 = local.readonly_access_policy_statement_part2
-  aws_ssoadmin_instances_arns            = data.aws_ssoadmin_instances.ssoadmin_instances.arns
-  is_production                          = var.is_production
+  is_production = var.is_production
 
   is_nexus_openscience_running = var.is_nexus_openscience_running
   is_nexus_obp_running         = var.is_nexus_obp_running
