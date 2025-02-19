@@ -13,6 +13,9 @@ resource "aws_iam_role" "github_actions_role" {
         Condition = {
           StringLike = {
             "token.actions.githubusercontent.com:sub" = "repo:${var.github_organisation}/${var.repo_name}:*"
+          },
+          StringEquals = {
+            "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
           }
         }
       }

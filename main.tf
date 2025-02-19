@@ -29,7 +29,7 @@ locals {
   dockerhub_bbpbuildbot_secret_arn = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_secret_arn
   dockerhub_bbpbuildbot_policy_arn = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_policy_arn
 
-  github_organisation = "https://github.com/openbraininstitute"
+  github_organisation = "openbraininstitute"
 }
 
 module "coreservices_key" {
