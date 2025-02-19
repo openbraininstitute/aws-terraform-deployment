@@ -12,9 +12,8 @@ module "ml_producer_eventbridge" {
   # Fire every five minutes
   rules = {
     ml_producer_pmc = {
-      description = "Cron for producer aimed at pmc's s3 bucket."
-      # schedule_expression = "cron(0 2 * * ? *)"
-      schedule_expression = "rate(2 days)"
+      description         = "Cron for producer aimed at pmc's s3 bucket."
+      schedule_expression = "cron(0 2 * * ? *)"
       state               = "ENABLED"
     }
     ml_producer_local = {
@@ -35,7 +34,7 @@ module "ml_producer_eventbridge" {
           containerOverrides = [
             {
               name    = "ml_producer",
-              command = ["pu-producer", "pmc-oa-opendata", module.ml_sqs.queue_url, "--start-date", "01-01-1500", "--index", "pmc_paragraphs_v2", "--parser-name", "parse/jats_xml", "--prefix", "oa_comm/xml/all", "oa_noncomm/xml/all", "author_manuscript/xml/all", "--file-extension", "xml", "-v"]
+              command = ["pu-producer", "pmc-oa-opendata", module.ml_sqs.queue_url, "--index", "pmc_paragraphs_v2", "--parser-name", "parse/jats_xml", "--prefix", "oa_comm/xml/all", "oa_noncomm/xml/all", "author_manuscript/xml/all", "--file-extension", "xml", "-v"]
             }
           ]
         })
