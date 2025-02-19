@@ -265,6 +265,16 @@ module "core_webapp" {
   env_NEXT_PUBLIC_DEPLOYMENT_ENV          = var.core_web_app_deployment_env
 }
 
+module "delegate_identity_center" {
+  source = "./delegate_identity_center"
+
+  # only to be deployed in the management account
+  count = var.is_production ? 1 : 0
+
+  management_account_id                = 671250183987
+  delegated_idcenter_member_account_id = 692859911827
+}
+
 module "accounting_svc" {
   source = "./accounting_svc"
 
