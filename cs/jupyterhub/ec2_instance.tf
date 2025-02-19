@@ -20,6 +20,10 @@ data "aws_ami" "ubuntu2404" {
   owners = ["amazon"]
 }
 
+data "aws_secretsmanager_secret_version" "jupyterhub_secrets" {
+  secret_id = var.jupyterhub_secrets_arn
+}
+
 resource "aws_instance" "jupyterhub_server" {
   ami                         = data.aws_ami.ubuntu2404.id
   instance_type               = "t3.large"
@@ -31,18 +35,17 @@ resource "aws_instance" "jupyterhub_server" {
   user_data_replace_on_change = true
   monitoring                  = true
 
-  user_data = <<EOF
-#!/bin/bash
-sudo apt update
-sudo apt install nfs-common -y
-sudo mkdir -p /jupyterhub/home
-sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${aws_efs_file_system.jupyterhub_homedirs.dns_name}:/ /jupyterhub/home
-curl -L https://tljh.jupyter.org/bootstrap.py \
-  | sudo python3 - \
-    --admin obi-administrator
-sudo tljh-config set base_url ${var.jupyterhub_base_path}
-sudo tljh-config reload
-EOF
+  user_data = templatefile("${path.module}/jupyterhub_config.sh.tpl",
+    { ADMIN_USER       = "obi-administrator",
+      BASE_PATH        = var.jupyterhub_base_path,
+      HOMEDIRS_EFS     = aws_efs_file_system.jupyterhub_homedirs.dns_name,
+      HOMEDIRS_PATH    = "/home",
+      KC_CLIENT_ID     = jsondecode(data.aws_secretsmanager_secret_version.jupyterhub_secrets.secret_string)["KC_CLIENT_ID"],
+      KC_CLIENT_SECRET = jsondecode(data.aws_secretsmanager_secret_version.jupyterhub_secrets.secret_string)["KC_CLIENT_SECRET"],
+      KC_REALM         = "SBO",
+      PRIMARY_DOMAIN   = var.primary_domain,
+    }
+  )
 
   tags = {
     Name        = "jupyterhub_svc"
