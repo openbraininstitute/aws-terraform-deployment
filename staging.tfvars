@@ -9,7 +9,7 @@ nexus_obp_bucket_name                 = "nexus-obp-production-staging-test"
 nexus_ship_bucket_name                = "nexus-ship-production-staging-test"
 nexus_openscience_bucket_name         = "nexus-openscience-production-staging-test"
 nexus_az_letter_id                    = "a"
-core_web_app_docker_image_url         = "bluebrain/sbo-core-web-app:staging"
+core_web_app_docker_image_url         = "public.ecr.aws/openbraininstitute/core-web-app:staging"
 virtual_lab_manager_docker_image_url  = "bluebrain/obp-virtual-lab-api:staging"
 cell_svc_docker_image_url             = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.1.1-prod"
 is_nexus_openscience_running          = false
@@ -27,4 +27,5 @@ keycloak_task_size = {
 coreservices_public_key                    = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDO8QAh2WZ/WcZnNeojPNhadeodMO2l3PssaUFJWfvEFNzkuo5ci7nxb39M2FH6RyFAfqykV/v89KfDIg9K2ebJQZS+x6Enrqm7+ROmZjCdpYkFm7l2NCoKLus92DaPX6k1Tv5hcI76BqWN4nOKQxzb7ziJxFl5wzLgTwnXZvY33dA3Pu6aimksv071KnQ3hJKk6Omx/l7Hv/D7c0tU8vRCUefzHT3TkRpRgTTq+Wd8S0pGSmMB4drk5PiUzEVczxuIfmYGCWV2va6aT34yuMOw/6y2Cr9guCkyR2FkFm7q0MPw0aKGFBwTT05eiEWBWKQQbqi1qMtSwd6tp4qv6crN SSH key for AWS SBO POC"
 hpc_resource_provisioner_container_version = "latest"
 core_web_app_deployment_env                = "staging"
+core_web_app_next_public_matomo_site_id    = "3"
 

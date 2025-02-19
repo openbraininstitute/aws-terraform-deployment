@@ -28,6 +28,8 @@ locals {
   workflow_service_secrets_arn     = data.terraform_remote_state.common.outputs.workflow_service_secrets_arn
   dockerhub_bbpbuildbot_secret_arn = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_secret_arn
   dockerhub_bbpbuildbot_policy_arn = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_policy_arn
+
+  github_organisation = "https://github.com/openbraininstitute"
 }
 
 module "coreservices_key" {
@@ -263,6 +265,25 @@ module "core_webapp" {
   env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY  = "pk_test_51QjjHBKGUR5u3ofLgNUOpljnvy27UTTpkhwgsLiwK9xlNjnR7CZfiMjtZWMjgN7GW3eDyzMJ7Z1pIqC9LiwkfQRX00ebb5c9XI"
   env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL = "http://${data.terraform_remote_state.common.outputs.private_alb_dns_name}:3000/api/literature"
   env_NEXT_PUBLIC_DEPLOYMENT_ENV          = var.core_web_app_deployment_env
+  env_NEXT_PUBLIC_MATOMO_SITE_ID          = var.core_web_app_next_public_matomo_site_id
+  env_NEXT_PUBLIC_MATOMO_CDN_URL          = "https://cdn.matomo.cloud/openbraininstitute.matomo.cloud"
+  env_NEXT_PUBLIC_MATOMO_URL              = "https://openbraininstitute.matomo.cloud"
+}
+
+module "github_core_webapp_ecs_redeploy_role" {
+  source = "./github_ecs_redeploy_role"
+
+  # for now we only want such a redeploy role in staging
+  count = var.is_staging ? 1 : 0
+
+  account_id               = local.account_id
+  aws_region               = local.aws_region
+  github_organisation      = local.github_organisation
+  repo_name                = "core-web-app"
+  ecs_cluster_name         = module.core_webapp.ecs_cluster_name
+  ecs_service_name         = module.core_webapp.ecs_service_name
+  ecs_task_definition_name = module.core_webapp.ecs_task_definition_name
+  # The ARN of the generated role is needed in GH and is part of the outputs.
 }
 
 module "delegate_identity_center" {
