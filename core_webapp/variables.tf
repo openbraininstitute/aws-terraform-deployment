@@ -40,16 +40,6 @@ variable "core_webapp_docker_image_url" {
   sensitive   = false
 }
 
-variable "dockerhub_access_iam_policy_arn" {
-  type      = string
-  sensitive = false
-}
-
-variable "dockerhub_credentials_arn" {
-  type      = string
-  sensitive = false
-}
-
 # TODO: update to "/app/core" after migration to the production domain.
 variable "core_webapp_base_path" {
   type        = string
