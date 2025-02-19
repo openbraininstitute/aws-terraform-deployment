@@ -14,7 +14,7 @@ module "ml_producer_eventbridge" {
     ml_producer_pmc = {
       description = "Cron for producer aimed at pmc's s3 bucket."
       # schedule_expression = "cron(0 2 * * ? *)"
-      schedule_expression = "rate(3 days)"
+      schedule_expression = "rate(2 days)"
       state               = "ENABLED"
     }
     ml_producer_local = {
