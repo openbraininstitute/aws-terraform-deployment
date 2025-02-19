@@ -37,6 +37,7 @@ resource "aws_instance" "jupyterhub_server" {
 
   user_data = templatefile("${path.module}/jupyterhub_config.sh.tpl",
     { ADMIN_USER       = "obi-administrator",
+      ADMIN_PASS       = jsondecode(data.aws_secretsmanager_secret_version.jupyterhub_secrets.secret_string)["JUPYTER_ADMIN_PASS"],
       BASE_PATH        = var.jupyterhub_base_path,
       HOMEDIRS_EFS     = aws_efs_file_system.jupyterhub_homedirs.dns_name,
       HOMEDIRS_PATH    = "/home",
