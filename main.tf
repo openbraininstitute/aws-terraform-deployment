@@ -263,6 +263,9 @@ module "core_webapp" {
   env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY  = "pk_test_51QjjHBKGUR5u3ofLgNUOpljnvy27UTTpkhwgsLiwK9xlNjnR7CZfiMjtZWMjgN7GW3eDyzMJ7Z1pIqC9LiwkfQRX00ebb5c9XI"
   env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL = "http://${data.terraform_remote_state.common.outputs.private_alb_dns_name}:3000/api/literature"
   env_NEXT_PUBLIC_DEPLOYMENT_ENV          = var.core_web_app_deployment_env
+  env_NEXT_PUBLIC_MATOMO_SITE_ID          = var.core_web_app_next_public_matomo_site_id
+  env_NEXT_PUBLIC_MATOMO_CDN_URL          = "https://cdn.matomo.cloud/openbraininstitute.matomo.cloud"
+  env_NEXT_PUBLIC_MATOMO_URL              = "https://openbraininstitute.matomo.cloud"
 }
 
 module "delegate_identity_center" {

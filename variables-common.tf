@@ -69,6 +69,12 @@ variable "core_web_app_deployment_env" {
   sensitive   = false
 }
 
+variable "core_web_app_next_public_matomo_site_id" {
+  type        = string
+  description = "matomo site id <staging|production>"
+  sensitive   = false
+}
+
 ### BlueNaaS service ###
 
 variable "bluenaas_docker_image_url" {
