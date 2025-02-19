@@ -142,6 +142,18 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
           name  = "NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL"
           value = var.env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL
         },
+        {
+          name  = "NEXT_PUBLIC_MATOMO_URL"
+          value = var.env_NEXT_PUBLIC_MATOMO_URL
+        },
+        {
+          name  = "NEXT_PUBLIC_MATOMO_CDN_URL"
+          value = var.env_NEXT_PUBLIC_MATOMO_CDN_URL
+        },
+        {
+          name  = "NEXT_PUBLIC_MATOMO_SITE_ID"
+          value = var.env_NEXT_PUBLIC_MATOMO_SITE_ID
+        },
       ]
       secrets = [
         {

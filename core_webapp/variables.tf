@@ -108,3 +108,18 @@ variable "env_NEXT_PUBLIC_DEPLOYMENT_ENV" {
   description = "env core-web-app is deployed <staging|production>"
   sensitive   = false
 }
+variable "env_NEXT_PUBLIC_MATOMO_URL" {
+  type        = string
+  description = "matomo url to server analytics script, (this is global)"
+  sensitive   = false
+}
+variable "env_NEXT_PUBLIC_MATOMO_CDN_URL" {
+  type        = string
+  description = "matomo url to server analytics script using cdn, (this is global)"
+  sensitive   = false
+}
+variable "env_NEXT_PUBLIC_MATOMO_SITE_ID" {
+  type        = string
+  description = "matomo site id <staging | production>"
+  sensitive   = false
+}
