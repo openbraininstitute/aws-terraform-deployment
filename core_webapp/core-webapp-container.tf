@@ -121,6 +121,10 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
           value = var.env_DEBUG
         },
         {
+          name  = "ACCOUNTING_BASE_URL"
+          value = var.accounting_base_url
+        },
+        {
           name  = "NEXT_PUBLIC_DEPLOYMENT_ENV"
           value = var.env_NEXT_PUBLIC_DEPLOYMENT_ENV
         },

@@ -256,6 +256,7 @@ module "core_webapp" {
   allowed_source_ip_cidr_blocks        = ["0.0.0.0/0"]
   vpc_cidr_block                       = local.vpc_cidr_block
   core_webapp_secrets_arn              = local.core_webapp_secrets_arn
+  accounting_base_url                  = "https://${local.primary_domain}${var.accounting_base_path}"
 
   env_DEBUG                               = "true"
   env_NEXTAUTH_URL                        = "https://${local.primary_domain}/app/api/auth"
