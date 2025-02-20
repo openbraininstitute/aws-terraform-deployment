@@ -1,0 +1,4 @@
+output "private_lb_rule_suffix" {
+  description = "entitycore Private Loadbalancer Rule Suffix"
+  value       = aws_lb_target_group.entitycore_private_tg.arn_suffix
+}
