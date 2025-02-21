@@ -149,15 +149,6 @@ variable "ecs_number_of_containers" {
   description = "Number of containers"
 }
 
-variable "dockerhub_access_iam_policy_arn" {
-  type      = string
-  sensitive = false
-}
-
-variable "dockerhub_credentials_arn" {
-  type      = string
-  sensitive = false
-}
 
 variable "virtual_lab_manager_base_path" {
   type        = string

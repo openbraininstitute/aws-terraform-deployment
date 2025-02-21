@@ -102,10 +102,6 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
       image       = var.virtual_lab_manager_docker_image_url
       name        = "virtual_lab_manager"
 
-      repositoryCredentials = {
-        credentialsParameter = var.dockerhub_credentials_arn
-      }
-
       portMappings = [
         {
           hostPort      = 8000
@@ -392,12 +388,6 @@ resource "aws_iam_policy" "ecsTaskLogs_virtuallab" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_virtual_lab_manager_task_role_dockerhub_policy_attachment" {
-  role       = aws_iam_role.ecs_virtual_lab_manager_task_execution_role[0].name
-  policy_arn = var.dockerhub_access_iam_policy_arn
-
-  count = local.container_count
-}
 
 resource "aws_iam_role_policy_attachment" "ecs_virtual_lab_manager_secrets_access_policy_attachment" {
   role       = aws_iam_role.ecs_virtual_lab_manager_task_execution_role[0].name

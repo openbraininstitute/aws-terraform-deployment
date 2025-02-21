@@ -374,9 +374,6 @@ module "virtual_lab_manager" {
 
   log_group_name = var.virtual_lab_manager_log_group_name
 
-  dockerhub_access_iam_policy_arn = local.dockerhub_bbpbuildbot_policy_arn
-  dockerhub_credentials_arn       = local.dockerhub_bbpbuildbot_secret_arn
-
   virtual_lab_manager_docker_image_url = var.virtual_lab_manager_docker_image_url
 
   keycloak_server_url = "https://${local.primary_domain}/auth/"
