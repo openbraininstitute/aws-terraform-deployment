@@ -21,7 +21,6 @@ c.JupyterHub.authenticator_class = "generic-oauth"
 c.GenericOAuthenticator.client_id = "${KC_CLIENT_ID}"
 c.GenericOAuthenticator.client_secret = "${KC_CLIENT_SECRET}"
 c.GenericOAuthenticator.oauth_callback_url = "https://${PRIMARY_DOMAIN}${BASE_PATH}/hub/oauth_callback"
-c.GenericOAuthenticator.logout_redirect_url ="https://${PRIMARY_DOMAIN}${BASE_PATH}/hub/oauth2/logout"
 
 c.GenericOAuthenticator.authorize_url = "https://${PRIMARY_DOMAIN}/auth/realms/${KC_REALM}/protocol/openid-connect/auth"
 c.GenericOAuthenticator.token_url = "https://${PRIMARY_DOMAIN}/auth/realms/${KC_REALM}/protocol/openid-connect/token"
