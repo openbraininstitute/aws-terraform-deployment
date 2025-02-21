@@ -36,6 +36,16 @@ c.GenericOAuthenticator.auto_login_oauth2_authorize = True
 c.GenericOAuthenticator.validate_server_cert = False
 EOF
 
+# Julia installation
+JULIA_VERSION="1.6.6"
+JULIA_VER=$(cut -d '.' -f -2 <<< "$JULIA_VERSION")
+BASE_URL="https://julialang-s3.julialang.org/bin/linux/x64"
+URL="$BASE_URL/$JULIA_VER/julia-$JULIA_VERSION-linux-x86_64.tar.gz"
+wget -nv $URL -O /tmp/julia.tar.gz
+tar -x -f /tmp/julia.tar.gz -C /usr/local --strip-components 1
+rm /tmp/julia.tar.gz
+ln -s /usr/local/bin/julia /opt/tljh/user/bin/julia
+
 # Restart JupyterHub service to apply changes
 sudo tljh-config reload proxy
 sudo tljh-config reload
