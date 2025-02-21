@@ -9,8 +9,9 @@ resource "aws_lb_target_group" "core_webapp_private" {
   #  create_before_destroy = true
   #}
   health_check {
-    enabled  = true
-    path     = "/app"
+    enabled = true
+    // TODO Replace with a health check endpoint for core web app once implemented
+    path     = "/"
     protocol = "HTTP"
   }
   tags = {
@@ -20,17 +21,11 @@ resource "aws_lb_target_group" "core_webapp_private" {
 
 resource "aws_lb_listener_rule" "private_core_webapp" {
   listener_arn = var.private_alb_https_listener_arn
-  priority     = 200
+  priority     = 1000
 
   action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.core_webapp_private.arn
-  }
-
-  condition {
-    path_pattern {
-      values = ["${var.core_webapp_base_path}*"]
-    }
   }
 
   condition {

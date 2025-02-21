@@ -251,7 +251,6 @@ module "core_webapp" {
   private_alb_https_listener_arn       = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
   aws_region                           = local.aws_region
   core_webapp_docker_image_url         = var.core_web_app_docker_image_url
-  core_webapp_base_path                = "/app"
   route_table_id                       = local.route_table_private_subnets_id
   allowed_source_ip_cidr_blocks        = ["0.0.0.0/0"]
   vpc_cidr_block                       = local.vpc_cidr_block
@@ -259,7 +258,7 @@ module "core_webapp" {
   accounting_base_url                  = "https://${local.primary_domain}${var.accounting_base_path}"
 
   env_DEBUG                               = "true"
-  env_NEXTAUTH_URL                        = "https://${local.primary_domain}/app/api/auth"
+  env_NEXTAUTH_URL                        = "https://${local.primary_domain}/api/auth"
   env_KEYCLOAK_ISSUER                     = "https://${local.primary_domain}/auth/realms/SBO"
   env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY  = "pk_test_51QjjHBKGUR5u3ofLgNUOpljnvy27UTTpkhwgsLiwK9xlNjnR7CZfiMjtZWMjgN7GW3eDyzMJ7Z1pIqC9LiwkfQRX00ebb5c9XI"
   env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL = "http://${data.terraform_remote_state.common.outputs.private_alb_dns_name}:3000/api/literature"
