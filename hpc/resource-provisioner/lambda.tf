@@ -44,4 +44,11 @@ resource "aws_lambda_function" "hpc_resource_provisioner_async_lambda" {
     security_group_ids = var.hpc_resource_provisioner_sg_ids
     subnet_ids         = var.hpc_resource_provisioner_subnet_ids
   }
+  environment {
+    variables = {
+      SBO_NEXUSDATA_BUCKET = var.sbo_nexusdata_bucket
+      CONTAINERS_BUCKET    = var.containers_bucket
+      SCRATCH_BUCKET       = var.scratch_bucket
+    }
+  }
 }

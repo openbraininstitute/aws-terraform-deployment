@@ -97,6 +97,10 @@ module "resource-provisioner" {
   aws_region                                 = var.aws_region
   account_id                                 = var.account_id
   hpc_resource_provisioner_container_version = var.hpc_resource_provisioner_container_version
+
+  sbo_nexusdata_bucket = var.sbo_nexusdata_bucket
+  containers_bucket    = var.containers_bucket
+  scratch_bucket       = var.scratch_bucket
 }
 
 module "dynamodb" {
