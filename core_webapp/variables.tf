@@ -40,12 +40,6 @@ variable "core_webapp_docker_image_url" {
   sensitive   = false
 }
 
-variable "core_webapp_base_path" {
-  type        = string
-  description = "The base path for the core webapp"
-  sensitive   = false
-}
-
 variable "route_table_id" {
   type        = string
   description = "route table for private networks"
