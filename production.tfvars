@@ -30,3 +30,7 @@ coreservices_public_key                    = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAA
 hpc_resource_provisioner_container_version = "latest"
 core_web_app_deployment_env                = "production"
 core_web_app_next_public_matomo_site_id    = "1"
+
+hpc_resource_provisioner_sbo_nexusdata_bucket = ""
+hpc_resource_provisioner_containers_bucket    = ""
+hpc_resource_provisioner_scratch_bucket       = ""
