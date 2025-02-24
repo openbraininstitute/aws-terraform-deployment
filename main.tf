@@ -227,6 +227,9 @@ module "hpc" {
   endpoints_route_table_id                   = local.route_table_private_subnets_id
   hpc_slurm_secrets_arn                      = local.hpc_slurm_secrets_arn
   hpc_resource_provisioner_container_version = var.hpc_resource_provisioner_container_version
+  sbo_nexusdata_bucket                       = var.hpc_resource_provisioner_sbo_nexusdata_bucket
+  containers_bucket                          = var.hpc_resource_provisioner_containers_bucket
+  scratch_bucket                             = var.hpc_resource_provisioner_scratch_bucket
 }
 
 module "static-server" {

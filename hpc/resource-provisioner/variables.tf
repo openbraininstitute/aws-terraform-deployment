@@ -21,3 +21,15 @@ variable "account_id" {
 variable "hpc_resource_provisioner_container_version" {
   type = string
 }
+
+variable "sbo_nexusdata_bucket" {
+  type = string
+}
+
+variable "containers_bucket" {
+  type = string
+}
+
+variable "scratch_bucket" {
+  type = string
+}
