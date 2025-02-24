@@ -7,6 +7,7 @@ sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,ret
 curl -L https://tljh.jupyter.org/bootstrap.py \
   | sudo python3 - \
     --admin ${ADMIN_USER}:${ADMIN_PASS} \
+    --show-progress-page \
     --plugin jupyterlab-open-url-parameter==0.3.0
 
 sudo tljh-config set base_url ${BASE_PATH}
@@ -45,6 +46,25 @@ wget -nv $URL -O /tmp/julia.tar.gz
 tar -x -f /tmp/julia.tar.gz -C /usr/local --strip-components 1
 rm /tmp/julia.tar.gz
 ln -s /usr/local/bin/julia /opt/tljh/user/bin/julia
+
+JULIA_PACKAGES="IJulia BenchmarkTools JSON"
+JULIA_NUM_THREADS=20
+export JULIA_DEPOT_PATH=/opt/tljh/user/share/julia/
+export JUPYTER_DATA_DIR=/opt/tljh/user/share/jupyter/
+
+# Install packages
+for PKG in `echo $JULIA_PACKAGES`; do
+  echo "Installing Julia package $PKG..."
+  julia -e 'using Pkg; pkg"add '$PKG'; precompile;"'
+done
+
+# Install kernel
+echo "Installing IJulia kernel..."
+julia -e 'using IJulia; IJulia.installkernel("julia", env=Dict(
+      "JULIA_NUM_THREADS"=>"'"$JULIA_NUM_THREADS"'",
+      "JULIA_DEPOT_PATH"=>"'"$JULIA_DEPOT_PATH"'",
+      "JUPYTER_DATA_DIR"=>"'"$JUPYTER_DATA_DIR"'"
+))'
 
 # Restart JupyterHub service to apply changes
 sudo tljh-config reload proxy
