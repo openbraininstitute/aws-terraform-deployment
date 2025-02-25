@@ -48,16 +48,27 @@ tar -x -f /tmp/julia.tar.gz -C /usr/local --strip-components 1
 rm /tmp/julia.tar.gz
 ln -s /usr/local/bin/julia /opt/tljh/user/bin/julia
 
-JULIA_PACKAGES="IJulia BenchmarkTools JSON"
+declare -A JULIA_PACKAGES=(
+  ["IJulia"]="1.26.0"
+  ["DifferentialEquations"]="7.2.0"
+  ["JSON"]="0.21.4"
+  ["ModelingToolkit"]="8.11.0"
+  ["Plots"]="1.31.1"
+  ["Symbolics"]="4.3.0"
+  ["WebIO"]="0.8.21"
+  ["Interact"]="0.10.5"
+)
+
 JULIA_NUM_THREADS=20
 
 export JULIA_DEPOT_PATH=/opt/tljh/user/share/julia/
 export JUPYTER_DATA_DIR=/opt/tljh/user/share/jupyter/
 
 # Install packages
-for PKG in `echo $JULIA_PACKAGES`; do
-  echo "Installing Julia package $PKG..."
-  julia -e 'using Pkg; pkg"add '$PKG'; precompile;"'
+for PKG in "${!JULIA_PACKAGES[@]}"; do
+  PKG_VERSION="${JULIA_PACKAGES[$PKG]}"
+  echo "Installing Julia package $PKG $PKG_VERSION..."
+  julia -e "using Pkg; Pkg.add(name=\"${PKG}\", version=\"${PKG_VERSION}\"); precompile;"
 done
 
 # Install kernel
