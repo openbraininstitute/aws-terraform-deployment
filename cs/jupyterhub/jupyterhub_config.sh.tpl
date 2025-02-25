@@ -65,8 +65,8 @@ declare -A JULIA_PACKAGES=(
 # Install packages
 for PKG in "$${!JULIA_PACKAGES[@]}"
 do
-  PKG_VERSION="$${JULIA_PACKAGES[$$PKG]}"
-  echo "Installing Julia package $$PKG $$PKG_VERSION..."
+  PKG_VERSION="$${JULIA_PACKAGES[$PKG]}"
+  echo "Installing Julia package $PKG $PKG_VERSION..."
   julia -e "using Pkg; Pkg.add(name=\"$${PKG}\", version=\"$${PKG_VERSION}\"); precompile;"
 done
 
