@@ -26,7 +26,7 @@ data "aws_secretsmanager_secret_version" "jupyterhub_secrets" {
 
 resource "aws_instance" "jupyterhub_server" {
   ami                         = data.aws_ami.ubuntu2404.id
-  instance_type               = "t3.large"
+  instance_type               = "c7i.xlarge"
   subnet_id                   = var.jupyterhub_private_subnet
   key_name                    = var.aws_coreservices_ssh_key_id
   vpc_security_group_ids      = [aws_security_group.jupyterhub_sg.id]
