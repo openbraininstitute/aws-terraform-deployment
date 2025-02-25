@@ -8,7 +8,7 @@ curl -L https://tljh.jupyter.org/bootstrap.py \
   | sudo python3 - \
     --admin ${ADMIN_USER}:${ADMIN_PASS} \
     --show-progress-page \
-    --plugin jupyterlab-open-url-parameter==0.3.0
+    --plugin webio-jupyter-extension==0.1.0
 
 sudo tljh-config set base_url ${BASE_PATH}
 
