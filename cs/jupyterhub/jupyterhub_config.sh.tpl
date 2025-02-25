@@ -53,6 +53,7 @@ export JUPYTER_DATA_DIR=/opt/tljh/user/share/jupyter/
 
 declare -A JULIA_PACKAGES=(
   ["IJulia"]="1.26.0"
+  ["BenchmarkTools"]="1.5.0"
   ["DifferentialEquations"]="7.2.0"
   ["JSON"]="0.21.4"
   ["ModelingToolkit"]="8.11.0"
