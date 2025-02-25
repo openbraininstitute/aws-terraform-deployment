@@ -48,6 +48,9 @@ tar -x -f /tmp/julia.tar.gz -C /usr/local --strip-components 1
 rm /tmp/julia.tar.gz
 ln -s /usr/local/bin/julia /opt/tljh/user/bin/julia
 
+export JULIA_DEPOT_PATH=/opt/tljh/user/share/julia/
+export JUPYTER_DATA_DIR=/opt/tljh/user/share/jupyter/
+
 declare -A JULIA_PACKAGES=(
   ["IJulia"]="1.26.0"
   ["DifferentialEquations"]="7.2.0"
@@ -59,11 +62,6 @@ declare -A JULIA_PACKAGES=(
   ["Interact"]="0.10.5"
 )
 
-JULIA_NUM_THREADS=20
-
-export JULIA_DEPOT_PATH=/opt/tljh/user/share/julia/
-export JUPYTER_DATA_DIR=/opt/tljh/user/share/jupyter/
-
 # Install packages
 for PKG in "${!JULIA_PACKAGES[@]}"; do
   PKG_VERSION="${JULIA_PACKAGES[$PKG]}"
@@ -72,6 +70,7 @@ for PKG in "${!JULIA_PACKAGES[@]}"; do
 done
 
 # Install kernel
+JULIA_NUM_THREADS=8
 echo "Installing IJulia kernel..."
 julia -e 'using IJulia; IJulia.installkernel("julia", env=Dict(
       "JULIA_NUM_THREADS"=>"'"$JULIA_NUM_THREADS"'",
