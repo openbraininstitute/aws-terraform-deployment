@@ -42,6 +42,7 @@ JULIA_VERSION="1.6.6"
 JULIA_VER=$(cut -d '.' -f -2 <<< "$JULIA_VERSION")
 BASE_URL="https://julialang-s3.julialang.org/bin/linux/x64"
 URL="$BASE_URL/$JULIA_VER/julia-$JULIA_VERSION-linux-x86_64.tar.gz"
+
 wget -nv $URL -O /tmp/julia.tar.gz
 tar -x -f /tmp/julia.tar.gz -C /usr/local --strip-components 1
 rm /tmp/julia.tar.gz
@@ -49,6 +50,7 @@ ln -s /usr/local/bin/julia /opt/tljh/user/bin/julia
 
 JULIA_PACKAGES="IJulia BenchmarkTools JSON"
 JULIA_NUM_THREADS=20
+
 export JULIA_DEPOT_PATH=/opt/tljh/user/share/julia/
 export JUPYTER_DATA_DIR=/opt/tljh/user/share/jupyter/
 
@@ -65,6 +67,11 @@ julia -e 'using IJulia; IJulia.installkernel("julia", env=Dict(
       "JULIA_DEPOT_PATH"=>"'"$JULIA_DEPOT_PATH"'",
       "JUPYTER_DATA_DIR"=>"'"$JUPYTER_DATA_DIR"'"
 ))'
+
+# Give jupyterhub-users groups access to $JULIA_DEPOT_PATH
+chgrp -R jupyterhub-users ${JULIA_DEPOT_PATH}
+chmod 664 ${JULIA_DEPOT_PATH}/logs/repl_history.jl
+chmod 664 ${JULIA_DEPOT_PATH}/logs/manifest_usage.toml
 
 # Restart JupyterHub service to apply changes
 sudo tljh-config reload proxy
