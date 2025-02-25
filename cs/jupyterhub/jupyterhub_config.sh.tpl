@@ -63,10 +63,11 @@ declare -A JULIA_PACKAGES=(
 )
 
 # Install packages
-for PKG in "${!JULIA_PACKAGES[@]}"; do
-  PKG_VERSION="${JULIA_PACKAGES[$PKG]}"
-  echo "Installing Julia package $PKG $PKG_VERSION..."
-  julia -e "using Pkg; Pkg.add(name=\"${PKG}\", version=\"${PKG_VERSION}\"); precompile;"
+for PKG in "$${!JULIA_PACKAGES[@]}"
+do
+  PKG_VERSION="$${JULIA_PACKAGES[$$PKG]}"
+  echo "Installing Julia package $$PKG $$PKG_VERSION..."
+  julia -e "using Pkg; Pkg.add(name=\"$${PKG}\", version=\"$${PKG_VERSION}\"); precompile;"
 done
 
 # Install kernel
@@ -79,9 +80,9 @@ julia -e 'using IJulia; IJulia.installkernel("julia", env=Dict(
 ))'
 
 # Give jupyterhub-users groups access to $JULIA_DEPOT_PATH
-chgrp -R jupyterhub-users ${JULIA_DEPOT_PATH}
-chmod 664 ${JULIA_DEPOT_PATH}/logs/repl_history.jl
-chmod 664 ${JULIA_DEPOT_PATH}/logs/manifest_usage.toml
+chgrp -R jupyterhub-users $${JULIA_DEPOT_PATH}
+chmod 664 $${JULIA_DEPOT_PATH}/logs/repl_history.jl
+chmod 664 $${JULIA_DEPOT_PATH}/logs/manifest_usage.toml
 
 # Restart JupyterHub service to apply changes
 sudo tljh-config reload proxy
