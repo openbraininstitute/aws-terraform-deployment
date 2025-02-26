@@ -43,7 +43,7 @@ module "ml_ecs_service_backend" {
         },
         {
           name  = "SCHOLARAG__DB__INDEX_PARAGRAPHS"
-          value = "pmc_paragraphs_v2"
+          value = "pmc_paragraphs_v3"
         },
         {
           name  = "SCHOLARAG__DB__HOST"
