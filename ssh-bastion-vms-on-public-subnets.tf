@@ -40,8 +40,8 @@ resource "aws_route53_record" "ssh_bastion_a" {
 
 resource "aws_route53_record" "ssh_bastion" {
   count   = var.create_ssh_bastion_vm_on_public_a_network ? 1 : 0
-  zone_id = data.terraform_remote_state.common.outputs.primary_domain_zone_id
-  name    = "ssh.${data.terraform_remote_state.common.outputs.primary_domain}"
+  zone_id = data.terraform_remote_state.common.outputs.bastion_domain_zone_id
+  name    = "ssh.${data.terraform_remote_state.common.outputs.bastion_domain}"
   type    = "A"
   ttl     = 60
   records = [aws_instance.ssh_bastion_a[0].public_ip]
