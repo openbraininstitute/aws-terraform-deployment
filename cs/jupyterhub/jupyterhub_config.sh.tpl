@@ -61,6 +61,7 @@ declare -A JULIA_PACKAGES=(
   ["Symbolics"]="4.3.0"
   ["WebIO"]="0.8.21"
   ["Interact"]="0.10.5"
+  ["PyCall"]="1.96.4"
 )
 
 # Install packages
