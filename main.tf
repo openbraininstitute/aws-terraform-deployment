@@ -64,7 +64,7 @@ module "cs" {
   aws_coreservices_ssh_key_id    = module.coreservices_key.key_pair_id
 
   preferred_hostname = local.primary_domain
-  redirect_hostnames = ["openbluebrain.ch", "openbrainplatform.org", "openbrainplatform.com"]
+  redirect_hostnames = ["openbrainplatform.org", "openbrainplatform.com"]
 
   jupyterhub_secrets_arn = local.jupyterhub_secrets_arn
 
