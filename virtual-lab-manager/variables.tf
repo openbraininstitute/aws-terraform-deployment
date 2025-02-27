@@ -172,3 +172,10 @@ variable "virtual_lab_manager_secrets_arn" {
   description = "The ARN of the virtual lab manager secrets"
   sensitive   = false
 }
+
+
+variable "virtual_lab_manager_tags" {
+  description = "tags of the resources."
+  type        = map(string)
+  default     = { SBO_Billing = "virtual_lab_manager" }
+}
