@@ -12,18 +12,14 @@ resource "aws_security_group" "virtual_lab_manager_db_sg" {
     cidr_blocks = var.allowed_source_ip_cidr_blocks
   }
 
-  tags = {
-    SBO_Billing = "virtual_lab_manager"
-  }
+  tags = var.virtual_lab_manager_tags
 }
 
 resource "aws_db_subnet_group" "virtual_lab_manager_db_subnet_group" {
   name       = "virtual-lab-manager-db-subnet-group"
   subnet_ids = [aws_subnet.virtual_lab_manager_a.id, aws_subnet.virtual_lab_manager_b.id]
 
-  tags = {
-    SBO_Billing = "virtual_lab_manager"
-  }
+  tags = var.virtual_lab_manager_tags
 }
 
 data "aws_secretsmanager_secret_version" "virtual_lab_manager_secrets" {
@@ -62,7 +58,5 @@ resource "aws_db_instance" "virtual_lab_manager" {
 
   copy_tags_to_snapshot = true
 
-  tags = {
-    SBO_Billing = "virtual_lab_manager"
-  }
+  tags = var.virtual_lab_manager_tags
 }
