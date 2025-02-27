@@ -325,7 +325,7 @@ resource "aws_lb_listener_rule" "sitemap_xml" {
 
   condition {
     path_pattern {
-      values = ["/sitemap_xml"]
+      values = ["/sitemap.xml"]
     }
   }
 }
