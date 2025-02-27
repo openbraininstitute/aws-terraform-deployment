@@ -28,7 +28,5 @@ resource "aws_iam_policy" "virtual_lab_manager_secrets_access" {
   }
   EOT
 
-  tags = {
-    SBO_Billing = "virtual_lab_manager"
-  }
+  tags = var.virtual_lab_manager_tags
 }

@@ -17,9 +17,7 @@ resource "aws_lb_target_group" "virtual_lab_manager_private" {
     protocol = "HTTP"
   }
 
-  tags = {
-    SBO_Billing = "virtual_lab_manager"
-  }
+  tags = var.virtual_lab_manager_tags
 }
 
 resource "aws_lb_listener_rule" "virtual_lab_manager_private" {
@@ -43,7 +41,5 @@ resource "aws_lb_listener_rule" "virtual_lab_manager_private" {
     }
   }
 
-  tags = {
-    SBO_Billing = "virtual_lab_manager"
-  }
+  tags = var.virtual_lab_manager_tags
 }
