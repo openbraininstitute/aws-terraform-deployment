@@ -9,6 +9,7 @@ concurrency:
   group: terraform-${{ github.base_ref }}
 
 jobs:
+
   terraform_verify:
     environment: ${{ github.base_ref }}
     env:
@@ -22,6 +23,21 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: .
+          output_format: github_failed_only
+          output_file_path: checkov_issues
+          quiet: true # display only failed checks
+          download_external_modules: true
+
+      - name: Comment with checkov results
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          file-path: checkov_issues
+          comment-tag: checkov # update existing comment instead of adding a new one on every run
 
       - name: Configure Terraform
         uses: hashicorp/setup-terraform@v3
