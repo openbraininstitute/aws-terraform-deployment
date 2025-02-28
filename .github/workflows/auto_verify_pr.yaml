@@ -8,6 +8,11 @@ on:
 concurrency:
   group: terraform-${{ github.base_ref }}
 
+permissions:
+  contents: read
+  packages: read
+  pull-requests: write
+
 jobs:
 
   terraform_verify:
@@ -36,8 +41,9 @@ jobs:
       - name: Comment with checkov results
         uses: thollander/actions-comment-pull-request@v3
         with:
-          file-path: checkov_issues
+          file-path: checkov_issues/results_github_failed_only.md
           comment-tag: checkov # update existing comment instead of adding a new one on every run
+        if: failure()
 
       - name: Configure Terraform
         uses: hashicorp/setup-terraform@v3
