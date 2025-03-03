@@ -217,7 +217,7 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         },
         {
           name  = "REDIS_PORT"
-          value = aws_elasticache_cluster.vlm_redis_cluster.port
+          value = tostring(aws_elasticache_cluster.vlm_redis_cluster.port)
         }
       ]
       secrets = [
