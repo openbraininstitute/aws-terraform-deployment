@@ -28,9 +28,6 @@ jobs:
         run: terraform fmt -check -diff -recursive
       - name: Initialize Terraform
         run: terraform init -backend-config="./${{ inputs.environment }}.config"
-      - name: Run Custom Plan script
-        run: |
-        if: exists(./scripts/terraform_plan_${{ inputs.environment }}.sh)
       - name: Run Terraform Plan
         run: |-
           if [ -e ./scripts/terraform_plan_${{ inputs.environment }}.sh ]
@@ -43,7 +40,7 @@ jobs:
         run: |-
           if [ -e ./scripts/terraform_apply_${{ inputs.environment }}.sh ]
           then
-            ./scripts/terraform_apply_${{ inputs.environment.sh }}
+            ./scripts/terraform_apply_${{ inputs.environment }}.sh
           else
             terraform apply -auto-approve -var-file="${{ inputs.environment }}.tfvars"
           fi
