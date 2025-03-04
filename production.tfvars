@@ -1,19 +1,18 @@
-is_staging                            = false
-is_production                         = true
-terraform_remote_state_dynamodb_table = "terraform-state-lock-table-production"
-terraform_remote_state_bucket_name    = "obi-tfstate-production"
-cell_svc_bucket_name                  = "sbo-cell-svc-perf-test"
-ml_paper_bucket_name                  = "ml-paper-bucket"
-nexus_domain_name                     = "openbluebrain.com"
-nexus_obp_bucket_name                 = "nexus-obp-production"
-nexus_ship_bucket_name                = "nexus-ship-production"
-nexus_openscience_bucket_name         = "nexus-openscience-production"
-nexus_az_letter_id                    = "b"
-core_web_app_docker_image_url         = "public.ecr.aws/openbraininstitute/core-web-app:2025.03.03.1"
-virtual_lab_manager_docker_image_url  = "public.ecr.aws/openbraininstitute/virtual-lab-api:20250226.1"
-cell_svc_docker_image_url             = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.2.1-prod"
-is_nexus_openscience_running          = false
-is_nexus_obp_running                  = true
+is_staging                           = false
+is_production                        = true
+terraform_remote_state_bucket_name   = "obi-tfstate-production"
+cell_svc_bucket_name                 = "sbo-cell-svc-perf-test"
+ml_paper_bucket_name                 = "ml-paper-bucket"
+nexus_domain_name                    = "openbluebrain.com"
+nexus_obp_bucket_name                = "nexus-obp-production"
+nexus_ship_bucket_name               = "nexus-ship-production"
+nexus_openscience_bucket_name        = "nexus-openscience-production"
+nexus_az_letter_id                   = "b"
+core_web_app_docker_image_url        = "public.ecr.aws/openbraininstitute/core-web-app:2025.03.03.1"
+virtual_lab_manager_docker_image_url = "public.ecr.aws/openbraininstitute/virtual-lab-api:20250226.1"
+cell_svc_docker_image_url            = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.2.1-prod"
+is_nexus_openscience_running         = false
+is_nexus_obp_running                 = true
 
 # TODO: replace tag below with a version tag when the CI is ready
 bluenaas_docker_image_url = "bluebrain/blue-naas-single-cell:latest"
