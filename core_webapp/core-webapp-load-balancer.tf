@@ -13,6 +13,8 @@ resource "aws_lb_target_group" "core_webapp_private" {
     // TODO Replace with a health check endpoint for core web app once implemented
     path     = "/"
     protocol = "HTTP"
+    # TODO: Remove 307 when the domain redirect is implemented on AWS ALB level
+    matcher = "200,307"
   }
   tags = {
     SBO_Billing = "core_webapp"
