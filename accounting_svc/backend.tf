@@ -154,6 +154,10 @@ resource "aws_ecs_task_definition" "accounting_ecs_definition" {
         {
           name  = "SQS_ONESHOT_QUEUE_NAME"
           value = module.oneshot_event_queue_set.main_queue_name
+        },
+        {
+          name  = "CHARGE_ONESHOT_LOOP_SLEEP"
+          value = "30"
         }
       ]
 
