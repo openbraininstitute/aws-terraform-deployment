@@ -7,12 +7,6 @@ variable "terraform_remote_state_bucket_name" {
   sensitive   = false
 }
 
-variable "terraform_remote_state_dynamodb_table" {
-  type        = string
-  description = "dynamodb table that stores the remote lock"
-  sensitive   = false
-}
-
 variable "cell_svc_bucket_name" {
   type      = string
   sensitive = false
