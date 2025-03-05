@@ -23,7 +23,8 @@ resource "aws_lambda_function" "hpc_resource_provisioner_lambda" {
 }
 
 data "aws_ecr_image" "hpc_resource_provisioner_image" {
-  repository_name = "hpc/resource-provisioner"
+  registry_id     = "985539765147"
+  repository_name = "openbraininstitute/hpc-resource-provisioner"
   image_tag       = var.hpc_resource_provisioner_container_version
 }
 
