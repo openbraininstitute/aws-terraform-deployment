@@ -8,7 +8,6 @@ terraform apply -auto-approve \
                 -target="module.hpc.module.dynamodb" \
                 -target="module.hpc.module.efs" \
                 -target="module.coreservices_key" \
-                -target="aws_instance.ssh_bastion_a" \
                 -target="aws_vpc_security_group_ingress_rule.ssh_bastion_hosts_allow_ssh_external" \
                 -target="aws_vpc_security_group_egress_rule.ssh_bastion_hosts_allow_everything_outgoing" \
                 -target="aws_subnet.bbp_workflow_svc" \

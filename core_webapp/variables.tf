@@ -40,13 +40,6 @@ variable "core_webapp_docker_image_url" {
   sensitive   = false
 }
 
-# TODO: update to "/app/core" after migration to the production domain.
-variable "core_webapp_base_path" {
-  type        = string
-  description = "The base path for the core webapp"
-  sensitive   = false
-}
-
 variable "route_table_id" {
   type        = string
   description = "route table for private networks"
@@ -67,6 +60,12 @@ variable "env_DEBUG" {
   type        = string
   sensitive   = false
   description = "DEBUG environment value for the webapp"
+}
+
+variable "accounting_base_url" {
+  type        = string
+  description = "Accounting service base URL"
+  sensitive   = false
 }
 
 variable "env_NEXTAUTH_URL" {
@@ -98,16 +97,19 @@ variable "env_NEXT_PUBLIC_DEPLOYMENT_ENV" {
   description = "env core-web-app is deployed <staging|production>"
   sensitive   = false
 }
+
 variable "env_NEXT_PUBLIC_MATOMO_URL" {
   type        = string
   description = "matomo url to server analytics script, (this is global)"
   sensitive   = false
 }
+
 variable "env_NEXT_PUBLIC_MATOMO_CDN_URL" {
   type        = string
   description = "matomo url to server analytics script using cdn, (this is global)"
   sensitive   = false
 }
+
 variable "env_NEXT_PUBLIC_MATOMO_SITE_ID" {
   type        = string
   description = "matomo site id <staging | production>"

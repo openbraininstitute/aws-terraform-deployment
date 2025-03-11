@@ -149,15 +149,6 @@ variable "ecs_number_of_containers" {
   description = "Number of containers"
 }
 
-variable "dockerhub_access_iam_policy_arn" {
-  type      = string
-  sensitive = false
-}
-
-variable "dockerhub_credentials_arn" {
-  type      = string
-  sensitive = false
-}
 
 variable "virtual_lab_manager_base_path" {
   type        = string
@@ -180,4 +171,11 @@ variable "virtual_lab_manager_secrets_arn" {
   type        = string
   description = "The ARN of the virtual lab manager secrets"
   sensitive   = false
+}
+
+
+variable "virtual_lab_manager_tags" {
+  description = "tags of the resources."
+  type        = map(string)
+  default     = { SBO_Billing = "virtual_lab_manager" }
 }

@@ -55,12 +55,9 @@ Deployment of the OBI platform in AWS with Terraform.
 | [aws_iam_role.apigw_cloudwatch](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy_attachments_exclusive.apigw_cloudwatch_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachments_exclusive) | resource |
 | [aws_iam_user.cell_svc_bucket_user](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user) | resource |
-| [aws_instance.ssh_bastion_a](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) | resource |
-| [aws_instance.ssh_bastion_b](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) | resource |
+| [aws_instance.ssh_bastion](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) | resource |
 | [aws_network_acl.public](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/network_acl) | resource |
 | [aws_route53_record.ssh_bastion](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
-| [aws_route53_record.ssh_bastion_a](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
-| [aws_route53_record.ssh_bastion_b](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_s3_bucket.sbo-cell-svc-perf-test](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
 | [aws_s3_bucket_lifecycle_configuration.sbo-cell-svc-perf-test](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_lifecycle_configuration) | resource |
 | [aws_s3_bucket_metric.sbo-cell-svc-perf-test-metrics](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_metric) | resource |
@@ -99,7 +96,6 @@ Deployment of the OBI platform in AWS with Terraform.
 | <a name="input_cell_svc_bucket_name"></a> [cell\_svc\_bucket\_name](#input\_cell\_svc\_bucket\_name) | n/a | `string` | n/a | yes |
 | <a name="input_core_web_app_docker_image_url"></a> [core\_web\_app\_docker\_image\_url](#input\_core\_web\_app\_docker\_image\_url) | docker image for the core-web-app | `string` | n/a | yes |
 | <a name="input_create_ssh_bastion_vm_on_public_a_network"></a> [create\_ssh\_bastion\_vm\_on\_public\_a\_network](#input\_create\_ssh\_bastion\_vm\_on\_public\_a\_network) | Create SSH bastion VM on public network in availability zone A: needed for access to HPC resources for example | `bool` | `true` | no |
-| <a name="input_create_ssh_bastion_vm_on_public_b_network"></a> [create\_ssh\_bastion\_vm\_on\_public\_b\_network](#input\_create\_ssh\_bastion\_vm\_on\_public\_b\_network) | Create SSH bastion VM on public network in availability zone B: only needed for testing across availability zones | `bool` | `false` | no |
 | <a name="input_ec_apikey"></a> [ec\_apikey](#input\_ec\_apikey) | n/a | `string` | n/a | yes |
 | <a name="input_is_production"></a> [is\_production](#input\_is\_production) | Whether deployment is happening in production or not | `bool` | `true` | no |
 | <a name="input_ml_paper_bucket_name"></a> [ml\_paper\_bucket\_name](#input\_ml\_paper\_bucket\_name) | n/a | `string` | n/a | yes |
@@ -110,7 +106,6 @@ Deployment of the OBI platform in AWS with Terraform.
 | <a name="input_nexus_ship_bucket_name"></a> [nexus\_ship\_bucket\_name](#input\_nexus\_ship\_bucket\_name) | n/a | `string` | n/a | yes |
 | <a name="input_nise_dockerhub_password"></a> [nise\_dockerhub\_password](#input\_nise\_dockerhub\_password) | Password for the NISE dockerhub access. Set via TF\_VAR\_nise\_dockerhub\_password variable. | `string` | n/a | yes |
 | <a name="input_terraform_remote_state_bucket_name"></a> [terraform\_remote\_state\_bucket\_name](#input\_terraform\_remote\_state\_bucket\_name) | Bucket name storing the deployment-common tfstate | `string` | n/a | yes |
-| <a name="input_terraform_remote_state_dynamodb_table"></a> [terraform\_remote\_state\_dynamodb\_table](#input\_terraform\_remote\_state\_dynamodb\_table) | dynamodb table that stores the remote lock | `string` | n/a | yes |
 | <a name="input_virtual_lab_manager_base_path"></a> [virtual\_lab\_manager\_base\_path](#input\_virtual\_lab\_manager\_base\_path) | The base path for the virtual lab manager | `string` | `"/api/virtual-lab-manager"` | no |
 | <a name="input_virtual_lab_manager_docker_image_url"></a> [virtual\_lab\_manager\_docker\_image\_url](#input\_virtual\_lab\_manager\_docker\_image\_url) | docker image for the virtual lab manager | `string` | `"bluebrain/obp-virtual-lab-api:latest"` | no |
 | <a name="input_virtual_lab_manager_ecs_number_of_containers"></a> [virtual\_lab\_manager\_ecs\_number\_of\_containers](#input\_virtual\_lab\_manager\_ecs\_number\_of\_containers) | Number of containers for the virtual lab manager | `number` | `1` | no |

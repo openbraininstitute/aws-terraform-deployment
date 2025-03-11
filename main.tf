@@ -65,7 +65,7 @@ module "cs" {
   aws_coreservices_ssh_key_id    = module.coreservices_key.key_pair_id
 
   preferred_hostname = local.primary_domain
-  redirect_hostnames = ["openbluebrain.ch", "openbrainplatform.org", "openbrainplatform.com"]
+  redirect_hostnames = ["openbrainplatform.org", "openbrainplatform.com"]
 
   jupyterhub_secrets_arn = local.jupyterhub_secrets_arn
 
@@ -87,8 +87,8 @@ module "ml" {
   route_table_private_subnets_id = local.route_table_private_subnets_id
 
   dockerhub_credentials_arn = local.dockerhub_bbpbuildbot_secret_arn
-  backend_image_tag         = "scholarag-v0.0.9"
-  etl_image_tag             = "scholaretl-v0.0.7"
+  backend_image_tag         = "scholarag-v0.0.10"
+  etl_image_tag             = "scholaretl-v0.0.8"
   agent_image_tag           = "neuroagent-v0.3.3"
   grobid_image_url          = "lfoppiano/grobid:0.8.0"
 
@@ -204,6 +204,22 @@ module "bluenaas_svc" {
   task_size = var.bluenaas_task_size
 }
 
+module "github_bluenaas_ecs_redeploy_role" {
+  source = "./github_ecs_redeploy_role"
+
+  # for now we only want such a redeploy role in staging
+  count = var.is_staging ? 1 : 0
+
+  account_id               = local.account_id
+  aws_region               = local.aws_region
+  github_organisation      = local.github_organisation
+  repo_name                = "Bluenaas"
+  ecs_cluster_name         = module.bluenaas_svc.ecs_cluster_name
+  ecs_service_name         = module.bluenaas_svc.ecs_service_name
+  ecs_task_definition_name = module.bluenaas_svc.ecs_task_definition_name
+  # The ARN of the generated role is needed in GH and is part of the outputs.
+}
+
 module "hpc" {
   source = "./hpc"
 
@@ -228,6 +244,9 @@ module "hpc" {
   endpoints_route_table_id                   = local.route_table_private_subnets_id
   hpc_slurm_secrets_arn                      = local.hpc_slurm_secrets_arn
   hpc_resource_provisioner_container_version = var.hpc_resource_provisioner_container_version
+  sbo_nexusdata_bucket                       = var.hpc_resource_provisioner_sbo_nexusdata_bucket
+  containers_bucket                          = var.hpc_resource_provisioner_containers_bucket
+  scratch_bucket                             = var.hpc_resource_provisioner_scratch_bucket
 }
 
 module "static-server" {
@@ -252,14 +271,14 @@ module "core_webapp" {
   private_alb_https_listener_arn       = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
   aws_region                           = local.aws_region
   core_webapp_docker_image_url         = var.core_web_app_docker_image_url
-  core_webapp_base_path                = "/app"
   route_table_id                       = local.route_table_private_subnets_id
   allowed_source_ip_cidr_blocks        = ["0.0.0.0/0"]
   vpc_cidr_block                       = local.vpc_cidr_block
   core_webapp_secrets_arn              = local.core_webapp_secrets_arn
+  accounting_base_url                  = "https://${local.primary_domain}${var.accounting_base_path}"
 
   env_DEBUG                               = "true"
-  env_NEXTAUTH_URL                        = "https://${local.primary_domain}/app/api/auth"
+  env_NEXTAUTH_URL                        = "https://${local.primary_domain}/api/auth"
   env_KEYCLOAK_ISSUER                     = "https://${local.primary_domain}/auth/realms/SBO"
   env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY  = "pk_test_51QjjHBKGUR5u3ofLgNUOpljnvy27UTTpkhwgsLiwK9xlNjnR7CZfiMjtZWMjgN7GW3eDyzMJ7Z1pIqC9LiwkfQRX00ebb5c9XI"
   env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL = "http://${data.terraform_remote_state.common.outputs.private_alb_dns_name}:3000/api/literature"
@@ -389,9 +408,6 @@ module "virtual_lab_manager" {
   virtual_lab_manager_postgres_user = "vlm_user"
 
   log_group_name = var.virtual_lab_manager_log_group_name
-
-  dockerhub_access_iam_policy_arn = local.dockerhub_bbpbuildbot_policy_arn
-  dockerhub_credentials_arn       = local.dockerhub_bbpbuildbot_secret_arn
 
   virtual_lab_manager_docker_image_url = var.virtual_lab_manager_docker_image_url
 

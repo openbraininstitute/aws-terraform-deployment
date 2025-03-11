@@ -216,8 +216,18 @@ locals {
       key          = "static/favicon.ico"
       source       = "${path.module}/favicon.ico"
       content_type = "image/vnd.microsoft.icon"
-    },
+    }
   ]
+  google_search_verification = {
+    key          = "static/google62bf7fe0ad1621f2.html"
+    source       = "${path.module}/google62bf7fe0ad1621f2.html"
+    content_type = "text/html"
+  }
+  sitemap_xml = {
+    key          = "static/sitemap.xml"
+    source       = "${path.module}/sitemap.xml"
+    content_type = "text/xml"
+  }
 }
 
 resource "aws_s3_object" "favicon" {
@@ -229,6 +239,26 @@ resource "aws_s3_object" "favicon" {
   content_type = local.favicon[count.index].content_type
 
   etag = filemd5(local.favicon[count.index].source)
+}
+
+resource "aws_s3_object" "google_search_verification" {
+  bucket = var.static_content_bucket_name
+
+  key          = local.google_search_verification.key
+  source       = local.google_search_verification.source
+  content_type = local.google_search_verification.content_type
+
+  etag = filemd5(local.google_search_verification.source)
+}
+
+resource "aws_s3_object" "sitemap_xml" {
+  bucket = var.static_content_bucket_name
+
+  key          = local.sitemap_xml.key
+  source       = local.sitemap_xml.source
+  content_type = local.sitemap_xml.content_type
+
+  etag = filemd5(local.sitemap_xml.source)
 }
 
 resource "aws_lb_listener_rule" "favicon" {
@@ -250,6 +280,52 @@ resource "aws_lb_listener_rule" "favicon" {
   condition {
     path_pattern {
       values = ["/favicon.ico"]
+    }
+  }
+}
+
+resource "aws_lb_listener_rule" "google_search_verification" {
+  listener_arn = var.alb_listener_arn
+  priority     = var.alb_listener_rule_priority + 2
+
+  action {
+    type = "redirect"
+    redirect {
+      host        = "s3.amazonaws.com"
+      path        = "/${var.domain_name}/${local.google_search_verification.key}"
+      query       = ""
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+
+  condition {
+    path_pattern {
+      values = ["/google62bf7fe0ad1621f2.html"]
+    }
+  }
+}
+
+resource "aws_lb_listener_rule" "sitemap_xml" {
+  listener_arn = var.alb_listener_arn
+  priority     = var.alb_listener_rule_priority + 3
+
+  action {
+    type = "redirect"
+    redirect {
+      host        = "s3.amazonaws.com"
+      path        = "/${var.domain_name}/${local.sitemap_xml.key}"
+      query       = ""
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+
+  condition {
+    path_pattern {
+      values = ["/sitemap.xml"]
     }
   }
 }

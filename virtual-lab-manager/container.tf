@@ -53,9 +53,7 @@ resource "aws_vpc_security_group_ingress_rule" "virtual_lab_manager_allow_port_8
   cidr_ipv4   = var.vpc_cidr_block
   description = "Allow port 8000 http"
 
-  tags = {
-    SBO_Billing = "virtual_lab_manager"
-  }
+  tags = var.virtual_lab_manager_tags
 }
 
 resource "aws_vpc_security_group_egress_rule" "virtual_lab_manager_allow_outgoing_tcp" {
@@ -67,9 +65,7 @@ resource "aws_vpc_security_group_egress_rule" "virtual_lab_manager_allow_outgoin
   cidr_ipv4   = "0.0.0.0/0"
   description = "Allow all TCP"
 
-  tags = {
-    SBO_Billing = "virtual_lab_manager"
-  }
+  tags = var.virtual_lab_manager_tags
 }
 
 resource "aws_vpc_security_group_egress_rule" "virtual_lab_manager_allow_outgoing_udp" {
@@ -81,9 +77,7 @@ resource "aws_vpc_security_group_egress_rule" "virtual_lab_manager_allow_outgoin
   cidr_ipv4   = "0.0.0.0/0"
   description = "Allow all UDP"
 
-  tags = {
-    SBO_Billing = "virtual_lab_manager"
-  }
+  tags = var.virtual_lab_manager_tags
 }
 
 resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
@@ -101,10 +95,6 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
       essential   = true
       image       = var.virtual_lab_manager_docker_image_url
       name        = "virtual_lab_manager"
-
-      repositoryCredentials = {
-        credentialsParameter = var.dockerhub_credentials_arn
-      }
 
       portMappings = [
         {
@@ -220,6 +210,18 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         {
           name  = "MAIL_PASSWORD"
           value = var.virtual_lab_manager_mail_password
+        },
+        {
+          name  = "REDIS_HOST"
+          value = aws_elasticache_cluster.vlm_redis_cluster.cache_nodes[0].address
+        },
+        {
+          name  = "REDIS_PORT"
+          value = tostring(aws_elasticache_cluster.vlm_redis_cluster.port)
+        },
+        {
+          name  = "STRIPE_DEVICE_NAME"
+          value = "Open Brain Institute"
         }
       ]
       secrets = [
@@ -392,12 +394,6 @@ resource "aws_iam_policy" "ecsTaskLogs_virtuallab" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_virtual_lab_manager_task_role_dockerhub_policy_attachment" {
-  role       = aws_iam_role.ecs_virtual_lab_manager_task_execution_role[0].name
-  policy_arn = var.dockerhub_access_iam_policy_arn
-
-  count = local.container_count
-}
 
 resource "aws_iam_role_policy_attachment" "ecs_virtual_lab_manager_secrets_access_policy_attachment" {
   role       = aws_iam_role.ecs_virtual_lab_manager_task_execution_role[0].name

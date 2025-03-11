@@ -288,11 +288,13 @@
             "Resource": "*"
         },
         {
-            "Sid": "AllowSfxCreation",
+            "Sid": "AllowSfxManagement",
             "Effect": "Allow",
             "Action": [
                 "fsx:CreateDataRepositoryAssociation",
+                "fsx:DeleteDataRepositoryAssociation",
                 "fsx:CreateFileSystem",
+                "fsx:DeleteFileSystem",
                 "fsx:DescribeDataRepositoryAssociations",
                 "fsx:DescribeFileSystems",
                 "fsx:TagResource"
