@@ -203,6 +203,22 @@ module "bluenaas_svc" {
   task_size = var.bluenaas_task_size
 }
 
+module "github_bluenaas_ecs_redeploy_role" {
+  source = "./github_ecs_redeploy_role"
+
+  # for now we only want such a redeploy role in staging
+  count = var.is_staging ? 1 : 0
+
+  account_id               = local.account_id
+  aws_region               = local.aws_region
+  github_organisation      = local.github_organisation
+  repo_name                = "Bluenaas"
+  ecs_cluster_name         = module.bluenaas_svc.ecs_cluster_name
+  ecs_service_name         = module.bluenaas_svc.ecs_service_name
+  ecs_task_definition_name = module.bluenaas_svc.ecs_task_definition_name
+  # The ARN of the generated role is needed in GH and is part of the outputs.
+}
+
 module "hpc" {
   source = "./hpc"
 
