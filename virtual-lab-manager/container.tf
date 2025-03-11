@@ -218,6 +218,10 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         {
           name  = "REDIS_PORT"
           value = tostring(aws_elasticache_cluster.vlm_redis_cluster.port)
+        },
+        {
+          name  = "STRIPE_DEVICE_NAME"
+          value = "Open Brain Institute"
         }
       ]
       secrets = [
