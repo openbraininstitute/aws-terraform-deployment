@@ -216,6 +216,10 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         {
           name  = "MAIL_PASSWORD"
           value = var.virtual_lab_manager_mail_password
+        },
+        {
+          name  = "STRIPE_DEVICE_NAME"
+          value = "Open Brain Institute"
         }
       ]
       secrets = [
