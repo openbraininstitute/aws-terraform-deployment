@@ -181,3 +181,9 @@ variable "hpc_resource_provisioner_scratch_bucket" {
   type        = string
   description = "S3 bucket in which scratch space lives. Includes s3:// prefix and sub-path, if any"
 }
+
+### entitycore ###
+variable "entitycore_svc_s3_bucket_name" {
+    type = string
+    description = "S3 bucket name in which entitycore data lives."
+}

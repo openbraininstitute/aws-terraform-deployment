@@ -50,3 +50,8 @@ variable "internet_access_route_id" {
 variable "entitycore_service_secrets_arn" {
   type = string
 }
+
+variable "s3_bucket_name" {
+  description = "Name of the S3 bucket for entitycore service"
+  type        = string
+}

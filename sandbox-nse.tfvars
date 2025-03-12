@@ -35,3 +35,5 @@ ec_apikey               = "placeholder"
 hpc_resource_provisioner_sbo_nexusdata_bucket = "s3://sbonexusdata-sandbox"
 hpc_resource_provisioner_containers_bucket    = "s3://sboinfrastructureassets-sandbox/containers"
 hpc_resource_provisioner_scratch_bucket       = "s3://sbosandbox-lec3cn"
+
+entitycore_svc_s3_bucket_name = "entitycore-data-sandbox-nse-test"

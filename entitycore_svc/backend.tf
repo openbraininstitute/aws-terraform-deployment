@@ -143,6 +143,10 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
           name  = "DB_USER"
           value = var.db_username
         },
+        {
+          name  = "S3_BUCKET_NAME"
+          value = var.s3_bucket_name
+        }
       ]
 
       secrets = [
