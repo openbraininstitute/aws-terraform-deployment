@@ -552,7 +552,7 @@ module "dashboards" {
     "BlueNaaS"           = module.bluenaas_svc.private_lb_rule_suffix
     "CoreWebAppMain"     = module.core_webapp_main.private_lb_rule_suffix
     "VLabManager"        = module.virtual_lab_manager.private_arn_suffix
-    "EntityCoreService"  = module.entitycore_svc.private_arn_suffix
+    "EntityCoreService"  = module.entitycore_svc.private_lb_rule_suffix
   }, var.is_staging ? { "CoreWebAppNext" = module.core_webapp_next[0].private_lb_rule_suffix } : {})
 }
 
