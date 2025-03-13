@@ -1,9 +1,9 @@
-# AMI for Ubuntu 24.04 LTS
-data "aws_ami" "ubuntu2404" {
+# AMI for Ubuntu 22.04 LTS
+data "aws_ami" "ubuntu2204" {
   most_recent = false
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server-20250115"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20250228"]
   }
   filter {
     name   = "owner-alias"
@@ -25,7 +25,7 @@ data "aws_secretsmanager_secret_version" "jupyterhub_secrets" {
 }
 
 resource "aws_instance" "jupyterhub_server" {
-  ami                         = data.aws_ami.ubuntu2404.id
+  ami                         = data.aws_ami.ubuntu2204.id
   instance_type               = "c7i.xlarge"
   subnet_id                   = var.jupyterhub_private_subnet
   key_name                    = var.aws_coreservices_ssh_key_id
@@ -54,7 +54,8 @@ resource "aws_instance" "jupyterhub_server" {
   }
 
   root_block_device {
-    encrypted = true
+    volume_size = 20
+    encrypted   = true
   }
 
   metadata_options {
