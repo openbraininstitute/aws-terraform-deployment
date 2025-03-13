@@ -184,6 +184,6 @@ variable "hpc_resource_provisioner_scratch_bucket" {
 
 ### entitycore ###
 variable "entitycore_svc_s3_bucket_name" {
-    type = string
-    description = "S3 bucket name in which entitycore data lives."
+  type        = string
+  description = "S3 bucket name in which entitycore data lives."
 }

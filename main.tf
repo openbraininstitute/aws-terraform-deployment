@@ -403,8 +403,8 @@ module "entitycore_svc" {
 
   entitycore_service_secrets_arn = local.entitycore_service_secrets_arn
 
-  root_path    = "/api/entitycore"
-  keycloak_url = "https://openbluebrain.com/auth/realms/SBO/"
+  root_path      = "/api/entitycore"
+  keycloak_url   = "https://openbluebrain.com/auth/realms/SBO/"
   s3_bucket_name = var.entitycore_svc_s3_bucket_name
 
 }
