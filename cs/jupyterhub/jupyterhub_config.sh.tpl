@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sudo apt update
-sudo apt install nfs-common nginx nodejs npm -y
+sudo apt install nfs-common nginx nodejs jq npm -y
 sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${HOMEDIRS_EFS}:/ ${HOMEDIRS_PATH}
 
 sudo systemctl enable nginx
@@ -16,9 +16,14 @@ curl -L https://tljh.jupyter.org/bootstrap.py \
 
 sudo tljh-config set base_url ${BASE_PATH}
 sudo tljh-config set http.port 8080
-
 # limit session to 30 mins
 sudo tljh-config set services.cull.max_age 1800
+
+# set default interface to jupyterlab and disable autosave feature
+sudo tljh-config set user_environment.default_app jupyterlab
+for DIR in $(find /opt/tljh/ -name docmanager-extension -type d); do
+  cat <<< $(jq '.properties.autosave.default = false' $DIR/plugin.json) > $DIR/plugin.json
+done
 
 # Setup Keycloak as a GenericOAuthenticator
 cat <<EOF > /opt/tljh/config/jupyterhub_config.d/keycloak.py
