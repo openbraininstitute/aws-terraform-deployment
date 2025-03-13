@@ -163,6 +163,20 @@ module "cells_svc" {
   cell_svc_docker_image_url = var.cell_svc_docker_image_url
 }
 
+module "metabolism_notebook_redirect" {
+  source = "./redirect_relative_link"
+  # Redirection of a relative link, redirects to 'main hostname'
+
+  # static redirect for Polina's notebook.
+  from_path = "/link/metabolism"
+  to_path   = "/jupyterhub/hub/user-redirect/git-pull"
+  to_query  = "repo=https://github.com/openbraininstitute/obi_platform_analysis_notebooks&urlpath=lab/tree/obi_platform_analysis_notebooks/Metabolism/analysis_notebook.ipynb&branch=main"
+  priority  = 250 # Has to be unique across all ALB rules
+
+  primary_domain         = local.primary_domain
+  alb_https_listener_arn = local.private_alb_https_listener_arn
+}
+
 module "nse" {
   source = "./nse"
 
