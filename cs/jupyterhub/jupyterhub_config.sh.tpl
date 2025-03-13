@@ -1,16 +1,21 @@
 #!/bin/bash
 
 sudo apt update
-sudo apt install nfs-common -y
+sudo apt install nfs-common nginx nodejs npm -y
 sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${HOMEDIRS_EFS}:/ ${HOMEDIRS_PATH}
+
+sudo systemctl enable nginx
+sudo systemctl stop nginx
 
 curl -L https://tljh.jupyter.org/bootstrap.py \
   | sudo python3 - \
     --admin ${ADMIN_USER}:${ADMIN_PASS} \
+    --version 0.2.0 \
+    --user-requirements-txt-url https://gist.githubusercontent.com/danifr/6d0c4ff74a51ebb076179447855b9849/raw/1b183e30bc8513e9310bd49d0ed584dceb16e7b2/requirements.txt \
     --show-progress-page \
-    --plugin webio-jupyter-extension==0.1.0
 
 sudo tljh-config set base_url ${BASE_PATH}
+sudo tljh-config set http.port 8080
 
 # limit session to 30 mins
 sudo tljh-config set services.cull.max_age 1800
@@ -28,7 +33,7 @@ c.GenericOAuthenticator.token_url = "https://${PRIMARY_DOMAIN}/auth/realms/${KC_
 c.GenericOAuthenticator.userdata_url = "https://${PRIMARY_DOMAIN}/auth/realms/${KC_REALM}/protocol/openid-connect/userinfo"
 
 c.GenericOAuthenticator.login_service = "Keycloak login"
-c.GenericOAuthenticator.username_claim =  "preferred_username"
+c.GenericOAuthenticator.username_key =  "preferred_username"
 c.GenericOAuthenticator.scope = ["openid"]
 
 c.GenericOAuthenticator.allow_all = True
@@ -37,6 +42,46 @@ c.GenericOAuthenticator.auto_login_oauth2_authorize = True
 c.GenericOAuthenticator.validate_server_cert = False
 EOF
 
+# Setup Nginx as reverse proxy for JupyterHub
+sudo rm -f /etc/nginx/sites-enabled/default
+sudo rm -f /etc/nginx/sites-available/default
+# adapted from https://jupyterhub.readthedocs.io/en/stable/howto/configuration/config-proxy.html#nginx
+cat <<EOF > /etc/nginx/sites-enabled/jupyterhub.conf
+# Top-level HTTP config for WebSocket headers
+# If Upgrade is defined, Connection = upgrade
+# If Upgrade is empty, Connection = close
+map \$http_upgrade \$connection_upgrade {
+    default upgrade;
+    ''      close;
+}
+
+server {
+    listen 80;
+    server_name ${PRIMARY_DOMAIN};
+
+    # Prevent double slashes and recursive redirects
+    rewrite ^/(.*)//+(.*)$ /\$1/\$2 permanent;
+
+    # Forward all traffic to port 8080
+    location ${BASE_PATH} {
+        proxy_pass http://localhost:8080${BASE_PATH};
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+
+        # websocket headers
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection \$connection_upgrade;
+        proxy_set_header X-Scheme \$scheme;
+
+        proxy_buffering off;
+    }
+}
+EOF
+
+#
 # Julia installation
 JULIA_VERSION="1.6.6"
 JULIA_VER=$(cut -d '.' -f -2 <<< "$JULIA_VERSION")
@@ -72,6 +117,8 @@ do
   julia -e "using Pkg; Pkg.add(name=\"$${PKG}\", version=\"$${PKG_VERSION}\"); precompile;"
 done
 
+julia -e 'using Pkg; Pkg.build("Interact")'
+
 # Install kernel
 JULIA_NUM_THREADS=8
 echo "Installing IJulia kernel..."
@@ -81,6 +128,16 @@ julia -e 'using IJulia; IJulia.installkernel("julia", env=Dict(
       "JUPYTER_DATA_DIR"=>"'"$JUPYTER_DATA_DIR"'"
 ))'
 
+# downgrade bcrypt to avoid AttributeError: module 'bcrypt' has no attribute '__about__' error
+source /opt/tljh/hub/bin/activate
+pip install --upgrade bcrypt==4.0.1
+deactivate
+
+source /opt/tljh/user/bin/activate
+pip install webio_jupyter_extension webio_jupyterlab_provider
+pip install --upgrade jupyterlab-pygments==0.2.0
+conda deactivate
+
 # Give jupyterhub-users groups access to $JULIA_DEPOT_PATH
 chgrp -R jupyterhub-users $${JULIA_DEPOT_PATH}
 chmod 664 $${JULIA_DEPOT_PATH}/logs/repl_history.jl
@@ -89,3 +146,6 @@ chmod 664 $${JULIA_DEPOT_PATH}/logs/manifest_usage.toml
 # Restart JupyterHub service to apply changes
 sudo tljh-config reload proxy
 sudo tljh-config reload
+
+# Restart nginx reverse proxy
+sudo systemctl restart nginx
