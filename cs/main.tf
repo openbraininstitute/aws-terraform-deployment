@@ -11,6 +11,7 @@ module "jupyterhub" {
   private_alb_https_listener_arn = var.private_alb_https_listener_arn
   primary_domain                 = var.preferred_hostname
   jupyterhub_private_subnet      = module.networking.jupyterhub_private_subnet
+  jupyterhub_ec2_type            = var.jupyterhub_ec2_type
   jupyterhub_port                = 80
   jupyterhub_base_path           = "/jupyterhub"
   jupyterhub_secrets_arn         = var.jupyterhub_secrets_arn
