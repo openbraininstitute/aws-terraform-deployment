@@ -28,6 +28,10 @@ variable "paper_bucket_name" {
   type = string
 }
 
+variable "neuroagent_bucket_name" {
+  type = string
+}
+
 variable "vpc_cidr_block" {
   description = "CIDR block of the vpc"
   type        = string

@@ -1,3 +1,17 @@
+module "s3_bucket" {
+  source = "terraform-aws-modules/s3-bucket/aws"
+
+  bucket = var.neuroagent_bucket_name
+  acl    = "private"
+
+  control_object_ownership = true
+  object_ownership         = "ObjectWriter"
+
+  versioning = {
+    enabled = false
+  }
+}
+
 #tfsec:ignore:aws-ec2-no-public-egress-sgr
 module "ecs_service_agent" {
   source = "terraform-aws-modules/ecs/aws//modules/service"

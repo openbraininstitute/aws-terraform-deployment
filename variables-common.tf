@@ -22,6 +22,11 @@ variable "ml_paper_bucket_name" {
   sensitive = false
 }
 
+variable "ml_neuroagent_bucket_name" {
+  type      = string
+  sensitive = false
+}
+
 variable "nexus_domain_name" {
   type      = string
   sensitive = false

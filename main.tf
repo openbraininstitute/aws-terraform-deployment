@@ -92,6 +92,7 @@ module "ml" {
   grobid_image_url          = "lfoppiano/grobid:0.8.0"
 
   paper_bucket_name = var.ml_paper_bucket_name
+  neuroagent_bucket_name = var.ml_neuroagent_bucket_name
   nexus_domain_name = module.nexus.nexus_domain_name
   primary_domain    = local.primary_domain
 
