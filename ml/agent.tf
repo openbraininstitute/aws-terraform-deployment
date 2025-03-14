@@ -52,30 +52,6 @@ module "ecs_service_agent" {
       ]
       environment = [
         {
-          name  = "NEUROAGENT_TOOLS__LITERATURE__URL"
-          value = "http://${var.private_alb_dns}:3000/api/literature/retrieval/"
-        },
-        {
-          name  = "NEUROAGENT_KNOWLEDGE_GRAPH__BASE_URL"
-          value = "https://${var.nexus_domain_name}/api/nexus/v1"
-        },
-        {
-          name  = "NEUROAGENT_OPENAI__MODEL"
-          value = "gpt-4o-mini"
-        },
-        {
-          name  = "NEUROAGENT_KEYCLOAK__ISSUER"
-          value = "https://${var.primary_domain}/auth/realms/SBO"
-        },
-        {
-          name  = "NEUROAGENT_KNOWLEDGE_GRAPH__DOWNLOAD_HIERARCHY"
-          value = "true"
-        },
-        {
-          name  = "NEUROAGENT_DB__PREFIX"
-          value = "postgresql://"
-        },
-        {
           name  = "NEUROAGENT_DB__HOST"
           value = module.ml_rds_postgres.db_instance_address
         },
@@ -84,23 +60,51 @@ module "ecs_service_agent" {
           value = module.ml_rds_postgres.db_instance_port
         },
         {
+          name  = "NEUROAGENT_DB__PREFIX"
+          value = "postgresql://"
+        },
+        {
           name  = "NEUROAGENT_DB__USER"
           value = module.ml_rds_postgres.db_instance_username
+        },
+        {
+          name  = "NEUROAGENT_KEYCLOAK__ISSUER"
+          value = "https://${var.primary_domain}/auth/realms/SBO"
+        },
+        {
+          name  = "NEUROAGENT_KNOWLEDGE_GRAPH__BASE_URL"
+          value = "https://${var.nexus_domain_name}/api/nexus/v1"
+        },
+        {
+          name  = "NEUROAGENT_KNOWLEDGE_GRAPH__DOWNLOAD_HIERARCHY"
+          value = "true"
         },
         {
           name  = "NEUROAGENT_MISC__APPLICATION_PREFIX"
           value = "/api/agent"
         },
         {
+          name  = "NEUROAGENT_MISC__CORS_ORIGINS"
+          value = "https://openbrainplatform.org, https://bbp.epfl.ch"
+        },
+        {
+          name  = "NEUROAGENT_OPENAI__MODEL"
+          value = "gpt-4o-mini"
+        },
+        {
           name  = "NEUROAGENT_STORAGE__BUCKET_NAME"
           value = var.neuroagent_bucket_name
         },
         {
-          name  = "NEUROAGENT_MISC__CORS_ORIGINS"
-          value = "https://openbrainplatform.org, https://bbp.epfl.ch"
+          name  = "NEUROAGENT_TOOLS__LITERATURE__URL"
+          value = "http://${var.private_alb_dns}:3000/api/literature/retrieval/"
         },
       ]
       secrets = [
+        {
+          name      = "NEUROAGENT_DB__PASSWORD"
+          valueFrom = "${module.ml_rds_postgres.db_instance_master_user_secret_arn}:password::"
+        },
         {
           name      = "NEUROAGENT_OPENAI__TOKEN"
           valueFrom = "${var.ml_secrets_arn}:OPENAI_API_KEY::"
@@ -108,10 +112,6 @@ module "ecs_service_agent" {
         {
           name      = "NEUROAGENT_TOOLS__WEB_SEARCH__TAVILY_API_KEY"
           valueFrom = "${var.ml_secrets_arn}:TAVILY_API_KEY::"
-        },
-        {
-          name      = "NEUROAGENT_DB__PASSWORD"
-          valueFrom = "${module.ml_rds_postgres.db_instance_master_user_secret_arn}:password::"
         },
       ]
       readonly_root_filesystem = false
