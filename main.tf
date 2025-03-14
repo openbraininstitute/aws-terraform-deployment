@@ -67,6 +67,7 @@ module "cs" {
   redirect_hostnames = ["openbrainplatform.org", "openbrainplatform.com"]
 
   jupyterhub_secrets_arn = local.jupyterhub_secrets_arn
+  jupyterhub_ec2_type    = var.jupyterhub_ec2_type
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 }

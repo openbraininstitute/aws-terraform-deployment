@@ -56,3 +56,8 @@ variable "jupyterhub_secrets_arn" {
   description = "ARN of the JupyterHub secrets manager"
   sensitive   = false
 }
+
+variable "jupyterhub_ec2_type" {
+  type        = string
+  description = "JupyterHub service Amazon EC2 Instance type"
+}
