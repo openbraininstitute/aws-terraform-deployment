@@ -158,6 +158,11 @@ module "ecs_service_agent" {
     log-policy = aws_iam_policy.ml_ecs_agent_log_policy.arn
   }
 
+  # Add the S3 policy to the task role (not execution role)
+  tasks_iam_role_policies = {
+    s3-policy = aws_iam_policy.ml_ecs_agent_s3_policy.arn
+  }
+
   service_connect_configuration = {
     namespace = aws_service_discovery_http_namespace.ml_agent.arn
     service = {
@@ -261,5 +266,25 @@ resource "aws_iam_policy" "ml_ecs_agent_log_policy" {
     ]
     }
   )
+  tags = var.tags
+}
+
+resource "aws_iam_policy" "ml_ecs_agent_s3_policy" {
+  name = "ml_ecs_agent_s3_access"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:*"
+        ]
+        Resource = [
+          module.s3_bucket.s3_bucket_arn,
+          "${module.s3_bucket.s3_bucket_arn}/*"
+        ]
+      }
+    ]
+  })
   tags = var.tags
 }
