@@ -3,6 +3,7 @@ is_production                        = true
 terraform_remote_state_bucket_name   = "obi-tfstate-production"
 cell_svc_bucket_name                 = "sbo-cell-svc-perf-test"
 ml_paper_bucket_name                 = "ml-paper-bucket"
+ml_neuroagent_bucket_name            = "ml-neuroagent-production"
 nexus_domain_name                    = "openbluebrain.com"
 nexus_obp_bucket_name                = "nexus-obp-production"
 nexus_ship_bucket_name               = "nexus-ship-production"

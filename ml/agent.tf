@@ -1,3 +1,17 @@
+module "s3_bucket" {
+  source = "terraform-aws-modules/s3-bucket/aws"
+
+  bucket = var.neuroagent_bucket_name
+  acl    = "private"
+
+  control_object_ownership = true
+  object_ownership         = "ObjectWriter"
+
+  versioning = {
+    enabled = false
+  }
+}
+
 #tfsec:ignore:aws-ec2-no-public-egress-sgr
 module "ecs_service_agent" {
   source = "terraform-aws-modules/ecs/aws//modules/service"
@@ -38,62 +52,6 @@ module "ecs_service_agent" {
       ]
       environment = [
         {
-          name  = "NEUROAGENT_TOOLS__LITERATURE__URL"
-          value = "http://${var.private_alb_dns}:3000/api/literature/retrieval/"
-        },
-        {
-          name  = "NEUROAGENT_KNOWLEDGE_GRAPH__BASE_URL"
-          value = "https://${var.nexus_domain_name}/api/nexus/v1"
-        },
-        {
-          name  = "NEUROAGENT_AGENT__MODEL"
-          value = "simple"
-        },
-        {
-          name  = "NEUROAGENT_OPENAI__MODEL"
-          value = "gpt-4o-mini"
-        },
-        {
-          name  = "NEUROAGENT_TOOLS__MORPHO__SEARCH_SIZE"
-          value = "10"
-        },
-        {
-          name  = "NEUROAGENT_TOOLS__KG_MORPHO__SEARCH_SIZE"
-          value = "6"
-        },
-        {
-          name  = "NEUROAGENT_TOOLS__TRACE__SEARCH_SIZE"
-          value = "10"
-        },
-        {
-          name  = "NEUROAGENT_TOOLS__LITERATURE__RERANKER_K"
-          value = "8"
-        },
-        {
-          name  = "NEUROAGENT_KEYCLOAK__VALIDATE_TOKEN"
-          value = "true"
-        },
-        {
-          name  = "NEUROAGENT_KEYCLOAK__ISSUER"
-          value = "https://${var.primary_domain}/auth/realms/SBO"
-        },
-        {
-          name  = "NEUROAGENT_KNOWLEDGE_GRAPH__DOWNLOAD_HIERARCHY"
-          value = "true"
-        },
-        {
-          name  = "NEUROAGENT_KEYCLOAK__CLIENT_ID"
-          value = "obp-ml-agent"
-        },
-        {
-          name  = "NEUROAGENT_KEYCLOAK__USERNAME"
-          value = "sbo-ml"
-        },
-        {
-          name  = "NEUROAGENT_DB__PREFIX"
-          value = "postgresql://"
-        },
-        {
           name  = "NEUROAGENT_DB__HOST"
           value = module.ml_rds_postgres.db_instance_address
         },
@@ -102,8 +60,20 @@ module "ecs_service_agent" {
           value = module.ml_rds_postgres.db_instance_port
         },
         {
+          name  = "NEUROAGENT_DB__PREFIX"
+          value = "postgresql+asyncpg://"
+        },
+        {
           name  = "NEUROAGENT_DB__USER"
           value = module.ml_rds_postgres.db_instance_username
+        },
+        {
+          name  = "NEUROAGENT_KEYCLOAK__ISSUER"
+          value = "https://${var.primary_domain}/auth/realms/SBO"
+        },
+        {
+          name  = "NEUROAGENT_KNOWLEDGE_GRAPH__BASE_URL"
+          value = "https://${var.nexus_domain_name}/api/nexus/v1"
         },
         {
           name  = "NEUROAGENT_MISC__APPLICATION_PREFIX"
@@ -111,29 +81,33 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_MISC__CORS_ORIGINS"
-          value = "https://openbrainplatform.org, https://bbp.epfl.ch"
+          value = "https://${var.primary_domain},https://www.${var.primary_domain}"
         },
         {
-          name  = "NEUROAGENT_KNOWLEDGE_GRAPH__BR_SAVING_PATH"
-          value = "/brainregion_hierarchy.json"
+          name  = "NEUROAGENT_OPENAI__MODEL"
+          value = "gpt-4o-mini"
         },
         {
-          name  = "NEUROAGENT_KNOWLEDGE_GRAPH__CT_SAVING_PATH"
-          value = "/celltypes_hierarchy.json"
+          name  = "NEUROAGENT_STORAGE__BUCKET_NAME"
+          value = var.neuroagent_bucket_name
+        },
+        {
+          name  = "NEUROAGENT_TOOLS__LITERATURE__URL"
+          value = "http://${var.private_alb_dns}:3000/api/literature/retrieval/"
         },
       ]
       secrets = [
-        {
-          name      = "NEUROAGENT_OPENAI__TOKEN"
-          valueFrom = "${var.ml_secrets_arn}:OPENAI_API_KEY::"
-        },
         {
           name      = "NEUROAGENT_DB__PASSWORD"
           valueFrom = "${module.ml_rds_postgres.db_instance_master_user_secret_arn}:password::"
         },
         {
-          name      = "NEUROAGENT_KEYCLOAK__PASSWORD"
-          valueFrom = "${var.ml_secrets_arn}:KEYCLOAK_PASSWORD::"
+          name      = "NEUROAGENT_OPENAI__TOKEN"
+          valueFrom = "${var.ml_secrets_arn}:OPENAI_API_KEY::"
+        },
+        {
+          name      = "NEUROAGENT_TOOLS__WEB_SEARCH__TAVILY_API_KEY"
+          valueFrom = "${var.ml_secrets_arn}:TAVILY_API_KEY::"
         },
       ]
       readonly_root_filesystem = false
@@ -142,6 +116,11 @@ module "ecs_service_agent" {
 
   task_exec_iam_role_policies = {
     log-policy = aws_iam_policy.ml_ecs_agent_log_policy.arn
+  }
+
+  # Add the S3 policy to the task role (not execution role)
+  tasks_iam_role_policies = {
+    s3-policy = aws_iam_policy.ml_ecs_agent_s3_policy.arn
   }
 
   service_connect_configuration = {
@@ -247,5 +226,25 @@ resource "aws_iam_policy" "ml_ecs_agent_log_policy" {
     ]
     }
   )
+  tags = var.tags
+}
+
+resource "aws_iam_policy" "ml_ecs_agent_s3_policy" {
+  name = "ml_ecs_agent_s3_access"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:*"
+        ]
+        Resource = [
+          module.s3_bucket.s3_bucket_arn,
+          "${module.s3_bucket.s3_bucket_arn}/*"
+        ]
+      }
+    ]
+  })
   tags = var.tags
 }
