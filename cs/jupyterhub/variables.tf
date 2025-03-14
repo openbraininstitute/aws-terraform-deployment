@@ -29,6 +29,11 @@ variable "jupyterhub_private_subnet" {
   type = string
 }
 
+variable "jupyterhub_ec2_type" {
+  type        = string
+  description = "JupyterHub service Amazon EC2 Instance type"
+}
+
 variable "jupyterhub_secrets_arn" {
   type        = string
   description = "ARN of the JupyterHub secrets manager"

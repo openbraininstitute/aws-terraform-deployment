@@ -14,6 +14,7 @@ virtual_lab_manager_docker_image_url = "public.ecr.aws/openbraininstitute/virtua
 cell_svc_docker_image_url            = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.2.1-prod"
 is_nexus_openscience_running         = false
 is_nexus_obp_running                 = true
+jupyterhub_ec2_type                  = "c7i.large"
 
 bluenaas_docker_image_url = "bluebrain/blue-naas-single-cell:staging"
 bluenaas_task_size = {

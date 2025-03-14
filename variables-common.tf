@@ -147,6 +147,12 @@ variable "keycloak_task_size" {
   description = "CPU and memory limit for Keycloak's ECS task (number or string format)"
 }
 
+variable "jupyterhub_ec2_type" {
+  type        = string
+  description = "JupyterHub service Amazon EC2 Instance type"
+  default     = "t3.small"
+}
+
 ### HPC ###
 variable "hpc_resource_provisioner_container_version" {
   type        = string
