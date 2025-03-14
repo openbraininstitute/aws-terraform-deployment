@@ -61,7 +61,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_DB__PREFIX"
-          value = "postgresql://"
+          value = "postgresql+asyncpg://"
         },
         {
           name  = "NEUROAGENT_DB__USER"
@@ -81,7 +81,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_MISC__CORS_ORIGINS"
-          value = "https://openbrainplatform.org, https://bbp.epfl.ch"
+          value = "https://openbraininstitute.org,https://staging.openbraininstitute.org"
         },
         {
           name  = "NEUROAGENT_OPENAI__MODEL"
