@@ -76,10 +76,6 @@ module "ecs_service_agent" {
           value = "https://${var.nexus_domain_name}/api/nexus/v1"
         },
         {
-          name  = "NEUROAGENT_KNOWLEDGE_GRAPH__DOWNLOAD_HIERARCHY"
-          value = "true"
-        },
-        {
           name  = "NEUROAGENT_MISC__APPLICATION_PREFIX"
           value = "/api/agent"
         },
