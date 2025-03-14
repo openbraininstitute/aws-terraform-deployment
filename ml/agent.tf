@@ -81,7 +81,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_MISC__CORS_ORIGINS"
-          value = "https://openbraininstitute.org,https://www.openbraininstitute.org,https://staging.openbraininstitute.org,https://www.staging.openbraininstitute.org"
+          value = "https://${var.primary_domain},https://www.${var.primary_domain}"
         },
         {
           name  = "NEUROAGENT_OPENAI__MODEL"
