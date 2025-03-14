@@ -88,7 +88,7 @@ module "ml" {
   dockerhub_credentials_arn = local.dockerhub_bbpbuildbot_secret_arn
   backend_image_tag         = "scholarag-v0.0.10"
   etl_image_tag             = "scholaretl-v0.0.8"
-  agent_image_tag           = "neuroagent-v0.3.3"
+  agent_image_tag           = "neuroagent-v0.4.1"
   grobid_image_url          = "lfoppiano/grobid:0.8.0"
 
   paper_bucket_name      = var.ml_paper_bucket_name
