@@ -1,8 +1,13 @@
 #!/bin/bash
 
+EFS_MOUNT_OPS="nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
+
 sudo apt update
 sudo apt install nfs-common nginx nodejs jq npm -y
-sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${HOMEDIRS_EFS}:/ ${HOMEDIRS_PATH}
+sudo mount -t nfs4 -o $${EFS_MOUNT_OPS} ${HOMEDIRS_EFS}:/ ${HOMEDIRS_PATH}
+
+sudo echo -n "${HOMEDIRS_EFS}:/ ${HOMEDIRS_PATH} nfs4 $${EFS_MOUNT_OPS} 0 0" >> /etc/fstab
+sudo mount -a
 
 sudo systemctl enable nginx
 sudo systemctl stop nginx
