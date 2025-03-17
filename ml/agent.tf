@@ -188,12 +188,6 @@ resource "aws_lb_listener_rule" "generic_private_agent_rule" {
       values = ["/api/agent/*"]
     }
   }
-
-  condition {
-    source_ip {
-      values = [var.vpc_cidr_block]
-    }
-  }
 }
 
 resource "aws_lb_target_group" "generic_private_ml_target_group_agent" {
