@@ -201,6 +201,12 @@ variable "rds_storage_type" {
 
 }
 
+variable "rds_db_name" {
+  description = "Name of the database."
+  default     = "ml_postgres"
+
+}
+
 variable "github_repos" {
   description = "List of github repos that should be allowed to use ML's ECR"
   type        = list(string)
