@@ -26,7 +26,7 @@ module "ml_rds_postgres" {
   allocated_storage = var.rds_allocated_storage
   storage_type      = var.rds_storage_type
 
-  db_name                     = "ml_postgres"
+  db_name                     = var.rds_db_name
   username                    = var.rds_user
   manage_master_user_password = true
   port                        = var.rds_port

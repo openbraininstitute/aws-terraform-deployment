@@ -56,6 +56,10 @@ module "ecs_service_agent" {
           value = module.ml_rds_postgres.db_instance_address
         },
         {
+          name  = "NEUROAGENT_DB__NAME"
+          value = var.rds_db_name
+        },
+        {
           name  = "NEUROAGENT_DB__PORT"
           value = module.ml_rds_postgres.db_instance_port
         },
