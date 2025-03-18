@@ -1,9 +1,8 @@
 # Subnet for the core webapp
-# 10.0.2.0/28 is 10.0.2.0 up to 10.0.2.15 with subnet and broadcast included
 resource "aws_subnet" "core_webapp" {
   vpc_id                  = var.vpc_id
   availability_zone       = "${var.aws_region}a"
-  cidr_block              = "10.0.2.0/28"
+  cidr_block              = var.subnet_cidr_block
   map_public_ip_on_launch = false
 
   tags = {
