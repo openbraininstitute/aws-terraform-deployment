@@ -1,10 +1,10 @@
 locals {
-  clustername = "core_webapp_ecs_cluster"
-  servicename = "core_webapp_ecs_service"
+  clustername = "core_webapp_${var.key}_ecs_cluster"
+  servicename = "core_webapp_${var.key}_ecs_service"
 }
 
 resource "aws_cloudwatch_dashboard" "main" {
-  dashboard_name = "CoreWebApp"
+  dashboard_name = "CoreWebApp${title(var.key)}"
 
   dashboard_body = jsonencode({
     widgets = [
