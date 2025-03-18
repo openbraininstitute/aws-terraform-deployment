@@ -23,7 +23,7 @@ curl -L https://tljh.jupyter.org/bootstrap.py \
     --show-progress-page \
 
 sudo tljh-config set base_url ${BASE_PATH}
-sudo tljh-config set http.port 8080
+sudo tljh-config set http.port ${JUPYTERHUB_PORT}
 # limit session to 30 mins
 sudo tljh-config set services.cull.max_age 1800
 
@@ -75,9 +75,9 @@ server {
     # Prevent double slashes and recursive redirects
     rewrite ^/(.*)//+(.*)$ /\$1/\$2 permanent;
 
-    # Forward all traffic to port 8080
+    # Forward all traffic to port JUPYTERHUB_PORT
     location ${BASE_PATH} {
-        proxy_pass http://localhost:8080${BASE_PATH};
+        proxy_pass http://localhost:${JUPYTERHUB_PORT}${BASE_PATH};
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
