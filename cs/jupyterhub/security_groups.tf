@@ -57,8 +57,8 @@ resource "aws_security_group" "jupyterhub_sg" {
 resource "aws_vpc_security_group_ingress_rule" "jupyterhub_allow_http_internal" {
   security_group_id = aws_security_group.jupyterhub_sg.id
   description       = "Allow HTTP from internal"
-  from_port         = var.jupyterhub_port
-  to_port           = var.jupyterhub_port
+  from_port         = var.jupyterhub_nginx_port
+  to_port           = var.jupyterhub_nginx_port
   ip_protocol       = "tcp"
   cidr_ipv4         = data.aws_vpc.main.cidr_block
 
