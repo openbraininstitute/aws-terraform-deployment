@@ -1,5 +1,17 @@
-variable "core_webapp_log_group_name" {
-  default     = "core_webapp"
+variable "key" {
+  type        = string
+  description = "Unique key for the module instance, used as a suffix for resource names"
+  sensitive   = false
+}
+
+variable "hostname" {
+  default     = null
+  type        = string
+  description = "Hostname for the core webapp"
+  sensitive   = false
+}
+
+variable "log_group_name" {
   type        = string
   description = "The log name within cloudwatch for the core webapp"
   sensitive   = false
@@ -11,16 +23,22 @@ variable "vpc_id" {
   description = "ID of the VPC"
 }
 
-variable "core_webapp_ecs_number_of_containers" {
+variable "ecs_number_of_containers" {
   type        = number
   default     = 1
   sensitive   = false
   description = "Number of containers for the SBO core webapp"
 }
 
-variable "private_alb_https_listener_arn" {
+variable "alb_listener_arn" {
   type        = string
-  description = "nlb listener to which the https listener rule should be added"
+  description = "ALB listener to which the listener rule should be added"
+  sensitive   = false
+}
+
+variable "alb_listener_rule_priority" {
+  type        = number
+  description = "Priority of the ALB listener rule"
   sensitive   = false
 }
 
@@ -34,32 +52,28 @@ variable "vpc_cidr_block" {
   type        = string
 }
 
-variable "core_webapp_docker_image_url" {
+variable "docker_image_url" {
   type        = string
-  description = "docker image for the core webapp"
+  description = "Docker image for the core webapp"
   sensitive   = false
 }
 
 variable "route_table_id" {
   type        = string
-  description = "route table for private networks"
+  description = "Route table for private networks"
   sensitive   = false
 }
 
 variable "allowed_source_ip_cidr_blocks" {
-  type = list(string)
+  default     = null
+  type        = list(string)
+  description = "List of CIDR blocks to allow access to the webapp"
 }
 
-variable "core_webapp_secrets_arn" {
+variable "secrets_arn" {
   type        = string
-  description = "coreweb-app secrets ARN"
+  description = "Secrets ARN"
   sensitive   = false
-}
-
-variable "env_DEBUG" {
-  type        = string
-  sensitive   = false
-  description = "DEBUG environment value for the webapp"
 }
 
 variable "accounting_base_url" {
@@ -100,18 +114,18 @@ variable "env_NEXT_PUBLIC_DEPLOYMENT_ENV" {
 
 variable "env_NEXT_PUBLIC_MATOMO_URL" {
   type        = string
-  description = "matomo url to server analytics script, (this is global)"
+  description = "Matomo url to server analytics script, (this is global)"
   sensitive   = false
 }
 
 variable "env_NEXT_PUBLIC_MATOMO_CDN_URL" {
   type        = string
-  description = "matomo url to server analytics script using cdn, (this is global)"
+  description = "Matomo url to server analytics script using cdn, (this is global)"
   sensitive   = false
 }
 
 variable "env_NEXT_PUBLIC_MATOMO_SITE_ID" {
   type        = string
-  description = "matomo site id <staging | production>"
+  description = "Matomo site id <staging | production>"
   sensitive   = false
 }

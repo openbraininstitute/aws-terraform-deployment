@@ -9,3 +9,8 @@ output "ecs_service_name" {
 output "ecs_task_definition_name" {
   value = aws_ecs_task_definition.core_webapp_ecs_definition[0].family
 }
+
+output "private_lb_rule_suffix" {
+  description = "Core Web app Private Loadbalancer Rule Suffix"
+  value       = aws_lb_target_group.core_webapp_private.arn_suffix
+}

@@ -5,7 +5,7 @@ locals {
 
 resource "aws_cloudwatch_log_group" "core_webapp" {
   # TODO check if the logs can be encrypted
-  name              = var.core_webapp_log_group_name
+  name              = var.log_group_name
   skip_destroy      = false
   retention_in_days = 5
 
@@ -18,7 +18,7 @@ resource "aws_cloudwatch_log_group" "core_webapp" {
 }
 
 resource "aws_ecs_cluster" "core_webapp" {
-  name = "core_webapp_ecs_cluster"
+  name = "core_webapp_${var.key}_ecs_cluster"
 
   tags = {
     Application = "core_webapp"
@@ -32,7 +32,7 @@ resource "aws_ecs_cluster" "core_webapp" {
 
 # TODO make more strict
 resource "aws_security_group" "core_webapp_ecs_task" {
-  name        = "core_webapp_ecs_task"
+  name        = "core_webapp_${var.key}_ecs_task"
   vpc_id      = var.vpc_id
   description = "Sec group for SBO core webapp"
 
@@ -86,9 +86,9 @@ resource "aws_vpc_security_group_egress_rule" "core_webapp_allow_outgoing_udp" {
 }
 
 resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
-  count = var.core_webapp_ecs_number_of_containers > 0 ? 1 : 0
+  count = var.ecs_number_of_containers > 0 ? 1 : 0
 
-  family       = "core_webapp_task_family"
+  family       = "core_webapp_${var.key}_task_family"
   network_mode = "awsvpc"
 
   container_definitions = jsonencode([
@@ -96,9 +96,9 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
       cpu         = local.cpu
       memory      = local.memory
       networkMode = "awsvpc"
-      family      = "sbocorewebapp"
+      family      = "corewebapp"
       essential   = true
-      image       = var.core_webapp_docker_image_url
+      image       = var.docker_image_url
       name        = "core_webapp"
 
       portMappings = [
@@ -116,10 +116,6 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
         retries     = 3
       }
       environment = [
-        {
-          name  = "DEBUG"
-          value = var.env_DEBUG
-        },
         {
           name  = "ACCOUNTING_BASE_URL"
           value = var.accounting_base_url
@@ -160,33 +156,33 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
       secrets = [
         {
           name      = "KEYCLOAK_CLIENT_SECRET"
-          valueFrom = "${var.core_webapp_secrets_arn}:cognito_client_secret::"
+          valueFrom = "${var.secrets_arn}:cognito_client_secret::"
         },
         {
           name      = "NEXTAUTH_SECRET"
-          valueFrom = "${var.core_webapp_secrets_arn}:nextauth_secret::"
+          valueFrom = "${var.secrets_arn}:nextauth_secret::"
         },
         {
           name      = "KEYCLOAK_CLIENT_ID"
-          valueFrom = "${var.core_webapp_secrets_arn}:cognito_client_id::"
+          valueFrom = "${var.secrets_arn}:cognito_client_id::"
         },
         {
           name      = "MAILCHIMP_API_KEY"
-          valueFrom = "${var.core_webapp_secrets_arn}:MAILCHIMP_API_KEY::"
+          valueFrom = "${var.secrets_arn}:MAILCHIMP_API_KEY::"
         },
         {
           name      = "MAILCHIMP_AUDIENCE_ID"
-          valueFrom = "${var.core_webapp_secrets_arn}:MAILCHIMP_AUDIENCE_ID::"
+          valueFrom = "${var.secrets_arn}:MAILCHIMP_AUDIENCE_ID::"
         },
         {
           name      = "MAILCHIMP_API_SERVER"
-          valueFrom = "${var.core_webapp_secrets_arn}:MAILCHIMP_API_SERVER::"
+          valueFrom = "${var.secrets_arn}:MAILCHIMP_API_SERVER::"
         }
       ]
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = var.core_webapp_log_group_name
+          awslogs-group         = var.log_group_name
           awslogs-region        = var.aws_region
           awslogs-create-group  = "true"
           awslogs-stream-prefix = "core_webapp"
@@ -207,14 +203,13 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
 }
 
 resource "aws_ecs_service" "core_webapp_ecs_service" {
-  count = var.core_webapp_ecs_number_of_containers > 0 ? 1 : 0
+  count = var.ecs_number_of_containers > 0 ? 1 : 0
 
-  name            = "core_webapp_ecs_service"
+  name            = "core_webapp_${var.key}_ecs_service"
   cluster         = aws_ecs_cluster.core_webapp.id
   launch_type     = "FARGATE"
   task_definition = aws_ecs_task_definition.core_webapp_ecs_definition[0].arn
-  desired_count   = var.core_webapp_ecs_number_of_containers
-  #iam_role        = "${var.ecs_iam_role_name}"
+  desired_count   = var.ecs_number_of_containers
 
   load_balancer {
     target_group_arn = aws_lb_target_group.core_webapp_private.arn
@@ -234,9 +229,6 @@ resource "aws_ecs_service" "core_webapp_ecs_service" {
   ]
   # force redeployment on each tf apply
   force_new_deployment = true
-  #triggers = {
-  #  redeployment = timestamp()
-  #}
   lifecycle {
     ignore_changes = [desired_count]
   }
@@ -247,8 +239,8 @@ resource "aws_ecs_service" "core_webapp_ecs_service" {
 }
 
 resource "aws_iam_role" "ecs_core_webapp_task_execution_role" {
-  count = var.core_webapp_ecs_number_of_containers > 0 ? 1 : 0
-  name  = "core_webapp-ecsTaskExecutionRole"
+  count = var.ecs_number_of_containers > 0 ? 1 : 0
+  name  = "core_webapp_${var.key}-ecsTaskExecutionRole"
 
   assume_role_policy = <<EOF
 {
@@ -274,12 +266,12 @@ resource "aws_iam_role_policy_attachment" "ecs_core_webapp_task_execution_role_p
   role       = aws_iam_role.ecs_core_webapp_task_execution_role[0].name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 
-  count = var.core_webapp_ecs_number_of_containers > 0 ? 1 : 0
+  count = var.ecs_number_of_containers > 0 ? 1 : 0
 }
 
 resource "aws_iam_role" "ecs_core_webapp_task_role" {
-  count = var.core_webapp_ecs_number_of_containers > 0 ? 1 : 0
-  name  = "core_webapp-ecsTaskRole"
+  count = var.ecs_number_of_containers > 0 ? 1 : 0
+  name  = "core_webapp_${var.key}-ecsTaskRole"
 
   assume_role_policy = <<EOF
 {
@@ -302,7 +294,7 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_core_webapp_secrets_access_policy_attachment" {
-  count      = var.core_webapp_ecs_number_of_containers > 0 ? 1 : 0
+  count      = var.ecs_number_of_containers > 0 ? 1 : 0
   role       = aws_iam_role.ecs_core_webapp_task_execution_role[0].name
   policy_arn = aws_iam_policy.sbo_core_webapp_secrets_access.arn
 }

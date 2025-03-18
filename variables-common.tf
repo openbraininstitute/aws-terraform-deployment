@@ -61,6 +61,14 @@ variable "core_web_app_docker_image_url" {
   description = "docker image for the core-web-app"
   sensitive   = false
 }
+
+variable "core_web_app_next_docker_image_url" {
+  default     = null
+  type        = string
+  description = "docker image for the core-web-app-next"
+  sensitive   = false
+}
+
 variable "core_web_app_deployment_env" {
   default     = "production"
   type        = string

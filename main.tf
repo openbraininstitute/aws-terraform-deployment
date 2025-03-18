@@ -263,22 +263,50 @@ module "static-server" {
   alb_listener_rule_priority = 600
 }
 
-module "core_webapp" {
+module "core_webapp_main" {
   source = "./core_webapp"
 
-  core_webapp_log_group_name           = "core_webapp"
-  vpc_id                               = local.vpc_id
-  core_webapp_ecs_number_of_containers = 1
-  private_alb_https_listener_arn       = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
-  aws_region                           = local.aws_region
-  core_webapp_docker_image_url         = var.core_web_app_docker_image_url
-  route_table_id                       = local.route_table_private_subnets_id
-  allowed_source_ip_cidr_blocks        = ["0.0.0.0/0"]
-  vpc_cidr_block                       = local.vpc_cidr_block
-  core_webapp_secrets_arn              = local.core_webapp_secrets_arn
-  accounting_base_url                  = "https://${local.primary_domain}${var.accounting_base_path}"
+  key                        = "main"
+  log_group_name             = "core_webapp_main"
+  vpc_id                     = local.vpc_id
+  alb_listener_arn           = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
+  alb_listener_rule_priority = 1000
+  aws_region                 = local.aws_region
+  docker_image_url           = var.core_web_app_docker_image_url
+  route_table_id             = local.route_table_private_subnets_id
+  vpc_cidr_block             = local.vpc_cidr_block
+  secrets_arn                = local.core_webapp_secrets_arn
+  accounting_base_url        = "https://${local.primary_domain}${var.accounting_base_path}"
 
-  env_DEBUG                               = "true"
+  env_NEXTAUTH_URL                        = "https://${local.primary_domain}/api/auth"
+  env_KEYCLOAK_ISSUER                     = "https://${local.primary_domain}/auth/realms/SBO"
+  env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY  = "pk_test_51QjjHBKGUR5u3ofLgNUOpljnvy27UTTpkhwgsLiwK9xlNjnR7CZfiMjtZWMjgN7GW3eDyzMJ7Z1pIqC9LiwkfQRX00ebb5c9XI"
+  env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL = "http://${data.terraform_remote_state.common.outputs.private_alb_dns_name}:3000/api/literature"
+  env_NEXT_PUBLIC_DEPLOYMENT_ENV          = var.core_web_app_deployment_env
+  env_NEXT_PUBLIC_MATOMO_SITE_ID          = var.core_web_app_next_public_matomo_site_id
+  env_NEXT_PUBLIC_MATOMO_CDN_URL          = "https://cdn.matomo.cloud/openbraininstitute.matomo.cloud"
+  env_NEXT_PUBLIC_MATOMO_URL              = "https://openbraininstitute.matomo.cloud"
+}
+
+module "core_webapp_next" {
+  source = "./core_webapp"
+
+  count = var.core_web_app_next_docker_image_url != null ? 1 : 0
+
+  key              = "next"
+  log_group_name   = "core_webapp_next"
+  vpc_id           = local.vpc_id
+  alb_listener_arn = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
+  # The following priority has to be higher (lower number)
+  # than the priority of the main core-web-app listener rule.
+  alb_listener_rule_priority = 980
+  aws_region                 = local.aws_region
+  docker_image_url           = var.core_web_app_next_docker_image_url
+  route_table_id             = local.route_table_private_subnets_id
+  vpc_cidr_block             = local.vpc_cidr_block
+  secrets_arn                = local.core_webapp_secrets_arn
+  accounting_base_url        = "https://${local.primary_domain}${var.accounting_base_path}"
+
   env_NEXTAUTH_URL                        = "https://${local.primary_domain}/api/auth"
   env_KEYCLOAK_ISSUER                     = "https://${local.primary_domain}/auth/realms/SBO"
   env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY  = "pk_test_51QjjHBKGUR5u3ofLgNUOpljnvy27UTTpkhwgsLiwK9xlNjnR7CZfiMjtZWMjgN7GW3eDyzMJ7Z1pIqC9LiwkfQRX00ebb5c9XI"
