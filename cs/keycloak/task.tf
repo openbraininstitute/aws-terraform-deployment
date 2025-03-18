@@ -88,7 +88,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
         },
         {
           name  = "JAVA_OPTS_APPEND"
-          value = "-Xms512m -Xmx2g"
+          value = "-XX:MaxRAMPercentage=75.0"
         },
         {
           name  = "PROXY_ADDRESS_FORWARDING"
