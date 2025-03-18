@@ -1,7 +1,7 @@
 # Configure ALB target group
 resource "aws_lb_target_group" "private_jupyterhub_target_group" {
   name        = "private-jupyterhub-target-group"
-  port        = var.jupyterhub_port
+  port        = var.jupyterhub_nginx_port
   protocol    = "HTTP"
   target_type = "instance"
   vpc_id      = var.vpc_id
@@ -11,7 +11,7 @@ resource "aws_lb_target_group" "private_jupyterhub_target_group" {
   }
   health_check {
     path                = var.jupyterhub_base_path
-    port                = var.jupyterhub_port
+    port                = var.jupyterhub_nginx_port
     protocol            = "HTTP"
     interval            = 30
     timeout             = 5
@@ -24,7 +24,7 @@ resource "aws_lb_target_group" "private_jupyterhub_target_group" {
 resource "aws_lb_target_group_attachment" "private_jupyterhub_target_group_attachment" {
   target_group_arn = aws_lb_target_group.private_jupyterhub_target_group.arn
   target_id        = aws_instance.jupyterhub_server.id
-  port             = var.jupyterhub_port
+  port             = var.jupyterhub_nginx_port
 }
 
 resource "aws_lb_listener_rule" "private_jupyterhub_https" {

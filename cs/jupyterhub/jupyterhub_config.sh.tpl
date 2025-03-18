@@ -1,8 +1,16 @@
 #!/bin/bash
 
+EFS_MOUNT_OPS="nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
+
 sudo apt update
 sudo apt install nfs-common nginx nodejs jq npm -y
-sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport ${HOMEDIRS_EFS}:/ ${HOMEDIRS_PATH}
+sudo mount -t nfs4 -o $${EFS_MOUNT_OPS} ${HOMEDIRS_EFS}:/ ${HOMEDIRS_PATH}
+
+# clean up all EFS jupyter users homedirs
+sudo rm -rf ${HOMEDIRS_PATH}/jupyter-*
+
+sudo echo -n "${HOMEDIRS_EFS}:/ ${HOMEDIRS_PATH} nfs4 $${EFS_MOUNT_OPS} 0 0" >> /etc/fstab
+sudo mount -a
 
 sudo systemctl enable nginx
 sudo systemctl stop nginx
@@ -15,7 +23,7 @@ curl -L https://tljh.jupyter.org/bootstrap.py \
     --show-progress-page \
 
 sudo tljh-config set base_url ${BASE_PATH}
-sudo tljh-config set http.port 8080
+sudo tljh-config set http.port ${JUPYTERHUB_PORT}
 # limit session to 30 mins
 sudo tljh-config set services.cull.max_age 1800
 
@@ -67,9 +75,9 @@ server {
     # Prevent double slashes and recursive redirects
     rewrite ^/(.*)//+(.*)$ /\$1/\$2 permanent;
 
-    # Forward all traffic to port 8080
+    # Forward all traffic to port JUPYTERHUB_PORT
     location ${BASE_PATH} {
-        proxy_pass http://localhost:8080${BASE_PATH};
+        proxy_pass http://localhost:${JUPYTERHUB_PORT}${BASE_PATH};
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
@@ -102,16 +110,16 @@ export JULIA_DEPOT_PATH=/opt/tljh/user/share/julia/
 export JUPYTER_DATA_DIR=/opt/tljh/user/share/jupyter/
 
 declare -A JULIA_PACKAGES=(
-  ["IJulia"]="1.26.0"
-  ["BenchmarkTools"]="1.5.0"
-  ["DifferentialEquations"]="7.2.0"
   ["JSON"]="0.21.4"
+  ["Symbolics"]="4.3.0"
+  ["DifferentialEquations"]="7.2.0"
   ["ModelingToolkit"]="8.11.0"
   ["Plots"]="1.31.1"
-  ["Symbolics"]="4.3.0"
-  ["WebIO"]="0.8.21"
   ["Interact"]="0.10.5"
+  ["WebIO"]="0.8.21"
+  ["IJulia"]="1.26.0"
   ["PyCall"]="1.96.4"
+  ["BenchmarkTools"]="1.5.0"
 )
 
 # Install packages
