@@ -337,15 +337,15 @@ module "github_core_webapp_next_ecs_redeploy_role" {
   source = "./github_ecs_redeploy_role"
 
   # for now we only want such a redeploy role in staging
-  count = var.is_staging ? 1 : 0
+  count = var.is_staging && var.core_web_app_next_docker_image_url != null ? 1 : 0
 
   account_id               = local.account_id
   aws_region               = local.aws_region
   github_organisation      = local.github_organisation
   repo_name                = "core-web-app"
-  ecs_cluster_name         = module.core_webapp_next.ecs_cluster_name
-  ecs_service_name         = module.core_webapp_next.ecs_service_name
-  ecs_task_definition_name = module.core_webapp_next.ecs_task_definition_name
+  ecs_cluster_name         = module.core_webapp_next[0].ecs_cluster_name
+  ecs_service_name         = module.core_webapp_next[0].ecs_service_name
+  ecs_task_definition_name = module.core_webapp_next[0].ecs_task_definition_name
   # The ARN of the generated role is needed in GH and is part of the outputs.
 }
 
@@ -524,7 +524,7 @@ module "dashboards" {
     "NexusDelta"         = module.nexus.private_delta_lb_rule_suffix
     "BlueNaaS"           = module.bluenaas_svc.private_lb_rule_suffix
     "CoreWebAppMain"     = module.core_webapp_main.private_lb_rule_suffix
-    "CoreWebAppNext"     = module.core_webapp_next.private_lb_rule_suffix
+    "CoreWebAppNext"     = module.core_webapp_next[0].private_lb_rule_suffix
     "VLabManager"        = module.virtual_lab_manager.private_arn_suffix
   }
 }
