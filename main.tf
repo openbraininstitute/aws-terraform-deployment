@@ -299,6 +299,7 @@ module "core_webapp_next" {
   alb_listener_arn = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
   # The following priority has to be higher (lower number)
   # than the priority of the main core-web-app listener rule.
+  hostname                   = "next.staging.openbraininstitute.org"
   alb_listener_rule_priority = 980
   aws_region                 = local.aws_region
   docker_image_url           = var.core_web_app_next_docker_image_url
