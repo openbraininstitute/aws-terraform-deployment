@@ -1,6 +1,6 @@
 resource "aws_iam_policy" "sbo_core_webapp_secrets_access" {
-  name        = "sbo-core-webapp-secrets-access-policy"
-  description = "Policy that gives access to the SBO core webapp secrets"
+  name        = "core-webapp-${var.key}-secrets-access-policy"
+  description = "Policy that gives access to the core-webapp-${var.key} secrets"
 
   policy = <<EOF
 {
@@ -13,7 +13,7 @@ resource "aws_iam_policy" "sbo_core_webapp_secrets_access" {
         "secretsmanager:GetSecretValue"
       ],
       "Resource": [
-        "${var.core_webapp_secrets_arn}"
+        "${var.secrets_arn}"
       ]
     }
   ]

@@ -263,22 +263,22 @@ module "static-server" {
   alb_listener_rule_priority = 600
 }
 
-module "core_webapp" {
+module "core_webapp_main" {
   source = "./core_webapp"
 
-  core_webapp_log_group_name           = "core_webapp"
-  vpc_id                               = local.vpc_id
-  core_webapp_ecs_number_of_containers = 1
-  private_alb_https_listener_arn       = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
-  aws_region                           = local.aws_region
-  core_webapp_docker_image_url         = var.core_web_app_docker_image_url
-  route_table_id                       = local.route_table_private_subnets_id
-  allowed_source_ip_cidr_blocks        = ["0.0.0.0/0"]
-  vpc_cidr_block                       = local.vpc_cidr_block
-  core_webapp_secrets_arn              = local.core_webapp_secrets_arn
-  accounting_base_url                  = "https://${local.primary_domain}${var.accounting_base_path}"
+  key                           = "main"
+  log_group_name                = "core_webapp_main"
+  vpc_id                        = local.vpc_id
+  alb_listener_arn              = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
+  alb_listener_rule_priority    = 1000
+  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
+  aws_region                    = local.aws_region
+  docker_image_url              = var.core_web_app_docker_image_url
+  route_table_id                = local.route_table_private_subnets_id
+  vpc_cidr_block                = local.vpc_cidr_block
+  secrets_arn                   = local.core_webapp_secrets_arn
+  accounting_base_url           = "https://${local.primary_domain}${var.accounting_base_path}"
 
-  env_DEBUG                               = "true"
   env_NEXTAUTH_URL                        = "https://${local.primary_domain}/api/auth"
   env_KEYCLOAK_ISSUER                     = "https://${local.primary_domain}/auth/realms/SBO"
   env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY  = "pk_test_51QjjHBKGUR5u3ofLgNUOpljnvy27UTTpkhwgsLiwK9xlNjnR7CZfiMjtZWMjgN7GW3eDyzMJ7Z1pIqC9LiwkfQRX00ebb5c9XI"
@@ -289,7 +289,38 @@ module "core_webapp" {
   env_NEXT_PUBLIC_MATOMO_URL              = "https://openbraininstitute.matomo.cloud"
 }
 
-module "github_core_webapp_ecs_redeploy_role" {
+module "core_webapp_next" {
+  source = "./core_webapp"
+
+  count = var.is_staging ? 1 : 0
+
+  key              = "next"
+  log_group_name   = "core_webapp_next"
+  vpc_id           = local.vpc_id
+  alb_listener_arn = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
+  # The following priority has to be higher (lower number)
+  # than the priority of the main core-web-app listener rule.
+  hostname                      = "next.staging.openbraininstitute.org"
+  alb_listener_rule_priority    = 980
+  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
+  aws_region                    = local.aws_region
+  docker_image_url              = var.core_web_app_next_docker_image_url
+  route_table_id                = local.route_table_private_subnets_id
+  vpc_cidr_block                = local.vpc_cidr_block
+  secrets_arn                   = local.core_webapp_secrets_arn
+  accounting_base_url           = "https://${local.primary_domain}${var.accounting_base_path}"
+
+  env_NEXTAUTH_URL                        = "https://${local.primary_domain}/api/auth"
+  env_KEYCLOAK_ISSUER                     = "https://${local.primary_domain}/auth/realms/SBO"
+  env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY  = "pk_test_51QjjHBKGUR5u3ofLgNUOpljnvy27UTTpkhwgsLiwK9xlNjnR7CZfiMjtZWMjgN7GW3eDyzMJ7Z1pIqC9LiwkfQRX00ebb5c9XI"
+  env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL = "http://${data.terraform_remote_state.common.outputs.private_alb_dns_name}:3000/api/literature"
+  env_NEXT_PUBLIC_DEPLOYMENT_ENV          = var.core_web_app_deployment_env
+  env_NEXT_PUBLIC_MATOMO_SITE_ID          = var.core_web_app_next_public_matomo_site_id
+  env_NEXT_PUBLIC_MATOMO_CDN_URL          = "https://cdn.matomo.cloud/openbraininstitute.matomo.cloud"
+  env_NEXT_PUBLIC_MATOMO_URL              = "https://openbraininstitute.matomo.cloud"
+}
+
+module "github_core_webapp_main_ecs_redeploy_role" {
   source = "./github_ecs_redeploy_role"
 
   # for now we only want such a redeploy role in staging
@@ -299,9 +330,25 @@ module "github_core_webapp_ecs_redeploy_role" {
   aws_region               = local.aws_region
   github_organisation      = local.github_organisation
   repo_name                = "core-web-app"
-  ecs_cluster_name         = module.core_webapp.ecs_cluster_name
-  ecs_service_name         = module.core_webapp.ecs_service_name
-  ecs_task_definition_name = module.core_webapp.ecs_task_definition_name
+  ecs_cluster_name         = module.core_webapp_main.ecs_cluster_name
+  ecs_service_name         = module.core_webapp_main.ecs_service_name
+  ecs_task_definition_name = module.core_webapp_main.ecs_task_definition_name
+  # The ARN of the generated role is needed in GH and is part of the outputs.
+}
+
+module "github_core_webapp_next_ecs_redeploy_role" {
+  source = "./github_ecs_redeploy_role"
+
+  # for now we only want such a redeploy role in staging
+  count = var.is_staging ? 1 : 0
+
+  account_id               = local.account_id
+  aws_region               = local.aws_region
+  github_organisation      = local.github_organisation
+  repo_name                = "core-web-app"
+  ecs_cluster_name         = module.core_webapp_next[0].ecs_cluster_name
+  ecs_service_name         = module.core_webapp_next[0].ecs_service_name
+  ecs_task_definition_name = module.core_webapp_next[0].ecs_task_definition_name
   # The ARN of the generated role is needed in GH and is part of the outputs.
 }
 
@@ -479,7 +526,8 @@ module "dashboards" {
     "NexusFusion"        = module.nexus.private_fusion_lb_rule_suffix
     "NexusDelta"         = module.nexus.private_delta_lb_rule_suffix
     "BlueNaaS"           = module.bluenaas_svc.private_lb_rule_suffix
-    "CoreWebApp"         = module.core_webapp.private_lb_rule_suffix
+    "CoreWebAppMain"     = module.core_webapp_main.private_lb_rule_suffix
+    "CoreWebAppNext"     = module.core_webapp_next[0].private_lb_rule_suffix
     "VLabManager"        = module.virtual_lab_manager.private_arn_suffix
   }
 }

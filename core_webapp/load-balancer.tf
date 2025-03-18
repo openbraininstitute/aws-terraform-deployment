@@ -1,13 +1,10 @@
 resource "aws_lb_target_group" "core_webapp_private" {
   #ts:skip=AC_AWS_0492
-  name        = "core-webapp-private"
+  name        = "core-webapp-${var.key}-private"
   port        = 8000
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = var.vpc_id
-  #lifecycle {
-  #  create_before_destroy = true
-  #}
   health_check {
     enabled = true
     // TODO Replace with a health check endpoint for core web app once implemented
@@ -22,8 +19,8 @@ resource "aws_lb_target_group" "core_webapp_private" {
 }
 
 resource "aws_lb_listener_rule" "private_core_webapp" {
-  listener_arn = var.private_alb_https_listener_arn
-  priority     = 1000
+  listener_arn = var.alb_listener_arn
+  priority     = var.alb_listener_rule_priority
 
   action {
     type             = "forward"
@@ -33,6 +30,15 @@ resource "aws_lb_listener_rule" "private_core_webapp" {
   condition {
     source_ip {
       values = var.allowed_source_ip_cidr_blocks
+    }
+  }
+
+  dynamic "condition" {
+    for_each = var.hostname != null ? [1] : []
+    content {
+      host_header {
+        values = [var.hostname]
+      }
     }
   }
 
