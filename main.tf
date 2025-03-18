@@ -291,7 +291,7 @@ module "core_webapp_main" {
 module "core_webapp_next" {
   source = "./core_webapp"
 
-  count = var.core_web_app_next_docker_image_url != null ? 1 : 0
+  count = var.is_staging ? 1 : 0
 
   key              = "next"
   log_group_name   = "core_webapp_next"
@@ -337,7 +337,7 @@ module "github_core_webapp_next_ecs_redeploy_role" {
   source = "./github_ecs_redeploy_role"
 
   # for now we only want such a redeploy role in staging
-  count = var.is_staging && var.core_web_app_next_docker_image_url != null ? 1 : 0
+  count = var.is_staging ? 1 : 0
 
   account_id               = local.account_id
   aws_region               = local.aws_region
