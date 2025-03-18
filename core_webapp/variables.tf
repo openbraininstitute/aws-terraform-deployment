@@ -52,6 +52,12 @@ variable "vpc_cidr_block" {
   type        = string
 }
 
+variable "subnet_cidr_block" {
+  description = "CIDR block of the subnet"
+  type        = string
+  sensitive   = false
+}
+
 variable "docker_image_url" {
   type        = string
   description = "Docker image for the core webapp"
