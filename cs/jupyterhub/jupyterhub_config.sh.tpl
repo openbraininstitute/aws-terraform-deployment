@@ -6,6 +6,9 @@ sudo apt update
 sudo apt install nfs-common nginx nodejs jq npm -y
 sudo mount -t nfs4 -o $${EFS_MOUNT_OPS} ${HOMEDIRS_EFS}:/ ${HOMEDIRS_PATH}
 
+# clean up all EFS jupyter users homedirs
+sudo rm -rf ${HOMEDIRS_PATH}/jupyter-*
+
 sudo echo -n "${HOMEDIRS_EFS}:/ ${HOMEDIRS_PATH} nfs4 $${EFS_MOUNT_OPS} 0 0" >> /etc/fstab
 sudo mount -a
 
