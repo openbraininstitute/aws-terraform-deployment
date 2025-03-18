@@ -269,7 +269,7 @@ module "core_webapp_main" {
   key                           = "main"
   log_group_name                = "core_webapp_main"
   vpc_id                        = local.vpc_id
-  subnet_cidr_block             = "10.0.2.0/28"
+  subnet_cidr_block             = "10.0.21.0/28"
   alb_listener_arn              = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
   alb_listener_rule_priority    = 1000
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
@@ -298,7 +298,7 @@ module "core_webapp_next" {
   key               = "next"
   log_group_name    = "core_webapp_next"
   vpc_id            = local.vpc_id
-  subnet_cidr_block = "10.0.2.16/28"
+  subnet_cidr_block = "10.0.21.16/28"
   alb_listener_arn  = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
   # The following priority has to be higher (lower number)
   # than the priority of the main core-web-app listener rule.
