@@ -17,6 +17,10 @@ variable "primary_domain" {
   type = string
 }
 
+variable "jupyterhub_nginx_port" {
+  type = number
+}
+
 variable "jupyterhub_port" {
   type = number
 }
