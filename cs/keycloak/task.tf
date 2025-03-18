@@ -31,6 +31,16 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
           protocol      = "tcp"
         }
       ]
+      healthcheck = {
+        command = [
+          "CMD-SHELL",
+          "exec 3<>/dev/tcp/127.0.0.1/${var.keycloak_management_port};echo -e 'GET /health/ready HTTP/1.1\r\nhost: http://localhost\r\nConnection: close\r\n\r\n' >&3;if [ $? -eq 0 ]; then echo 'Healthcheck Successful';exit 0;else echo 'Healthcheck Failed';exit 1;fi;"
+        ]
+        interval    = 30
+        timeout     = 5
+        startPeriod = 120
+        retries     = 3
+      }
       environment = [
         {
           name  = "KC_HOSTNAME"

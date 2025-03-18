@@ -56,6 +56,10 @@ module "ecs_service_agent" {
           value = module.ml_rds_postgres.db_instance_address
         },
         {
+          name  = "NEUROAGENT_DB__NAME"
+          value = var.rds_db_name
+        },
+        {
           name  = "NEUROAGENT_DB__PORT"
           value = module.ml_rds_postgres.db_instance_port
         },
@@ -186,12 +190,6 @@ resource "aws_lb_listener_rule" "generic_private_agent_rule" {
   condition {
     path_pattern {
       values = ["/api/agent/*"]
-    }
-  }
-
-  condition {
-    source_ip {
-      values = [var.vpc_cidr_block]
     }
   }
 }
