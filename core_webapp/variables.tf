@@ -65,7 +65,7 @@ variable "route_table_id" {
 }
 
 variable "allowed_source_ip_cidr_blocks" {
-  default     = null
+  default     = ["0.0.0.0/0"]
   type        = list(string)
   description = "List of CIDR blocks to allow access to the webapp"
 }

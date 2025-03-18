@@ -27,12 +27,9 @@ resource "aws_lb_listener_rule" "private_core_webapp" {
     target_group_arn = aws_lb_target_group.core_webapp_private.arn
   }
 
-  dynamic "condition" {
-    for_each = var.allowed_source_ip_cidr_blocks != null ? [1] : []
-    content {
-      source_ip {
-        values = var.allowed_source_ip_cidr_blocks
-      }
+  condition {
+    source_ip {
+      values = var.allowed_source_ip_cidr_blocks
     }
   }
 
