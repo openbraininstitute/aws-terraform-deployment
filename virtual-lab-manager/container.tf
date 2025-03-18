@@ -222,6 +222,18 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         {
           name  = "STRIPE_DEVICE_NAME"
           value = "Open Brain Institute"
+        },
+        {
+          name  = "ENABLE_DISCOUNT"
+          value = "true"
+        },
+        {
+          name  = "DISCOUNT_MONTHLY_ID"
+          value = "monthly-special-launch-price"
+        },
+        {
+          name  = "DISCOUNT_YEARLY_ID"
+          value = "yearly-special-launch-price"
         }
       ]
       secrets = [

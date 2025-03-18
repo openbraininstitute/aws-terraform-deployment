@@ -41,6 +41,7 @@ resource "aws_instance" "jupyterhub_server" {
       BASE_PATH        = var.jupyterhub_base_path,
       HOMEDIRS_EFS     = aws_efs_file_system.jupyterhub_homedirs.dns_name,
       HOMEDIRS_PATH    = "/home",
+      JUPYTERHUB_PORT  = var.jupyterhub_port,
       KC_CLIENT_ID     = jsondecode(data.aws_secretsmanager_secret_version.jupyterhub_secrets.secret_string)["KC_CLIENT_ID"],
       KC_CLIENT_SECRET = jsondecode(data.aws_secretsmanager_secret_version.jupyterhub_secrets.secret_string)["KC_CLIENT_SECRET"],
       KC_REALM         = "SBO",
