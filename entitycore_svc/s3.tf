@@ -43,8 +43,8 @@ resource "aws_s3_bucket_policy" "prevent_delete" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid    = "PreventDeleteBucketAndObjects"
-        Effect = "Deny"
+        Sid       = "PreventDeleteBucketAndObjects"
+        Effect    = "Deny"
         Principal = "*"
         Action = [
           "s3:DeleteBucket",
@@ -58,8 +58,8 @@ resource "aws_s3_bucket_policy" "prevent_delete" {
         ]
       },
       {
-        Sid    = "PreventLifecycleModification"
-        Effect = "Deny"
+        Sid       = "PreventLifecycleModification"
+        Effect    = "Deny"
         Principal = "*"
         Action = [
           "s3:PutLifecycleConfiguration"

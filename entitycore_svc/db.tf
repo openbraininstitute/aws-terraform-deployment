@@ -13,11 +13,11 @@ resource "aws_db_instance" "entitycore" {
   #ts:skip=AC_AWS_0454
   #ts:skip=AC_AWS_0058
 
-  engine         = "postgres"
-  engine_version = "17"
+  engine                      = "postgres"
+  engine_version              = "17"
   allow_major_version_upgrade = true
-  multi_az       = true
-  instance_class = "db.t3.small"
+  multi_az                    = true
+  instance_class              = "db.t3.small"
 
   deletion_protection = true #tfsec:ignore:AVD-AWS-0177
   allocated_storage   = 50   # in gigabytes
