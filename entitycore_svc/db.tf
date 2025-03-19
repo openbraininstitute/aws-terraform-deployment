@@ -15,6 +15,7 @@ resource "aws_db_instance" "entitycore" {
 
   engine         = "postgres"
   engine_version = "17"
+  allow_major_version_upgrade = true
   multi_az       = true
   instance_class = "db.t3.small"
 
