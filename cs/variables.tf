@@ -30,12 +30,6 @@ variable "preferred_hostname" {
   sensitive   = false
 }
 
-variable "redirect_hostnames" {
-  type        = list(string)
-  description = "hostnames which should be redirected to the preferred hostname if there's a request for /auth"
-  sensitive   = false
-}
-
 variable "keycloak_secrets_arn" {
   type        = string
   description = "ARN of the Keycloak secrets manager"
