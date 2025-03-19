@@ -406,6 +406,10 @@ module "entitycore_svc" {
   root_path      = "/api/entitycore"
   keycloak_url   = "https://openbluebrain.com/auth/realms/SBO/"
   s3_bucket_name = var.entitycore_svc_s3_bucket_name
+  image_url      = var.entitycore_svc_image_url
+
+  db_name     = "entitycore"
+  db_username = "entitycore"
 
 }
 

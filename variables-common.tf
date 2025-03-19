@@ -187,3 +187,10 @@ variable "entitycore_svc_s3_bucket_name" {
   type        = string
   description = "S3 bucket name in which entitycore data lives."
 }
+
+variable "entitycore_svc_image_url" {
+  type        = string
+  description = "Image URL for entitycore service."
+}
+
+
