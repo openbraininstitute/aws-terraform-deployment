@@ -7,7 +7,7 @@ def do(event, context):
         authResponse = generateAllow("me", event["methodArn"])
         # FIXME get user vlab/proj
         authResponse["context"] = {
-            "SVC_VLAB": "O1_data_physiology_sep11",
+            "SVC_VLAB": "dummy-vlab-id",
             "TOKEN": token,
         }
         return authResponse
