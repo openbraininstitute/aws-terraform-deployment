@@ -14,7 +14,7 @@ resource "aws_db_instance" "entitycore" {
   #ts:skip=AC_AWS_0058
 
   engine         = "postgres"
-  engine_version = "15"
+  engine_version = "17"
   multi_az       = true
   instance_class = "db.t3.small"
 
