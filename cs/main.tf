@@ -9,7 +9,7 @@ module "jupyterhub" {
   aws_coreservices_ssh_key_id    = var.aws_coreservices_ssh_key_id
   vpc_id                         = var.vpc_id
   private_alb_https_listener_arn = var.private_alb_https_listener_arn
-  primary_domain                 = var.preferred_hostname
+  primary_domain                 = var.domain_name
   jupyterhub_private_subnet      = module.networking.jupyterhub_private_subnet
   jupyterhub_ec2_type            = var.jupyterhub_ec2_type
   jupyterhub_nginx_port          = 80
@@ -25,8 +25,8 @@ module "keycloak" {
   db_instance_class              = var.db_instance_class
   private_alb_https_listener_arn = var.private_alb_https_listener_arn
 
-  preferred_hostname = var.preferred_hostname
-  efs_mt_subnets     = module.networking.keycloak_private_subnets
+  domain_name    = var.domain_name
+  efs_mt_subnets = module.networking.keycloak_private_subnets
 
   keycloak_secrets_arn     = var.keycloak_secrets_arn
   keycloak_port            = 8081
