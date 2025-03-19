@@ -26,9 +26,7 @@ module "keycloak" {
   private_alb_https_listener_arn = var.private_alb_https_listener_arn
 
   preferred_hostname = var.preferred_hostname
-  redirect_hostnames = var.redirect_hostnames
-
-  efs_mt_subnets = module.networking.keycloak_private_subnets
+  efs_mt_subnets     = module.networking.keycloak_private_subnets
 
   keycloak_secrets_arn     = var.keycloak_secrets_arn
   keycloak_port            = 8081
