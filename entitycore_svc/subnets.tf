@@ -33,3 +33,14 @@ resource "aws_subnet" "entitycore_ecs_b" {
     Name = "entitycore_ecs_b"
   }
 }
+
+# give access to the internet for ECR
+resource "aws_route_table_association" "entitycore_ecs_a_internet_access" {
+  subnet_id      = aws_subnet.entitycore_ecs_a.id
+  route_table_id = var.internet_access_route_id
+}
+
+resource "aws_route_table_association" "entitycore_ecs_b_internet_access" {
+  subnet_id      = aws_subnet.entitycore_ecs_b.id
+  route_table_id = var.internet_access_route_id
+}
