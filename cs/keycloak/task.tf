@@ -44,7 +44,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
       environment = [
         {
           name  = "KC_HOSTNAME"
-          value = var.preferred_hostname
+          value = var.domain_name
         },
         {
           name  = "KC_DB"

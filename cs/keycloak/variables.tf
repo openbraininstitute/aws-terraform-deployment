@@ -13,10 +13,9 @@ variable "efs_mt_subnets" {
   type = list(string)
 }
 
-variable "preferred_hostname" {
-  type        = string
-  description = "preferred hostname to which requests for /auth should be redirected if the host is any of the redirect_hostnames"
-  sensitive   = false
+variable "domain_name" {
+  type      = string
+  sensitive = false
 }
 
 variable "private_alb_https_listener_arn" {
