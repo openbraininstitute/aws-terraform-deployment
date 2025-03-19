@@ -33,14 +33,3 @@ resource "aws_subnet" "entitycore_ecs_b" {
     Name = "entitycore_ecs_b"
   }
 }
-
-# give access to the internet so dockerhub can be reached
-resource "aws_route_table_association" "entitycore_ecs_a_docker_access" {
-  subnet_id      = aws_subnet.entitycore_ecs_a.id
-  route_table_id = var.internet_access_route_id
-}
-
-resource "aws_route_table_association" "entitycore_ecs_b_docker_access" {
-  subnet_id      = aws_subnet.entitycore_ecs_b.id
-  route_table_id = var.internet_access_route_id
-}
