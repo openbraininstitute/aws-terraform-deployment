@@ -269,6 +269,7 @@ module "core_webapp_main" {
   key                           = "main"
   log_group_name                = "core_webapp_main"
   vpc_id                        = local.vpc_id
+  subnet_cidr_block             = "10.0.21.0/28"
   alb_listener_arn              = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
   alb_listener_rule_priority    = 1000
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
@@ -294,10 +295,11 @@ module "core_webapp_next" {
 
   count = var.is_staging ? 1 : 0
 
-  key              = "next"
-  log_group_name   = "core_webapp_next"
-  vpc_id           = local.vpc_id
-  alb_listener_arn = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
+  key               = "next"
+  log_group_name    = "core_webapp_next"
+  vpc_id            = local.vpc_id
+  subnet_cidr_block = "10.0.21.16/28"
+  alb_listener_arn  = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
   # The following priority has to be higher (lower number)
   # than the priority of the main core-web-app listener rule.
   hostname                      = "next.staging.openbraininstitute.org"
@@ -310,7 +312,7 @@ module "core_webapp_next" {
   secrets_arn                   = local.core_webapp_secrets_arn
   accounting_base_url           = "https://${local.primary_domain}${var.accounting_base_path}"
 
-  env_NEXTAUTH_URL                        = "https://${local.primary_domain}/api/auth"
+  env_NEXTAUTH_URL                        = "https://next.staging.openbraininstitute.org/api/auth"
   env_KEYCLOAK_ISSUER                     = "https://${local.primary_domain}/auth/realms/SBO"
   env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY  = "pk_test_51QjjHBKGUR5u3ofLgNUOpljnvy27UTTpkhwgsLiwK9xlNjnR7CZfiMjtZWMjgN7GW3eDyzMJ7Z1pIqC9LiwkfQRX00ebb5c9XI"
   env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL = "http://${data.terraform_remote_state.common.outputs.private_alb_dns_name}:3000/api/literature"
