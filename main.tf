@@ -403,8 +403,14 @@ module "entitycore_svc" {
 
   entitycore_service_secrets_arn = local.entitycore_service_secrets_arn
 
-  root_path      = "/api/entitycore"
-  keycloak_url   = "https://${local.primary_domain}/auth/realms/SBO"
+  root_path = "/api/entitycore"
+
+  # use staging keycloak url in sandboxes
+  keycloak_url = (var.is_staging || var.is_production) ? (
+    "https://${local.primary_domain}/auth/realms/SBO/"
+    ) : (
+    "https://staging.openbraininstitute.org/auth/realms/SBO/"
+  )
   s3_bucket_name = var.entitycore_svc_s3_bucket_name
   image_url      = var.entitycore_svc_image_url
 
