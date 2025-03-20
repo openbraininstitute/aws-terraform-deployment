@@ -10,7 +10,7 @@ resource "aws_s3_bucket" "entitycore" {
 resource "aws_s3_bucket_versioning" "entitycore" {
   bucket = aws_s3_bucket.entitycore.id
   versioning_configuration {
-    status = "Enabled"
+    status = "Disabled"
   }
 }
 
