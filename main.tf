@@ -353,6 +353,12 @@ module "github_core_webapp_next_ecs_redeploy_role" {
   # The ARN of the generated role is needed in GH and is part of the outputs.
 }
 
+module "doi_redirect" {
+  source = "./redirect_link"
+
+  private_alb_https_listener_arn = local.private_alb_https_listener_arn
+}
+
 module "delegate_identity_center" {
   source = "./delegate_identity_center"
 
