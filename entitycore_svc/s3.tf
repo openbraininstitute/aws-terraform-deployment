@@ -6,7 +6,7 @@ resource "aws_s3_bucket" "entitycore" {
   }
 }
 
-# Enable versioning
+# Disable versioning until enabled in entitycore
 resource "aws_s3_bucket_versioning" "entitycore" {
   bucket = aws_s3_bucket.entitycore.id
   versioning_configuration {
