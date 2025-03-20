@@ -34,3 +34,6 @@ core_web_app_next_public_matomo_site_id    = "3"
 hpc_resource_provisioner_sbo_nexusdata_bucket = ""
 hpc_resource_provisioner_containers_bucket    = ""
 hpc_resource_provisioner_scratch_bucket       = ""
+
+entitycore_svc_s3_bucket_name = "entitycore-data-sandbox-nse-test"
+entitycore_svc_image_url      = "public.ecr.aws/openbraininstitute/entitycore:2025.3.0"
