@@ -29,7 +29,7 @@ resource "aws_iam_role" "lambda_role" {
 }
 
 resource "aws_iam_policy_attachment" "lambda_execution_attach" {
-  name       = "lambda_execution_attach"
+  name       = "doi_redirect_lambda_execution_attach"
   roles      = [aws_iam_role.lambda_role.name]
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
