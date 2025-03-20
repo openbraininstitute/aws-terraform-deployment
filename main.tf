@@ -524,7 +524,7 @@ module "dashboards" {
   aws_region = local.aws_region
 
   private_load_balancer_id = local.private_alb_https_listener_arn
-  private_load_balancer_target_suffixes = {
+  private_load_balancer_target_suffixes = merge({
     "AccountingService"  = module.accounting_svc.private_lb_rule_suffix
     "SonataCellService"  = module.cells_svc.private_lb_rule_suffix
     "KGInference"        = module.kg_inference_api.private_lb_rule_suffix
@@ -534,9 +534,8 @@ module "dashboards" {
     "NexusDelta"         = module.nexus.private_delta_lb_rule_suffix
     "BlueNaaS"           = module.bluenaas_svc.private_lb_rule_suffix
     "CoreWebAppMain"     = module.core_webapp_main.private_lb_rule_suffix
-    "CoreWebAppNext"     = module.core_webapp_next[0].private_lb_rule_suffix
     "VLabManager"        = module.virtual_lab_manager.private_arn_suffix
-  }
+  }, var.is_staging ? { "CoreWebAppNext" = module.core_webapp_next[0].private_lb_rule_suffix } : {})
 }
 
 
