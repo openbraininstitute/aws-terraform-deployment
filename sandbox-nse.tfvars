@@ -14,7 +14,7 @@ core_web_app_next_docker_image_url   = "public.ecr.aws/openbraininstitute/core-w
 virtual_lab_manager_docker_image_url = "public.ecr.aws/openbraininstitute/virtual-lab-api:20250226.1"
 cell_svc_docker_image_url            = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.1.1-prod"
 is_nexus_openscience_running         = false
-is_nexus_obp_running                 = true
+is_nexus_obp_running                 = false
 
 bluenaas_docker_image_url = "bluebrain/blue-naas-single-cell:staging"
 bluenaas_task_size = {
