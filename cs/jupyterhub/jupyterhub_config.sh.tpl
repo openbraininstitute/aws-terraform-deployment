@@ -72,6 +72,9 @@ server {
     listen 80;
     server_name ${PRIMARY_DOMAIN};
 
+    # avoid 413 errors when dealing with large notebook files
+    client_max_body_size 50M;
+
     # Prevent double slashes and recursive redirects
     rewrite ^/(.*)//+(.*)$ /\$1/\$2 permanent;
 
