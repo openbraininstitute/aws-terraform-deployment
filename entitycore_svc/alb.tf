@@ -19,7 +19,7 @@ resource "aws_lb_target_group" "entitycore_private_tg" {
 
 resource "aws_lb_listener_rule" "entitycore_private_listener_rule" {
   listener_arn = var.private_alb_listener_arn
-  priority     = 650
+  priority     = 610
 
   action {
     type             = "forward"
