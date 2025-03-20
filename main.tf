@@ -23,6 +23,7 @@ locals {
   ml_secrets_arn                   = data.terraform_remote_state.common.outputs.ml_secrets_arn
   bluenaas_service_secrets_arn     = data.terraform_remote_state.common.outputs.bluenaas_service_secrets_arn
   accounting_service_secrets_arn   = data.terraform_remote_state.common.outputs.accounting_service_secrets_arn
+  entitycore_service_secrets_arn   = data.terraform_remote_state.common.outputs.entitycore_service_secrets_arn
   hpc_slurm_secrets_arn            = data.terraform_remote_state.common.outputs.hpc_slurm_secrets_arn
   nexus_secrets_arn                = data.terraform_remote_state.common.outputs.nexus_secrets_arn
   workflow_service_secrets_arn     = data.terraform_remote_state.common.outputs.workflow_service_secrets_arn
@@ -391,6 +392,33 @@ module "billing_cost_management" {
   is_production = var.is_production
 }
 
+module "entitycore_svc" {
+  source = "./entitycore_svc"
+
+  aws_region                    = local.aws_region
+  vpc_id                        = local.vpc_id
+  private_alb_listener_arn      = local.private_alb_https_listener_arn
+  internet_access_route_id      = local.route_table_private_subnets_id
+  allowed_source_ip_cidr_blocks = [local.vpc_cidr_block]
+
+  entitycore_service_secrets_arn = local.entitycore_service_secrets_arn
+
+  root_path = "/api/entitycore"
+
+  # use staging keycloak url in sandboxes
+  keycloak_url = (var.is_staging || var.is_production) ? (
+    "https://${local.primary_domain}/auth/realms/SBO/"
+    ) : (
+    "https://staging.openbraininstitute.org/auth/realms/SBO/"
+  )
+  s3_bucket_name = var.entitycore_svc_s3_bucket_name
+  image_url      = var.entitycore_svc_image_url
+
+  db_name     = "entitycore"
+  db_username = "entitycore"
+
+}
+
 module "kg_inference_api" {
   source = "./kg-inference-api"
 
@@ -535,6 +563,7 @@ module "dashboards" {
     "BlueNaaS"           = module.bluenaas_svc.private_lb_rule_suffix
     "CoreWebAppMain"     = module.core_webapp_main.private_lb_rule_suffix
     "VLabManager"        = module.virtual_lab_manager.private_arn_suffix
+    "EntityCoreService"  = module.entitycore_svc.private_lb_rule_suffix
   }, var.is_staging ? { "CoreWebAppNext" = module.core_webapp_next[0].private_lb_rule_suffix } : {})
 }
 
