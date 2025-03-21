@@ -399,7 +399,7 @@ module "entitycore_svc" {
   vpc_id                        = local.vpc_id
   private_alb_listener_arn      = local.private_alb_https_listener_arn
   internet_access_route_id      = local.route_table_private_subnets_id
-  allowed_source_ip_cidr_blocks = [local.vpc_cidr_block]
+  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 
   entitycore_service_secrets_arn = local.entitycore_service_secrets_arn
 
