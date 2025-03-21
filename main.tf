@@ -200,7 +200,7 @@ module "bluenaas_svc" {
 
   base_path = "/api/bluenaas"
 
-  accounting_base_url = "https://${local.primary_domain}${var.accounting_base_path}"
+  accounting_base_url = "https://${local.primary_domain}${var.accounting_svc_base_path}"
 
   task_size = var.bluenaas_task_size
 }
@@ -278,7 +278,7 @@ module "core_webapp_main" {
   route_table_id                = local.route_table_private_subnets_id
   vpc_cidr_block                = local.vpc_cidr_block
   secrets_arn                   = local.core_webapp_secrets_arn
-  accounting_base_url           = "https://${local.primary_domain}${var.accounting_base_path}"
+  accounting_base_url           = "https://${local.primary_domain}${var.accounting_svc_base_path}"
 
   env_NEXTAUTH_URL                        = "https://${local.primary_domain}/api/auth"
   env_KEYCLOAK_ISSUER                     = "https://${local.primary_domain}/auth/realms/SBO"
@@ -310,7 +310,7 @@ module "core_webapp_next" {
   route_table_id                = local.route_table_private_subnets_id
   vpc_cidr_block                = local.vpc_cidr_block
   secrets_arn                   = local.core_webapp_secrets_arn
-  accounting_base_url           = "https://${local.primary_domain}${var.accounting_base_path}"
+  accounting_base_url           = "https://${local.primary_domain}${var.accounting_svc_base_path}"
 
   env_NEXTAUTH_URL                        = "https://next.staging.openbraininstitute.org/api/auth"
   env_KEYCLOAK_ISSUER                     = "https://${local.primary_domain}/auth/realms/SBO"
@@ -520,7 +520,7 @@ module "virtual_lab_manager" {
     "neurosciencegraph/data",
   ]
 
-  accounting_base_url = "https://${local.primary_domain}${var.accounting_base_path}"
+  accounting_base_url = "https://${local.primary_domain}${var.accounting_svc_base_path}"
 }
 
 module "bbp_workflow_svc" {
