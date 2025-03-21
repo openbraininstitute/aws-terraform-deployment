@@ -373,18 +373,15 @@ module "delegate_identity_center" {
 module "accounting_svc" {
   source = "./accounting_svc"
 
-  aws_region                    = local.aws_region
-  vpc_id                        = local.vpc_id
-  private_alb_listener_arn      = local.private_alb_https_listener_arn
-  internet_access_route_id      = local.route_table_private_subnets_id
-  allowed_source_ip_cidr_blocks = [local.vpc_cidr_block]
-
+  aws_region                     = local.aws_region
+  vpc_id                         = local.vpc_id
+  private_alb_listener_arn       = local.private_alb_https_listener_arn
+  internet_access_route_id       = local.route_table_private_subnets_id
+  allowed_source_ip_cidr_blocks  = [local.vpc_cidr_block]
+  docker_image_url               = var.accounting_svc_docker_image_url
   accounting_service_secrets_arn = local.accounting_service_secrets_arn
 
-  dockerhub_credentials_arn       = local.dockerhub_bbpbuildbot_secret_arn
-  dockerhub_access_iam_policy_arn = local.dockerhub_bbpbuildbot_policy_arn
-
-  root_path = var.accounting_base_path
+  root_path = var.accounting_svc_base_path
 }
 
 module "billing_cost_management" {

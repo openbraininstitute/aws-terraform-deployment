@@ -12,6 +12,7 @@ nexus_az_letter_id                   = "b"
 core_web_app_docker_image_url        = "public.ecr.aws/openbraininstitute/core-web-app:2025.03.17.2"
 virtual_lab_manager_docker_image_url = "public.ecr.aws/openbraininstitute/virtual-lab-api:2025.03.18.2"
 cell_svc_docker_image_url            = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.2.1-prod"
+accounting_svc_docker_image_url      = "public.ecr.aws/openbraininstitute/accounting-service:2025.3.0"
 is_nexus_openscience_running         = false
 is_nexus_obp_running                 = true
 jupyterhub_ec2_type                  = "c7i.4xlarge"
