@@ -54,7 +54,7 @@ resource "aws_lambda_permission" "alb_invocation" {
 
 resource "aws_lb_listener_rule" "lambda_rule" {
   listener_arn = var.private_alb_https_listener_arn
-  priority     = 5
+  priority     = var.listener_rule_priority
 
   action {
     type             = "forward"

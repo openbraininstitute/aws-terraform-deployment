@@ -357,6 +357,7 @@ module "github_core_webapp_next_ecs_redeploy_role" {
 module "doi_redirect" {
   source = "./redirect_link"
 
+  listener_rule_priority         = 50
   private_alb_https_listener_arn = local.private_alb_https_listener_arn
 }
 
