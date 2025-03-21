@@ -234,7 +234,16 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         {
           name  = "DISCOUNT_YEARLY_ID"
           value = "yearly-special-launch-price"
-        }
+        },
+        {
+          name  = "ENABLE_FREE_CREDITS"
+          value = "true"
+        },
+        {
+          name  = "VLAB_CREATION_FREE_CREDITS"
+          value = "200"
+        },
+
       ]
       secrets = [
         {
