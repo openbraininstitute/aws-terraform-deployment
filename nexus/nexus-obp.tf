@@ -83,6 +83,12 @@ module "blazegraph_obp_composite" {
 module "elasticsearch_obp" {
   source = "./elasticcloud"
 
+  providers = {
+    ec     = ec
+    ec.ec2 = ec.ec2
+  }
+
+
   aws_region               = var.aws_region
   elastic_vpc_endpoint_id  = module.networking.elastic_vpc_endpoint_id
   elastic_hosted_zone_name = module.networking.elastic_hosted_zone_name
@@ -92,7 +98,8 @@ module "elasticsearch_obp" {
   hot_node_size  = "4g"
   hot_node_count = 2
 
-  deployment_name = "nexus-obp-elasticsearch"
+  deployment_name     = "nexus-obp-elasticsearch"
+  deployment_name_ec2 = "nexus-obp-elasticsearch_ec2"
 
   aws_tags = {
     Nexus       = "elastic",
