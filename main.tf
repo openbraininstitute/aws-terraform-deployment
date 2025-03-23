@@ -112,6 +112,11 @@ module "ml" {
 module "nexus" {
   source = "./nexus"
 
+  providers = {
+    ec     = ec
+    ec.ec2 = ec.ec2
+  }
+
   aws_region         = local.aws_region
   account_id         = local.account_id
   vpc_id             = local.vpc_id
