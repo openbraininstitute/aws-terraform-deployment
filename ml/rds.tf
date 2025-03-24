@@ -33,6 +33,7 @@ module "ml_rds_postgres" {
   skip_final_snapshot         = true
 
   manage_master_user_password_rotation = true
+  master_user_password_rotation_schedule_expression = "rate(15 days)"
 
 
   vpc_security_group_ids = [aws_security_group.ml_rds.id]
