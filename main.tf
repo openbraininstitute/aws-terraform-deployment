@@ -140,6 +140,9 @@ module "nexus" {
   is_nexus_openscience_running = var.is_nexus_openscience_running
   is_nexus_obp_running         = var.is_nexus_obp_running
 
+  ec_snapshots_access_key_id        = var.ec_snapshots_access_key_id
+  ec_snapshots_s3_secret_access_key = var.ec_snapshots_s3_secret_access_key
+  ec_snapshots_s3_bucket_name       = var.ec_snapshots_s3_bucket_name
 }
 
 module "viz" {

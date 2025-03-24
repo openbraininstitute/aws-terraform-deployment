@@ -52,3 +52,26 @@ variable "hot_node_count" {
 variable "aws_tags" {
   type = map(string)
 }
+
+variable "is_production" {
+  type = bool
+}
+
+variable "create_snapshot_repository" {
+  type = bool
+}
+
+variable "ec_snapshots_access_key_id" {
+  type      = string
+  sensitive = true
+}
+
+variable "ec_snapshots_s3_bucket_name" {
+  type      = string
+  sensitive = true
+}
+
+variable "ec_snapshots_s3_secret_access_key" {
+  type      = string
+  sensitive = true
+}

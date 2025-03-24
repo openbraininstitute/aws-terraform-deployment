@@ -23,7 +23,7 @@ resource "ec_deployment" "deployment_ec2" {
     topology = {}
   }
 
-  tags = var.aws_tags
+  tags = merge(var.aws_tags, { "env" = var.is_production ? "production" : "staging", "ec_user" = "ec2" })
 }
 
 resource "ec_deployment_traffic_filter" "deployment_filter_ec2" {
