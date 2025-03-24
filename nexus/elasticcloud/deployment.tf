@@ -2,6 +2,8 @@
 # which is distributed under the MIT License
 
 resource "ec_deployment" "deployment" {
+  provider = ec
+
   name = var.deployment_name
 
   region                 = var.aws_region
@@ -26,6 +28,8 @@ resource "ec_deployment" "deployment" {
 }
 
 resource "ec_deployment_traffic_filter" "deployment_filter" {
+  provider = ec
+
   name   = "Allow traffic from AWS VPC"
   region = var.aws_region
   type   = "vpce"

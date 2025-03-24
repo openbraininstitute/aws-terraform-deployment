@@ -4,6 +4,10 @@ terraform {
       source  = "hashicorp/aws"
       version = ">= 2.7.0"
     }
+    ec = {
+      source                = "elastic/ec"
+      configuration_aliases = [ec.ec2]
+    }
   }
 }
 

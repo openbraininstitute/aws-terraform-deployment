@@ -56,6 +56,11 @@ variable "ec_apikey" {
   sensitive = true
 }
 
+variable "ec_apikey2" {
+  type      = string
+  sensitive = true
+}
+
 variable "core_web_app_docker_image_url" {
   type        = string
   description = "docker image for the core-web-app"
