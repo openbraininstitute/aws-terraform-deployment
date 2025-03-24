@@ -89,6 +89,13 @@ module "elasticsearch_openscience" {
     ec.ec2 = ec.ec2
   }
 
+  is_production              = var.is_production
+  create_snapshot_repository = false
+
+  ec_snapshots_access_key_id        = null
+  ec_snapshots_s3_bucket_name       = null
+  ec_snapshots_s3_secret_access_key = null
+
   aws_region               = var.aws_region
   elastic_vpc_endpoint_id  = module.networking.elastic_vpc_endpoint_id
   elastic_hosted_zone_name = module.networking.elastic_hosted_zone_name
