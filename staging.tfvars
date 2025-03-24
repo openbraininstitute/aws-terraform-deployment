@@ -13,6 +13,7 @@ core_web_app_docker_image_url        = "public.ecr.aws/openbraininstitute/core-w
 core_web_app_next_docker_image_url   = "public.ecr.aws/openbraininstitute/core-web-app:entitycore-migration"
 virtual_lab_manager_docker_image_url = "public.ecr.aws/openbraininstitute/virtual-lab-api:staging"
 cell_svc_docker_image_url            = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.2.1-prod"
+accounting_svc_docker_image_url      = "public.ecr.aws/openbraininstitute/accounting-service:latest"
 is_nexus_openscience_running         = false
 is_nexus_obp_running                 = true
 jupyterhub_ec2_type                  = "c7i.large"

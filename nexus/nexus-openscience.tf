@@ -84,6 +84,11 @@ module "elasticsearch_openscience" {
   source = "./elasticcloud"
   count  = var.is_production ? 1 : 0
 
+  providers = {
+    ec     = ec
+    ec.ec2 = ec.ec2
+  }
+
   aws_region               = var.aws_region
   elastic_vpc_endpoint_id  = module.networking.elastic_vpc_endpoint_id
   elastic_hosted_zone_name = module.networking.elastic_hosted_zone_name
@@ -93,7 +98,8 @@ module "elasticsearch_openscience" {
   hot_node_size  = "4g"
   hot_node_count = 2
 
-  deployment_name = "nexus-openscience-elasticsearch"
+  deployment_name     = "nexus-openscience-elasticsearch"
+  deployment_name_ec2 = "nexus-openscience-elasticsearch_ec2"
 
   aws_tags = {
     Nexus       = "elastic",

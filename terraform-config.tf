@@ -25,3 +25,8 @@ provider "aws" {
 provider "ec" {
   apikey = var.ec_apikey
 }
+
+provider "ec" {
+  alias  = "ec2"
+  apikey = var.ec_apikey2
+}
