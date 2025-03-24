@@ -96,15 +96,15 @@ module "ecs_service_agent" {
           value = var.neuroagent_bucket_name
         },
         {
-          name  = "NEUORAGENT_RATE_LIMITER__LIMIT_CHAT"
+          name  = "NEUROAGENT_RATE_LIMITER__LIMIT_CHAT"
           value = "30"
         },
         {
-          name  = "NEUORAGENT_RATE_LIMITER__REDIS_HOST"
+          name  = "NEUROAGENT_RATE_LIMITER__REDIS_HOST"
           value = aws_elasticache_cluster.ml_redis_cluster.cache_nodes[0].address
         },
         {
-          name  = "NEURAGENT_RATE_LIMITER__REDIS_PORT"
+          name  = "NEUROAGENT_RATE_LIMITER__REDIS_PORT"
           value = aws_elasticache_cluster.ml_redis_cluster.port
         },
         {
