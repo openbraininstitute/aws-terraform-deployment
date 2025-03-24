@@ -112,18 +112,23 @@ variable "virtual_lab_manager_log_group_name" {
 
 variable "virtual_lab_manager_docker_image_url" {
   type        = string
-  description = "docker image for the virtual lab manager"
+  description = "Docker image for the virtual lab manager"
   sensitive   = false
 }
 
 ### Accounting service ###
 
-variable "accounting_base_path" {
+variable "accounting_svc_docker_image_url" {
+  type        = string
+  description = "Docker image for the accounting service"
+}
+
+variable "accounting_svc_base_path" {
   default     = "/api/accounting"
   type        = string
   description = "The base path for the accounting service"
-  sensitive   = false
 }
+
 variable "coreservices_public_key" {
   type        = string
   description = "Public SSH key for the coreservices team"

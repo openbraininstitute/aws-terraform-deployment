@@ -34,13 +34,13 @@ resource "aws_subnet" "accounting_ecs_b" {
   }
 }
 
-# give access to the internet so dockerhub can be reached
-resource "aws_route_table_association" "accounting_ecs_a_docker_access" {
+# ? do we need internet access to reach image registry? If not - this to be deleted.
+resource "aws_route_table_association" "accounting_ecs_a_internet_access" {
   subnet_id      = aws_subnet.accounting_ecs_a.id
   route_table_id = var.internet_access_route_id
 }
 
-resource "aws_route_table_association" "accounting_ecs_b_docker_access" {
+resource "aws_route_table_association" "accounting_ecs_b_internet_access" {
   subnet_id      = aws_subnet.accounting_ecs_b.id
   route_table_id = var.internet_access_route_id
 }

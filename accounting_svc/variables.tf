@@ -22,17 +22,6 @@ variable "root_path" {
 variable "docker_image_url" {
   description = "Docker image for the accounting service"
   type        = string
-  default     = "bluebrain/obp-accounting-service:2025.1.0-prod"
-}
-
-variable "dockerhub_credentials_arn" {
-  description = "ARN of the secret containing the DockerHub credentials"
-  type        = string
-}
-
-variable "dockerhub_access_iam_policy_arn" {
-  description = "ARN of IAM policy to access the secret containing the DockerHub credentials"
-  type        = string
 }
 
 variable "db_name" {

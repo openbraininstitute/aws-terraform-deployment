@@ -96,10 +96,6 @@ resource "aws_ecs_task_definition" "accounting_ecs_definition" {
 
       image = var.docker_image_url
 
-      repositoryCredentials = {
-        credentialsParameter = var.dockerhub_credentials_arn
-      }
-
       essential = true
 
       portMappings = [
@@ -287,11 +283,6 @@ resource "aws_iam_policy" "ecs_task_logs_accounting" {
       }
     ]
   })
-}
-
-resource "aws_iam_role_policy_attachment" "dockerhub" {
-  role       = aws_iam_role.ecs_accounting_task_execution_role.name
-  policy_arn = var.dockerhub_access_iam_policy_arn
 }
 
 resource "aws_iam_role_policy_attachment" "secrets" {
