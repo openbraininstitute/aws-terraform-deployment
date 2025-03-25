@@ -11,7 +11,7 @@ output "nexus_domain_name" {
 }
 
 output "nexus_es_main_http_endpoint" {
-  value = module.elasticsearch_obp.http_endpoint
+  value = module.elasticsearch_obp.http_endpoint_ec2
 }
 
 output "nexus_es_openscience_http_endpoint" {
