@@ -44,10 +44,10 @@ resource "aws_secretsmanager_secret" "elastic_password_ec2" {
   recovery_window_in_days = var.secret_recovery_window_in_days
 }
 
-resource "aws_secretsmanager_secret_version" "elastic_password_ec2" {
-  secret_id = aws_secretsmanager_secret.elastic_password_ec2.id
-  secret_string = jsonencode({
-    username = "elastic",
-    password = ec_deployment.deployment_ec2.elasticsearch_password
-  })
-}
+# resource "aws_secretsmanager_secret_version" "elastic_password_ec2" {
+#   secret_id = aws_secretsmanager_secret.elastic_password_ec2.id
+#   secret_string = jsonencode({
+#     username = "elastic",
+#     password = ec_deployment.deployment_ec2.elasticsearch_password
+#   })
+# }
