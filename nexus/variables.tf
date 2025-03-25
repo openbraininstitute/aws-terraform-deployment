@@ -74,17 +74,3 @@ variable "is_nexus_obp_running" {
   type        = bool
 }
 
-variable "ec_snapshots_access_key_id" {
-  type      = string
-  sensitive = true
-}
-
-variable "ec_snapshots_s3_bucket_name" {
-  type      = string
-  sensitive = true
-}
-
-variable "ec_snapshots_s3_secret_access_key" {
-  type      = string
-  sensitive = true
-}
