@@ -11,5 +11,5 @@ output "nexus_es_main_http_endpoint" {
 }
 
 output "nexus_es_openscience_http_endpoint" {
-  value = var.is_production ? module.nexus.nexus_es_openscience_http_endpoint[0] : null
+  value = var.is_production ? module.nexus.nexus_es_openscience_http_endpoint : null
 }
