@@ -99,7 +99,6 @@ module "elasticsearch_obp" {
   hot_node_size  = "4g"
   hot_node_count = 2
 
-  deployment_name     = "nexus-obp-elasticsearch"
   deployment_name_ec2 = "nexus-obp-elasticsearch_ec2"
 
   aws_tags = {
