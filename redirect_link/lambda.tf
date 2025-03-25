@@ -13,8 +13,6 @@ resource "aws_lambda_function" "doi_redirect" {
   runtime          = "python3.11"
 }
 
-
-
 resource "aws_iam_role" "lambda_role" {
   name = "doi_redirect_lambda_execution_role"
 
@@ -28,9 +26,8 @@ resource "aws_iam_role" "lambda_role" {
   })
 }
 
-resource "aws_iam_policy_attachment" "lambda_execution_attach" {
-  name       = "doi_redirect_lambda_execution_attach"
-  roles      = [aws_iam_role.lambda_role.name]
+resource "aws_iam_role_policy_attachment" "lambda_execution_attach" {
+  role       = aws_iam_role.lambda_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
