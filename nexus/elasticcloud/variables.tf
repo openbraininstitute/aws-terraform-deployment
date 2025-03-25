@@ -14,11 +14,6 @@ variable "elastic_hosted_zone_name" {
   description = "name of the hosted zone in which the VPC endpoint exists"
 }
 
-variable "deployment_name" {
-  type        = string
-  description = "Name of the deployment in Elastic Cloud"
-}
-
 variable "deployment_name_ec2" {
   type        = string
   description = "Name of the deployment in Elastic Cloud 2"
