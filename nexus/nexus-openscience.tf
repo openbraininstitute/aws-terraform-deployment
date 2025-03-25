@@ -144,7 +144,7 @@ module "nexus_delta_openscience" {
   postgres_reader_host = module.postgres_cluster_openscience[0].reader_endpoint
 
   elasticsearch_endpoint = module.elasticsearch_openscience[0].http_endpoint_ec2
-  elastic_password_arn   = module.elasticsearch_openscience[0].elastic_user_credentials_secret_arn
+  elastic_password_arn   = module.elasticsearch_openscience[0].elastic_user_credentials_secret_arn_ec2
 
   blazegraph_endpoint           = module.blazegraph_openscience_bg[0].http_endpoint
   blazegraph_composite_endpoint = module.blazegraph_openscience_composite[0].http_endpoint

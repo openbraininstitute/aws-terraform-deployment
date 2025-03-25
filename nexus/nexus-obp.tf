@@ -142,7 +142,7 @@ module "nexus_delta_obp" {
   postgres_reader_host = module.postgres_cluster_obp.reader_endpoint
 
   elasticsearch_endpoint = module.elasticsearch_obp.http_endpoint_ec2
-  elastic_password_arn   = module.elasticsearch_obp.elastic_user_credentials_secret_arn
+  elastic_password_arn   = module.elasticsearch_obp.elastic_user_credentials_secret_arn_ec2
 
   blazegraph_endpoint           = module.blazegraph_obp_bg.http_endpoint
   blazegraph_composite_endpoint = module.blazegraph_obp_composite.http_endpoint
