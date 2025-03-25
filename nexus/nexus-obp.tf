@@ -88,12 +88,7 @@ module "elasticsearch_obp" {
     ec.ec2 = ec.ec2
   }
 
-  is_production              = var.is_production
-  create_snapshot_repository = true
-
-  ec_snapshots_access_key_id        = var.ec_snapshots_access_key_id
-  ec_snapshots_s3_bucket_name       = var.ec_snapshots_s3_bucket_name
-  ec_snapshots_s3_secret_access_key = var.ec_snapshots_s3_secret_access_key
+  is_production = var.is_production
 
   aws_region               = var.aws_region
   elastic_vpc_endpoint_id  = module.networking.elastic_vpc_endpoint_id

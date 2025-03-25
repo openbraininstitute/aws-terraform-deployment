@@ -61,21 +61,6 @@ variable "ec_apikey2" {
   sensitive = true
 }
 
-variable "ec_snapshots_access_key_id" {
-  type      = string
-  sensitive = true
-}
-
-variable "ec_snapshots_s3_bucket_name" {
-  type      = string
-  sensitive = true
-}
-
-variable "ec_snapshots_s3_secret_access_key" {
-  type      = string
-  sensitive = true
-}
-
 variable "core_web_app_docker_image_url" {
   type        = string
   description = "docker image for the core-web-app"
