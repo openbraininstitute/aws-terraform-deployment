@@ -52,6 +52,10 @@ module "ecs_service_agent" {
       ]
       environment = [
         {
+          name  = "NEUROAGENT_ACCOUNTING__BASE_URL"
+          value = "https://${var.primary_domain}/api/accounting"
+        },
+        {
           name  = "NEUROAGENT_DB__HOST"
           value = module.ml_rds_postgres.db_instance_address
         },
