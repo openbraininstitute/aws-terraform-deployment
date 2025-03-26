@@ -236,12 +236,12 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
           value = "yearly-special-launch-price"
         },
         {
-          name  = "ENABLE_FREE_CREDITS"
+          name  = "ENABLE_WELCOME_BONUS"
           value = "true"
         },
         {
-          name  = "VLAB_CREATION_FREE_CREDITS"
-          value = "200"
+          name  = "WELCOME_BONUS_CREDITS"
+          value = "100"
         },
 
       ]
