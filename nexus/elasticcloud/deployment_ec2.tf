@@ -40,7 +40,7 @@ resource "ec_deployment_traffic_filter" "deployment_filter_ec2" {
 
 #tfsec:ignore:aws-ssm-secret-use-customer-key
 resource "aws_secretsmanager_secret" "elastic_password_ec2" {
-  name                    = "nexus_nexus-obp-elasticsearch_elastic_password_ec2"
+  name                    = "${var.deployment_name_ec2}_password"
   recovery_window_in_days = var.secret_recovery_window_in_days
 }
 
