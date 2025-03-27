@@ -177,6 +177,10 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
         {
           name      = "MAILCHIMP_API_SERVER"
           valueFrom = "${var.secrets_arn}:MAILCHIMP_API_SERVER::"
+        },
+        {
+          name      = "SENTRY_DSN"
+          valueFrom = "${var.secrets_arn}:SENTRY_DSN::"
         }
       ]
       logConfiguration = {
