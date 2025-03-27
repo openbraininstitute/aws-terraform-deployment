@@ -20,8 +20,8 @@ jupyterhub_ec2_type                  = "c7i.4xlarge"
 # TODO: replace tag below with a version tag when the CI is ready
 bluenaas_docker_image_url = "bluebrain/blue-naas-single-cell:latest"
 bluenaas_task_size = {
-  cpu    = 4096
-  memory = 8192
+  cpu    = 16384
+  memory = 32768
 }
 
 keycloak_task_size = {
