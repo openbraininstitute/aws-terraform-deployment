@@ -149,7 +149,7 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         },
         {
           name  = "DEPLOYMENT_ENV"
-          value = var.virtual_lab_manager_depoloyment_env
+          value = var.virtual_lab_manager_deployment_env
         },
         {
           name  = "NEXUS_DELTA_URI"

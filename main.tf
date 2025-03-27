@@ -486,7 +486,7 @@ module "virtual_lab_manager" {
 
   ecs_number_of_containers = var.virtual_lab_manager_ecs_number_of_containers
 
-  virtual_lab_manager_depoloyment_env = "production"
+  virtual_lab_manager_deployment_env = var.deployment_env
 
   virtual_lab_manager_nexus_delta_uri = "https://${module.nexus.nexus_domain_name}/api/nexus/v1"
 

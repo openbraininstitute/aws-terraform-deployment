@@ -1,3 +1,4 @@
+deployment_env                       = "staging"
 is_staging                           = true
 is_production                        = false
 terraform_remote_state_bucket_name   = "obi-tfstate-staging"

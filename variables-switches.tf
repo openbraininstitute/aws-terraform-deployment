@@ -36,3 +36,8 @@ variable "is_staging" {
   type        = bool
   default     = false
 }
+
+variable "deployment_env" {
+  description = "The environment in which the deployment is happening (staging or production)"
+  type        = string
+}

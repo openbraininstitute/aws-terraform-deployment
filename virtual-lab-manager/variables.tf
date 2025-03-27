@@ -52,9 +52,9 @@ variable "virtual_lab_manager_postgres_user" {
   sensitive   = false
 }
 
-variable "virtual_lab_manager_depoloyment_env" {
+variable "virtual_lab_manager_deployment_env" {
   type        = string
-  description = "deployment env, oneOf<'dev' | 'test' | 'production'>"
+  description = "deployment env, oneOf<'staging' | 'production'>"
   sensitive   = false
 }
 
