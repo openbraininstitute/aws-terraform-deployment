@@ -173,9 +173,17 @@ variable "virtual_lab_manager_secrets_arn" {
   sensitive   = false
 }
 
-
 variable "virtual_lab_manager_tags" {
   description = "tags of the resources."
   type        = map(string)
   default     = { SBO_Billing = "virtual_lab_manager" }
+}
+
+variable "task_size" {
+  type = object({
+    cpu    = any
+    memory = any
+  })
+
+  description = "CPU and memory limit for ECS task (number or string format)"
 }

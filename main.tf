@@ -484,6 +484,7 @@ module "virtual_lab_manager" {
 
   virtual_lab_manager_secrets_arn = local.virtual_lab_manager_secrets_arn
 
+  task_size                = var.virtual_lab_manager_task_size
   ecs_number_of_containers = var.virtual_lab_manager_ecs_number_of_containers
 
   virtual_lab_manager_depoloyment_env = "production"

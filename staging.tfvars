@@ -23,6 +23,12 @@ bluenaas_task_size = {
   cpu    = 4096
   memory = 8192
 }
+
+virtual_lab_manager_task_size = {
+  cpu    = 512
+  memory = 1024
+}
+
 keycloak_task_size = {
   cpu    = 2048
   memory = 4096

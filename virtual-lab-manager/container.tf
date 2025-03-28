@@ -1,6 +1,4 @@
 locals {
-  cpu             = 512
-  memory          = 1024
   container_count = var.ecs_number_of_containers > 0 ? 1 : 0
 }
 
@@ -88,8 +86,8 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
 
   container_definitions = jsonencode([
     {
-      cpu         = local.cpu
-      memory      = local.memory
+      cpu         = var.task_size.cpu
+      memory      = var.task_size.memory
       networkMode = "awsvpc"
       family      = "virtuallabmanager"
       essential   = true
@@ -291,8 +289,8 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
     }
   ])
 
-  cpu                      = local.cpu
-  memory                   = local.memory
+  cpu                      = var.task_size.cpu
+  memory                   = var.task_size.memory
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = aws_iam_role.ecs_virtual_lab_manager_task_execution_role[0].arn
   task_role_arn            = aws_iam_role.ecs_virtual_lab_manager_task_role[0].arn
