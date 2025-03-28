@@ -116,6 +116,15 @@ variable "virtual_lab_manager_docker_image_url" {
   sensitive   = false
 }
 
+variable "virtual_lab_manager_task_size" {
+  type = object({
+    cpu    = any
+    memory = any
+  })
+
+  description = "CPU and memory limit for ECS task (number or string format) for virtual lab manager"
+}
+
 ### Accounting service ###
 
 variable "accounting_svc_docker_image_url" {
