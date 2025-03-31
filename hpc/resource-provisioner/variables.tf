@@ -33,3 +33,7 @@ variable "containers_bucket" {
 variable "scratch_bucket" {
   type = string
 }
+
+variable "aws_security_group_efa_id" {
+  type = string
+}
