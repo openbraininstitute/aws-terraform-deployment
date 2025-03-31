@@ -25,3 +25,7 @@ output "resource_provisioner_iam_role_arn" {
 output "resource_provisioner_security_group_id" {
   value = aws_security_group.hpc_resource_provisioner.id
 }
+
+output "aws_security_group_efa_id" {
+  value = aws_security_group.efa.id
+}

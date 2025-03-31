@@ -49,6 +49,7 @@ resource "aws_lambda_function" "hpc_resource_provisioner_async_lambda" {
       SBO_NEXUSDATA_BUCKET = var.sbo_nexusdata_bucket
       CONTAINERS_BUCKET    = var.containers_bucket
       SCRATCH_BUCKET       = var.scratch_bucket
+      EFA_SG_ID            = var.aws_security_group_efa_id
     }
   }
 }
