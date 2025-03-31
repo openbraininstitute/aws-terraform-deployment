@@ -27,6 +27,11 @@ variable "ml_neuroagent_bucket_name" {
   sensitive = false
 }
 
+variable "athena_query_results_bucket_name" {
+  type        = string
+  description = "Name for the S3 bucket that will hold Athena query results"
+}
+
 variable "nexus_domain_name" {
   type      = string
   sensitive = false

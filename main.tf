@@ -576,3 +576,11 @@ module "ses_user_virtuallab" {
 
   user_name = "ses-smtp-user.obp.virtuallabs"
 }
+
+module "athena" {
+  source = "./athena"
+
+  account_id                       = local.account_id
+  aws_region                       = local.aws_region
+  athena_query_results_bucket_name = var.athena_query_results_bucket_name
+}

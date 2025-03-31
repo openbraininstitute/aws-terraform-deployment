@@ -3,6 +3,8 @@ is_production                        = false
 terraform_remote_state_bucket_name   = "obi-tfstate-sandbox-hpc"
 cell_svc_bucket_name                 = "sbo-cell-svc-perf-test-sandbox-hpc"
 ml_paper_bucket_name                 = "ml-paper-bucket-sandbox-hpc-test"
+ml_neuroagent_bucket_name            = "ml-neuroagent-staging"
+athena_query_results_bucket_name     = "obi-athena-query-results-sandbox-hpc"
 nexus_domain_name                    = "sandbox-hpc.openbluebrain.com"
 nexus_obp_bucket_name                = "nexus-obp-sandbox-hpc-test"
 nexus_ship_bucket_name               = "nexus-ship-sandbox-hpc-test"
@@ -11,6 +13,7 @@ nexus_az_letter_id                   = "a"
 core_web_app_docker_image_url        = "bluebrain/sbo-core-web-app:2025.1.0-prod"
 virtual_lab_manager_docker_image_url = "public.ecr.aws/openbraininstitute/virtual-lab-api:20250226.1"
 cell_svc_docker_image_url            = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.1.1-prod"
+accounting_svc_docker_image_url      = "public.ecr.aws/openbraininstitute/accounting-service:latest"
 is_nexus_openscience_running         = false
 is_nexus_obp_running                 = true
 
@@ -19,6 +22,12 @@ bluenaas_task_size = {
   cpu    = 4096
   memory = 8192
 }
+
+virtual_lab_manager_task_size = {
+  cpu    = 512
+  memory = 1024
+}
+
 keycloak_task_size = {
   cpu    = 1024
   memory = 2048
@@ -36,3 +45,6 @@ ec_apikey2              = "placeholder"
 hpc_resource_provisioner_sbo_nexusdata_bucket = "s3://sbonexusdata-sandbox"
 hpc_resource_provisioner_containers_bucket    = "s3://sboinfrastructureassets-sandbox/containers"
 hpc_resource_provisioner_scratch_bucket       = "s3://sbosandbox-lec3cn"
+
+entitycore_svc_s3_bucket_name = "entitycore-data-staging"
+entitycore_svc_image_url      = "public.ecr.aws/openbraininstitute/entitycore:2025.3.1"
