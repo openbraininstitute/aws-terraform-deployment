@@ -1,8 +1,10 @@
 is_staging                                = false
 is_production                             = false
+deployment_env                            = "sandbox-hpc"
 terraform_remote_state_bucket_name        = "obi-tfstate-sandbox-hpc"
 cell_svc_bucket_name                      = "sbo-cell-svc-perf-test-sandbox-hpc"
 ml_paper_bucket_name                      = "ml-paper-bucket-sandbox-hpc-test"
+ml_neuroagent_bucket_name                 = "ml-neuroagent-staging"
 nexus_domain_name                         = "sandbox-hpc.openbluebrain.com"
 nexus_obp_bucket_name                     = "nexus-obp-sandbox-hpc-test"
 nexus_ship_bucket_name                    = "nexus-ship-sandbox-hpc-test"
@@ -12,6 +14,8 @@ core_web_app_docker_image_url             = "bluebrain/sbo-core-web-app:2025.1.0
 virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:20250226.1"
 thumbnail_generation_api_docker_image_url = "bluebrain/thumbnail-generation-api:latest"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.1.1-prod"
+accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:latest"
+me_model_analysis_docker_image_url        = "public.ecr.aws/openbraininstitute/me-model-analysis:staging"
 is_nexus_openscience_running              = false
 is_nexus_obp_running                      = true
 
@@ -20,6 +24,12 @@ bluenaas_task_size = {
   cpu    = 4096
   memory = 8192
 }
+
+virtual_lab_manager_task_size = {
+  cpu    = 512
+  memory = 1024
+}
+
 keycloak_task_size = {
   cpu    = 1024
   memory = 2048
@@ -36,3 +46,6 @@ ec_apikey2              = "placeholder"
 hpc_resource_provisioner_sbo_nexusdata_bucket = "s3://sbonexusdata-sandbox"
 hpc_resource_provisioner_containers_bucket    = "s3://sboinfrastructureassets-sandbox/containers"
 hpc_resource_provisioner_scratch_bucket       = "s3://sbosandbox-lec3cn"
+
+entitycore_svc_s3_bucket_name = "entitycore-data-staging"
+entitycore_svc_image_url      = "public.ecr.aws/openbraininstitute/entitycore:2025.3.1"
