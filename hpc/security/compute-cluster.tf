@@ -169,31 +169,3 @@ resource "aws_security_group" "compute_efs" {
     description = "allow egress within vpc"
   }
 }
-
-
-resource "aws_security_group" "hpc_efa" {
-  name   = "hpc_efa_fg"
-  vpc_id = var.pcluster_vpc_id
-
-  description = "EFA-enabled security group for cluster"
-
-  ingress {
-    description = "All traffic"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "all"
-    self        = true
-  }
-
-  egress {
-    description = "All traffic"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "all"
-    self        = true
-  }
-
-  tags = {
-    Name = "sbo-poc-compute-sg"
-  }
-}
