@@ -389,11 +389,6 @@ module "accounting_svc" {
   root_path = var.accounting_svc_base_path
 }
 
-module "billing_cost_management" {
-  source        = "./billing_cost_management"
-  is_production = var.is_production
-}
-
 module "entitycore_svc" {
   source = "./entitycore_svc"
 
