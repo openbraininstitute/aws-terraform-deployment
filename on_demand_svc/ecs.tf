@@ -155,6 +155,9 @@ resource "aws_ecs_task_definition" "this" {
   family                   = local.cluster_name
   requires_compatibilities = var.ecs_task_type == "FARGATE" ? ["FARGATE"] : ["EC2"]
   network_mode             = "awsvpc"
+  memory                   = var.ecs_memory
+  cpu                      = var.ecs_cpu
+
   container_definitions = jsonencode([
     {
       name        = local.cluster_name
