@@ -19,6 +19,7 @@ DDB_ECS_TASK_ACC = os.environ["DDB_ECS_TASK_ACC"]
 APIGW_ENDPOINT = os.environ["APIGW_ENDPOINT"]
 APIGW_REGION = os.environ["APIGW_REGION"]
 ECS_CLUSTER = os.environ["ECS_CLUSTER"]
+ECS_TASK_TYPE = os.environ["ECS_TASK_TYPE"]
 ECS_TASK_NAME = os.environ["ECS_TASK_NAME"]
 ECS_TASK_DEF = os.environ["ECS_TASK_DEF"]
 ECS_STOP_ON_WS_DISCONNECT = os.environ["ECS_STOP_ON_WS_DISCONNECT"]
@@ -49,6 +50,7 @@ def connect(event, context):
     svc_vlab = event["requestContext"]["authorizer"]["SVC_VLAB"]
     task = ECS.run_task(
         cluster=ECS_CLUSTER,
+        launchType=ECS_TASK_TYPE,
         taskDefinition=ECS_TASK_DEF,
         networkConfiguration={
             "awsvpcConfiguration": {
