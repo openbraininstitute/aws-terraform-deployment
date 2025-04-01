@@ -129,17 +129,6 @@ resource "aws_iam_role" "task" {
   ]
 }
 
-data "aws_iam_policy_document" "dockerhub" {
-  statement {
-    actions = [
-      "ssm:GetParameters",
-      "secretsmanager:GetSecretValue"
-    ]
-    effect    = "Allow"
-    resources = [var.dockerhub_creds_arn]
-  }
-}
-
 resource "aws_iam_policy" "dockerhub" {
   name   = "${var.svc_name}-ecs-dockerhub-access"
   policy = data.aws_iam_policy_document.dockerhub.json
@@ -171,9 +160,6 @@ resource "aws_ecs_task_definition" "this" {
       family      = local.cluster_name
       essential   = true
       image       = var.svc_image
-      repositoryCredentials = {
-        credentialsParameter = var.dockerhub_creds_arn
-      }
       linuxParameters = var.ecs_task_type == "EC2" ? {
         devices = [{
           hostPath      = "/dev/fuse"

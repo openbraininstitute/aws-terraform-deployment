@@ -172,14 +172,13 @@ module "cells_svc" {
 module "nse" {
   source = "./nse"
 
-  aws_region                = local.aws_region
-  account_id                = local.account_id
-  vpc_id                    = local.vpc_id
-  dockerhub_credentials_arn = local.dockerhub_bbpbuildbot_secret_arn
-  amazon_linux_ecs_ami_id   = data.aws_ami.amazon_linux_2_ecs.id
-  route_table_id            = local.route_table_private_subnets_id
+  aws_region              = local.aws_region
+  account_id              = local.account_id
+  vpc_id                  = local.vpc_id
+  amazon_linux_ecs_ami_id = data.aws_ami.amazon_linux_2_ecs.id
+  route_table_id          = local.route_table_private_subnets_id
 
-  me_model_analysis_docker_image_url = "bluebrain/me-model-analysis:latest"
+  me_model_analysis_docker_image_url = var.me_model_analysis_docker_image_url
 }
 
 module "bluenaas_svc" {

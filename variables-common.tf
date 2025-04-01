@@ -61,6 +61,15 @@ variable "ec_apikey2" {
   sensitive = true
 }
 
+### ME-Model analysis ###
+
+variable "me_model_analysis_docker_image_url" {
+  type        = string
+  description = "docker image for the ME-Model analysis"
+}
+
+### Core Web App ###
+
 variable "core_web_app_docker_image_url" {
   type        = string
   description = "docker image for the core-web-app"

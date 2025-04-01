@@ -57,11 +57,6 @@ variable "ecs_task_type" {
   description = "Values: 'EC2', 'FARGATE'"
 }
 
-variable "dockerhub_creds_arn" {
-  type        = string
-  description = "Docker hub credentials secret ARN."
-}
-
 variable "account_id" {
   type        = string
   description = "AWS account id."
