@@ -51,6 +51,8 @@ resource "aws_ecs_cluster" "this" {
 }
 
 resource "aws_ecs_capacity_provider" "this" {
+  count = var.ecs_task_type == "EC2" ? 1 : 0
+
   name = var.svc_name
   auto_scaling_group_provider {
     auto_scaling_group_arn = aws_autoscaling_group.this.arn
@@ -64,10 +66,12 @@ resource "aws_ecs_capacity_provider" "this" {
 }
 
 resource "aws_ecs_cluster_capacity_providers" "this" {
+  count = var.ecs_task_type == "EC2" ? 1 : 0
+
   cluster_name       = local.cluster_name
-  capacity_providers = [aws_ecs_capacity_provider.this.name]
+  capacity_providers = [aws_ecs_capacity_provider.this[0].name]
   default_capacity_provider_strategy {
-    capacity_provider = aws_ecs_capacity_provider.this.name
+    capacity_provider = aws_ecs_capacity_provider.this[0].name
     base              = 0
     weight            = 1
   }
