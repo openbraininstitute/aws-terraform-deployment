@@ -129,18 +129,11 @@ resource "aws_iam_role" "task" {
   ]
 }
 
-resource "aws_iam_policy" "dockerhub" {
-  name   = "${var.svc_name}-ecs-dockerhub-access"
-  policy = data.aws_iam_policy_document.dockerhub.json
-  tags   = var.tags
-}
-
 resource "aws_iam_role" "task_exec" {
   name               = "${var.svc_name}-ecs-task-exec"
   assume_role_policy = data.aws_iam_policy_document.task.json
   managed_policy_arns = [
-    "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
-    aws_iam_policy.dockerhub.arn,
+    "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
   ]
 }
 
