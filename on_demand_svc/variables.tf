@@ -43,7 +43,7 @@ variable "ecs_cpu" {
 variable "ecs_memory" {
   type        = number
   description = "ECS memory units per task."
-  default     = 512
+  default     = 2048
 }
 
 variable "ecs_stop_on_ws_disconnect" {
