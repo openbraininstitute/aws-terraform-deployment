@@ -51,6 +51,8 @@ resource "aws_ecs_cluster" "this" {
 }
 
 resource "aws_ecs_capacity_provider" "this" {
+  count = var.ecs_task_type == "EC2" ? 1 : 0
+
   name = var.svc_name
   auto_scaling_group_provider {
     auto_scaling_group_arn = aws_autoscaling_group.this.arn
