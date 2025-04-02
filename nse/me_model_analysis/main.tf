@@ -12,4 +12,5 @@ module "single_cell" {
   svc_image                 = var.docker_image_url
   svc_bucket                = "sbo-cell-svc-perf-test"
   tags                      = { SBO_Billing = "me_model_analysis" }
+  deployment_env            = var.deployment_env
 }

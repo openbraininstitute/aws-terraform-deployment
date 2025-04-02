@@ -26,6 +26,7 @@ ECS_STOP_ON_WS_DISCONNECT = os.environ["ECS_STOP_ON_WS_DISCONNECT"]
 SVC_SUBNET = os.environ["SVC_SUBNET"]
 SVC_SECURITY_GRP = os.environ["SVC_SECURITY_GRP"]
 SVC_BUCKET = os.environ["SVC_BUCKET"]
+DEPLOYMENT_ENV = os.environ["DEPLOYMENT_ENV"]
 
 
 def _task_key(date, label):
@@ -68,6 +69,7 @@ def connect(event, context):
                         {"name": "APIGW_CONN_ID", "value": conn_id},
                         {"name": "SVC_BUCKET", "value": SVC_BUCKET},
                         {"name": "SVC_VLAB", "value": svc_vlab},
+                        {"name": "DEPLOYMENT_ENV", "value": DEPLOYMENT_ENV},
                     ],
                 }
             ]

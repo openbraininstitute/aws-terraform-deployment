@@ -1,5 +1,6 @@
 is_staging                           = false
 is_production                        = true
+deployment_env                       = "production"
 terraform_remote_state_bucket_name   = "obi-tfstate-production"
 cell_svc_bucket_name                 = "sbo-cell-svc-perf-test"
 ml_paper_bucket_name                 = "ml-paper-bucket"

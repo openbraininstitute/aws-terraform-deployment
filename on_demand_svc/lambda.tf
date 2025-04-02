@@ -134,6 +134,7 @@ resource "aws_lambda_function" "ws_handler" {
       "SVC_SUBNET"                = var.ecs_subnet_id
       "SVC_SECURITY_GRP"          = aws_security_group.ecs.id
       "SVC_BUCKET"                = var.svc_bucket
+      "DEPLOYMENT_ENV"            = var.deployment_env
     }
   }
   tracing_config {
