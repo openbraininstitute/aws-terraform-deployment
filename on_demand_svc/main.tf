@@ -1,5 +1,5 @@
 # Starts ECS tasks on demand based on websocket connections to api gateway.
-# ECS task image should listen on 8080 and provide health(GET)/default/shutdown rest endpoints.
+# ECS task image should listen on 8000 and provide health(GET)/default/shutdown rest endpoints.
 # default(POST) endpoint will get forwarded messages from ws connection, it should use
 # boto3 apigatewaymanagementapi post_to_connection to send ws messages back.
 # Once ws connection is terminated from the client, shutdown(POST) endpoint will be invoked that

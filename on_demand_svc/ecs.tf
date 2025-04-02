@@ -5,7 +5,7 @@ locals {
 resource "aws_security_group" "ecs" {
   name        = "${var.svc_name}-ecs-sg"
   vpc_id      = var.vpc_id
-  description = "Allow 8080 inbound traffic and TLS/8080 outbound traffic"
+  description = "Allow 8000 inbound traffic and TLS/8000 outbound traffic"
   tags        = var.tags
 }
 
@@ -13,12 +13,12 @@ data "aws_subnet" "ecs" {
   id = var.ecs_subnet_id
 }
 
-resource "aws_vpc_security_group_ingress_rule" "in_8080_for_svc" {
+resource "aws_vpc_security_group_ingress_rule" "in_8000_for_svc" {
   security_group_id = aws_security_group.ecs.id
   cidr_ipv4         = data.aws_subnet.ecs.cidr_block
   ip_protocol       = "tcp"
-  from_port         = 8080
-  to_port           = 8080
+  from_port         = 8000
+  to_port           = 8000
 }
 
 resource "aws_vpc_security_group_egress_rule" "out_tls" {
@@ -29,11 +29,11 @@ resource "aws_vpc_security_group_egress_rule" "out_tls" {
   ip_protocol       = "tcp"
 }
 
-resource "aws_vpc_security_group_egress_rule" "out_8080_for_lambda" {
+resource "aws_vpc_security_group_egress_rule" "out_8000_for_lambda" {
   security_group_id = aws_security_group.ecs.id
   cidr_ipv4         = "0.0.0.0/0"
-  from_port         = 8080
-  to_port           = 8080
+  from_port         = 8000
+  to_port           = 8000
   ip_protocol       = "tcp"
 }
 
@@ -51,6 +51,8 @@ resource "aws_ecs_cluster" "this" {
 }
 
 resource "aws_ecs_capacity_provider" "this" {
+  count = var.ecs_task_type == "EC2" ? 1 : 0
+
   name = var.svc_name
   auto_scaling_group_provider {
     auto_scaling_group_arn = aws_autoscaling_group.this.arn
@@ -64,10 +66,12 @@ resource "aws_ecs_capacity_provider" "this" {
 }
 
 resource "aws_ecs_cluster_capacity_providers" "this" {
+  count = var.ecs_task_type == "EC2" ? 1 : 0
+
   cluster_name       = local.cluster_name
-  capacity_providers = [aws_ecs_capacity_provider.this.name]
+  capacity_providers = [aws_ecs_capacity_provider.this[0].name]
   default_capacity_provider_strategy {
-    capacity_provider = aws_ecs_capacity_provider.this.name
+    capacity_provider = aws_ecs_capacity_provider.this[0].name
     base              = 0
     weight            = 1
   }
@@ -125,36 +129,21 @@ resource "aws_iam_role" "task" {
   ]
 }
 
-data "aws_iam_policy_document" "dockerhub" {
-  statement {
-    actions = [
-      "ssm:GetParameters",
-      "secretsmanager:GetSecretValue"
-    ]
-    effect    = "Allow"
-    resources = [var.dockerhub_creds_arn]
-  }
-}
-
-resource "aws_iam_policy" "dockerhub" {
-  name   = "${var.svc_name}-ecs-dockerhub-access"
-  policy = data.aws_iam_policy_document.dockerhub.json
-  tags   = var.tags
-}
-
 resource "aws_iam_role" "task_exec" {
   name               = "${var.svc_name}-ecs-task-exec"
   assume_role_policy = data.aws_iam_policy_document.task.json
   managed_policy_arns = [
-    "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
-    aws_iam_policy.dockerhub.arn,
+    "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
   ]
 }
 
 resource "aws_ecs_task_definition" "this" {
   family                   = local.cluster_name
-  requires_compatibilities = ["EC2"]
+  requires_compatibilities = var.ecs_task_type == "FARGATE" ? ["FARGATE"] : ["EC2"]
   network_mode             = "awsvpc"
+  memory                   = var.ecs_memory
+  cpu                      = var.ecs_cpu
+
   container_definitions = jsonencode([
     {
       name        = local.cluster_name
@@ -164,10 +153,7 @@ resource "aws_ecs_task_definition" "this" {
       family      = local.cluster_name
       essential   = true
       image       = var.svc_image
-      repositoryCredentials = {
-        credentialsParameter = var.dockerhub_creds_arn
-      }
-      linuxParameters = {
+      linuxParameters = var.ecs_task_type == "EC2" ? {
         devices = [{
           hostPath      = "/dev/fuse"
           containerPath = "/dev/fuse"
@@ -176,11 +162,11 @@ resource "aws_ecs_task_definition" "this" {
           add  = ["SYS_ADMIN"]
           drop = []
         }
-      }
+      } : null
       portMappings = [
         {
-          hostPort      = 8080
-          containerPort = 8080
+          hostPort      = 8000
+          containerPort = 8000
           protocol      = "tcp"
         }
       ]

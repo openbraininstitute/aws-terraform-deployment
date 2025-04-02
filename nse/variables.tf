@@ -11,10 +11,6 @@ variable "account_id" {
   type        = string
 }
 
-variable "dockerhub_credentials_arn" {
-  type = string
-}
-
 variable "me_model_analysis_docker_image_url" {
   type = string
 }

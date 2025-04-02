@@ -10,10 +10,6 @@ variable "docker_image_url" {
   type = string
 }
 
-variable "dockerhub_credentials_arn" {
-  type = string
-}
-
 variable "amazon_linux_ecs_ami_id" {
   type = string
 }

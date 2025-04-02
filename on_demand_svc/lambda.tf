@@ -27,7 +27,7 @@ data "aws_iam_policy_document" "ws_handler_connect" {
   }
   statement {
     actions   = ["iam:PassRole"]
-    resources = [aws_iam_role.task_exec.arn]
+    resources = [aws_iam_role.task_exec.arn, aws_iam_role.task.arn]
     effect    = "Allow"
   }
 }
@@ -127,6 +127,7 @@ resource "aws_lambda_function" "ws_handler" {
       "APIGW_ENDPOINT"            = "https://${aws_apigatewayv2_api.this.id}.execute-api.${var.aws_region}.amazonaws.com/${aws_apigatewayv2_stage.prod.name}"
       "APIGW_REGION"              = var.aws_region
       "ECS_CLUSTER"               = aws_ecs_cluster.this.name
+      "ECS_TASK_TYPE"             = var.ecs_task_type
       "ECS_TASK_DEF"              = aws_ecs_task_definition.this.arn
       "ECS_TASK_NAME"             = aws_ecs_task_definition.this.family
       "ECS_STOP_ON_WS_DISCONNECT" = var.ecs_stop_on_ws_disconnect ? "True" : ""
