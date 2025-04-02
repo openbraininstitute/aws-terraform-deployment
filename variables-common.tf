@@ -51,11 +51,6 @@ variable "nexus_az_letter_id" {
   type = string
 }
 
-variable "ec_apikey" {
-  type      = string
-  sensitive = true
-}
-
 variable "ec_apikey2" {
   type      = string
   sensitive = true
