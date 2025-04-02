@@ -27,7 +27,7 @@ data "aws_iam_policy_document" "ws_handler_connect" {
   }
   statement {
     actions   = ["iam:PassRole"]
-    resources = [aws_iam_role.task_exec.arn]
+    resources = [aws_iam_role.task_exec.arn, aws_iam_role.task.arn]
     effect    = "Allow"
   }
 }
