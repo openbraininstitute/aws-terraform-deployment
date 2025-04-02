@@ -145,10 +145,6 @@ module "nexus" {
   is_nexus_obp_running         = var.is_nexus_obp_running
 }
 
-module "viz" {
-  source = "./viz"
-}
-
 module "cells_svc" {
   source = "./cells_svc"
 
