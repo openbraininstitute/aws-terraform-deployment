@@ -30,7 +30,6 @@ core_web_app_next_public_matomo_site_id    = "3"
 
 # Sandbox placeholders
 nise_dockerhub_password = "placeholder"
-ec_apikey               = "placeholder"
 ec_apikey2              = "placeholder"
 
 hpc_resource_provisioner_sbo_nexusdata_bucket = "s3://sbonexusdata-sandbox"
