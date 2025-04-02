@@ -22,3 +22,8 @@ variable "amazon_linux_ecs_ami_id" {
 variable "route_table_id" {
   type = string
 }
+
+variable "deployment_env" {
+  type        = string
+  description = "The deployment environment, values: 'staging', 'production'"
+}

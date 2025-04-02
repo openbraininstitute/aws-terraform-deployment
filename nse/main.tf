@@ -1,6 +1,8 @@
 module "me_model_analysis" {
   source = "./me_model_analysis"
 
+  deployment_env = var.deployment_env
+
   aws_region       = var.aws_region
   account_id       = var.account_id
   vpc_id           = var.vpc_id

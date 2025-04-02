@@ -76,3 +76,8 @@ variable "tags" {
   type        = map(string)
   description = "JSON schema for websocket incoming message validation."
 }
+
+variable "deployment_env" {
+  type        = string
+  description = "Deployment environment, values: 'staging', 'production'"
+}
