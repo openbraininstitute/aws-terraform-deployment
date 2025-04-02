@@ -172,6 +172,8 @@ module "cells_svc" {
 module "nse" {
   source = "./nse"
 
+  deployment_env = var.deployment_env
+
   aws_region              = local.aws_region
   account_id              = local.account_id
   vpc_id                  = local.vpc_id
