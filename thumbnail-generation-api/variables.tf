@@ -61,13 +61,3 @@ variable "thumbnail_generation_api_log_group_name" {
   description = "The log name within cloudwatch for the thumbnail generation api"
   sensitive   = false
 }
-
-variable "dockerhub_access_iam_policy_arn" {
-  type      = string
-  sensitive = false
-}
-
-variable "dockerhub_credentials_arn" {
-  type      = string
-  sensitive = false
-}
