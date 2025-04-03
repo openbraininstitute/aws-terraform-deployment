@@ -445,9 +445,6 @@ module "thumbnail_generation_api" {
   vpc_cidr_block                 = local.vpc_cidr_block
   vpc_id                         = local.vpc_id
 
-  dockerhub_access_iam_policy_arn = local.dockerhub_bbpbuildbot_policy_arn
-  dockerhub_credentials_arn       = local.dockerhub_bbpbuildbot_secret_arn
-
   aws_region                                = local.aws_region
   allowed_source_ip_cidr_blocks             = ["0.0.0.0/0"]
   thumbnail_generation_api_docker_image_url = var.thumbnail_generation_api_docker_image_url
