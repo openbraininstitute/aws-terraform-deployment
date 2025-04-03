@@ -450,7 +450,7 @@ module "thumbnail_generation_api" {
 
   aws_region                                = local.aws_region
   allowed_source_ip_cidr_blocks             = ["0.0.0.0/0"]
-  thumbnail_generation_api_docker_image_url = "bluebrain/thumbnail-generation-api:latest"
+  thumbnail_generation_api_docker_image_url = var.thumbnail_generation_api_docker_image_url
   thumbnail_generation_api_base_path        = "/api/thumbnail-generation"
   thumbnail_generation_api_log_group_name   = "thumbnail_generation_api"
 }
