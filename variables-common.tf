@@ -120,6 +120,7 @@ variable "virtual_lab_manager_docker_image_url" {
   sensitive   = false
 }
 
+
 variable "virtual_lab_manager_task_size" {
   type = object({
     cpu    = any
@@ -217,3 +218,9 @@ variable "entitycore_svc_image_url" {
 }
 
 
+
+variable "thumbnail_generation_api_docker_image_url" {
+  type        = string
+  description = "Docker image for the thumbnail generation api"
+  sensitive   = false
+}
