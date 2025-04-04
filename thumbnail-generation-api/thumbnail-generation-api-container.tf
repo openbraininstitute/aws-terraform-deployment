@@ -161,7 +161,7 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
         environment = [
           {
             name  = "WHITELISTED_CORS_URLS",
-            value = "http://localhost:3000"
+            value = jsonencode(var.thumbnail_generation_api_cors_origins)
           },
           {
             name  = "BASE_PATH"

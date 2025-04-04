@@ -450,6 +450,7 @@ module "thumbnail_generation_api" {
   thumbnail_generation_api_docker_image_url = var.thumbnail_generation_api_docker_image_url
   thumbnail_generation_api_base_path        = "/api/thumbnail-generation"
   thumbnail_generation_api_log_group_name   = "thumbnail_generation_api"
+  thumbnail_generation_api_cors_origins     = ["http://localhost:3000", "https://next.staging.openbraininstitute.org"]
 }
 
 module "virtual_lab_manager" {
@@ -495,7 +496,7 @@ module "virtual_lab_manager" {
 
   virtual_lab_manager_mail_starttls   = "True"
   virtual_lab_manager_use_credentials = "True"
-  virtual_lab_manager_cors_origins    = ["http://localhost:3000"]
+  virtual_lab_manager_cors_origins    = ["http://localhost:3000", "https://next.staging.openbraininstitute.org"]
 
   virtual_lab_manager_admin_base_path      = "{}/app/virtual-lab/lab/{}/admin?panel=billing"
   virtual_lab_manager_deployment_namespace = "https://${local.primary_domain}"
