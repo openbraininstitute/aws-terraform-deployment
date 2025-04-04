@@ -61,3 +61,9 @@ variable "thumbnail_generation_api_log_group_name" {
   description = "The log name within cloudwatch for the thumbnail generation api"
   sensitive   = false
 }
+
+variable "thumbnail_generation_api_cors_origins" {
+  type        = list(string)
+  description = "Origins that are allowed to make requests to the virtual lab api through a browser"
+  sensitive   = false
+}
