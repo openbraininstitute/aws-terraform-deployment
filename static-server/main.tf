@@ -223,6 +223,16 @@ locals {
     source       = "${path.module}/google62bf7fe0ad1621f2.html"
     content_type = "text/html"
   }
+  entraid_verification = {
+    key = "static/microsoft-identity-association.json"
+    content = templatefile(
+      "${path.module}/microsoft-identity-association.json.tftpl",
+      {
+        applicationId = var.domain_name == "www.openbraininstitute.org" ? "3c33faf6-86d5-4e53-afa6-d707d273bdf2" : "5345f792-e550-4ee2-896a-cb207e13d144"
+      }
+    )
+    content_type = "text/json"
+  }
   sitemap_xml = {
     key          = "static/sitemap.xml"
     source       = "${path.module}/sitemap.xml"
@@ -249,6 +259,14 @@ resource "aws_s3_object" "google_search_verification" {
   content_type = local.google_search_verification.content_type
 
   etag = filemd5(local.google_search_verification.source)
+}
+
+resource "aws_s3_object" "entraid_verification" {
+  bucket = var.static_content_bucket_name
+
+  key          = local.entraid_verification.key
+  content      = local.entraid_verification.content
+  content_type = local.entraid_verification.content_type
 }
 
 resource "aws_s3_object" "sitemap_xml" {
@@ -326,6 +344,29 @@ resource "aws_lb_listener_rule" "sitemap_xml" {
   condition {
     path_pattern {
       values = ["/sitemap.xml"]
+    }
+  }
+}
+
+resource "aws_lb_listener_rule" "entraid_verification" {
+  listener_arn = var.alb_listener_arn
+  priority     = var.alb_listener_rule_priority + 4
+
+  action {
+    type = "redirect"
+    redirect {
+      host        = "s3.amazonaws.com"
+      path        = "/${var.domain_name}/${local.entraid_verification.key}"
+      query       = ""
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+
+  condition {
+    path_pattern {
+      values = ["/.well-known/microsoft-identity-association.json"]
     }
   }
 }
