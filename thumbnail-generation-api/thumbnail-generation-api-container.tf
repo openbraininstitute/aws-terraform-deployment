@@ -85,11 +85,6 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_attachment" {
 }
 
 
-resource "aws_iam_role_policy_attachment" "thumbnail_generation_api_ecs_task_role_dockerhub_policy_attachment" {
-  role       = aws_iam_role.thumbnail_generation_api_ecs_task_execution_role.name
-  policy_arn = var.dockerhub_access_iam_policy_arn
-}
-
 resource "aws_security_group" "thumbnail_generation_api_sec_group" {
   name        = "thumbnail_generation_api_sec_group"
   vpc_id      = var.vpc_id
@@ -154,11 +149,8 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
   container_definitions = jsonencode(
     [
       {
-        name  = "thumbnail-generation-api-container",
-        image = var.thumbnail_generation_api_docker_image_url,
-        repositoryCredentials = {
-          credentialsParameter = var.dockerhub_credentials_arn
-        },
+        name      = "thumbnail-generation-api-container",
+        image     = var.thumbnail_generation_api_docker_image_url,
         essential = true,
         portMappings = [
           {
@@ -182,6 +174,10 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
           {
             name  = "SENTRY_DSN"
             value = "https://df67a83aab2f208467f94df08a207e59@o224246.ingest.us.sentry.io/4507457507885056"
+          },
+          {
+            name : "ENTITY_CORE_URI",
+            value : "https://staging.openbraininstitute.org/api/entitycore"
           }
         ],
         memory = 2048
