@@ -47,6 +47,36 @@ resource "aws_iam_role_policy" "backup_role_policy" {
         Effect   = "Allow"
         Resource = "*"
       },
+      {
+        Action = [
+          "rds:DescribeDBInstances",
+          "rds:DescribeDBClusters",
+          "rds:ListTagsForResource",
+          "rds:CreateDBSnapshot",
+          "rds:DeleteDBSnapshot",
+          "rds:CopyDBSnapshot",
+          "rds:DescribeDBSnapshots"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+      {
+        Action = [
+          "s3:GetBucketLocation",
+          "s3:ListBucket",
+          "s3:GetBucketTagging",
+          "s3:GetBucketVersioning",
+          "s3:GetBucketPublicAccessBlock",
+          "s3:GetBucketAcl",
+          "s3:GetBucketPolicy",
+          "s3:GetObject",
+          "s3:GetObjectVersion",
+          "s3:GetObjectTagging",
+          "s3:GetObjectAcl"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      }
     ]
   })
 }
