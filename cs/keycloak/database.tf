@@ -63,7 +63,8 @@ resource "aws_db_instance" "keycloak_database" {
   maintenance_window      = "sun:01:00-sun:02:00"
 
   tags = {
-    Name        = "keycloak-db"
-    SBO_Billing = "keycloak"
+    Name            = "keycloak-db"
+    SBO_Billing     = "keycloak"
+    obi_backup_plan = "obi_plan"
   }
 }
