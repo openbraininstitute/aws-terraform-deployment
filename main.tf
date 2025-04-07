@@ -72,6 +72,10 @@ module "cs" {
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 }
 
+module "backups" {
+  source = "./backups"
+}
+
 module "ml" {
   source = "./ml"
 
