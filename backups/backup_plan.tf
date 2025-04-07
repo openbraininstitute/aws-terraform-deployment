@@ -55,13 +55,15 @@ resource "aws_iam_role_policy" "backup_role_policy" {
           "rds:CreateDBSnapshot",
           "rds:DeleteDBSnapshot",
           "rds:CopyDBSnapshot",
-          "rds:DescribeDBSnapshots"
+          "rds:DescribeDBSnapshots",
+          "rds:AddTagsToResource"
         ]
         Effect   = "Allow"
         Resource = "*"
       },
       {
         Action = [
+          "s3:GetBucketNotification",
           "s3:GetBucketLocation",
           "s3:ListBucket",
           "s3:GetBucketTagging",
@@ -73,6 +75,16 @@ resource "aws_iam_role_policy" "backup_role_policy" {
           "s3:GetObjectVersion",
           "s3:GetObjectTagging",
           "s3:GetObjectAcl"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+      {
+        Action = [
+          "elasticfilesystem:DescribeFileSystems",
+          "elasticfilesystem:DescribeBackupPolicy",
+          "elasticfilesystem:Backup",
+          "elasticfilesystem:DescribeTags"
         ]
         Effect   = "Allow"
         Resource = "*"
