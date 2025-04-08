@@ -76,7 +76,8 @@ resource "aws_iam_role_policy" "backup_role_policy" {
           "s3:GetObjectTagging",
           "s3:GetObjectAcl",
           "s3:PutBucketNotification",
-          "events:ListRules"
+          "events:ListRules",
+          "events:PutRule"
         ]
         Effect   = "Allow"
         Resource = "*"
