@@ -15,17 +15,27 @@ resource "aws_iam_policy" "iam_build_policy" {
         ],
         Resource = [
           "arn:aws:s3:::${var.bucket_name}/**",
+          "arn:aws:s3:::parallelcluster-*-v1-do-not-delete",
+          "arn:aws:s3:::parallelcluster-*-v1-do-not-delete/**"
         ]
       },
       {
         "Action" : [
-          "cloudformation:DeleteStack",
+          "cloudformation:CreateStack",
+          "cloudformation:DeleteStack"
+        ],
+        "Effect" : "Allow",
+        "Resource" : [
+          "arn:aws:cloudformation:${var.aws_region}:${var.account_id}:stack/obi-parallelcluster*/*"
+        ]
+      },
+      {
+        "Action" : [
           "cloudformation:ListStacks"
         ],
         "Effect" : "Allow",
         "Resource" : [
-          "arn:aws:cloudformation:${var.aws_region}:${var.account_id}:stack/obi-parallelcluster*/*",
-          "arn:aws:cloudformation:${var.aws_region}:${var.account_id}:stack/*/*",
+          "arn:aws:cloudformation:${var.aws_region}:${var.account_id}:stack/*/*"
         ]
       },
       {
@@ -35,22 +45,22 @@ resource "aws_iam_policy" "iam_build_policy" {
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:imagebuilder:${var.aws_region}:${var.account_id}:image/obi-parallelcluster-*/*/*",
-          "arn:aws:imagebuilder:${var.aws_region}:${var.account_id}:component/packages/*",
-          "arn:aws:imagebuilder:${var.aws_region}:${var.account_id}:component/neurodamus-toolchain/*",
-          "arn:aws:imagebuilder:${var.aws_region}:${var.account_id}:component/singularity-ce/*",
-          "arn:aws:imagebuilder:${var.aws_region}:${var.account_id}:component/configure-ami/*",
-          "arn:aws:imagebuilder:${var.aws_region}:${var.account_id}:component/parallelclusterimage-updateos*",
-          "arn:aws:imagebuilder:${var.aws_region}:${var.account_id}:component/parallelclusterimage*",
+          "arn:aws:imagebuilder:${var.aws_region}:${var.account_id}:component/*",
           "arn:aws:imagebuilder:${var.aws_region}:${var.account_id}:image/parallelclusterimage-obi*",
           "arn:aws:imagebuilder:${var.aws_region}:${var.account_id}:infrastructure-configuration/parallelclusterimage*",
           "arn:aws:imagebuilder:${var.aws_region}:${var.account_id}:distribution-configuration/parallelclusterimage*",
-          "arn:aws:imagebuilder:${var.aws_region}:${var.account_id}:image-recipe/parallelclusterimage-obi*"
+          "arn:aws:imagebuilder:${var.aws_region}:${var.account_id}:image-recipe/parallelclusterimage-obi*",
+          "arn:aws:imagebuilder:${var.aws_region}:*:image/amazon-linux-2023-x86*"
         ]
       },
       {
         "Action" : [
+          "lambda:AddPermission",
+          "lambda:CreateFunction",
+          "lambda:GetFunction",
           "lambda:DeleteFunction",
-          "lambda:RemovePermission"
+          "lambda:RemovePermission",
+          "lambda:TagResource"
         ],
         "Effect" : "Allow",
         "Resource" : [
@@ -64,21 +74,44 @@ resource "aws_iam_policy" "iam_build_policy" {
         "Effect" : "Allow",
         "Resource" : [
           "arn:aws:ec2:${var.aws_region}::image/*",
+          "arn:aws:ec2:${var.aws_region}::snapshot/*"
         ]
       },
       {
         "Action" : [
-          "iam:RemoveRoleFromInstanceProfile"
+          "iam:AddRoleToInstanceProfile",
+          "iam:AttachRolePolicy",
+          "iam:CreateRole",
+          "iam:CreateInstanceProfile",
+          "iam:DeleteInstanceProfile",
+          "iam:GetInstanceProfile",
+          "iam:GetPolicy",
+          "iam:GetRole",
+          "iam:PassRole",
+          "iam:PutRolePolicy",
+          "iam:RemoveRoleFromInstanceProfile",
+          "iam:TagRole",
+          "iam:DeleteRole",
+          "iam:DeleteRolePolicy",
+          "iam:DetachRolePolicy"
         ],
         "Effect" : "Allow",
         "Resource" : [
-          "arn:aws:iam::${var.account_id}:policy/ParallelCluster_S3_GetObject_RPMs"
+          "arn:aws:iam::${var.account_id}:policy/ParallelCluster_S3_GetObject_RPMs",
+          "arn:aws:iam::${var.account_id}:role/parallelcluster/ParallelClusterImage*",
+          "arn:aws:iam::${var.account_id}:role/ParallelClusterImage*",
+          "arn:aws:iam::${var.account_id}:instance-profile/ParallelClusterImage*",
+          "arn:aws:iam::${var.account_id}:instance-profile/parallelcluster*"
         ]
       },
       {
         "Action" : [
+          "SNS:CreateTopic",
           "SNS:DeleteTopic",
           "SNS:GetTopicAttributes",
+          "SNS:Publish",
+          "SNS:Subscribe",
+          "SNS:TagResource",
           "SNS:Unsubscribe"
         ],
         "Effect" : "Allow",
@@ -97,7 +130,9 @@ resource "aws_iam_policy" "iam_build_policy" {
       },
       {
         "Action" : [
-          "logs:DeleteLogGroup"
+          "logs:CreateLogGroup",
+          "logs:DeleteLogGroup",
+          "logs:TagResource"
         ],
         "Effect" : "Allow",
         "Resource" : [
@@ -107,14 +142,11 @@ resource "aws_iam_policy" "iam_build_policy" {
       {
         "Action" : [
           "ec2:DescribeImages",
+          "ec2:DescribeInstances",
+          "ec2:DescribeInstanceTypes",
           "ec2:DescribeInstanceTypeOfferings",
           "ec2:DescribeSecurityGroups",
           "cloudformation:DescribeStacks",
-          "iam:DeleteInstanceProfile",
-          "iam:DeleteRole",
-          "iam:DeleteRolePolicy",
-          "iam:DetachRolePolicy",
-          "iam:RemoveRoleFromInstanceProfile"
         ],
         "Effect" : "Allow",
         "Resource" : [
