@@ -18,7 +18,21 @@ resource "aws_iam_policy" "iam_build_policy" {
         ]
       },
       {
+        Effect = "Allow",
+        Action = [
+          "s3:PutObject",
+          "s3:PutObjectAcl",
+          "s3:GetObject",
+          "s3:ListBucket"
+        ],
+        Resource = [
+          "arn:aws:s3:::parallelcluster-*-v1-do-not-delete",
+          "arn:aws:s3:::parallelcluster-*-v1-do-not-delete/**"
+        ]
+      },
+      {
         "Action" : [
+          "cloudformation:CreateStack",
           "cloudformation:DeleteStack",
           "cloudformation:ListStacks"
         ],
@@ -44,7 +58,8 @@ resource "aws_iam_policy" "iam_build_policy" {
           "arn:aws:imagebuilder:${var.aws_region}:${var.account_id}:image/parallelclusterimage-obi*",
           "arn:aws:imagebuilder:${var.aws_region}:${var.account_id}:infrastructure-configuration/parallelclusterimage*",
           "arn:aws:imagebuilder:${var.aws_region}:${var.account_id}:distribution-configuration/parallelclusterimage*",
-          "arn:aws:imagebuilder:${var.aws_region}:${var.account_id}:image-recipe/parallelclusterimage-obi*"
+          "arn:aws:imagebuilder:${var.aws_region}:${var.account_id}:image-recipe/parallelclusterimage-obi*",
+          "arn:aws:imagebuilder:${var.aws_region}:*:image/amazon-linux-2023-x86*"
         ]
       },
       {
@@ -68,11 +83,12 @@ resource "aws_iam_policy" "iam_build_policy" {
       },
       {
         "Action" : [
+          "iam:GetPolicy",
           "iam:RemoveRoleFromInstanceProfile"
         ],
         "Effect" : "Allow",
         "Resource" : [
-          "arn:aws:iam::${var.account_id}:policy/ParallelCluster_S3_GetObject_RPMs"
+          "arn:aws:iam::${var.account_id}:policy/ParallelCluster_S3_GetObject_RPMs",
         ]
       },
       {
@@ -107,6 +123,8 @@ resource "aws_iam_policy" "iam_build_policy" {
       {
         "Action" : [
           "ec2:DescribeImages",
+          "ec2:DescribeInstances",
+          "ec2:DescribeInstanceTypes",
           "ec2:DescribeInstanceTypeOfferings",
           "ec2:DescribeSecurityGroups",
           "cloudformation:DescribeStacks",
