@@ -78,7 +78,8 @@ resource "aws_iam_role_policy" "backup_role_policy" {
           "s3:PutBucketNotification",
           "events:ListRules",
           "events:PutRule",
-          "events:ListTargetsByRule"
+          "events:ListTargetsByRule",
+          "events:PutTargets"
         ]
         Effect   = "Allow"
         Resource = "*"
