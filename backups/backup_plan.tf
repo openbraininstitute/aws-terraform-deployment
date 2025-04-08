@@ -79,7 +79,8 @@ resource "aws_iam_role_policy" "backup_role_policy" {
           "events:ListRules",
           "events:PutRule",
           "events:ListTargetsByRule",
-          "events:PutTargets"
+          "events:PutTargets",
+          "cloudwatch:GetMetricData"
         ]
         Effect   = "Allow"
         Resource = "*"
