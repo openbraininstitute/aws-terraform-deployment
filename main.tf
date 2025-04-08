@@ -242,6 +242,15 @@ module "bluenaas_svc" {
   task_size = var.bluenaas_task_size
 }
 
+module "github_ami_build_role" {
+  source              = "./github_ami_build_role"
+  account_id          = local.account_id
+  aws_region          = local.aws_region
+  github_organisation = local.github_organisation
+  repo_name           = "machine-images"
+  bucket_name         = var.sbo_infrastructureassets_bucket
+}
+
 module "github_bluenaas_ecs_redeploy_role" {
   source = "./github_ecs_redeploy_role"
 

@@ -206,6 +206,11 @@ variable "hpc_resource_provisioner_scratch_bucket" {
   description = "S3 bucket in which scratch space lives. Includes s3:// prefix and sub-path, if any"
 }
 
+variable "sbo_infrastructureassets_bucket" {
+  type        = string
+  description = "S3 bucket in which infrastructure assets are stored"
+}
+
 ### entitycore ###
 variable "entitycore_svc_s3_bucket_name" {
   type        = string

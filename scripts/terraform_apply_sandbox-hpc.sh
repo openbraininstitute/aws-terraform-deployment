@@ -15,5 +15,6 @@ terraform apply -auto-approve \
                 -target="aws_security_group.bbp_workflow_svc" \
                 -target="aws_apigatewayv2_api.this" \
                 -target="module.bbp_workflow_svc" \
+                -target="module.github_ami_build_role" \
                 -var "create_ssh_bastion_vm_on_public_a_network=true" \
                 -var-file=sandbox-hpc.tfvars
