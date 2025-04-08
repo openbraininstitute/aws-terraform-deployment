@@ -33,13 +33,20 @@ resource "aws_iam_policy" "iam_build_policy" {
       {
         "Action" : [
           "cloudformation:CreateStack",
-          "cloudformation:DeleteStack",
+          "cloudformation:DeleteStack"
+        ],
+        "Effect" : "Allow",
+        "Resource" : [
+          "arn:aws:cloudformation:${var.aws_region}:${var.account_id}:stack/obi-parallelcluster*/*"
+        ]
+      },
+      {
+        "Action" : [
           "cloudformation:ListStacks"
         ],
         "Effect" : "Allow",
         "Resource" : [
-          "arn:aws:cloudformation:${var.aws_region}:${var.account_id}:stack/obi-parallelcluster*/*",
-          "arn:aws:cloudformation:${var.aws_region}:${var.account_id}:stack/*/*",
+          "arn:aws:cloudformation:${var.aws_region}:${var.account_id}:stack/*/*"
         ]
       },
       {
