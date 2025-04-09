@@ -43,6 +43,7 @@ resource "aws_db_instance" "accounting" {
   copy_tags_to_snapshot = true
 
   tags = {
-    Name = "accounting-db"
+    Name            = "accounting-db"
+    obi_backup_plan = "obi_plan"
   }
 }

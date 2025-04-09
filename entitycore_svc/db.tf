@@ -44,6 +44,7 @@ resource "aws_db_instance" "entitycore" {
   copy_tags_to_snapshot = true
 
   tags = {
-    Name = "entitycore-db"
+    Name            = "entitycore-db"
+    obi_backup_plan = "obi_plan"
   }
 }
