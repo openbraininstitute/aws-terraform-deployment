@@ -58,5 +58,5 @@ resource "aws_db_instance" "virtual_lab_manager" {
 
   copy_tags_to_snapshot = true
 
-  tags = var.virtual_lab_manager_tags
+  tags = merge(var.virtual_lab_manager_tags, { obi_backup_plan = "obi_plan" })
 }

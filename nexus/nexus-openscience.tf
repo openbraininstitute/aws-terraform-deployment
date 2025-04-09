@@ -16,6 +16,7 @@ module "postgres_cluster_openscience" {
   instance_class                  = "db.m5d.large"
   nexus_postgresql_engine_version = "16"
   nexus_secrets_arn               = var.nexus_secrets_arn
+  obi_backup_plan                 = null
 }
 
 # ecs_cluster module is called in nexus-obp.tf

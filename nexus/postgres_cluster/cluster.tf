@@ -40,4 +40,6 @@ resource "aws_rds_cluster" "nexus" {
   master_password = jsondecode(data.aws_secretsmanager_secret_version.nexus_database_password.secret_string)["postgres_password"]
 
   copy_tags_to_snapshot = true
+
+  tags = var.obi_backup_plan == null ? {} : { obi_backup_plan = var.obi_backup_plan }
 }

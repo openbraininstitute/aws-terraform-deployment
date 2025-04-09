@@ -15,6 +15,7 @@ module "postgres_cluster_obp" {
   instance_class                  = "db.m5d.large"
   nexus_postgresql_engine_version = "16"
   nexus_secrets_arn               = var.nexus_secrets_arn
+  obi_backup_plan                 = "obi_plan"
 }
 
 module "ecs_cluster" {
