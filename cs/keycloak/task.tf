@@ -79,8 +79,8 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
           value = "${tostring(var.keycloak_port)}"
         },
         {
-          name  = "KC_PROXY"
-          value = "edge"
+          name  = "KC_PROXY_HEADERS"
+          value = "xforwarded"
         },
         {
           name  = "KEYCLOAK_ADMIN"
