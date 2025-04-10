@@ -231,3 +231,8 @@ variable "nexus_domain_name" {
 variable "primary_domain" {
   type = string
 }
+
+variable "obi_backup_plan" {
+  type        = string
+  description = "Name of the backup plan to use for production s3 buckets"
+}
