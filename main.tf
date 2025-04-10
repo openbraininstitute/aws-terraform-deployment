@@ -82,7 +82,8 @@ module "ml" {
   aws_region = local.aws_region
   account_id = local.account_id
 
-  is_production = var.is_production
+  is_production   = var.is_production
+  obi_backup_plan = "obi_plan"
 
   ml_secrets_arn = local.ml_secrets_arn
 

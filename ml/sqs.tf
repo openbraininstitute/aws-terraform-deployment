@@ -22,7 +22,7 @@ module "ml_sqs" {
 #tfsec:ignore:aws-s3-enable-bucket-logging
 resource "aws_s3_bucket" "ml_paper_bucket" {
   bucket = var.paper_bucket_name
-  tags   = var.tags
+  tags   = var.is_production ? merge(var.tags, { obi_backup_plan = var.obi_backup_plan }) : var.tags
 }
 
 resource "aws_s3_bucket_metric" "ml_paper_metrics" {

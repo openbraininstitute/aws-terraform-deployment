@@ -10,6 +10,8 @@ module "s3_bucket" {
   versioning = {
     enabled = false
   }
+
+  tags = var.is_production ? { obi_backup_plan = var.obi_backup_plan } : {}
 }
 
 #tfsec:ignore:aws-ec2-no-public-egress-sgr
