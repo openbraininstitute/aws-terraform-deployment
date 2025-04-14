@@ -89,6 +89,24 @@ module "aws_backups_sns_to_teams" {
   secret_recovery_window_in_days = 7
 }
 
+module "deployments_sns_topic" {
+  source = "./deployments_sns_topic"
+}
+
+module "deployments_sns_to_teams" {
+  source = "./sns_lambda_to_teams"
+
+  unique_name          = "aws_deployments" # to make sure certain roles and secrets have a unique name
+  sns_topic_arn        = module.deployments_sns_topic.sns_topic_arn
+  python_script_name   = "aws_deployments_sns_to_teams.py"
+  python_function_name = "handle"
+  handler              = "aws_deployments_sns_to_teams.handle"
+  python_runtime       = "python3.11"
+
+  secret_recovery_window_in_days = 7
+}
+
+
 module "ml" {
   source = "./ml"
 
