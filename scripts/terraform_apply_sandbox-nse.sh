@@ -1,7 +1,8 @@
 echo "Terraform apply for NSE sandbox"
 
 terraform apply -auto-approve \
-                -target=module.entitycore_svc \
-                -target=aws_db_instance.entitycore \
-                -target=aws_ecs_service.entitycore_ecs_service \
+                -target=module.obi_one_svc \
+                -target=module.obi_generative_gui_svc \
+                -target=aws_ecs_service.obi_one_ecs_service \
+                -target=aws_ecs_service.obi_generative_gui_ecs_service \
                 -var-file=sandbox-nse.tfvars
