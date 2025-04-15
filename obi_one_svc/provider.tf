@@ -10,7 +10,7 @@ terraform {
 provider "aws" {
   default_tags {
     tags = {
-      SBO_Billing = "entitycore"
+      SBO_Billing = "obi_one"
     }
   }
   region = var.aws_region

@@ -3,24 +3,24 @@ locals {
   memory = 512
 }
 
-resource "aws_cloudwatch_log_group" "entitycore_ecs_task_logs" {
+resource "aws_cloudwatch_log_group" "obi_one_ecs_task_logs" {
   # TODO check if the logs can be encrypted
-  name_prefix       = "acc_ecs"
+  name_prefix       = "obi_one_ecs"
   skip_destroy      = false
   retention_in_days = 14
 
   kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
 
   tags = {
-    Name = "entitycore"
+    Name = "obi_one"
   }
 }
 
-resource "aws_ecs_cluster" "entitycore" {
-  name = "entitycore_ecs_cluster"
+resource "aws_ecs_cluster" "obi_one" {
+  name = "obi_one_ecs_cluster"
 
   tags = {
-    Name = "entitycore"
+    Name = "obi_one"
   }
 
   setting {
@@ -30,18 +30,18 @@ resource "aws_ecs_cluster" "entitycore" {
 }
 
 # TODO make more strict
-resource "aws_security_group" "entitycore_ecs_task" {
-  name_prefix = "ac_ecs"
+resource "aws_security_group" "obi_one_ecs_task" {
+  name_prefix = "obi_one_ecs"
   vpc_id      = var.vpc_id
-  description = "Sec group for entitycore service"
+  description = "Sec group for obi-one service"
 
   tags = {
-    Name = "entitycore_secgroup"
+    Name = "obi_one_secgroup"
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "entitycore_allow_port_8000" {
-  security_group_id = aws_security_group.entitycore_ecs_task.id
+resource "aws_vpc_security_group_ingress_rule" "obi_one_allow_port_8000" {
+  security_group_id = aws_security_group.obi_one_ecs_task.id
 
   ip_protocol = "tcp"
   from_port   = 8000
@@ -50,8 +50,8 @@ resource "aws_vpc_security_group_ingress_rule" "entitycore_allow_port_8000" {
   description = "Allow port 8000 http"
 }
 
-resource "aws_vpc_security_group_ingress_rule" "entitycore_allow_in_tcp" {
-  security_group_id = aws_security_group.entitycore_ecs_task.id
+resource "aws_vpc_security_group_ingress_rule" "obi_one_allow_in_tcp" {
+  security_group_id = aws_security_group.obi_one_ecs_task.id
   # TODO limit to what is needed
   ip_protocol = "tcp"
   from_port   = 0
@@ -60,8 +60,8 @@ resource "aws_vpc_security_group_ingress_rule" "entitycore_allow_in_tcp" {
   description = "Allow all TCP"
 }
 
-resource "aws_vpc_security_group_egress_rule" "entitycore_allow_outgoing_tcp" {
-  security_group_id = aws_security_group.entitycore_ecs_task.id
+resource "aws_vpc_security_group_egress_rule" "obi_one_allow_outgoing_tcp" {
+  security_group_id = aws_security_group.obi_one_ecs_task.id
   # TODO limit to what is needed
   ip_protocol = "tcp"
   from_port   = 0
@@ -70,8 +70,8 @@ resource "aws_vpc_security_group_egress_rule" "entitycore_allow_outgoing_tcp" {
   description = "Allow all TCP"
 }
 
-resource "aws_vpc_security_group_egress_rule" "entitycore_allow_outgoing_udp" {
-  security_group_id = aws_security_group.entitycore_ecs_task.id
+resource "aws_vpc_security_group_egress_rule" "obi_one_allow_outgoing_udp" {
+  security_group_id = aws_security_group.obi_one_ecs_task.id
   # TODO limit to what is needed
   ip_protocol = "udp"
   from_port   = 0
@@ -80,21 +80,21 @@ resource "aws_vpc_security_group_egress_rule" "entitycore_allow_outgoing_udp" {
   description = "Allow all UDP"
 }
 
-resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
-  family       = "entitycore_task_family"
+resource "aws_ecs_task_definition" "obi_one_ecs_definition" {
+  family       = "obi_one_task_family"
   network_mode = "awsvpc"
 
   container_definitions = jsonencode([
     {
-      name   = "entitycore"
-      family = "entitycore"
+      name   = "obi_one"
+      family = "obi_one"
 
       cpu    = local.cpu
       memory = local.memory
 
       networkMode = "awsvpc"
 
-      image = var.image_url
+      image = var.docker_image_url
 
       essential = true
 
@@ -126,43 +126,19 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
         {
           name  = "ROOT_PATH"
           value = var.root_path
-        },
-        {
-          name  = "DB_HOST"
-          value = aws_db_instance.entitycore.address
-        },
-        {
-          name  = "DB_PORT"
-          value = "5432"
-        },
-        {
-          name  = "DB_NAME"
-          value = var.db_name
-        },
-        {
-          name  = "DB_USER"
-          value = var.db_username
-        },
-        {
-          name  = "S3_BUCKET_NAME"
-          value = var.s3_bucket_name
         }
       ]
 
       secrets = [
-        {
-          name      = "DB_PASS"
-          valueFrom = var.entitycore_service_secrets_arn
-        }
       ]
 
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = aws_cloudwatch_log_group.entitycore_ecs_task_logs.name
+          awslogs-group         = aws_cloudwatch_log_group.obi_one_ecs_task_logs.name
           awslogs-region        = var.aws_region
           awslogs-create-group  = "true"
-          awslogs-stream-prefix = "entitycore"
+          awslogs-stream-prefix = "obi_one"
         }
       }
     }
@@ -173,36 +149,36 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
 
   requires_compatibilities = ["FARGATE"]
 
-  execution_role_arn = aws_iam_role.ecs_entitycore_task_execution_role.arn
-  task_role_arn      = aws_iam_role.ecs_entitycore_task_role.arn
+  execution_role_arn = aws_iam_role.ecs_obi_one_task_execution_role.arn
+  task_role_arn      = aws_iam_role.ecs_obi_one_task_role.arn
 
   depends_on = [
-    aws_cloudwatch_log_group.entitycore_ecs_task_logs,
+    aws_cloudwatch_log_group.obi_one_ecs_task_logs,
   ]
 }
 
-resource "aws_ecs_service" "entitycore_ecs_service" {
-  name            = "entitycore_ecs_service"
-  cluster         = aws_ecs_cluster.entitycore.id
+resource "aws_ecs_service" "obi_one_ecs_service" {
+  name            = "obi_one_ecs_service"
+  cluster         = aws_ecs_cluster.obi_one.id
   launch_type     = "FARGATE"
-  task_definition = aws_ecs_task_definition.entitycore_ecs_definition.arn
+  task_definition = aws_ecs_task_definition.obi_one_ecs_definition.arn
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.entitycore_private_tg.arn
-    container_name   = "entitycore"
+    target_group_arn = aws_lb_target_group.obi_one_private_tg.arn
+    container_name   = "obi_one"
     container_port   = 8000
   }
 
   network_configuration {
-    security_groups = [aws_security_group.entitycore_ecs_task.id]
-    subnets = [aws_subnet.entitycore_ecs_a.id,
-      aws_subnet.entitycore_ecs_b.id,
+    security_groups = [aws_security_group.obi_one_ecs_task.id]
+    subnets = [aws_subnet.obi_one_ecs_a.id,
+      aws_subnet.obi_one_ecs_b.id,
     ]
     assign_public_ip = false
   }
 
   depends_on = [
-    aws_iam_role.ecs_entitycore_task_execution_role,
+    aws_iam_role.ecs_obi_one_task_execution_role,
   ]
 
   force_new_deployment = true
@@ -211,8 +187,8 @@ resource "aws_ecs_service" "entitycore_ecs_service" {
   propagate_tags = "SERVICE"
 }
 
-resource "aws_iam_role" "ecs_entitycore_task_execution_role" {
-  name_prefix = "acc_ecs"
+resource "aws_iam_role" "ecs_obi_one_task_execution_role" {
+  name_prefix = "obi_one_ecs"
 
   assume_role_policy = <<-EOT
   {
@@ -231,13 +207,13 @@ resource "aws_iam_role" "ecs_entitycore_task_execution_role" {
   EOT
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_entitycore_task_execution_role_policy_attachment" {
-  role       = aws_iam_role.ecs_entitycore_task_execution_role.name
+resource "aws_iam_role_policy_attachment" "ecs_obi_one_task_execution_role_policy_attachment" {
+  role       = aws_iam_role.ecs_obi_one_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-resource "aws_iam_role" "ecs_entitycore_task_role" {
-  name_prefix = "acc_ecs"
+resource "aws_iam_role" "ecs_obi_one_task_role" {
+  name_prefix = "obi_one_ecs"
 
   assume_role_policy = <<-EOT
   {
@@ -256,8 +232,8 @@ resource "aws_iam_role" "ecs_entitycore_task_role" {
   EOT
 }
 
-resource "aws_iam_policy" "ecs_task_logs_entitycore" {
-  name_prefix = "acc_ecs"
+resource "aws_iam_policy" "ecs_task_logs_obi_one" {
+  name_prefix = "obi_one_ecs"
   description = "Allows ECS tasks to create log streams and log groups in CloudWatch Logs"
 
   policy = jsonencode({
@@ -277,12 +253,7 @@ resource "aws_iam_policy" "ecs_task_logs_entitycore" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "secrets" {
-  role       = aws_iam_role.ecs_entitycore_task_execution_role.name
-  policy_arn = aws_iam_policy.secrets_access.arn
-}
-
 resource "aws_iam_role_policy_attachment" "execution_logs" {
-  role       = aws_iam_role.ecs_entitycore_task_execution_role.name
-  policy_arn = aws_iam_policy.ecs_task_logs_entitycore.arn
+  role       = aws_iam_role.ecs_obi_one_task_execution_role.name
+  policy_arn = aws_iam_policy.ecs_task_logs_obi_one.arn
 }

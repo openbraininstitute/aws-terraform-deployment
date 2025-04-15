@@ -1,8 +1,8 @@
 resource "aws_security_group" "acc_sg" {
   vpc_id = var.vpc_id
 
-  name        = "main_entitycore_sg"
-  description = "main security group for entitycore resources"
+  name        = "main_obi_one_sg"
+  description = "main security group for obi-one resources"
 }
 
 resource "aws_vpc_security_group_ingress_rule" "main_subnet_ingress" {

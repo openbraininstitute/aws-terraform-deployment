@@ -19,7 +19,7 @@ resource "aws_lb_target_group" "obi_one_private_tg" {
 
 resource "aws_lb_listener_rule" "obi_one_private_listener_rule" {
   listener_arn = var.private_alb_listener_arn
-  priority     = 610
+  priority     = 710
 
   action {
     type             = "forward"

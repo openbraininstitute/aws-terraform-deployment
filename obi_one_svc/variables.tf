@@ -24,30 +24,11 @@ variable "keycloak_url" {
   type        = string
 }
 
-variable "image_url" {
-  description = "Image for the entitycore service"
-  type        = string
-}
-
-variable "db_name" {
-  description = "Name of the database"
-  type        = string
-}
-
-variable "db_username" {
-  description = "Admin username for the database"
+variable "docker_image_url" {
+  description = "Docker image for the obi-one service"
   type        = string
 }
 
 variable "internet_access_route_id" {
   type = string
-}
-
-variable "entitycore_service_secrets_arn" {
-  type = string
-}
-
-variable "s3_bucket_name" {
-  description = "Name of the S3 bucket for entitycore service"
-  type        = string
 }

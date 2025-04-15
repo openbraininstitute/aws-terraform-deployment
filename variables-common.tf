@@ -224,3 +224,8 @@ variable "thumbnail_generation_api_docker_image_url" {
   description = "Docker image for the thumbnail generation api"
   sensitive   = false
 }
+
+variable "obi_one_svc_docker_image_url" {
+  type        = string
+  description = "Image URL for obi-one service."
+}

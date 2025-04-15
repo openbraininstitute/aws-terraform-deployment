@@ -1,10 +1,10 @@
 locals {
-  clustername = "entitycore_ecs_cluster"
-  servicename = "entitycore_ecs_service"
+  clustername = "obi_one_ecs_cluster"
+  servicename = "obi_one_ecs_service"
 }
 
 resource "aws_cloudwatch_dashboard" "main" {
-  dashboard_name = "entitycore"
+  dashboard_name = "obi-one"
 
   dashboard_body = jsonencode({
     widgets = [
@@ -17,12 +17,16 @@ resource "aws_cloudwatch_dashboard" "main" {
 
         properties = {
           metrics = [
-            ["AWS/ECS",
+            [
+              "AWS/ECS",
               "CPUUtilization",
               "ClusterName", local.clustername,
               "ServiceName", local.servicename,
-              { "stat" : "Average",
-            "region" : var.aws_region }]
+              {
+                "stat" : "Average",
+                "region" : var.aws_region
+              }
+            ]
           ]
           view    = "timeSeries"
           stacked = false
@@ -40,11 +44,13 @@ resource "aws_cloudwatch_dashboard" "main" {
 
         properties = {
           metrics = [
-            ["AWS/ECS",
+            [
+              "AWS/ECS",
               "MemoryUtilization",
               "ClusterName", local.clustername,
               "ServiceName", local.servicename,
-            { "stat" : "Average", "region" : var.aws_region }]
+              { "stat" : "Average", "region" : var.aws_region }
+            ]
           ]
           view    = "timeSeries"
           stacked = false
