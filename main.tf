@@ -449,8 +449,8 @@ module "entitycore_svc" {
 
 }
 
-module "obi_one_svc" {
-  source = "./obi_one_svc"
+module "obi_one" {
+  source = "./obi_one"
 
   aws_region                    = local.aws_region
   vpc_id                        = local.vpc_id
@@ -466,7 +466,7 @@ module "obi_one_svc" {
     ) : (
     "https://staging.openbraininstitute.org/auth/realms/SBO/"
   )
-  docker_image_url      = var.obi_one_svc_docker_image_url
+  docker_image_url      = var.obi_one_docker_image_url
 }
 
 module "obi_generative_gui" {
