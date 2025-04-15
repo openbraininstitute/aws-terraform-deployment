@@ -82,8 +82,8 @@ module "aws_backups_sns_to_teams" {
   unique_name          = "aws_backups" # to make sure certain roles and secrets have a unique name
   sns_topic_arn        = module.backups.sns_topic_arn
   python_script_name   = "aws_backups_sns_to_teams.py"
-  python_function_name = "handle"
-  handler              = "aws_backups_sns_to_teams.handle"
+  python_function_name = "handle_backup_event"
+  handler              = "aws_backups_sns_to_teams.handle_backup_event"
   python_runtime       = "python3.11"
 
   secret_recovery_window_in_days = 7
@@ -99,8 +99,8 @@ module "deployments_sns_to_teams" {
   unique_name          = "aws_deployments" # to make sure certain roles and secrets have a unique name
   sns_topic_arn        = module.deployments_sns_topic.sns_topic_arn
   python_script_name   = "aws_deployments_sns_to_teams.py"
-  python_function_name = "handle"
-  handler              = "aws_deployments_sns_to_teams.handle"
+  python_function_name = "handle_deployment_event"
+  handler              = "aws_deployments_sns_to_teams.handle_deployment_event"
   python_runtime       = "python3.11"
 
   secret_recovery_window_in_days = 7

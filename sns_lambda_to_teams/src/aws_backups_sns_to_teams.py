@@ -30,7 +30,7 @@ def get_teams_webhook_url() -> str:
             raise
 
 
-def handle(event: Dict[str, Any], _) -> Dict[str, Any]:
+def handle_backup_event(event: Dict[str, Any], _) -> Dict[str, Any]:
     """Main Lambda handler for processing SNS events."""
     logger.info("Received event: %s", json.dumps(event))
 
