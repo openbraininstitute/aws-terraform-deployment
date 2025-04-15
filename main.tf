@@ -469,8 +469,8 @@ module "obi_one_svc" {
   docker_image_url      = var.obi_one_svc_docker_image_url
 }
 
-module "obi_generative_gui_svc" {
-  source = "./obi_generative_gui_svc"
+module "obi_generative_gui" {
+  source = "./obi_generative_gui"
 
   aws_region                    = local.aws_region
   vpc_id                        = local.vpc_id
@@ -486,7 +486,7 @@ module "obi_generative_gui_svc" {
     ) : (
     "https://staging.openbraininstitute.org/auth/realms/SBO/"
   )
-  docker_image_url      = var.obi_generative_gui_svc_docker_image_url
+  docker_image_url      = var.obi_generative_gui_docker_image_url
 }
 
 module "kg_inference_api" {
