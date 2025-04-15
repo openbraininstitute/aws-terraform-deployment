@@ -466,7 +466,7 @@ module "obi_one" {
     ) : (
     "https://staging.openbraininstitute.org/auth/realms/SBO/"
   )
-  docker_image_url      = var.obi_one_docker_image_url
+  docker_image_url = var.obi_one_docker_image_url
 }
 
 module "obi_generative_gui" {
@@ -486,7 +486,7 @@ module "obi_generative_gui" {
     ) : (
     "https://staging.openbraininstitute.org/auth/realms/SBO/"
   )
-  docker_image_url      = var.obi_generative_gui_docker_image_url
+  docker_image_url = var.obi_generative_gui_docker_image_url
 }
 
 module "kg_inference_api" {
