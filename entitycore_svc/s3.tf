@@ -2,7 +2,8 @@ resource "aws_s3_bucket" "entitycore" {
   bucket = var.s3_bucket_name
 
   tags = {
-    Name = "entitycore-storage"
+    Name            = "entitycore-storage"
+    obi_backup_plan = var.obi_backup_plan
   }
 }
 
