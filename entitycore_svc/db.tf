@@ -45,6 +45,6 @@ resource "aws_db_instance" "entitycore" {
 
   tags = {
     Name            = "entitycore-db"
-    obi_backup_plan = "obi_plan"
+    obi_backup_plan = var.obi_backup_plan
   }
 }

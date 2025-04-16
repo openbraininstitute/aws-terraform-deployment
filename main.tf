@@ -447,6 +447,7 @@ module "entitycore_svc" {
   db_name     = "entitycore"
   db_username = "entitycore"
 
+  obi_backup_plan = "obi_plan"
 }
 
 module "kg_inference_api" {
