@@ -51,3 +51,8 @@ variable "s3_bucket_name" {
   description = "Name of the S3 bucket for entitycore service"
   type        = string
 }
+
+variable "obi_backup_plan" {
+  description = "Name of the OBI backup plan"
+  type        = string
+}
