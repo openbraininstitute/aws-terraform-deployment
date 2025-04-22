@@ -44,20 +44,10 @@ resource "aws_vpc_security_group_ingress_rule" "obi_generative_gui_allow_port_80
   security_group_id = aws_security_group.obi_generative_gui_ecs_task.id
 
   ip_protocol = "tcp"
-  from_port   = 8000
-  to_port     = 8000
+  from_port   = var.container_port
+  to_port     = var.container_port
   cidr_ipv4   = data.aws_vpc.main.cidr_block
-  description = "Allow port 8000 http"
-}
-
-resource "aws_vpc_security_group_ingress_rule" "obi_generative_gui_allow_in_tcp" {
-  security_group_id = aws_security_group.obi_generative_gui_ecs_task.id
-  # TODO limit to what is needed
-  ip_protocol = "tcp"
-  from_port   = 0
-  to_port     = 65535
-  cidr_ipv4   = "0.0.0.0/0"
-  description = "Allow all TCP"
+  description = "Allow access to the container port"
 }
 
 resource "aws_vpc_security_group_egress_rule" "obi_generative_gui_allow_outgoing_tcp" {
@@ -100,19 +90,11 @@ resource "aws_ecs_task_definition" "obi_generative_gui_ecs_definition" {
 
       portMappings = [
         {
-          hostPort      = 8000
-          containerPort = 8000
+          hostPort      = var.host_port
+          containerPort = var.container_port
           protocol      = "tcp"
         }
       ]
-
-      healthcheck = {
-        command     = ["CMD-SHELL", "exit 0"] // TODO: add a proper health check.
-        interval    = 60
-        timeout     = 5
-        startPeriod = 30
-        retries     = 3
-      }
 
       environment = [
         {
@@ -166,7 +148,7 @@ resource "aws_ecs_service" "obi_generative_gui_ecs_service" {
   load_balancer {
     target_group_arn = aws_lb_target_group.obi_generative_gui_private_tg.arn
     container_name   = "obi_generative_gui"
-    container_port   = 8000
+    container_port   = var.container_port
   }
 
   network_configuration {

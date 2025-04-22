@@ -1,7 +1,7 @@
 resource "aws_lb_target_group" "obi_generative_gui_private_tg" {
   #ts:skip=AC_AWS_0492
   name        = "obi-generative-gui-private"
-  port        = 8000
+  port        = var.container_port
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = var.vpc_id
@@ -12,7 +12,7 @@ resource "aws_lb_target_group" "obi_generative_gui_private_tg" {
 
   health_check {
     enabled  = true
-    path     = "${var.root_path}/health"
+    path     = "${var.root_path}/api/health"
     protocol = "HTTP"
   }
 }
@@ -29,12 +29,6 @@ resource "aws_lb_listener_rule" "obi_generative_gui_private_listener_rule" {
   condition {
     path_pattern {
       values = ["${var.root_path}*"]
-    }
-  }
-
-  condition {
-    source_ip {
-      values = var.allowed_source_ip_cidr_blocks
     }
   }
 }

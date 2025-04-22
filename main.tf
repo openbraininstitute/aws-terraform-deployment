@@ -453,13 +453,15 @@ module "entitycore_svc" {
 module "obi_one" {
   source = "./obi_one"
 
-  aws_region                    = local.aws_region
-  vpc_id                        = local.vpc_id
-  private_alb_listener_arn      = local.private_alb_https_listener_arn
-  internet_access_route_id      = local.route_table_private_subnets_id
-  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
+  aws_region               = local.aws_region
+  vpc_id                   = local.vpc_id
+  private_alb_listener_arn = local.private_alb_https_listener_arn
+  internet_access_route_id = local.route_table_private_subnets_id
 
   root_path = "/api/obi-one"
+
+  container_port = 8000
+  host_port      = 8000
 
   # use staging keycloak url in sandboxes
   keycloak_url = (var.is_staging || var.is_production) ? (
@@ -473,13 +475,15 @@ module "obi_one" {
 module "obi_generative_gui" {
   source = "./obi_generative_gui"
 
-  aws_region                    = local.aws_region
-  vpc_id                        = local.vpc_id
-  private_alb_listener_arn      = local.private_alb_https_listener_arn
-  internet_access_route_id      = local.route_table_private_subnets_id
-  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
+  aws_region               = local.aws_region
+  vpc_id                   = local.vpc_id
+  private_alb_listener_arn = local.private_alb_https_listener_arn
+  internet_access_route_id = local.route_table_private_subnets_id
 
-  root_path = "/api/obi-generative-gui"
+  root_path = "/app/obi-generative-gui"
+
+  container_port = 8000
+  host_port      = 8000
 
   # use staging keycloak url in sandboxes
   keycloak_url = (var.is_staging || var.is_production) ? (

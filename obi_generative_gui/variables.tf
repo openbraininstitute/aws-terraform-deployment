@@ -6,10 +6,6 @@ variable "vpc_id" {
   type = string
 }
 
-variable "allowed_source_ip_cidr_blocks" {
-  type = list(string)
-}
-
 variable "private_alb_listener_arn" {
   type = string
 }
@@ -17,6 +13,16 @@ variable "private_alb_listener_arn" {
 variable "root_path" {
   description = "Base path for the API"
   type        = string
+}
+
+variable "host_port" {
+  description = "Internal host port"
+  type        = number
+}
+
+variable "container_port" {
+  description = "Container port"
+  type        = number
 }
 
 variable "keycloak_url" {
