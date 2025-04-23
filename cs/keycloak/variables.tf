@@ -9,7 +9,7 @@ variable "allowed_source_ip_cidr_blocks" {
   type = list(string)
 }
 
-variable "efs_mt_subnets" {
+variable "keycloak_subnets" {
   type = list(string)
 }
 

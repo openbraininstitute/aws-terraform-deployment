@@ -11,10 +11,10 @@ resource "aws_efs_file_system" "keycloak-theme" {
 
 ### Create mount target for keycloak-theme EFS for each subnet
 resource "aws_efs_mount_target" "keycloak-theme-mt" {
-  count           = length(var.efs_mt_subnets)
+  count           = length(var.keycloak_subnets)
   file_system_id  = aws_efs_file_system.keycloak-theme.id
   security_groups = [aws_security_group.efs_sg.id]
-  subnet_id       = var.efs_mt_subnets[count.index]
+  subnet_id       = var.keycloak_subnets[count.index]
 }
 
 # EFS to store keycloak providers (aka plugins)
@@ -29,8 +29,8 @@ resource "aws_efs_file_system" "keycloak-providers" {
 }
 
 resource "aws_efs_mount_target" "keycloak-providers-mt" {
-  count           = length(var.efs_mt_subnets)
+  count           = length(var.keycloak_subnets)
   file_system_id  = aws_efs_file_system.keycloak-providers.id
   security_groups = [aws_security_group.efs_sg.id]
-  subnet_id       = var.efs_mt_subnets[count.index]
+  subnet_id       = var.keycloak_subnets[count.index]
 }
