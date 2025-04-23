@@ -38,6 +38,15 @@ resource "aws_network_acl" "obi_one_nacl" {
     to_port    = var.container_port
     protocol   = "tcp"
   }
+  # allow ingress to ephemeral ports
+  ingress {
+    rule_no    = 150
+    action     = "allow"
+    cidr_block = data.aws_vpc.main.cidr_block
+    from_port  = 1024
+    to_port    = 65535
+    protocol   = "tcp"
+  }
   egress {
     rule_no    = 200
     action     = "allow"
