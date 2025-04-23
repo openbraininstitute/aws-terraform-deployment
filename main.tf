@@ -398,16 +398,6 @@ module "doi_redirect" {
   private_alb_https_listener_arn = local.private_alb_https_listener_arn
 }
 
-module "delegate_identity_center" {
-  source = "./delegate_identity_center"
-
-  # only to be deployed in the management account
-  count = var.is_production ? 1 : 0
-
-  management_account_id                = 671250183987
-  delegated_idcenter_member_account_id = 692859911827
-}
-
 module "accounting_svc" {
   source = "./accounting_svc"
 
