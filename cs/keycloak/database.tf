@@ -2,7 +2,7 @@
 
 resource "aws_db_subnet_group" "keycloak_db_subnet_group" {
   name       = "keycloak-db-subnet-group"
-  subnet_ids = var.efs_mt_subnets
+  subnet_ids = var.keycloak_subnets
 
   tags = {
     SBO_Billing = "keycloak"
