@@ -29,7 +29,6 @@ resource "aws_ecs_cluster" "obi_one" {
   }
 }
 
-# TODO make more strict
 resource "aws_security_group" "obi_one_ecs_task" {
   name_prefix = "obi_one_ecs"
   vpc_id      = var.vpc_id
@@ -40,7 +39,7 @@ resource "aws_security_group" "obi_one_ecs_task" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "obi_one_allow_port_8000" {
+resource "aws_vpc_security_group_ingress_rule" "obi_one_allow_container_port" {
   security_group_id = aws_security_group.obi_one_ecs_task.id
 
   ip_protocol = "tcp"
@@ -51,24 +50,16 @@ resource "aws_vpc_security_group_ingress_rule" "obi_one_allow_port_8000" {
 }
 
 
-resource "aws_vpc_security_group_egress_rule" "obi_one_allow_outgoing_tcp" {
+resource "aws_vpc_security_group_egress_rule" "obi_one_allow_outgoing" {
   security_group_id = aws_security_group.obi_one_ecs_task.id
-  # TODO limit to what is needed
-  ip_protocol = "tcp"
-  from_port   = 0
-  to_port     = 65535
-  cidr_ipv4   = "0.0.0.0/0"
-  description = "Allow all TCP"
-}
+  description       = "Allow egress to any destination"
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = "-1"
 
-resource "aws_vpc_security_group_egress_rule" "obi_one_allow_outgoing_udp" {
-  security_group_id = aws_security_group.obi_one_ecs_task.id
-  # TODO limit to what is needed
-  ip_protocol = "udp"
-  from_port   = 0
-  to_port     = 65535
-  cidr_ipv4   = "0.0.0.0/0"
-  description = "Allow all UDP"
+  tags = {
+    SBO_Billing = "obi_one"
+    Name        = "obi_one_allow_outgoing"
+  }
 }
 
 resource "aws_ecs_task_definition" "obi_one_ecs_definition" {

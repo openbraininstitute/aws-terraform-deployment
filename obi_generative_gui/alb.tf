@@ -12,14 +12,14 @@ resource "aws_lb_target_group" "obi_generative_gui_private_tg" {
 
   health_check {
     enabled  = true
-    path     = "${var.root_path}/api/health"
+    path     = "${var.root_path}/health"
     protocol = "HTTP"
   }
 }
 
 resource "aws_lb_listener_rule" "obi_generative_gui_private_listener_rule" {
   listener_arn = var.private_alb_listener_arn
-  priority     = 710
+  priority     = 711
 
   action {
     type             = "forward"
