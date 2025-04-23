@@ -38,8 +38,16 @@ resource "aws_network_acl" "obi_one_nacl" {
     to_port    = var.container_port
     protocol   = "tcp"
   }
-  egress {
+  ingress {
+    protocol   = "tcp"
     rule_no    = 200
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 1024
+    to_port    = 65535
+  }
+  egress {
+    rule_no    = 300
     action     = "allow"
     cidr_block = "0.0.0.0/0"
     from_port  = 0
