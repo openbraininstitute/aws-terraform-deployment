@@ -1,7 +1,7 @@
 resource "aws_subnet" "obi_generative_gui_ecs_a" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}a"
-  cidr_block        = "10.0.24.32/27"
+  cidr_block        = "10.0.25.32/27"
   tags = {
     Name = "obi_generative_gui_ecs_a"
   }
@@ -10,7 +10,7 @@ resource "aws_subnet" "obi_generative_gui_ecs_a" {
 resource "aws_subnet" "obi_generative_gui_ecs_b" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}b"
-  cidr_block        = "10.0.24.64/27"
+  cidr_block        = "10.0.25.64/27"
   tags = {
     Name = "obi_generative_gui_ecs_b"
   }
