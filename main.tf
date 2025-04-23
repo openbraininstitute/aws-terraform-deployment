@@ -440,6 +440,50 @@ module "entitycore_svc" {
   obi_backup_plan = "obi_plan"
 }
 
+module "obi_one" {
+  source = "./obi_one"
+
+  aws_region               = local.aws_region
+  vpc_id                   = local.vpc_id
+  private_alb_listener_arn = local.private_alb_https_listener_arn
+  internet_access_route_id = local.route_table_private_subnets_id
+
+  root_path = "/api/obi-one"
+
+  container_port = 8000
+  host_port      = 8000
+
+  # use staging keycloak url in sandboxes
+  keycloak_url = (var.is_staging || var.is_production) ? (
+    "https://${local.primary_domain}/auth/realms/SBO/"
+    ) : (
+    "https://staging.openbraininstitute.org/auth/realms/SBO/"
+  )
+  docker_image_url = var.obi_one_docker_image_url
+}
+
+module "obi_generative_gui" {
+  source = "./obi_generative_gui"
+
+  aws_region               = local.aws_region
+  vpc_id                   = local.vpc_id
+  private_alb_listener_arn = local.private_alb_https_listener_arn
+  internet_access_route_id = local.route_table_private_subnets_id
+
+  root_path = "/app/obi-generative-gui"
+
+  container_port = 8000
+  host_port      = 8000
+
+  # use staging keycloak url in sandboxes
+  keycloak_url = (var.is_staging || var.is_production) ? (
+    "https://${local.primary_domain}/auth/realms/SBO/"
+    ) : (
+    "https://staging.openbraininstitute.org/auth/realms/SBO/"
+  )
+  docker_image_url = var.obi_generative_gui_docker_image_url
+}
+
 module "kg_inference_api" {
   source = "./kg-inference-api"
 

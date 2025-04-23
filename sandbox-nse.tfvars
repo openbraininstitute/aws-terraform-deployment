@@ -1,5 +1,6 @@
 is_staging                                = false
 is_production                             = false
+deployment_env                            = "sandbox-nse"
 terraform_remote_state_bucket_name        = "obi-tfstate-sandbox-nse"
 cell_svc_bucket_name                      = "sbo-cell-svc-perf-test-sandbox-nse"
 ml_paper_bucket_name                      = "ml-paper-bucket-sandbox-hpc-test"
@@ -13,6 +14,8 @@ core_web_app_docker_image_url             = "public.ecr.aws/openbraininstitute/c
 core_web_app_next_docker_image_url        = "public.ecr.aws/openbraininstitute/core-web-app:entitycore-migration"
 virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:20250226.1"
 thumbnail_generation_api_docker_image_url = "bluebrain/thumbnail-generation-api:latest"
+accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:latest"
+me_model_analysis_docker_image_url        = "public.ecr.aws/openbraininstitute/me-model-analysis:staging"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.1.1-prod"
 is_nexus_openscience_running              = false
 is_nexus_obp_running                      = false
@@ -21,6 +24,10 @@ bluenaas_docker_image_url = "bluebrain/blue-naas-single-cell:staging"
 bluenaas_task_size = {
   cpu    = 4096
   memory = 8192
+}
+virtual_lab_manager_task_size = {
+  cpu    = 512
+  memory = 1024
 }
 keycloak_task_size = {
   cpu    = 1024
@@ -41,3 +48,6 @@ hpc_resource_provisioner_scratch_bucket       = "s3://sbosandbox-lec3cn"
 
 entitycore_svc_s3_bucket_name = "entitycore-data-sandbox-nse-test"
 entitycore_svc_image_url      = "public.ecr.aws/openbraininstitute/entitycore:2025.4.1"
+
+obi_one_docker_image_url            = "public.ecr.aws/openbraininstitute/obi-one:2025.4.2"
+obi_generative_gui_docker_image_url = "public.ecr.aws/openbraininstitute/obi-generative-gui:2025.4.2"
