@@ -453,12 +453,8 @@ module "obi_one" {
   container_port = 8000
   host_port      = 8000
 
-  # use staging keycloak url in sandboxes
-  keycloak_url = (var.is_staging || var.is_production) ? (
-    "https://${local.primary_domain}/auth/realms/SBO/"
-    ) : (
-    "https://staging.openbraininstitute.org/auth/realms/SBO/"
-  )
+  keycloak_url     = "https://${local.primary_domain}/auth/realms/SBO/"
+  entitycore_url   = "https://${local.primary_domain}/api/entitycore"
   docker_image_url = var.obi_one_docker_image_url
 }
 
@@ -475,12 +471,8 @@ module "obi_generative_gui" {
   container_port = 8000
   host_port      = 8000
 
-  # use staging keycloak url in sandboxes
-  keycloak_url = (var.is_staging || var.is_production) ? (
-    "https://${local.primary_domain}/auth/realms/SBO/"
-    ) : (
-    "https://staging.openbraininstitute.org/auth/realms/SBO/"
-  )
+  keycloak_url     = "https://${local.primary_domain}/auth/realms/SBO/"
+  entitycore_url   = "https://${local.primary_domain}/api/entitycore"
   docker_image_url = var.obi_generative_gui_docker_image_url
 }
 
