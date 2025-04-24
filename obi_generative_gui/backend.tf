@@ -97,6 +97,10 @@ resource "aws_ecs_task_definition" "obi_generative_gui_ecs_definition" {
           value = var.keycloak_url
         },
         {
+          name  = "ENTITYCORE_URL"
+          value = var.entitycore_url
+        },
+        {
           name  = "ROOT_PATH"
           value = var.root_path
         }
