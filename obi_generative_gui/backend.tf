@@ -101,6 +101,10 @@ resource "aws_ecs_task_definition" "obi_generative_gui_ecs_definition" {
           value = var.entitycore_url
         },
         {
+          name  = "OBI_ONE_URL"
+          value = var.obi_one_url
+        },
+        {
           name  = "ROOT_PATH"
           value = var.root_path
         }
