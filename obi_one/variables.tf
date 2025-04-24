@@ -30,6 +30,11 @@ variable "keycloak_url" {
   type        = string
 }
 
+variable "entitycore_url" {
+  description = "Entitycore URL"
+  type        = string
+}
+
 variable "docker_image_url" {
   description = "Docker image for the obi-one service"
   type        = string

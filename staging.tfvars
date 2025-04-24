@@ -49,4 +49,4 @@ entitycore_svc_s3_bucket_name = "entitycore-data-staging"
 entitycore_svc_image_url      = "public.ecr.aws/openbraininstitute/entitycore:2025.4.1"
 
 obi_one_docker_image_url            = "public.ecr.aws/openbraininstitute/obi-one:2025.4.2"
-obi_generative_gui_docker_image_url = "public.ecr.aws/openbraininstitute/obi-generative-gui:2025.4.2"
+obi_generative_gui_docker_image_url = "public.ecr.aws/openbraininstitute/obi-generative-gui:2025.4.4"
