@@ -473,6 +473,7 @@ module "obi_generative_gui" {
 
   keycloak_url     = "https://${local.primary_domain}/auth/realms/SBO/"
   entitycore_url   = "https://${local.primary_domain}/api/entitycore"
+  obi_one_url      = "https://${local.primary_domain}/api/obi-one"
   docker_image_url = var.obi_generative_gui_docker_image_url
 }
 

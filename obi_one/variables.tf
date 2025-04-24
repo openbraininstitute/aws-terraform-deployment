@@ -31,7 +31,7 @@ variable "keycloak_url" {
 }
 
 variable "entitycore_url" {
-  description = "Entitycore URL"
+  description = "entitycore URL"
   type        = string
 }
 

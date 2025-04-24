@@ -31,7 +31,12 @@ variable "keycloak_url" {
 }
 
 variable "entitycore_url" {
-  description = "Entitycore URL"
+  description = "entitycore URL"
+  type        = string
+}
+
+variable "obi_one_url" {
+  description = "obi-one URL"
   type        = string
 }
 
