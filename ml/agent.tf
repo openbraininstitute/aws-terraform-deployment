@@ -119,7 +119,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_TOOLS__LITERATURE__URL"
-          value = "http://${var.private_alb_dns}:3000/api/literature/retrieval/"
+          value = "http://${var.private_alb_dns}:3000/api/literature"
         },
       ]
       secrets = [
