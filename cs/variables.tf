@@ -54,3 +54,7 @@ variable "jupyterhub_ec2_type" {
   type        = string
   description = "JupyterHub service Amazon EC2 Instance type"
 }
+
+variable "is_production" {
+  type = bool
+}

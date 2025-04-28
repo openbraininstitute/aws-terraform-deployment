@@ -1,4 +1,8 @@
 #tfsec:ignore:aws-ecs-enable-in-transit-encryption
+locals {
+  kc_start_command = var.is_production ? "start" : "start --spi-theme-static-max-age=-1 --spi-theme-cache-themes=false --spi-theme-cache-templates=false"
+}
+
 resource "aws_ecs_task_definition" "sbo_keycloak_task" {
   family                   = "keycloak-task"
   requires_compatibilities = ["FARGATE"]
@@ -15,7 +19,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
       image     = "keycloak/keycloak:25.0.6"
       cpu       = var.keycloak_task_size.cpu
       memory    = var.keycloak_task_size.memory
-      command   = ["start"]
+      command   = [local.kc_start_command]
       essential = true
       portMappings = [
         {
