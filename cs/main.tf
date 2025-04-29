@@ -34,5 +34,8 @@ module "keycloak" {
   keycloak_management_port = 9000
   keycloak_task_size       = var.keycloak_task_size
 
+  keycloak_ecs_cluster_name = "keycloak-cluster"
+  keycloak_ecs_service_name = "keycloak-service"
+
   allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
 }

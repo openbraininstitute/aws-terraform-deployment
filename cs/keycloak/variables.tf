@@ -45,6 +45,14 @@ variable "keycloak_secrets_arn" {
   sensitive   = false
 }
 
+variable "keycloak_ecs_cluster_name" {
+  type = string
+}
+
+variable "keycloak_ecs_service_name" {
+  type = string
+}
+
 variable "keycloak_task_size" {
   type = object({
     cpu    = number
