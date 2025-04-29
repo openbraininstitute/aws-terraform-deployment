@@ -15,9 +15,9 @@ resource "aws_cloudwatch_dashboard" "main" {
               "AWS/ECS",
               "CPUUtilization",
               "ClusterName",
-              aws_ecs_cluster.keycloak-cluster.id,
+              var.keycloak_ecs_cluster_name,
               "ServiceName",
-              aws_ecs_service.keycloak_service_terraform.id,
+              var.keycloak_ecs_service_name,
               { "stat" : "Average", "region" : data.aws_region.current.name },
             ]
           ],
@@ -44,9 +44,9 @@ resource "aws_cloudwatch_dashboard" "main" {
               "AWS/ECS",
               "CPUUtilization",
               "ClusterName",
-              aws_ecs_cluster.keycloak-cluster.id,
+              var.keycloak_ecs_cluster_name,
               "ServiceName",
-              aws_ecs_service.keycloak_service_terraform.id,
+              var.keycloak_ecs_service_name,
               { "stat" : "Average", "region" : data.aws_region.current.name },
             ]
           ],
