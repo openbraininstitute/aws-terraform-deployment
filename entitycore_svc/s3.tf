@@ -14,7 +14,7 @@ resource "aws_s3_bucket_cors_configuration" "entitycore" {
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["GET", "HEAD"]
-    allowed_origins = s3_bucket_allowed_origins
+    allowed_origins = var.s3_bucket_allowed_origins
     expose_headers  = ["ETag", "Content-Length", "Content-Type", "Last-Modified"]
     max_age_seconds = 3000
   }
