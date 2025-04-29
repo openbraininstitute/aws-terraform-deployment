@@ -1,8 +1,3 @@
-locals {
-  clustername = "sbo-keycloak-cluster"
-  servicename = "sbo-keycloak-service"
-}
-
 resource "aws_cloudwatch_dashboard" "main" {
   dashboard_name = "Keycloak"
 
@@ -20,9 +15,9 @@ resource "aws_cloudwatch_dashboard" "main" {
               "AWS/ECS",
               "CPUUtilization",
               "ClusterName",
-              local.clustername,
+              aws_ecs_cluster.keycloak-cluster.id,
               "ServiceName",
-              local.servicename,
+              aws_ecs_service.keycloak_service_terraform.id,
               { "stat" : "Average", "region" : data.aws_region.current.name },
             ]
           ],
@@ -49,9 +44,9 @@ resource "aws_cloudwatch_dashboard" "main" {
               "AWS/ECS",
               "CPUUtilization",
               "ClusterName",
-              local.clustername,
+              aws_ecs_cluster.keycloak-cluster.id,
               "ServiceName",
-              local.servicename,
+              aws_ecs_service.keycloak_service_terraform.id,
               { "stat" : "Average", "region" : data.aws_region.current.name },
             ]
           ],
