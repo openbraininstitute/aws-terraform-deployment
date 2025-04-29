@@ -1,6 +1,6 @@
 resource "aws_ecs_service" "keycloak_service_terraform" {
-  name            = "sbo-keycloak-service"
-  cluster         = aws_ecs_cluster.sbo-keycloak-cluster.id       # the ECS cluster ID where we run the service
+  name            = "keycloak-service"
+  cluster         = aws_ecs_cluster.keycloak-cluster.id           # the ECS cluster ID where we run the service
   task_definition = aws_ecs_task_definition.sbo_keycloak_task.arn # the ARN of the task definition
   desired_count   = 1
   launch_type     = "FARGATE"
