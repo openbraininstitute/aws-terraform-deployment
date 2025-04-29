@@ -7,6 +7,19 @@ resource "aws_s3_bucket" "entitycore" {
   }
 }
 
+# Add CORS configuration to allow cross-origin access
+resource "aws_s3_bucket_cors_configuration" "entitycore" {
+  bucket = aws_s3_bucket.entitycore.id
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET", "HEAD"]
+    allowed_origins = var.s3_bucket_allowed_origins
+    expose_headers  = ["ETag", "Content-Length", "Content-Type", "Last-Modified"]
+    max_age_seconds = 3000
+  }
+}
+
 # Disable versioning until enabled in entitycore
 resource "aws_s3_bucket_versioning" "entitycore" {
   bucket = aws_s3_bucket.entitycore.id

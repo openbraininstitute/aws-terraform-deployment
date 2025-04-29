@@ -212,6 +212,11 @@ variable "entitycore_svc_s3_bucket_name" {
   description = "S3 bucket name in which entitycore data lives."
 }
 
+variable "entitycore_svc_s3_bucket_allowed_origins" {
+  type        = list(string)
+  description = "Allowed origins for the entitycore service"
+}
+
 variable "entitycore_svc_image_url" {
   type        = string
   description = "Image URL for entitycore service."
