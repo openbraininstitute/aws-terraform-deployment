@@ -432,8 +432,9 @@ module "entitycore_svc" {
     ) : (
     "https://staging.openbraininstitute.org/auth/realms/SBO/"
   )
+
   s3_bucket_name            = var.entitycore_svc_s3_bucket_name
-  s3_bucket_allowed_origins = ["*"]
+  s3_bucket_allowed_origins = var.entitycore_svc_s3_bucket_allowed_origins
 
   image_url = var.entitycore_svc_image_url
 
