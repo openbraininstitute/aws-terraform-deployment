@@ -52,6 +52,11 @@ variable "s3_bucket_name" {
   type        = string
 }
 
+variable "s3_bucket_allowed_origins" {
+  description = "Allowed origins for the S3 bucket"
+  type        = list(string)
+}
+
 variable "obi_backup_plan" {
   description = "Name of the OBI backup plan"
   type        = string
