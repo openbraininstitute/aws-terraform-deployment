@@ -27,7 +27,6 @@ module "keycloak" {
 
   domain_name      = var.domain_name
   keycloak_subnets = module.networking.keycloak_private_subnets
-  is_production    = var.is_production
 
   keycloak_secrets_arn     = var.keycloak_secrets_arn
   keycloak_port            = 8081

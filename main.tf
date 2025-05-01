@@ -64,8 +64,7 @@ module "cs" {
   keycloak_task_size             = var.keycloak_task_size
   aws_coreservices_ssh_key_id    = module.coreservices_key.key_pair_id
 
-  domain_name   = local.primary_domain
-  is_production = var.is_production
+  domain_name = local.primary_domain
 
   jupyterhub_secrets_arn = local.jupyterhub_secrets_arn
   jupyterhub_ec2_type    = var.jupyterhub_ec2_type

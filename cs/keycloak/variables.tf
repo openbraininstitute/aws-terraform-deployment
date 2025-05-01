@@ -61,7 +61,3 @@ variable "keycloak_task_size" {
 
   description = "CPU and memory limit for Keycloak's ECS task (number or string format)"
 }
-
-variable "is_production" {
-  type = bool
-}
