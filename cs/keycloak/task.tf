@@ -79,6 +79,10 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
           value = "${tostring(var.keycloak_port)}"
         },
         {
+          name  = "KC_METRICS_ENABLED"
+          value = "true"
+        },
+        {
           name  = "KC_PROXY_HEADERS"
           value = "xforwarded"
         },
@@ -129,6 +133,38 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
         secretOptions = []
       }
       systemControls = []
+    },
+    {
+      name  = "aws-collector"
+      image = "public.ecr.aws/aws-observability/aws-otel-collector:v0.43.2"
+      command = [
+        "--config=/etc/ecs/otel-agent-config.yaml"
+      ]
+      essential = false
+      mountPoints = [
+        {
+          sourceVolume  = "otel-config-volume"
+          containerPath = "/etc/ecs/"
+          readOnly      = false
+        }
+      ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-create-group  = "true"
+          awslogs-group         = "/ecs/ecs-aws-otel-keycloak-collector"
+          awslogs-region        = data.aws_region.current.name
+          awslogs-stream-prefix = "ecs"
+        }
+      }
+      healthcheck = {
+        command = [
+          "/healthcheck"
+        ]
+        interval = 5
+        retries  = 2
+        timeout  = 3
+      }
   }])
 
   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
@@ -145,6 +181,14 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
     name = "keycloak-providers-volume"
     efs_volume_configuration {
       file_system_id = aws_efs_file_system.keycloak-providers.id
+      root_directory = "/"
+    }
+  }
+
+  volume {
+    name = "otel-config-volume"
+    efs_volume_configuration {
+      file_system_id = aws_efs_file_system.otel-config.id
       root_directory = "/"
     }
   }
