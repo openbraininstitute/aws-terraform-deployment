@@ -34,16 +34,19 @@ resource "aws_iam_role_policy_attachment" "keycloak_secret_access" {
 
 resource "aws_iam_policy" "ecsTaskLogs" {
   name        = "keycloak-ecsTaskLogs"
-  description = "Allows ECS tasks to create log streams and log groups in CloudWatch Logs"
+  description = "Allows ECS tasks to call AWS services on your behalf"
 
   policy = jsonencode({
-    Version = "2012-10-17" #tfsec:ignore:aws-iam-no-policy-wildcards
+    Version = "2012-10-17"
     Statement = [
       {
         Effect = "Allow"
         Action = [
+          "logs:CreateLogGroup",
           "logs:CreateLogStream",
-          "logs:CreateLogGroup"
+          "logs:DescribeLogGroups",
+          "logs:DescribeLogStreams",
+          "logs:PutLogEvents",
         ]
         Resource = "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:*"
       }
@@ -84,12 +87,18 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_attachment_lo
   policy_arn = aws_iam_policy.ecsTaskLogs.arn
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_attachment" {
+resource "aws_iam_role_policy_attachment" "secret_access_role_attachment" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
+}
+
+# got them from https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/ecs/aws-otel-fargate-sidecar-deployment-cfn.yaml
+resource "aws_iam_role_policy_attachment" "_ecs_task_execution_role_policy_attachment" {
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-resource "aws_iam_role_policy_attachment" "secret_access_role_attachment" {
+resource "aws_iam_role_policy_attachment" "ecs_task_cloudwatch_logs_attachment" {
   role       = aws_iam_role.ecs_task_execution_role.name
-  policy_arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
 }

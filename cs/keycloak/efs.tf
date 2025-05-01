@@ -34,3 +34,21 @@ resource "aws_efs_mount_target" "keycloak-providers-mt" {
   security_groups = [aws_security_group.efs_sg.id]
   subnet_id       = var.keycloak_subnets[count.index]
 }
+
+# EFS to store AWS otel config
+resource "aws_efs_file_system" "otel-config" {
+  performance_mode = "generalPurpose"
+  throughput_mode  = "bursting"
+  encrypted        = "true"
+  tags = {
+    Name        = "otel-config"
+    SBO_Billing = "keycloak"
+  }
+}
+
+resource "aws_efs_mount_target" "otel-config-mt" {
+  count           = length(var.keycloak_subnets)
+  file_system_id  = aws_efs_file_system.otel-config.id
+  security_groups = [aws_security_group.efs_sg.id]
+  subnet_id       = var.keycloak_subnets[count.index]
+}
