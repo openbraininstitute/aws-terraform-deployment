@@ -42,6 +42,7 @@ core_web_app_deployment_env                = "staging"
 core_web_app_next_public_matomo_site_id    = "3"
 
 hpc_resource_provisioner_sbo_nexusdata_bucket = ""
+sbo_infrastructureassets_bucket               = "s3://sboinfrastructureassets-staging"
 hpc_resource_provisioner_containers_bucket    = ""
 hpc_resource_provisioner_scratch_bucket       = ""
 
