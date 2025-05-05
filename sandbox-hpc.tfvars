@@ -18,6 +18,7 @@ accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/a
 me_model_analysis_docker_image_url        = "public.ecr.aws/openbraininstitute/me-model-analysis:staging"
 is_nexus_openscience_running              = false
 is_nexus_obp_running                      = true
+jupyterhub_ec2_type                       = "c7i.4xlarge"
 
 bluenaas_docker_image_url = "bluebrain/blue-naas-single-cell:staging"
 bluenaas_task_size = {
@@ -48,8 +49,9 @@ sbo_infrastructureassets_bucket               = "s3://sboinfrastructureassets-sa
 hpc_resource_provisioner_containers_bucket    = "s3://sboinfrastructureassets-sandbox/containers"
 hpc_resource_provisioner_scratch_bucket       = "s3://sbosandbox-lec3cn"
 
-entitycore_svc_s3_bucket_name = "entitycore-data-staging"
-entitycore_svc_image_url      = "public.ecr.aws/openbraininstitute/entitycore:2025.4.2"
+entitycore_svc_s3_bucket_name            = "entitycore-data-staging"
+entitycore_svc_s3_bucket_allowed_origins = ["www.openbraininstitute.org"]
+entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.4.2"
 
 obi_one_docker_image_url            = "public.ecr.aws/openbraininstitute/obi-one:2025.4.2"
 obi_generative_gui_docker_image_url = "public.ecr.aws/openbraininstitute/obi-generative-gui:2025.4.5"
