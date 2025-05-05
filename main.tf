@@ -123,7 +123,7 @@ module "ml" {
   route_table_private_subnets_id = local.route_table_private_subnets_id
 
   dockerhub_credentials_arn = local.dockerhub_bbpbuildbot_secret_arn
-  backend_image_tag         = "scholarag-v0.0.10"
+  backend_image_tag         = "scholarag-v0.0.11"
   etl_image_tag             = "scholaretl-v0.0.8"
   agent_image_tag           = "neuroagent-v0.5.0"
   grobid_image_url          = "lfoppiano/grobid:0.8.0"
