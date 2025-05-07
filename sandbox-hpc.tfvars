@@ -18,7 +18,6 @@ accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/a
 me_model_analysis_docker_image_url        = "public.ecr.aws/openbraininstitute/me-model-analysis:staging"
 is_nexus_openscience_running              = false
 is_nexus_obp_running                      = true
-jupyterhub_ec2_type                       = "c7i.4xlarge"
 
 bluenaas_docker_image_url = "bluebrain/blue-naas-single-cell:staging"
 bluenaas_task_size = {
