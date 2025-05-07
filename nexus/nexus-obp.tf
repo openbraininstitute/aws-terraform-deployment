@@ -98,7 +98,7 @@ module "elasticsearch_obp" {
   elasticsearch_version = "8.16.1"
 
   hot_node_size  = "4g"
-  hot_node_count = 2
+  hot_node_count = 3
 
   deployment_name_ec2 = "nexus-obp-elasticsearch_ec2"
 
