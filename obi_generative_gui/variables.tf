@@ -40,6 +40,11 @@ variable "obi_one_url" {
   type        = string
 }
 
+variable "nextauth_url" {
+  description = "nextauth URL"
+  type        = string
+}
+
 variable "docker_image_url" {
   description = "Docker image for the obi-generative-gui service"
   type        = string
@@ -47,4 +52,10 @@ variable "docker_image_url" {
 
 variable "internet_access_route_id" {
   type = string
+}
+
+variable "secrets_arn" {
+  type        = string
+  description = "Secrets ARN"
+  sensitive   = false
 }

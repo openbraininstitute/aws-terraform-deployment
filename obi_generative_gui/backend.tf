@@ -93,6 +93,10 @@ resource "aws_ecs_task_definition" "obi_generative_gui_ecs_definition" {
           value = "false"
         },
         {
+          name  = "ROOT_PATH"
+          value = var.root_path
+        },
+        {
           name  = "KEYCLOAK_URL"
           value = var.keycloak_url
         },
@@ -105,12 +109,24 @@ resource "aws_ecs_task_definition" "obi_generative_gui_ecs_definition" {
           value = var.obi_one_url
         },
         {
-          name  = "ROOT_PATH"
-          value = var.root_path
-        }
+          name  = "NEXTAUTH_URL"
+          value = var.nextauth_url
+        },
       ]
 
       secrets = [
+        {
+          name      = "KEYCLOAK_CLIENT_ID"
+          valueFrom = "${var.secrets_arn}:keycloak_client_id::"
+        },
+        {
+          name      = "KEYCLOAK_CLIENT_SECRET"
+          valueFrom = "${var.secrets_arn}:keycloak_client_secret::"
+        },
+        {
+          name      = "NEXTAUTH_SECRET"
+          valueFrom = "${var.secrets_arn}:nextauth_secret::"
+        },
       ]
 
       logConfiguration = {

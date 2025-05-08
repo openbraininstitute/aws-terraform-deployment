@@ -27,6 +27,7 @@ locals {
   hpc_slurm_secrets_arn            = data.terraform_remote_state.common.outputs.hpc_slurm_secrets_arn
   nexus_secrets_arn                = data.terraform_remote_state.common.outputs.nexus_secrets_arn
   workflow_service_secrets_arn     = data.terraform_remote_state.common.outputs.workflow_service_secrets_arn
+  obi_generative_gui_secrets_arn   = data.terraform_remote_state.common.outputs.obi_generative_gui_secrets_arn
   dockerhub_bbpbuildbot_secret_arn = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_secret_arn
   dockerhub_bbpbuildbot_policy_arn = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_policy_arn
 
@@ -486,6 +487,8 @@ module "obi_generative_gui" {
   keycloak_url     = "https://${local.primary_domain}/auth/realms/SBO/"
   entitycore_url   = "https://${local.primary_domain}/api/entitycore"
   obi_one_url      = "https://${local.primary_domain}/api/obi-one"
+  nextauth_url     = "https://${local.primary_domain}/app/obi-generative-gui/api/auth"
+  secrets_arn      = local.obi_generative_gui_secrets_arn
   docker_image_url = var.obi_generative_gui_docker_image_url
 }
 
