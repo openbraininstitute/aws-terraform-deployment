@@ -93,7 +93,7 @@ resource "aws_iam_role_policy_attachment" "secret_access_role_attachment" {
 }
 
 # got them from https://raw.githubusercontent.com/aws-observability/aws-otel-collector/main/deployment-template/ecs/aws-otel-fargate-sidecar-deployment-cfn.yaml
-resource "aws_iam_role_policy_attachment" "_ecs_task_execution_role_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy_attachment" {
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
