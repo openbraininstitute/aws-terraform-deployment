@@ -123,9 +123,9 @@ module "ml" {
   route_table_private_subnets_id = local.route_table_private_subnets_id
 
   dockerhub_credentials_arn = local.dockerhub_bbpbuildbot_secret_arn
-  backend_image_tag         = "scholarag-v0.0.11"
+  backend_image_tag         = "scholarag-v0.0.12"
   etl_image_tag             = "scholaretl-v0.0.8"
-  agent_image_tag           = "neuroagent-v0.5.0"
+  agent_image_tag           = "neuroagent-v0.5.1"
   grobid_image_url          = "lfoppiano/grobid:0.8.0"
 
   paper_bucket_name      = var.ml_paper_bucket_name
