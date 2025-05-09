@@ -212,6 +212,11 @@ variable "github_repos" {
   type        = list(string)
 }
 
+variable "github_oidc_provider_arn" {
+  description = "ARN of the OIDC provider for GitHub"
+  type        = string
+}
+
 variable "tags" {
   description = "tags of the resources."
   type        = map(string)
