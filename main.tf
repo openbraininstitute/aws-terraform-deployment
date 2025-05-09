@@ -53,6 +53,14 @@ module "networking" {
   route_table_id = local.route_table_private_subnets_id
 }
 
+module "github_oidc_provider" {
+  source  = "terraform-module/github-oidc-provider/aws"
+  version = "~> 1"
+
+  create_oidc_provider = true
+}
+
+
 module "cs" {
   source = "./cs"
 
@@ -141,6 +149,8 @@ module "ml" {
   # NEW PRIVATE ALB
   generic_private_alb_listener_arn      = local.private_alb_https_listener_arn
   generic_private_alb_security_group_id = data.terraform_remote_state.common.outputs.generic_private_alb_security_group_id
+
+  github_oidc_provider_arn = module.github_oidc_provider.oidc_provider_arn
 
   github_repos = ["openbraininstitute/neuroagent", "openbraininstitute/scholarag", "openbraininstitute/scholaretl"]
 }
@@ -243,12 +253,13 @@ module "bluenaas_svc" {
 }
 
 module "github_ami_build_role" {
-  source              = "./github_ami_build_role"
-  account_id          = local.account_id
-  aws_region          = local.aws_region
-  github_organisation = local.github_organisation
-  repo_name           = "machine-images"
-  bucket_name         = var.sbo_infrastructureassets_bucket
+  source                   = "./github_ami_build_role"
+  account_id               = local.account_id
+  aws_region               = local.aws_region
+  github_organisation      = local.github_organisation
+  github_oidc_provider_arn = module.github_oidc_provider.oidc_provider_arn
+  repo_name                = "machine-images"
+  bucket_name              = var.sbo_infrastructureassets_bucket
 }
 
 module "github_bluenaas_ecs_redeploy_role" {
