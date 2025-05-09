@@ -98,6 +98,12 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy_attach
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+# to be able to send scraped metrics to Amazon Managed Service for Prometheus
+resource "aws_iam_role_policy_attachment" "ecs_task_prometheus_role_policy_attachment" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonPrometheusRemoteWriteAccess"
+}
+
 resource "aws_iam_role_policy_attachment" "ecs_task_cloudwatch_logs_attachment" {
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
