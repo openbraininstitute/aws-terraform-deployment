@@ -12,7 +12,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
   container_definitions = jsonencode([
     {
       name      = "keycloak-container"
-      image     = "keycloak/keycloak:25.0.6"
+      image     = "keycloak/keycloak:26.2.4"
       cpu       = var.keycloak_task_size.cpu
       memory    = var.keycloak_task_size.memory
       command   = ["start"]
