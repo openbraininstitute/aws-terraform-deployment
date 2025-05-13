@@ -161,7 +161,8 @@ module "github_oidc" {
   source  = "terraform-module/github-oidc-provider/aws"
   version = "~> 1"
 
-  create_oidc_provider = true
+  create_oidc_provider = false # now done centrally from main.tf
+  oidc_provider_arn    = var.github_oidc_provider_arn
   create_oidc_role     = true
   role_name            = "GithubMachineImages"
 
