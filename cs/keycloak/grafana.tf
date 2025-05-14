@@ -11,6 +11,11 @@ resource "aws_grafana_workspace" "grafana-managed-workspace" {
   }
 }
 
+resource "aws_iam_role_policy_attachment" "grafana_prometheus_policy_attachment" {
+  role       = aws_iam_role.assume.name
+  policy_arn = aws_iam_policy.grafana_prometheus_access_policy.arn
+}
+
 resource "aws_iam_role" "assume" {
   name = "grafana-assume"
   assume_role_policy = jsonencode({
@@ -26,6 +31,31 @@ resource "aws_iam_role" "assume" {
       },
     ]
   })
+}
+
+resource "aws_iam_policy" "grafana_prometheus_access_policy" {
+  name = "cs-GrafanaPrometheusAccessPolicy"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "aps:ListWorkspaces",
+          "aps:DescribeWorkspace",
+          "aps:QueryMetrics",
+          "aps:GetLabels",
+          "aps:GetSeries",
+          "aps:GetMetricMetadata"
+        ],
+        "Resource" : "*"
+      }
+    ]
+  })
+
+  tags = {
+    SBO_Billing = "keycloak"
+  }
 }
 
 # Get IAM Identity Center instance
