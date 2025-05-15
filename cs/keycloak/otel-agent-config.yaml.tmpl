@@ -1,0 +1,43 @@
+extensions:
+  health_check:
+  sigv4auth:
+    region: ${AWS_REGION}
+    service: aps
+
+receivers:
+  prometheus:
+    config:
+      global:
+        scrape_interval: 1m
+        scrape_timeout: 10s
+      scrape_configs:
+      - job_name: 'keycloak-metrics'
+        scrape_interval: 30s
+        metrics_path: /auth/metrics
+        static_configs:
+        - targets: ['localhost:${KEYCLOAK_MANAGEMENT_PORT}'] # keycloak metrics
+
+      - job_name: 'otel-collector-metrics'
+        scrape_interval: 1m
+        static_configs:
+        - targets: ['localhost:8888']
+
+processors:
+  batch:
+    timeout: 60s
+
+exporters:
+  prometheusremotewrite:
+    endpoint: ${PROMETHEUS_ENDPOINT}
+    auth:
+      authenticator: sigv4auth
+  awsemf:
+
+service:
+  pipelines:
+    metrics:
+      receivers: [prometheus]
+      processors: [batch]
+      exporters: [awsemf, prometheusremotewrite]
+
+  extensions: [health_check, sigv4auth]
