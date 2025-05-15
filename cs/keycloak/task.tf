@@ -165,7 +165,61 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
         retries  = 2
         timeout  = 3
       }
-  }])
+      dependsOn = [
+        {
+          containerName = "keycloak-otel-agent-config"
+          condition     = "COMPLETE"
+        }
+      ]
+    },
+    {
+      name      = "keycloak-otel-agent-config"
+      image     = "bash"
+      essential = false
+      command = [
+        "sh",
+        "-c",
+        <<-EOT
+          echo $OTEL_AGENT_CONFIG | base64 -d - | tee /etc/ecs/otel-agent-config.yaml && \
+          sed -i -e "s/\$${KEYCLOAK_MANAGEMENT_PORT}/$KEYCLOAK_MANAGEMENT_PORT/g" -e "s/\$${AWS_REGION}/$AWS_REGION/g" -e "s/\$${PROMETHEUS_ENDPOINT}/$PROMETHEUS_ENDPOINT/g" /etc/ecs/otel-agent-config.yaml
+        EOT
+      ]
+      environment = [
+        {
+          name  = "OTEL_AGENT_CONFIG"
+          value = base64encode(file("${path.module}/otel-agent-config.yaml.tmpl"))
+        },
+        {
+          name  = "KEYCLOAK_MANAGEMENT_PORT"
+          value = "${tostring(var.keycloak_management_port)}"
+        },
+        {
+          name  = "AWS_REGION"
+          value = data.aws_region.current.name
+        },
+        {
+          name  = "PROMETHEUS_ENDPOINT"
+          value = "${aws_prometheus_workspace.keycloak-managed-prometheus-workspace.prometheus_endpoint}api/v1/remote_write"
+        },
+      ]
+      mountPoints = [
+        {
+          sourceVolume  = "otel-config-volume"
+          containerPath = "/etc/ecs/"
+          readOnly      = false
+        }
+      ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = "/ecs/ecs-aws-otel-keycloak-collector"
+          awslogs-region        = data.aws_region.current.name
+          awslogs-create-group  = "true"
+          awslogs-stream-prefix = "config"
+        }
+      }
+    }
+  ])
 
   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn      = aws_iam_role.ecs_task_execution_role.arn
