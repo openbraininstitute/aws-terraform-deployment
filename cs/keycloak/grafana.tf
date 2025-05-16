@@ -58,6 +58,33 @@ resource "aws_iam_policy" "grafana_prometheus_access_policy" {
   }
 }
 
+resource "aws_lb_listener_rule" "internal_grafana_workspace_redirect" {
+  listener_arn = var.private_alb_https_listener_arn
+  priority     = 570
+
+  action {
+    type = "redirect"
+    redirect {
+      host        = aws_grafana_workspace.grafana-managed-workspace.endpoint
+      path        = "/dashboards"
+      port        = "443"
+      query       = ""
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+
+  condition {
+    path_pattern {
+      values = ["/internal/grafana*"]
+    }
+  }
+
+  tags = {
+    SBO_Billing = "keycloak"
+  }
+}
+
 # Get IAM Identity Center instance
 data "aws_ssoadmin_instances" "main" {}
 
