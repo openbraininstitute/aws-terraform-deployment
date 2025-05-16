@@ -180,8 +180,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
         "sh",
         "-c",
         <<-EOT
-          echo $OTEL_AGENT_CONFIG | base64 -d - | tee /etc/ecs/otel-agent-config.yaml && \
-          sed -i -e "s/\$${KEYCLOAK_MANAGEMENT_PORT}/$KEYCLOAK_MANAGEMENT_PORT/g" -e "s/\$${AWS_REGION}/$AWS_REGION/g" -e "s/\$${PROMETHEUS_ENDPOINT}/$PROMETHEUS_ENDPOINT/g" /etc/ecs/otel-agent-config.yaml
+          echo $OTEL_AGENT_CONFIG | base64 -d - | tee /etc/ecs/otel-agent-config.yaml && sed -i -e "s;\$${KEYCLOAK_MANAGEMENT_PORT};$KEYCLOAK_MANAGEMENT_PORT;g" -e "s;\$${AWS_REGION};$AWS_REGION;g" -e "s;\$${PROMETHEUS_ENDPOINT};$PROMETHEUS_ENDPOINT;g" /etc/ecs/otel-agent-config.yaml
         EOT
       ]
       environment = [
