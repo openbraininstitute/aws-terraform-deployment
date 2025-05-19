@@ -83,6 +83,18 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
           value = "true"
         },
         {
+          name  = "KC_EVENT_METRICS_USER_ENABLED"
+          value = "true"
+        },
+        {
+          name  = "KC_HTTP_METRICS_HISTOGRAMS_ENABLED"
+          value = "true"
+        },
+        {
+          name  = "KC_CACHE_METRICS_HISTOGRAMS_ENABLED"
+          value = "true"
+        },
+        {
           name  = "KC_PROXY_HEADERS"
           value = "xforwarded"
         },
