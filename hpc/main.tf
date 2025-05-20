@@ -102,6 +102,7 @@ module "resource-provisioner" {
   sbo_nexusdata_bucket = var.sbo_nexusdata_bucket
   containers_bucket    = var.containers_bucket
   scratch_bucket       = var.scratch_bucket
+  fsx_policy_arn       = module.security.fsx_policy_arn
 }
 
 module "dynamodb" {

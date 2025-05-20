@@ -91,3 +91,13 @@ resource "aws_vpc_endpoint" "secretsmanager" {
   security_group_ids  = var.security_groups
   tags                = { Name = "Parallel-Clusters SecretsManager Endpoint" }
 }
+
+resource "aws_vpc_endpoint" "fsx" {
+  vpc_id              = var.pcluster_vpc_id
+  service_name        = "com.amazonaws.${var.aws_region}.fsx"
+  vpc_endpoint_type   = "Interface"
+  private_dns_enabled = true
+  subnet_ids          = local.aws_subnet_compute_endpoints_ids
+  security_group_ids  = var.security_groups
+  tags                = { Name = "Parallel-Clusters FSX Endpoint" }
+}

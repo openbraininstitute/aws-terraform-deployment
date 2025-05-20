@@ -305,13 +305,21 @@
                 ]
         },
         {
-            "Sid": "AllowCreateSecretsManagerSecret",
+            "Sid": "AllowManipulateSecretsManagerSecret",
             "Effect": "Allow",
             "Action": [
               "secretsmanager:CreateSecret",
               "secretsmanager:DeleteSecret",
-              "secretsmanager:ListSecrets",
-              "secretsmanager:TagResource"
+              "secretsmanager:TagResource",
+              "secretsmanager:GetSecretValue"
+            ],
+            "Resource": "arn:aws:secretsmanager:${aws_region}:${account_id}:secret:pcluster*"
+        },
+        {
+            "Sid": "AllowListSecretsManagerSecrets",
+            "Effect": "Allow",
+            "Action": [
+              "secretsmanager:ListSecrets"
             ],
             "Resource": "*"
         }

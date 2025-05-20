@@ -37,3 +37,7 @@ variable "scratch_bucket" {
 variable "aws_security_group_efa_id" {
   type = string
 }
+
+variable "fsx_policy_arn" {
+  type = string
+}
