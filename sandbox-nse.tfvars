@@ -20,7 +20,7 @@ cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/s
 is_nexus_openscience_running              = false
 is_nexus_obp_running                      = false
 
-bluenaas_docker_image_url = "bluebrain/blue-naas-single-cell:staging"
+bluenaas_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:staging"
 bluenaas_task_size = {
   cpu    = 4096
   memory = 8192
