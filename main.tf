@@ -236,9 +236,6 @@ module "bluenaas_svc" {
 
   bluenaas_service_secrets_arn = local.bluenaas_service_secrets_arn
 
-  dockerhub_credentials_arn       = local.dockerhub_bbpbuildbot_secret_arn
-  dockerhub_access_iam_policy_arn = local.dockerhub_bbpbuildbot_policy_arn
-
   docker_image_url = var.bluenaas_docker_image_url
 
 
