@@ -241,13 +241,14 @@ module "bluenaas_svc" {
 
   docker_image_url = var.bluenaas_docker_image_url
 
-  keycloak_server_url = "https://${local.primary_domain}/auth/"
 
   nexus_delta_uri = "https://${module.nexus.nexus_domain_name}/api/nexus/v1"
 
   base_path = "/api/bluenaas"
 
   accounting_base_url = "https://${local.primary_domain}${var.accounting_svc_base_path}"
+  entitycore_url      = "https://${local.primary_domain}/api/entitycore"
+  keycloak_server_url = "https://${local.primary_domain}/auth/"
 
   task_size = var.bluenaas_task_size
 }
