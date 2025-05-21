@@ -21,7 +21,7 @@ is_nexus_obp_running                      = true
 jupyterhub_ec2_type                       = "c7i.4xlarge"
 
 # TODO: replace tag below with a version tag when the CI is ready
-bluenaas_docker_image_url = "bluebrain/blue-naas-single-cell:latest"
+bluenaas_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:2025.05.21.1"
 bluenaas_task_size = {
   cpu    = 16384
   memory = 32768
