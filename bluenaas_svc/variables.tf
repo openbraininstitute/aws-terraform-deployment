@@ -24,16 +24,6 @@ variable "docker_image_url" {
   type        = string
 }
 
-variable "dockerhub_credentials_arn" {
-  description = "ARN of the secret containing the DockerHub credentials"
-  type        = string
-}
-
-variable "dockerhub_access_iam_policy_arn" {
-  description = "ARN of IAM policy to access the secret containing the DockerHub credentials"
-  type        = string
-}
-
 variable "deployment_env" {
   description = "Environment in which the service is deployed"
   type        = string
