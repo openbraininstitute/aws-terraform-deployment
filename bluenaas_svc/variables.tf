@@ -69,6 +69,11 @@ variable "accounting_base_url" {
   sensitive   = false
 }
 
+variable "entitycore_url" {
+  description = "entitycore URL"
+  type        = string
+}
+
 variable "task_size" {
   type = object({
     cpu    = any
