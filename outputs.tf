@@ -13,3 +13,11 @@ output "nexus_es_main_http_endpoint" {
 output "nexus_es_openscience_http_endpoint" {
   value = var.is_production ? module.nexus.nexus_es_openscience_http_endpoint : null
 }
+
+output "notebook_service" {
+  value = module.notebook_service
+}
+
+output "notebook_service_redeploy_role" {
+  value = var.is_staging ? module.github_notebook_service_ecs_redeploy_role[0] : null
+}
