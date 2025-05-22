@@ -276,6 +276,48 @@ module "github_bluenaas_ecs_redeploy_role" {
   # The ARN of the generated role is needed in GH and is part of the outputs.
 }
 
+module "notebook_service" {
+  source = "./notebook_service"
+
+  aws_region                 = local.aws_region
+  vpc_id                     = local.vpc_id
+  private_alb_listener_arn   = local.private_alb_https_listener_arn
+  alb_listener_rule_priority = 755
+  internet_access_route_id   = local.route_table_private_subnets_id
+  ecs_cidr_block_a           = "10.0.22.0/27"
+  ecs_cidr_block_b           = "10.0.22.32/27"
+
+  task_size = {
+    cpu    = 512
+    memory = 1024
+  }
+
+  docker_image_url = var.notebook_service_docker_image_url
+
+  base_path = "/api/notebook_service"
+
+  accounting_base_url = "https://${local.primary_domain}${var.accounting_svc_base_path}"
+  keycloak_server_url = "https://${local.primary_domain}/auth/"
+  keycloak_realm_name = "SBO"
+}
+
+module "github_notebook_service_ecs_redeploy_role" {
+  source = "./github_ecs_redeploy_role"
+
+  # for now we only want such a redeploy role in staging
+  count = var.is_staging ? 1 : 0
+
+  account_id               = local.account_id
+  aws_region               = local.aws_region
+  github_organisation      = local.github_organisation
+  repo_name                = "notebook-service"
+  ecs_cluster_name         = module.notebook_service.ecs_cluster_name
+  ecs_service_name         = module.notebook_service.ecs_service_name
+  ecs_task_definition_name = module.notebook_service.ecs_task_definition_name
+  # The ARN of the generated role is needed in GH and is part of the outputs.
+}
+
+
 module "hpc" {
   source = "./hpc"
 

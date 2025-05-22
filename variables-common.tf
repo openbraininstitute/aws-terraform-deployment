@@ -149,6 +149,13 @@ variable "coreservices_public_key" {
   sensitive   = true
 }
 
+### Notebook service ###
+
+variable "notebook_service_docker_image_url" {
+  type        = string
+  description = "Docker image for the notebook service"
+}
+
 ### Nexus ###
 
 variable "nise_dockerhub_password" {

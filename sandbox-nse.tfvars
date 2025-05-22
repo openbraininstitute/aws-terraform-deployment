@@ -19,6 +19,8 @@ me_model_analysis_docker_image_url        = "public.ecr.aws/openbraininstitute/m
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.1.1-prod"
 is_nexus_openscience_running              = false
 is_nexus_obp_running                      = false
+notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook_service:staging"
+
 
 bluenaas_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:staging"
 bluenaas_task_size = {
