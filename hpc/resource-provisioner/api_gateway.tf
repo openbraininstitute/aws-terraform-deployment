@@ -14,6 +14,12 @@ resource "aws_api_gateway_resource" "hpc_resource_provisioner_res_pcluster" {
   path_part   = "pcluster"
 }
 
+resource "aws_api_gateway_resource" "hpc_resource_provisioner_res_datasync" {
+  rest_api_id = aws_api_gateway_rest_api.hpc_resource_provisioner_api.id
+  parent_id   = aws_api_gateway_resource.hpc_resource_provisioner_res_provisioner.id
+  path_part   = "datasync"
+}
+
 resource "aws_api_gateway_resource" "hpc_resource_provisioner_res_version" {
   rest_api_id = aws_api_gateway_rest_api.hpc_resource_provisioner_api.id
   parent_id   = aws_api_gateway_resource.hpc_resource_provisioner_res_provisioner.id
@@ -27,6 +33,14 @@ locals {
 resource "aws_api_gateway_method" "hpc_resource_provisioner_pcluster_method" {
   rest_api_id   = aws_api_gateway_rest_api.hpc_resource_provisioner_api.id
   resource_id   = aws_api_gateway_resource.hpc_resource_provisioner_res_pcluster.id
+  count         = 3
+  http_method   = local.http_methods[count.index]
+  authorization = "AWS_IAM"
+}
+
+resource "aws_api_gateway_method" "hpc_resource_provisioner_datasync_method" {
+  rest_api_id   = aws_api_gateway_rest_api.hpc_resource_provisioner_api.id
+  resource_id   = aws_api_gateway_resource.hpc_resource_provisioner_res_datasync.id
   count         = 3
   http_method   = local.http_methods[count.index]
   authorization = "AWS_IAM"
@@ -49,6 +63,16 @@ resource "aws_api_gateway_integration" "hpc_resource_provisioner_pcluster_integr
   integration_http_method = "POST"
 }
 
+resource "aws_api_gateway_integration" "hpc_resource_provisioner_datasync_integration" {
+  count                   = 3
+  rest_api_id             = aws_api_gateway_rest_api.hpc_resource_provisioner_api.id
+  resource_id             = aws_api_gateway_resource.hpc_resource_provisioner_res_datasync.id
+  http_method             = aws_api_gateway_method.hpc_resource_provisioner_datasync_method[count.index].http_method
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.hpc_resource_provisioner_lambda.invoke_arn
+  integration_http_method = "POST"
+}
+
 resource "aws_api_gateway_integration" "hpc_resource_provisioner_version_integration" {
   rest_api_id             = aws_api_gateway_rest_api.hpc_resource_provisioner_api.id
   resource_id             = aws_api_gateway_resource.hpc_resource_provisioner_res_version.id
@@ -62,8 +86,10 @@ resource "aws_api_gateway_deployment" "hpc_resource_provisioner_api_deployment" 
   rest_api_id = aws_api_gateway_rest_api.hpc_resource_provisioner_api.id
   depends_on = [
     aws_api_gateway_method.hpc_resource_provisioner_pcluster_method,
+    aws_api_gateway_method.hpc_resource_provisioner_datasync_method,
     aws_api_gateway_method.hpc_resource_provisioner_version_method,
     aws_api_gateway_integration.hpc_resource_provisioner_pcluster_integration,
+    aws_api_gateway_integration.hpc_resource_provisioner_datasync_integration,
     aws_api_gateway_integration.hpc_resource_provisioner_version_integration
   ]
   triggers = {
@@ -72,6 +98,7 @@ resource "aws_api_gateway_deployment" "hpc_resource_provisioner_api_deployment" 
     redeployment = sha1(jsonencode([
       aws_api_gateway_rest_api.hpc_resource_provisioner_api.body,
       aws_api_gateway_method.hpc_resource_provisioner_pcluster_method[*].id,
+      aws_api_gateway_method.hpc_resource_provisioner_datasync_method[*].id,
       aws_lambda_function.hpc_resource_provisioner_lambda
     ]))
   }
