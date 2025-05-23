@@ -284,8 +284,8 @@ module "notebook_service" {
   private_alb_listener_arn   = local.private_alb_https_listener_arn
   alb_listener_rule_priority = 755
   internet_access_route_id   = local.route_table_private_subnets_id
-  ecs_cidr_block_a           = "10.0.22.0/27"
-  ecs_cidr_block_b           = "10.0.22.32/27"
+  ecs_cidr_block_a           = "10.0.2.192/27"
+  ecs_cidr_block_b           = "10.0.2.224/27"
 
   task_size = {
     cpu    = 512
