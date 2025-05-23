@@ -18,7 +18,7 @@ accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/a
 me_model_analysis_docker_image_url        = "public.ecr.aws/openbraininstitute/me-model-analysis:staging"
 is_nexus_openscience_running              = false
 is_nexus_obp_running                      = true
-notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook_service:staging"
+notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:staging"
 
 
 bluenaas_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:staging"
