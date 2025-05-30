@@ -202,7 +202,8 @@ module "cells_svc" {
 
   aws_coreservices_ssh_key_id = module.coreservices_key.key_pair_id
 
-  root_path = "/api/circuit"
+  root_path    = "/api/circuit"
+  keycloak_url = "https://${local.primary_domain}/auth/realms/SBO/"
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 

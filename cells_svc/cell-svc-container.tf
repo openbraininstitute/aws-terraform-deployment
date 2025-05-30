@@ -246,7 +246,11 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
         {
           name  = "ROOT_PATH"
           value = var.root_path
-        }
+        },
+        {
+          name  = "KEYCLOAK_URL"
+          value = var.keycloak_url
+        },
       ]
 
       healthcheck = {
