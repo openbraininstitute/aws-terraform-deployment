@@ -43,6 +43,11 @@ variable "root_path" {
   type        = string
 }
 
+variable "keycloak_url" {
+  description = "Keycloak URL"
+  type        = string
+}
+
 variable "route_table_private_subnets_id" {
   type = string
 }
