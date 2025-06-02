@@ -19,7 +19,7 @@ me_model_analysis_docker_image_url        = "public.ecr.aws/openbraininstitute/m
 is_nexus_openscience_running              = false
 is_nexus_obp_running                      = true
 jupyterhub_ec2_type                       = "c7i.xlarge"
-notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:doesntexistyet"
+notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:staging"
 
 bluenaas_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:2025.06.02.1"
 bluenaas_task_size = {
