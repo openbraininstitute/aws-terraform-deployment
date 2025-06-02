@@ -18,7 +18,7 @@ accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/a
 me_model_analysis_docker_image_url        = "public.ecr.aws/openbraininstitute/me-model-analysis:2025.04.08.1"
 is_nexus_openscience_running              = false
 is_nexus_obp_running                      = true
-jupyterhub_ec2_type                       = "c7i.4xlarge"
+jupyterhub_ec2_type                       = "c7i.xlarge"
 notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:doesntexistyet"
 
 # TODO: replace tag below with a version tag when the CI is ready
