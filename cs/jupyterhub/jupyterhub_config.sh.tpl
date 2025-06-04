@@ -3,7 +3,7 @@
 EFS_MOUNT_OPS="nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
 
 sudo apt update
-sudo apt install nfs-common nginx nodejs jq npm -y
+sudo apt install unzip nfs-common nginx nodejs jq npm -y
 sudo mount -t nfs4 -o $${EFS_MOUNT_OPS} ${HOMEDIRS_EFS}:/ ${HOMEDIRS_PATH}
 
 # clean up all EFS jupyter users homedirs
@@ -18,8 +18,8 @@ sudo systemctl stop nginx
 curl -L https://tljh.jupyter.org/bootstrap.py \
   | sudo python3 - \
     --admin ${ADMIN_USER}:${ADMIN_PASS} \
-    --version 0.2.0 \
-    --user-requirements-txt-url https://gist.githubusercontent.com/danifr/6d0c4ff74a51ebb076179447855b9849/raw/1b183e30bc8513e9310bd49d0ed584dceb16e7b2/requirements.txt \
+    --version 2.0.0 \
+#    --user-requirements-txt-url https://gist.githubusercontent.com/danifr/6d0c4ff74a51ebb076179447855b9849/raw/1b183e30bc8513e9310bd49d0ed584dceb16e7b2/requirements.txt \
     --show-progress-page \
 
 sudo tljh-config set base_url ${BASE_PATH}
@@ -46,7 +46,7 @@ c.GenericOAuthenticator.token_url = "https://${PRIMARY_DOMAIN}/auth/realms/${KC_
 c.GenericOAuthenticator.userdata_url = "https://${PRIMARY_DOMAIN}/auth/realms/${KC_REALM}/protocol/openid-connect/userinfo"
 
 c.GenericOAuthenticator.login_service = "Keycloak login"
-c.GenericOAuthenticator.username_key =  "preferred_username"
+c.GenericOAuthenticator.username_claim =  "preferred_username"
 c.GenericOAuthenticator.scope = ["openid"]
 
 c.GenericOAuthenticator.allow_all = True
@@ -144,14 +144,12 @@ julia -e 'using IJulia; IJulia.installkernel("julia", env=Dict(
       "JUPYTER_DATA_DIR"=>"'"$JUPYTER_DATA_DIR"'"
 ))'
 
-# downgrade bcrypt to avoid AttributeError: module 'bcrypt' has no attribute '__about__' error
-source /opt/tljh/hub/bin/activate
-pip install --upgrade bcrypt==4.0.1
-deactivate
-
 source /opt/tljh/user/bin/activate
-pip install webio_jupyter_extension webio_jupyterlab_provider
-pip install --upgrade jupyterlab-pygments==0.2.0
+curl -L https://github.com/halleysfifthinc/WebIO.jl/releases/download/extension-0.2.0/extension-artifacts.zip -o /tmp/extension-artifacts.zip
+unzip /tmp/extension-artifacts.zip
+pip install webio_jupyter_extension-0.2.0-py3-none-any.whl
+
+pip install webio_jupyterlab_provider
 conda deactivate
 
 # Give jupyterhub-users groups access to $JULIA_DEPOT_PATH
