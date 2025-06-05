@@ -1,9 +1,8 @@
-# AMI for Ubuntu 22.04 LTS
-data "aws_ami" "ubuntu2204" {
+data "aws_ami" "jupyterhub_os" {
   most_recent = false
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20250228"]
+    values = ["${var.jupyterhub_ec2_operating_system}"]
   }
   filter {
     name   = "owner-alias"
@@ -25,7 +24,7 @@ data "aws_secretsmanager_secret_version" "jupyterhub_secrets" {
 }
 
 resource "aws_instance" "jupyterhub_server" {
-  ami                         = data.aws_ami.ubuntu2204.id
+  ami                         = data.aws_ami.jupyterhub_os.id
   instance_type               = var.jupyterhub_ec2_type
   subnet_id                   = var.jupyterhub_private_subnet
   key_name                    = var.aws_coreservices_ssh_key_id
@@ -35,7 +34,7 @@ resource "aws_instance" "jupyterhub_server" {
   user_data_replace_on_change = true
   monitoring                  = true
 
-  user_data = templatefile("${path.module}/jupyterhub_config.sh.tpl",
+  user_data = templatefile("${path.module}/${var.jupyterhub_ec2_config_template}",
     { ADMIN_USER       = "obi-administrator",
       ADMIN_PASS       = jsondecode(data.aws_secretsmanager_secret_version.jupyterhub_secrets.secret_string)["JUPYTER_ADMIN_PASS"],
       BASE_PATH        = var.jupyterhub_base_path,

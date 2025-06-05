@@ -1,10 +1,14 @@
+locals {
+  efs_name = basename(abspath(var.jupyterhub_base_path))
+}
+
 # EFS to store JupyterHub users HOMEDIRS
 resource "aws_efs_file_system" "jupyterhub_homedirs" {
   performance_mode = "generalPurpose"
   throughput_mode  = "bursting"
   encrypted        = true
   tags = {
-    Name        = "jupyterhub_svc"
+    Name        = local.efs_name
     SBO_Billing = "jupyterhub_svc"
   }
 }
