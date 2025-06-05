@@ -1,6 +1,6 @@
 # Configure ALB target group
 resource "aws_lb_target_group" "private_jupyterhub_target_group" {
-  name        = "private-jupyterhub-target-group"
+  name        = var.jupyterhub_target_group_name
   port        = var.jupyterhub_nginx_port
   protocol    = "HTTP"
   target_type = "instance"
@@ -29,7 +29,7 @@ resource "aws_lb_target_group_attachment" "private_jupyterhub_target_group_attac
 
 resource "aws_lb_listener_rule" "private_jupyterhub_https" {
   listener_arn = var.private_alb_https_listener_arn
-  priority     = 350
+  priority     = var.jupyterhub_listener_rule_priority
   action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.private_jupyterhub_target_group.arn

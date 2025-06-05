@@ -7,12 +7,12 @@ data "aws_subnet" "jupyterhub_subnet" {
 }
 
 resource "aws_security_group" "jupyterhub_efs_sg" {
-  name        = "jupyterhub-efs-sg"
+  name        = var.jupyterhub_sg_efs_name
   description = "Security group for JupyterHub EFS"
   vpc_id      = var.vpc_id
   tags = {
     SBO_Billing = "jupyterhub_svc"
-    Name        = "jupyterhub_efs_sg"
+    Name        = var.jupyterhub_sg_efs_name
   }
 }
 
@@ -24,7 +24,7 @@ resource "aws_vpc_security_group_egress_rule" "jupyterhub_efs_sg_egress" {
 
   tags = {
     SBO_Billing = "jupyterhub_svc"
-    Name        = "jupyterhub_efs_sg"
+    Name        = var.jupyterhub_sg_efs_name
   }
 }
 
@@ -38,19 +38,19 @@ resource "aws_vpc_security_group_ingress_rule" "jupyterhub_efs_sg_ingress" {
 
   tags = {
     SBO_Billing = "jupyterhub_svc"
-    Name        = "jupyterhub_efs_sg"
+    Name        = var.jupyterhub_sg_efs_name
   }
 }
 
 # Security group for the public networks
 resource "aws_security_group" "jupyterhub_sg" {
-  name        = "jupyterhub service SG"
+  name        = var.jupyterhub_sg_name
   vpc_id      = var.vpc_id
   description = "SG for the jupyterhub service"
 
   tags = {
     SBO_Billing = "jupyterhub_svc"
-    Name        = "jupyterhub_sg"
+    Name        = var.jupyterhub_sg_name
   }
 }
 
@@ -63,19 +63,21 @@ resource "aws_vpc_security_group_ingress_rule" "jupyterhub_allow_http_internal" 
   cidr_ipv4         = data.aws_vpc.main.cidr_block
 
   tags = {
-    Name = "jupyterhub_allow_http_internal"
+    SBO_Billing = "jupyterhub_svc"
+    Name        = "jupyterhub_allow_http_internal"
   }
 }
 
 resource "aws_vpc_security_group_ingress_rule" "jupyterhub_allow_ssh_external" {
   security_group_id = aws_security_group.jupyterhub_sg.id
-  description       = "Allow SSH from everywhere"
+  description       = "Allow SSH from internal VPC"
   from_port         = 22
   to_port           = 22
   ip_protocol       = "tcp"
   cidr_ipv4         = data.aws_vpc.main.cidr_block
   tags = {
-    Name = "jupyterhub_allow_ssh_internal"
+    SBO_Billing = "jupyterhub_svc"
+    Name        = "jupyterhub_allow_ssh_internal"
   }
 }
 
@@ -86,6 +88,7 @@ resource "aws_vpc_security_group_egress_rule" "jupyterhub_allow_everything_outgo
   cidr_ipv4         = "0.0.0.0/0"
 
   tags = {
-    Name = "jupyterhub_allow_everything_outgoing"
+    SBO_Billing = "jupyterhub_svc"
+    Name        = "jupyterhub_allow_everything_outgoing"
   }
 }
