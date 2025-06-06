@@ -1,3 +1,7 @@
+locals {
+  ec2_name = basename(abspath(var.jupyterhub_base_path))
+}
+
 data "aws_ami" "jupyterhub_os" {
   most_recent = false
   filter {
@@ -49,7 +53,7 @@ resource "aws_instance" "jupyterhub_server" {
   )
 
   tags = {
-    Name        = "jupyterhub_svc"
+    Name        = "${local.ec2_name}_svc"
     SBO_Billing = "jupyterhub_svc"
   }
 
