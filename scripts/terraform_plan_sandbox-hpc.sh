@@ -7,7 +7,6 @@ terraform plan -target="module.hpc.module.vpc" \
                -target="module.hpc.module.resource-provisioner-dev" \
                -target="module.hpc.module.dynamodb" \
                -target="module.hpc.module.efs" \
-               -target="module.hpc.module.monitoring" \
                -target="module.coreservices_key" \
                -target="aws_vpc_security_group_ingress_rule.ssh_bastion_hosts_allow_ssh_external" \
                -target="aws_vpc_security_group_egress_rule.ssh_bastion_hosts_allow_everything_outgoing" \

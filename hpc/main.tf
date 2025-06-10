@@ -137,8 +137,3 @@ module "dynamodb" {
   source        = "./dynamodb/"
   is_production = var.is_production
 }
-
-module "monitoring" {
-  source                         = "./monitoring/"
-  private_alb_https_listener_arn = var.private_alb_https_listener_arn
-}
