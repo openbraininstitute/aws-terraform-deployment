@@ -46,10 +46,6 @@ variable "fsx_policy_arn" {
   type = string
 }
 
-variable "datasync_role_arn" {
-  type = string
-}
-
 variable "fs_subnet_ids" {
   type = list(string)
 }

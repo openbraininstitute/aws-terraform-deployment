@@ -105,7 +105,6 @@ module "resource-provisioner" {
   scratch_bucket       = var.scratch_bucket
   scratch_bucket_arn   = var.scratch_bucket_arn
   fsx_policy_arn       = module.security.fsx_policy_arn
-  datasync_role_arn    = module.security.datasync_role_arn
   fs_subnet_ids        = module.networking.fs_subnet_ids
   fs_sg_id             = module.security.compute_efs_sg_id
 }
@@ -128,7 +127,6 @@ module "resource-provisioner-dev" {
   scratch_bucket       = var.scratch_bucket
   scratch_bucket_arn   = var.scratch_bucket_arn
   fsx_policy_arn       = module.security.fsx_policy_arn
-  datasync_role_arn    = module.security.datasync_role_arn
   fs_subnet_ids        = module.networking.fs_subnet_ids
   fs_sg_id             = module.security.compute_efs_sg_id
 }
