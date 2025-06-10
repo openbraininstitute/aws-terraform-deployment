@@ -152,6 +152,14 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
           name  = "NEXT_PUBLIC_MATOMO_SITE_ID"
           value = var.env_NEXT_PUBLIC_MATOMO_SITE_ID
         },
+        {
+          name  = "NEXT_PUBLIC_NOTEBOOK_SERVICE_BASE_URL"
+          value = var.env_NEXT_PUBLIC_NOTEBOOK_SERVICE_BASE_URL
+        },
+        {
+          name  = "NEXT_PUBLIC_ENABLE_RUN_NOTEBOOK"
+          value = var.env_NEXT_PUBLIC_ENABLE_RUN_NOTEBOOK
+        },
       ]
       secrets = [
         {

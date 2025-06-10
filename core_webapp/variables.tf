@@ -134,3 +134,15 @@ variable "env_NEXT_PUBLIC_MATOMO_SITE_ID" {
   description = "Matomo site id <staging | production>"
   sensitive   = false
 }
+
+variable "env_NEXT_PUBLIC_NOTEBOOK_SERVICE_BASE_URL" {
+  type        = string
+  description = "Notebook service base url"
+  sensitive   = false
+}
+
+variable "env_NEXT_PUBLIC_ENABLE_RUN_NOTEBOOK" {
+  type        = string
+  description = "Enable run notebook feature, either the string 'True', either anything else for false"
+  sensitive   = false
+}
