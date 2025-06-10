@@ -90,6 +90,10 @@ variable "hpc_resource_provisioner_container_version" {
   type = string
 }
 
+variable "hpc_resource_provisioner_container_dev_version" {
+  type = string
+}
+
 variable "sbo_nexusdata_bucket" {
   type = string
 }
@@ -100,4 +104,18 @@ variable "containers_bucket" {
 
 variable "scratch_bucket" {
   type = string
+}
+
+variable "scratch_bucket_arn" {
+  type = string
+}
+
+variable "private_alb_https_listener_arn" {
+  type = string
+}
+
+variable "is_hpc_dev" {
+  type      = bool
+  default   = false
+  sensitive = false
 }

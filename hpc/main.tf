@@ -91,6 +91,7 @@ module "efs" {
 module "resource-provisioner" {
   source = "./resource-provisioner/"
 
+  suffix                                     = "prod"
   hpc_resource_provisioner_role              = module.security.resource_provisioner_iam_role_arn
   hpc_resource_provisioner_subnet_ids        = [module.networking.lambda_subnet_id]
   hpc_resource_provisioner_sg_ids            = [var.obp_vpc_default_sg_id, module.security.vpc_peering_security_group_id, module.security.resource_provisioner_security_group_id]
@@ -102,10 +103,42 @@ module "resource-provisioner" {
   sbo_nexusdata_bucket = var.sbo_nexusdata_bucket
   containers_bucket    = var.containers_bucket
   scratch_bucket       = var.scratch_bucket
+  scratch_bucket_arn   = var.scratch_bucket_arn
   fsx_policy_arn       = module.security.fsx_policy_arn
+  datasync_role_arn    = module.security.datasync_role_arn
+  fs_subnet_ids        = module.networking.fs_subnet_ids
+  fs_sg_id             = module.security.compute_efs_sg_id
+}
+
+module "resource-provisioner-dev" {
+  count  = var.is_hpc_dev ? 1 : 0
+  source = "./resource-provisioner/"
+
+  suffix                                     = "dev"
+  hpc_resource_provisioner_role              = module.security.resource_provisioner_iam_role_arn
+  hpc_resource_provisioner_subnet_ids        = [module.networking.lambda_subnet_id]
+  hpc_resource_provisioner_sg_ids            = [var.obp_vpc_default_sg_id, module.security.vpc_peering_security_group_id, module.security.resource_provisioner_security_group_id]
+  aws_region                                 = var.aws_region
+  account_id                                 = var.account_id
+  hpc_resource_provisioner_container_version = var.hpc_resource_provisioner_container_dev_version
+  aws_security_group_efa_id                  = module.security.aws_security_group_efa_id
+
+  sbo_nexusdata_bucket = var.sbo_nexusdata_bucket
+  containers_bucket    = var.containers_bucket
+  scratch_bucket       = var.scratch_bucket
+  scratch_bucket_arn   = var.scratch_bucket_arn
+  fsx_policy_arn       = module.security.fsx_policy_arn
+  datasync_role_arn    = module.security.datasync_role_arn
+  fs_subnet_ids        = module.networking.fs_subnet_ids
+  fs_sg_id             = module.security.compute_efs_sg_id
 }
 
 module "dynamodb" {
   source        = "./dynamodb/"
   is_production = var.is_production
+}
+
+module "monitoring" {
+  source                         = "./monitoring/"
+  private_alb_https_listener_arn = var.private_alb_https_listener_arn
 }

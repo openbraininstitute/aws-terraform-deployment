@@ -8,7 +8,7 @@ resource "aws_lambda_permission" "hpc_resource_provisioner_permission_post" {
 
 # tfsec:ignore:aws-lambda-enable-tracing
 resource "aws_lambda_function" "hpc_resource_provisioner_lambda" {
-  function_name    = "hpc-resource-provisioner"
+  function_name    = "hpc-resource-provisioner-${var.suffix}"
   role             = var.hpc_resource_provisioner_role
   package_type     = "Image"
   architectures    = ["x86_64"]
@@ -20,6 +20,19 @@ resource "aws_lambda_function" "hpc_resource_provisioner_lambda" {
     security_group_ids = var.hpc_resource_provisioner_sg_ids
     subnet_ids         = var.hpc_resource_provisioner_subnet_ids
   }
+  environment {
+    variables = {
+      SBO_NEXUSDATA_BUCKET   = var.sbo_nexusdata_bucket
+      CONTAINERS_BUCKET      = var.containers_bucket
+      SCRATCH_BUCKET         = var.scratch_bucket
+      SCRATCH_BUCKET_ARN     = var.scratch_bucket_arn
+      EFA_SG_ID              = var.aws_security_group_efa_id
+      FSX_POLICY_ARN         = var.fsx_policy_arn
+      DATASYNC_ROLE_ARN      = var.datasync_role_arn
+      DATASYNC_LOG_GROUP_ARN = aws_cloudwatch_log_group.datasync_log_group.arn
+      SUFFIX                 = var.suffix
+    }
+  }
 }
 
 data "aws_ecr_image" "hpc_resource_provisioner_image" {
@@ -29,7 +42,7 @@ data "aws_ecr_image" "hpc_resource_provisioner_image" {
 
 # tfsec:ignore:aws-lambda-enable-tracing
 resource "aws_lambda_function" "hpc_resource_provisioner_async_lambda" {
-  function_name    = "hpc-resource-provisioner-creator"
+  function_name    = "hpc-resource-provisioner-creator-${var.suffix}"
   role             = var.hpc_resource_provisioner_role
   package_type     = "Image"
   architectures    = ["x86_64"]
@@ -46,11 +59,16 @@ resource "aws_lambda_function" "hpc_resource_provisioner_async_lambda" {
   }
   environment {
     variables = {
-      SBO_NEXUSDATA_BUCKET = var.sbo_nexusdata_bucket
-      CONTAINERS_BUCKET    = var.containers_bucket
-      SCRATCH_BUCKET       = var.scratch_bucket
-      EFA_SG_ID            = var.aws_security_group_efa_id
-      FSX_POLICY_ARN       = var.fsx_policy_arn
+      SBO_NEXUSDATA_BUCKET   = var.sbo_nexusdata_bucket
+      CONTAINERS_BUCKET      = var.containers_bucket
+      SCRATCH_BUCKET         = var.scratch_bucket
+      SCRATCH_BUCKET_ARN     = var.scratch_bucket_arn
+      EFA_SG_ID              = var.aws_security_group_efa_id
+      FSX_POLICY_ARN         = var.fsx_policy_arn
+      DATASYNC_ROLE_ARN      = var.datasync_role_arn
+      DATASYNC_LOG_GROUP_ARN = aws_cloudwatch_log_group.datasync_log_group.arn
+      FS_SUBNET_IDS          = jsonencode(var.fs_subnet_ids)
+      FS_SG_ID               = var.fs_sg_id
     }
   }
 }

@@ -1,5 +1,5 @@
 resource "aws_api_gateway_rest_api" "hpc_resource_provisioner_api" {
-  name = "hpc_resource_provisioner"
+  name = "hpc_resource_provisioner-${var.suffix}"
 }
 
 resource "aws_api_gateway_resource" "hpc_resource_provisioner_res_provisioner" {
