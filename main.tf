@@ -378,14 +378,16 @@ module "core_webapp_main" {
   secrets_arn                   = local.core_webapp_secrets_arn
   accounting_base_url           = "https://${local.primary_domain}${var.accounting_svc_base_path}"
 
-  env_NEXTAUTH_URL                        = "https://${local.primary_domain}/api/auth"
-  env_KEYCLOAK_ISSUER                     = "https://${local.primary_domain}/auth/realms/SBO"
-  env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY  = "pk_test_51QjjHBKGUR5u3ofLgNUOpljnvy27UTTpkhwgsLiwK9xlNjnR7CZfiMjtZWMjgN7GW3eDyzMJ7Z1pIqC9LiwkfQRX00ebb5c9XI"
-  env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL = "http://${data.terraform_remote_state.common.outputs.private_alb_dns_name}:3000/api/literature"
-  env_NEXT_PUBLIC_DEPLOYMENT_ENV          = var.core_web_app_deployment_env
-  env_NEXT_PUBLIC_MATOMO_SITE_ID          = var.core_web_app_next_public_matomo_site_id
-  env_NEXT_PUBLIC_MATOMO_CDN_URL          = "https://cdn.matomo.cloud/openbraininstitute.matomo.cloud"
-  env_NEXT_PUBLIC_MATOMO_URL              = "https://openbraininstitute.matomo.cloud"
+  env_NEXTAUTH_URL                          = "https://${local.primary_domain}/api/auth"
+  env_KEYCLOAK_ISSUER                       = "https://${local.primary_domain}/auth/realms/SBO"
+  env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY    = "pk_test_51QjjHBKGUR5u3ofLgNUOpljnvy27UTTpkhwgsLiwK9xlNjnR7CZfiMjtZWMjgN7GW3eDyzMJ7Z1pIqC9LiwkfQRX00ebb5c9XI"
+  env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL   = "http://${data.terraform_remote_state.common.outputs.private_alb_dns_name}:3000/api/literature"
+  env_NEXT_PUBLIC_DEPLOYMENT_ENV            = var.core_web_app_deployment_env
+  env_NEXT_PUBLIC_MATOMO_SITE_ID            = var.core_web_app_next_public_matomo_site_id
+  env_NEXT_PUBLIC_MATOMO_CDN_URL            = "https://cdn.matomo.cloud/openbraininstitute.matomo.cloud"
+  env_NEXT_PUBLIC_MATOMO_URL                = "https://openbraininstitute.matomo.cloud"
+  env_NEXT_PUBLIC_ENABLE_RUN_NOTEBOOK       = var.is_staging ? "true" : "false"
+  env_NEXT_PUBLIC_NOTEBOOK_SERVICE_BASE_URL = "https://${local.primary_domain}/api/notebook_service"
 }
 
 module "core_webapp_next" {
@@ -410,14 +412,16 @@ module "core_webapp_next" {
   secrets_arn                   = local.core_webapp_secrets_arn
   accounting_base_url           = "https://${local.primary_domain}${var.accounting_svc_base_path}"
 
-  env_NEXTAUTH_URL                        = "https://next.staging.openbraininstitute.org/api/auth"
-  env_KEYCLOAK_ISSUER                     = "https://${local.primary_domain}/auth/realms/SBO"
-  env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY  = "pk_test_51QjjHBKGUR5u3ofLgNUOpljnvy27UTTpkhwgsLiwK9xlNjnR7CZfiMjtZWMjgN7GW3eDyzMJ7Z1pIqC9LiwkfQRX00ebb5c9XI"
-  env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL = "http://${data.terraform_remote_state.common.outputs.private_alb_dns_name}:3000/api/literature"
-  env_NEXT_PUBLIC_DEPLOYMENT_ENV          = var.core_web_app_deployment_env
-  env_NEXT_PUBLIC_MATOMO_SITE_ID          = var.core_web_app_next_public_matomo_site_id
-  env_NEXT_PUBLIC_MATOMO_CDN_URL          = "https://cdn.matomo.cloud/openbraininstitute.matomo.cloud"
-  env_NEXT_PUBLIC_MATOMO_URL              = "https://openbraininstitute.matomo.cloud"
+  env_NEXTAUTH_URL                          = "https://next.staging.openbraininstitute.org/api/auth"
+  env_KEYCLOAK_ISSUER                       = "https://${local.primary_domain}/auth/realms/SBO"
+  env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY    = "pk_test_51QjjHBKGUR5u3ofLgNUOpljnvy27UTTpkhwgsLiwK9xlNjnR7CZfiMjtZWMjgN7GW3eDyzMJ7Z1pIqC9LiwkfQRX00ebb5c9XI"
+  env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL   = "http://${data.terraform_remote_state.common.outputs.private_alb_dns_name}:3000/api/literature"
+  env_NEXT_PUBLIC_DEPLOYMENT_ENV            = var.core_web_app_deployment_env
+  env_NEXT_PUBLIC_MATOMO_SITE_ID            = var.core_web_app_next_public_matomo_site_id
+  env_NEXT_PUBLIC_MATOMO_CDN_URL            = "https://cdn.matomo.cloud/openbraininstitute.matomo.cloud"
+  env_NEXT_PUBLIC_MATOMO_URL                = "https://openbraininstitute.matomo.cloud"
+  env_NEXT_PUBLIC_ENABLE_RUN_NOTEBOOK       = var.is_staging ? "true" : "false"
+  env_NEXT_PUBLIC_NOTEBOOK_SERVICE_BASE_URL = "https://${local.primary_domain}/api/notebook_service"
 }
 
 module "github_core_webapp_main_ecs_redeploy_role" {
