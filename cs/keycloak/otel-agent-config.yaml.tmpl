@@ -38,6 +38,6 @@ service:
     metrics:
       receivers: [prometheus]
       processors: [batch]
-      exporters: [awsemf, prometheusremotewrite]
+      exporters: [prometheusremotewrite]
 
   extensions: [health_check, sigv4auth]
