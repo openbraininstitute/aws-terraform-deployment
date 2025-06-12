@@ -129,6 +129,14 @@ module "ecs_service_agent" {
           name  = "NEUROAGENT_TOOLS__ENTITYCORE__URL"
           value = "http://${var.primary_domain}/api/entitycore"
         },
+        {
+          name  = "NEUROAGENT_TOOLS__THUMBNAIL_GENERATION__URL"
+          value = "http://${var.primary_domain}/api/thumbnail-generation"
+        },
+        {
+          name  = "NEUROAGENT_TOOLS__WHITELISTED_TOOL_REGEX"
+          value = "literature-search-tool|web-search-tool"
+        },
       ]
       secrets = [
         {
