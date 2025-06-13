@@ -165,7 +165,7 @@ variable "rds_engine" {
 
 variable "rds_version" {
   description = "version of the rds database."
-  default     = "16.4"
+  default     = "16"
 }
 
 variable "rds_instance_class" {
