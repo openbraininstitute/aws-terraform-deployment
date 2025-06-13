@@ -3,7 +3,7 @@ data "aws_ami" "ubuntu2204" {
   most_recent = false
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20250228"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20250516"]
   }
   filter {
     name   = "owner-alias"
