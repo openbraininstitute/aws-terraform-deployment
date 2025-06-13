@@ -137,12 +137,10 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-create-group  = "true"
-          awslogs-group         = "/ecs/keycloak-task"
+          awslogs-group         = aws_cloudwatch_log_group.keycloak_ecs_task.name
           awslogs-region        = data.aws_region.current.name
           awslogs-stream-prefix = "ecs"
         }
-        secretOptions = []
       }
       systemControls = []
     },
@@ -163,8 +161,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-create-group  = "true"
-          awslogs-group         = "/ecs/ecs-aws-otel-keycloak-collector"
+          awslogs-group         = aws_cloudwatch_log_group.keycloak_aws_otel_collector.name
           awslogs-region        = data.aws_region.current.name
           awslogs-stream-prefix = "ecs"
         }
@@ -223,10 +220,9 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = "/ecs/ecs-aws-otel-keycloak-collector"
+          awslogs-group         = aws_cloudwatch_log_group.keycloak_aws_otel_collector.name
           awslogs-region        = data.aws_region.current.name
-          awslogs-create-group  = "true"
-          awslogs-stream-prefix = "config"
+          awslogs-stream-prefix = "ecs"
         }
       }
     }
@@ -257,6 +253,26 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
       root_directory = "/"
     }
   }
+
+  tags = {
+    SBO_Billing = "keycloak"
+  }
+}
+
+resource "aws_cloudwatch_log_group" "keycloak_ecs_task" {
+  name              = "keycloak-task"
+  retention_in_days = 180
+  skip_destroy      = false
+
+  tags = {
+    SBO_Billing = "keycloak"
+  }
+}
+
+resource "aws_cloudwatch_log_group" "keycloak_aws_otel_collector" {
+  name              = "keycloak-aws-otel-collector"
+  retention_in_days = 14
+  skip_destroy      = false
 
   tags = {
     SBO_Billing = "keycloak"
