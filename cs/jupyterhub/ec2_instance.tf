@@ -25,7 +25,7 @@ data "aws_secretsmanager_secret_version" "jupyterhub_secrets" {
 }
 
 resource "aws_instance" "jupyterhub_server" {
-  ami                         = data.aws_ami.ubuntu2204.id
+  ami                         = "ami-07f9449c0b700566e"
   instance_type               = var.jupyterhub_ec2_type
   subnet_id                   = var.jupyterhub_private_subnet
   key_name                    = var.aws_coreservices_ssh_key_id
