@@ -135,3 +135,11 @@ module "dynamodb" {
   source        = "./dynamodb/"
   is_production = var.is_production
 }
+
+module "s3" {
+  source                                        = "./s3/"
+  sboinfrastructureassets_bucket_name           = var.sboinfrastructureassets_bucket_name
+  hpc_resource_provisioner_sbo_nexusdata_bucket = var.sbo_nexusdata_bucket
+  hpc_resource_provisioner_scratch_bucket       = var.scratch_bucket
+  account_id                                    = var.account_id
+}

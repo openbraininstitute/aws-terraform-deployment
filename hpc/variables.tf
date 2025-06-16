@@ -119,3 +119,11 @@ variable "is_hpc_dev" {
   default   = false
   sensitive = false
 }
+
+variable "sboinfrastructureassets_bucket_name" {
+  type = string
+}
+
+variable "pcluster_ami_id" {
+  type = string
+}

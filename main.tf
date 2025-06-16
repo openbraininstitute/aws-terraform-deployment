@@ -295,6 +295,8 @@ module "hpc" {
   scratch_bucket_arn                             = var.hpc_resource_provisioner_scratch_bucket_arn
   private_alb_https_listener_arn                 = local.private_alb_https_listener_arn
   is_hpc_dev                                     = true
+  sboinfrastructureassets_bucket_name            = var.sbo_infrastructureassets_bucket
+  pcluster_ami_id                                = var.pcluster_ami_id
 }
 
 module "static-server" {
