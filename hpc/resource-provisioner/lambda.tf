@@ -61,6 +61,7 @@ resource "aws_lambda_function" "hpc_resource_provisioner_async_lambda" {
       CONTAINERS_BUCKET    = var.containers_bucket
       SCRATCH_BUCKET       = var.scratch_bucket
       SCRATCH_BUCKET_ARN   = var.scratch_bucket_arn
+      INFRA_ASSETS_BUCKET  = var.infra_assets_bucket
       EFA_SG_ID            = var.aws_security_group_efa_id
       FSX_POLICY_ARN       = var.fsx_policy_arn
       FS_SUBNET_IDS        = jsonencode(var.fs_subnet_ids)

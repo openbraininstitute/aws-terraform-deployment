@@ -38,6 +38,10 @@ variable "scratch_bucket_arn" {
   type = string
 }
 
+variable "infra_assets_bucket" {
+  type = string
+}
+
 variable "aws_security_group_efa_id" {
   type = string
 }
