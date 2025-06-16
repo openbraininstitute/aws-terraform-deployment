@@ -112,7 +112,6 @@ module "resource-provisioner" {
 }
 
 module "resource-provisioner-dev" {
-  count  = var.is_hpc_dev ? 1 : 0
   source = "./resource-provisioner/"
 
   suffix                                     = "dev"
