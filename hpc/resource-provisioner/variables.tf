@@ -57,3 +57,11 @@ variable "fs_sg_id" {
 variable "suffix" {
   type = string
 }
+
+variable "eventbridge_role_arn" {
+  type = string
+}
+
+variable "pcluster_ami_id" {
+  type = string
+}

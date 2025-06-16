@@ -225,6 +225,10 @@ variable "sbo_infrastructureassets_bucket" {
   description = "S3 bucket in which infrastructure assets are stored"
 }
 
+variable "pcluster_ami_id" {
+  type = string
+}
+
 ### entitycore ###
 variable "entitycore_svc_aws_s3_internal_bucket" {
   type        = string

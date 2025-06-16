@@ -28,8 +28,8 @@ keycloak_task_size = {
   memory = 2048
 }
 coreservices_public_key                        = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCy8UW1JdUjIuiiaI+xFId3smXFe6iwxdn6Klqi8y4E+cFHP/uQxW4AuCfJVoOjOQ2CNU0UIGRlCkw3IwUmZvwGjFZS1Vs6jt+KjWiDRdFzQQrz5+vuqPX2576wXlT+EHe0W6r7Qla5i1L6cjz6/E4u5yFZ3MJQSBYjLqXjT7Da4R72gPx9oiIoSH2JBu3vHyfkTEo3l6C+WJlYnUGOLnUxGGGnhJrBKmIRNMmtRNgQlBkPR4mnCAFABJfgpzgNf4bpqLbma5DabQGbvpX6qCLSAV5Zdd4gBQLIAJfS/a5pMWaIy9qDTWB2vy4Z39HI45k6efrLL+xgo+XYSRqn5jDT heeren@Mac"
-hpc_resource_provisioner_container_version     = "0.5.11.dev21"
-hpc_resource_provisioner_container_dev_version = "latest-dev"
+hpc_resource_provisioner_container_version     = "0.5.11"
+hpc_resource_provisioner_container_dev_version = "0.5.12.dev50"
 core_web_app_deployment_env                    = "staging"
 core_web_app_next_public_matomo_site_id        = "3"
 is_hpc_dev                                     = true
@@ -39,6 +39,7 @@ sbo_infrastructureassets_bucket               = "s3://sboinfrastructureassets-sa
 hpc_resource_provisioner_containers_bucket    = "s3://sboinfrastructureassets-sandbox/containers"
 hpc_resource_provisioner_scratch_bucket       = "s3://sbosandbox-lec3cn"
 hpc_resource_provisioner_scratch_bucket_arn   = "arn:aws:s3:::sbosandbox-lec3cn"
+pcluster_ami_id                               = "ami-027ff2490377d3048"
 
 entitycore_svc_image_url = "public.ecr.aws/openbraininstitute/entitycore:2025.4.2"
 

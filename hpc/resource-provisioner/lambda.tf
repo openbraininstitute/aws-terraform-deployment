@@ -65,6 +65,9 @@ resource "aws_lambda_function" "hpc_resource_provisioner_async_lambda" {
       FSX_POLICY_ARN       = var.fsx_policy_arn
       FS_SUBNET_IDS        = jsonencode(var.fs_subnet_ids)
       FS_SG_ID             = var.fs_sg_id
+      EVENTBRIDGE_ROLE_ARN = var.eventbridge_role_arn
+      API_GW_STAGE_ARN     = aws_api_gateway_stage.hpc_resource_provisioner_api_stage.arn
+      PCLUSTER_AMI_ID      = var.pcluster_ami_id
     }
   }
 }
