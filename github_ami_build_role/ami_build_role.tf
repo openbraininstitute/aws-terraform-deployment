@@ -8,15 +8,19 @@ resource "aws_iam_policy" "iam_build_policy" {
       {
         Effect = "Allow",
         Action = [
+          "s3:CreateBucket",
+          "s3:PutBucketVersioning",
+          "s3:PutEncryptionConfiguration",
+          "s3:PutBucketPolicy",
           "s3:PutObject",
           "s3:PutObjectAcl",
           "s3:GetObject",
           "s3:ListBucket"
         ],
         Resource = [
-          "arn:aws:s3:::${var.bucket_name}/**",
+          "arn:aws:s3:::${var.bucket_name}/*",
           "arn:aws:s3:::parallelcluster-*-v1-do-not-delete",
-          "arn:aws:s3:::parallelcluster-*-v1-do-not-delete/**"
+          "arn:aws:s3:::parallelcluster-*-v1-do-not-delete/*"
         ]
       },
       {
@@ -83,6 +87,7 @@ resource "aws_iam_policy" "iam_build_policy" {
           "iam:AttachRolePolicy",
           "iam:CreateRole",
           "iam:CreateInstanceProfile",
+          "iam:CreateServiceLinkedRole",
           "iam:DeleteInstanceProfile",
           "iam:GetInstanceProfile",
           "iam:GetPolicy",
@@ -101,13 +106,15 @@ resource "aws_iam_policy" "iam_build_policy" {
           "arn:aws:iam::${var.account_id}:role/parallelcluster/ParallelClusterImage*",
           "arn:aws:iam::${var.account_id}:role/ParallelClusterImage*",
           "arn:aws:iam::${var.account_id}:instance-profile/ParallelClusterImage*",
-          "arn:aws:iam::${var.account_id}:instance-profile/parallelcluster*"
+          "arn:aws:iam::${var.account_id}:instance-profile/parallelcluster*",
+          "arn:aws:iam::${var.account_id}:role/aws-service-role/imagebuilder.amazonaws.com*"
         ]
       },
       {
         "Action" : [
           "SNS:CreateTopic",
           "SNS:DeleteTopic",
+          "SNS:GetSubscriptionAttributes",
           "SNS:GetTopicAttributes",
           "SNS:Publish",
           "SNS:Subscribe",
