@@ -233,6 +233,11 @@ locals {
     )
     content_type = "text/json"
   }
+  jupyterhub_requirements = {
+    key          = "static/jupyterhub_requirements.txt"
+    source       = "${path.module}/jupyterhub_requirements.txt"
+    content_type = "text/plain"
+  }
   sitemap_xml = {
     key          = "static/sitemap.xml"
     source       = "${path.module}/sitemap.xml"
@@ -267,6 +272,14 @@ resource "aws_s3_object" "entraid_verification" {
   key          = local.entraid_verification.key
   content      = local.entraid_verification.content
   content_type = local.entraid_verification.content_type
+}
+
+resource "aws_s3_object" "jupyterhub_requirements" {
+  bucket = var.static_content_bucket_name
+
+  key          = local.jupyterhub_requirements.key
+  source       = local.jupyterhub_requirements.source
+  content_type = local.jupyterhub_requirements.content_type
 }
 
 resource "aws_s3_object" "sitemap_xml" {
@@ -367,6 +380,29 @@ resource "aws_lb_listener_rule" "entraid_verification" {
   condition {
     path_pattern {
       values = ["/.well-known/microsoft-identity-association.json"]
+    }
+  }
+}
+
+resource "aws_lb_listener_rule" "jupyterhub_requirements" {
+  listener_arn = var.alb_listener_arn
+  priority     = var.alb_listener_rule_priority + 5
+
+  action {
+    type = "redirect"
+    redirect {
+      host        = "s3.amazonaws.com"
+      path        = "/${var.domain_name}/${local.jupyterhub_requirements.key}"
+      query       = ""
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+
+  condition {
+    path_pattern {
+      values = ["/juyterhub/requirements.txt"]
     }
   }
 }
