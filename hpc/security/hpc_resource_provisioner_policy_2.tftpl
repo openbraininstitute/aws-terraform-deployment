@@ -1,0 +1,46 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "FSXServiceLinkedRole",
+            "Action": [
+                "iam:AttachRolePolicy",
+                "iam:CreateServiceLinkedRole",
+                "iam:PutRolePolicy"
+            ],
+            "Resource": [
+                "arn:aws:iam::${account_id}:role/aws-service-role/s3.data-source.lustre.fsx.amazonaws.com/*",
+                "arn:aws:iam::${account_id}:role/aws-service-role/fsx.amazonaws.com/AWSServiceRoleForAmazonFSx"
+            ],
+            "Effect": "Allow"
+        },
+        {
+            "Action": [
+                    "dynamodb:DescribeTable",
+                    "dynamodb:DeleteItem",
+                    "dynamodb:GetItem",
+                    "dynamodb:PutItem",
+                    "dynamodb:UpdateItem",
+                    "dynamodb:Query",
+                    "dynamodb:Scan"
+            ],
+            "Resource": [
+                    "arn:aws:dynamodb:us-east-1:${account_id}:table/pclusters"
+            ],
+            "Effect": "Allow",
+            "Sid": "LambdaDynamoDB"
+        },
+        {
+            "Action": [
+                "events:PutRule",
+                "events:TagResource",
+                "events:UntagResource"
+            ],
+            "Resource": [
+                "arn:aws:event..."
+            ],
+            "Effect": "Allow",
+            "Sid": "LambdaEventBridgePermissions"
+        }
+    ]
+}

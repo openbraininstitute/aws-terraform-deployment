@@ -16,16 +16,6 @@
             "Resource": "*"
         },
         {
-            "Sid": "FSXServiceLinkedRole",
-            "Action": [
-                "iam:AttachRolePolicy",
-                "iam:CreateServiceLinkedRole",
-                "iam:PutRolePolicy"
-            ],
-            "Resource": "arn:aws:iam::*:role/aws-service-role/s3.data-source.lustre.fsx.amazonaws.com/*",
-            "Effect": "Allow"
-        },
-        {
             "Action": [
                 "ec2:Describe*"
             ],
@@ -208,7 +198,7 @@
             "Resource": [
                 "arn:aws:s3:::parallelcluster-*",
                 "arn:aws:s3:::aws-parallelcluster-*",
-                "arn:aws:s3:::sbosandbox-lec3cn"
+                "arn:aws:s3:::sbosandbox-*"
             ],
             "Effect": "Allow",
             "Sid": "S3ResourcesBucket"
