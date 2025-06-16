@@ -68,3 +68,8 @@ variable "ecs_cidr_block_b" {
   type        = string
   description = "CIDR block for ECS subnet b"
 }
+
+variable "secret_recovery_window_in_days" {
+  description = "Secret recovery window in days"
+  type        = number
+}
