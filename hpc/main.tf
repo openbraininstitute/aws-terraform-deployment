@@ -128,6 +128,7 @@ module "resource-provisioner-dev" {
   containers_bucket    = var.containers_bucket
   scratch_bucket       = var.scratch_bucket
   scratch_bucket_arn   = var.scratch_bucket_arn
+  infra_assets_bucket  = var.sboinfrastructureassets_bucket_name
   fsx_policy_arn       = module.security.fsx_policy_arn
   fs_subnet_ids        = module.networking.fs_subnet_ids
   fs_sg_id             = module.security.compute_efs_sg_id
