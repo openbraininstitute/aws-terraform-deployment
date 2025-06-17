@@ -48,11 +48,11 @@ resource "aws_route_table_association" "small_scale_simulator_primary_subnet_b_i
 }
 
 resource "aws_route_table_association" "small_scale_simulator_secondary_subnet_a_internet_access" {
-  subnet_id      = aws_subnet.small_scale_simulator_secondary_a
+  subnet_id      = aws_subnet.small_scale_simulator_secondary_a.id
   route_table_id = var.internet_access_route_id
 }
 
 resource "aws_route_table_association" "small_scale_simulator_secondary_subnet_b_internet_access" {
-  subnet_id      = aws_subnet.small_scale_simulator_secondary_b
+  subnet_id      = aws_subnet.small_scale_simulator_secondary_b.id
   route_table_id = var.internet_access_route_id
 }

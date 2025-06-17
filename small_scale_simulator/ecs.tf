@@ -394,7 +394,7 @@ resource "aws_ecs_service" "api" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    security_groups  = [aws_security_group.api]
+    security_groups  = [aws_security_group.api.id]
     subnets          = [aws_subnet.small_scale_simulator_primary_a.id, aws_subnet.small_scale_simulator_primary_b.id]
     assign_public_ip = false
   }
@@ -426,7 +426,7 @@ resource "aws_ecs_service" "worker" {
 
   network_configuration {
     security_groups = [aws_security_group.worker.id]
-    subnets         = [aws_subnet.small_scale_simulator_secondary_a, aws_subnet.small_scale_simulator_secondary_b]
+    subnets         = [aws_subnet.small_scale_simulator_secondary_a.id, aws_subnet.small_scale_simulator_secondary_b.id]
   }
 
   depends_on = [
