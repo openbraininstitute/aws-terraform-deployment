@@ -384,8 +384,6 @@ resource "aws_ecs_service" "redis" {
   service_registries {
     registry_arn = aws_service_discovery_service.redis.arn
   }
-
-  depends_on = [aws_nat_gateway.main]
 }
 
 resource "aws_ecs_service" "api" {

@@ -16,7 +16,7 @@ resource "aws_efs_mount_target" "mount_target" {
     "subnet_secondary_b_id" = aws_subnet.small_scale_simulator_secondary_b.id
   }
 
-  file_system_id  = aws_efs_file_system.main.id
+  file_system_id  = aws_efs_file_system.small_scale_simulator_storage.id
   subnet_id       = each.value
-  security_groups = [aws_security_group.small_scale_simulator_storage.id]
+  security_groups = [aws_security_group.storage.id]
 }
