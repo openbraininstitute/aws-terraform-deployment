@@ -18,7 +18,7 @@ resource "aws_iam_policy" "secrets_access" {
         "secretsmanager:GetSecretValue"
       ],
       "Resource": [
-        ${aws_secretsmanager_secret.secrets.arn}
+        "${aws_secretsmanager_secret.secrets.arn}"
       ]
     }
   ]
