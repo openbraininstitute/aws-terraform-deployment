@@ -1,0 +1,72 @@
+variable "aws_region" {
+  type = string
+}
+
+variable "vpc_id" {
+  type = string
+}
+
+variable "alb_listener_arn" {
+  type = string
+}
+
+variable "alb_listener_rule_priority" {
+  type = number
+}
+
+variable "base_path" {
+  description = "Base path for the API"
+  type        = string
+}
+
+variable "api_docker_image_url" {
+  description = "Docker image for the API service"
+  type        = string
+}
+
+variable "worker_docker_image_url" {
+  description = "Docker image for the worker service"
+  type        = string
+}
+
+variable "deployment_env" {
+  description = "Environment in which the service is deployed"
+  type        = string
+  default     = "production"
+}
+
+variable "keycloak_server_url" {
+  description = "URL of the Keycloak server"
+  type        = string
+}
+
+variable "debug" {
+  description = "Debug flag"
+  type        = string
+  default     = "false"
+}
+
+variable "internet_access_route_id" {
+  type = string
+}
+
+variable "secrets_arn" {
+  type = string
+}
+
+variable "nexus_delta_uri" {
+  type = string
+}
+
+variable "accounting_base_url" {
+  type        = string
+  description = "Accounting service base URL"
+  sensitive   = false
+}
+
+variable "entitycore_url" {
+  description = "entitycore URL"
+  type        = string
+}
+
+# TODO : Configure task sizes for api and workers, consider adding autoscaling params for workers

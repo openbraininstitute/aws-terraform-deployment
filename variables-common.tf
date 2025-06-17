@@ -98,6 +98,18 @@ variable "bluenaas_docker_image_url" {
   description = "Docker image URL for the blue-naas service"
 }
 
+### Small Scale Simulator ###
+
+variable "small_scale_simulator_api_docker_image_url" {
+  type        = string
+  description = "Docker image URL for the small scale simulator API"
+}
+
+variable "small_scale_simulator_worker_docker_image_url" {
+  type        = string
+  description = "Docker image URL for the small scale simulator worker"
+}
+
 ### Virtual Lab Manager service ###
 
 variable "virtual_lab_manager_base_path" {

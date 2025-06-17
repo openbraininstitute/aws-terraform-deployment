@@ -251,6 +251,30 @@ module "bluenaas_svc" {
   task_size = var.bluenaas_task_size
 }
 
+module "small_scale_simulator" {
+  source = "./small_scale_simulator"
+
+  aws_region                 = local.aws_region
+  vpc_id                     = local.vpc_id
+  alb_listener_arn           = local.private_alb_https_listener_arn
+  alb_listener_rule_priority = 755
+  internet_access_route_id   = local.route_table_private_subnets_id
+
+  # TODO Clone from bluenaas_svc before it is retired
+  secrets_arn = local.bluenaas_service_secrets_arn
+
+  api_docker_image_url    = var.small_scale_simulator_api_docker_image_url
+  worker_docker_image_url = var.small_scale_simulator_worker_docker_image_url
+
+  base_path = "/api/small-scale-simulator"
+
+  nexus_delta_uri = "https://${module.nexus.nexus_domain_name}/api/nexus/v1"
+
+  accounting_base_url = "https://${local.primary_domain}${var.accounting_svc_base_path}"
+  entitycore_url      = "https://${local.primary_domain}/api/entitycore"
+  keycloak_server_url = "https://${local.primary_domain}/auth/"
+}
+
 module "github_ami_build_role" {
   source                   = "./github_ami_build_role"
   account_id               = local.account_id

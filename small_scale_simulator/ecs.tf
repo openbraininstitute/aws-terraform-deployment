@@ -1,0 +1,366 @@
+# TODO create via for-each loop
+resource "aws_cloudwatch_log_group" "redis" {
+  name              = "/ecs/small-scale-simulator/redis"
+  skip_destroy      = false
+  retention_in_days = 14
+
+  kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
+
+  tags = {
+    Name = "small-scale-simulator"
+  }
+}
+
+resource "aws_cloudwatch_log_group" "api" {
+  name              = "/ecs/small-scale-simulator/api"
+  skip_destroy      = false
+  retention_in_days = 14
+
+  kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
+
+  tags = {
+    Name = "small-scale-simulator"
+  }
+}
+
+resource "aws_cloudwatch_log_group" "worker" {
+  name              = "/ecs/small-scale-simulator/worker"
+  skip_destroy      = false
+  retention_in_days = 14
+
+  kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
+
+  tags = {
+    Name = "small-scale-simulator"
+  }
+}
+
+resource "aws_ecs_cluster" "main" {
+  name = "small-scale-simulator"
+
+  setting {
+    name  = "containerInsights"
+    value = "disabled" #tfsec:ignore:aws-ecs-enable-container-insight
+  }
+
+  tags = {
+    Name = "small-scale-simulator"
+  }
+}
+
+resource "aws_iam_role" "ecs_task_execution_role" {
+  name_prefix = "small-scale-simulator-ecs"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+resource "aws_iam_role_policy_attachment" "secrets" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = aws_iam_policy.secrets_access.arn
+}
+
+resource "aws_iam_role_policy_attachment" "execution_logs" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = aws_iam_policy.ecs_task_logs_bluenaas.arn
+}
+
+resource "aws_iam_role_policy_attachment" "efs" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonElasticFileSystemClientFullAccess"
+}
+
+
+# Service Discovery Namespace
+resource "aws_service_discovery_private_dns_namespace" "main" {
+  name        = "small-scale-simulator.local"
+  description = "Service discovery namespace for small-scale-simulator"
+  vpc         = aws_vpc.main.id
+}
+
+# Service Discovery Service for Redis
+resource "aws_service_discovery_service" "redis" {
+  name = "redis"
+
+  dns_config {
+    namespace_id = aws_service_discovery_private_dns_namespace.main.id
+
+    dns_records {
+      ttl  = 10
+      type = "A"
+    }
+
+    routing_policy = "MULTIVALUE"
+  }
+}
+
+# Redis Task Definition
+resource "aws_ecs_task_definition" "redis" {
+  family                   = "small-scale-simulator-redis"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = "256"
+  memory                   = "512"
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+
+  runtime_platform {
+    operating_system_family = "LINUX"
+    cpu_architecture        = "ARM64"
+  }
+
+  container_definitions = jsonencode([
+    {
+      name  = "redis"
+      image = "redis:8-alpine"
+      portMappings = [
+        {
+          containerPort = 6379
+          protocol      = "tcp"
+        }
+      ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.redis.name
+          "awslogs-region"        = "us-east-1"
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
+    }
+  ])
+}
+
+# API Task Definition
+resource "aws_ecs_task_definition" "api" {
+  family                   = "small-scale-simulator-api"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = "256"
+  memory                   = "512"
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+
+  runtime_platform {
+    operating_system_family = "LINUX"
+    cpu_architecture        = "ARM64"
+  }
+
+  volume {
+    name = "storage"
+
+    efs_volume_configuration {
+      file_system_id = aws_efs_file_system.storage.id
+      root_directory = "/"
+    }
+  }
+
+  container_definitions = jsonencode([
+    {
+      name  = "api"
+      image = var.api_docker_image_url
+      portMappings = [
+        {
+          containerPort = 8000
+          protocol      = "tcp"
+        }
+      ]
+      mountPoints = [
+        {
+          sourceVolume  = "storage"
+          containerPath = "/app/storage"
+          readOnly      = true
+        }
+      ]
+      environment = [
+        {
+          name  = "REDIS_URL"
+          value = "redis://redis.small-scale-simulator.local:6379"
+        },
+        {
+          name  = "DEBUG",
+          value = "True"
+        },
+        {
+          name  = "PYTHONUNBUFFERED",
+          value = "1"
+        }
+      ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.api.name
+          "awslogs-region"        = "us-east-1"
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
+    }
+  ])
+}
+
+# Worker Task Definition
+resource "aws_ecs_task_definition" "worker" {
+  family                   = "small-scale-simulator-worker"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = "4096"
+  memory                   = "8192"
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+
+  volume {
+    name = "storage"
+
+    efs_volume_configuration {
+      file_system_id = aws_efs_file_system.storage.id
+      root_directory = "/"
+    }
+  }
+
+  container_definitions = jsonencode([
+    {
+      name  = "worker"
+      image = var.worker_docker_image_url
+      mountPoints = [
+        {
+          sourceVolume  = "storage"
+          containerPath = "/app/storage"
+          readOnly      = false
+        }
+      ]
+      environment = [
+        {
+          name  = "REDIS_URL"
+          value = "redis://redis.small-scale-simulator.local:6379"
+        },
+        {
+          name  = "DEBUG",
+          value = "True"
+        },
+        {
+          name  = "PYTHONUNBUFFERED",
+          value = "1"
+        }
+      ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.worker.name
+          "awslogs-region"        = "us-east-1"
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
+    }
+  ])
+}
+
+
+# ECS Services
+resource "aws_ecs_service" "redis" {
+  name            = "redis"
+  cluster         = aws_ecs_cluster.main.id
+  task_definition = aws_ecs_task_definition.redis.arn
+  desired_count   = 1
+  launch_type     = "FARGATE"
+
+  network_configuration {
+    security_groups = [aws_security_group.redis.id]
+    subnets         = [aws_subnet.small_scale_simulator_primary_a.id, aws_subnet.small_scale_simulator_primary_b.id]
+  }
+
+  service_registries {
+    registry_arn = aws_service_discovery_service.redis.arn
+  }
+
+  depends_on = [aws_nat_gateway.main]
+}
+
+resource "aws_ecs_service" "api" {
+  name            = "api"
+  cluster         = aws_ecs_cluster.main.id
+  task_definition = aws_ecs_task_definition.api.arn
+  desired_count   = 1
+  launch_type     = "FARGATE"
+
+  network_configuration {
+    security_groups = [aws_security_group.api]
+    subnets         = [aws_subnet.small_scale_simulator_primary_a.id, aws_subnet.small_scale_simulator_primary_b.id]
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.api.arn
+    container_name   = "api"
+    container_port   = 8000
+  }
+
+  depends_on = [
+    aws_lb_listener.api,
+    aws_ecs_service.redis
+  ]
+}
+
+resource "aws_ecs_service" "worker" {
+  name            = "worker"
+  cluster         = aws_ecs_cluster.main.id
+  task_definition = aws_ecs_task_definition.worker.arn
+  desired_count   = 1
+
+  # Enable auto scaling
+  lifecycle {
+    ignore_changes = [desired_count]
+  }
+
+  capacity_provider_strategy {
+    capacity_provider = "FARGATE_SPOT"
+    weight            = 100
+  }
+
+  network_configuration {
+    security_groups = [aws_security_group.worker.id]
+    subnets         = [aws_subnet.small_scale_simulator_secondary_a, aws_subnet.small_scale_simulator_secondary_b]
+  }
+
+  depends_on = [
+    aws_ecs_service.redis
+  ]
+}
+
+
+# Auto Scaling Target for Worker Service
+resource "aws_appautoscaling_target" "worker" {
+  max_capacity       = 10
+  min_capacity       = 1
+  resource_id        = "service/${aws_ecs_cluster.main.name}/${aws_ecs_service.worker.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+# Auto Scaling Policy for Worker Service (CPU-based)
+resource "aws_appautoscaling_policy" "worker_cpu" {
+  name               = "small-scale-simulator-worker-cpu-scaling"
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.worker.resource_id
+  scalable_dimension = aws_appautoscaling_target.worker.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.worker.service_namespace
+
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageCPUUtilization"
+    }
+    target_value       = 80.0
+    scale_in_cooldown  = 60
+    scale_out_cooldown = 300
+  }
+}

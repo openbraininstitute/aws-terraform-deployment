@@ -29,6 +29,9 @@ bluenaas_task_size = {
   memory = 8192
 }
 
+small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-staging"
+small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-staging"
+
 virtual_lab_manager_task_size = {
   cpu    = 512
   memory = 1024
