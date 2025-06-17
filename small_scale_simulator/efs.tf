@@ -1,6 +1,4 @@
-resource "aws_efs_file_system" "storage" {
-  name = "small_scale_simulator_storage"
-
+resource "aws_efs_file_system" "small_scale_simulator_storage" {
   creation_token   = "small-scale-simulator-storage"
   performance_mode = "generalPurpose"
   encrypted        = false #tfsec:ignore:aws-efs-enable-at-rest-encryption
@@ -20,5 +18,5 @@ resource "aws_efs_mount_target" "mount_target" {
 
   file_system_id  = aws_efs_file_system.main.id
   subnet_id       = each.value
-  security_groups = [aws_security_group.storage.id]
+  security_groups = [aws_security_group.small_scale_simulator_storage.id]
 }

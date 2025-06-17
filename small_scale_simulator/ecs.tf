@@ -65,6 +65,27 @@ resource "aws_iam_role" "ecs_task_execution_role" {
   })
 }
 
+resource "aws_iam_policy" "ecs_task_logs" {
+  name_prefix = "small_scale_simulator_ecs"
+  description = "Allows ECS tasks to create log streams and log groups in CloudWatch Logs"
+
+  policy = jsonencode({
+    Version = "2012-10-17" #tfsec:ignore:aws-iam-no-policy-wildcards
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:DescribeLogStreams",
+          "logs:PutLogEvents",
+        ]
+        Resource = "arn:aws:logs:*:*:*"
+      }
+    ]
+  })
+}
+
 resource "aws_iam_role_policy_attachment" "ecs" {
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
@@ -77,7 +98,7 @@ resource "aws_iam_role_policy_attachment" "secrets" {
 
 resource "aws_iam_role_policy_attachment" "execution_logs" {
   role       = aws_iam_role.ecs_task_execution_role.name
-  policy_arn = aws_iam_policy.ecs_task_logs_bluenaas.arn
+  policy_arn = aws_iam_policy.ecs_task_logs.arn
 }
 
 resource "aws_iam_role_policy_attachment" "efs" {
@@ -90,7 +111,7 @@ resource "aws_iam_role_policy_attachment" "efs" {
 resource "aws_service_discovery_private_dns_namespace" "main" {
   name        = "small-scale-simulator.local"
   description = "Service discovery namespace for small-scale-simulator"
-  vpc         = aws_vpc.main.id
+  vpc         = data.aws_vpc.main.id
 }
 
 # Service Discovery Service for Redis
@@ -163,7 +184,7 @@ resource "aws_ecs_task_definition" "api" {
     name = "storage"
 
     efs_volume_configuration {
-      file_system_id = aws_efs_file_system.storage.id
+      file_system_id = aws_efs_file_system.small_scale_simulator_storage.id
       root_directory = "/"
     }
   }
@@ -264,7 +285,7 @@ resource "aws_ecs_task_definition" "worker" {
     name = "storage"
 
     efs_volume_configuration {
-      file_system_id = aws_efs_file_system.storage.id
+      file_system_id = aws_efs_file_system.small_scale_simulator_storage.id
       root_directory = "/"
     }
   }
