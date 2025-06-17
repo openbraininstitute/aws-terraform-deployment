@@ -195,10 +195,50 @@ resource "aws_ecs_task_definition" "api" {
           value = "True"
         },
         {
-          name  = "PYTHONUNBUFFERED",
-          value = "1"
+          name  = "BASE_PATH"
+          value = var.base_path
+        },
+        {
+          name  = "KC_SERVER_URI"
+          value = var.keycloak_server_url
+        },
+        {
+          name  = "KC_REALM_NAME"
+          value = "SBO"
+        },
+        {
+          name  = "DEPLOYMENT_ENV"
+          value = var.deployment_env
+        },
+        {
+          name  = "NEXUS_ROOT_URI"
+          value = var.nexus_delta_uri
+        },
+        {
+          name  = "ENTITYCORE_URI"
+          value = var.entitycore_url
+        },
+        {
+          name  = "ACCOUNTING_BASE_URL"
+          value = var.accounting_base_url
         }
       ]
+
+      secrets = [
+        {
+          name      = "KC_CLIENT_ID"
+          valueFrom = "${var.secrets_arn}:KC_CLIENT_ID::"
+        },
+        {
+          name      = "KC_CLIENT_SECRET"
+          valueFrom = "${var.secrets_arn}:KC_CLIENT_SECRET::"
+        },
+        {
+          name      = "SENTRY_DSN"
+          valueFrom = "${var.secrets_arn}:SENTRY_DSN::"
+        }
+      ]
+
       logConfiguration = {
         logDriver = "awslogs"
         options = {
@@ -250,10 +290,50 @@ resource "aws_ecs_task_definition" "worker" {
           value = "True"
         },
         {
-          name  = "PYTHONUNBUFFERED",
-          value = "1"
+          name  = "BASE_PATH"
+          value = var.base_path
+        },
+        {
+          name  = "KC_SERVER_URI"
+          value = var.keycloak_server_url
+        },
+        {
+          name  = "KC_REALM_NAME"
+          value = "SBO"
+        },
+        {
+          name  = "DEPLOYMENT_ENV"
+          value = var.deployment_env
+        },
+        {
+          name  = "NEXUS_ROOT_URI"
+          value = var.nexus_delta_uri
+        },
+        {
+          name  = "ENTITYCORE_URI"
+          value = var.entitycore_url
+        },
+        {
+          name  = "ACCOUNTING_BASE_URL"
+          value = var.accounting_base_url
         }
       ]
+
+      secrets = [
+        {
+          name      = "KC_CLIENT_ID"
+          valueFrom = "${var.secrets_arn}:KC_CLIENT_ID::"
+        },
+        {
+          name      = "KC_CLIENT_SECRET"
+          valueFrom = "${var.secrets_arn}:KC_CLIENT_SECRET::"
+        },
+        {
+          name      = "SENTRY_DSN"
+          valueFrom = "${var.secrets_arn}:SENTRY_DSN::"
+        }
+      ]
+
       logConfiguration = {
         logDriver = "awslogs"
         options = {
