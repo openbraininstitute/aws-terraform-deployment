@@ -394,20 +394,18 @@ resource "aws_ecs_service" "api" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    security_groups = [aws_security_group.api]
-    subnets         = [aws_subnet.small_scale_simulator_primary_a.id, aws_subnet.small_scale_simulator_primary_b.id]
+    security_groups  = [aws_security_group.api]
+    subnets          = [aws_subnet.small_scale_simulator_primary_a.id, aws_subnet.small_scale_simulator_primary_b.id]
+    assign_public_ip = false
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.api.arn
+    target_group_arn = aws_lb_target_group.main.arn
     container_name   = "api"
     container_port   = 8000
   }
 
-  depends_on = [
-    aws_lb_listener.api,
-    aws_ecs_service.redis
-  ]
+  depends_on = [aws_ecs_service.redis]
 }
 
 resource "aws_ecs_service" "worker" {
