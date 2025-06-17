@@ -12,7 +12,7 @@ resource "aws_efs_mount_target" "mount_target" {
   for_each = {
     "subnet_primary_a_id"   = aws_subnet.small_scale_simulator_primary_a.id
     "subnet_primary_b_id"   = aws_subnet.small_scale_simulator_primary_b.id
-    "subnet_secondary_b_id" = aws_subnet.small_scale_simulator_secondary_a.id
+    "subnet_secondary_a_id" = aws_subnet.small_scale_simulator_secondary_a.id
     "subnet_secondary_b_id" = aws_subnet.small_scale_simulator_secondary_b.id
   }
 
