@@ -1,3 +1,7 @@
+locals {
+  log_group_prefix = "ecs/small-scale-simulator"
+}
+
 # TODO create via for-each loop
 resource "aws_cloudwatch_log_group" "redis" {
   name              = "/ecs/small-scale-simulator/redis"
@@ -157,9 +161,9 @@ resource "aws_ecs_task_definition" "redis" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          "awslogs-group"         = aws_cloudwatch_log_group.redis.name
-          "awslogs-region"        = "us-east-1"
-          "awslogs-stream-prefix" = "ecs"
+          awslogs-group        = aws_cloudwatch_log_group.redis.name
+          awslogs-create-group = "true"
+          awslogs-region       = "us-east-1"
         }
       }
     }
@@ -263,9 +267,9 @@ resource "aws_ecs_task_definition" "api" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          "awslogs-group"         = aws_cloudwatch_log_group.api.name
-          "awslogs-region"        = "us-east-1"
-          "awslogs-stream-prefix" = "ecs"
+          awslogs-group        = aws_cloudwatch_log_group.api.name
+          awslogs-region       = "us-east-1"
+          awslogs-create-group = "true"
         }
       }
     }
@@ -358,9 +362,9 @@ resource "aws_ecs_task_definition" "worker" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          "awslogs-group"         = aws_cloudwatch_log_group.worker.name
-          "awslogs-region"        = "us-east-1"
-          "awslogs-stream-prefix" = "ecs"
+          awslogs-group        = aws_cloudwatch_log_group.worker.name
+          awslogs-region       = "us-east-1"
+          awslogs-create-group = "true"
         }
       }
     }
