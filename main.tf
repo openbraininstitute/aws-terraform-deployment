@@ -273,6 +273,8 @@ module "small_scale_simulator" {
   accounting_base_url = "https://${local.primary_domain}${var.accounting_svc_base_path}"
   entitycore_url      = "https://${local.primary_domain}/api/entitycore"
   keycloak_server_url = "https://${local.primary_domain}/auth/"
+
+  worker_task_size = var.small_scale_simulator_worker_task_size
 }
 
 module "github_ami_build_role" {

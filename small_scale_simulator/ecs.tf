@@ -4,7 +4,7 @@ locals {
 
 # TODO create via for-each loop
 resource "aws_cloudwatch_log_group" "redis" {
-  name              = "/ecs/small-scale-simulator/redis"
+  name              = "${local.log_group_prefix}/redis"
   skip_destroy      = false
   retention_in_days = 14
 
@@ -16,7 +16,7 @@ resource "aws_cloudwatch_log_group" "redis" {
 }
 
 resource "aws_cloudwatch_log_group" "api" {
-  name              = "/ecs/small-scale-simulator/api"
+  name              = "${local.log_group_prefix}/api"
   skip_destroy      = false
   retention_in_days = 14
 
@@ -28,7 +28,7 @@ resource "aws_cloudwatch_log_group" "api" {
 }
 
 resource "aws_cloudwatch_log_group" "worker" {
-  name              = "/ecs/small-scale-simulator/worker"
+  name              = "${local.log_group_prefix}/worker"
   skip_destroy      = false
   retention_in_days = 14
 
@@ -281,9 +281,11 @@ resource "aws_ecs_task_definition" "worker" {
   family                   = "small-scale-simulator-worker"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = "4096"
-  memory                   = "8192"
-  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+
+  cpu    = var.task_size.cpu
+  memory = var.task_size.memory
+
+  execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
 
   volume {
     name = "storage"
@@ -298,6 +300,10 @@ resource "aws_ecs_task_definition" "worker" {
     {
       name  = "worker"
       image = var.worker_docker_image_url
+
+      cpu    = var.task_size.cpu
+      memory = var.task_size.memory
+
       mountPoints = [
         {
           sourceVolume  = "storage"
@@ -306,6 +312,14 @@ resource "aws_ecs_task_definition" "worker" {
         }
       ]
       environment = [
+        {
+          name  = "QUEUES"
+          value = "high medium low"
+        },
+        {
+          name  = "NUM_WORKERS"
+          value = "4"
+        },
         {
           name  = "REDIS_URL"
           value = "redis://redis.small-scale-simulator.local:6379"

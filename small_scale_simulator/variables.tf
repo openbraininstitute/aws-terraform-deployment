@@ -69,4 +69,13 @@ variable "entitycore_url" {
   type        = string
 }
 
-# TODO : Configure task sizes for api and workers, consider adding autoscaling params for workers
+# TODO : Configure task sizes for api, consider adding autoscaling params for workers
+
+variable "worker_task_size" {
+  type = object({
+    cpu    = any
+    memory = any
+  })
+
+  description = "CPU and memory limit for ECS task (number or string format)"
+}
