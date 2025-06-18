@@ -254,6 +254,9 @@ module "bluenaas_svc" {
 module "small_scale_simulator" {
   source = "./small_scale_simulator"
 
+  # Deploy only to staging until it's production ready
+  count = var.is_staging ? 1 : 0
+
   aws_region                 = local.aws_region
   vpc_id                     = local.vpc_id
   alb_listener_arn           = local.private_alb_https_listener_arn
