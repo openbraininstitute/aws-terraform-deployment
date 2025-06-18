@@ -251,3 +251,15 @@ variable "obi_generative_gui_docker_image_url" {
   type        = string
   description = "Docker image URL for obi-generative-gui service."
 }
+
+variable "azure_vpn_gateway_preshared_key" {
+  type        = string
+  description = "Preshared key for the VPN gateway towards Azure"
+  sensitive   = true
+}
+
+variable "azure_vpn_gateway_tunnel1_ip_address" {
+  type        = string
+  description = "IP address of the first tunnel interface on the Azure side of the VPN connection."
+  sensitive   = false
+}

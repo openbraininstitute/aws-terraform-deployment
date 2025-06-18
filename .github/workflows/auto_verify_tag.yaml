@@ -13,6 +13,8 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       TF_VAR_ec_apikey2: ${{ secrets.ELASTIC_CLOUD_API_KEY2 }} # Second, new elastic cloud instance of the new AWS org
       TF_VAR_nise_dockerhub_password: ${{ secrets.NISE_DOCKERHUB_PASS }}
+      TF_VAR_azure_vpn_gateway_preshared_key: ${{ secrets.AZURE_VPN_GATEWAY_PRESHARED_KEY }}
+      TF_VAR_azure_vpn_gateway_tunnel1_ip_address: ${{ vars.AZURE_VPN_GATEWAY_TUNNEL1_IP_ADDRESS }}
 
     runs-on: ubuntu-latest
     name: Auto Verify & plan terraform code
@@ -31,4 +33,4 @@ jobs:
 
       - name: Run Terraform Plan
         run: |
-          terraform plan -var-file="production.tfvars" -out plan.tfplan >/dev/null && terraform show plan.tfplan
+          terraform plan -input=false -var-file="production.tfvars" -out plan.tfplan >/dev/null && terraform show plan.tfplan

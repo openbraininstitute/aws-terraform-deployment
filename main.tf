@@ -31,6 +31,9 @@ locals {
   dockerhub_bbpbuildbot_policy_arn = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_policy_arn
 
   github_organisation = "openbraininstitute"
+
+  aws_bgp_asn   = 65000
+  azure_bgp_asn = 65515
 }
 
 module "coreservices_key" {
@@ -318,6 +321,23 @@ module "github_notebook_service_ecs_redeploy_role" {
   ecs_service_name         = module.notebook_service.ecs_service_name
   ecs_task_definition_name = module.notebook_service.ecs_task_definition_name
   # The ARN of the generated role is needed in GH and is part of the outputs.
+}
+
+module "vpn_to_azure" {
+  source = "./site_to_site_vpn"
+
+  count = var.is_staging ? 1 : 0
+
+  vpc_id                               = local.vpc_id
+  aws_bgp_asn                          = local.aws_bgp_asn
+  azure_bgp_asn                        = local.azure_bgp_asn
+  azure_vpn_gateway_tunnel1_ip_address = var.azure_vpn_gateway_tunnel1_ip_address
+  azure_vpn_gateway_preshared_key      = var.azure_vpn_gateway_preshared_key
+  aws_region                           = local.aws_region
+
+  providers = {
+    aws = aws.site_to_site_vpn
+  }
 }
 
 
