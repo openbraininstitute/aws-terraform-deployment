@@ -1,5 +1,6 @@
 annotated-types==0.7.0
 anyio==4.9.0
+awscli==1.40.38
 cached-property==2.0.1
 certifi==2025.6.15
 cffi==1.17.1
