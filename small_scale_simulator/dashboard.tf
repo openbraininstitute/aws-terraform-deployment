@@ -4,7 +4,7 @@ locals {
 }
 
 resource "aws_cloudwatch_dashboard" "main" {
-  dashboard_name = "Small scale simulator"
+  dashboard_name = "Small_scale_simulator"
 
   dashboard_body = jsonencode({
     widgets = flatten([
