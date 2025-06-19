@@ -27,6 +27,11 @@ bluenaas_task_size = {
   memory = 32768
 }
 
+small_scale_simulator_worker_task_size = {
+  cpu    = 2048
+  memory = 4096
+}
+
 virtual_lab_manager_task_size = {
   cpu    = 1024
   memory = 2048

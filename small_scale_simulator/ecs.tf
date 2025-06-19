@@ -284,8 +284,8 @@ resource "aws_ecs_task_definition" "worker" {
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
 
-  cpu    = var.task_size.cpu
-  memory = var.task_size.memory
+  cpu    = var.worker_task_size.cpu
+  memory = var.worker_task_size.memory
 
   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
 
@@ -303,8 +303,8 @@ resource "aws_ecs_task_definition" "worker" {
       name  = "worker"
       image = var.worker_docker_image_url
 
-      cpu    = var.task_size.cpu
-      memory = var.task_size.memory
+      cpu    = var.worker_task_size.cpu
+      memory = var.worker_task_size.memory
 
       mountPoints = [
         {
