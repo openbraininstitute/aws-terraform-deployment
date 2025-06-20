@@ -98,6 +98,37 @@ variable "bluenaas_docker_image_url" {
   description = "Docker image URL for the blue-naas service"
 }
 
+variable "bluenaas_task_size" {
+  type = object({
+    cpu    = any
+    memory = any
+  })
+
+  description = "CPU and memory limit for ECS task (number or string format)"
+}
+
+### Small Scale Simulator ###
+
+variable "small_scale_simulator_api_docker_image_url" {
+  type        = string
+  description = "Docker image URL for the small scale simulator API"
+}
+
+variable "small_scale_simulator_worker_docker_image_url" {
+  type        = string
+  description = "Docker image URL for the small scale simulator worker"
+}
+
+variable "small_scale_simulator_worker_task_size" {
+  type = object({
+    cpu    = any
+    memory = any
+  })
+
+  description = "CPU and memory limit for the worker ECS task (number or string format)"
+}
+
+
 ### Virtual Lab Manager service ###
 
 variable "virtual_lab_manager_base_path" {
@@ -162,17 +193,6 @@ variable "nise_dockerhub_password" {
   type        = string
   description = "Password for the NISE dockerhub access. Set via TF_VAR_nise_dockerhub_password variable."
   sensitive   = true
-}
-
-### BlueNaaS ###
-
-variable "bluenaas_task_size" {
-  type = object({
-    cpu    = any
-    memory = any
-  })
-
-  description = "CPU and memory limit for ECS task (number or string format)"
 }
 
 ### Keycloak ###
