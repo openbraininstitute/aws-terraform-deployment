@@ -161,9 +161,10 @@ resource "aws_ecs_task_definition" "redis" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group        = aws_cloudwatch_log_group.redis.name
-          awslogs-create-group = "true"
-          awslogs-region       = "us-east-1"
+          awslogs-group         = aws_cloudwatch_log_group.redis.name
+          awslogs-create-group  = "true"
+          awslogs-region        = "us-east-1"
+          awslogs-stream-prefix = "small-scale-simulator"
         }
       }
     }
@@ -269,9 +270,10 @@ resource "aws_ecs_task_definition" "api" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group        = aws_cloudwatch_log_group.api.name
-          awslogs-region       = "us-east-1"
-          awslogs-create-group = "true"
+          awslogs-group         = aws_cloudwatch_log_group.api.name
+          awslogs-region        = "us-east-1"
+          awslogs-create-group  = "true"
+          awslogs-stream-prefix = "small-scale-simulator"
         }
       }
     }
@@ -378,9 +380,10 @@ resource "aws_ecs_task_definition" "worker" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group        = aws_cloudwatch_log_group.worker.name
-          awslogs-region       = "us-east-1"
-          awslogs-create-group = "true"
+          awslogs-group         = aws_cloudwatch_log_group.worker.name
+          awslogs-create-group  = "true"
+          awslogs-region        = "us-east-1"
+          awslogs-stream-prefix = "small-scale-simulator"
         }
       }
     }

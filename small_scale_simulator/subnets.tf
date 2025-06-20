@@ -2,7 +2,7 @@
 resource "aws_subnet" "small_scale_simulator_primary_a" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}a"
-  cidr_block        = "10.0.22.0/27"
+  cidr_block        = "10.0.26.0/27"
   tags = {
     Name = "small_scale_simulator_primary_a"
   }
@@ -11,7 +11,7 @@ resource "aws_subnet" "small_scale_simulator_primary_a" {
 resource "aws_subnet" "small_scale_simulator_primary_b" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}b"
-  cidr_block        = "10.0.22.32/27"
+  cidr_block        = "10.0.26.32/27"
   tags = {
     Name = "small_scale_simulator_primary_b"
   }
@@ -21,7 +21,7 @@ resource "aws_subnet" "small_scale_simulator_primary_b" {
 resource "aws_subnet" "small_scale_simulator_secondary_a" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}a"
-  cidr_block        = "10.0.22.64/26"
+  cidr_block        = "10.0.26.64/26"
   tags = {
     Name = "small_scale_simulator_secondary_a"
   }
@@ -30,7 +30,7 @@ resource "aws_subnet" "small_scale_simulator_secondary_a" {
 resource "aws_subnet" "small_scale_simulator_secondary_b" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}b"
-  cidr_block        = "10.0.22.128/26"
+  cidr_block        = "10.0.26.128/26"
   tags = {
     Name = "small_scale_simulator_secondary_b"
   }
