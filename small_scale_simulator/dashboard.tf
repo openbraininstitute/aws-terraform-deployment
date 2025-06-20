@@ -28,7 +28,7 @@ resource "aws_cloudwatch_dashboard" "main" {
             view    = "timeSeries"
             stacked = false
             region  = var.aws_region
-            title   = "${upper(service)} CPUUtilization: Average"
+            title   = "${upper(service)} CPU avg"
             period  = 300
           }
         },
@@ -50,7 +50,7 @@ resource "aws_cloudwatch_dashboard" "main" {
             view    = "timeSeries"
             stacked = false
             region  = var.aws_region
-            title   = "${upper(service)} MemoryUtilization: Average"
+            title   = "${upper(service)} Mem avg"
             period  = 300
           }
         }
