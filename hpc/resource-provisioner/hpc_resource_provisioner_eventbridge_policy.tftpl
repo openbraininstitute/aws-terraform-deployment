@@ -14,6 +14,19 @@
                 "iam:TagRole"
             ],
             "Resource": "*"
+        },
+        {
+                "Sid": "AllowAPIInvocation",
+                "Effect": "Allow",
+                "Action": [
+                    "apigateway:*",
+                    "execute-api:invoke"
+                ],
+                "Resource": [
+                    "arn:aws:apigateway:${aws_region}::/apis/${api_deployment_id}/deployments",
+                    "arn:aws:apigateway:${aws_region}::*",
+                    "*"
+                ]
         }
     ]
 }

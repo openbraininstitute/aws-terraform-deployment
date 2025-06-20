@@ -33,7 +33,3 @@ output "aws_security_group_efa_id" {
 output "fsx_policy_arn" {
   value = aws_iam_policy.fsx_describe_dra_policy.arn
 }
-
-output "eventbridge_role_arn" {
-  value = aws_iam_role.resource_provisioner_eventbridge.arn
-}

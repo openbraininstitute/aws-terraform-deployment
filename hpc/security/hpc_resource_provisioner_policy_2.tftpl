@@ -25,19 +25,24 @@
                     "dynamodb:Scan"
             ],
             "Resource": [
-                    "arn:aws:dynamodb:us-east-1:${account_id}:table/pclusters"
+                    "arn:aws:dynamodb:${aws_region}:${account_id}:table/pclusters*"
             ],
             "Effect": "Allow",
             "Sid": "LambdaDynamoDB"
         },
         {
             "Action": [
+                "events:DeleteRule",
+                "events:ListRules",
+                "events:ListTargetsByRule",
                 "events:PutRule",
+                "events:PutTargets",
+                "events:RemoveTargets",
                 "events:TagResource",
                 "events:UntagResource"
             ],
             "Resource": [
-                "arn:aws:event..."
+                "arn:aws:events:${aws_region}:${account_id}:rule/*"
             ],
             "Effect": "Allow",
             "Sid": "LambdaEventBridgePermissions"
