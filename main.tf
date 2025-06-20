@@ -260,7 +260,7 @@ module "small_scale_simulator" {
   aws_region                 = local.aws_region
   vpc_id                     = local.vpc_id
   alb_listener_arn           = local.private_alb_https_listener_arn
-  alb_listener_rule_priority = 755
+  alb_listener_rule_priority = 760
   internet_access_route_id   = local.route_table_private_subnets_id
 
   # TODO Clone from bluenaas_svc before it is retired
