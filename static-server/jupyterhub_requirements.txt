@@ -99,7 +99,8 @@ numba==0.61.2
 numexpr==2.11.0
 numpy==1.26.4
 numpy-quaternion==2024.0.9
-obi_auth==0.3.0
+obi-one=2025.6.2
+obi-auth==0.3.0
 packaging==25.0
 palettable==3.3.3
 pandas==2.3.0
