@@ -386,7 +386,7 @@ resource "aws_lb_listener_rule" "entraid_verification" {
 
 resource "aws_lb_listener_rule" "jupyterhub_requirements" {
   listener_arn = var.alb_listener_arn
-  priority     = var.alb_listener_rule_priority + 5
+  priority     = 349 # higher prio. than /jupyterhub* rule
 
   action {
     type = "redirect"
@@ -402,7 +402,7 @@ resource "aws_lb_listener_rule" "jupyterhub_requirements" {
 
   condition {
     path_pattern {
-      values = ["/juyterhub/requirements.txt"]
+      values = ["/jupyterhub/requirements.txt"]
     }
   }
 }
