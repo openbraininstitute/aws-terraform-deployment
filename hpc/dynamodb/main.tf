@@ -88,13 +88,20 @@ resource "aws_dynamodb_table" "pcluster_dynamo_table" {
   #   type = "S"
   # }
 
-  # attribute {
-  #   name = "claimed"
-  #   type = "N"
-  # }
+  attribute {
+    name = "provisioning_launched"
+    type = "N"
+  }
 
   billing_mode                = "PAY_PER_REQUEST"
   deletion_protection_enabled = var.is_production
   hash_key                    = "name"
+
+  global_secondary_index {
+    name               = "ClaimIndex"
+    hash_key           = "provisioning_launched"
+    projection_type    = "INCLUDE"
+    non_key_attributes = ["name", "project_id", "vlab_id", "tier", "benchmark", "dev", "include_lustre", "sim_pubkey", "admin_ssh_key_name"]
+  }
 
 }
