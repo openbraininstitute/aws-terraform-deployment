@@ -6,3 +6,7 @@ output "resource_provisioner_api_url" {
   description = "The URL of the resource provisioner API"
   value       = module.resource-provisioner.api_url
 }
+
+output "apigw_arn" {
+  value = module.resource-provisioner.apigw_arn
+}

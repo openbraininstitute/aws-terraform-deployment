@@ -108,7 +108,6 @@ module "resource-provisioner" {
   fsx_policy_arn       = module.security.fsx_policy_arn
   fs_subnet_ids        = module.networking.fs_subnet_ids
   fs_sg_id             = module.security.compute_efs_sg_id
-  eventbridge_role_arn = module.security.eventbridge_role_arn
   pcluster_ami_id      = var.pcluster_ami_id
 }
 
@@ -132,7 +131,6 @@ module "resource-provisioner-dev" {
   fsx_policy_arn       = module.security.fsx_policy_arn
   fs_subnet_ids        = module.networking.fs_subnet_ids
   fs_sg_id             = module.security.compute_efs_sg_id
-  eventbridge_role_arn = module.security.eventbridge_role_arn
   pcluster_ami_id      = var.pcluster_ami_id
 }
 

@@ -13,3 +13,7 @@ output "notebook_service" {
 output "notebook_service_redeploy_role" {
   value = var.is_staging ? module.github_notebook_service_ecs_redeploy_role[0] : null
 }
+
+output "apigw_arn" {
+  value = module.hpc.apigw_arn
+}
