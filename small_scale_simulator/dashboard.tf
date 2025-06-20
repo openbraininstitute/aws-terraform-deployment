@@ -11,8 +11,8 @@ resource "aws_cloudwatch_dashboard" "main" {
       for i, service in local.servicenames : [
         {
           type   = "metric"
-          x      = (i % 2) * 12
-          y      = floor(i / 2) * 12
+          x      = 0
+          y      = i * 6
           width  = 12
           height = 6
 
@@ -28,14 +28,14 @@ resource "aws_cloudwatch_dashboard" "main" {
             view    = "timeSeries"
             stacked = false
             region  = var.aws_region
-            title   = "${upper(service)} CPU avg"
+            title   = "${upper(service)} CPUUtilization: Average"
             period  = 300
           }
         },
         {
           type   = "metric"
-          x      = ((i % 2) * 12) + 12
-          y      = floor(i / 2) * 12
+          x      = 12
+          y      = i * 6
           width  = 12
           height = 6
 
@@ -50,7 +50,7 @@ resource "aws_cloudwatch_dashboard" "main" {
             view    = "timeSeries"
             stacked = false
             region  = var.aws_region
-            title   = "${upper(service)} Mem avg"
+            title   = "${upper(service)} MemoryUtilization: Average"
             period  = 300
           }
         }
