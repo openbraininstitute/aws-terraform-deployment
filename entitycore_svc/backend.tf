@@ -5,7 +5,7 @@ locals {
 
 resource "aws_cloudwatch_log_group" "entitycore_ecs_task_logs" {
   # TODO check if the logs can be encrypted
-  name_prefix       = "acc_ecs"
+  name_prefix       = "entitycore"
   skip_destroy      = false
   retention_in_days = 14
 
@@ -31,7 +31,7 @@ resource "aws_ecs_cluster" "entitycore" {
 
 # TODO make more strict
 resource "aws_security_group" "entitycore_ecs_task" {
-  name_prefix = "ac_ecs"
+  name_prefix = "entitycore"
   vpc_id      = var.vpc_id
   description = "Sec group for entitycore service"
 
@@ -212,7 +212,7 @@ resource "aws_ecs_service" "entitycore_ecs_service" {
 }
 
 resource "aws_iam_role" "ecs_entitycore_task_execution_role" {
-  name_prefix = "acc_ecs"
+  name_prefix = "entitycore"
 
   assume_role_policy = <<-EOT
   {
@@ -237,7 +237,7 @@ resource "aws_iam_role_policy_attachment" "ecs_entitycore_task_execution_role_po
 }
 
 resource "aws_iam_role" "ecs_entitycore_task_role" {
-  name_prefix = "acc_ecs"
+  name_prefix = "entitycore"
 
   assume_role_policy = <<-EOT
   {
@@ -257,7 +257,7 @@ resource "aws_iam_role" "ecs_entitycore_task_role" {
 }
 
 resource "aws_iam_policy" "ecs_task_logs_entitycore" {
-  name_prefix = "acc_ecs"
+  name_prefix = "entitycore"
   description = "Allows ECS tasks to create log streams and log groups in CloudWatch Logs"
 
   policy = jsonencode({
