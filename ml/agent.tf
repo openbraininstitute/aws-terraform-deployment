@@ -135,7 +135,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_TOOLS__WHITELISTED_TOOL_REGEX"
-          value = "entitycore-asset-getall|entitycore-asset-getone|entitycore-brainatlas-getall|entitycore-brainatlas-getone|entitycore-brainregion-getall|entitycore-brainregion-getone|entitycore-brainregionhierarchy-getall|entitycore-brainregionhierarchy-getone|entitycore-contribution-getall|entitycore-contribution-getone|entitycore-electricalcellrecording-getall|entitycore-electricalcellrecording-getone|entitycore-emodel-getall|entitycore-emodel-getone|entitycore-etype-getall|entitycore-etype-getone|entitycore-experimentalboutondensity-getall|entitycore-experimentalboutondensity-getone|entitycore-experimentalneurondensity-getall|entitycore-experimentalneurondensity-getone|entitycore-experimentalsynapsesperconnection-getall|entitycore-experimentalsynapsesperconnection-getone|entitycore-memodel-getall|entitycore-memodel-getone|entitycore-mtype-getall|entitycore-mtype-getone|entitycore-organization-getall|entitycore-organization-getone|entitycore-person-getall|entitycore-person-getone|entitycore-reconstructionmorphology-getall|entitycore-reconstructionmorphology-getone|entitycore-species-getall|entitycore-species-getone|entitycore-strain-getall|entitycore-strain-getone|entitycore-subject-getall|entitycore-subject-getone|literature-search-tool|morpho-metrics-tool|web-search-tool"
+          value = "^(?!.*(downloadone|ionchannelmodel|measurementannotation|plot-generator|resolve-|scs|thumbnail|mcp)).*"
         },
       ]
       secrets = [
