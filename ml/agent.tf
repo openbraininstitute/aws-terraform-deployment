@@ -82,8 +82,8 @@ module "ecs_service_agent" {
           value = "https://${var.primary_domain}/auth/realms/SBO"
         },
         {
-          name  = "NEUROAGENT_KNOWLEDGE_GRAPH__BASE_URL"
-          value = "https://${var.nexus_domain_name}/api/nexus/v1"
+          name  = "NEUROAGENT_LLM__WHITELISTED_MODEL_IDS_REGEX"
+          value = "openai/gpt-4.1-mini"
         },
         {
           name  = "NEUROAGENT_MISC__APPLICATION_PREFIX"
@@ -135,7 +135,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_TOOLS__WHITELISTED_TOOL_REGEX"
-          value = "literature-search-tool|web-search-tool"
+          value = "^(?!.*(downloadone|ionchannelmodel|measurementannotation|plot-generator|resolve-|scs|thumbnail|mcp)).*"
         },
       ]
       secrets = [
@@ -144,7 +144,7 @@ module "ecs_service_agent" {
           valueFrom = "${module.ml_rds_postgres.db_instance_master_user_secret_arn}:password::"
         },
         {
-          name      = "NEUROAGENT_OPENAI__TOKEN"
+          name      = "NEUROAGENT_LLM__OPENAI_TOKEN"
           valueFrom = "${var.ml_secrets_arn}:OPENAI_API_KEY::"
         },
         {
