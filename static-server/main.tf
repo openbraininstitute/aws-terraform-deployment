@@ -280,6 +280,7 @@ resource "aws_s3_object" "jupyterhub_requirements" {
   key          = local.jupyterhub_requirements.key
   source       = local.jupyterhub_requirements.source
   content_type = local.jupyterhub_requirements.content_type
+  etag         = filemd5(local.jupyterhub_requirements.source)
 }
 
 resource "aws_s3_object" "sitemap_xml" {
