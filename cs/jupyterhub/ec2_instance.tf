@@ -42,6 +42,7 @@ resource "aws_instance" "jupyterhub_server" {
     { ADMIN_USER       = "obi-administrator",
       ADMIN_PASS       = jsondecode(data.aws_secretsmanager_secret_version.jupyterhub_secrets.secret_string)["JUPYTER_ADMIN_PASS"],
       BASE_PATH        = var.jupyterhub_base_path,
+      CS_SSH_KEY       = var.aws_coreservices_ssh_key_id,
       HOMEDIRS_EFS     = aws_efs_file_system.jupyterhub_homedirs.dns_name,
       HOMEDIRS_PATH    = "/home",
       JUPYTERHUB_PORT  = var.jupyterhub_port,
