@@ -35,6 +35,13 @@ for DIR in $(find /opt/tljh/ -name docmanager-extension -type d); do
   cat <<< $(jq '.properties.autosave.default = false' $DIR/plugin.json) > $DIR/plugin.json
 done
 
+# from: https://tljh.jupyter.org/en/latest/howto/content/share-data.html
+mkdir -p ${SHARED_DIR_PATH}
+sudo chmod 777 ${SHARED_DIR_PATH}
+sudo chmod g+s ${SHARED_DIR_PATH}
+sudo chown root:jupyterhub-users ${SHARED_DIR_PATH}
+sudo ln -s ${SHARED_DIR_PATH} /etc/skel/shared_data
+
 # Setup Keycloak as a GenericOAuthenticator
 cat <<EOF > /opt/tljh/config/jupyterhub_config.d/keycloak.py
 c.JupyterHub.authenticator_class = "generic-oauth"

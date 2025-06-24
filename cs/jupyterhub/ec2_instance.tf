@@ -45,6 +45,7 @@ resource "aws_instance" "jupyterhub_server" {
       CS_SSH_KEY       = var.aws_coreservices_ssh_key_id,
       HOMEDIRS_EFS     = aws_efs_file_system.jupyterhub_homedirs.dns_name,
       HOMEDIRS_PATH    = "/home",
+      SHARED_DIR_PATH  = "/home/shared",
       JUPYTERHUB_PORT  = var.jupyterhub_port,
       KC_CLIENT_ID     = jsondecode(data.aws_secretsmanager_secret_version.jupyterhub_secrets.secret_string)["KC_CLIENT_ID"],
       KC_CLIENT_SECRET = jsondecode(data.aws_secretsmanager_secret_version.jupyterhub_secrets.secret_string)["KC_CLIENT_SECRET"],
