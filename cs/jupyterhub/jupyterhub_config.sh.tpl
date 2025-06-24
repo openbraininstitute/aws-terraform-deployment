@@ -12,6 +12,9 @@ sudo rm -rf ${HOMEDIRS_PATH}/jupyter-*
 sudo echo -n "${HOMEDIRS_EFS}:/ ${HOMEDIRS_PATH} nfs4 $${EFS_MOUNT_OPS} 0 0" >> /etc/fstab
 sudo mount -a
 
+# to be able to ssh as ubuntu user
+sudo echo $CS_SSH_KEY > /home/ubuntu/.ssh/authorized_keys
+
 sudo systemctl enable nginx
 sudo systemctl stop nginx
 
