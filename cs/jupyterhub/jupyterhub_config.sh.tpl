@@ -13,7 +13,10 @@ sudo echo -n "${HOMEDIRS_EFS}:/ ${HOMEDIRS_PATH} nfs4 $${EFS_MOUNT_OPS} 0 0" >> 
 sudo mount -a
 
 # to be able to ssh as ubuntu user
+sudo mkdir -p /home/ubuntu/.ssh/
+sudo chown -R ubuntu:ubuntu /home/ubuntu/
 sudo echo $CS_SSH_KEY > /home/ubuntu/.ssh/authorized_keys
+sudo chmod 600 /home/ubuntu/.ssh/authorized_keys
 
 sudo systemctl enable nginx
 sudo systemctl stop nginx
