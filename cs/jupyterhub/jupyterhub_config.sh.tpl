@@ -42,6 +42,13 @@ sudo chmod g+s ${SHARED_DIR_PATH}
 sudo chown root:jupyterhub-users ${SHARED_DIR_PATH}
 sudo ln -s ${SHARED_DIR_PATH} /etc/skel/shared_data
 
+# add admins
+sudo tljh-config add-item users.admin jupyter-james-isbister
+sudo tljh-config add-item users.admin jupyter-darshanmandge
+sudo tljh-config add-item users.admin jupyter-lidakanari
+sudo tljh-config add-item users.admin jupyter-mwolfr
+sudo tljh-config add-item users.admin jupyter-romani79
+
 # Setup Keycloak as a GenericOAuthenticator
 cat <<EOF > /opt/tljh/config/jupyterhub_config.d/keycloak.py
 c.JupyterHub.authenticator_class = "generic-oauth"
