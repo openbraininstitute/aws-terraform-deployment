@@ -15,7 +15,8 @@ sudo mount -a
 # to be able to ssh as ubuntu user
 sudo mkdir -p /home/ubuntu/.ssh/
 sudo chown -R ubuntu:ubuntu /home/ubuntu/
-sudo echo $CS_SSH_KEY > /home/ubuntu/.ssh/authorized_keys
+sudo echo "${CS_SSH_KEY}" > /home/ubuntu/.ssh/authorized_keys
+sudo chmod 700 /home/ubuntu/.ssh
 sudo chmod 600 /home/ubuntu/.ssh/authorized_keys
 
 sudo systemctl enable nginx
