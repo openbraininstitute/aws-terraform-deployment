@@ -119,19 +119,19 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_TOOLS__LITERATURE__URL"
-          value = "http://${var.private_alb_dns}:3000/api/literature"
+          value = "https://${var.primary_domain}/api/literature"
         },
         {
           name  = "NEUROAGENT_TOOLS__OBI_ONE__URL"
-          value = "http://${var.primary_domain}/api/obi-one"
+          value = "https://${var.primary_domain}/api/obi-one"
         },
         {
           name  = "NEUROAGENT_TOOLS__ENTITYCORE__URL"
-          value = "http://${var.primary_domain}/api/entitycore"
+          value = "https://${var.primary_domain}/api/entitycore"
         },
         {
           name  = "NEUROAGENT_TOOLS__THUMBNAIL_GENERATION__URL"
-          value = "http://${var.primary_domain}/api/thumbnail-generation"
+          value = "https://${var.primary_domain}/api/thumbnail-generation"
         },
         {
           name  = "NEUROAGENT_TOOLS__WHITELISTED_TOOL_REGEX"
