@@ -39,11 +39,12 @@ for DIR in $(find /opt/tljh/ -name docmanager-extension -type d); do
   cat <<< $(jq '.properties.autosave.default = false' $DIR/plugin.json) > $DIR/plugin.json
 done
 
-# from: https://tljh.jupyter.org/en/latest/howto/content/share-data.html
 mkdir -p ${SHARED_DIR_PATH}
-sudo chmod 777 ${SHARED_DIR_PATH}
-sudo chmod g+s ${SHARED_DIR_PATH}
-sudo chown root:jupyterhub-users ${SHARED_DIR_PATH}
+# RO for jupyterhub users, full access for root
+sudo chown -R root:jupyterhub-users ${SHARED_DIR_PATH}
+sudo chmod -R 2750 ${SHARED_DIR_PATH}
+
+# from: https://tljh.jupyter.org/en/latest/howto/content/share-data.html
 sudo ln -s ${SHARED_DIR_PATH} /etc/skel/shared_data
 
 # add admins
