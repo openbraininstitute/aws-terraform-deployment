@@ -25,6 +25,10 @@ variable "jupyterhub_port" {
   type = number
 }
 
+variable "jupyterhub_admin_users" {
+  type = list(string)
+}
+
 variable "jupyterhub_sg_name" {
   type = string
 }
