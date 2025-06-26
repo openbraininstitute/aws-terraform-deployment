@@ -1,6 +1,7 @@
 #tfsec:ignore:aws-ec2-no-public-egress-sgr
 module "ml-ecs_service_grobid" {
-  source = "terraform-aws-modules/ecs/aws//modules/service"
+  source  = "terraform-aws-modules/ecs/aws//modules/service"
+  version = "v5.12.1"
 
   name                  = "ml-ecs-service-grobid"
   cluster_arn           = local.ecs_cluster_arn
