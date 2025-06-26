@@ -1,5 +1,6 @@
 module "ml_producer_eventbridge" {
-  source = "terraform-aws-modules/eventbridge/aws"
+  source  = "terraform-aws-modules/eventbridge/aws"
+  version = "v3.17.1"
 
   # Schedules can only be created on default bus
   create_bus = false
@@ -85,7 +86,8 @@ module "ml_producer_eventbridge" {
 
 #tfsec:ignore:aws-ec2-no-public-egress-sgr
 module "ml_ecs_task_producer" {
-  source = "terraform-aws-modules/ecs/aws//modules/service"
+  source  = "terraform-aws-modules/ecs/aws//modules/service"
+  version = "v5.12.1"
 
   name        = "ml-ecs-task-producer"
   cluster_arn = local.ecs_cluster_arn

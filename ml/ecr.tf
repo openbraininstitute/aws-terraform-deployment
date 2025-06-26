@@ -1,5 +1,6 @@
 module "ml_ecr" {
-  source = "terraform-aws-modules/ecr/aws"
+  source  = "terraform-aws-modules/ecr/aws"
+  version = "v2.4.0"
 
   repository_name = "ml-repository"
   repository_lifecycle_policy = jsonencode({
