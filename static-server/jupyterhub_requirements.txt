@@ -66,9 +66,6 @@ jmespath==1.0.1
 joblib==1.5.1
 jsonschema==4.24.0
 jsonschema-specifications==2025.4.1
-jupyter_client==8.6.3
-jupyter_core==5.8.1
-jupyterlab_widgets==3.0.15
 kiwisolver==1.4.8
 lazy==1.6
 LFPy==2.3.5
