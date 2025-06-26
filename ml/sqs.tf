@@ -1,5 +1,6 @@
 module "ml_sqs" {
-  source = "terraform-aws-modules/sqs/aws"
+  source  = "terraform-aws-modules/sqs/aws"
+  version = "v4.3.1"
 
   name = "ml-sqs"
 
