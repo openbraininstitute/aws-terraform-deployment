@@ -25,6 +25,7 @@ sudo systemctl stop nginx
 curl -L https://tljh.jupyter.org/bootstrap.py \
   | sudo python3 - \
     --admin ${ADMIN_USER}:${ADMIN_PASS} \
+    --user-requirements-txt-url https://s3.amazonaws.com/${PRIMARY_DOMAIN}/static/jupyterhub_requirements.txt \
     --version 2.0.0 \
     --show-progress-page \
 
