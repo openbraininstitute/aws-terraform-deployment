@@ -31,8 +31,11 @@ curl -L https://tljh.jupyter.org/bootstrap.py \
 
 sudo tljh-config set base_url ${BASE_PATH}
 sudo tljh-config set http.port ${JUPYTERHUB_PORT}
-# limit session to 30 mins
-sudo tljh-config set services.cull.max_age 1800
+
+# limit max session to 1h and 15 mins
+sudo tljh-config set services.cull.max_age 4500
+# if notebook is idle for 20 mins, cull service
+sudo tljh-config set services.cull.timeout 1200
 
 # set default interface to jupyterlab and disable autosave feature
 sudo tljh-config set user_environment.default_app jupyterlab
