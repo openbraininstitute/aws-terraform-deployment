@@ -48,13 +48,13 @@ sudo chmod -R 2750 ${SHARED_DIR_PATH}
 # from: https://tljh.jupyter.org/en/latest/howto/content/share-data.html
 sudo ln -s ${SHARED_DIR_PATH} /etc/skel/shared_data
 
-# add admins to jupyterhub-admins
-sudo tljh-config add-item users.admin jupyter-james-isbister
-sudo tljh-config add-item users.admin jupyter-darshanmandge
-sudo tljh-config add-item users.admin jupyter-lidakanari
-sudo tljh-config add-item users.admin jupyter-mwolfr
-sudo tljh-config add-item users.admin jupyter-romani79
-sudo tljh-config add-item users.admin jupyter-danifr
+# users to jupyterhub-admins: ${JUPYTERHUB_ADMINS}
+JUPYTERHUB_ADMINS_SET=""
+for USERNAME in $(echo "${JUPYTERHUB_ADMINS}" | xargs)
+do
+  sudo tljh-config add-item users.admin jupyter-$${USERNAME}
+  JUPYTERHUB_ADMINS_SET="'$${USERNAME}' $${JUPYTERHUB_ADMINS_SET}"
+done
 
 # Setup Keycloak as a GenericOAuthenticator
 cat <<EOF > /opt/tljh/config/jupyterhub_config.d/keycloak.py
@@ -73,7 +73,7 @@ c.GenericOAuthenticator.username_claim = "preferred_username"
 c.GenericOAuthenticator.scope = ["openid"]
 
 # jupyterhub-admins users need to be allowed at the Authenticator level
-c.GenericOAuthenticator.admin_users = {'james-isbister', 'darshanmandge', 'lidakanari', 'mwolfr', 'romani79', 'danifr'}
+c.GenericOAuthenticator.admin_users = { $${JUPYTERHUB_ADMINS_SET} }
 
 c.GenericOAuthenticator.allow_all = True
 c.GenericOAuthenticator.auto_login = True
