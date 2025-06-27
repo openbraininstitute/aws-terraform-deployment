@@ -73,7 +73,7 @@ c.GenericOAuthenticator.username_claim = "preferred_username"
 c.GenericOAuthenticator.scope = ["openid"]
 
 # jupyterhub-admins users need to be allowed at the Authenticator level
-#c.GenericOAuthenticator.admin_users = { $${JUPYTERHUB_ADMINS_SET} }
+c.GenericOAuthenticator.admin_users = { $${JUPYTERHUB_ADMINS_SET} }
 
 c.GenericOAuthenticator.allow_all = True
 c.GenericOAuthenticator.auto_login = True
