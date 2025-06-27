@@ -52,12 +52,13 @@ sudo chmod -R 2750 ${SHARED_DIR_PATH}
 sudo ln -s ${SHARED_DIR_PATH} /etc/skel/shared_data
 
 # users to jupyterhub-admins: ${JUPYTERHUB_ADMINS}
-JUPYTERHUB_ADMINS_SET=""
 for USERNAME in $(echo "${JUPYTERHUB_ADMINS}" | xargs)
 do
   sudo tljh-config add-item users.admin jupyter-$${USERNAME}
-  JUPYTERHUB_ADMINS_SET="'$${USERNAME}' $${JUPYTERHUB_ADMINS_SET}"
 done
+
+JUPYTERHUB_ADMINS_SET=$(printf "'%s', " ${JUPYTERHUB_ADMINS})
+JUPYTERHUB_ADMINS_SET="$${JUPYTERHUB_ADMINS_SET%, }"  # remove trailing comma and space
 
 # Setup Keycloak as a GenericOAuthenticator
 cat <<EOF > /opt/tljh/config/jupyterhub_config.d/keycloak.py
