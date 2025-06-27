@@ -55,5 +55,5 @@ entitycore_svc_s3_bucket_name            = "entitycore-data-production"
 entitycore_svc_s3_bucket_allowed_origins = ["www.openbraininstitute.org"]
 entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.6.7"
 
-obi_one_docker_image_url            = "public.ecr.aws/openbraininstitute/obi-one:2025.6.9"
+obi_one_docker_image_url            = "public.ecr.aws/openbraininstitute/obi-one:2025.6.11"
 obi_generative_gui_docker_image_url = "public.ecr.aws/openbraininstitute/obi-generative-gui:2025.5.4"
