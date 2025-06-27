@@ -57,7 +57,7 @@ do
   sudo tljh-config add-item users.admin jupyter-$${USERNAME}
 done
 
-JUPYTERHUB_ADMINS_SET=$(printf "'%s', " "${JUPYTERHUB_ADMINS}")
+JUPYTERHUB_ADMINS_SET=$(printf "'%s', " ${JUPYTERHUB_ADMINS})
 JUPYTERHUB_ADMINS_SET="$${JUPYTERHUB_ADMINS_SET%, }"  # remove trailing comma and space
 
 # Setup Keycloak as a GenericOAuthenticator
