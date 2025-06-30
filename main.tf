@@ -610,6 +610,7 @@ module "thumbnail_generation_api" {
   thumbnail_generation_api_base_path        = "/api/thumbnail-generation"
   thumbnail_generation_api_log_group_name   = "thumbnail_generation_api"
   thumbnail_generation_api_cors_origins     = ["http://localhost:3000", "https://next.staging.openbraininstitute.org"]
+  entitycore_url                            = "https://${local.primary_domain}/api/entitycore"
 }
 
 module "virtual_lab_manager" {

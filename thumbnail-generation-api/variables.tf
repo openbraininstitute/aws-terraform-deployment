@@ -67,3 +67,9 @@ variable "thumbnail_generation_api_cors_origins" {
   description = "Origins that are allowed to make requests to the virtual lab api through a browser"
   sensitive   = false
 }
+
+
+variable "entitycore_url" {
+  description = "entitycore URL"
+  type        = string
+}
