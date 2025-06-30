@@ -51,9 +51,10 @@ resource "aws_security_group" "api" {
   vpc_id      = data.aws_vpc.main.id
 
   ingress {
-    from_port = 8000
-    to_port   = 8000
-    protocol  = "tcp"
+    from_port   = 8000
+    to_port     = 8000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
     # security_groups = [aws_security_group.alb.id]
   }
 
