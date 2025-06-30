@@ -192,8 +192,12 @@ resource "aws_ecs_task_definition" "api" {
     name = "storage"
 
     efs_volume_configuration {
-      file_system_id = aws_efs_file_system.small_scale_simulator_storage.id
-      root_directory = "/"
+      file_system_id     = aws_efs_file_system.small_scale_simulator_storage.id
+      transit_encryption = "ENABLED"
+      authorization_config {
+        access_point_id = aws_efs_access_point.small_scale_simulator_storage_ap.id
+        iam             = "ENABLED"
+      }
     }
   }
 
@@ -297,8 +301,12 @@ resource "aws_ecs_task_definition" "worker" {
     name = "storage"
 
     efs_volume_configuration {
-      file_system_id = aws_efs_file_system.small_scale_simulator_storage.id
-      root_directory = "/"
+      file_system_id     = aws_efs_file_system.small_scale_simulator_storage.id
+      transit_encryption = "ENABLED"
+      authorization_config {
+        access_point_id = aws_efs_access_point.small_scale_simulator_storage_ap.id
+        iam             = "ENABLED"
+      }
     }
   }
 

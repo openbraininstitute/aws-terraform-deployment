@@ -18,3 +18,21 @@ resource "aws_efs_mount_target" "mount_target" {
   subnet_id       = each.value
   security_groups = [aws_security_group.storage.id]
 }
+
+resource "aws_efs_access_point" "small_scale_simulator_storage_ap" {
+  file_system_id = aws_efs_file_system.small_scale_simulator_storage.id
+
+  posix_user {
+    gid = 1000
+    uid = 1000
+  }
+
+  root_directory {
+    path = "/app/storage"
+    creation_info {
+      owner_gid   = 1000
+      owner_uid   = 1000
+      permissions = "0755"
+    }
+  }
+}
