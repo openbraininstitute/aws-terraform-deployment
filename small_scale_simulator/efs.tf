@@ -1,5 +1,5 @@
 resource "aws_efs_file_system" "small_scale_simulator_storage" {
-  creation_token   = "small-scale-simulator-storage-v1"
+  creation_token   = "small-scale-simulator-storage"
   performance_mode = "generalPurpose"
   encrypted        = true
 
