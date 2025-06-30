@@ -110,6 +110,29 @@ resource "aws_iam_role_policy_attachment" "efs" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonElasticFileSystemClientFullAccess"
 }
 
+# Task Role for API and Worker (needed for EFS IAM authorization)
+resource "aws_iam_role" "ecs_task_role" {
+  name_prefix = "small-scale-simulator-task"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "task_efs" {
+  role       = aws_iam_role.ecs_task_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonElasticFileSystemClientFullAccess"
+}
+
 
 # Service Discovery Namespace
 resource "aws_service_discovery_private_dns_namespace" "main" {
@@ -181,6 +204,7 @@ resource "aws_ecs_task_definition" "api" {
   memory = "512"
 
   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn      = aws_iam_role.ecs_task_role.arn
 
   // TODO: Add this back once ARM image build is fixed
   # runtime_platform {
@@ -296,6 +320,7 @@ resource "aws_ecs_task_definition" "worker" {
   memory = var.worker_task_size.memory
 
   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn      = aws_iam_role.ecs_task_role.arn
 
   volume {
     name = "storage"
