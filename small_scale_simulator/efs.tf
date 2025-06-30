@@ -1,7 +1,7 @@
 resource "aws_efs_file_system" "small_scale_simulator_storage" {
   creation_token   = "small-scale-simulator-storage-v1"
   performance_mode = "generalPurpose"
-  encrypted        = false #tfsec:ignore:aws-efs-enable-at-rest-encryption
+  encrypted        = true
 
   tags = {
     Name = "small_scale_simulator_efs"
