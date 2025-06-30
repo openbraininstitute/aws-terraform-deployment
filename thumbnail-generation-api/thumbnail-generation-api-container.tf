@@ -177,7 +177,7 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
           },
           {
             name : "ENTITY_CORE_URI",
-            value : "https://staging.openbraininstitute.org/api/entitycore"
+            value : var.entitycore_url
           }
         ],
         memory = 2048
