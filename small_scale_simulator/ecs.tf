@@ -195,7 +195,7 @@ resource "aws_ecs_task_definition" "api" {
       file_system_id     = aws_efs_file_system.small_scale_simulator_storage.id
       transit_encryption = "ENABLED"
       authorization_config {
-        access_point_id = aws_efs_access_point.app_storage_ap.id
+        access_point_id = aws_efs_access_point.small_scale_simulator_storage_ap.id
         iam             = "ENABLED"
       }
     }
@@ -304,7 +304,7 @@ resource "aws_ecs_task_definition" "worker" {
       file_system_id     = aws_efs_file_system.small_scale_simulator_storage.id
       transit_encryption = "ENABLED"
       authorization_config {
-        access_point_id = aws_efs_access_point.app_storage_ap.id
+        access_point_id = aws_efs_access_point.small_scale_simulator_storage_ap.id
         iam             = "ENABLED"
       }
     }
