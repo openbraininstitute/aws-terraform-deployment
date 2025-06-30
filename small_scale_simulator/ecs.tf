@@ -1,5 +1,19 @@
 locals {
   log_group_prefix = "ecs/small-scale-simulator"
+
+  api = {
+    task_size = {
+      cpu : "256",
+      memory : "512"
+    }
+  }
+
+  redis = {
+    task_size = {
+      cpu : "256",
+      memory : "512"
+    }
+  }
 }
 
 # TODO create via for-each loop
@@ -139,9 +153,11 @@ resource "aws_ecs_task_definition" "redis" {
   family                   = "small-scale-simulator-redis"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = "256"
-  memory                   = "512"
-  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+
+  cpu    = locals.redis.task_size.cpu
+  memory = locals.redis.task_size.memory
+
+  execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
 
   runtime_platform {
     operating_system_family = "LINUX"
@@ -152,6 +168,10 @@ resource "aws_ecs_task_definition" "redis" {
     {
       name  = "redis"
       image = "redis:8-alpine"
+
+      cpu    = locals.redis.task_size.cpu
+      memory = locals.redis.task_size.memory
+
       portMappings = [
         {
           containerPort = 6379
@@ -177,8 +197,8 @@ resource "aws_ecs_task_definition" "api" {
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
 
-  cpu    = "256"
-  memory = "512"
+  cpu    = locals.api.task_size.cpu
+  memory = locals.api.task_size.memory
 
   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
 
@@ -201,6 +221,10 @@ resource "aws_ecs_task_definition" "api" {
     {
       name  = "api"
       image = var.api_docker_image_url
+
+      cpu    = locals.api.task_size.cpu
+      memory = locals.api.task_size.memory
+
       portMappings = [
         {
           containerPort = 8000
