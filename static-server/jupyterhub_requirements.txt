@@ -1,4 +1,4 @@
-awscli==1.40.43
+awscli==1.41.0
 bluecellulab==2.6.59
 bluepyefe==2.3.45
 bluepyemodel==1.0.36
@@ -8,7 +8,7 @@ connectome-manipulator==1.0.3
 Connectome-Utilities==0.4.11
 currentscape==1.0.20
 efel==5.7.17
-entitysdk==0.7.0
+entitysdk==0.7.2
 h5py==3.14.0
 LFPy==2.3.5
 matplotlib==3.10.3
@@ -17,12 +17,12 @@ neurom==4.0.4
 NEURON==8.2.7
 numpy==1.26.4
 obi-auth==0.3.0
-obi-one==2025.6.6
+obi-one==2025.6.12
 pandas==2.3.0
-plotly==6.1.2
+plotly==6.2.0
 rich==14.0.0
 scipy==1.14.1
 seaborn==0.13.2
 TMD==2.4.3
-umap-learn==0.5.7
+umap-learn==0.5.8
 uuid==1.30
