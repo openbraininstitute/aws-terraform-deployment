@@ -136,7 +136,9 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_TOOLS__WHITELISTED_TOOL_REGEX"
-          value = "^(?!.*(downloadone|ionchannelmodel|measurementannotation|plot-generator|resolve-|scs|thumbnail|mcp)).*"
+          value = "^(?!.*(downloadone|ionchannelmodel|measurementannotation|simulation|synaptome|plot-generator|resolve-|scs|thumbnail|mcp)).*"
+
+
         },
       ]
       secrets = [
