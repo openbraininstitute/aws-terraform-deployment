@@ -8,7 +8,7 @@ connectome-manipulator==1.0.3
 Connectome-Utilities==0.4.11
 currentscape==1.0.20
 efel==5.7.17
-entitysdk==0.7.2
+entitysdk==0.7.3
 h5py==3.14.0
 LFPy==2.3.5
 matplotlib==3.10.3
@@ -17,7 +17,7 @@ neurom==4.0.4
 NEURON==8.2.7
 numpy==1.26.4
 obi-auth==0.3.0
-obi-one==2025.6.12
+obi-one==2025.7.0
 pandas==2.3.0
 plotly==6.2.0
 rich==14.0.0
