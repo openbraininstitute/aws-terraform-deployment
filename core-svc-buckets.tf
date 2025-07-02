@@ -18,7 +18,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "sbo-cell-svc-perf-test" {
   rule {
     id     = "DeleteOldMultipartUploads"
     status = "Enabled"
-
+    filter {}
     abort_incomplete_multipart_upload {
       days_after_initiation = 7
     }
