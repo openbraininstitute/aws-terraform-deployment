@@ -357,7 +357,7 @@ resource "aws_ecs_task_definition" "worker" {
         },
         {
           name  = "NUM_WORKERS"
-          value = "4"
+          value = var.num_workers
         },
         {
           name  = "REDIS_URL"

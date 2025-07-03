@@ -119,6 +119,12 @@ variable "small_scale_simulator_worker_docker_image_url" {
   description = "Docker image URL for the small scale simulator worker"
 }
 
+variable "small_scale_simulator_num_workers" {
+  type = string
+
+  description = "Number of workers processes per each ECS worker node for the small scale simulator"
+}
+
 variable "small_scale_simulator_worker_task_size" {
   type = object({
     cpu    = any
