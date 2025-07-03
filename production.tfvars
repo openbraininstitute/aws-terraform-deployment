@@ -10,12 +10,12 @@ nexus_obp_bucket_name                     = "nexus-obp-production"
 nexus_ship_bucket_name                    = "nexus-ship-production"
 nexus_openscience_bucket_name             = "nexus-openscience-production"
 nexus_az_letter_id                        = "b"
-core_web_app_docker_image_url             = "public.ecr.aws/openbraininstitute/core-web-app:2025.07.02.1"
-virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:2025.07.01.1"
+core_web_app_docker_image_url             = "public.ecr.aws/openbraininstitute/core-web-app:2025.07.03.1"
+virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:2025.07.02.1"
 thumbnail_generation_api_docker_image_url = "public.ecr.aws/openbraininstitute/thumbnail-generation-api:2025.06.30.1"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.5.0"
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2025.5.2"
-me_model_analysis_docker_image_url        = "public.ecr.aws/openbraininstitute/me-model-analysis:2025.04.08.1"
+me_model_analysis_docker_image_url        = "public.ecr.aws/openbraininstitute/me-model-analysis:2025.07.03.1"
 is_nexus_openscience_running              = false
 is_nexus_obp_running                      = true
 jupyterhub_ec2_type                       = "c7i.16xlarge"
@@ -33,8 +33,8 @@ small_scale_simulator_worker_task_size = {
   memory = 32768
 }
 
-small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:2025.06.30.1"
-small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:2025.06.30.1"
+small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.07.03.1"
+small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.07.03.1"
 
 virtual_lab_manager_task_size = {
   cpu    = 1024
