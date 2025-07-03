@@ -79,3 +79,9 @@ variable "worker_task_size" {
 
   description = "CPU and memory limit for ECS task (number or string format)"
 }
+
+variable "num_workers" {
+  type = string
+
+  description = "Number of worker processes per each ECS worker node"
+}

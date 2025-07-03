@@ -27,9 +27,10 @@ bluenaas_task_size = {
   memory = 32768
 }
 
+small_scale_simulator_num_workers = 24
 small_scale_simulator_worker_task_size = {
-  cpu    = 2048
-  memory = 4096
+  cpu    = 16384
+  memory = 32768
 }
 
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.07.03.1"
