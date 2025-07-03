@@ -83,5 +83,5 @@ variable "worker_task_size" {
 variable "num_workers" {
   type = string
 
-  description = "Number of workers processes per each ECS worker node"
+  description = "Number of worker processes per each ECS worker node"
 }
