@@ -1,5 +1,5 @@
 awscli==1.41.0
-bluecellulab==2.6.59
+bluecellulab==2.6.62
 bluepyefe==2.3.45
 bluepyemodel==1.0.36
 bluepyopt==1.14.18
@@ -17,7 +17,7 @@ neurom==4.0.4
 NEURON==8.2.7
 numpy==1.26.4
 obi-auth==0.3.0
-obi-one==2025.7.0
+obi-one==2025.7.4
 pandas==2.3.0
 plotly==6.2.0
 rich==14.0.0
