@@ -94,3 +94,9 @@ variable "num_workers" {
 
   description = "Number of worker processes per each ECS worker node"
 }
+
+variable "worker_autoscaler_min_capacity" {
+  type = number
+
+  description = "Minimum number of worker nodes requested from capacity provider"
+}

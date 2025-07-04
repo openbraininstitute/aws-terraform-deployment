@@ -143,6 +143,12 @@ variable "small_scale_simulator_api_task_size" {
   description = "CPU and memory limit for the API ECS task (number or string format)"
 }
 
+variable "small_scale_simulator_worker_autoscaler_min_capacity" {
+  type = number
+
+  description = "Minimum number of worker nodes requested from capacity provider for small scale simulator"
+}
+
 
 ### Virtual Lab Manager service ###
 

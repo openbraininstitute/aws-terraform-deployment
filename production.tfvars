@@ -27,16 +27,17 @@ bluenaas_task_size = {
   memory = 32768
 }
 
-small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.07.04.1"
-small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.07.04.1"
-small_scale_simulator_num_workers             = 12
+small_scale_simulator_api_docker_image_url           = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.07.04.1"
+small_scale_simulator_worker_docker_image_url        = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.07.04.1"
+small_scale_simulator_worker_autoscaler_min_capacity = 4
+small_scale_simulator_num_workers                    = 12
 small_scale_simulator_worker_task_size = {
   cpu    = 16384
   memory = 32768
 }
 small_scale_simulator_api_task_size = {
-  cpu    = 512
-  memory = 1024
+  cpu    = 1024
+  memory = 2048
 }
 
 virtual_lab_manager_task_size = {
