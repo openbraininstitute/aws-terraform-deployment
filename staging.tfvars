@@ -29,14 +29,17 @@ bluenaas_task_size = {
   memory = 8192
 }
 
-small_scale_simulator_num_workers = 8
-small_scale_simulator_worker_task_size = {
-  cpu    = 4096
-  memory = 8192
-}
-
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-staging"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-staging"
+small_scale_simulator_num_workers             = 8
+small_scale_simulator_worker_task_size = {
+  cpu    = 2048
+  memory = 4096
+}
+small_scale_simulator_api_task_size = {
+  cpu    = 256
+  memory = 512
+}
 
 virtual_lab_manager_task_size = {
   cpu    = 512
@@ -61,5 +64,10 @@ entitycore_svc_s3_bucket_name            = "entitycore-data-staging"
 entitycore_svc_s3_bucket_allowed_origins = ["*"]
 entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.7.1"
 
-obi_one_docker_image_url            = "public.ecr.aws/openbraininstitute/obi-one:2025.7.3"
+obi_one_docker_image_url = "public.ecr.aws/openbraininstitute/obi-one:2025.7.3"
+obi_one_task_size = {
+  cpu    = 512
+  memory = 1024
+}
+
 obi_generative_gui_docker_image_url = "public.ecr.aws/openbraininstitute/obi-generative-gui:2025.5.4"

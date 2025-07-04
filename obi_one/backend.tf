@@ -1,8 +1,3 @@
-locals {
-  cpu    = 256
-  memory = 512
-}
-
 resource "aws_cloudwatch_log_group" "obi_one_ecs_task_logs" {
   # TODO check if the logs can be encrypted
   name_prefix       = "obi_one_ecs"
@@ -71,8 +66,8 @@ resource "aws_ecs_task_definition" "obi_one_ecs_definition" {
       name   = "obi_one"
       family = "obi_one"
 
-      cpu    = local.cpu
-      memory = local.memory
+      cpu    = var.task_size.cpu
+      memory = var.task_size.memory
 
       networkMode = "awsvpc"
 
@@ -122,8 +117,8 @@ resource "aws_ecs_task_definition" "obi_one_ecs_definition" {
     }
   ])
 
-  cpu    = local.cpu
-  memory = local.memory
+  cpu    = var.task_size.cpu
+  memory = var.task_size.memory
 
   requires_compatibilities = ["FARGATE"]
 

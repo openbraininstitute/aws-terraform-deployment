@@ -77,7 +77,16 @@ variable "worker_task_size" {
     memory = any
   })
 
-  description = "CPU and memory limit for ECS task (number or string format)"
+  description = "CPU and memory limit for ECS worker task (number or string format)"
+}
+
+variable "api_task_size" {
+  type = object({
+    cpu    = any
+    memory = any
+  })
+
+  description = "CPU and memory limit for ECS API task (number or string format)"
 }
 
 variable "num_workers" {

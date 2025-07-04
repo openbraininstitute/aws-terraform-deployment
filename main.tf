@@ -275,6 +275,7 @@ module "small_scale_simulator" {
   keycloak_server_url = "https://${local.primary_domain}/auth/"
 
   worker_task_size = var.small_scale_simulator_worker_task_size
+  api_task_size    = var.small_scale_simulator_api_task_size
   num_workers      = var.small_scale_simulator_num_workers
 }
 
@@ -553,6 +554,8 @@ module "obi_one" {
   keycloak_url     = "https://${local.primary_domain}/auth/realms/SBO/"
   entitycore_url   = "https://${local.primary_domain}/api/entitycore"
   docker_image_url = var.obi_one_docker_image_url
+
+  task_size = var.obi_one_task_size
 }
 
 module "obi_generative_gui" {
