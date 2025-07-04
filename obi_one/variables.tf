@@ -43,3 +43,12 @@ variable "docker_image_url" {
 variable "internet_access_route_id" {
   type = string
 }
+
+variable "task_size" {
+  type = object({
+    cpu    = any
+    memory = any
+  })
+
+  description = "CPU and memory limit for ECS task (number or string format)"
+}

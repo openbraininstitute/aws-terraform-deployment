@@ -134,6 +134,15 @@ variable "small_scale_simulator_worker_task_size" {
   description = "CPU and memory limit for the worker ECS task (number or string format)"
 }
 
+variable "small_scale_simulator_api_task_size" {
+  type = object({
+    cpu    = any
+    memory = any
+  })
+
+  description = "CPU and memory limit for the API ECS task (number or string format)"
+}
+
 
 ### Virtual Lab Manager service ###
 
@@ -271,6 +280,15 @@ variable "thumbnail_generation_api_docker_image_url" {
 variable "obi_one_docker_image_url" {
   type        = string
   description = "Docker image URL for obi-one service."
+}
+
+variable "obi_one_task_size" {
+  type = object({
+    cpu    = any
+    memory = any
+  })
+
+  description = "CPU and memory limit for obi-one ECS task (number or string format)"
 }
 
 variable "obi_generative_gui_docker_image_url" {

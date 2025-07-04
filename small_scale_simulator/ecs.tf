@@ -200,8 +200,8 @@ resource "aws_ecs_task_definition" "api" {
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
 
-  cpu    = "256"
-  memory = "512"
+  cpu    = var.api_task_size.cpu
+  memory = var.api_task_size.memory
 
   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn      = aws_iam_role.ecs_task_role.arn
@@ -478,8 +478,13 @@ resource "aws_ecs_service" "worker" {
   }
 
   capacity_provider_strategy {
+    capacity_provider = "FARGATE"
+    weight            = 50
+  }
+
+  capacity_provider_strategy {
     capacity_provider = "FARGATE_SPOT"
-    weight            = 100
+    weight            = 50
   }
 
   network_configuration {
@@ -496,7 +501,7 @@ resource "aws_ecs_service" "worker" {
 # Auto Scaling Target for Worker Service
 resource "aws_appautoscaling_target" "worker" {
   max_capacity       = 10
-  min_capacity       = 1
+  min_capacity       = 2
   resource_id        = "service/${aws_ecs_cluster.main.name}/${aws_ecs_service.worker.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
