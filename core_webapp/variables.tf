@@ -92,7 +92,6 @@ variable "env_NEXTAUTH_URL" {
   sensitive   = false
   description = "NEXTAUTH_URL environment value for the webapp"
 }
-
 variable "env_KEYCLOAK_ISSUER" {
   type        = string
   sensitive   = false
