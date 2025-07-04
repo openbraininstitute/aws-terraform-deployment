@@ -167,6 +167,10 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
           valueFrom = "${var.secrets_arn}:cognito_client_secret::"
         },
         {
+          name  = "GITHUB_TOKEN"
+          value = "${var.secrets_arn}:GITHUB_TOKEN::"
+        },
+        {
           name      = "NEXTAUTH_SECRET"
           valueFrom = "${var.secrets_arn}:nextauth_secret::"
         },
