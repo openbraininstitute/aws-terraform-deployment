@@ -274,9 +274,10 @@ module "small_scale_simulator" {
   entitycore_url      = "https://${local.primary_domain}/api/entitycore"
   keycloak_server_url = "https://${local.primary_domain}/auth/"
 
-  worker_task_size = var.small_scale_simulator_worker_task_size
-  api_task_size    = var.small_scale_simulator_api_task_size
-  num_workers      = var.small_scale_simulator_num_workers
+  api_task_size                  = var.small_scale_simulator_api_task_size
+  worker_task_size               = var.small_scale_simulator_worker_task_size
+  worker_autoscaler_min_capacity = var.small_scale_simulator_worker_autoscaler_min_capacity
+  num_workers                    = var.small_scale_simulator_num_workers
 }
 
 module "github_ami_build_role" {

@@ -479,12 +479,12 @@ resource "aws_ecs_service" "worker" {
 
   capacity_provider_strategy {
     capacity_provider = "FARGATE"
-    weight            = 50
+    weight            = 25
   }
 
   capacity_provider_strategy {
     capacity_provider = "FARGATE_SPOT"
-    weight            = 50
+    weight            = 75
   }
 
   network_configuration {
@@ -501,7 +501,7 @@ resource "aws_ecs_service" "worker" {
 # Auto Scaling Target for Worker Service
 resource "aws_appautoscaling_target" "worker" {
   max_capacity       = 10
-  min_capacity       = 2
+  min_capacity       = var.worker_autoscaler_min_capacity
   resource_id        = "service/${aws_ecs_cluster.main.name}/${aws_ecs_service.worker.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
