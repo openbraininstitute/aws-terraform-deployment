@@ -17,12 +17,12 @@ module "s3_bucket" {
 
 #tfsec:ignore:aws-ec2-no-public-egress-sgr
 module "ecs_service_agent" {
-  source = "terraform-aws-modules/ecs/aws//modules/service"
+  source  = "terraform-aws-modules/ecs/aws//modules/service"
+  version = "v5.12.1"
 
   name                  = "ecs-service-agent"
   cluster_arn           = local.ecs_cluster_arn
   task_exec_secret_arns = [var.ml_secrets_arn, module.ml_rds_postgres.db_instance_master_user_secret_arn]
-
 
   cpu    = 1024
   memory = 2048
