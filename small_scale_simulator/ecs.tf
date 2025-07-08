@@ -477,14 +477,12 @@ resource "aws_ecs_service" "worker" {
     ignore_changes = [desired_count]
   }
 
-  capacity_provider_strategy {
-    capacity_provider = "FARGATE"
-    weight            = 25
-  }
-
-  capacity_provider_strategy {
-    capacity_provider = "FARGATE_SPOT"
-    weight            = 75
+  dynamic "capacity_provider_strategy" {
+    for_each = var.worker_capacity_provider_strategy
+    content {
+      capacity_provider = capacity_provider_strategy.value.capacity_provider
+      weight            = capacity_provider_strategy.value.weight
+    }
   }
 
   network_configuration {
