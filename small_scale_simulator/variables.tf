@@ -100,3 +100,12 @@ variable "worker_autoscaler_min_capacity" {
 
   description = "Minimum number of worker nodes requested from capacity provider"
 }
+
+variable "worker_capacity_provider_strategy" {
+  type = list(object({
+    capacity_provider = string # Valid values: FARGATE, FARGATE_SPOT
+    weight            = number
+  }))
+
+  description = "Capacity provider strategy for worker service"
+}
