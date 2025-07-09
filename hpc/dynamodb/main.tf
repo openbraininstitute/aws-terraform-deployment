@@ -101,7 +101,7 @@ resource "aws_dynamodb_table" "pcluster_dynamo_table" {
     name               = "ClaimIndex"
     hash_key           = "provisioning_launched"
     projection_type    = "INCLUDE"
-    non_key_attributes = ["name", "project_id", "vlab_id", "tier", "benchmark", "dev", "include_lustre", "sim_pubkey", "admin_ssh_key_name"]
+    non_key_attributes = ["name", "project_id", "vlab_id", "tier", "benchmark", "dev", "include_lustre", "sim_pubkey", "admin_ssh_key_name", "creation_time"]
   }
 
 }
