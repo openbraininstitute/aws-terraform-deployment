@@ -73,5 +73,4 @@ obi_one_task_size = {
   cpu    = 512
   memory = 1024
 }
-
 obi_generative_gui_docker_image_url = "public.ecr.aws/openbraininstitute/obi-generative-gui:2025.5.4"
