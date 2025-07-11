@@ -630,6 +630,8 @@ module "virtual_lab_manager" {
   invite_link = "https://${local.primary_domain}/app"
   mail_from   = "no-reply@${local.email_domain_name}"
 
+  db_multi_az = var.is_production
+
   virtual_lab_manager_postgres_db   = "vlm"
   virtual_lab_manager_postgres_user = "vlm_user"
 
