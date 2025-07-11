@@ -187,3 +187,9 @@ variable "task_size" {
 
   description = "CPU and memory limit for ECS task (number or string format)"
 }
+
+variable "db_multi_az" {
+  type = bool
+
+  description = "Multi AZ switch for the database"
+}
