@@ -190,6 +190,7 @@ module "dashboard" {
   }
 
   dashboard_name = "Nexus-OBP"
+  count          = var.is_nexus_obp_running ? 1 : 0
 
   blazegraph_composite_service_name = module.blazegraph_obp_composite.service_name
   blazegraph_composite_log_group    = module.blazegraph_obp_composite.log_group
