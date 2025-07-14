@@ -95,10 +95,6 @@ module "ecs_service_agent" {
           value = "https://${var.primary_domain},https://www.${var.primary_domain}"
         },
         {
-          name  = "NEUROAGENT_OPENAI__MODEL"
-          value = "gpt-4o-mini"
-        },
-        {
           name  = "NEUROAGENT_STORAGE__BUCKET_NAME"
           value = var.neuroagent_bucket_name
         },
@@ -136,7 +132,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_TOOLS__WHITELISTED_TOOL_REGEX"
-          value = "^(?!.*(downloadone|ionchannelmodel|measurementannotation|simulation|synaptome|plot-generator|resolve-|scs|thumbnail|mcp)).*"
+          value = "^(?!.*(downloadone|ionchannelmodel|measurementannotation|simulation|synaptome|plot-generator|scs|thumbnail|mcp|simulation|tavily|read|research|exa|python|experimentalsynapsesperconnection|circuit|obione)).*"
 
 
         },
