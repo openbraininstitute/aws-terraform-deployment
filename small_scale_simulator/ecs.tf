@@ -442,6 +442,8 @@ resource "aws_ecs_service" "redis" {
   service_registries {
     registry_arn = aws_service_discovery_service.redis.arn
   }
+
+  propagate_tags = "SERVICE"
 }
 
 resource "aws_ecs_service" "api" {
@@ -463,7 +465,8 @@ resource "aws_ecs_service" "api" {
     container_port   = 8000
   }
 
-  depends_on = [aws_ecs_service.redis]
+  depends_on     = [aws_ecs_service.redis]
+  propagate_tags = "SERVICE"
 }
 
 resource "aws_ecs_service" "worker" {
@@ -490,9 +493,8 @@ resource "aws_ecs_service" "worker" {
     subnets         = [aws_subnet.small_scale_simulator_secondary_a.id, aws_subnet.small_scale_simulator_secondary_b.id]
   }
 
-  depends_on = [
-    aws_ecs_service.redis
-  ]
+  depends_on     = [aws_ecs_service.redis]
+  propagate_tags = "SERVICE"
 }
 
 
