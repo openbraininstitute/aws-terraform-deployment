@@ -134,10 +134,10 @@ variable "small_scale_simulator_workers" {
       cpu    = any
       memory = any
     })
-    num_workers                 = number
-    queues                      = string
-    autoscaler_min_capacity     = number
-    capacity_provider_strategy  = list(object({
+    num_workers             = number
+    queues                  = string
+    autoscaler_min_capacity = number
+    capacity_provider_strategy = list(object({
       capacity_provider = string # Valid values: FARGATE, FARGATE_SPOT
       weight            = number
     }))
