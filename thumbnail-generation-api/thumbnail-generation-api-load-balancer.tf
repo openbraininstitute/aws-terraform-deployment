@@ -11,7 +11,7 @@ resource "aws_lb_target_group" "thumbnail_generation_api_private_tg" {
   }
   health_check {
     enabled  = true
-    path     = "${var.thumbnail_generation_api_base_path}/docs"
+    path     = "${var.thumbnail_generation_api_base_path}/health"
     protocol = "HTTP"
   }
   tags = {
