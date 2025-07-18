@@ -71,7 +71,7 @@ hpc_resource_provisioner_scratch_bucket       = ""
 
 entitycore_svc_s3_bucket_name            = "entitycore-data-staging"
 entitycore_svc_s3_bucket_allowed_origins = ["*"]
-entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.7.4"
+entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.7.5"
 
 obi_one_docker_image_url = "public.ecr.aws/openbraininstitute/obi-one:2025.7.5"
 obi_one_task_size = {
