@@ -18,32 +18,6 @@ module "ml_ecr" {
           "type" : "expire"
         }
       },
-      {
-        "rulePriority" : 2,
-        "description" : "Keep only the last 3 images for scholarag",
-        "selection" : {
-          "tagStatus" : "tagged",
-          "tagPrefixList" : ["scholarag"],
-          "countType" : "imageCountMoreThan",
-          "countNumber" : 3
-        },
-        "action" : {
-          "type" : "expire"
-        }
-      },
-      {
-        "rulePriority" : 3,
-        "description" : "Keep only the last 3 images for scholaretl",
-        "selection" : {
-          "tagStatus" : "tagged",
-          "tagPrefixList" : ["scholaretl"],
-          "countType" : "imageCountMoreThan",
-          "countNumber" : 3
-        },
-        "action" : {
-          "type" : "expire"
-        }
-      }
     ]
     }
   )
