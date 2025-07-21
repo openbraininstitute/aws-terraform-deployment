@@ -19,6 +19,11 @@ variable "base_path" {
   type        = string
 }
 
+variable "cors_origins" {
+  description = "CORS origins"
+  type        = list(string)
+}
+
 variable "api_docker_image_url" {
   description = "Docker image for the API service"
   type        = string
