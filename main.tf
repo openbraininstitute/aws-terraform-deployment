@@ -131,7 +131,7 @@ module "ml" {
   route_table_private_subnets_id = local.route_table_private_subnets_id
 
   dockerhub_credentials_arn = local.dockerhub_bbpbuildbot_secret_arn
-  agent_image_tag           = "neuroagent-v0.7.0"
+  agent_image_tag           = "neuroagent-v0.7.1"
 
   neuroagent_bucket_name = var.ml_neuroagent_bucket_name
   nexus_domain_name      = module.nexus.nexus_domain_name
@@ -263,6 +263,10 @@ module "small_scale_simulator" {
   worker_docker_image_url = var.small_scale_simulator_worker_docker_image_url
 
   base_path = "/api/small-scale-simulator"
+  cors_origins = concat(
+    ["https://${local.primary_domain}"],
+    var.is_staging ? ["http://localhost:3000"] : []
+  )
 
   nexus_delta_uri = "https://${module.nexus.nexus_domain_name}/api/nexus/v1"
 
