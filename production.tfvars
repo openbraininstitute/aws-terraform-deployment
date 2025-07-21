@@ -10,11 +10,11 @@ nexus_obp_bucket_name                     = "nexus-obp-production"
 nexus_ship_bucket_name                    = "nexus-ship-production"
 nexus_openscience_bucket_name             = "nexus-openscience-production"
 nexus_az_letter_id                        = "b"
-core_web_app_docker_image_url             = "public.ecr.aws/openbraininstitute/core-web-app:2025.07.04.1"
-virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:2025.07.02.1"
-thumbnail_generation_api_docker_image_url = "public.ecr.aws/openbraininstitute/thumbnail-generation-api:2025.06.30.1"
+core_web_app_docker_image_url             = "public.ecr.aws/openbraininstitute/core-web-app:2025.07.18.1"
+virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:2025.07.17.1"
+thumbnail_generation_api_docker_image_url = "public.ecr.aws/openbraininstitute/thumbnail-generation-api:2025.07.17.1"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.5.0"
-accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2025.5.2"
+accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2025.07.1"
 me_model_analysis_docker_image_url        = "public.ecr.aws/openbraininstitute/me-model-analysis:2025.07.03.1"
 is_nexus_openscience_running              = false
 is_nexus_obp_running                      = true
@@ -65,7 +65,7 @@ hpc_resource_provisioner_scratch_bucket       = ""
 
 entitycore_svc_s3_bucket_name            = "entitycore-data-production"
 entitycore_svc_s3_bucket_allowed_origins = ["https://www.openbraininstitute.org"]
-entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.7.1"
+entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.7.4"
 
 obi_one_docker_image_url = "public.ecr.aws/openbraininstitute/obi-one:2025.7.5"
 obi_one_task_size = {
