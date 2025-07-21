@@ -263,7 +263,7 @@ module "small_scale_simulator" {
   worker_docker_image_url = var.small_scale_simulator_worker_docker_image_url
 
   base_path    = "/api/small-scale-simulator"
-  cors_origins = ["https://${local.primary_domain}", var.is_staging ? "http://localhost:3000" : []]
+  cors_origins = ["https://${local.primary_domain}", var.is_staging ? ["http://localhost:3000"] : []]
 
   nexus_delta_uri = "https://${module.nexus.nexus_domain_name}/api/nexus/v1"
 
