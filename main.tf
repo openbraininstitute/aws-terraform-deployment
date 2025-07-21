@@ -131,12 +131,8 @@ module "ml" {
   route_table_private_subnets_id = local.route_table_private_subnets_id
 
   dockerhub_credentials_arn = local.dockerhub_bbpbuildbot_secret_arn
-  backend_image_tag         = "scholarag-v0.0.12"
-  etl_image_tag             = "scholaretl-v0.0.8"
   agent_image_tag           = "neuroagent-v0.7.0"
-  grobid_image_url          = "lfoppiano/grobid:0.8.0"
 
-  paper_bucket_name      = var.ml_paper_bucket_name
   neuroagent_bucket_name = var.ml_neuroagent_bucket_name
   nexus_domain_name      = module.nexus.nexus_domain_name
   primary_domain         = local.primary_domain
@@ -152,7 +148,7 @@ module "ml" {
 
   github_oidc_provider_arn = module.github_oidc_provider.oidc_provider_arn
 
-  github_repos = ["openbraininstitute/neuroagent", "openbraininstitute/scholarag", "openbraininstitute/scholaretl"]
+  github_repos = ["openbraininstitute/neuroagent"]
 }
 
 module "nexus" {

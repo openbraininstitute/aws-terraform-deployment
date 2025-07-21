@@ -24,10 +24,6 @@ variable "is_production" {
   type = bool
 }
 
-variable "paper_bucket_name" {
-  type = string
-}
-
 variable "neuroagent_bucket_name" {
   type = string
 }
@@ -56,23 +52,8 @@ variable "generic_private_alb_security_group_id" {
   type        = string
 }
 
-variable "backend_image_tag" {
-  description = "Url of the docker image to use in the ECS container for the backend (format repo:tag)"
-  type        = string
-}
-
-variable "etl_image_tag" {
-  description = "Url of the docker image to use in the ECS container for etl (format repo:tag)"
-  type        = string
-}
-
 variable "agent_image_tag" {
   description = "Url of the ECR imageof the agent (format repo:tag)"
-  type        = string
-}
-
-variable "grobid_image_url" {
-  description = "Url of the docker image to use in the ECS container for grobid (format repo:tag)"
   type        = string
 }
 
@@ -86,42 +67,6 @@ variable "private_alb_security_group_id" {
   type        = string
 }
 
-variable "os_domain_name" {
-  description = "Name of the OS instance"
-  type        = string
-  default     = "ml-os"
-
-}
-
-variable "os_version" {
-  description = "Version of the Opensearch cluster"
-  type        = string
-  default     = "OpenSearch_2.11"
-}
-
-variable "os_node_number" {
-  description = "Number of nodes of the Opensearch cluster."
-  type        = number
-  default     = 4
-}
-
-variable "os_instance_type" {
-  description = "Type of opensearch instance"
-  type        = string
-  default     = "t3.medium.search"
-}
-
-variable "os_ebs_volume" {
-  description = "Storage size per node. Depends on the instance type"
-  type        = number
-  default     = 200
-}
-
-variable "os_ebs_throughput" {
-  description = "Trhoughput of the gp3 ebs volume."
-  type        = number
-  default     = 255
-}
 
 variable "ec_cluster_name" {
   description = "Name of the redis instance."
@@ -145,12 +90,6 @@ variable "ec_num_nodes" {
 variable "ec_param_group" {
   description = "Group of parameters for redis"
   default     = "default.redis7"
-}
-
-variable "sqs_etl_parser_list" {
-  description = "List of parsers deployed behind the load balancer"
-  type        = list(string)
-  default     = ["jats_xml", "xocs_xml", "tei_xml", "grobid_pdf", "pubmed_xml"]
 }
 
 variable "private_alb_dns" {

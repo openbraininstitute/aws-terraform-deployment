@@ -111,14 +111,6 @@ module "ecs_service_agent" {
           value = aws_elasticache_cluster.ml_redis_cluster.port
         },
         {
-          name  = "NEUROAGENT_TOOLS__LITERATURE__RETRIEVER_K"
-          value = "100"
-        },
-        {
-          name  = "NEUROAGENT_TOOLS__LITERATURE__URL"
-          value = "https://${var.primary_domain}/api/literature"
-        },
-        {
           name  = "NEUROAGENT_TOOLS__OBI_ONE__URL"
           value = "https://${var.primary_domain}/api/obi-one"
         },
@@ -132,7 +124,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_TOOLS__WHITELISTED_TOOL_REGEX"
-          value = "^(?!.*(downloadone|ionchannelmodel|measurementannotation|simulation|synaptome|plot-generator|scs|thumbnail|mcp|simulation|tavily|read|research|exa|python|experimentalsynapsesperconnection|circuit|obione)).*"
+          value = "^(?!.*(downloadone|ionchannelmodel|measurementannotation|simulation|synaptome|plot-generator|scs|thumbnail|mcp|simulation|research|python|experimentalsynapsesperconnection|circuit|obione)).*"
 
 
         },
@@ -147,8 +139,8 @@ module "ecs_service_agent" {
           valueFrom = "${var.ml_secrets_arn}:OPENAI_API_KEY::"
         },
         {
-          name      = "NEUROAGENT_TOOLS__WEB_SEARCH__TAVILY_API_KEY"
-          valueFrom = "${var.ml_secrets_arn}:TAVILY_API_KEY::"
+          name      = "NEUROAGENT_MCP__SECRETS__EXA_API_KEY"
+          valueFrom = "${var.ml_secrets_arn}:EXA_API_KEY::"
         },
       ]
       readonly_root_filesystem = false
