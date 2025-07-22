@@ -211,6 +211,10 @@ module "cells_svc" {
 module "nse" {
   source = "./nse"
 
+  # TODO: Module has been superseded by the small scale simulator.
+  # TO be remove completely once the latter is tested in staging.
+  count = var.is_production ? 1 : 0
+
   deployment_env = var.deployment_env
 
   aws_region              = local.aws_region
@@ -224,6 +228,10 @@ module "nse" {
 
 module "bluenaas_svc" {
   source = "./bluenaas_svc"
+
+  # TODO: Module has been superseded by the small scale simulator.
+  # TO be remove completely once the latter is tested in staging.
+  count = var.is_production ? 1 : 0
 
   aws_region                 = local.aws_region
   vpc_id                     = local.vpc_id
