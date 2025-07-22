@@ -17,11 +17,6 @@ receivers:
         static_configs:
         - targets: ['localhost:${KEYCLOAK_MANAGEMENT_PORT}'] # keycloak metrics
 
-      - job_name: 'otel-collector-metrics'
-        scrape_interval: 1m
-        static_configs:
-        - targets: ['localhost:8888']
-
 processors:
   batch:
     timeout: 60s
