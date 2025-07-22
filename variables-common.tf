@@ -119,21 +119,6 @@ variable "small_scale_simulator_worker_docker_image_url" {
   description = "Docker image URL for the small scale simulator worker"
 }
 
-variable "small_scale_simulator_num_workers" {
-  type = string
-
-  description = "Number of worker processes per each ECS worker node for the small scale simulator"
-}
-
-variable "small_scale_simulator_worker_task_size" {
-  type = object({
-    cpu    = any
-    memory = any
-  })
-
-  description = "CPU and memory limit for the worker ECS task (number or string format)"
-}
-
 variable "small_scale_simulator_api_task_size" {
   type = object({
     cpu    = any
@@ -143,19 +128,22 @@ variable "small_scale_simulator_api_task_size" {
   description = "CPU and memory limit for the API ECS task (number or string format)"
 }
 
-variable "small_scale_simulator_worker_autoscaler_min_capacity" {
-  type = number
-
-  description = "Minimum number of worker nodes requested from capacity provider for small scale simulator"
-}
-
-variable "small_scale_simulator_worker_capacity_provider_strategy" {
-  type = list(object({
-    capacity_provider = string # Valid values: FARGATE, FARGATE_SPOT
-    weight            = number
+variable "small_scale_simulator_workers" {
+  type = map(object({
+    task_size = object({
+      cpu    = any
+      memory = any
+    })
+    num_workers             = number
+    queues                  = string
+    autoscaler_min_capacity = number
+    capacity_provider_strategy = list(object({
+      capacity_provider = string # Valid values: FARGATE, FARGATE_SPOT
+      weight            = number
+    }))
   }))
 
-  description = "Capacity provider strategy for worker service"
+  description = "Map of worker configurations for small scale simulator. Each key represents a worker service name with its configuration."
 }
 
 

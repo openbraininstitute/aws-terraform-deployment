@@ -27,22 +27,38 @@ bluenaas_task_size = {
   memory = 32768
 }
 
-small_scale_simulator_api_docker_image_url           = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.07.04.1"
-small_scale_simulator_worker_docker_image_url        = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.07.04.1"
-small_scale_simulator_worker_autoscaler_min_capacity = 1
-small_scale_simulator_num_workers                    = 12
-small_scale_simulator_worker_task_size = {
-  cpu    = 16384
-  memory = 32768
-}
+small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.07.04.1"
+small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.07.04.1"
 small_scale_simulator_api_task_size = {
   cpu    = 1024
   memory = 2048
 }
-small_scale_simulator_worker_capacity_provider_strategy = [
-  { capacity_provider = "FARGATE", weight = 25 },
-  { capacity_provider = "FARGATE_SPOT", weight = 75 }
-]
+small_scale_simulator_workers = {
+  small = {
+    task_size = {
+      cpu    = 4096
+      memory = 8192
+    }
+    num_workers             = 2
+    queues                  = "high medium"
+    autoscaler_min_capacity = 1
+    capacity_provider_strategy = [
+      { capacity_provider = "FARGATE_SPOT", weight = 100 }
+    ]
+  }
+  large = {
+    task_size = {
+      cpu    = 16384
+      memory = 32768
+    }
+    num_workers             = 12
+    queues                  = "high medium low"
+    autoscaler_min_capacity = 1
+    capacity_provider_strategy = [
+      { capacity_provider = "FARGATE", weight = 100 },
+    ]
+  }
+}
 
 virtual_lab_manager_task_size = {
   cpu    = 1024
