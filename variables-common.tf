@@ -236,7 +236,27 @@ variable "sbo_infrastructureassets_bucket" {
 ### entitycore ###
 variable "entitycore_svc_s3_bucket_name" {
   type        = string
+  description = "S3 bucket name in which entitycore data lives (for backward compatibility)."
+}
+
+variable "entitycore_svc_aws_s3_internal_bucket" {
+  type        = string
   description = "S3 bucket name in which entitycore data lives."
+}
+
+variable "entitycore_svc_aws_s3_internal_region" {
+  type        = string
+  description = "S3 region name in which entitycore data lives."
+}
+
+variable "entitycore_svc_aws_s3_open_bucket" {
+  type        = string
+  description = "S3 bucket name in which open data lives."
+}
+
+variable "entitycore_svc_aws_s3_open_region" {
+  type        = string
+  description = "S3 region name in which open data lives."
 }
 
 variable "entitycore_svc_s3_bucket_allowed_origins" {
