@@ -248,21 +248,23 @@ module "github_ami_build_role" {
   bucket_name              = var.sbo_infrastructureassets_bucket
 }
 
-module "github_small_scale_simulator_ecs_redeploy_role" {
-  source = "./github_ecs_redeploy_role"
+#  TODO: refactor github_ecs_redeploy_role to support multiple services within the same ECS cluster.
+# module "github_small_scale_simulator_api_ecs_redeploy_role" {
+#   source = "./github_ecs_redeploy_role"
 
-  # for now we only want such a redeploy role in staging
-  count = var.is_staging ? 1 : 0
+#   # for now we only want such a redeploy role in staging
+#   count = var.is_staging ? 1 : 0
 
-  account_id               = local.account_id
-  aws_region               = local.aws_region
-  github_organisation      = local.github_organisation
-  repo_name                = "Bluenaas"
-  ecs_cluster_name         = module.small_scale_simulator.ecs_cluster_name
-  ecs_service_name         = module.small_scale_simulator.ecs_service_name
-  ecs_task_definition_name = module.small_scale_simulator.ecs_task_definition_name
-  # The ARN of the generated role is needed in GH and is part of the outputs.
-}
+#   account_id               = local.account_id
+#   aws_region               = local.aws_region
+#   github_organisation      = local.github_organisation
+#   repo_name                = "Bluenaas"
+#   ecs_cluster_name         = module.small_scale_simulator.ecs_cluster_name
+#   ecs_service_name         = module.small_scale_simulator.api_ecs_service_name
+#   ecs_task_definition_name = module.small_scale_simulator.api_ecs_task_definition_name
+#   # The ARN of the generated role is needed in GH and is part of the outputs.
+# }
+
 
 module "notebook_service" {
   source = "./notebook_service"
