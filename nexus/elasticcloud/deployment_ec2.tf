@@ -2,8 +2,8 @@
 
 resource "ec_deployment" "deployment_ec2" {
   provider = ec.ec2
-
-  name = var.deployment_name_ec2
+  count    = var.is_nexus_obp_running ? 1 : 0
+  name     = var.deployment_name_ec2
 
   region                 = var.aws_region
   version                = var.elasticsearch_version

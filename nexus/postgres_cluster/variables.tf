@@ -39,3 +39,9 @@ variable "obi_backup_plan" {
   type        = string
   description = "Value for the obi_backup_plan tag: either null or the name of the backup plan"
 }
+
+variable "is_nexus_obp_running" {
+  description = "Whether OBP nexus should be running"
+  type        = bool
+  default     = true
+}
