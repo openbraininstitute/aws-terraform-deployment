@@ -208,45 +208,6 @@ module "cells_svc" {
   cell_svc_docker_image_url = var.cell_svc_docker_image_url
 }
 
-module "nse" {
-  source = "./nse"
-
-  deployment_env = var.deployment_env
-
-  aws_region              = local.aws_region
-  account_id              = local.account_id
-  vpc_id                  = local.vpc_id
-  amazon_linux_ecs_ami_id = data.aws_ami.amazon_linux_2_ecs.id
-  route_table_id          = local.route_table_private_subnets_id
-
-  me_model_analysis_docker_image_url = var.me_model_analysis_docker_image_url
-}
-
-module "bluenaas_svc" {
-  source = "./bluenaas_svc"
-
-  aws_region                 = local.aws_region
-  vpc_id                     = local.vpc_id
-  private_alb_listener_arn   = local.private_alb_https_listener_arn
-  alb_listener_rule_priority = 750
-  internet_access_route_id   = local.route_table_private_subnets_id
-
-  bluenaas_service_secrets_arn = local.bluenaas_service_secrets_arn
-
-  docker_image_url = var.bluenaas_docker_image_url
-
-
-  nexus_delta_uri = "https://${module.nexus.nexus_domain_name}/api/nexus/v1"
-
-  base_path = "/api/bluenaas"
-
-  accounting_base_url = "https://${local.primary_domain}${var.accounting_svc_base_path}"
-  entitycore_url      = "https://${local.primary_domain}/api/entitycore"
-  keycloak_server_url = "https://${local.primary_domain}/auth/"
-
-  task_size = var.bluenaas_task_size
-}
-
 module "small_scale_simulator" {
   source = "./small_scale_simulator"
 
@@ -286,22 +247,6 @@ module "github_ami_build_role" {
   github_oidc_provider_arn = module.github_oidc_provider.oidc_provider_arn
   repo_name                = "machine-images"
   bucket_name              = var.sbo_infrastructureassets_bucket
-}
-
-module "github_bluenaas_ecs_redeploy_role" {
-  source = "./github_ecs_redeploy_role"
-
-  # for now we only want such a redeploy role in staging
-  count = var.is_staging ? 1 : 0
-
-  account_id               = local.account_id
-  aws_region               = local.aws_region
-  github_organisation      = local.github_organisation
-  repo_name                = "Bluenaas"
-  ecs_cluster_name         = module.bluenaas_svc.ecs_cluster_name
-  ecs_service_name         = module.bluenaas_svc.ecs_service_name
-  ecs_task_definition_name = module.bluenaas_svc.ecs_task_definition_name
-  # The ARN of the generated role is needed in GH and is part of the outputs.
 }
 
 module "notebook_service" {
@@ -724,7 +669,6 @@ module "dashboards" {
     "KeyCloak"           = module.cs.private_keycloak_lb_rule_suffix
     "NexusFusion"        = module.nexus.private_fusion_lb_rule_suffix
     "NexusDelta"         = module.nexus.private_delta_lb_rule_suffix
-    "BlueNaaS"           = module.bluenaas_svc.private_lb_rule_suffix
     "CoreWebAppMain"     = module.core_webapp_main.private_lb_rule_suffix
     "VLabManager"        = module.virtual_lab_manager.private_arn_suffix
     "EntityCoreService"  = module.entitycore_svc.private_lb_rule_suffix

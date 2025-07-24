@@ -20,13 +20,6 @@ is_nexus_openscience_running              = false
 is_nexus_obp_running                      = true
 notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:staging"
 
-
-bluenaas_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:staging"
-bluenaas_task_size = {
-  cpu    = 4096
-  memory = 8192
-}
-
 virtual_lab_manager_task_size = {
   cpu    = 512
   memory = 1024

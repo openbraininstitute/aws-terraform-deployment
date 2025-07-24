@@ -51,3 +51,9 @@ variable "aws_tags" {
 variable "is_production" {
   type = bool
 }
+
+variable "is_nexus_obp_running" {
+  description = "Whether OBP nexus should be running"
+  type        = bool
+  default     = true
+}
