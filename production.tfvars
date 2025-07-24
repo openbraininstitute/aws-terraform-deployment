@@ -21,12 +21,6 @@ is_nexus_obp_running                      = false
 jupyterhub_ec2_type                       = "c7i.2xlarge"
 notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:staging"
 
-bluenaas_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:2025.06.30.1"
-bluenaas_task_size = {
-  cpu    = 16384
-  memory = 32768
-}
-
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.07.24.1"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.07.24.1"
 small_scale_simulator_api_task_size = {
