@@ -526,8 +526,13 @@ module "entitycore_svc" {
     "https://staging.openbraininstitute.org/auth/realms/SBO/"
   )
 
-  s3_bucket_name            = var.entitycore_svc_s3_bucket_name
+  s3_bucket_name            = var.entitycore_svc_s3_bucket_name  # for backward compatibility
   s3_bucket_allowed_origins = var.entitycore_svc_s3_bucket_allowed_origins
+  aws_s3_internal_bucket    = var.entitycore_svc_aws_s3_internal_bucket
+  aws_s3_internal_region    = var.entitycore_svc_aws_s3_internal_region
+  aws_s3_open_bucket        = var.entitycore_svc_aws_s3_open_bucket
+  aws_s3_open_region        = var.entitycore_svc_aws_s3_open_region
+
 
   image_url = var.entitycore_svc_image_url
 
