@@ -15,17 +15,10 @@ virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/v
 thumbnail_generation_api_docker_image_url = "public.ecr.aws/openbraininstitute/thumbnail-generation-api:2025.07.17.1"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.5.0"
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2025.07.1"
-me_model_analysis_docker_image_url        = "public.ecr.aws/openbraininstitute/me-model-analysis:2025.07.03.1"
 is_nexus_openscience_running              = false
 is_nexus_obp_running                      = false
 jupyterhub_ec2_type                       = "c7i.2xlarge"
 notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:staging"
-
-bluenaas_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:2025.06.30.1"
-bluenaas_task_size = {
-  cpu    = 16384
-  memory = 32768
-}
 
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.07.24.1"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.07.24.1"
