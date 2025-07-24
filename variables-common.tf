@@ -84,6 +84,19 @@ variable "core_web_app_next_public_matomo_site_id" {
   sensitive   = false
 }
 
+variable "core_webapp_s3_bucket_name" {
+  type        = string
+  description = "S3 bucket name for core webapp main assets"
+  sensitive   = false
+}
+
+variable "core_webapp_cloudfront_certificate_arn" {
+  type        = string
+  description = "ARN of ACM certificate for core webapp main CloudFront custom domain"
+  default     = null
+  sensitive   = false
+}
+
 ### Small Scale Simulator ###
 
 variable "small_scale_simulator_api_docker_image_url" {

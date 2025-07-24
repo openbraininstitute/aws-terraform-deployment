@@ -145,3 +145,29 @@ variable "env_NEXT_PUBLIC_ENABLE_RUN_NOTEBOOK" {
   description = "Enable run notebook feature, either the string 'True', either anything else for false"
   sensitive   = false
 }
+
+# S3 and CloudFront Configuration Variables
+variable "s3_bucket_name" {
+  type        = string
+  description = "Name of the S3 bucket for core webapp assets"
+  sensitive   = false
+}
+
+variable "s3_bucket_allowed_origins" {
+  type        = list(string)
+  description = "Allowed CORS origins for the S3 bucket"
+}
+
+variable "cloudfront_aliases" {
+  type        = list(string)
+  description = "List of domain aliases for CloudFront distribution"
+  default     = null
+  sensitive   = false
+}
+
+variable "cloudfront_certificate_arn" {
+  type        = string
+  description = "ARN of ACM certificate for CloudFront custom domain"
+  default     = null
+  sensitive   = false
+}
