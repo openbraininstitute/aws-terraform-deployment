@@ -350,6 +350,10 @@ module "core_webapp_main" {
   vpc_cidr_block                = local.vpc_cidr_block
   secrets_arn                   = local.core_webapp_secrets_arn
   accounting_base_url           = "https://${local.primary_domain}${var.accounting_svc_base_path}"
+  s3_bucket_name                = var.core_webapp_s3_bucket_name
+  s3_bucket_allowed_origins     = ["https://${local.primary_domain}"]
+  cloudfront_aliases            = ["cdn.${local.primary_domain}"]
+  cloudfront_certificate_arn    = null
 
   env_NEXTAUTH_URL                          = "https://${local.primary_domain}/api/auth"
   env_KEYCLOAK_ISSUER                       = "https://${local.primary_domain}/auth/realms/SBO"
@@ -384,6 +388,8 @@ module "core_webapp_next" {
   vpc_cidr_block                = local.vpc_cidr_block
   secrets_arn                   = local.core_webapp_secrets_arn
   accounting_base_url           = "https://${local.primary_domain}${var.accounting_svc_base_path}"
+  s3_bucket_name                = var.core_webapp_s3_bucket_name
+  s3_bucket_allowed_origins     = ["https://${local.primary_domain}"]
 
   env_NEXTAUTH_URL                          = "https://next.staging.openbraininstitute.org/api/auth"
   env_KEYCLOAK_ISSUER                       = "https://${local.primary_domain}/auth/realms/SBO"
