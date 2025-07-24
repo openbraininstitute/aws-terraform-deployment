@@ -9,6 +9,7 @@ module "postgres_cluster_obp" {
     aws = aws.nexus_postgres_tags
   }
 
+  is_nexus_obp_running            = var.is_nexus_obp_running
   cluster_identifier              = local.database_id
   subnets_ids                     = module.networking.psql_subnets_ids
   security_group_id               = module.networking.main_subnet_sg_id
@@ -89,7 +90,8 @@ module "elasticsearch_obp" {
     ec.ec2 = ec.ec2
   }
 
-  is_production = var.is_production
+  is_production        = var.is_production
+  is_nexus_obp_running = var.is_nexus_obp_running
 
   aws_region               = var.aws_region
   elastic_vpc_endpoint_id  = module.networking.elastic_vpc_endpoint_id
