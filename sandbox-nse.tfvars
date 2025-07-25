@@ -15,7 +15,6 @@ core_web_app_next_docker_image_url        = "public.ecr.aws/openbraininstitute/c
 virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:20250226.1"
 thumbnail_generation_api_docker_image_url = "bluebrain/thumbnail-generation-api:latest"
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:latest"
-me_model_analysis_docker_image_url        = "public.ecr.aws/openbraininstitute/me-model-analysis:staging"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.5.0"
 is_nexus_openscience_running              = false
 is_nexus_obp_running                      = false
