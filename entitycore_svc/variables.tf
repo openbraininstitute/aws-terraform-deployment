@@ -47,11 +47,6 @@ variable "entitycore_service_secrets_arn" {
   type = string
 }
 
-variable "s3_bucket_name" {
-  description = "S3 bucket name in which entitycore data lives (for backward compatibility)."
-  type        = string
-}
-
 variable "aws_s3_internal_bucket" {
   description = "S3 bucket name in which entitycore data lives."
   type        = string

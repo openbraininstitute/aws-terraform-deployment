@@ -144,9 +144,25 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
           value = var.db_username
         },
         {
-          name  = "S3_BUCKET_NAME"
-          value = var.s3_bucket_name
-        }
+          name  = "S3_BUCKET_NAME" # for backward compatibility
+          value = var.aws_s3_internal_bucket
+        },
+        {
+          name  = "AWS_S3_INTERNAL_BUCKET"
+          value = var.aws_s3_internal_bucket
+        },
+        {
+          name  = "AWS_S3_INTERNAL_REGION"
+          value = var.aws_s3_internal_region
+        },
+        {
+          name  = "AWS_S3_OPEN_BUCKET"
+          value = var.aws_s3_open_bucket
+        },
+        {
+          name  = "AWS_S3_OPEN_REGION"
+          value = var.aws_s3_open_region
+        },
       ]
 
       secrets = [
