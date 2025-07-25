@@ -197,7 +197,7 @@ module "small_scale_simulator" {
   base_path = "/api/small-scale-simulator"
   cors_origins = concat(
     ["https://${local.primary_domain}"],
-    var.is_staging ? ["http://localhost:3000"] : []
+    var.is_staging ? ["http://localhost:3000", "https://dev.openbraininstitute.org"] : []
   )
 
   accounting_base_url = "https://${local.primary_domain}${var.accounting_svc_base_path}"
@@ -334,11 +334,11 @@ module "core_webapp_main" {
   env_NEXTAUTH_URL                          = "https://${local.primary_domain}/api/auth"
   env_KEYCLOAK_ISSUER                       = "https://${local.primary_domain}/auth/realms/SBO"
   env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY    = "pk_test_51QjjHBKGUR5u3ofLgNUOpljnvy27UTTpkhwgsLiwK9xlNjnR7CZfiMjtZWMjgN7GW3eDyzMJ7Z1pIqC9LiwkfQRX00ebb5c9XI"
+  env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL   = "http://${data.terraform_remote_state.common.outputs.private_alb_dns_name}:3000/api/literature"
   env_NEXT_PUBLIC_DEPLOYMENT_ENV            = var.core_web_app_deployment_env
   env_NEXT_PUBLIC_MATOMO_SITE_ID            = var.core_web_app_next_public_matomo_site_id
   env_NEXT_PUBLIC_MATOMO_CDN_URL            = "https://cdn.matomo.cloud/openbraininstitute.matomo.cloud"
   env_NEXT_PUBLIC_MATOMO_URL                = "https://openbraininstitute.matomo.cloud"
-  env_NEXT_PUBLIC_ENABLE_RUN_NOTEBOOK       = var.is_staging ? "true" : "false"
   env_NEXT_PUBLIC_NOTEBOOK_SERVICE_BASE_URL = "https://${local.primary_domain}/api/notebook_service"
 }
 
@@ -371,11 +371,11 @@ module "core_webapp_dev" {
   env_NEXTAUTH_URL                          = "https://dev.openbraininstitute.org/api/auth"
   env_KEYCLOAK_ISSUER                       = "https://${local.primary_domain}/auth/realms/SBO"
   env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY    = "pk_test_51QjjHBKGUR5u3ofLgNUOpljnvy27UTTpkhwgsLiwK9xlNjnR7CZfiMjtZWMjgN7GW3eDyzMJ7Z1pIqC9LiwkfQRX00ebb5c9XI"
+  env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL   = "http://${data.terraform_remote_state.common.outputs.private_alb_dns_name}:3000/api/literature"
   env_NEXT_PUBLIC_DEPLOYMENT_ENV            = var.core_web_app_deployment_env
   env_NEXT_PUBLIC_MATOMO_SITE_ID            = var.core_web_app_next_public_matomo_site_id
   env_NEXT_PUBLIC_MATOMO_CDN_URL            = "https://cdn.matomo.cloud/openbraininstitute.matomo.cloud"
   env_NEXT_PUBLIC_MATOMO_URL                = "https://openbraininstitute.matomo.cloud"
-  env_NEXT_PUBLIC_ENABLE_RUN_NOTEBOOK       = var.is_staging ? "true" : "false"
   env_NEXT_PUBLIC_NOTEBOOK_SERVICE_BASE_URL = "https://${local.primary_domain}/api/notebook_service"
 }
 
