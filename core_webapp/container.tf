@@ -121,40 +121,12 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
           value = var.accounting_base_url
         },
         {
-          name  = "NEXT_PUBLIC_DEPLOYMENT_ENV"
-          value = var.env_NEXT_PUBLIC_DEPLOYMENT_ENV
-        },
-        {
           name  = "NEXTAUTH_URL"
           value = var.env_NEXTAUTH_URL
         },
         {
           name  = "KEYCLOAK_ISSUER"
           value = var.env_KEYCLOAK_ISSUER
-        },
-        {
-          name  = "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"
-          value = var.env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-        },
-        {
-          name  = "NEXT_PUBLIC_MATOMO_URL"
-          value = var.env_NEXT_PUBLIC_MATOMO_URL
-        },
-        {
-          name  = "NEXT_PUBLIC_MATOMO_CDN_URL"
-          value = var.env_NEXT_PUBLIC_MATOMO_CDN_URL
-        },
-        {
-          name  = "NEXT_PUBLIC_MATOMO_SITE_ID"
-          value = var.env_NEXT_PUBLIC_MATOMO_SITE_ID
-        },
-        {
-          name  = "NEXT_PUBLIC_NOTEBOOK_SERVICE_BASE_URL"
-          value = var.env_NEXT_PUBLIC_NOTEBOOK_SERVICE_BASE_URL
-        },
-        {
-          name  = "NEXT_PUBLIC_ENABLE_RUN_NOTEBOOK"
-          value = var.env_NEXT_PUBLIC_ENABLE_RUN_NOTEBOOK
         },
         {
           name  = "NEXT_PUBLIC_CDN_URI"
