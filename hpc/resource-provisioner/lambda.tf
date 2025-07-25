@@ -8,7 +8,7 @@ resource "aws_lambda_permission" "hpc_resource_provisioner_permission_post" {
 
 # tfsec:ignore:aws-lambda-enable-tracing
 resource "aws_lambda_function" "hpc_resource_provisioner_lambda" {
-  function_name    = "hpc-resource-provisioner-${var.suffix}"
+  function_name    = "hpc-resource-provisioner"
   role             = var.hpc_resource_provisioner_role
   package_type     = "Image"
   architectures    = ["x86_64"]
@@ -30,10 +30,9 @@ resource "aws_lambda_function" "hpc_resource_provisioner_lambda" {
       FSX_POLICY_ARN       = var.fsx_policy_arn
       FS_SUBNET_IDS        = jsonencode(var.fs_subnet_ids)
       FS_SG_ID             = var.fs_sg_id
-      SUFFIX               = var.suffix
       # API_GW_STAGE_ARN     = aws_api_gateway_stage.hpc_resource_provisioner_api_stage.arn
       API_GW_STAGE_ARN     = "arn:aws:execute-api:${var.aws_region}:${var.account_id}:kmlnf84csk/" # TODO: don't hardcode, find a way to do this without a cycle
-      EVENTBRIDGE_ROLE_ARN = var.suffix == "dev" ? aws_iam_role.resource_provisioner_eventbridge[0].arn : "NOT SET"
+      EVENTBRIDGE_ROLE_ARN = aws_iam_role.resource_provisioner_eventbridge.arn
     }
   }
 }
@@ -45,7 +44,7 @@ data "aws_ecr_image" "hpc_resource_provisioner_image" {
 
 # tfsec:ignore:aws-lambda-enable-tracing
 resource "aws_lambda_function" "hpc_resource_provisioner_async_lambda" {
-  function_name    = "hpc-resource-provisioner-creator-${var.suffix}"
+  function_name    = "hpc-resource-provisioner-creator"
   role             = var.hpc_resource_provisioner_role
   package_type     = "Image"
   architectures    = ["x86_64"]

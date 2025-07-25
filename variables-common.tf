@@ -195,11 +195,6 @@ variable "hpc_resource_provisioner_container_version" {
   description = "Version of hpc-resource-provisioner to deploy"
 }
 
-variable "hpc_resource_provisioner_container_dev_version" {
-  type        = string
-  description = "Version of hpc-resource-provisioner to deploy"
-}
-
 variable "hpc_resource_provisioner_sbo_nexusdata_bucket" {
   type        = string
   description = "S3 bucket in which SBO Nexus data lives. Includes s3:// prefix and sub-path, if any"

@@ -1,5 +1,4 @@
 resource "aws_cloudwatch_dashboard" "resource_provisioner_dashboard" {
-  count          = var.suffix == "prod" ? 1 : 0
   dashboard_name = "HPC-Resource-Provisioner"
   dashboard_body = jsonencode({
     "widgets" : [

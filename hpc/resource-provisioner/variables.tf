@@ -58,10 +58,6 @@ variable "fs_sg_id" {
   type = string
 }
 
-variable "suffix" {
-  type = string
-}
-
 variable "pcluster_ami_id" {
   type = string
 }
