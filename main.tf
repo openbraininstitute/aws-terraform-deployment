@@ -16,19 +16,19 @@ locals {
   primary_domain    = data.terraform_remote_state.common.outputs.primary_domain
   email_domain_name = data.terraform_remote_state.common.outputs.email_domain_name
 
-  virtual_lab_manager_secrets_arn  = data.terraform_remote_state.common.outputs.virtual_lab_manager_secrets_arn
-  keycloak_secrets_arn             = data.terraform_remote_state.common.outputs.keycloak_secrets_arn
-  jupyterhub_secrets_arn           = data.terraform_remote_state.common.outputs.jupyterhub_secrets_arn
-  core_webapp_secrets_arn          = data.terraform_remote_state.common.outputs.core_webapp_secrets_arn
-  ml_secrets_arn                   = data.terraform_remote_state.common.outputs.ml_secrets_arn
-  bluenaas_service_secrets_arn     = data.terraform_remote_state.common.outputs.bluenaas_service_secrets_arn
-  accounting_service_secrets_arn   = data.terraform_remote_state.common.outputs.accounting_service_secrets_arn
-  entitycore_service_secrets_arn   = data.terraform_remote_state.common.outputs.entitycore_service_secrets_arn
-  hpc_slurm_secrets_arn            = data.terraform_remote_state.common.outputs.hpc_slurm_secrets_arn
-  nexus_secrets_arn                = data.terraform_remote_state.common.outputs.nexus_secrets_arn
-  workflow_service_secrets_arn     = data.terraform_remote_state.common.outputs.workflow_service_secrets_arn
-  dockerhub_bbpbuildbot_secret_arn = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_secret_arn
-  dockerhub_bbpbuildbot_policy_arn = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_policy_arn
+  virtual_lab_manager_secrets_arn   = data.terraform_remote_state.common.outputs.virtual_lab_manager_secrets_arn
+  keycloak_secrets_arn              = data.terraform_remote_state.common.outputs.keycloak_secrets_arn
+  jupyterhub_secrets_arn            = data.terraform_remote_state.common.outputs.jupyterhub_secrets_arn
+  core_webapp_secrets_arn           = data.terraform_remote_state.common.outputs.core_webapp_secrets_arn
+  ml_secrets_arn                    = data.terraform_remote_state.common.outputs.ml_secrets_arn
+  small_scale_simulator_secrets_arn = data.terraform_remote_state.common.outputs.bluenaas_service_secrets_arn
+  accounting_service_secrets_arn    = data.terraform_remote_state.common.outputs.accounting_service_secrets_arn
+  entitycore_service_secrets_arn    = data.terraform_remote_state.common.outputs.entitycore_service_secrets_arn
+  hpc_slurm_secrets_arn             = data.terraform_remote_state.common.outputs.hpc_slurm_secrets_arn
+  nexus_secrets_arn                 = data.terraform_remote_state.common.outputs.nexus_secrets_arn
+  workflow_service_secrets_arn      = data.terraform_remote_state.common.outputs.workflow_service_secrets_arn
+  dockerhub_bbpbuildbot_secret_arn  = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_secret_arn
+  dockerhub_bbpbuildbot_policy_arn  = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_policy_arn
 
   github_organisation = "openbraininstitute"
 }
@@ -217,8 +217,7 @@ module "small_scale_simulator" {
   alb_listener_rule_priority = 760
   internet_access_route_id   = local.route_table_private_subnets_id
 
-  # TODO Clone from bluenaas_svc before it is retired
-  secrets_arn = local.bluenaas_service_secrets_arn
+  secrets_arn = local.small_scale_simulator_secrets_arn
 
   api_docker_image_url    = var.small_scale_simulator_api_docker_image_url
   worker_docker_image_url = var.small_scale_simulator_worker_docker_image_url
@@ -662,16 +661,17 @@ module "dashboards" {
 
   private_load_balancer_id = local.private_alb_https_listener_arn
   private_load_balancer_target_suffixes = merge({
-    "AccountingService"  = module.accounting_svc.private_lb_rule_suffix
-    "SonataCellService"  = module.cells_svc.private_lb_rule_suffix
-    "KGInference"        = module.kg_inference_api.private_lb_rule_suffix
-    "ThumbnailGenerator" = module.thumbnail_generation_api.private_lb_rule_suffix
-    "KeyCloak"           = module.cs.private_keycloak_lb_rule_suffix
-    "NexusFusion"        = module.nexus.private_fusion_lb_rule_suffix
-    "NexusDelta"         = module.nexus.private_delta_lb_rule_suffix
-    "CoreWebAppMain"     = module.core_webapp_main.private_lb_rule_suffix
-    "VLabManager"        = module.virtual_lab_manager.private_arn_suffix
-    "EntityCoreService"  = module.entitycore_svc.private_lb_rule_suffix
+    "AccountingService"   = module.accounting_svc.private_lb_rule_suffix
+    "CoreWebAppMain"      = module.core_webapp_main.private_lb_rule_suffix
+    "EntityCoreService"   = module.entitycore_svc.private_lb_rule_suffix
+    "KeyCloak"            = module.cs.private_keycloak_lb_rule_suffix
+    "KGInference"         = module.kg_inference_api.private_lb_rule_suffix
+    "NexusDelta"          = module.nexus.private_delta_lb_rule_suffix
+    "NexusFusion"         = module.nexus.private_fusion_lb_rule_suffix
+    "SmallScaleSimulator" = module.small_scale_simulator.private_lb_rule_suffix
+    "SonataCellService"   = module.cells_svc.private_lb_rule_suffix
+    "ThumbnailGenerator"  = module.thumbnail_generation_api.private_lb_rule_suffix
+    "VLabManager"         = module.virtual_lab_manager.private_arn_suffix
   }, var.is_staging ? { "CoreWebAppNext" = module.core_webapp_next[0].private_lb_rule_suffix } : {})
 }
 

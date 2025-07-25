@@ -35,10 +35,8 @@ function resource_to_tag {
         *"keycloak"*) echo "keycloak";;
         *"kg_inference_api"*) echo "kg_inference_api";;
         *"marketplace"*) echo "marketplace-deployment";;
-        *"me_model"*) echo "me_model_analysis";;
         *"nexus"*) echo "nexus";;
         *"pcluster"* | *"parallelcluster"* | *"fsx"*) echo "hpc:parallelcluster";;
-        *"bluenaas"* | *"single_cell"*) echo "bluenaas";;
         *"thumbnail_generation_api"*) echo "thumbnail_generation_api";;
         *"virtual_lab_manager"*) echo "virtual_lab_manager";;
         *"viz"*) echo "viz";;
