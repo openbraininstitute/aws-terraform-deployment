@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "entitycore" {
-  bucket = var.s3_bucket_name
+  bucket = var.aws_s3_internal_bucket
 
   tags = {
     Name            = "entitycore-storage"
