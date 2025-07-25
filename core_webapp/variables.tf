@@ -163,5 +163,11 @@ variable "cloudfront_certificate_arn" {
   type        = string
   description = "ARN of ACM certificate for CloudFront custom domain"
   default     = null
+}
+
+variable "sbo_billing_tag" {
+  type        = string
+  description = "Value for the SBO_Billing tag"
+  default     = "core_webapp"
   sensitive   = false
 }
