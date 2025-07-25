@@ -366,6 +366,7 @@ module "core_webapp_dev" {
   s3_bucket_name                = var.core_webapp_s3_bucket_name
   s3_bucket_allowed_origins     = ["https://${local.primary_domain}"]
 
+  sbo_billing_tag = "core_webapp_dev"
 
   env_NEXTAUTH_URL                          = "https://dev.openbraininstitute.org/api/auth"
   env_KEYCLOAK_ISSUER                       = "https://${local.primary_domain}/auth/realms/SBO"
