@@ -47,8 +47,23 @@ variable "entitycore_service_secrets_arn" {
   type = string
 }
 
-variable "s3_bucket_name" {
-  description = "Name of the S3 bucket for entitycore service"
+variable "aws_s3_internal_bucket" {
+  description = "S3 bucket name in which entitycore data lives."
+  type        = string
+}
+
+variable "aws_s3_internal_region" {
+  description = "S3 region name in which entitycore data lives."
+  type        = string
+}
+
+variable "aws_s3_open_bucket" {
+  description = "S3 bucket name in which open data lives."
+  type        = string
+}
+
+variable "aws_s3_open_region" {
+  description = "S3 region name in which open data lives."
   type        = string
 }
 

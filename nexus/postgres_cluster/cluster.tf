@@ -10,6 +10,7 @@ data "aws_secretsmanager_secret_version" "nexus_database_password" {
 
 # tfsec:ignore:aws-rds-encrypt-cluster-storage-data
 resource "aws_rds_cluster" "nexus" {
+  count                     = var.is_nexus_obp_running ? 1 : 0
   cluster_identifier        = var.cluster_identifier
   availability_zones        = ["us-east-1a", "us-east-1b", "us-east-1c"]
   engine                    = "postgres"

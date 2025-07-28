@@ -56,13 +56,6 @@ variable "ec_apikey2" {
   sensitive = true
 }
 
-### ME-Model analysis ###
-
-variable "me_model_analysis_docker_image_url" {
-  type        = string
-  description = "docker image for the ME-Model analysis"
-}
-
 ### Core Web App ###
 
 variable "core_web_app_docker_image_url" {
@@ -89,22 +82,6 @@ variable "core_web_app_next_public_matomo_site_id" {
   type        = string
   description = "matomo site id <staging|production>"
   sensitive   = false
-}
-
-### BlueNaaS service ###
-
-variable "bluenaas_docker_image_url" {
-  type        = string
-  description = "Docker image URL for the blue-naas service"
-}
-
-variable "bluenaas_task_size" {
-  type = object({
-    cpu    = any
-    memory = any
-  })
-
-  description = "CPU and memory limit for ECS task (number or string format)"
 }
 
 ### Small Scale Simulator ###
@@ -257,9 +234,24 @@ variable "sbo_infrastructureassets_bucket" {
 }
 
 ### entitycore ###
-variable "entitycore_svc_s3_bucket_name" {
+variable "entitycore_svc_aws_s3_internal_bucket" {
   type        = string
   description = "S3 bucket name in which entitycore data lives."
+}
+
+variable "entitycore_svc_aws_s3_internal_region" {
+  type        = string
+  description = "S3 region name in which entitycore data lives."
+}
+
+variable "entitycore_svc_aws_s3_open_bucket" {
+  type        = string
+  description = "S3 bucket name in which open data lives."
+}
+
+variable "entitycore_svc_aws_s3_open_region" {
+  type        = string
+  description = "S3 region name in which open data lives."
 }
 
 variable "entitycore_svc_s3_bucket_allowed_origins" {

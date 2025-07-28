@@ -16,18 +16,10 @@ virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/v
 thumbnail_generation_api_docker_image_url = "public.ecr.aws/openbraininstitute/thumbnail-generation-api:staging"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.5.0"
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:latest"
-me_model_analysis_docker_image_url        = "public.ecr.aws/openbraininstitute/me-model-analysis:staging"
 is_nexus_openscience_running              = false
 is_nexus_obp_running                      = false
 jupyterhub_ec2_type                       = "c7i.large"
 notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:staging"
-
-
-bluenaas_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:staging"
-bluenaas_task_size = {
-  cpu    = 4096
-  memory = 8192
-}
 
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-staging"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-staging"
@@ -69,9 +61,12 @@ sbo_infrastructureassets_bucket               = "s3://sboinfrastructureassets-st
 hpc_resource_provisioner_containers_bucket    = ""
 hpc_resource_provisioner_scratch_bucket       = ""
 
-entitycore_svc_s3_bucket_name            = "entitycore-data-staging"
+entitycore_svc_aws_s3_internal_bucket    = "entitycore-data-staging"
+entitycore_svc_aws_s3_internal_region    = "us-east-1"
+entitycore_svc_aws_s3_open_bucket        = "openbluebrain"
+entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["*"]
-entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.7.5"
+entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.7.7"
 
 obi_one_docker_image_url = "public.ecr.aws/openbraininstitute/obi-one:2025.7.6"
 obi_one_task_size = {

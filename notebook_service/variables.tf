@@ -20,7 +20,7 @@ variable "base_path" {
 }
 
 variable "docker_image_url" {
-  description = "Docker image for the bluenaas service"
+  description = "Docker image for the notebook service"
   type        = string
 }
 
