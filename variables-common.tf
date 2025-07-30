@@ -56,13 +56,6 @@ variable "ec_apikey2" {
   sensitive = true
 }
 
-### ME-Model analysis ###
-
-variable "me_model_analysis_docker_image_url" {
-  type        = string
-  description = "docker image for the ME-Model analysis"
-}
-
 ### Core Web App ###
 
 variable "core_web_app_docker_image_url" {
@@ -91,22 +84,6 @@ variable "core_web_app_next_public_matomo_site_id" {
   sensitive   = false
 }
 
-### BlueNaaS service ###
-
-variable "bluenaas_docker_image_url" {
-  type        = string
-  description = "Docker image URL for the blue-naas service"
-}
-
-variable "bluenaas_task_size" {
-  type = object({
-    cpu    = any
-    memory = any
-  })
-
-  description = "CPU and memory limit for ECS task (number or string format)"
-}
-
 ### Small Scale Simulator ###
 
 variable "small_scale_simulator_api_docker_image_url" {
@@ -119,21 +96,6 @@ variable "small_scale_simulator_worker_docker_image_url" {
   description = "Docker image URL for the small scale simulator worker"
 }
 
-variable "small_scale_simulator_num_workers" {
-  type = string
-
-  description = "Number of worker processes per each ECS worker node for the small scale simulator"
-}
-
-variable "small_scale_simulator_worker_task_size" {
-  type = object({
-    cpu    = any
-    memory = any
-  })
-
-  description = "CPU and memory limit for the worker ECS task (number or string format)"
-}
-
 variable "small_scale_simulator_api_task_size" {
   type = object({
     cpu    = any
@@ -143,10 +105,22 @@ variable "small_scale_simulator_api_task_size" {
   description = "CPU and memory limit for the API ECS task (number or string format)"
 }
 
-variable "small_scale_simulator_worker_autoscaler_min_capacity" {
-  type = number
+variable "small_scale_simulator_workers" {
+  type = map(object({
+    task_size = object({
+      cpu    = any
+      memory = any
+    })
+    num_workers             = number
+    queues                  = string
+    autoscaler_min_capacity = number
+    capacity_provider_strategy = list(object({
+      capacity_provider = string # Valid values: FARGATE, FARGATE_SPOT
+      weight            = number
+    }))
+  }))
 
-  description = "Minimum number of worker nodes requested from capacity provider for small scale simulator"
+  description = "Map of worker configurations for small scale simulator. Each key represents a worker service name with its configuration."
 }
 
 
@@ -260,9 +234,24 @@ variable "sbo_infrastructureassets_bucket" {
 }
 
 ### entitycore ###
-variable "entitycore_svc_s3_bucket_name" {
+variable "entitycore_svc_aws_s3_internal_bucket" {
   type        = string
   description = "S3 bucket name in which entitycore data lives."
+}
+
+variable "entitycore_svc_aws_s3_internal_region" {
+  type        = string
+  description = "S3 region name in which entitycore data lives."
+}
+
+variable "entitycore_svc_aws_s3_open_bucket" {
+  type        = string
+  description = "S3 bucket name in which open data lives."
+}
+
+variable "entitycore_svc_aws_s3_open_region" {
+  type        = string
+  description = "S3 region name in which open data lives."
 }
 
 variable "entitycore_svc_s3_bucket_allowed_origins" {

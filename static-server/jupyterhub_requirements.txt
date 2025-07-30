@@ -17,6 +17,7 @@ neurom==4.0.4
 NEURON==8.2.7
 numpy==1.26.4
 obi-auth==0.3.0
+obi-notebook==0.1.dev10
 obi-one==2025.7.4
 pandas==2.3.0
 plotly==6.2.0

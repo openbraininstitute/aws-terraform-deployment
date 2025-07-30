@@ -15,26 +15,21 @@ core_web_app_next_docker_image_url        = "public.ecr.aws/openbraininstitute/c
 virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:20250226.1"
 thumbnail_generation_api_docker_image_url = "bluebrain/thumbnail-generation-api:latest"
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:latest"
-me_model_analysis_docker_image_url        = "public.ecr.aws/openbraininstitute/me-model-analysis:staging"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.5.0"
 is_nexus_openscience_running              = false
 is_nexus_obp_running                      = false
 notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:staging"
 
-
-bluenaas_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:staging"
-bluenaas_task_size = {
-  cpu    = 4096
-  memory = 8192
-}
 virtual_lab_manager_task_size = {
   cpu    = 512
   memory = 1024
 }
+
 keycloak_task_size = {
   cpu    = 1024
   memory = 2048
 }
+
 coreservices_public_key                    = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCy8UW1JdUjIuiiaI+xFId3smXFe6iwxdn6Klqi8y4E+cFHP/uQxW4AuCfJVoOjOQ2CNU0UIGRlCkw3IwUmZvwGjFZS1Vs6jt+KjWiDRdFzQQrz5+vuqPX2576wXlT+EHe0W6r7Qla5i1L6cjz6/E4u5yFZ3MJQSBYjLqXjT7Da4R72gPx9oiIoSH2JBu3vHyfkTEo3l6C+WJlYnUGOLnUxGGGnhJrBKmIRNMmtRNgQlBkPR4mnCAFABJfgpzgNf4bpqLbma5DabQGbvpX6qCLSAV5Zdd4gBQLIAJfS/a5pMWaIy9qDTWB2vy4Z39HI45k6efrLL+xgo+XYSRqn5jDT heeren@Mac"
 hpc_resource_provisioner_container_version = "latest-dev"
 core_web_app_deployment_env                = "staging"
@@ -48,8 +43,7 @@ hpc_resource_provisioner_sbo_nexusdata_bucket = "s3://sbonexusdata-sandbox"
 hpc_resource_provisioner_containers_bucket    = "s3://sboinfrastructureassets-sandbox/containers"
 hpc_resource_provisioner_scratch_bucket       = "s3://sbosandbox-lec3cn"
 
-entitycore_svc_s3_bucket_name = "entitycore-data-sandbox-nse-test"
-entitycore_svc_image_url      = "public.ecr.aws/openbraininstitute/entitycore:2025.4.2"
+entitycore_svc_image_url = "public.ecr.aws/openbraininstitute/entitycore:2025.4.2"
 
 obi_one_docker_image_url            = "public.ecr.aws/openbraininstitute/obi-one:2025.4.2"
 obi_generative_gui_docker_image_url = "public.ecr.aws/openbraininstitute/obi-generative-gui:2025.4.5"

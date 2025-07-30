@@ -35,11 +35,13 @@ resource "aws_db_instance" "virtual_lab_manager" {
   allocated_storage       = 5    # in gigabytes
   backup_retention_period = 2    # in days
 
+  apply_immediately = false
+
   db_subnet_group_name = aws_db_subnet_group.virtual_lab_manager_db_subnet_group.name
 
   engine         = "postgres"
   engine_version = "14"
-  multi_az       = false
+  multi_az       = var.db_multi_az
   instance_class = "db.t3.small"
 
   identifier = "virtual-lab-manager-db-id"

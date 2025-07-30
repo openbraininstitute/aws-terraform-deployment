@@ -16,19 +16,19 @@ locals {
   primary_domain    = data.terraform_remote_state.common.outputs.primary_domain
   email_domain_name = data.terraform_remote_state.common.outputs.email_domain_name
 
-  virtual_lab_manager_secrets_arn  = data.terraform_remote_state.common.outputs.virtual_lab_manager_secrets_arn
-  keycloak_secrets_arn             = data.terraform_remote_state.common.outputs.keycloak_secrets_arn
-  jupyterhub_secrets_arn           = data.terraform_remote_state.common.outputs.jupyterhub_secrets_arn
-  core_webapp_secrets_arn          = data.terraform_remote_state.common.outputs.core_webapp_secrets_arn
-  ml_secrets_arn                   = data.terraform_remote_state.common.outputs.ml_secrets_arn
-  bluenaas_service_secrets_arn     = data.terraform_remote_state.common.outputs.bluenaas_service_secrets_arn
-  accounting_service_secrets_arn   = data.terraform_remote_state.common.outputs.accounting_service_secrets_arn
-  entitycore_service_secrets_arn   = data.terraform_remote_state.common.outputs.entitycore_service_secrets_arn
-  hpc_slurm_secrets_arn            = data.terraform_remote_state.common.outputs.hpc_slurm_secrets_arn
-  nexus_secrets_arn                = data.terraform_remote_state.common.outputs.nexus_secrets_arn
-  workflow_service_secrets_arn     = data.terraform_remote_state.common.outputs.workflow_service_secrets_arn
-  dockerhub_bbpbuildbot_secret_arn = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_secret_arn
-  dockerhub_bbpbuildbot_policy_arn = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_policy_arn
+  virtual_lab_manager_secrets_arn   = data.terraform_remote_state.common.outputs.virtual_lab_manager_secrets_arn
+  keycloak_secrets_arn              = data.terraform_remote_state.common.outputs.keycloak_secrets_arn
+  jupyterhub_secrets_arn            = data.terraform_remote_state.common.outputs.jupyterhub_secrets_arn
+  core_webapp_secrets_arn           = data.terraform_remote_state.common.outputs.core_webapp_secrets_arn
+  ml_secrets_arn                    = data.terraform_remote_state.common.outputs.ml_secrets_arn
+  small_scale_simulator_secrets_arn = data.terraform_remote_state.common.outputs.bluenaas_service_secrets_arn
+  accounting_service_secrets_arn    = data.terraform_remote_state.common.outputs.accounting_service_secrets_arn
+  entitycore_service_secrets_arn    = data.terraform_remote_state.common.outputs.entitycore_service_secrets_arn
+  hpc_slurm_secrets_arn             = data.terraform_remote_state.common.outputs.hpc_slurm_secrets_arn
+  nexus_secrets_arn                 = data.terraform_remote_state.common.outputs.nexus_secrets_arn
+  workflow_service_secrets_arn      = data.terraform_remote_state.common.outputs.workflow_service_secrets_arn
+  dockerhub_bbpbuildbot_secret_arn  = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_secret_arn
+  dockerhub_bbpbuildbot_policy_arn  = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_policy_arn
 
   github_organisation = "openbraininstitute"
 }
@@ -131,12 +131,8 @@ module "ml" {
   route_table_private_subnets_id = local.route_table_private_subnets_id
 
   dockerhub_credentials_arn = local.dockerhub_bbpbuildbot_secret_arn
-  backend_image_tag         = "scholarag-v0.0.12"
-  etl_image_tag             = "scholaretl-v0.0.8"
-  agent_image_tag           = "neuroagent-v0.6.4"
-  grobid_image_url          = "lfoppiano/grobid:0.8.0"
+  agent_image_tag           = "neuroagent-v0.7.2"
 
-  paper_bucket_name      = var.ml_paper_bucket_name
   neuroagent_bucket_name = var.ml_neuroagent_bucket_name
   nexus_domain_name      = module.nexus.nexus_domain_name
   primary_domain         = local.primary_domain
@@ -152,7 +148,7 @@ module "ml" {
 
   github_oidc_provider_arn = module.github_oidc_provider.oidc_provider_arn
 
-  github_repos = ["openbraininstitute/neuroagent", "openbraininstitute/scholarag", "openbraininstitute/scholaretl"]
+  github_repos = ["openbraininstitute/neuroagent"]
 }
 
 module "nexus" {
@@ -212,45 +208,6 @@ module "cells_svc" {
   cell_svc_docker_image_url = var.cell_svc_docker_image_url
 }
 
-module "nse" {
-  source = "./nse"
-
-  deployment_env = var.deployment_env
-
-  aws_region              = local.aws_region
-  account_id              = local.account_id
-  vpc_id                  = local.vpc_id
-  amazon_linux_ecs_ami_id = data.aws_ami.amazon_linux_2_ecs.id
-  route_table_id          = local.route_table_private_subnets_id
-
-  me_model_analysis_docker_image_url = var.me_model_analysis_docker_image_url
-}
-
-module "bluenaas_svc" {
-  source = "./bluenaas_svc"
-
-  aws_region                 = local.aws_region
-  vpc_id                     = local.vpc_id
-  private_alb_listener_arn   = local.private_alb_https_listener_arn
-  alb_listener_rule_priority = 750
-  internet_access_route_id   = local.route_table_private_subnets_id
-
-  bluenaas_service_secrets_arn = local.bluenaas_service_secrets_arn
-
-  docker_image_url = var.bluenaas_docker_image_url
-
-
-  nexus_delta_uri = "https://${module.nexus.nexus_domain_name}/api/nexus/v1"
-
-  base_path = "/api/bluenaas"
-
-  accounting_base_url = "https://${local.primary_domain}${var.accounting_svc_base_path}"
-  entitycore_url      = "https://${local.primary_domain}/api/entitycore"
-  keycloak_server_url = "https://${local.primary_domain}/auth/"
-
-  task_size = var.bluenaas_task_size
-}
-
 module "small_scale_simulator" {
   source = "./small_scale_simulator"
 
@@ -260,13 +217,16 @@ module "small_scale_simulator" {
   alb_listener_rule_priority = 760
   internet_access_route_id   = local.route_table_private_subnets_id
 
-  # TODO Clone from bluenaas_svc before it is retired
-  secrets_arn = local.bluenaas_service_secrets_arn
+  secrets_arn = local.small_scale_simulator_secrets_arn
 
   api_docker_image_url    = var.small_scale_simulator_api_docker_image_url
   worker_docker_image_url = var.small_scale_simulator_worker_docker_image_url
 
   base_path = "/api/small-scale-simulator"
+  cors_origins = concat(
+    ["https://${local.primary_domain}"],
+    var.is_staging ? ["http://localhost:3000"] : []
+  )
 
   nexus_delta_uri = "https://${module.nexus.nexus_domain_name}/api/nexus/v1"
 
@@ -274,10 +234,8 @@ module "small_scale_simulator" {
   entitycore_url      = "https://${local.primary_domain}/api/entitycore"
   keycloak_server_url = "https://${local.primary_domain}/auth/"
 
-  api_task_size                  = var.small_scale_simulator_api_task_size
-  worker_task_size               = var.small_scale_simulator_worker_task_size
-  worker_autoscaler_min_capacity = var.small_scale_simulator_worker_autoscaler_min_capacity
-  num_workers                    = var.small_scale_simulator_num_workers
+  api_task_size = var.small_scale_simulator_api_task_size
+  workers       = var.small_scale_simulator_workers
 }
 
 module "github_ami_build_role" {
@@ -288,22 +246,6 @@ module "github_ami_build_role" {
   github_oidc_provider_arn = module.github_oidc_provider.oidc_provider_arn
   repo_name                = "machine-images"
   bucket_name              = var.sbo_infrastructureassets_bucket
-}
-
-module "github_bluenaas_ecs_redeploy_role" {
-  source = "./github_ecs_redeploy_role"
-
-  # for now we only want such a redeploy role in staging
-  count = var.is_staging ? 1 : 0
-
-  account_id               = local.account_id
-  aws_region               = local.aws_region
-  github_organisation      = local.github_organisation
-  repo_name                = "Bluenaas"
-  ecs_cluster_name         = module.bluenaas_svc.ecs_cluster_name
-  ecs_service_name         = module.bluenaas_svc.ecs_service_name
-  ecs_task_definition_name = module.bluenaas_svc.ecs_task_definition_name
-  # The ARN of the generated role is needed in GH and is part of the outputs.
 }
 
 module "notebook_service" {
@@ -528,8 +470,12 @@ module "entitycore_svc" {
     "https://staging.openbraininstitute.org/auth/realms/SBO/"
   )
 
-  s3_bucket_name            = var.entitycore_svc_s3_bucket_name
   s3_bucket_allowed_origins = var.entitycore_svc_s3_bucket_allowed_origins
+  aws_s3_internal_bucket    = var.entitycore_svc_aws_s3_internal_bucket
+  aws_s3_internal_region    = var.entitycore_svc_aws_s3_internal_region
+  aws_s3_open_bucket        = var.entitycore_svc_aws_s3_open_bucket
+  aws_s3_open_region        = var.entitycore_svc_aws_s3_open_region
+
 
   image_url = var.entitycore_svc_image_url
 
@@ -629,6 +575,8 @@ module "virtual_lab_manager" {
   invite_link = "https://${local.primary_domain}/app"
   mail_from   = "no-reply@${local.email_domain_name}"
 
+  db_multi_az = var.is_production
+
   virtual_lab_manager_postgres_db   = "vlm"
   virtual_lab_manager_postgres_user = "vlm_user"
 
@@ -712,17 +660,17 @@ module "dashboards" {
 
   private_load_balancer_id = local.private_alb_https_listener_arn
   private_load_balancer_target_suffixes = merge({
-    "AccountingService"  = module.accounting_svc.private_lb_rule_suffix
-    "SonataCellService"  = module.cells_svc.private_lb_rule_suffix
-    "KGInference"        = module.kg_inference_api.private_lb_rule_suffix
-    "ThumbnailGenerator" = module.thumbnail_generation_api.private_lb_rule_suffix
-    "KeyCloak"           = module.cs.private_keycloak_lb_rule_suffix
-    "NexusFusion"        = module.nexus.private_fusion_lb_rule_suffix
-    "NexusDelta"         = module.nexus.private_delta_lb_rule_suffix
-    "BlueNaaS"           = module.bluenaas_svc.private_lb_rule_suffix
-    "CoreWebAppMain"     = module.core_webapp_main.private_lb_rule_suffix
-    "VLabManager"        = module.virtual_lab_manager.private_arn_suffix
-    "EntityCoreService"  = module.entitycore_svc.private_lb_rule_suffix
+    "AccountingService"   = module.accounting_svc.private_lb_rule_suffix
+    "CoreWebAppMain"      = module.core_webapp_main.private_lb_rule_suffix
+    "EntityCoreService"   = module.entitycore_svc.private_lb_rule_suffix
+    "KeyCloak"            = module.cs.private_keycloak_lb_rule_suffix
+    "KGInference"         = module.kg_inference_api.private_lb_rule_suffix
+    "NexusDelta"          = module.nexus.private_delta_lb_rule_suffix
+    "NexusFusion"         = module.nexus.private_fusion_lb_rule_suffix
+    "SmallScaleSimulator" = module.small_scale_simulator.private_lb_rule_suffix
+    "SonataCellService"   = module.cells_svc.private_lb_rule_suffix
+    "ThumbnailGenerator"  = module.thumbnail_generation_api.private_lb_rule_suffix
+    "VLabManager"         = module.virtual_lab_manager.private_arn_suffix
   }, var.is_staging ? { "CoreWebAppNext" = module.core_webapp_next[0].private_lb_rule_suffix } : {})
 }
 

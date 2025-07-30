@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 2.7.0"
+      version = "~>5.0"
     }
   }
 }
@@ -10,7 +10,7 @@ terraform {
 provider "aws" {
   default_tags {
     tags = {
-      SBO_Billing = "bluenaas"
+      SBO_Billing = "small_scale_simulator"
     }
   }
   region = var.aws_region

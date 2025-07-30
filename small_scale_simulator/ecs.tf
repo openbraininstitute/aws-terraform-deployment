@@ -257,6 +257,10 @@ resource "aws_ecs_task_definition" "api" {
           value = var.base_path
         },
         {
+          name  = "CORS_ORIGINS"
+          value = jsonencode(var.cors_origins)
+        },
+        {
           name  = "KC_SERVER_URI"
           value = var.keycloak_server_url
         },
@@ -310,14 +314,16 @@ resource "aws_ecs_task_definition" "api" {
   ])
 }
 
-# Worker Task Definition
+# Worker Task Definitions
 resource "aws_ecs_task_definition" "worker" {
-  family                   = "small-scale-simulator-worker"
+  for_each = var.workers
+
+  family                   = "small-scale-simulator-worker-${each.key}"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
 
-  cpu    = var.worker_task_size.cpu
-  memory = var.worker_task_size.memory
+  cpu    = each.value.task_size.cpu
+  memory = each.value.task_size.memory
 
   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn      = aws_iam_role.ecs_task_role.arn
@@ -340,8 +346,8 @@ resource "aws_ecs_task_definition" "worker" {
       name  = "worker"
       image = var.worker_docker_image_url
 
-      cpu    = var.worker_task_size.cpu
-      memory = var.worker_task_size.memory
+      cpu    = each.value.task_size.cpu
+      memory = each.value.task_size.memory
 
       mountPoints = [
         {
@@ -353,11 +359,11 @@ resource "aws_ecs_task_definition" "worker" {
       environment = [
         {
           name  = "QUEUES"
-          value = "high medium low"
+          value = each.value.queues
         },
         {
           name  = "NUM_WORKERS"
-          value = var.num_workers
+          value = tostring(each.value.num_workers)
         },
         {
           name  = "REDIS_URL"
@@ -442,6 +448,8 @@ resource "aws_ecs_service" "redis" {
   service_registries {
     registry_arn = aws_service_discovery_service.redis.arn
   }
+
+  propagate_tags = "SERVICE"
 }
 
 resource "aws_ecs_service" "api" {
@@ -463,13 +471,16 @@ resource "aws_ecs_service" "api" {
     container_port   = 8000
   }
 
-  depends_on = [aws_ecs_service.redis]
+  depends_on     = [aws_ecs_service.redis]
+  propagate_tags = "SERVICE"
 }
 
 resource "aws_ecs_service" "worker" {
-  name            = "worker"
+  for_each = var.workers
+
+  name            = "worker-${each.key}"
   cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.worker.arn
+  task_definition = aws_ecs_task_definition.worker[each.key].arn
   desired_count   = 1
 
   # Enable auto scaling
@@ -477,14 +488,12 @@ resource "aws_ecs_service" "worker" {
     ignore_changes = [desired_count]
   }
 
-  capacity_provider_strategy {
-    capacity_provider = "FARGATE"
-    weight            = 25
-  }
-
-  capacity_provider_strategy {
-    capacity_provider = "FARGATE_SPOT"
-    weight            = 75
+  dynamic "capacity_provider_strategy" {
+    for_each = each.value.capacity_provider_strategy
+    content {
+      capacity_provider = capacity_provider_strategy.value.capacity_provider
+      weight            = capacity_provider_strategy.value.weight
+    }
   }
 
   network_configuration {
@@ -492,28 +501,31 @@ resource "aws_ecs_service" "worker" {
     subnets         = [aws_subnet.small_scale_simulator_secondary_a.id, aws_subnet.small_scale_simulator_secondary_b.id]
   }
 
-  depends_on = [
-    aws_ecs_service.redis
-  ]
+  depends_on     = [aws_ecs_service.redis]
+  propagate_tags = "SERVICE"
 }
 
 
-# Auto Scaling Target for Worker Service
+# Auto Scaling Target for Worker Services
 resource "aws_appautoscaling_target" "worker" {
+  for_each = var.workers
+
   max_capacity       = 10
-  min_capacity       = var.worker_autoscaler_min_capacity
-  resource_id        = "service/${aws_ecs_cluster.main.name}/${aws_ecs_service.worker.name}"
+  min_capacity       = each.value.autoscaler_min_capacity
+  resource_id        = "service/${aws_ecs_cluster.main.name}/${aws_ecs_service.worker[each.key].name}"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
 }
 
-# Auto Scaling Policy for Worker Service (CPU-based)
+# Auto Scaling Policy for Worker Services (CPU-based)
 resource "aws_appautoscaling_policy" "worker_cpu" {
-  name               = "small-scale-simulator-worker-cpu-scaling"
+  for_each = var.workers
+
+  name               = "small-scale-simulator-worker-${each.key}-cpu-scaling"
   policy_type        = "TargetTrackingScaling"
-  resource_id        = aws_appautoscaling_target.worker.resource_id
-  scalable_dimension = aws_appautoscaling_target.worker.scalable_dimension
-  service_namespace  = aws_appautoscaling_target.worker.service_namespace
+  resource_id        = aws_appautoscaling_target.worker[each.key].resource_id
+  scalable_dimension = aws_appautoscaling_target.worker[each.key].scalable_dimension
+  service_namespace  = aws_appautoscaling_target.worker[each.key].service_namespace
 
   target_tracking_scaling_policy_configuration {
     predefined_metric_specification {
