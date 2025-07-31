@@ -4,7 +4,7 @@ locals {
 
 module "postgres_cluster_openscience" {
   source = "./postgres_cluster"
-  count  = var.is_production ? 1 : 0
+  count  = var.is_nexus_openscience_running ? 1 : 0
 
   providers = {
     aws = aws.nexus_openscience_postgres_tags
