@@ -24,7 +24,7 @@ module "postgres_cluster_openscience" {
 # Blazegraph instance dedicated to Blazegraph views
 module "blazegraph_openscience_bg" {
   source = "./blazegraph"
-  count  = var.is_production ? 1 : 0
+  count  = var.is_nexus_openscience_running ? 1 : 0
 
   providers = {
     aws = aws.nexus_openscience_blazegraph_tags
@@ -54,7 +54,7 @@ module "blazegraph_openscience_bg" {
 # Blazegraph instance dedicated to composite views
 module "blazegraph_openscience_composite" {
   source = "./blazegraph"
-  count  = var.is_production ? 1 : 0
+  count  = var.is_nexus_openscience_running ? 1 : 0
 
   providers = {
     aws = aws.nexus_openscience_blazegraph_tags
@@ -83,7 +83,7 @@ module "blazegraph_openscience_composite" {
 
 module "elasticsearch_openscience" {
   source = "./elasticcloud"
-  count  = var.is_production ? 1 : 0
+  count  = var.is_nexus_openscience_running ? 1 : 0
 
   providers = {
     ec     = ec
@@ -111,7 +111,7 @@ module "elasticsearch_openscience" {
 
 module "nexus_delta_openscience" {
   source = "./delta"
-  count  = var.is_production ? 1 : 0
+  count  = var.is_nexus_openscience_running ? 1 : 0
 
   providers = {
     aws = aws.nexus_openscience_delta_tags
@@ -158,7 +158,7 @@ module "nexus_delta_openscience" {
 
 module "nexus_fusion_openscience" {
   source = "./fusion"
-  count  = var.is_production ? 1 : 0
+  count  = var.is_nexus_openscience_running ? 1 : 0
 
   providers = {
     aws = aws.nexus_openscience_fusion_tags
