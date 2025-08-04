@@ -7,11 +7,11 @@ output "github_core_web_app_next_ecs_redeploy_role_arn" {
 }
 
 output "nexus_es_main_http_endpoint" {
-  value = module.nexus.nexus_es_main_http_endpoint
+  value = var.is_nexus_obp_running ? module.nexus.nexus_es_main_http_endpoint : null
 }
 
 output "nexus_es_openscience_http_endpoint" {
-  value = var.is_production ? module.nexus.nexus_es_openscience_http_endpoint : null
+  value = var.is_nexus_openscience_running ? module.nexus.nexus_es_openscience_http_endpoint : null
 }
 
 output "notebook_service" {
