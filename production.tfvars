@@ -67,6 +67,7 @@ hpc_resource_provisioner_sbo_nexusdata_bucket = ""
 sbo_infrastructureassets_bucket               = "s3://sboinfrastructureassets"
 hpc_resource_provisioner_containers_bucket    = ""
 hpc_resource_provisioner_scratch_bucket       = ""
+hpc_resource_provisioner_scratch_bucket_arn   = ""
 pcluster_ami_id                               = ""
 
 entitycore_svc_aws_s3_internal_bucket    = "entitycore-data-production"
