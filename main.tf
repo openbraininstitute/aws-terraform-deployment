@@ -593,8 +593,6 @@ module "virtual_lab_manager" {
 
   virtual_lab_manager_depoloyment_env = "production"
 
-  virtual_lab_manager_nexus_delta_uri = "https://${module.nexus.nexus_domain_name}/api/nexus/v1"
-
   virtual_lab_manager_invite_expiration = "7"
 
   virtual_lab_manager_mail_username = module.ses_user_virtuallab.access_key_id
@@ -610,25 +608,6 @@ module "virtual_lab_manager" {
 
   virtual_lab_manager_admin_base_path      = "{}/app/virtual-lab/lab/{}/admin?panel=billing"
   virtual_lab_manager_deployment_namespace = "https://${local.primary_domain}"
-
-  virtual_lab_manager_cross_project_resolvers = [
-    "public/ephys",
-    "public/thalamus",
-    "public/ngv",
-    "public/multi-vesicular-release",
-    "public/hippocampus",
-    "public/topological-sampling",
-    "bbp/lnmce",
-    "public/ngv-anatomy",
-    "bbp-external/seu",
-    "public/forge",
-    "public/sscx",
-    "bbp/mouselight",
-    "public/morphologies",
-    "neurosciencegraph/datamodels",
-    "bbp/mmb-point-neuron-framework-model",
-    "neurosciencegraph/data",
-  ]
 
   accounting_base_url = "https://${local.primary_domain}${var.accounting_svc_base_path}"
 }

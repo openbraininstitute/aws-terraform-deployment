@@ -150,10 +150,6 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
           value = var.virtual_lab_manager_depoloyment_env
         },
         {
-          name  = "NEXUS_DELTA_URI"
-          value = var.virtual_lab_manager_nexus_delta_uri
-        },
-        {
           name  = "INVITE_EXPIRES_IN_DAYS"
           value = var.virtual_lab_manager_invite_expiration
         },
@@ -196,10 +192,6 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         {
           name  = "DEPLOYMENT_NAMESPACE"
           value = var.virtual_lab_manager_deployment_namespace
-        },
-        {
-          name  = "NEXUS_CROSS_RESOLVER_PROJECTS"
-          value = jsonencode(var.virtual_lab_manager_cross_project_resolvers)
         },
         {
           name  = "ACCOUNTING_BASE_URL"
