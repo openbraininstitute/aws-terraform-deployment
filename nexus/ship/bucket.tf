@@ -18,6 +18,21 @@ resource "aws_s3_bucket_lifecycle_configuration" "nexus_ship" {
   }
 }
 
+resource "aws_s3_bucket_lifecycle_configuration" "nexus_ship_tiering_rule" {
+  bucket = aws_s3_bucket.nexus_ship.id
+
+  rule {
+    id     = "IntelligentTiering"
+    status = "Enabled"
+    filter {}
+
+    transition {
+      days          = 0         # Transition immediately upon creation
+      storage_class = "GLACIER" # AKA Amazon S3 Glacier Flexible Retrieval
+    }
+  }
+}
+
 resource "aws_s3_bucket_public_access_block" "nexus_ship" {
   bucket = aws_s3_bucket.nexus_ship.id
 
