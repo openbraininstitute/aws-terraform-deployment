@@ -29,6 +29,27 @@ bluenaas_task_size = {
   memory = 8192
 }
 
+small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-staging"
+small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-staging"
+small_scale_simulator_api_task_size = {
+  cpu    = 256
+  memory = 512
+}
+small_scale_simulator_workers = {
+  default = {
+    task_size = {
+      cpu    = 4096
+      memory = 8192
+    }
+    num_workers             = 4
+    queues                  = "high medium low"
+    autoscaler_min_capacity = 1
+    capacity_provider_strategy = [
+      { capacity_provider = "FARGATE_SPOT", weight = 100 }
+    ]
+  }
+}
+
 virtual_lab_manager_task_size = {
   cpu    = 512
   memory = 1024
@@ -42,7 +63,6 @@ coreservices_public_key                    = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAA
 hpc_resource_provisioner_container_version = "0.5.12.dev82" # used to be 0.5.12.dev9
 core_web_app_deployment_env                = "staging"
 core_web_app_next_public_matomo_site_id    = "3"
-is_hpc_dev                                 = true
 
 # Sandbox placeholders
 nise_dockerhub_password = "placeholder"
@@ -55,9 +75,16 @@ hpc_resource_provisioner_scratch_bucket       = "s3://sbosandbox-cn6l7t"
 hpc_resource_provisioner_scratch_bucket_arn   = "arn:aws:s3:::sbosandbox-cn6l7t"
 pcluster_ami_id                               = "ami-07aed7f6c6f1517fc"
 
-entitycore_svc_s3_bucket_name            = "entitycore-data-sandbox-benchmarks"
+entitycore_svc_aws_s3_internal_bucket    = "entitycore-data-staging"
+entitycore_svc_aws_s3_internal_region    = "us-east-1"
+entitycore_svc_aws_s3_open_bucket        = "openbluebrain"
+entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["www.openbraininstitute.org"]
 entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.4.2"
 
-obi_one_docker_image_url            = "public.ecr.aws/openbraininstitute/obi-one:2025.4.2"
+obi_one_docker_image_url = "public.ecr.aws/openbraininstitute/obi-one:2025.4.2"
+obi_one_task_size = {
+  cpu    = 512
+  memory = 1024
+}
 obi_generative_gui_docker_image_url = "public.ecr.aws/openbraininstitute/obi-generative-gui:2025.4.5"
