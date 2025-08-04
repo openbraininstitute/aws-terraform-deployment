@@ -16,11 +16,6 @@ resource "aws_s3_bucket_lifecycle_configuration" "nexus_ship" {
       days_after_initiation = 7
     }
   }
-}
-
-resource "aws_s3_bucket_lifecycle_configuration" "nexus_ship_tiering_rule" {
-  bucket = aws_s3_bucket.nexus_ship.id
-
   rule {
     id     = "IntelligentTiering"
     status = "Enabled"
