@@ -36,11 +36,6 @@ resource "aws_s3_bucket_lifecycle_configuration" "nexus_obp" {
       days_after_initiation = 7
     }
   }
-}
-
-resource "aws_s3_bucket_lifecycle_configuration" "nexus_obp_intelligent_tiering_rule" {
-  bucket = aws_s3_bucket.nexus_obp.id
-
   rule {
     id     = "IntelligentTiering"
     status = "Enabled"
@@ -90,12 +85,6 @@ resource "aws_s3_bucket_lifecycle_configuration" "nexus_openscience" {
       days_after_initiation = 7
     }
   }
-}
-
-
-resource "aws_s3_bucket_lifecycle_configuration" "nexus_openscience_intelligent_tiering_rule" {
-  bucket = aws_s3_bucket.nexus_openscience.id
-
   rule {
     id     = "IntelligentTiering"
     status = "Enabled"
