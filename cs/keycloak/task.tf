@@ -34,11 +34,11 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
       healthcheck = {
         command = [
           "CMD-SHELL",
-          "[ -f /tmp/HealthCheck.java ] || echo 'public class HealthCheck { public static void main(String[] args) throws java.lang.Throwable { java.net.URI uri = java.net.URI.create(args[0]); System.exit(java.net.HttpURLConnection.HTTP_OK == ((java.net.HttpURLConnection)uri.toURL().openConnection()).getResponseCode() ? 0 : 1); } }' > /tmp/HealthCheck.java && java /tmp/HealthCheck.java http://localhost:${var.keycloak_management_port}/auth/health/live"
+          "[ -f /tmp/HealthCheck.java ] || echo 'public class HealthCheck { public static void main(String[] args) throws java.lang.Throwable { java.net.URI uri = java.net.URI.create(args[0]); System.exit(java.net.HttpURLConnection.HTTP_OK == ((java.net.HttpURLConnection)uri.toURL().openConnection()).getResponseCode() ? 0 : 1); } }' > /tmp/HealthCheck.java && java /tmp/HealthCheck.java http://localhost:${var.keycloak_management_port}/auth/health/ready"
         ]
         interval    = 10
         timeout     = 5
-        startPeriod = 150
+        startPeriod = 180
         retries     = 3
       }
       environment = [
