@@ -73,7 +73,7 @@ sbo_infrastructureassets_bucket               = "s3://sboinfrastructureassets-sa
 hpc_resource_provisioner_containers_bucket    = "s3://sboinfrastructureassets-sandbox-benchmarks/containers"
 hpc_resource_provisioner_scratch_bucket       = "s3://sbosandbox-cn6l7t"
 hpc_resource_provisioner_scratch_bucket_arn   = "arn:aws:s3:::sbosandbox-cn6l7t"
-pcluster_ami_id                               = "ami-07aed7f6c6f1517fc"
+pcluster_ami_id                               = "ami-0dfa261290e9dffe0"
 
 entitycore_svc_aws_s3_internal_bucket    = "entitycore-data-staging"
 entitycore_svc_aws_s3_internal_region    = "us-east-1"
