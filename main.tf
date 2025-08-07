@@ -337,19 +337,24 @@ module "static-server" {
 module "core_webapp_main" {
   source = "./core_webapp"
 
-  key                           = "main"
-  log_group_name                = "core_webapp_main"
-  vpc_id                        = local.vpc_id
-  subnet_cidr_block             = "10.0.21.0/28"
-  alb_listener_arn              = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
-  alb_listener_rule_priority    = 1000
-  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
-  aws_region                    = local.aws_region
-  docker_image_url              = var.core_web_app_docker_image_url
-  route_table_id                = local.route_table_private_subnets_id
-  vpc_cidr_block                = local.vpc_cidr_block
-  secrets_arn                   = local.core_webapp_secrets_arn
-  accounting_base_url           = "https://${local.primary_domain}${var.accounting_svc_base_path}"
+  key                                = "main"
+  log_group_name                     = "core_webapp_main"
+  vpc_id                             = local.vpc_id
+  subnet_cidr_block                  = "10.0.21.0/28"
+  alb_listener_arn                   = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
+  alb_listener_rule_priority         = 1000
+  allowed_source_ip_cidr_blocks      = ["0.0.0.0/0"]
+  aws_region                         = local.aws_region
+  docker_image_url                   = var.core_web_app_docker_image_url
+  route_table_id                     = local.route_table_private_subnets_id
+  vpc_cidr_block                     = local.vpc_cidr_block
+  secrets_arn                        = local.core_webapp_secrets_arn
+  accounting_base_url                = "https://${local.primary_domain}${var.accounting_svc_base_path}"
+  s3_bucket_name                     = var.core_webapp_s3_bucket_name
+  s3_bucket_allowed_origins          = ["https://${local.primary_domain}"]
+  cloudfront_aliases                 = ["cdn.${local.primary_domain}"]
+  cloudfront_certificate_arn         = var.core_webapp_cloudfront_certificate_arn
+  github_actions_ci_upload_user_name = var.core_webapp_github_actions_ci_upload_user_name
 
   env_NEXTAUTH_URL                          = "https://${local.primary_domain}/api/auth"
   env_KEYCLOAK_ISSUER                       = "https://${local.primary_domain}/auth/realms/SBO"
@@ -375,15 +380,18 @@ module "core_webapp_next" {
   alb_listener_arn  = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
   # The following priority has to be higher (lower number)
   # than the priority of the main core-web-app listener rule.
-  hostname                      = "next.staging.openbraininstitute.org"
-  alb_listener_rule_priority    = 980
-  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
-  aws_region                    = local.aws_region
-  docker_image_url              = var.core_web_app_next_docker_image_url
-  route_table_id                = local.route_table_private_subnets_id
-  vpc_cidr_block                = local.vpc_cidr_block
-  secrets_arn                   = local.core_webapp_secrets_arn
-  accounting_base_url           = "https://${local.primary_domain}${var.accounting_svc_base_path}"
+  hostname                           = "next.staging.openbraininstitute.org"
+  alb_listener_rule_priority         = 980
+  allowed_source_ip_cidr_blocks      = ["0.0.0.0/0"]
+  aws_region                         = local.aws_region
+  docker_image_url                   = var.core_web_app_next_docker_image_url
+  route_table_id                     = local.route_table_private_subnets_id
+  vpc_cidr_block                     = local.vpc_cidr_block
+  secrets_arn                        = local.core_webapp_secrets_arn
+  accounting_base_url                = "https://${local.primary_domain}${var.accounting_svc_base_path}"
+  s3_bucket_name                     = var.core_webapp_s3_bucket_name
+  s3_bucket_allowed_origins          = ["https://${local.primary_domain}"]
+  github_actions_ci_upload_user_name = var.core_webapp_github_actions_ci_upload_user_name
 
   env_NEXTAUTH_URL                          = "https://next.staging.openbraininstitute.org/api/auth"
   env_KEYCLOAK_ISSUER                       = "https://${local.primary_domain}/auth/realms/SBO"
