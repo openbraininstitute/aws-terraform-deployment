@@ -90,6 +90,8 @@ variable "core_webapp_s3_bucket_name" {
   sensitive   = false
 }
 
+
+
 variable "core_webapp_cloudfront_certificate_arn" {
   type        = string
   description = "ARN of ACM certificate for core webapp main CloudFront custom domain"
