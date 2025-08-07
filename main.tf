@@ -353,7 +353,7 @@ module "core_webapp_main" {
   s3_bucket_name                = var.core_webapp_s3_bucket_name
   s3_bucket_allowed_origins     = ["https://${local.primary_domain}"]
   cloudfront_aliases            = ["cdn.${local.primary_domain}"]
-  cloudfront_certificate_arn    = null
+  cloudfront_certificate_arn    = var.core_webapp_cloudfront_certificate_arn
 
   env_NEXTAUTH_URL                          = "https://${local.primary_domain}/api/auth"
   env_KEYCLOAK_ISSUER                       = "https://${local.primary_domain}/auth/realms/SBO"
@@ -390,6 +390,7 @@ module "core_webapp_next" {
   accounting_base_url           = "https://${local.primary_domain}${var.accounting_svc_base_path}"
   s3_bucket_name                = var.core_webapp_s3_bucket_name
   s3_bucket_allowed_origins     = ["https://${local.primary_domain}"]
+
 
   env_NEXTAUTH_URL                          = "https://next.staging.openbraininstitute.org/api/auth"
   env_KEYCLOAK_ISSUER                       = "https://${local.primary_domain}/auth/realms/SBO"
