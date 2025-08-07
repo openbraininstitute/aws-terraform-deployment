@@ -88,5 +88,5 @@ obi_one_task_size = {
 obi_generative_gui_docker_image_url = "public.ecr.aws/openbraininstitute/obi-generative-gui:2025.5.4"
 
 # CoreWebApp s3 and CloudFront configuration
-core_webapp_s3_bucket_name             = "core_webapp-static-assets-production"
+core_webapp_s3_bucket_name             = "core-webapp-static-assets-production"
 core_webapp_cloudfront_certificate_arn = null
