@@ -76,13 +76,8 @@ resource "aws_iam_policy" "core_webapp_s3_upload_policy" {
   }
 }
 
-data "aws_iam_user" "github_actions_upload_user" {
-  count     = 1
-  user_name = local.github_actions_ci_upload_user_name
-}
-
 resource "aws_iam_user_policy_attachment" "github_actions_s3_upload" {
   count      = 1
-  user       = data.aws_iam_user.github_actions_upload_user[0].user_name
+  user       = local.github_actions_ci_upload_user_name
   policy_arn = aws_iam_policy.core_webapp_s3_upload_policy.arn
 }
