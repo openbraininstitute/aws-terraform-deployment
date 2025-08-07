@@ -90,8 +90,6 @@ variable "core_webapp_s3_bucket_name" {
   sensitive   = false
 }
 
-
-
 variable "core_webapp_cloudfront_certificate_arn" {
   type        = string
   description = "ARN of ACM certificate for core webapp main CloudFront custom domain"
@@ -160,7 +158,6 @@ variable "virtual_lab_manager_docker_image_url" {
   description = "Docker image for the virtual lab manager"
   sensitive   = false
 }
-
 
 variable "virtual_lab_manager_task_size" {
   type = object({
@@ -278,8 +275,6 @@ variable "entitycore_svc_image_url" {
   type        = string
   description = "Image URL for entitycore service."
 }
-
-
 
 variable "thumbnail_generation_api_docker_image_url" {
   type        = string
