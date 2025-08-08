@@ -110,12 +110,6 @@ variable "private_alb_https_listener_arn" {
   type = string
 }
 
-variable "is_hpc_dev" {
-  type      = bool
-  default   = false
-  sensitive = false
-}
-
 variable "sboinfrastructureassets_bucket_name" {
   type = string
 }

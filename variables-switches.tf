@@ -29,9 +29,3 @@ variable "deployment_env" {
   type        = string
   description = "The deployment environment, values: 'staging', 'production'"
 }
-
-variable "is_hpc_dev" {
-  type      = bool
-  default   = false
-  sensitive = false
-}

@@ -5,7 +5,6 @@ terraform apply -auto-approve \
                 -target="module.hpc.module.security" \
                 -target="module.hpc.module.networking" \
                 -target="module.hpc.module.resource-provisioner" \
-               -target="module.hpc.module.resource-provisioner-dev" \
                 -target="module.hpc.module.dynamodb" \
                 -target="module.hpc.module.efs" \
                 -target="module.coreservices_key" \
