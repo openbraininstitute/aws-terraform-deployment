@@ -1,4 +1,5 @@
 resource "aws_s3_bucket" "core_webapp" {
+  count  = var.key == "main" ? 1 : 0
   bucket = var.s3_bucket_name
 
   tags = {
@@ -8,7 +9,8 @@ resource "aws_s3_bucket" "core_webapp" {
 }
 
 resource "aws_s3_bucket_cors_configuration" "core_webapp" {
-  bucket = aws_s3_bucket.core_webapp.id
+  count  = var.key == "main" ? 1 : 0
+  bucket = aws_s3_bucket.core_webapp[0].id
 
   cors_rule {
     allowed_headers = ["*"]
@@ -21,7 +23,8 @@ resource "aws_s3_bucket_cors_configuration" "core_webapp" {
 
 # Enable versioning for assets
 resource "aws_s3_bucket_versioning" "core_webapp" {
-  bucket = aws_s3_bucket.core_webapp.id
+  count  = var.key == "main" ? 1 : 0
+  bucket = aws_s3_bucket.core_webapp[0].id
   versioning_configuration {
     status = "Enabled"
   }
@@ -29,7 +32,8 @@ resource "aws_s3_bucket_versioning" "core_webapp" {
 
 # Enable server-side encryption
 resource "aws_s3_bucket_server_side_encryption_configuration" "core_webapp" {
-  bucket = aws_s3_bucket.core_webapp.id
+  count  = var.key == "main" ? 1 : 0
+  bucket = aws_s3_bucket.core_webapp[0].id
 
   rule {
     apply_server_side_encryption_by_default {
@@ -40,7 +44,8 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "core_webapp" {
 
 # Block public access initially (CloudFront will access via OAC)
 resource "aws_s3_bucket_public_access_block" "core_webapp" {
-  bucket = aws_s3_bucket.core_webapp.id
+  count  = var.key == "main" ? 1 : 0
+  bucket = aws_s3_bucket.core_webapp[0].id
 
   block_public_acls       = true
   block_public_policy     = true
@@ -51,6 +56,7 @@ resource "aws_s3_bucket_public_access_block" "core_webapp" {
 
 # S3 bucket policy for CloudFront OAC access
 data "aws_iam_policy_document" "core_webapp_policy" {
+  count = var.key == "main" ? 1 : 0
   statement {
     sid    = "AllowCloudFrontServicePrincipal"
     effect = "Allow"
@@ -62,12 +68,12 @@ data "aws_iam_policy_document" "core_webapp_policy" {
       "s3:GetObject"
     ]
     resources = [
-      "${aws_s3_bucket.core_webapp.arn}/*"
+      "${aws_s3_bucket.core_webapp[0].arn}/*"
     ]
     condition {
       test     = "StringEquals"
       variable = "AWS:SourceArn"
-      values   = [aws_cloudfront_distribution.core_webapp_cdn.arn]
+      values   = [aws_cloudfront_distribution.core_webapp_cdn[0].arn]
     }
   }
   statement {
@@ -83,15 +89,16 @@ data "aws_iam_policy_document" "core_webapp_policy" {
       "s3:GetObject",
     ]
     resources = [
-      "${aws_s3_bucket.core_webapp.arn}",
-      "${aws_s3_bucket.core_webapp.arn}/*",
+      "${aws_s3_bucket.core_webapp[0].arn}",
+      "${aws_s3_bucket.core_webapp[0].arn}/*",
     ]
   }
 }
 
 resource "aws_s3_bucket_policy" "core_webapp_policy" {
-  bucket = aws_s3_bucket.core_webapp.id
-  policy = data.aws_iam_policy_document.core_webapp_policy.json
+  count  = var.key == "main" ? 1 : 0
+  bucket = aws_s3_bucket.core_webapp[0].id
+  policy = data.aws_iam_policy_document.core_webapp_policy[0].json
 
-  depends_on = [aws_cloudfront_distribution.core_webapp_cdn]
+  depends_on = [aws_cloudfront_distribution.core_webapp_cdn[0]]
 }

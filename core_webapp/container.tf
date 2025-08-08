@@ -162,7 +162,7 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
         },
         {
           name  = "NEXT_PUBLIC_CDN_URI"
-          value = "https://${aws_cloudfront_distribution.core_webapp_cdn.domain_name}"
+          value = var.key == "main" ? "https://${aws_cloudfront_distribution.core_webapp_cdn[0].domain_name}" : null
         },
       ]
       secrets = [

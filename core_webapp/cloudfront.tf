@@ -1,4 +1,5 @@
 resource "aws_cloudfront_origin_access_control" "core_webapp_oac" {
+  count                             = var.key == "main" ? 1 : 0
   name                              = "core-webapp-${var.key}-oac"
   description                       = "OAC for Core WebApp S3 bucket"
   origin_access_control_origin_type = "s3"
@@ -8,6 +9,7 @@ resource "aws_cloudfront_origin_access_control" "core_webapp_oac" {
 
 # default cache policy
 resource "aws_cloudfront_cache_policy" "core_webapp_default" {
+  count       = var.key == "main" ? 1 : 0
   name        = "core-webapp-${var.key}-default-policy"
   comment     = "Cache policy for Core WebApp default behavior with CORS headers"
   default_ttl = 86400    # 1 day
@@ -37,6 +39,7 @@ resource "aws_cloudfront_cache_policy" "core_webapp_default" {
 
 # static assets cache policy
 resource "aws_cloudfront_cache_policy" "core_webapp_static" {
+  count   = var.key == "main" ? 1 : 0
   name    = "core-webapp-${var.key}-static-policy"
   comment = "Cache policy for Core WebApp static assets"
   # this values can be discussed when we deploy in staging to get some insights
@@ -64,6 +67,7 @@ resource "aws_cloudfront_cache_policy" "core_webapp_static" {
 
 # images cache policy
 resource "aws_cloudfront_cache_policy" "core_webapp_images" {
+  count       = var.key == "main" ? 1 : 0
   name        = "core-webapp-${var.key}-images-policy"
   comment     = "Cache policy for Core WebApp images"
   default_ttl = 2592000  # 30 days
@@ -90,6 +94,7 @@ resource "aws_cloudfront_cache_policy" "core_webapp_images" {
 
 # CloudFront distribution
 resource "aws_cloudfront_distribution" "core_webapp_cdn" {
+  count           = var.key == "main" ? 1 : 0
   enabled         = true
   is_ipv6_enabled = true
   // TODO: should we use a root object?
@@ -100,16 +105,16 @@ resource "aws_cloudfront_distribution" "core_webapp_cdn" {
   aliases = var.cloudfront_aliases
 
   origin {
-    domain_name              = aws_s3_bucket.core_webapp.bucket_domain_name
-    origin_id                = "S3-${aws_s3_bucket.core_webapp.id}"
-    origin_access_control_id = aws_cloudfront_origin_access_control.core_webapp_oac.id
+    domain_name              = aws_s3_bucket.core_webapp[0].bucket_domain_name
+    origin_id                = "S3-${aws_s3_bucket.core_webapp[0].id}"
+    origin_access_control_id = aws_cloudfront_origin_access_control.core_webapp_oac[0].id
   }
 
   default_cache_behavior {
     allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = "S3-${aws_s3_bucket.core_webapp.id}"
-    cache_policy_id        = aws_cloudfront_cache_policy.core_webapp_default.id
+    target_origin_id       = "S3-${aws_s3_bucket.core_webapp[0].id}"
+    cache_policy_id        = aws_cloudfront_cache_policy.core_webapp_default[0].id
     compress               = true
     viewer_protocol_policy = "redirect-to-https"
   }
@@ -118,8 +123,8 @@ resource "aws_cloudfront_distribution" "core_webapp_cdn" {
     path_pattern           = "*/_next/static/*"
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = "S3-${aws_s3_bucket.core_webapp.id}"
-    cache_policy_id        = aws_cloudfront_cache_policy.core_webapp_static.id
+    target_origin_id       = "S3-${aws_s3_bucket.core_webapp[0].id}"
+    cache_policy_id        = aws_cloudfront_cache_policy.core_webapp_static[0].id
     compress               = true
     viewer_protocol_policy = "redirect-to-https"
   }
@@ -128,15 +133,15 @@ resource "aws_cloudfront_distribution" "core_webapp_cdn" {
     path_pattern           = "*/public/*"
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = "S3-${aws_s3_bucket.core_webapp.id}"
-    cache_policy_id        = aws_cloudfront_cache_policy.core_webapp_images.id
+    target_origin_id       = "S3-${aws_s3_bucket.core_webapp[0].id}"
+    cache_policy_id        = aws_cloudfront_cache_policy.core_webapp_images[0].id
     compress               = true
     viewer_protocol_policy = "redirect-to-https"
   }
   // TODO: should we use a blacklist?
-  // as 
+  // as
   // restriction_type = "blacklist"
-  // locations        = ["RU", "IR", ...] 
+  // locations        = ["RU", "IR", ...]
   restrictions {
     geo_restriction {
       restriction_type = "none"
