@@ -20,12 +20,6 @@ resource "aws_api_gateway_resource" "hpc_resource_provisioner_res_version" {
   path_part   = "version"
 }
 
-resource "aws_api_gateway_resource" "hpc_resource_provisioner_res_dra" {
-  rest_api_id = aws_api_gateway_rest_api.hpc_resource_provisioner_api.id
-  parent_id   = aws_api_gateway_resource.hpc_resource_provisioner_res_provisioner.id
-  path_part   = "dra"
-}
-
 locals {
   http_methods = ["GET", "POST", "DELETE"]
 }
@@ -42,13 +36,6 @@ resource "aws_api_gateway_method" "hpc_resource_provisioner_version_method" {
   rest_api_id   = aws_api_gateway_rest_api.hpc_resource_provisioner_api.id
   resource_id   = aws_api_gateway_resource.hpc_resource_provisioner_res_version.id
   http_method   = "GET"
-  authorization = "AWS_IAM"
-}
-
-resource "aws_api_gateway_method" "hpc_resource_provisioner_dra_method" {
-  rest_api_id   = aws_api_gateway_rest_api.hpc_resource_provisioner_api.id
-  resource_id   = aws_api_gateway_resource.hpc_resource_provisioner_res_dra.id
-  http_method   = "POST"
   authorization = "AWS_IAM"
 }
 
@@ -71,24 +58,13 @@ resource "aws_api_gateway_integration" "hpc_resource_provisioner_version_integra
   integration_http_method = "POST"
 }
 
-resource "aws_api_gateway_integration" "hpc_resource_provisioner_dra_integration" {
-  rest_api_id             = aws_api_gateway_rest_api.hpc_resource_provisioner_api.id
-  resource_id             = aws_api_gateway_resource.hpc_resource_provisioner_res_dra.id
-  http_method             = aws_api_gateway_method.hpc_resource_provisioner_dra_method.http_method
-  type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.hpc_resource_provisioner_lambda.invoke_arn
-  integration_http_method = "POST"
-}
-
 resource "aws_api_gateway_deployment" "hpc_resource_provisioner_api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.hpc_resource_provisioner_api.id
   depends_on = [
     aws_api_gateway_method.hpc_resource_provisioner_pcluster_method,
     aws_api_gateway_method.hpc_resource_provisioner_version_method,
-    aws_api_gateway_method.hpc_resource_provisioner_dra_method,
     aws_api_gateway_integration.hpc_resource_provisioner_pcluster_integration,
     aws_api_gateway_integration.hpc_resource_provisioner_version_integration,
-    aws_api_gateway_integration.hpc_resource_provisioner_dra_integration
   ]
   triggers = {
     # redeploy when the api or its methods change, but also serves to declare a dependency
