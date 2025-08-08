@@ -31,8 +31,7 @@ resource "aws_lambda_function" "hpc_resource_provisioner_lambda" {
       FS_SUBNET_IDS        = jsonencode(var.fs_subnet_ids)
       FS_SG_ID             = var.fs_sg_id
       # API_GW_STAGE_ARN     = aws_api_gateway_stage.hpc_resource_provisioner_api_stage.arn
-      API_GW_STAGE_ARN     = "arn:aws:execute-api:${var.aws_region}:${var.account_id}:033upmtu0d/" # TODO: don't hardcode, find a way to do this without a cycle
-      EVENTBRIDGE_ROLE_ARN = aws_iam_role.resource_provisioner_eventbridge.arn
+      API_GW_STAGE_ARN = "arn:aws:execute-api:${var.aws_region}:${var.account_id}:033upmtu0d/" # TODO: don't hardcode, find a way to do this without a cycle
     }
   }
 }
