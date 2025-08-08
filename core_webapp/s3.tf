@@ -70,6 +70,23 @@ data "aws_iam_policy_document" "core_webapp_policy" {
       values   = [aws_cloudfront_distribution.core_webapp_cdn.arn]
     }
   }
+  statement {
+    sid    = "AllowGitHubActionsUploadUser"
+    effect = "Allow"
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::985539765147:user/github_actions_upload_user_core_web_app"]
+    }
+    actions = [
+      "s3:ListBucket",
+      "s3:PutObject",
+      "s3:GetObject",
+    ]
+    resources = [
+      "${aws_s3_bucket.core_webapp.arn}",
+      "${aws_s3_bucket.core_webapp.arn}/*",
+    ]
+  }
 }
 
 resource "aws_s3_bucket_policy" "core_webapp_policy" {
