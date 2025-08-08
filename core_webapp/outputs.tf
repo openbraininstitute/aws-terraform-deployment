@@ -17,5 +17,5 @@ output "private_lb_rule_suffix" {
 
 output "cloudfront_distribution_id" {
   description = "ID of the CloudFront distribution"
-  value       = aws_cloudfront_distribution.core_webapp_cdn.id
+  value       = var.key == "main" ? aws_cloudfront_distribution.core_webapp_cdn[0].id : null
 }
