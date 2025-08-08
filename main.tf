@@ -135,7 +135,6 @@ module "ml" {
   agent_image_tag = "neuroagent-v0.7.2"
 
   neuroagent_bucket_name = var.ml_neuroagent_bucket_name
-  nexus_domain_name      = module.nexus.nexus_domain_name
   primary_domain         = local.primary_domain
 
   # OLD PRIVATE ALB
