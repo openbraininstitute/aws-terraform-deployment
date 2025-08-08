@@ -30,6 +30,8 @@ locals {
   dockerhub_bbpbuildbot_secret_arn  = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_secret_arn
   dockerhub_bbpbuildbot_policy_arn  = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_policy_arn
 
+  cloudfront_certificate_arn = data.terraform_remote_state.common.outputs.cloudfront_certificate_arn
+
   github_organisation = "openbraininstitute"
 }
 
@@ -353,7 +355,7 @@ module "core_webapp_main" {
   s3_bucket_name                = var.core_webapp_s3_bucket_name
   s3_bucket_allowed_origins     = ["https://${local.primary_domain}"]
   cloudfront_aliases            = ["cdn.${local.primary_domain}"]
-  cloudfront_certificate_arn    = var.core_webapp_cloudfront_certificate_arn
+  cloudfront_certificate_arn    = local.cloudfront_certificate_arn
 
   env_NEXTAUTH_URL                          = "https://${local.primary_domain}/api/auth"
   env_KEYCLOAK_ISSUER                       = "https://${local.primary_domain}/auth/realms/SBO"
