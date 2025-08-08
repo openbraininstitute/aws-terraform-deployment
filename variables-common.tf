@@ -224,6 +224,10 @@ variable "pcluster_ami_id" {
   type = string
 }
 
+variable "hpc_av_zone_suffixes" {
+  type = list(string)
+}
+
 ### entitycore ###
 variable "entitycore_svc_aws_s3_internal_bucket" {
   type        = string

@@ -69,6 +69,7 @@ hpc_resource_provisioner_containers_bucket    = ""
 hpc_resource_provisioner_scratch_bucket       = ""
 hpc_resource_provisioner_scratch_bucket_arn   = ""
 pcluster_ami_id                               = ""
+hpc_av_zone_suffixes                          = ["a"]
 
 entitycore_svc_aws_s3_internal_bucket    = "entitycore-data-production"
 entitycore_svc_aws_s3_internal_region    = "us-east-1"
