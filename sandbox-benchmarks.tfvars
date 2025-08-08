@@ -22,13 +22,6 @@ is_nexus_obp_running                      = true
 jupyterhub_ec2_type                       = "c7i.4xlarge"
 notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:staging"
 
-
-bluenaas_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:staging"
-bluenaas_task_size = {
-  cpu    = 4096
-  memory = 8192
-}
-
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-staging"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-staging"
 small_scale_simulator_api_task_size = {
@@ -88,3 +81,6 @@ obi_one_task_size = {
   memory = 1024
 }
 obi_generative_gui_docker_image_url = "public.ecr.aws/openbraininstitute/obi-generative-gui:2025.4.5"
+
+# CoreWebApp s3 and CloudFront configuration
+core_webapp_s3_bucket_name = "core-webapp-static-assets-production"
