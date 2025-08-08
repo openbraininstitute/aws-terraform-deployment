@@ -132,8 +132,7 @@ module "ml" {
   vpc_cidr_block                 = local.vpc_cidr_block
   route_table_private_subnets_id = local.route_table_private_subnets_id
 
-  dockerhub_credentials_arn = local.dockerhub_bbpbuildbot_secret_arn
-  agent_image_tag           = "neuroagent-v0.7.2"
+  agent_image_tag = "neuroagent-v0.7.2"
 
   neuroagent_bucket_name = var.ml_neuroagent_bucket_name
   nexus_domain_name      = module.nexus.nexus_domain_name

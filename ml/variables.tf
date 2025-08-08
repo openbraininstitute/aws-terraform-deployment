@@ -57,16 +57,10 @@ variable "agent_image_tag" {
   type        = string
 }
 
-variable "dockerhub_credentials_arn" {
-  description = "arn of the credentials to the dockerhub instance."
-  type        = string
-}
-
 variable "private_alb_security_group_id" {
   description = "ID of the security group attached to the private load balancer."
   type        = string
 }
-
 
 variable "ec_cluster_name" {
   description = "Name of the redis instance."
