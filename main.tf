@@ -543,7 +543,6 @@ module "kg_inference_api" {
   aws_region                        = local.aws_region
   account_id                        = local.account_id
   allowed_source_ip_cidr_blocks     = ["0.0.0.0/0"]
-  nexus_domain_name                 = module.nexus.nexus_domain_name
   kg_inference_api_docker_image_url = "bluebrain/kg-inference-api:latest"
   kg_inference_api_base_path        = "/api/kg-inference"
   kg_inference_api_log_group_name   = "kg_inference_api"
