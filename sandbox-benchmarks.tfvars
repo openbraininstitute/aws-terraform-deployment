@@ -62,7 +62,7 @@ nise_dockerhub_password = "placeholder"
 ec_apikey2              = "placeholder"
 
 hpc_resource_provisioner_sbo_nexusdata_bucket = "s3://sbonexusdata-sandbox-benchmarks"
-sbo_infrastructureassets_bucket               = "s3://sboinfrastructureassets-sandbox-benchmarks"
+infrastructureassets_bucket                   = "s3://sboinfrastructureassets-sandbox-benchmarks"
 hpc_resource_provisioner_containers_bucket    = "s3://sboinfrastructureassets-sandbox-benchmarks/containers"
 hpc_resource_provisioner_scratch_bucket       = "s3://sbosandbox-cn6l7t"
 hpc_resource_provisioner_scratch_bucket_arn   = "arn:aws:s3:::sbosandbox-cn6l7t"

@@ -103,7 +103,7 @@ module "resource-provisioner" {
   containers_bucket    = var.containers_bucket
   scratch_bucket       = var.scratch_bucket
   scratch_bucket_arn   = var.scratch_bucket_arn
-  infra_assets_bucket  = var.sboinfrastructureassets_bucket_name
+  infra_assets_bucket  = var.infrastructureassets_bucket_name
   fsx_policy_arn       = module.security.fsx_policy_arn
   fs_subnet_ids        = module.networking.fs_subnet_ids
   fs_sg_id             = module.security.compute_efs_sg_id
@@ -117,7 +117,7 @@ module "dynamodb" {
 
 module "s3" {
   source                                        = "./s3/"
-  sboinfrastructureassets_bucket_name           = var.sboinfrastructureassets_bucket_name
+  infrastructureassets_bucket_name              = var.infrastructureassets_bucket_name
   hpc_resource_provisioner_sbo_nexusdata_bucket = var.sbo_nexusdata_bucket
   hpc_resource_provisioner_scratch_bucket       = var.scratch_bucket
   account_id                                    = var.account_id

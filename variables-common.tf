@@ -215,7 +215,7 @@ variable "hpc_resource_provisioner_scratch_bucket_arn" {
   description = "ARN for the hpc_resource_provisioner_scratch_bucket"
 }
 
-variable "sbo_infrastructureassets_bucket" {
+variable "infrastructureassets_bucket" {
   type        = string
   description = "S3 bucket in which infrastructure assets are stored"
 }

@@ -61,7 +61,7 @@ core_web_app_deployment_env                = "staging"
 core_web_app_next_public_matomo_site_id    = "3"
 
 hpc_resource_provisioner_sbo_nexusdata_bucket = "s3://sbonexusdata-sandbox"
-sbo_infrastructureassets_bucket               = "s3://sboinfrastructureassets-sandbox"
+infrastructureassets_bucket                   = "s3://sboinfrastructureassets-sandbox"
 hpc_resource_provisioner_containers_bucket    = "s3://sboinfrastructureassets-sandbox/containers"
 hpc_resource_provisioner_scratch_bucket       = "s3://sbosandbox-lec3cn"
 hpc_resource_provisioner_scratch_bucket_arn   = "arn:aws:s3:::sbosandbox-lec3cn"

@@ -1,5 +1,5 @@
 locals {
-  infra_assets_bucket_name = trimprefix(var.sboinfrastructureassets_bucket_name, "s3://")
+  infra_assets_bucket_name = trimprefix(var.infrastructureassets_bucket_name, "s3://")
   projects_bucket_name     = trimprefix(var.hpc_resource_provisioner_sbo_nexusdata_bucket, "s3://")
   scratch_bucket_name      = trimprefix(var.hpc_resource_provisioner_scratch_bucket, "s3://")
 }

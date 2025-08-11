@@ -1,4 +1,4 @@
-variable "sboinfrastructureassets_bucket_name" {
+variable "infrastructureassets_bucket_name" {
   type = string
 }
 

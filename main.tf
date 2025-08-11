@@ -217,7 +217,7 @@ module "github_ami_build_role" {
   github_organisation      = local.github_organisation
   github_oidc_provider_arn = module.github_oidc_provider.oidc_provider_arn
   repo_name                = "machine-images"
-  bucket_name              = var.sbo_infrastructureassets_bucket
+  bucket_name              = var.infrastructureassets_bucket
 }
 
 module "notebook_service" {
@@ -293,7 +293,7 @@ module "hpc" {
   scratch_bucket                             = var.hpc_resource_provisioner_scratch_bucket
   scratch_bucket_arn                         = var.hpc_resource_provisioner_scratch_bucket_arn
   private_alb_https_listener_arn             = local.private_alb_https_listener_arn
-  sboinfrastructureassets_bucket_name        = var.sbo_infrastructureassets_bucket
+  infrastructureassets_bucket_name           = var.infrastructureassets_bucket
   pcluster_ami_id                            = var.pcluster_ami_id
 }
 
