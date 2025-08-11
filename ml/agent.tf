@@ -8,6 +8,14 @@ module "s3_bucket" {
   control_object_ownership = true
   object_ownership         = "ObjectWriter"
 
+  cors_rule = [
+    {
+      allowed_methods = ["GET"]
+      allowed_origins = ["https://${var.primary_domain}"]
+      allowed_headers = ["*"]
+    }
+  ]
+
   versioning = {
     enabled = false
   }
