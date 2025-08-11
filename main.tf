@@ -228,8 +228,6 @@ module "small_scale_simulator" {
     var.is_staging ? ["http://localhost:3000"] : []
   )
 
-  nexus_delta_uri = "https://${module.nexus.nexus_domain_name}/api/nexus/v1"
-
   accounting_base_url = "https://${local.primary_domain}${var.accounting_svc_base_path}"
   entitycore_url      = "https://${local.primary_domain}/api/entitycore"
   keycloak_server_url = "https://${local.primary_domain}/auth/"
