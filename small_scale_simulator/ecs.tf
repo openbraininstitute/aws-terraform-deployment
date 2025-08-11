@@ -273,10 +273,6 @@ resource "aws_ecs_task_definition" "api" {
           value = var.deployment_env
         },
         {
-          name  = "NEXUS_ROOT_URI"
-          value = var.nexus_delta_uri
-        },
-        {
           name  = "ENTITYCORE_URI"
           value = var.entitycore_url
         },
@@ -388,10 +384,6 @@ resource "aws_ecs_task_definition" "worker" {
         {
           name  = "DEPLOYMENT_ENV"
           value = var.deployment_env
-        },
-        {
-          name  = "NEXUS_ROOT_URI"
-          value = var.nexus_delta_uri
         },
         {
           name  = "ENTITYCORE_URI"
