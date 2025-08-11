@@ -13,6 +13,7 @@ module "s3_bucket" {
       allowed_methods = ["GET"]
       allowed_origins = ["https://${var.primary_domain}"]
       allowed_headers = ["x-amz-meta-category"]
+      expose_headers  = ["x-amz-meta-category"]
     }
   ]
 
