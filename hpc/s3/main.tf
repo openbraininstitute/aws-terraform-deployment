@@ -1,6 +1,6 @@
 locals {
   infra_assets_bucket_name = trimprefix(var.infrastructureassets_bucket_name, "s3://")
-  projects_bucket_name     = trimprefix(var.hpc_resource_provisioner_sbo_nexusdata_bucket, "s3://")
+  projects_bucket_name     = trimprefix(var.hpc_resource_provisioner_data_bucket, "s3://")
   scratch_bucket_name      = trimprefix(var.hpc_resource_provisioner_scratch_bucket, "s3://")
 }
 resource "aws_s3_bucket" "sboinfrastructureassets" {

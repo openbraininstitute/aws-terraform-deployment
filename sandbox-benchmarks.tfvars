@@ -61,13 +61,13 @@ core_web_app_next_public_matomo_site_id    = "3"
 nise_dockerhub_password = "placeholder"
 ec_apikey2              = "placeholder"
 
-hpc_resource_provisioner_sbo_nexusdata_bucket = "s3://sbonexusdata-sandbox-benchmarks"
-infrastructureassets_bucket                   = "s3://sboinfrastructureassets-sandbox-benchmarks"
-hpc_resource_provisioner_containers_bucket    = "s3://sboinfrastructureassets-sandbox-benchmarks/containers"
-hpc_resource_provisioner_scratch_bucket       = "s3://sbosandbox-cn6l7t"
-hpc_resource_provisioner_scratch_bucket_arn   = "arn:aws:s3:::sbosandbox-cn6l7t"
-pcluster_ami_id                               = "ami-0dfa261290e9dffe0"
-hpc_av_zone_suffixes                          = ["d"]
+hpc_resource_provisioner_data_bucket        = "s3://sbonexusdata-sandbox-benchmarks"
+infrastructureassets_bucket                 = "s3://sboinfrastructureassets-sandbox-benchmarks"
+hpc_resource_provisioner_containers_bucket  = "s3://sboinfrastructureassets-sandbox-benchmarks/containers"
+hpc_resource_provisioner_scratch_bucket     = "s3://sbosandbox-cn6l7t"
+hpc_resource_provisioner_scratch_bucket_arn = "arn:aws:s3:::sbosandbox-cn6l7t"
+pcluster_ami_id                             = "ami-0dfa261290e9dffe0"
+hpc_av_zone_suffixes                        = ["d"]
 
 entitycore_svc_aws_s3_internal_bucket    = "entitycore-data-staging"
 entitycore_svc_aws_s3_internal_region    = "us-east-1"

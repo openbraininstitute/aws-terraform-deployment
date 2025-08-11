@@ -2,7 +2,7 @@ variable "infrastructureassets_bucket_name" {
   type = string
 }
 
-variable "hpc_resource_provisioner_sbo_nexusdata_bucket" {
+variable "hpc_resource_provisioner_data_bucket" {
   type = string
 }
 

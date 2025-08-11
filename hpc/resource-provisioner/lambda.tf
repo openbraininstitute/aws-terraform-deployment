@@ -22,7 +22,7 @@ resource "aws_lambda_function" "hpc_resource_provisioner_lambda" {
   }
   environment {
     variables = {
-      SBO_NEXUSDATA_BUCKET = var.sbo_nexusdata_bucket
+      SBO_NEXUSDATA_BUCKET = var.data_bucket
       CONTAINERS_BUCKET    = var.containers_bucket
       SCRATCH_BUCKET       = var.scratch_bucket
       SCRATCH_BUCKET_ARN   = var.scratch_bucket_arn
@@ -58,7 +58,7 @@ resource "aws_lambda_function" "hpc_resource_provisioner_async_lambda" {
   }
   environment {
     variables = {
-      SBO_NEXUSDATA_BUCKET = var.sbo_nexusdata_bucket
+      SBO_NEXUSDATA_BUCKET = var.data_bucket
       CONTAINERS_BUCKET    = var.containers_bucket
       SCRATCH_BUCKET       = var.scratch_bucket
       SCRATCH_BUCKET_ARN   = var.scratch_bucket_arn

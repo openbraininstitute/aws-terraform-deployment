@@ -90,7 +90,7 @@ variable "hpc_resource_provisioner_container_version" {
   type = string
 }
 
-variable "sbo_nexusdata_bucket" {
+variable "data_bucket" {
   type = string
 }
 

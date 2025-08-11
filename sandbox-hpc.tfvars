@@ -60,13 +60,13 @@ hpc_resource_provisioner_container_version = "0.5.12.dev12"
 core_web_app_deployment_env                = "staging"
 core_web_app_next_public_matomo_site_id    = "3"
 
-hpc_resource_provisioner_sbo_nexusdata_bucket = "s3://sbonexusdata-sandbox"
-infrastructureassets_bucket                   = "s3://sboinfrastructureassets-sandbox"
-hpc_resource_provisioner_containers_bucket    = "s3://sboinfrastructureassets-sandbox/containers"
-hpc_resource_provisioner_scratch_bucket       = "s3://sbosandbox-lec3cn"
-hpc_resource_provisioner_scratch_bucket_arn   = "arn:aws:s3:::sbosandbox-lec3cn"
-pcluster_ami_id                               = "ami-027ff2490377d3048"
-hpc_av_zone_suffixes                          = ["a"]
+hpc_resource_provisioner_data_bucket        = "s3://sbonexusdata-sandbox"
+infrastructureassets_bucket                 = "s3://sboinfrastructureassets-sandbox"
+hpc_resource_provisioner_containers_bucket  = "s3://sboinfrastructureassets-sandbox/containers"
+hpc_resource_provisioner_scratch_bucket     = "s3://sbosandbox-lec3cn"
+hpc_resource_provisioner_scratch_bucket_arn = "arn:aws:s3:::sbosandbox-lec3cn"
+pcluster_ami_id                             = "ami-027ff2490377d3048"
+hpc_av_zone_suffixes                        = ["a"]
 
 entitycore_svc_aws_s3_internal_bucket    = "entitycore-data-staging"
 entitycore_svc_aws_s3_internal_region    = "us-east-1"
