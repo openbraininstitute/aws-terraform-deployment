@@ -616,26 +616,6 @@ module "virtual_lab_manager" {
   accounting_base_url = "https://${local.primary_domain}${var.accounting_svc_base_path}"
 }
 
-module "bbp_workflow_svc" {
-  source                         = "./bbp_workflow_svc"
-  svc_name                       = "bbp-workflow-svc"
-  aws_region                     = local.aws_region
-  account_id                     = local.account_id
-  vpc_id                         = local.vpc_id
-  domain_name                    = local.primary_domain
-  route_table_private_subnets_id = local.route_table_private_subnets_id
-  nexus_domain_name              = module.nexus.nexus_domain_name
-  svc_image                      = "${local.account_id}.dkr.ecr.${local.aws_region}.amazonaws.com/bbp-workflow-svc:0.1.dev19"
-  kc_scr = (var.is_staging || var.is_production) ? (
-    "${local.workflow_service_secrets_arn}:keycloak_client_secret::"
-    ) : (
-    "arn:aws:secretsmanager:us-east-1:130659266700:secret:bbp-workflow-svc-kc-scr-9c9pEO"
-  )
-  hpc_provisioner_url = module.hpc.resource_provisioner_api_url
-  tags                = { SBO_Billing = "bbp_workflow_svc" }
-  count               = (var.is_staging || var.is_production) ? 0 : 1
-}
-
 module "dashboards" {
   source = "./dashboards"
 
