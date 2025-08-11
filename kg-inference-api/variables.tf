@@ -66,8 +66,3 @@ variable "dockerhub_credentials_arn" {
   type      = string
   sensitive = false
 }
-
-variable "nexus_domain_name" {
-  type        = string
-  description = "Nexus service domain name"
-}

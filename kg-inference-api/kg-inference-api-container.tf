@@ -167,10 +167,6 @@ resource "aws_ecs_task_definition" "kg_inference_api_task_definition" {
         ],
         environment = [
           {
-            name  = "BBP_NEXUS_ENDPOINT",
-            value = "https://${var.nexus_domain_name}/api/nexus/v1"
-          },
-          {
             name  = "ENVIRONMENT",
             value = "DEV"
           },
