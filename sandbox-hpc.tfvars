@@ -16,7 +16,7 @@ cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/s
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:latest"
 is_nexus_openscience_running              = false
 is_nexus_obp_running                      = true
-jupyterhub_ec2_type                       = "c7i.4xlarge"
+jupyterhub_ec2_type                       = "t3.micro"
 notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:staging"
 
 bluenaas_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:staging"
