@@ -124,7 +124,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_TOOLS__WHITELISTED_TOOL_REGEX"
-          value = "^(?!.*(downloadone|ionchannelmodel|measurementannotation|simulation|synaptome|plot-generator|scs|thumbnail|mcp|simulation|research|python|experimentalsynapsesperconnection|circuit|obione)).*"
+          value = "^(?!.*(downloadone|ionchannelmodel|measurementannotation|simulation|synaptome|scs|mcp|simulation|research|python|experimentalsynapsesperconnection|circuit|obione)).*"
 
 
         },
