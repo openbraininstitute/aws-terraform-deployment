@@ -5,18 +5,14 @@ terraform_remote_state_bucket_name        = "obi-tfstate-sandbox-hpc"
 cell_svc_bucket_name                      = "sbo-cell-svc-perf-test-sandbox-hpc"
 ml_paper_bucket_name                      = "ml-paper-bucket-sandbox-hpc-test"
 ml_neuroagent_bucket_name                 = "ml-neuroagent-staging"
-nexus_domain_name                         = "sandbox-hpc.openbluebrain.com"
 nexus_obp_bucket_name                     = "nexus-obp-sandbox-hpc-test"
 nexus_ship_bucket_name                    = "nexus-ship-sandbox-hpc-test"
 nexus_openscience_bucket_name             = "nexus-openscience-sandbox-hpc-test"
-nexus_az_letter_id                        = "a"
 core_web_app_docker_image_url             = "bluebrain/sbo-core-web-app:2025.1.0-prod"
 virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:20250226.1"
 thumbnail_generation_api_docker_image_url = "bluebrain/thumbnail-generation-api:latest"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.5.0"
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:latest"
-is_nexus_openscience_running              = false
-is_nexus_obp_running                      = true
 notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:staging"
 
 virtual_lab_manager_task_size = {
@@ -32,10 +28,6 @@ coreservices_public_key                    = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAA
 hpc_resource_provisioner_container_version = "latest-dev"
 core_web_app_deployment_env                = "staging"
 core_web_app_next_public_matomo_site_id    = "3"
-
-# Sandbox placeholders
-nise_dockerhub_password = "placeholder"
-ec_apikey2              = "placeholder"
 
 hpc_resource_provisioner_sbo_nexusdata_bucket = "s3://sbonexusdata-sandbox"
 sbo_infrastructureassets_bucket               = "s3://sboinfrastructureassets-sandbox"

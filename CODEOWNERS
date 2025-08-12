@@ -8,7 +8,6 @@
 # setting on the protected branch definition.
 
 * @cs
-nexus/ @nise
 bluenaas_svc/ @nise
 ml/ @ml
 cells_svc/ @nse

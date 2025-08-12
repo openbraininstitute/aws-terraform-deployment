@@ -27,11 +27,6 @@ variable "ml_neuroagent_bucket_name" {
   sensitive = false
 }
 
-variable "nexus_domain_name" {
-  type      = string
-  sensitive = false
-}
-
 variable "nexus_obp_bucket_name" {
   type      = string
   sensitive = false
@@ -45,15 +40,6 @@ variable "nexus_ship_bucket_name" {
 variable "nexus_openscience_bucket_name" {
   type      = string
   sensitive = false
-}
-
-variable "nexus_az_letter_id" {
-  type = string
-}
-
-variable "ec_apikey2" {
-  type      = string
-  sensitive = true
 }
 
 ### Core Web App ###
@@ -129,7 +115,6 @@ variable "small_scale_simulator_workers" {
   description = "Map of worker configurations for small scale simulator. Each key represents a worker service name with its configuration."
 }
 
-
 ### Virtual Lab Manager service ###
 
 variable "virtual_lab_manager_base_path" {
@@ -185,14 +170,6 @@ variable "coreservices_public_key" {
 variable "notebook_service_docker_image_url" {
   type        = string
   description = "Docker image for the notebook service"
-}
-
-### Nexus ###
-
-variable "nise_dockerhub_password" {
-  type        = string
-  description = "Password for the NISE dockerhub access. Set via TF_VAR_nise_dockerhub_password variable."
-  sensitive   = true
 }
 
 ### Keycloak ###
