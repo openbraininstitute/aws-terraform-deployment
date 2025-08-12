@@ -4,10 +4,6 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.55, != 5.71.0"
     }
-    ec = {
-      source  = "elastic/ec"
-      version = "~> 0.9.0"
-    }
   }
 
   required_version = ">= 1.2.0"
@@ -20,9 +16,4 @@ provider "aws" {
       SBO_Billing = "common"
     }
   }
-}
-
-provider "ec" {
-  alias  = "ec2"
-  apikey = var.ec_apikey2
 }

@@ -4,13 +4,8 @@ terraform {
       source  = "hashicorp/aws"
       version = ">= 2.7.0"
     }
-    ec = {
-      source                = "elastic/ec"
-      configuration_aliases = [ec.ec2]
-    }
   }
 }
-
 
 variable "default_tags" {
   default = {
@@ -31,7 +26,7 @@ provider "aws" {
   default_tags {
     tags = var.default_tags
   }
-  region = var.aws_region
+  region = "us-east-1"
 }
 
 provider "aws" {
@@ -44,7 +39,7 @@ provider "aws" {
       }
     )
   }
-  region = var.aws_region
+  region = "us-east-1"
 }
 
 provider "aws" {
@@ -57,7 +52,7 @@ provider "aws" {
       }
     )
   }
-  region = var.aws_region
+  region = "us-east-1"
 }
 
 provider "aws" {
@@ -70,7 +65,7 @@ provider "aws" {
       }
     )
   }
-  region = var.aws_region
+  region = "us-east-1"
 }
 
 provider "aws" {
@@ -83,7 +78,7 @@ provider "aws" {
       }
     )
   }
-  region = var.aws_region
+  region = "us-east-1"
 }
 
 provider "aws" {
@@ -96,7 +91,7 @@ provider "aws" {
       }
     )
   }
-  region = var.aws_region
+  region = "us-east-1"
 }
 
 provider "aws" {
@@ -109,7 +104,7 @@ provider "aws" {
       }
     )
   }
-  region = var.aws_region
+  region = "us-east-1"
 }
 
 provider "aws" {
@@ -122,7 +117,7 @@ provider "aws" {
       }
     )
   }
-  region = var.aws_region
+  region = "us-east-1"
 }
 
 provider "aws" {
@@ -135,7 +130,7 @@ provider "aws" {
       }
     )
   }
-  region = var.aws_region
+  region = "us-east-1"
 }
 
 #################
@@ -152,7 +147,7 @@ provider "aws" {
       }
     )
   }
-  region = var.aws_region
+  region = "us-east-1"
 }
 
 provider "aws" {
@@ -165,7 +160,7 @@ provider "aws" {
       }
     )
   }
-  region = var.aws_region
+  region = "us-east-1"
 }
 
 provider "aws" {
@@ -178,7 +173,7 @@ provider "aws" {
       }
     )
   }
-  region = var.aws_region
+  region = "us-east-1"
 }
 
 provider "aws" {
@@ -191,5 +186,5 @@ provider "aws" {
       }
     )
   }
-  region = var.aws_region
+  region = "us-east-1"
 }

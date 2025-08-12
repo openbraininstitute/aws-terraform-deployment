@@ -151,36 +151,15 @@ module "ml" {
   github_repos = ["openbraininstitute/neuroagent"]
 }
 
+# NOTE: The Nexus service has been fully decommissioned.
+# The purpose of this module is to maintain the data backups in S3 Glacier.
+# DO NOT DELETE: Deleting this module will also delete the S3 buckets and all backups.
 module "nexus" {
   source = "./nexus"
-
-  providers = {
-    ec     = ec
-    ec.ec2 = ec.ec2
-  }
-
-  aws_region         = local.aws_region
-  account_id         = local.account_id
-  vpc_id             = local.vpc_id
-  domain_name        = var.nexus_domain_name # TODO move nexus to local.primary_domain
-  dockerhub_password = var.nise_dockerhub_password
-  nexus_secrets_arn  = local.nexus_secrets_arn
-  nexus_az_letter_id = var.nexus_az_letter_id
-
-  nat_gateway_id = local.nat_gateway_id
-
-  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 
   nexus_obp_bucket_name         = var.nexus_obp_bucket_name
   nexus_ship_bucket_name        = var.nexus_ship_bucket_name
   nexus_openscience_bucket_name = var.nexus_openscience_bucket_name
-
-  private_lb_listener_https_arn = local.private_alb_https_listener_arn
-
-  is_production = var.is_production
-
-  is_nexus_openscience_running = var.is_nexus_openscience_running
-  is_nexus_obp_running         = var.is_nexus_obp_running
 }
 
 module "cells_svc" {
@@ -628,8 +607,6 @@ module "dashboards" {
     "EntityCoreService"   = module.entitycore_svc.private_lb_rule_suffix
     "KeyCloak"            = module.cs.private_keycloak_lb_rule_suffix
     "KGInference"         = module.kg_inference_api.private_lb_rule_suffix
-    "NexusDelta"          = module.nexus.private_delta_lb_rule_suffix
-    "NexusFusion"         = module.nexus.private_fusion_lb_rule_suffix
     "SmallScaleSimulator" = module.small_scale_simulator.private_lb_rule_suffix
     "SonataCellService"   = module.cells_svc.private_lb_rule_suffix
     "ThumbnailGenerator"  = module.thumbnail_generation_api.private_lb_rule_suffix
