@@ -37,11 +37,6 @@ variable "route_table_private_subnets_id" {
   description = "ID of the route table for the private subnets"
 }
 
-variable "private_alb_listener_arn" {
-  description = "ARN of the Load Balancer Listener on Private subnets."
-  type        = string
-}
-
 variable "generic_private_alb_listener_arn" {
   description = "ARN of the Load Balancer Listener that the public NLB forwards to."
   type        = string
@@ -54,11 +49,6 @@ variable "generic_private_alb_security_group_id" {
 
 variable "agent_image_tag" {
   description = "Url of the ECR imageof the agent (format repo:tag)"
-  type        = string
-}
-
-variable "private_alb_security_group_id" {
-  description = "ID of the security group attached to the private load balancer."
   type        = string
 }
 
@@ -84,11 +74,6 @@ variable "ec_num_nodes" {
 variable "ec_param_group" {
   description = "Group of parameters for redis"
   default     = "default.redis7"
-}
-
-variable "private_alb_dns" {
-  description = "DNS of the private loadbalancer."
-  type        = string
 }
 
 variable "rds_engine" {
