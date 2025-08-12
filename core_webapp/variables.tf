@@ -104,12 +104,6 @@ variable "env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" {
   description = "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY environment value for the webapp"
 }
 
-variable "env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL" {
-  type        = string
-  sensitive   = false
-  description = "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY environment value for the webapp"
-}
-
 variable "env_NEXT_PUBLIC_DEPLOYMENT_ENV" {
   type        = string
   description = "env core-web-app is deployed <staging|production>"

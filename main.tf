@@ -137,11 +137,6 @@ module "ml" {
   neuroagent_bucket_name = var.ml_neuroagent_bucket_name
   primary_domain         = local.primary_domain
 
-  # OLD PRIVATE ALB
-  private_alb_security_group_id = data.terraform_remote_state.common.outputs.private_alb_security_group_id
-  private_alb_listener_arn      = data.terraform_remote_state.common.outputs.private_alb_listener_3000_arn
-  private_alb_dns               = data.terraform_remote_state.common.outputs.private_alb_dns_name
-
   # NEW PRIVATE ALB
   generic_private_alb_listener_arn      = local.private_alb_https_listener_arn
   generic_private_alb_security_group_id = data.terraform_remote_state.common.outputs.generic_private_alb_security_group_id
@@ -335,7 +330,6 @@ module "core_webapp_main" {
   env_NEXTAUTH_URL                          = "https://${local.primary_domain}/api/auth"
   env_KEYCLOAK_ISSUER                       = "https://${local.primary_domain}/auth/realms/SBO"
   env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY    = "pk_test_51QjjHBKGUR5u3ofLgNUOpljnvy27UTTpkhwgsLiwK9xlNjnR7CZfiMjtZWMjgN7GW3eDyzMJ7Z1pIqC9LiwkfQRX00ebb5c9XI"
-  env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL   = "http://${data.terraform_remote_state.common.outputs.private_alb_dns_name}:3000/api/literature"
   env_NEXT_PUBLIC_DEPLOYMENT_ENV            = var.core_web_app_deployment_env
   env_NEXT_PUBLIC_MATOMO_SITE_ID            = var.core_web_app_next_public_matomo_site_id
   env_NEXT_PUBLIC_MATOMO_CDN_URL            = "https://cdn.matomo.cloud/openbraininstitute.matomo.cloud"
@@ -372,7 +366,6 @@ module "core_webapp_next" {
   env_NEXTAUTH_URL                          = "https://next.staging.openbraininstitute.org/api/auth"
   env_KEYCLOAK_ISSUER                       = "https://${local.primary_domain}/auth/realms/SBO"
   env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY    = "pk_test_51QjjHBKGUR5u3ofLgNUOpljnvy27UTTpkhwgsLiwK9xlNjnR7CZfiMjtZWMjgN7GW3eDyzMJ7Z1pIqC9LiwkfQRX00ebb5c9XI"
-  env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL   = "http://${data.terraform_remote_state.common.outputs.private_alb_dns_name}:3000/api/literature"
   env_NEXT_PUBLIC_DEPLOYMENT_ENV            = var.core_web_app_deployment_env
   env_NEXT_PUBLIC_MATOMO_SITE_ID            = var.core_web_app_next_public_matomo_site_id
   env_NEXT_PUBLIC_MATOMO_CDN_URL            = "https://cdn.matomo.cloud/openbraininstitute.matomo.cloud"
