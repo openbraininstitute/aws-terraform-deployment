@@ -8,7 +8,7 @@ resource "aws_iam_policy" "parallelcluster_rpms_policy" {
       {
         "Effect" : "Allow",
         "Action" : "s3:GetObject",
-        "Resource" : "arn:aws:s3:::sboinfrastructureassets/rpms/*"
+        "Resource" : "arn:aws:s3:::sboinfrastructureassets*/rpms/*"
       }
     ]
   })

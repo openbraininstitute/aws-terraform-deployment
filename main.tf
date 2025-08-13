@@ -217,7 +217,7 @@ module "github_ami_build_role" {
   github_organisation      = local.github_organisation
   github_oidc_provider_arn = module.github_oidc_provider.oidc_provider_arn
   repo_name                = "machine-images"
-  bucket_name              = var.sbo_infrastructureassets_bucket
+  bucket_name              = var.infrastructureassets_bucket
 }
 
 module "notebook_service" {
@@ -280,7 +280,7 @@ module "hpc" {
   create_jumphost                            = false
   compute_nat_access                         = false
   compute_subnet_count                       = 16
-  av_zone_suffixes                           = ["a"]
+  av_zone_suffixes                           = var.hpc_av_zone_suffixes
   peering_route_tables                       = [local.route_table_private_subnets_id, local.route_table_public_id]
   lambda_subnet_cidr                         = "10.0.16.0/24"
   is_production                              = var.is_production
@@ -288,9 +288,13 @@ module "hpc" {
   endpoints_route_table_id                   = local.route_table_private_subnets_id
   hpc_slurm_secrets_arn                      = local.hpc_slurm_secrets_arn
   hpc_resource_provisioner_container_version = var.hpc_resource_provisioner_container_version
-  sbo_nexusdata_bucket                       = var.hpc_resource_provisioner_sbo_nexusdata_bucket
+  data_bucket                                = var.hpc_resource_provisioner_data_bucket
   containers_bucket                          = var.hpc_resource_provisioner_containers_bucket
   scratch_bucket                             = var.hpc_resource_provisioner_scratch_bucket
+  scratch_bucket_arn                         = var.hpc_resource_provisioner_scratch_bucket_arn
+  private_alb_https_listener_arn             = local.private_alb_https_listener_arn
+  infrastructureassets_bucket_name           = var.infrastructureassets_bucket
+  pcluster_ami_id                            = var.pcluster_ami_id
 }
 
 module "static-server" {

@@ -31,9 +31,10 @@ hpc_resource_provisioner_container_version = "latest-dev"
 core_web_app_deployment_env                = "staging"
 core_web_app_next_public_matomo_site_id    = "3"
 
-hpc_resource_provisioner_sbo_nexusdata_bucket = "s3://sbonexusdata-sandbox"
-hpc_resource_provisioner_containers_bucket    = "s3://sboinfrastructureassets-sandbox/containers"
-hpc_resource_provisioner_scratch_bucket       = "s3://sbosandbox-lec3cn"
+hpc_resource_provisioner_data_bucket       = "s3://sbonexusdata-sandbox"
+hpc_resource_provisioner_containers_bucket = "s3://sboinfrastructureassets-sandbox/containers"
+hpc_resource_provisioner_scratch_bucket    = "s3://sbosandbox-lec3cn"
+pcluster_ami_id                            = ""
 
 entitycore_svc_image_url = "public.ecr.aws/openbraininstitute/entitycore:2025.4.2"
 

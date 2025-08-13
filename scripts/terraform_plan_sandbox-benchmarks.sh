@@ -1,17 +1,22 @@
-echo "Terraform plan for HPC sandbox"
+echo "Terraform plan for benchmarks sandbox"
 
 terraform plan -target="module.hpc.module.vpc" \
                -target="module.hpc.module.security" \
                -target="module.hpc.module.networking" \
+               -target="module.hpc.module.compute-cluster" \
                -target="module.hpc.module.resource-provisioner" \
                -target="module.hpc.module.dynamodb" \
                -target="module.hpc.module.s3" \
                -target="module.hpc.module.efs" \
                -target="module.coreservices_key" \
+               -target="aws_instance.ssh_bastion" \
+               -target="aws_security_group.ssh_bastion_hosts" \
+               -target="aws_security_group_ingress_rule.ssh_bastion_hosts_allow_http_internal" \
+               -target="aws_security_group_ingress_rule.ssh_bastion_hosts_allow_https_internal" \
                -target="aws_vpc_security_group_ingress_rule.ssh_bastion_hosts_allow_ssh_external" \
                -target="aws_vpc_security_group_egress_rule.ssh_bastion_hosts_allow_everything_outgoing" \
                -target="aws_apigatewayv2_api.this" \
                -target="module.github_ami_build_role" \
                -var "create_ssh_bastion_vm_on_public_a_network=true" \
-               -var-file=sandbox-hpc.tfvars \
+               -var-file=sandbox-benchmarks.tfvars \
                -out plan.tfplan  && terraform show plan.tfplan

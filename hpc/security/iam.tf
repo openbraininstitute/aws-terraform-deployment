@@ -9,7 +9,23 @@ resource "aws_iam_policy" "hpc_resource_provisioner_policy" {
   policy = templatefile("${path.module}/hpc_resource_provisioner_policy.tftpl", { "account_id" = var.account_id, "aws_region" = var.aws_region })
 }
 
+resource "aws_iam_policy" "hpc_resource_provisioner_policy_2" {
+  name   = "hpc_resource_provisioner_policy_2"
+  policy = templatefile("${path.module}/hpc_resource_provisioner_policy_2.tftpl", { "account_id" = var.account_id, "aws_region" = var.aws_region })
+}
+
 resource "aws_iam_role_policy_attachment" "hpc_resource_provisioner_role_policy_attachment" {
   role       = aws_iam_role.hpc_resource_provisioner_role.name
   policy_arn = aws_iam_policy.hpc_resource_provisioner_policy.arn
 }
+
+resource "aws_iam_role_policy_attachment" "hpc_resource_provisioner_role_policy_attachment_2" {
+  role       = aws_iam_role.hpc_resource_provisioner_role.name
+  policy_arn = aws_iam_policy.hpc_resource_provisioner_policy_2.arn
+}
+
+resource "aws_iam_policy" "fsx_describe_dra_policy" {
+  name   = "fsx_describe_dra_policy"
+  policy = file("${path.module}/pcluster_fsx_policy.json")
+}
+

@@ -195,9 +195,9 @@ variable "hpc_resource_provisioner_container_version" {
   description = "Version of hpc-resource-provisioner to deploy"
 }
 
-variable "hpc_resource_provisioner_sbo_nexusdata_bucket" {
+variable "hpc_resource_provisioner_data_bucket" {
   type        = string
-  description = "S3 bucket in which SBO Nexus data lives. Includes s3:// prefix and sub-path, if any"
+  description = "S3 bucket in which OBI data lives. Includes s3:// prefix and sub-path, if any"
 }
 
 variable "hpc_resource_provisioner_containers_bucket" {
@@ -210,9 +210,22 @@ variable "hpc_resource_provisioner_scratch_bucket" {
   description = "S3 bucket in which scratch space lives. Includes s3:// prefix and sub-path, if any"
 }
 
-variable "sbo_infrastructureassets_bucket" {
+variable "hpc_resource_provisioner_scratch_bucket_arn" {
+  type        = string
+  description = "ARN for the hpc_resource_provisioner_scratch_bucket"
+}
+
+variable "infrastructureassets_bucket" {
   type        = string
   description = "S3 bucket in which infrastructure assets are stored"
+}
+
+variable "pcluster_ami_id" {
+  type = string
+}
+
+variable "hpc_av_zone_suffixes" {
+  type = list(string)
 }
 
 ### entitycore ###
