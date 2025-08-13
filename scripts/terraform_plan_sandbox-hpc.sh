@@ -5,6 +5,7 @@ terraform plan -target="module.hpc.module.vpc" \
                -target="module.hpc.module.networking" \
                -target="module.hpc.module.resource-provisioner" \
                -target="module.hpc.module.dynamodb" \
+               -target="module.hpc.module.s3" \
                -target="module.hpc.module.efs" \
                -target="module.coreservices_key" \
                -target="aws_vpc_security_group_ingress_rule.ssh_bastion_hosts_allow_ssh_external" \

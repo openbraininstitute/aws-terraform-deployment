@@ -11,6 +11,15 @@
             "Resource": "arn:aws:s3:::${bucket_name}"
         },
         {
+            "Sid": "AllowLogsExportPutObject",
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "logs.us-east-1.amazonaws.com"
+            },
+            "Action": "s3:PutObject",
+            "Resource": "arn:aws:s3:::${bucket_name}/logs/*"
+        },
+        {
             "Sid": "AllowRpmsGetObject",
             "Effect": "Allow",
             "Principal": {
@@ -42,8 +51,7 @@
             "Effect": "Allow",
             "Principal": {
                 "AWS": [
-                    "arn:aws:iam::${account_id}:role/GithubMachineImages",
-                    "arn:aws:iam::${account_id}:user/ecr-uploader"
+                    "arn:aws:iam::${account_id}:role/GithubMachineImages"
                 ]
             },
             "Action": [

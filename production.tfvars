@@ -63,11 +63,11 @@ hpc_resource_provisioner_container_version = "latest"
 core_web_app_deployment_env                = "production"
 core_web_app_next_public_matomo_site_id    = "1"
 
-hpc_resource_provisioner_data_bucket        = ""
+hpc_resource_provisioner_data_bucket        = "s3://obi-hpc-data"
 infrastructureassets_bucket                 = "s3://sboinfrastructureassets"
-hpc_resource_provisioner_containers_bucket  = ""
-hpc_resource_provisioner_scratch_bucket     = ""
-hpc_resource_provisioner_scratch_bucket_arn = ""
+hpc_resource_provisioner_containers_bucket  = "s3://sboinfrastructureassets/containers"
+hpc_resource_provisioner_scratch_bucket     = "s3://obi-hpc-scratch"
+hpc_resource_provisioner_scratch_bucket_arn = "arn:aws:s3:::obi-hpc-scratch"
 pcluster_ami_id                             = ""
 hpc_av_zone_suffixes                        = ["a"]
 
