@@ -328,8 +328,10 @@ module "core_webapp_main" {
   accounting_base_url           = "https://${local.primary_domain}${var.accounting_svc_base_path}"
   s3_bucket_name                = var.core_webapp_s3_bucket_name
   s3_bucket_allowed_origins     = ["https://${local.primary_domain}"]
-  cloudfront_aliases            = ["cdn.${local.primary_domain}"]
-  cloudfront_certificate_arn    = local.cloudfront_certificate_arn
+
+  # remove 'www.' from local.primary_domain and prepend 'cdn'. ie: cdn.openbraininstitute.org
+  cloudfront_aliases         = [join(".", ["cdn", trimprefix(local.primary_domain, "www.")])]
+  cloudfront_certificate_arn = local.cloudfront_certificate_arn
 
   env_NEXTAUTH_URL                          = "https://${local.primary_domain}/api/auth"
   env_KEYCLOAK_ISSUER                       = "https://${local.primary_domain}/auth/realms/SBO"
