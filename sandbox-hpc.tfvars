@@ -14,8 +14,6 @@ virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/v
 thumbnail_generation_api_docker_image_url = "bluebrain/thumbnail-generation-api:latest"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.5.0"
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:latest"
-is_nexus_openscience_running              = false
-is_nexus_obp_running                      = true
 jupyterhub_ec2_type                       = "t3.micro"
 notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:staging"
 

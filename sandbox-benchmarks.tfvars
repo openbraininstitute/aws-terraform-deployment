@@ -17,8 +17,6 @@ thumbnail_generation_api_docker_image_url = "bluebrain/thumbnail-generation-api:
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.5.0"
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:latest"
 me_model_analysis_docker_image_url        = "public.ecr.aws/openbraininstitute/me-model-analysis:staging"
-is_nexus_openscience_running              = false
-is_nexus_obp_running                      = true
 jupyterhub_ec2_type                       = "t3.micro"
 notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:staging"
 
@@ -56,10 +54,6 @@ coreservices_public_key                    = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAA
 hpc_resource_provisioner_container_version = "0.5.12"
 core_web_app_deployment_env                = "staging"
 core_web_app_next_public_matomo_site_id    = "3"
-
-# Sandbox placeholders
-nise_dockerhub_password = "placeholder"
-ec_apikey2              = "placeholder"
 
 hpc_resource_provisioner_data_bucket        = "s3://sbonexusdata-sandbox-benchmarks"
 infrastructureassets_bucket                 = "s3://sboinfrastructureassets-sandbox-benchmarks"
