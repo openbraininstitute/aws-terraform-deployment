@@ -25,7 +25,6 @@ locals {
   accounting_service_secrets_arn    = data.terraform_remote_state.common.outputs.accounting_service_secrets_arn
   entitycore_service_secrets_arn    = data.terraform_remote_state.common.outputs.entitycore_service_secrets_arn
   hpc_slurm_secrets_arn             = data.terraform_remote_state.common.outputs.hpc_slurm_secrets_arn
-  workflow_service_secrets_arn      = data.terraform_remote_state.common.outputs.workflow_service_secrets_arn
   dockerhub_bbpbuildbot_secret_arn  = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_secret_arn
   dockerhub_bbpbuildbot_policy_arn  = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_policy_arn
 

@@ -12,6 +12,5 @@ terraform apply -target="module.hpc.module.vpc" \
                 -target="aws_route_table_association.bbp_workflow_svc" \
                 -target="aws_security_group.bbp_workflow_svc" \
                 -target="aws_apigatewayv2_api.this" \
-                -target="module.bbp_workflow_svc" \
                 -var "create_ssh_bastion_vm_on_public_a_network=true" \
                 -var-file=sandbox-hpc.tfvars
