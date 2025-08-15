@@ -38,7 +38,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
         ]
         interval    = 10
         timeout     = 5
-        startPeriod = 180
+        startPeriod = 90
         retries     = 3
       }
       environment = [
