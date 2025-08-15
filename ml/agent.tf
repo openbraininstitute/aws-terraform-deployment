@@ -8,6 +8,15 @@ module "s3_bucket" {
   control_object_ownership = true
   object_ownership         = "ObjectWriter"
 
+  cors_rule = [
+    {
+      allowed_methods = ["GET"]
+      allowed_origins = ["https://${var.primary_domain}"]
+      allowed_headers = ["x-amz-meta-category"]
+      expose_headers  = ["x-amz-meta-category"]
+    }
+  ]
+
   versioning = {
     enabled = false
   }
@@ -124,7 +133,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_TOOLS__WHITELISTED_TOOL_REGEX"
-          value = "^(?!.*(downloadone|ionchannelmodel|measurementannotation|simulation|synaptome|plot-generator|scs|thumbnail|mcp|simulation|research|python|experimentalsynapsesperconnection|circuit|obione)).*"
+          value = "^(?!.*(downloadone|ionchannelmodel|measurementannotation|simulation|synaptome|plot-generator|scs|mcp|simulation|research|python|experimentalsynapsesperconnection|circuit|obione)).*"
 
 
         },

@@ -20,6 +20,18 @@ resource "aws_lambda_function" "hpc_resource_provisioner_lambda" {
     security_group_ids = var.hpc_resource_provisioner_sg_ids
     subnet_ids         = var.hpc_resource_provisioner_subnet_ids
   }
+  environment {
+    variables = {
+      SBO_NEXUSDATA_BUCKET = var.data_bucket
+      CONTAINERS_BUCKET    = var.containers_bucket
+      SCRATCH_BUCKET       = var.scratch_bucket
+      SCRATCH_BUCKET_ARN   = var.scratch_bucket_arn
+      EFA_SG_ID            = var.aws_security_group_efa_id
+      FSX_POLICY_ARN       = var.fsx_policy_arn
+      FS_SUBNET_IDS        = jsonencode(var.fs_subnet_ids)
+      FS_SG_ID             = var.fs_sg_id
+    }
+  }
 }
 
 data "aws_ecr_image" "hpc_resource_provisioner_image" {
@@ -46,10 +58,16 @@ resource "aws_lambda_function" "hpc_resource_provisioner_async_lambda" {
   }
   environment {
     variables = {
-      SBO_NEXUSDATA_BUCKET = var.sbo_nexusdata_bucket
+      SBO_NEXUSDATA_BUCKET = var.data_bucket
       CONTAINERS_BUCKET    = var.containers_bucket
       SCRATCH_BUCKET       = var.scratch_bucket
+      SCRATCH_BUCKET_ARN   = var.scratch_bucket_arn
+      INFRA_ASSETS_BUCKET  = var.infra_assets_bucket
       EFA_SG_ID            = var.aws_security_group_efa_id
+      FSX_POLICY_ARN       = var.fsx_policy_arn
+      FS_SUBNET_IDS        = jsonencode(var.fs_subnet_ids)
+      FS_SG_ID             = var.fs_sg_id
+      PCLUSTER_AMI_ID      = var.pcluster_ami_id
     }
   }
 }

@@ -168,4 +168,20 @@ resource "aws_security_group" "compute_efs" {
     cidr_blocks = [data.aws_vpc.provided_vpc.cidr_block]
     description = "allow egress within vpc"
   }
+
+  ingress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    self        = true
+    description = "allow ingress within security group"
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    self        = true
+    description = "allow egress within security group"
+  }
 }

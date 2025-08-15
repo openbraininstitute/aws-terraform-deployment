@@ -27,11 +27,6 @@ variable "ml_neuroagent_bucket_name" {
   sensitive = false
 }
 
-variable "nexus_domain_name" {
-  type      = string
-  sensitive = false
-}
-
 variable "nexus_obp_bucket_name" {
   type      = string
   sensitive = false
@@ -45,15 +40,6 @@ variable "nexus_ship_bucket_name" {
 variable "nexus_openscience_bucket_name" {
   type      = string
   sensitive = false
-}
-
-variable "nexus_az_letter_id" {
-  type = string
-}
-
-variable "ec_apikey2" {
-  type      = string
-  sensitive = true
 }
 
 ### Core Web App ###
@@ -81,6 +67,12 @@ variable "core_web_app_deployment_env" {
 variable "core_web_app_next_public_matomo_site_id" {
   type        = string
   description = "matomo site id <staging|production>"
+  sensitive   = false
+}
+
+variable "core_webapp_s3_bucket_name" {
+  type        = string
+  description = "S3 bucket name for core webapp main assets"
   sensitive   = false
 }
 
@@ -123,7 +115,6 @@ variable "small_scale_simulator_workers" {
   description = "Map of worker configurations for small scale simulator. Each key represents a worker service name with its configuration."
 }
 
-
 ### Virtual Lab Manager service ###
 
 variable "virtual_lab_manager_base_path" {
@@ -145,7 +136,6 @@ variable "virtual_lab_manager_docker_image_url" {
   description = "Docker image for the virtual lab manager"
   sensitive   = false
 }
-
 
 variable "virtual_lab_manager_task_size" {
   type = object({
@@ -182,14 +172,6 @@ variable "notebook_service_docker_image_url" {
   description = "Docker image for the notebook service"
 }
 
-### Nexus ###
-
-variable "nise_dockerhub_password" {
-  type        = string
-  description = "Password for the NISE dockerhub access. Set via TF_VAR_nise_dockerhub_password variable."
-  sensitive   = true
-}
-
 ### Keycloak ###
 
 variable "keycloak_task_size" {
@@ -213,9 +195,9 @@ variable "hpc_resource_provisioner_container_version" {
   description = "Version of hpc-resource-provisioner to deploy"
 }
 
-variable "hpc_resource_provisioner_sbo_nexusdata_bucket" {
+variable "hpc_resource_provisioner_data_bucket" {
   type        = string
-  description = "S3 bucket in which SBO Nexus data lives. Includes s3:// prefix and sub-path, if any"
+  description = "S3 bucket in which OBI data lives. Includes s3:// prefix and sub-path, if any"
 }
 
 variable "hpc_resource_provisioner_containers_bucket" {
@@ -228,9 +210,22 @@ variable "hpc_resource_provisioner_scratch_bucket" {
   description = "S3 bucket in which scratch space lives. Includes s3:// prefix and sub-path, if any"
 }
 
-variable "sbo_infrastructureassets_bucket" {
+variable "hpc_resource_provisioner_scratch_bucket_arn" {
+  type        = string
+  description = "ARN for the hpc_resource_provisioner_scratch_bucket"
+}
+
+variable "infrastructureassets_bucket" {
   type        = string
   description = "S3 bucket in which infrastructure assets are stored"
+}
+
+variable "pcluster_ami_id" {
+  type = string
+}
+
+variable "hpc_av_zone_suffixes" {
+  type = list(string)
 }
 
 ### entitycore ###
@@ -263,8 +258,6 @@ variable "entitycore_svc_image_url" {
   type        = string
   description = "Image URL for entitycore service."
 }
-
-
 
 variable "thumbnail_generation_api_docker_image_url" {
   type        = string

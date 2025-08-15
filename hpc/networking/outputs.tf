@@ -21,3 +21,7 @@ output "compute_subnet_efs_ids" {
 output "lambda_subnet_id" {
   value = aws_subnet.lambda.id
 }
+
+output "fs_subnet_ids" {
+  value = aws_subnet.compute_efs[*].id
+}

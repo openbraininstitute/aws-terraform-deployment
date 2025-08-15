@@ -58,12 +58,6 @@ variable "virtual_lab_manager_depoloyment_env" {
   sensitive   = false
 }
 
-variable "virtual_lab_manager_nexus_delta_uri" {
-  type        = string
-  description = "nexus delta service url"
-  sensitive   = false
-}
-
 variable "virtual_lab_manager_invite_expiration" {
   type        = string
   description = "virtual lab invite expiration in days"
@@ -120,16 +114,9 @@ variable "virtual_lab_manager_admin_base_path" {
 
 variable "virtual_lab_manager_deployment_namespace" {
   type        = string
-  description = "deployment domain use for nexus project base path"
+  description = "deployment domain use for project base path"
   sensitive   = false
 }
-
-variable "virtual_lab_manager_cross_project_resolvers" {
-  type        = list(string)
-  description = "cross project resolver projects for project creation"
-  sensitive   = false
-}
-
 variable "accounting_base_url" {
   type        = string
   description = "Accounting service base URL"
@@ -148,7 +135,6 @@ variable "ecs_number_of_containers" {
   sensitive   = false
   description = "Number of containers"
 }
-
 
 variable "virtual_lab_manager_base_path" {
   type        = string

@@ -5,18 +5,14 @@ terraform_remote_state_bucket_name        = "obi-tfstate-production"
 cell_svc_bucket_name                      = "sbo-cell-svc-perf-test"
 ml_paper_bucket_name                      = "ml-paper-bucket"
 ml_neuroagent_bucket_name                 = "ml-neuroagent-production"
-nexus_domain_name                         = "openbluebrain.com"
 nexus_obp_bucket_name                     = "nexus-obp-production"
 nexus_ship_bucket_name                    = "nexus-ship-production"
 nexus_openscience_bucket_name             = "nexus-openscience-production"
-nexus_az_letter_id                        = "b"
-core_web_app_docker_image_url             = "public.ecr.aws/openbraininstitute/core-web-app:2025.07.24.1"
+core_web_app_docker_image_url             = "public.ecr.aws/openbraininstitute/core-web-app:2025.08.13.1"
 virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:2025.07.17.1"
 thumbnail_generation_api_docker_image_url = "public.ecr.aws/openbraininstitute/thumbnail-generation-api:2025.07.17.1"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.5.0"
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2025.07.1"
-is_nexus_openscience_running              = false
-is_nexus_obp_running                      = false
 jupyterhub_ec2_type                       = "c7i.2xlarge"
 notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:staging"
 
@@ -67,17 +63,20 @@ hpc_resource_provisioner_container_version = "latest"
 core_web_app_deployment_env                = "production"
 core_web_app_next_public_matomo_site_id    = "1"
 
-hpc_resource_provisioner_sbo_nexusdata_bucket = ""
-sbo_infrastructureassets_bucket               = "s3://sboinfrastructureassets"
-hpc_resource_provisioner_containers_bucket    = ""
-hpc_resource_provisioner_scratch_bucket       = ""
+hpc_resource_provisioner_data_bucket        = "s3://obi-hpc-data"
+infrastructureassets_bucket                 = "s3://sboinfrastructureassets"
+hpc_resource_provisioner_containers_bucket  = "s3://sboinfrastructureassets/containers"
+hpc_resource_provisioner_scratch_bucket     = "s3://obi-hpc-scratch"
+hpc_resource_provisioner_scratch_bucket_arn = "arn:aws:s3:::obi-hpc-scratch"
+pcluster_ami_id                             = ""
+hpc_av_zone_suffixes                        = ["a"]
 
 entitycore_svc_aws_s3_internal_bucket    = "entitycore-data-production"
 entitycore_svc_aws_s3_internal_region    = "us-east-1"
 entitycore_svc_aws_s3_open_bucket        = "openbluebrain"
 entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["https://www.openbraininstitute.org"]
-entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.7.5"
+entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.8.3"
 
 obi_one_docker_image_url = "public.ecr.aws/openbraininstitute/obi-one:2025.7.6"
 obi_one_task_size = {
@@ -86,3 +85,6 @@ obi_one_task_size = {
 }
 
 obi_generative_gui_docker_image_url = "public.ecr.aws/openbraininstitute/obi-generative-gui:2025.5.4"
+
+# CoreWebApp s3 and CloudFront configuration
+core_webapp_s3_bucket_name = "core-webapp-static-assets-production"

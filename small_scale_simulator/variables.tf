@@ -59,10 +59,6 @@ variable "secrets_arn" {
   type = string
 }
 
-variable "nexus_delta_uri" {
-  type = string
-}
-
 variable "accounting_base_url" {
   type        = string
   description = "Accounting service base URL"

@@ -167,10 +167,6 @@ resource "aws_ecs_task_definition" "kg_inference_api_task_definition" {
         ],
         environment = [
           {
-            name  = "BBP_NEXUS_ENDPOINT",
-            value = "https://${var.nexus_domain_name}/api/nexus/v1"
-          },
-          {
             name  = "ENVIRONMENT",
             value = "DEV"
           },
@@ -219,7 +215,7 @@ resource "aws_ecs_service" "kg_inference_api_service" {
   name                 = "kg-inference-api-service"
   cluster              = aws_ecs_cluster.kg_inference_api_cluster.id
   task_definition      = aws_ecs_task_definition.kg_inference_api_task_definition.arn
-  desired_count        = 1
+  desired_count        = 0
   force_new_deployment = true
   launch_type          = "FARGATE"
 

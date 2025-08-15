@@ -25,10 +25,10 @@ locals {
   accounting_service_secrets_arn    = data.terraform_remote_state.common.outputs.accounting_service_secrets_arn
   entitycore_service_secrets_arn    = data.terraform_remote_state.common.outputs.entitycore_service_secrets_arn
   hpc_slurm_secrets_arn             = data.terraform_remote_state.common.outputs.hpc_slurm_secrets_arn
-  nexus_secrets_arn                 = data.terraform_remote_state.common.outputs.nexus_secrets_arn
-  workflow_service_secrets_arn      = data.terraform_remote_state.common.outputs.workflow_service_secrets_arn
   dockerhub_bbpbuildbot_secret_arn  = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_secret_arn
   dockerhub_bbpbuildbot_policy_arn  = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_policy_arn
+
+  cloudfront_certificate_arn = data.terraform_remote_state.common.outputs.cloudfront_certificate_arn
 
   github_organisation = "openbraininstitute"
 }
@@ -130,17 +130,10 @@ module "ml" {
   vpc_cidr_block                 = local.vpc_cidr_block
   route_table_private_subnets_id = local.route_table_private_subnets_id
 
-  dockerhub_credentials_arn = local.dockerhub_bbpbuildbot_secret_arn
-  agent_image_tag           = "neuroagent-v0.7.2"
+  agent_image_tag = "neuroagent-v0.7.2"
 
   neuroagent_bucket_name = var.ml_neuroagent_bucket_name
-  nexus_domain_name      = module.nexus.nexus_domain_name
   primary_domain         = local.primary_domain
-
-  # OLD PRIVATE ALB
-  private_alb_security_group_id = data.terraform_remote_state.common.outputs.private_alb_security_group_id
-  private_alb_listener_arn      = data.terraform_remote_state.common.outputs.private_alb_listener_3000_arn
-  private_alb_dns               = data.terraform_remote_state.common.outputs.private_alb_dns_name
 
   # NEW PRIVATE ALB
   generic_private_alb_listener_arn      = local.private_alb_https_listener_arn
@@ -151,36 +144,15 @@ module "ml" {
   github_repos = ["openbraininstitute/neuroagent"]
 }
 
+# NOTE: The Nexus service has been fully decommissioned.
+# The purpose of this module is to maintain the data backups in S3 Glacier.
+# DO NOT DELETE: Deleting this module will also delete the S3 buckets and all backups.
 module "nexus" {
   source = "./nexus"
-
-  providers = {
-    ec     = ec
-    ec.ec2 = ec.ec2
-  }
-
-  aws_region         = local.aws_region
-  account_id         = local.account_id
-  vpc_id             = local.vpc_id
-  domain_name        = var.nexus_domain_name # TODO move nexus to local.primary_domain
-  dockerhub_password = var.nise_dockerhub_password
-  nexus_secrets_arn  = local.nexus_secrets_arn
-  nexus_az_letter_id = var.nexus_az_letter_id
-
-  nat_gateway_id = local.nat_gateway_id
-
-  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 
   nexus_obp_bucket_name         = var.nexus_obp_bucket_name
   nexus_ship_bucket_name        = var.nexus_ship_bucket_name
   nexus_openscience_bucket_name = var.nexus_openscience_bucket_name
-
-  private_lb_listener_https_arn = local.private_alb_https_listener_arn
-
-  is_production = var.is_production
-
-  is_nexus_openscience_running = var.is_nexus_openscience_running
-  is_nexus_obp_running         = var.is_nexus_obp_running
 }
 
 module "cells_svc" {
@@ -228,8 +200,6 @@ module "small_scale_simulator" {
     var.is_staging ? ["http://localhost:3000"] : []
   )
 
-  nexus_delta_uri = "https://${module.nexus.nexus_domain_name}/api/nexus/v1"
-
   accounting_base_url = "https://${local.primary_domain}${var.accounting_svc_base_path}"
   entitycore_url      = "https://${local.primary_domain}/api/entitycore"
   keycloak_server_url = "https://${local.primary_domain}/auth/"
@@ -245,7 +215,7 @@ module "github_ami_build_role" {
   github_organisation      = local.github_organisation
   github_oidc_provider_arn = module.github_oidc_provider.oidc_provider_arn
   repo_name                = "machine-images"
-  bucket_name              = var.sbo_infrastructureassets_bucket
+  bucket_name              = var.infrastructureassets_bucket
 }
 
 module "notebook_service" {
@@ -308,7 +278,7 @@ module "hpc" {
   create_jumphost                            = false
   compute_nat_access                         = false
   compute_subnet_count                       = 16
-  av_zone_suffixes                           = ["a"]
+  av_zone_suffixes                           = var.hpc_av_zone_suffixes
   peering_route_tables                       = [local.route_table_private_subnets_id, local.route_table_public_id]
   lambda_subnet_cidr                         = "10.0.16.0/24"
   is_production                              = var.is_production
@@ -316,9 +286,13 @@ module "hpc" {
   endpoints_route_table_id                   = local.route_table_private_subnets_id
   hpc_slurm_secrets_arn                      = local.hpc_slurm_secrets_arn
   hpc_resource_provisioner_container_version = var.hpc_resource_provisioner_container_version
-  sbo_nexusdata_bucket                       = var.hpc_resource_provisioner_sbo_nexusdata_bucket
+  data_bucket                                = var.hpc_resource_provisioner_data_bucket
   containers_bucket                          = var.hpc_resource_provisioner_containers_bucket
   scratch_bucket                             = var.hpc_resource_provisioner_scratch_bucket
+  scratch_bucket_arn                         = var.hpc_resource_provisioner_scratch_bucket_arn
+  private_alb_https_listener_arn             = local.private_alb_https_listener_arn
+  infrastructureassets_bucket_name           = var.infrastructureassets_bucket
+  pcluster_ami_id                            = var.pcluster_ami_id
 }
 
 module "static-server" {
@@ -350,11 +324,16 @@ module "core_webapp_main" {
   vpc_cidr_block                = local.vpc_cidr_block
   secrets_arn                   = local.core_webapp_secrets_arn
   accounting_base_url           = "https://${local.primary_domain}${var.accounting_svc_base_path}"
+  s3_bucket_name                = var.core_webapp_s3_bucket_name
+  s3_bucket_allowed_origins     = ["https://${local.primary_domain}"]
+
+  # remove 'www.' from local.primary_domain and prepend 'cdn'. ie: cdn.openbraininstitute.org
+  cloudfront_aliases         = [join(".", ["cdn", trimprefix(local.primary_domain, "www.")])]
+  cloudfront_certificate_arn = local.cloudfront_certificate_arn
 
   env_NEXTAUTH_URL                          = "https://${local.primary_domain}/api/auth"
   env_KEYCLOAK_ISSUER                       = "https://${local.primary_domain}/auth/realms/SBO"
   env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY    = "pk_test_51QjjHBKGUR5u3ofLgNUOpljnvy27UTTpkhwgsLiwK9xlNjnR7CZfiMjtZWMjgN7GW3eDyzMJ7Z1pIqC9LiwkfQRX00ebb5c9XI"
-  env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL   = "http://${data.terraform_remote_state.common.outputs.private_alb_dns_name}:3000/api/literature"
   env_NEXT_PUBLIC_DEPLOYMENT_ENV            = var.core_web_app_deployment_env
   env_NEXT_PUBLIC_MATOMO_SITE_ID            = var.core_web_app_next_public_matomo_site_id
   env_NEXT_PUBLIC_MATOMO_CDN_URL            = "https://cdn.matomo.cloud/openbraininstitute.matomo.cloud"
@@ -384,11 +363,13 @@ module "core_webapp_next" {
   vpc_cidr_block                = local.vpc_cidr_block
   secrets_arn                   = local.core_webapp_secrets_arn
   accounting_base_url           = "https://${local.primary_domain}${var.accounting_svc_base_path}"
+  s3_bucket_name                = var.core_webapp_s3_bucket_name
+  s3_bucket_allowed_origins     = ["https://${local.primary_domain}"]
+
 
   env_NEXTAUTH_URL                          = "https://next.staging.openbraininstitute.org/api/auth"
   env_KEYCLOAK_ISSUER                       = "https://${local.primary_domain}/auth/realms/SBO"
   env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY    = "pk_test_51QjjHBKGUR5u3ofLgNUOpljnvy27UTTpkhwgsLiwK9xlNjnR7CZfiMjtZWMjgN7GW3eDyzMJ7Z1pIqC9LiwkfQRX00ebb5c9XI"
-  env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL   = "http://${data.terraform_remote_state.common.outputs.private_alb_dns_name}:3000/api/literature"
   env_NEXT_PUBLIC_DEPLOYMENT_ENV            = var.core_web_app_deployment_env
   env_NEXT_PUBLIC_MATOMO_SITE_ID            = var.core_web_app_next_public_matomo_site_id
   env_NEXT_PUBLIC_MATOMO_CDN_URL            = "https://cdn.matomo.cloud/openbraininstitute.matomo.cloud"
@@ -538,7 +519,6 @@ module "kg_inference_api" {
   aws_region                        = local.aws_region
   account_id                        = local.account_id
   allowed_source_ip_cidr_blocks     = ["0.0.0.0/0"]
-  nexus_domain_name                 = module.nexus.nexus_domain_name
   kg_inference_api_docker_image_url = "bluebrain/kg-inference-api:latest"
   kg_inference_api_base_path        = "/api/kg-inference"
   kg_inference_api_log_group_name   = "kg_inference_api"
@@ -593,8 +573,6 @@ module "virtual_lab_manager" {
 
   virtual_lab_manager_depoloyment_env = "production"
 
-  virtual_lab_manager_nexus_delta_uri = "https://${module.nexus.nexus_domain_name}/api/nexus/v1"
-
   virtual_lab_manager_invite_expiration = "7"
 
   virtual_lab_manager_mail_username = module.ses_user_virtuallab.access_key_id
@@ -611,46 +589,7 @@ module "virtual_lab_manager" {
   virtual_lab_manager_admin_base_path      = "{}/app/virtual-lab/lab/{}/admin?panel=billing"
   virtual_lab_manager_deployment_namespace = "https://${local.primary_domain}"
 
-  virtual_lab_manager_cross_project_resolvers = [
-    "public/ephys",
-    "public/thalamus",
-    "public/ngv",
-    "public/multi-vesicular-release",
-    "public/hippocampus",
-    "public/topological-sampling",
-    "bbp/lnmce",
-    "public/ngv-anatomy",
-    "bbp-external/seu",
-    "public/forge",
-    "public/sscx",
-    "bbp/mouselight",
-    "public/morphologies",
-    "neurosciencegraph/datamodels",
-    "bbp/mmb-point-neuron-framework-model",
-    "neurosciencegraph/data",
-  ]
-
   accounting_base_url = "https://${local.primary_domain}${var.accounting_svc_base_path}"
-}
-
-module "bbp_workflow_svc" {
-  source                         = "./bbp_workflow_svc"
-  svc_name                       = "bbp-workflow-svc"
-  aws_region                     = local.aws_region
-  account_id                     = local.account_id
-  vpc_id                         = local.vpc_id
-  domain_name                    = local.primary_domain
-  route_table_private_subnets_id = local.route_table_private_subnets_id
-  nexus_domain_name              = module.nexus.nexus_domain_name
-  svc_image                      = "${local.account_id}.dkr.ecr.${local.aws_region}.amazonaws.com/bbp-workflow-svc:0.1.dev19"
-  kc_scr = (var.is_staging || var.is_production) ? (
-    "${local.workflow_service_secrets_arn}:keycloak_client_secret::"
-    ) : (
-    "arn:aws:secretsmanager:us-east-1:130659266700:secret:bbp-workflow-svc-kc-scr-9c9pEO"
-  )
-  hpc_provisioner_url = module.hpc.resource_provisioner_api_url
-  tags                = { SBO_Billing = "bbp_workflow_svc" }
-  count               = (var.is_staging || var.is_production) ? 0 : 1
 }
 
 module "dashboards" {
@@ -665,8 +604,6 @@ module "dashboards" {
     "EntityCoreService"   = module.entitycore_svc.private_lb_rule_suffix
     "KeyCloak"            = module.cs.private_keycloak_lb_rule_suffix
     "KGInference"         = module.kg_inference_api.private_lb_rule_suffix
-    "NexusDelta"          = module.nexus.private_delta_lb_rule_suffix
-    "NexusFusion"         = module.nexus.private_fusion_lb_rule_suffix
     "SmallScaleSimulator" = module.small_scale_simulator.private_lb_rule_suffix
     "SonataCellService"   = module.cells_svc.private_lb_rule_suffix
     "ThumbnailGenerator"  = module.thumbnail_generation_api.private_lb_rule_suffix
