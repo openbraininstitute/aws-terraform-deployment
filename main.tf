@@ -130,7 +130,7 @@ module "ml" {
   vpc_cidr_block                 = local.vpc_cidr_block
   route_table_private_subnets_id = local.route_table_private_subnets_id
 
-  agent_image_tag = "neuroagent-v0.8.o"
+  agent_image_tag = "neuroagent-v0.8.0"
 
   neuroagent_bucket_name = var.ml_neuroagent_bucket_name
   primary_domain         = local.primary_domain
