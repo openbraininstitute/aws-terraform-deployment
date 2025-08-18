@@ -4,6 +4,6 @@ provider "aws" {
       SBO_Billing = "kg_inference_api"
     }
   }
-  region = var.aws_region
+  region = "us-east-1"
 }
 
