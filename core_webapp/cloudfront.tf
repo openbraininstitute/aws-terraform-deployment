@@ -74,7 +74,7 @@ resource "aws_cloudfront_response_headers_policy" "core_webapp_fonts_cors" {
       items = ["*"]
     }
     access_control_allow_methods {
-      items = ["GET", "HEAD"]
+      items = ["GET", "HEAD", "OPTIONS"]
     }
     access_control_allow_origins {
       items = ["*"] # we can fix it to be per domain after testing "https://staging.openbraininstitute.org"
@@ -92,6 +92,7 @@ resource "aws_cloudfront_cache_policy" "core_webapp_fonts" {
   max_ttl     = 31536000 # 1 year
   min_ttl     = 86400    # 1 day
 
+
   parameters_in_cache_key_and_forwarded_to_origin {
     enable_accept_encoding_brotli = true
     enable_accept_encoding_gzip   = true
@@ -101,7 +102,10 @@ resource "aws_cloudfront_cache_policy" "core_webapp_fonts" {
     }
 
     headers_config {
-      header_behavior = "none"
+      header_behavior = "whitelist"
+      headers {
+        items = ["Origin"]
+      }
     }
 
     cookies_config {
@@ -166,7 +170,7 @@ resource "aws_cloudfront_distribution" "core_webapp_cdn" {
   }
 
   ordered_cache_behavior {
-    path_pattern               = "*/_next/static/media/*"
+    path_pattern               = "_next/static/media/*"
     allowed_methods            = ["GET", "HEAD"]
     cached_methods             = ["GET", "HEAD"]
     target_origin_id           = "S3-${aws_s3_bucket.core_webapp[0].id}"
@@ -177,7 +181,7 @@ resource "aws_cloudfront_distribution" "core_webapp_cdn" {
   }
 
   ordered_cache_behavior {
-    path_pattern           = "*/_next/static/*"
+    path_pattern           = "_next/static/*"
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
     target_origin_id       = "S3-${aws_s3_bucket.core_webapp[0].id}"
