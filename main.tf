@@ -507,21 +507,6 @@ module "obi_generative_gui" {
 
 module "kg_inference_api" {
   source = "./kg-inference-api"
-
-  private_alb_https_listener_arn = local.private_alb_https_listener_arn
-  route_table_id                 = local.route_table_private_subnets_id
-  vpc_cidr_block                 = local.vpc_cidr_block
-  vpc_id                         = local.vpc_id
-
-  dockerhub_access_iam_policy_arn = local.dockerhub_bbpbuildbot_policy_arn
-  dockerhub_credentials_arn       = local.dockerhub_bbpbuildbot_secret_arn
-
-  aws_region                        = local.aws_region
-  account_id                        = local.account_id
-  allowed_source_ip_cidr_blocks     = ["0.0.0.0/0"]
-  kg_inference_api_docker_image_url = "bluebrain/kg-inference-api:latest"
-  kg_inference_api_base_path        = "/api/kg-inference"
-  kg_inference_api_log_group_name   = "kg_inference_api"
 }
 
 module "thumbnail_generation_api" {
@@ -603,7 +588,6 @@ module "dashboards" {
     "CoreWebAppMain"      = module.core_webapp_main.private_lb_rule_suffix
     "EntityCoreService"   = module.entitycore_svc.private_lb_rule_suffix
     "KeyCloak"            = module.cs.private_keycloak_lb_rule_suffix
-    "KGInference"         = module.kg_inference_api.private_lb_rule_suffix
     "SmallScaleSimulator" = module.small_scale_simulator.private_lb_rule_suffix
     "SonataCellService"   = module.cells_svc.private_lb_rule_suffix
     "ThumbnailGenerator"  = module.thumbnail_generation_api.private_lb_rule_suffix
