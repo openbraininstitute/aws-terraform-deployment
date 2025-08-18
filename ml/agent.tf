@@ -132,8 +132,12 @@ module "ecs_service_agent" {
           value = "https://${var.primary_domain}/api/thumbnail-generation"
         },
         {
+          name  = "NEUROAGENT_TOOlS__FRONTEND_BASE_URL"
+          value = "https://${var.primary_domain}"
+        },
+        {
           name  = "NEUROAGENT_TOOLS__WHITELISTED_TOOL_REGEX"
-          value = "^(?!.*(downloadone|ionchannelmodel|measurementannotation|simulation|synaptome|plot-generator|scs|mcp|simulation|research|python|experimentalsynapsesperconnection|circuit|obione)).*"
+          value = "^(?!.*(downloadone|ionchannelmodel|measurementannotation|simulation|synaptome|plot-generator|scs|mcp|simulation|research|python|experimentalsynapsesperconnection|circuit|obione|expert|thumbnail-generation-electricalcellrecording)).*"
 
 
         },
