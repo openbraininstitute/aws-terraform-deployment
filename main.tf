@@ -325,7 +325,7 @@ module "core_webapp_main" {
   secrets_arn                   = local.core_webapp_secrets_arn
   accounting_base_url           = "https://${local.primary_domain}${var.accounting_svc_base_path}"
   s3_bucket_name                = var.core_webapp_s3_bucket_name
-  s3_bucket_allowed_origins     = ["https://${local.primary_domain}"]
+  s3_bucket_allowed_origins     = ["https://${local.primary_domain}", "https://${join(".", ["cdn", trimprefix(local.primary_domain, "www.")])}"]
 
   # remove 'www.' from local.primary_domain and prepend 'cdn'. ie: cdn.openbraininstitute.org
   cloudfront_aliases         = [join(".", ["cdn", trimprefix(local.primary_domain, "www.")])]
