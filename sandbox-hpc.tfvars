@@ -54,7 +54,7 @@ keycloak_task_size = {
   memory = 2048
 }
 coreservices_public_key                    = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCy8UW1JdUjIuiiaI+xFId3smXFe6iwxdn6Klqi8y4E+cFHP/uQxW4AuCfJVoOjOQ2CNU0UIGRlCkw3IwUmZvwGjFZS1Vs6jt+KjWiDRdFzQQrz5+vuqPX2576wXlT+EHe0W6r7Qla5i1L6cjz6/E4u5yFZ3MJQSBYjLqXjT7Da4R72gPx9oiIoSH2JBu3vHyfkTEo3l6C+WJlYnUGOLnUxGGGnhJrBKmIRNMmtRNgQlBkPR4mnCAFABJfgpzgNf4bpqLbma5DabQGbvpX6qCLSAV5Zdd4gBQLIAJfS/a5pMWaIy9qDTWB2vy4Z39HI45k6efrLL+xgo+XYSRqn5jDT heeren@Mac"
-hpc_resource_provisioner_container_version = "latest-dev"
+hpc_resource_provisioner_container_version = "0.5.12.dev12"
 
 hpc_resource_provisioner_data_bucket        = "s3://sbonexusdata-sandbox"
 infrastructureassets_bucket                 = "s3://sboinfrastructureassets-sandbox"
