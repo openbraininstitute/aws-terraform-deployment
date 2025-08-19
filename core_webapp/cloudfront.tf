@@ -170,7 +170,7 @@ resource "aws_cloudfront_distribution" "core_webapp_cdn" {
   }
 
   ordered_cache_behavior {
-    path_pattern               = "*/_next/static/media/*"
+    path_pattern               = "/_next/static/media/*"
     allowed_methods            = ["GET", "HEAD"]
     cached_methods             = ["GET", "HEAD"]
     target_origin_id           = "S3-${aws_s3_bucket.core_webapp[0].id}"
@@ -181,7 +181,7 @@ resource "aws_cloudfront_distribution" "core_webapp_cdn" {
   }
 
   ordered_cache_behavior {
-    path_pattern           = "*/_next/static/*"
+    path_pattern           = "/_next/static/*"
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
     target_origin_id       = "S3-${aws_s3_bucket.core_webapp[0].id}"
@@ -191,7 +191,7 @@ resource "aws_cloudfront_distribution" "core_webapp_cdn" {
   }
 
   ordered_cache_behavior {
-    path_pattern           = "*/public/*"
+    path_pattern           = "/public/*"
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
     target_origin_id       = "S3-${aws_s3_bucket.core_webapp[0].id}"
