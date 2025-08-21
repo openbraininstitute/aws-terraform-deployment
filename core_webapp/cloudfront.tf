@@ -12,8 +12,8 @@ resource "aws_cloudfront_cache_policy" "core_webapp_default" {
   count       = var.key == "main" ? 1 : 0
   name        = "core-webapp-${var.key}-default-policy"
   comment     = "Cache policy for Core WebApp default behavior with CORS headers"
-  default_ttl = 86400    # 1 day
-  max_ttl     = 31536000 # 1 year
+  default_ttl = 86400   # 1 day
+  max_ttl     = 2592000 # 1 month
   min_ttl     = 0
 
   parameters_in_cache_key_and_forwarded_to_origin {
@@ -43,9 +43,9 @@ resource "aws_cloudfront_cache_policy" "core_webapp_static" {
   name    = "core-webapp-${var.key}-static-policy"
   comment = "Cache policy for Core WebApp static assets"
   # respect origin cache control headers instead of using fixed ttl
-  default_ttl = 0        # use origin cache control headers (need to test if setting to 0 is the reason for passing the s3 cache control headers)
-  max_ttl     = 31536000 # 1 year max
-  min_ttl     = 0        # use origin cache control headers (need to test if setting to 0 is the reason for passing the s3 cache control headers)
+  default_ttl = 0      # use origin cache control headers (need to test if setting to 0 is the reason for passing the s3 cache control headers)
+  max_ttl     = 604800 # 1 week
+  min_ttl     = 0      # use origin cache control headers (need to test if setting to 0 is the reason for passing the s3 cache control headers)
 
   parameters_in_cache_key_and_forwarded_to_origin {
     enable_accept_encoding_brotli = true
@@ -88,9 +88,9 @@ resource "aws_cloudfront_cache_policy" "core_webapp_fonts" {
   count       = var.key == "main" ? 1 : 0
   name        = "core-webapp-${var.key}-fonts-policy"
   comment     = "Cache policy for Core WebApp fonts with CORS headers"
-  default_ttl = 31536000 # 1 year (fonts don't change often)
-  max_ttl     = 31536000 # 1 year
-  min_ttl     = 86400    # 1 day
+  default_ttl = 15768000 # 6 months (fonts don't change often)
+  max_ttl     = 15768000 # 6 months
+  min_ttl     = 0        # use origin cache control headers (need to test if setting to 0 is the reason for passing the s3 cache control headers)
 
 
   parameters_in_cache_key_and_forwarded_to_origin {
@@ -119,9 +119,9 @@ resource "aws_cloudfront_cache_policy" "core_webapp_images" {
   count       = var.key == "main" ? 1 : 0
   name        = "core-webapp-${var.key}-images-policy"
   comment     = "Cache policy for Core WebApp images"
-  default_ttl = 0        # use origin cache control headers (need to test if setting to 0 is the reason for passing the s3 cache control headers)
-  max_ttl     = 31536000 # 1 year max
-  min_ttl     = 0        # use origin cache control headers (need to test if setting to 0 is the reason for passing the s3 cache control headers)
+  default_ttl = 0       # use origin cache control headers (need to test if setting to 0 is the reason for passing the s3 cache control headers)
+  max_ttl     = 2592000 # 1 month
+  min_ttl     = 0       # use origin cache control headers (need to test if setting to 0 is the reason for passing the s3 cache control headers)
 
 
   parameters_in_cache_key_and_forwarded_to_origin {
@@ -170,7 +170,7 @@ resource "aws_cloudfront_distribution" "core_webapp_cdn" {
   }
 
   ordered_cache_behavior {
-    path_pattern               = "*/_next/static/media/*"
+    path_pattern               = "/_next/static/media/*"
     allowed_methods            = ["GET", "HEAD"]
     cached_methods             = ["GET", "HEAD"]
     target_origin_id           = "S3-${aws_s3_bucket.core_webapp[0].id}"
@@ -181,7 +181,7 @@ resource "aws_cloudfront_distribution" "core_webapp_cdn" {
   }
 
   ordered_cache_behavior {
-    path_pattern           = "*/_next/static/*"
+    path_pattern           = "/_next/static/*"
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
     target_origin_id       = "S3-${aws_s3_bucket.core_webapp[0].id}"
@@ -191,7 +191,7 @@ resource "aws_cloudfront_distribution" "core_webapp_cdn" {
   }
 
   ordered_cache_behavior {
-    path_pattern           = "*/public/*"
+    path_pattern           = "/public/*"
     allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
     target_origin_id       = "S3-${aws_s3_bucket.core_webapp[0].id}"
