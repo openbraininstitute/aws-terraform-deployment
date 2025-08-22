@@ -57,19 +57,6 @@ variable "core_web_app_next_docker_image_url" {
   sensitive   = false
 }
 
-variable "core_web_app_deployment_env" {
-  default     = "production"
-  type        = string
-  description = "env core-web-app is deployed <staging|production>"
-  sensitive   = false
-}
-
-variable "core_web_app_next_public_matomo_site_id" {
-  type        = string
-  description = "matomo site id <staging|production>"
-  sensitive   = false
-}
-
 variable "core_webapp_s3_bucket_name" {
   type        = string
   description = "S3 bucket name for core webapp main assets"

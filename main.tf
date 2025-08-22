@@ -197,7 +197,7 @@ module "small_scale_simulator" {
   base_path = "/api/small-scale-simulator"
   cors_origins = concat(
     ["https://${local.primary_domain}"],
-    var.is_staging ? ["http://localhost:3000"] : []
+    var.is_staging ? ["http://localhost:3000", "https://dev.openbraininstitute.org"] : []
   )
 
   accounting_base_url = "https://${local.primary_domain}${var.accounting_svc_base_path}"
@@ -331,30 +331,23 @@ module "core_webapp_main" {
   cloudfront_aliases         = [join(".", ["cdn", trimprefix(local.primary_domain, "www.")])]
   cloudfront_certificate_arn = local.cloudfront_certificate_arn
 
-  env_NEXTAUTH_URL                          = "https://${local.primary_domain}/api/auth"
-  env_KEYCLOAK_ISSUER                       = "https://${local.primary_domain}/auth/realms/SBO"
-  env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY    = "pk_test_51QjjHBKGUR5u3ofLgNUOpljnvy27UTTpkhwgsLiwK9xlNjnR7CZfiMjtZWMjgN7GW3eDyzMJ7Z1pIqC9LiwkfQRX00ebb5c9XI"
-  env_NEXT_PUBLIC_DEPLOYMENT_ENV            = var.core_web_app_deployment_env
-  env_NEXT_PUBLIC_MATOMO_SITE_ID            = var.core_web_app_next_public_matomo_site_id
-  env_NEXT_PUBLIC_MATOMO_CDN_URL            = "https://cdn.matomo.cloud/openbraininstitute.matomo.cloud"
-  env_NEXT_PUBLIC_MATOMO_URL                = "https://openbraininstitute.matomo.cloud"
-  env_NEXT_PUBLIC_ENABLE_RUN_NOTEBOOK       = var.is_staging ? "true" : "false"
-  env_NEXT_PUBLIC_NOTEBOOK_SERVICE_BASE_URL = "https://${local.primary_domain}/api/notebook_service"
+  env_NEXTAUTH_URL    = "https://${local.primary_domain}/api/auth"
+  env_KEYCLOAK_ISSUER = "https://${local.primary_domain}/auth/realms/SBO"
 }
 
-module "core_webapp_next" {
+module "core_webapp_dev" {
   source = "./core_webapp"
 
   count = var.is_staging ? 1 : 0
 
-  key               = "next"
-  log_group_name    = "core_webapp_next"
+  key               = "dev"
+  log_group_name    = "core_webapp_dev"
   vpc_id            = local.vpc_id
   subnet_cidr_block = "10.0.21.16/28"
   alb_listener_arn  = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
   # The following priority has to be higher (lower number)
   # than the priority of the main core-web-app listener rule.
-  hostname                      = "next.staging.openbraininstitute.org"
+  hostname                      = "dev.openbraininstitute.org"
   alb_listener_rule_priority    = 980
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
   aws_region                    = local.aws_region
@@ -363,19 +356,15 @@ module "core_webapp_next" {
   vpc_cidr_block                = local.vpc_cidr_block
   secrets_arn                   = local.core_webapp_secrets_arn
   accounting_base_url           = "https://${local.primary_domain}${var.accounting_svc_base_path}"
-  s3_bucket_name                = var.core_webapp_s3_bucket_name
-  s3_bucket_allowed_origins     = ["https://${local.primary_domain}"]
 
+  // These are not used in dev
+  s3_bucket_name            = var.core_webapp_s3_bucket_name
+  s3_bucket_allowed_origins = ["https://dev.openbraininstitute.org"]
 
-  env_NEXTAUTH_URL                          = "https://next.staging.openbraininstitute.org/api/auth"
-  env_KEYCLOAK_ISSUER                       = "https://${local.primary_domain}/auth/realms/SBO"
-  env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY    = "pk_test_51QjjHBKGUR5u3ofLgNUOpljnvy27UTTpkhwgsLiwK9xlNjnR7CZfiMjtZWMjgN7GW3eDyzMJ7Z1pIqC9LiwkfQRX00ebb5c9XI"
-  env_NEXT_PUBLIC_DEPLOYMENT_ENV            = var.core_web_app_deployment_env
-  env_NEXT_PUBLIC_MATOMO_SITE_ID            = var.core_web_app_next_public_matomo_site_id
-  env_NEXT_PUBLIC_MATOMO_CDN_URL            = "https://cdn.matomo.cloud/openbraininstitute.matomo.cloud"
-  env_NEXT_PUBLIC_MATOMO_URL                = "https://openbraininstitute.matomo.cloud"
-  env_NEXT_PUBLIC_ENABLE_RUN_NOTEBOOK       = var.is_staging ? "true" : "false"
-  env_NEXT_PUBLIC_NOTEBOOK_SERVICE_BASE_URL = "https://${local.primary_domain}/api/notebook_service"
+  sbo_billing_tag = "core_webapp_dev"
+
+  env_NEXTAUTH_URL    = "https://dev.openbraininstitute.org/api/auth"
+  env_KEYCLOAK_ISSUER = "https://${local.primary_domain}/auth/realms/SBO"
 }
 
 module "github_core_webapp_main_ecs_redeploy_role" {
@@ -394,7 +383,7 @@ module "github_core_webapp_main_ecs_redeploy_role" {
   # The ARN of the generated role is needed in GH and is part of the outputs.
 }
 
-module "github_core_webapp_next_ecs_redeploy_role" {
+module "github_core_webapp_dev_ecs_redeploy_role" {
   source = "./github_ecs_redeploy_role"
 
   # for now we only want such a redeploy role in staging
@@ -404,9 +393,9 @@ module "github_core_webapp_next_ecs_redeploy_role" {
   aws_region               = local.aws_region
   github_organisation      = local.github_organisation
   repo_name                = "core-web-app"
-  ecs_cluster_name         = module.core_webapp_next[0].ecs_cluster_name
-  ecs_service_name         = module.core_webapp_next[0].ecs_service_name
-  ecs_task_definition_name = module.core_webapp_next[0].ecs_task_definition_name
+  ecs_cluster_name         = module.core_webapp_dev[0].ecs_cluster_name
+  ecs_service_name         = module.core_webapp_dev[0].ecs_service_name
+  ecs_task_definition_name = module.core_webapp_dev[0].ecs_task_definition_name
   # The ARN of the generated role is needed in GH and is part of the outputs.
 }
 
@@ -592,7 +581,7 @@ module "dashboards" {
     "SonataCellService"   = module.cells_svc.private_lb_rule_suffix
     "ThumbnailGenerator"  = module.thumbnail_generation_api.private_lb_rule_suffix
     "VLabManager"         = module.virtual_lab_manager.private_arn_suffix
-  }, var.is_staging ? { "CoreWebAppNext" = module.core_webapp_next[0].private_lb_rule_suffix } : {})
+  }, var.is_staging ? { "CoreWebAppDev" = module.core_webapp_dev[0].private_lb_rule_suffix } : {})
 }
 
 

@@ -98,48 +98,6 @@ variable "env_KEYCLOAK_ISSUER" {
   description = "KEYCLOAK_ISSUER environment value for the webapp"
 }
 
-variable "env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" {
-  type        = string
-  sensitive   = false
-  description = "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY environment value for the webapp"
-}
-
-variable "env_NEXT_PUBLIC_DEPLOYMENT_ENV" {
-  type        = string
-  description = "env core-web-app is deployed <staging|production>"
-  sensitive   = false
-}
-
-variable "env_NEXT_PUBLIC_MATOMO_URL" {
-  type        = string
-  description = "Matomo url to server analytics script, (this is global)"
-  sensitive   = false
-}
-
-variable "env_NEXT_PUBLIC_MATOMO_CDN_URL" {
-  type        = string
-  description = "Matomo url to server analytics script using cdn, (this is global)"
-  sensitive   = false
-}
-
-variable "env_NEXT_PUBLIC_MATOMO_SITE_ID" {
-  type        = string
-  description = "Matomo site id <staging | production>"
-  sensitive   = false
-}
-
-variable "env_NEXT_PUBLIC_NOTEBOOK_SERVICE_BASE_URL" {
-  type        = string
-  description = "Notebook service base url"
-  sensitive   = false
-}
-
-variable "env_NEXT_PUBLIC_ENABLE_RUN_NOTEBOOK" {
-  type        = string
-  description = "Enable run notebook feature, either the string 'True', either anything else for false"
-  sensitive   = false
-}
-
 # S3 and CloudFront Configuration Variables
 variable "s3_bucket_name" {
   type        = string
@@ -163,5 +121,11 @@ variable "cloudfront_certificate_arn" {
   type        = string
   description = "ARN of ACM certificate for CloudFront custom domain"
   default     = null
+}
+
+variable "sbo_billing_tag" {
+  type        = string
+  description = "Value for the SBO_Billing tag"
+  default     = "core_webapp"
   sensitive   = false
 }

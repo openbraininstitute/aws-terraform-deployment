@@ -7,7 +7,7 @@ resource "aws_subnet" "core_webapp" {
 
   tags = {
     Name        = "core_webapp"
-    SBO_Billing = "core_webapp"
+    SBO_Billing = var.sbo_billing_tag
   }
 }
 
@@ -68,6 +68,6 @@ resource "aws_network_acl" "core_webapp" {
   }
   tags = {
     Name        = "core_webapp_acl"
-    SBO_Billing = "core_webapp"
+    SBO_Billing = var.sbo_billing_tag
   }
 }
