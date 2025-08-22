@@ -351,7 +351,7 @@ module "core_webapp_dev" {
   alb_listener_rule_priority    = 980
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
   aws_region                    = local.aws_region
-  docker_image_url              = var.core_web_app_next_docker_image_url
+  docker_image_url              = var.core_web_app_dev_docker_image_url
   route_table_id                = local.route_table_private_subnets_id
   vpc_cidr_block                = local.vpc_cidr_block
   secrets_arn                   = local.core_webapp_secrets_arn
@@ -511,7 +511,7 @@ module "thumbnail_generation_api" {
   thumbnail_generation_api_docker_image_url = var.thumbnail_generation_api_docker_image_url
   thumbnail_generation_api_base_path        = "/api/thumbnail-generation"
   thumbnail_generation_api_log_group_name   = "thumbnail_generation_api"
-  thumbnail_generation_api_cors_origins     = ["http://localhost:3000", "https://next.staging.openbraininstitute.org"]
+  thumbnail_generation_api_cors_origins     = ["http://localhost:3000", "https://dev.openbraininstitute.org"]
   entitycore_url                            = "https://${local.primary_domain}/api/entitycore"
 }
 
@@ -558,7 +558,7 @@ module "virtual_lab_manager" {
 
   virtual_lab_manager_mail_starttls   = "True"
   virtual_lab_manager_use_credentials = "True"
-  virtual_lab_manager_cors_origins    = ["http://localhost:3000", "https://next.staging.openbraininstitute.org"]
+  virtual_lab_manager_cors_origins    = ["http://localhost:3000", "https://dev.openbraininstitute.org"]
 
   virtual_lab_manager_admin_base_path      = "{}/app/virtual-lab/lab/{}/admin?panel=billing"
   virtual_lab_manager_deployment_namespace = "https://${local.primary_domain}"
