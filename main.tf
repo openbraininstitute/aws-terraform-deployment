@@ -473,6 +473,11 @@ module "obi_one" {
   docker_image_url = var.obi_one_docker_image_url
 
   task_size = var.obi_one_task_size
+
+  cors_origins = concat(
+    ["https://${local.primary_domain}"],
+    var.is_staging ? ["http://localhost:3000", "https://dev.openbraininstitute.org"] : []
+  )
 }
 
 module "obi_generative_gui" {

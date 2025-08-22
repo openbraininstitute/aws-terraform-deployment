@@ -52,3 +52,8 @@ variable "task_size" {
 
   description = "CPU and memory limit for ECS task (number or string format)"
 }
+
+variable "cors_origins" {
+  description = "CORS origins"
+  type        = list(string)
+}
