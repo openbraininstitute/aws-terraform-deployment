@@ -476,7 +476,7 @@ module "obi_one" {
 
   cors_origins = concat(
     ["https://${local.primary_domain}"],
-    var.is_staging ? ["http://localhost:3000", "https://dev.openbraininstitute.org"] : []
+    var.is_staging ? ["http://localhost:3000", "http://127.0.0.1:3000", "https://dev.openbraininstitute.org"] : []
   )
 }
 
