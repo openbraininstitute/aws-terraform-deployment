@@ -19,6 +19,11 @@ variable "root_path" {
   type        = string
 }
 
+variable "cors_origins" {
+  description = "CORS origins"
+  type        = list(string)
+}
+
 variable "keycloak_url" {
   description = "Keycloak URL"
   type        = string
