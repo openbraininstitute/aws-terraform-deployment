@@ -89,6 +89,10 @@ resource "aws_ecs_task_definition" "obi_one_ecs_definition" {
           value = "false"
         },
         {
+          name  = "CORS_ORIGINS"
+          value = jsonencode(var.cors_origins)
+        },
+        {
           name  = "KEYCLOAK_URL"
           value = var.keycloak_url
         },
