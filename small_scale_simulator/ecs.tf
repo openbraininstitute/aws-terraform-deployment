@@ -1,8 +1,8 @@
 locals {
   log_group_prefix = "ecs/small-scale-simulator"
   redis_task_size = {
-    cpu    = "256"
-    memory = "512"
+    cpu    = 256
+    memory = 512
   }
 }
 
