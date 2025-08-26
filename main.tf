@@ -429,6 +429,11 @@ module "entitycore_svc" {
   internet_access_route_id      = local.route_table_private_subnets_id
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 
+  cors_origins = concat(
+    ["https://${local.primary_domain}"],
+    var.is_staging ? ["http://localhost:3000", "http://127.0.0.1:3000", "https://dev.openbraininstitute.org"] : []
+  )
+
   entitycore_service_secrets_arn = local.entitycore_service_secrets_arn
 
   root_path = "/api/entitycore"
