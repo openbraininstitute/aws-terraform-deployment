@@ -137,7 +137,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_TOOLS__WHITELISTED_TOOL_REGEX"
-          value = "^(?!.*(downloadone|ionchannelmodel|measurementannotation|simulation|synaptome|plot-generator|scs|mcp|simulation|research|python|experimentalsynapsesperconnection|circuit|obione|expert|thumbnail-generation-electricalcellrecording|context-analyzer)).*"
+          value = "^(?!.*(downloadone|ionchannelmodel|measurementannotation|simulation|synaptome|scs|mcp|simulation|research|experimentalsynapsesperconnection|circuit|obione|expert|context-analyzer)).*"
 
 
         },
