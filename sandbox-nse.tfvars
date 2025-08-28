@@ -15,6 +15,7 @@ thumbnail_generation_api_docker_image_url = "bluebrain/thumbnail-generation-api:
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:latest"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.5.0"
 notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:staging"
+notebook_hub_on_eks_full_url              = "none"
 
 virtual_lab_manager_task_size = {
   cpu    = 512

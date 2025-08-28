@@ -35,7 +35,7 @@ jobs:
 
       - name: Run Terraform Plan
         run: |
-          terraform plan -var-file="${{ inputs.environment }}.tfvars" -out plan.tfplan >/dev/null && terraform show plan.tfplan
+          terraform plan -input=false -var-file="${{ inputs.environment }}.tfvars" -out plan.tfplan >/dev/null && terraform show plan.tfplan
 
       - name: Run Terraform Apply
         run: |

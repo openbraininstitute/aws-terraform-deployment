@@ -15,6 +15,7 @@ cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/s
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2025.07.1"
 jupyterhub_ec2_type                       = "c7i.2xlarge"
 notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:staging"
+notebook_hub_on_eks_full_url              = "none"
 
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.08.28.1"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.08.28.1"

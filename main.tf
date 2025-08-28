@@ -27,6 +27,7 @@ locals {
   hpc_slurm_secrets_arn             = data.terraform_remote_state.common.outputs.hpc_slurm_secrets_arn
   dockerhub_bbpbuildbot_secret_arn  = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_secret_arn
   dockerhub_bbpbuildbot_policy_arn  = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_policy_arn
+  notebook_service_secrets_arn      = data.terraform_remote_state.common.outputs.notebook_service_secrets_arn
 
   cloudfront_certificate_arn = data.terraform_remote_state.common.outputs.cloudfront_certificate_arn
 
@@ -229,8 +230,6 @@ module "notebook_service" {
   ecs_cidr_block_a           = "10.0.2.192/27"
   ecs_cidr_block_b           = "10.0.2.224/27"
 
-  secret_recovery_window_in_days = 7
-
   task_size = {
     cpu    = 512
     memory = 1024
@@ -243,6 +242,10 @@ module "notebook_service" {
   accounting_base_url = "https://${local.primary_domain}${var.accounting_svc_base_path}"
   keycloak_server_url = "https://${local.primary_domain}/auth/"
   keycloak_realm_name = "SBO"
+
+  accounting_enabled  = true
+  hub_on_eks_full_url = var.notebook_hub_on_eks_full_url
+  secrets_arn         = local.notebook_service_secrets_arn
 }
 
 module "github_notebook_service_ecs_redeploy_role" {

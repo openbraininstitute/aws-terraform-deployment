@@ -29,5 +29,5 @@ jobs:
           then
             ./scripts/terraform_plan_${{ github.ref_name }}.sh
           else
-            terraform plan -var-file="${{ github.ref_name }}.tfvars" -out plan.tfplan >/dev/null && terraform show plan.tfplan
+            terraform plan -input=false -var-file="${{ github.ref_name }}.tfvars" -out plan.tfplan >/dev/null && terraform show plan.tfplan
           fi

@@ -29,4 +29,4 @@ jobs:
 
       - name: Run Terraform Plan
         run: |
-          terraform plan -var-file="production.tfvars" -out plan.tfplan >/dev/null && terraform show plan.tfplan
+          terraform plan -input=false -var-file="production.tfvars" -out plan.tfplan >/dev/null && terraform show plan.tfplan
