@@ -19,6 +19,7 @@ accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/a
 me_model_analysis_docker_image_url        = "public.ecr.aws/openbraininstitute/me-model-analysis:staging"
 jupyterhub_ec2_type                       = "t3.micro"
 notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:staging"
+notebook_hub_on_eks_full_url              = "none"
 
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-staging"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-staging"
