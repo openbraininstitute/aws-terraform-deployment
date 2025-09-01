@@ -11,7 +11,10 @@ module "s3_bucket" {
   cors_rule = [
     {
       allowed_methods = ["GET"]
-      allowed_origins = ["https://${var.primary_domain}"]
+      allowed_origins = concat(
+        ["https://${var.primary_domain}"],
+        startswith(var.primary_domain, "staging.") ? ["https://dev.openbraininstitute.org"] : []
+      )
       allowed_headers = ["x-amz-meta-category"]
       expose_headers  = ["x-amz-meta-category"]
     }
@@ -137,7 +140,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_TOOLS__WHITELISTED_TOOL_REGEX"
-          value = "^(?!.*(downloadone|ionchannelmodel|measurementannotation|simulation|synaptome|scs|mcp|simulation|research|experimentalsynapsesperconnection|circuit|obione|expert|context-analyzer)).*"
+          value = "^(?!.*(downloadone|ionchannelmodel|measurementannotation|simulation|synaptome|scs|mcp|research|experimentalsynapsesperconnection|circuit|ephysmetrics|expert|context-analyzer)).*"
 
 
         },
