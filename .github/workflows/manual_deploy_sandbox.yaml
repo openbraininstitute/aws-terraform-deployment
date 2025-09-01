@@ -34,7 +34,7 @@ jobs:
           then
             ./scripts/terraform_plan_${{ inputs.environment }}.sh
           else
-            terraform plan -var-file="${{ inputs.environment }}.tfvars" -out plan.tfplan >/dev/null && terraform show plan.tfplan
+            terraform plan -input=false -var-file="${{ inputs.environment }}.tfvars" -out plan.tfplan >/dev/null && terraform show plan.tfplan
           fi
       - name: Run Terraform Apply
         run: |-

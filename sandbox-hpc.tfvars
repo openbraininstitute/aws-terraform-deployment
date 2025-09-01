@@ -16,6 +16,7 @@ cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/s
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:latest"
 jupyterhub_ec2_type                       = "t3.micro"
 notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:staging"
+notebook_hub_on_eks_full_url              = "none"
 
 bluenaas_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:staging"
 bluenaas_task_size = {

@@ -35,7 +35,7 @@ jobs:
 
       - name: Run Terraform Plan
         run: |
-          terraform plan -var-file="${{ github.base_ref }}.tfvars" -out plan.tfplan >/dev/null
+          terraform plan -input=false -var-file="${{ github.base_ref }}.tfvars" -out plan.tfplan >/dev/null
           terraform show plan.tfplan
           terraform show -no-color -json plan.tfplan > tfplan.json
 

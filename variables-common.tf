@@ -270,3 +270,8 @@ variable "obi_generative_gui_docker_image_url" {
   type        = string
   description = "Docker image URL for obi-generative-gui service."
 }
+
+variable "notebook_hub_on_eks_full_url" {
+  type        = string
+  description = "URL of /hub of the JupyterHub on EKS instance, needed for the notebooks service"
+}
