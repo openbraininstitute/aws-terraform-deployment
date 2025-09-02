@@ -13,7 +13,7 @@ module "s3_bucket" {
       allowed_methods = ["GET"]
       allowed_origins = concat(
         ["https://${var.primary_domain}"],
-        startswith(var.primary_domain, "staging.") ? ["https://dev.openbraininstitute.org"] : []
+        startswith(var.primary_domain, "staging.") ? ["https://dev.openbraininstitute.org", "http://localhost:3000"] : []
       )
       allowed_headers = ["x-amz-meta-category"]
       expose_headers  = ["x-amz-meta-category"]
