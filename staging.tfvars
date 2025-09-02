@@ -37,6 +37,20 @@ small_scale_simulator_workers = {
       { capacity_provider = "FARGATE_SPOT", weight = 100 }
     ]
   }
+  # This is a temporary solution to unblock testing of the service
+  # Will be replaced by on-demand tasks to reduce cost
+  mesh_skeletonization = {
+    task_size = {
+      cpu    = 16384
+      memory = 32768
+    }
+    num_workers             = 1
+    queues                  = "mesh_skeletonization"
+    autoscaler_min_capacity = 1
+    capacity_provider_strategy = [
+      { capacity_provider = "FARGATE", weight = 100 },
+    ]
+  }
 }
 
 virtual_lab_manager_task_size = {
