@@ -90,7 +90,7 @@ variable "hpc_resource_provisioner_container_version" {
   type = string
 }
 
-variable "sbo_nexusdata_bucket" {
+variable "data_bucket" {
   type = string
 }
 
@@ -99,5 +99,21 @@ variable "containers_bucket" {
 }
 
 variable "scratch_bucket" {
+  type = string
+}
+
+variable "scratch_bucket_arn" {
+  type = string
+}
+
+variable "private_alb_https_listener_arn" {
+  type = string
+}
+
+variable "infrastructureassets_bucket_name" {
+  type = string
+}
+
+variable "pcluster_ami_id" {
   type = string
 }

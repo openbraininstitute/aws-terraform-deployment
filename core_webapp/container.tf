@@ -13,7 +13,7 @@ resource "aws_cloudwatch_log_group" "core_webapp" {
 
   tags = {
     Application = "core_webapp"
-    SBO_Billing = "core_webapp"
+    SBO_Billing = var.sbo_billing_tag
   }
 }
 
@@ -22,7 +22,7 @@ resource "aws_ecs_cluster" "core_webapp" {
 
   tags = {
     Application = "core_webapp"
-    SBO_Billing = "core_webapp"
+    SBO_Billing = var.sbo_billing_tag
   }
   setting {
     name  = "containerInsights"
@@ -38,7 +38,7 @@ resource "aws_security_group" "core_webapp_ecs_task" {
 
   tags = {
     Name        = "core_webapp_secgroup"
-    SBO_Billing = "core_webapp"
+    SBO_Billing = var.sbo_billing_tag
   }
 }
 
@@ -51,7 +51,7 @@ resource "aws_vpc_security_group_ingress_rule" "core_webapp_allow_port_8000" {
   cidr_ipv4   = var.vpc_cidr_block
   description = "Allow port 8000 http"
   tags = {
-    SBO_Billing = "core_webapp"
+    SBO_Billing = var.sbo_billing_tag
   }
 }
 
@@ -66,7 +66,7 @@ resource "aws_vpc_security_group_egress_rule" "core_webapp_allow_outgoing_tcp" {
   #cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
   description = "Allow all TCP"
   tags = {
-    SBO_Billing = "core_webapp"
+    SBO_Billing = var.sbo_billing_tag
   }
 }
 
@@ -81,7 +81,7 @@ resource "aws_vpc_security_group_egress_rule" "core_webapp_allow_outgoing_udp" {
   #cidr_ipv4   = data.terraform_remote_state.common.outputs.vpc_cidr_block
   description = "Allow all UDP"
   tags = {
-    SBO_Billing = "core_webapp"
+    SBO_Billing = var.sbo_billing_tag
   }
 }
 
@@ -121,10 +121,6 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
           value = var.accounting_base_url
         },
         {
-          name  = "NEXT_PUBLIC_DEPLOYMENT_ENV"
-          value = var.env_NEXT_PUBLIC_DEPLOYMENT_ENV
-        },
-        {
           name  = "NEXTAUTH_URL"
           value = var.env_NEXTAUTH_URL
         },
@@ -133,32 +129,8 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
           value = var.env_KEYCLOAK_ISSUER
         },
         {
-          name  = "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"
-          value = var.env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-        },
-        {
-          name  = "NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL"
-          value = var.env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL
-        },
-        {
-          name  = "NEXT_PUBLIC_MATOMO_URL"
-          value = var.env_NEXT_PUBLIC_MATOMO_URL
-        },
-        {
-          name  = "NEXT_PUBLIC_MATOMO_CDN_URL"
-          value = var.env_NEXT_PUBLIC_MATOMO_CDN_URL
-        },
-        {
-          name  = "NEXT_PUBLIC_MATOMO_SITE_ID"
-          value = var.env_NEXT_PUBLIC_MATOMO_SITE_ID
-        },
-        {
-          name  = "NEXT_PUBLIC_NOTEBOOK_SERVICE_BASE_URL"
-          value = var.env_NEXT_PUBLIC_NOTEBOOK_SERVICE_BASE_URL
-        },
-        {
-          name  = "NEXT_PUBLIC_ENABLE_RUN_NOTEBOOK"
-          value = var.env_NEXT_PUBLIC_ENABLE_RUN_NOTEBOOK
+          name  = "NEXT_PUBLIC_CDN_URI"
+          value = var.key == "main" ? "https://${aws_cloudfront_distribution.core_webapp_cdn[0].domain_name}" : "https://placeholder"
         },
       ]
       secrets = [
@@ -214,7 +186,7 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
   task_role_arn            = aws_iam_role.ecs_core_webapp_task_role[0].arn
 
   tags = {
-    SBO_Billing = "core_webapp"
+    SBO_Billing = var.sbo_billing_tag
   }
 }
 
@@ -249,7 +221,7 @@ resource "aws_ecs_service" "core_webapp_ecs_service" {
     ignore_changes = [desired_count]
   }
   tags = {
-    SBO_Billing = "core_webapp"
+    SBO_Billing = var.sbo_billing_tag
   }
   propagate_tags = "SERVICE"
 }
@@ -274,7 +246,7 @@ resource "aws_iam_role" "ecs_core_webapp_task_execution_role" {
 }
 EOF
   tags = {
-    SBO_Billing = "core_webapp"
+    SBO_Billing = var.sbo_billing_tag
   }
 }
 
@@ -305,7 +277,7 @@ resource "aws_iam_role" "ecs_core_webapp_task_role" {
 }
 EOF
   tags = {
-    SBO_Billing = "core_webapp"
+    SBO_Billing = var.sbo_billing_tag
   }
 }
 

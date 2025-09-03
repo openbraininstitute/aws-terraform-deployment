@@ -99,12 +99,26 @@ module "resource-provisioner" {
   hpc_resource_provisioner_container_version = var.hpc_resource_provisioner_container_version
   aws_security_group_efa_id                  = module.security.aws_security_group_efa_id
 
-  sbo_nexusdata_bucket = var.sbo_nexusdata_bucket
-  containers_bucket    = var.containers_bucket
-  scratch_bucket       = var.scratch_bucket
+  data_bucket         = var.data_bucket
+  containers_bucket   = var.containers_bucket
+  scratch_bucket      = var.scratch_bucket
+  scratch_bucket_arn  = var.scratch_bucket_arn
+  infra_assets_bucket = var.infrastructureassets_bucket_name
+  fsx_policy_arn      = module.security.fsx_policy_arn
+  fs_subnet_ids       = module.networking.fs_subnet_ids
+  fs_sg_id            = module.security.compute_efs_sg_id
+  pcluster_ami_id     = var.pcluster_ami_id
 }
 
 module "dynamodb" {
   source        = "./dynamodb/"
   is_production = var.is_production
+}
+
+module "s3" {
+  source                                  = "./s3/"
+  infrastructureassets_bucket_name        = var.infrastructureassets_bucket_name
+  hpc_resource_provisioner_data_bucket    = var.data_bucket
+  hpc_resource_provisioner_scratch_bucket = var.scratch_bucket
+  account_id                              = var.account_id
 }

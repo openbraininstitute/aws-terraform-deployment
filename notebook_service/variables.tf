@@ -20,7 +20,7 @@ variable "base_path" {
 }
 
 variable "docker_image_url" {
-  description = "Docker image for the bluenaas service"
+  description = "Docker image for the notebook service"
   type        = string
 }
 
@@ -69,7 +69,17 @@ variable "ecs_cidr_block_b" {
   description = "CIDR block for ECS subnet b"
 }
 
-variable "secret_recovery_window_in_days" {
-  description = "Secret recovery window in days"
-  type        = number
+variable "hub_on_eks_full_url" {
+  description = "Full url to reach /hub on the EKS cluster"
+  type        = string
+}
+
+variable "accounting_enabled" {
+  description = "Is accounting (credits required or not) enabled or not"
+  type        = bool
+}
+
+variable "secrets_arn" {
+  description = "Secrets ARN for the notebook service"
+  type        = string
 }

@@ -98,50 +98,34 @@ variable "env_KEYCLOAK_ISSUER" {
   description = "KEYCLOAK_ISSUER environment value for the webapp"
 }
 
-variable "env_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY" {
+# S3 and CloudFront Configuration Variables
+variable "s3_bucket_name" {
   type        = string
-  sensitive   = false
-  description = "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY environment value for the webapp"
-}
-
-variable "env_NEXT_PUBLIC_BBS_ML_PRIVATE_BASE_URL" {
-  type        = string
-  sensitive   = false
-  description = "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY environment value for the webapp"
-}
-
-variable "env_NEXT_PUBLIC_DEPLOYMENT_ENV" {
-  type        = string
-  description = "env core-web-app is deployed <staging|production>"
+  description = "Name of the S3 bucket for core webapp assets"
   sensitive   = false
 }
 
-variable "env_NEXT_PUBLIC_MATOMO_URL" {
-  type        = string
-  description = "Matomo url to server analytics script, (this is global)"
+variable "s3_bucket_allowed_origins" {
+  type        = list(string)
+  description = "Allowed CORS origins for the S3 bucket"
+}
+
+variable "cloudfront_aliases" {
+  type        = list(string)
+  description = "List of domain aliases for CloudFront distribution"
+  default     = null
   sensitive   = false
 }
 
-variable "env_NEXT_PUBLIC_MATOMO_CDN_URL" {
+variable "cloudfront_certificate_arn" {
   type        = string
-  description = "Matomo url to server analytics script using cdn, (this is global)"
-  sensitive   = false
+  description = "ARN of ACM certificate for CloudFront custom domain"
+  default     = null
 }
 
-variable "env_NEXT_PUBLIC_MATOMO_SITE_ID" {
+variable "sbo_billing_tag" {
   type        = string
-  description = "Matomo site id <staging | production>"
-  sensitive   = false
-}
-
-variable "env_NEXT_PUBLIC_NOTEBOOK_SERVICE_BASE_URL" {
-  type        = string
-  description = "Notebook service base url"
-  sensitive   = false
-}
-
-variable "env_NEXT_PUBLIC_ENABLE_RUN_NOTEBOOK" {
-  type        = string
-  description = "Enable run notebook feature, either the string 'True', either anything else for false"
+  description = "Value for the SBO_Billing tag"
+  default     = "core_webapp"
   sensitive   = false
 }

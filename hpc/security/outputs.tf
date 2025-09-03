@@ -29,3 +29,7 @@ output "resource_provisioner_security_group_id" {
 output "aws_security_group_efa_id" {
   value = aws_security_group.efa.id
 }
+
+output "fsx_policy_arn" {
+  value = aws_iam_policy.fsx_describe_dra_policy.arn
+}

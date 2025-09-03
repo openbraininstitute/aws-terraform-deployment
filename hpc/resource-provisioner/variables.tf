@@ -22,7 +22,7 @@ variable "hpc_resource_provisioner_container_version" {
   type = string
 }
 
-variable "sbo_nexusdata_bucket" {
+variable "data_bucket" {
   type = string
 }
 
@@ -34,6 +34,30 @@ variable "scratch_bucket" {
   type = string
 }
 
+variable "scratch_bucket_arn" {
+  type = string
+}
+
+variable "infra_assets_bucket" {
+  type = string
+}
+
 variable "aws_security_group_efa_id" {
+  type = string
+}
+
+variable "fsx_policy_arn" {
+  type = string
+}
+
+variable "fs_subnet_ids" {
+  type = list(string)
+}
+
+variable "fs_sg_id" {
+  type = string
+}
+
+variable "pcluster_ami_id" {
   type = string
 }

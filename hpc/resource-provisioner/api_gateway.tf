@@ -64,7 +64,7 @@ resource "aws_api_gateway_deployment" "hpc_resource_provisioner_api_deployment" 
     aws_api_gateway_method.hpc_resource_provisioner_pcluster_method,
     aws_api_gateway_method.hpc_resource_provisioner_version_method,
     aws_api_gateway_integration.hpc_resource_provisioner_pcluster_integration,
-    aws_api_gateway_integration.hpc_resource_provisioner_version_integration
+    aws_api_gateway_integration.hpc_resource_provisioner_version_integration,
   ]
   triggers = {
     # redeploy when the api or its methods change, but also serves to declare a dependency

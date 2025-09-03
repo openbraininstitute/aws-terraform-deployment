@@ -8,6 +8,18 @@ module "s3_bucket" {
   control_object_ownership = true
   object_ownership         = "ObjectWriter"
 
+  cors_rule = [
+    {
+      allowed_methods = ["GET"]
+      allowed_origins = concat(
+        ["https://${var.primary_domain}"],
+        startswith(var.primary_domain, "staging.") ? ["https://dev.openbraininstitute.org", "http://localhost:3000"] : []
+      )
+      allowed_headers = ["x-amz-meta-category"]
+      expose_headers  = ["x-amz-meta-category"]
+    }
+  ]
+
   versioning = {
     enabled = false
   }
@@ -111,14 +123,6 @@ module "ecs_service_agent" {
           value = aws_elasticache_cluster.ml_redis_cluster.port
         },
         {
-          name  = "NEUROAGENT_TOOLS__LITERATURE__RETRIEVER_K"
-          value = "100"
-        },
-        {
-          name  = "NEUROAGENT_TOOLS__LITERATURE__URL"
-          value = "https://${var.primary_domain}/api/literature"
-        },
-        {
           name  = "NEUROAGENT_TOOLS__OBI_ONE__URL"
           value = "https://${var.primary_domain}/api/obi-one"
         },
@@ -131,8 +135,12 @@ module "ecs_service_agent" {
           value = "https://${var.primary_domain}/api/thumbnail-generation"
         },
         {
+          name  = "NEUROAGENT_TOOlS__FRONTEND_BASE_URL"
+          value = "https://${var.primary_domain}"
+        },
+        {
           name  = "NEUROAGENT_TOOLS__WHITELISTED_TOOL_REGEX"
-          value = "^(?!.*(downloadone|ionchannelmodel|measurementannotation|simulation|synaptome|plot-generator|scs|thumbnail|mcp|simulation|tavily|read|research|exa|python|experimentalsynapsesperconnection|circuit|obione)).*"
+          value = "^(?!.*(downloadone|ionchannelmodel|measurementannotation|simulation|synaptome|scs|mcp|research|experimentalsynapsesperconnection|circuit|ephysmetrics|expert|context-analyzer)).*"
 
 
         },
@@ -147,8 +155,8 @@ module "ecs_service_agent" {
           valueFrom = "${var.ml_secrets_arn}:OPENAI_API_KEY::"
         },
         {
-          name      = "NEUROAGENT_TOOLS__WEB_SEARCH__TAVILY_API_KEY"
-          valueFrom = "${var.ml_secrets_arn}:TAVILY_API_KEY::"
+          name      = "NEUROAGENT_MCP__SECRETS__EXA_API_KEY"
+          valueFrom = "${var.ml_secrets_arn}:EXA_API_KEY::"
         },
       ]
       readonly_root_filesystem = false

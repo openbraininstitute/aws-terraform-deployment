@@ -1,3 +1,11 @@
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+    }
+  }
+}
+
 #tfsec:ignore:aws-s3-enable-bucket-encryption
 #tfsec:ignore:aws-s3-enable-bucket-logging
 #tfsec:ignore:aws-s3-enable-versioning
@@ -14,6 +22,16 @@ resource "aws_s3_bucket_lifecycle_configuration" "nexus_ship" {
     filter {}
     abort_incomplete_multipart_upload {
       days_after_initiation = 7
+    }
+  }
+  rule {
+    id     = "IntelligentTiering"
+    status = "Enabled"
+    filter {}
+
+    transition {
+      days          = 0         # Transition immediately upon creation
+      storage_class = "GLACIER" # AKA Amazon S3 Glacier Flexible Retrieval
     }
   }
 }

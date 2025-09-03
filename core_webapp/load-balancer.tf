@@ -14,7 +14,7 @@ resource "aws_lb_target_group" "core_webapp_private" {
     matcher = "200,307"
   }
   tags = {
-    SBO_Billing = "core_webapp"
+    SBO_Billing = var.sbo_billing_tag
   }
 }
 
@@ -43,6 +43,6 @@ resource "aws_lb_listener_rule" "private_core_webapp" {
   }
 
   tags = {
-    SBO_Billing = "core_webapp"
+    SBO_Billing = var.sbo_billing_tag
   }
 }

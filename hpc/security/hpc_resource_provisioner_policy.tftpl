@@ -11,19 +11,10 @@
                 "iam:DeleteRolePolicy",
                 "iam:CreateRole",
                 "iam:DeleteRole",
-                "iam:TagRole"
+                "iam:TagRole",
+                "iam:PassRole"
             ],
             "Resource": "*"
-        },
-        {
-            "Sid": "FSXServiceLinkedRole",
-            "Action": [
-                "iam:AttachRolePolicy",
-                "iam:CreateServiceLinkedRole",
-                "iam:PutRolePolicy"
-            ],
-            "Resource": "arn:aws:iam::*:role/aws-service-role/s3.data-source.lustre.fsx.amazonaws.com/*",
-            "Effect": "Allow"
         },
         {
             "Action": [
@@ -195,6 +186,7 @@
             "Resource": [
                 "arn:aws:lambda:*:${account_id}:function:parallelcluster-*",
                 "arn:aws:lambda:*:${account_id}:function:pcluster-*",
+                "arn:aws:lambda:*:${account_id}:function:hpc-resource-provisioner-creator",
                 "arn:aws:lambda:*:${account_id}:function:hpc-resource-provisioner-creator"
             ],
             "Effect": "Allow",
@@ -207,7 +199,7 @@
             "Resource": [
                 "arn:aws:s3:::parallelcluster-*",
                 "arn:aws:s3:::aws-parallelcluster-*",
-                "arn:aws:s3:::sbosandbox-lec3cn"
+                "arn:aws:s3:::sbosandbox-*"
             ],
             "Effect": "Allow",
             "Sid": "S3ResourcesBucket"
@@ -305,13 +297,21 @@
                 ]
         },
         {
-            "Sid": "AllowCreateSecretsManagerSecret",
+            "Sid": "AllowManipulateSecretsManagerSecret",
             "Effect": "Allow",
             "Action": [
               "secretsmanager:CreateSecret",
               "secretsmanager:DeleteSecret",
-              "secretsmanager:ListSecrets",
-              "secretsmanager:TagResource"
+              "secretsmanager:TagResource",
+              "secretsmanager:GetSecretValue"
+            ],
+            "Resource": "arn:aws:secretsmanager:${aws_region}:${account_id}:secret:pcluster*"
+        },
+        {
+            "Sid": "AllowListSecretsManagerSecrets",
+            "Effect": "Allow",
+            "Action": [
+              "secretsmanager:ListSecrets"
             ],
             "Resource": "*"
         }

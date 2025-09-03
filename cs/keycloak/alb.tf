@@ -10,14 +10,14 @@ resource "aws_lb_target_group" "private_keycloak_target_group" {
     SBO_Billing = "keycloak"
   }
   health_check {
-    path                = "/auth/health"
+    path                = "/auth/health/ready"
     port                = var.keycloak_management_port
     protocol            = "HTTP"
-    interval            = 30
+    interval            = 60
     timeout             = 5
     healthy_threshold   = 2
     unhealthy_threshold = 2
-    matcher             = "200-399"
+    matcher             = "200"
   }
 }
 

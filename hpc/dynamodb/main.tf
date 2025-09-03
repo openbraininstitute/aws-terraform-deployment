@@ -25,7 +25,17 @@ resource "aws_dynamodb_table" "pcluster_subnets_dynamo_table" {
     name = "subnet_id"
     type = "S"
   }
+  attribute {
+    name = "cluster"
+    type = "S"
+  }
   billing_mode                = "PAY_PER_REQUEST"
   deletion_protection_enabled = var.is_production
   hash_key                    = "subnet_id"
+  global_secondary_index {
+    name               = "ClusterIndex"
+    hash_key           = "cluster"
+    projection_type    = "INCLUDE"
+    non_key_attributes = ["subnet_id"]
+  }
 }

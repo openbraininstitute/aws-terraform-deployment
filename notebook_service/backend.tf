@@ -152,9 +152,22 @@ resource "aws_ecs_task_definition" "ecs_definition" {
         {
           name  = "ACCOUNTING_BASE_URL"
           value = var.accounting_base_url
+        },
+        {
+          name  = "HUB_ON_EKS_FULL_URL",
+          value = var.hub_on_eks_full_url
+        },
+        {
+          name  = "ACCOUNTING_ENABLED",
+          value = var.accounting_enabled ? "True" : "False"
         }
       ]
-
+      secrets = [
+        {
+          name      = "EKS_CLUSTER_ENDPOINT_URL"
+          valueFrom = "${var.secrets_arn}:eks_cluster_endpoint_url::"
+        }
+      ]
       logConfiguration = {
         logDriver = "awslogs"
         options = {
@@ -239,6 +252,31 @@ resource "aws_iam_role" "ecs_task_role" {
   })
 }
 
+resource "aws_iam_policy" "eks_access" {
+  name_prefix = "notebook_service_ecs_eks_policy"
+  description = "Policy that gives access to EKS for the notebook service"
+
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "eks:DescribeCluster",
+          "eks:ListClusters",
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "eks_policy_attachment" {
+  role       = aws_iam_role.ecs_task_role.name
+  policy_arn = aws_iam_policy.eks_access.arn
+}
+
 resource "aws_iam_policy" "ecs_task_logs" {
   name_prefix = "notebook_service_ecs"
   description = "Allows ECS tasks to create log streams and log groups in CloudWatch Logs"
@@ -270,3 +308,7 @@ resource "aws_iam_role_policy_attachment" "ecs" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+resource "aws_iam_role_policy_attachment" "secrets_access_policy_attachment" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = aws_iam_policy.secrets_access.arn
+}

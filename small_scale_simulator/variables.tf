@@ -19,6 +19,11 @@ variable "base_path" {
   type        = string
 }
 
+variable "cors_origins" {
+  description = "CORS origins"
+  type        = list(string)
+}
+
 variable "api_docker_image_url" {
   description = "Docker image for the API service"
   type        = string
@@ -54,10 +59,6 @@ variable "secrets_arn" {
   type = string
 }
 
-variable "nexus_delta_uri" {
-  type = string
-}
-
 variable "accounting_base_url" {
   type        = string
   description = "Accounting service base URL"
@@ -69,16 +70,7 @@ variable "entitycore_url" {
   type        = string
 }
 
-# TODO : Configure task sizes for api, consider adding autoscaling params for workers
-
-variable "worker_task_size" {
-  type = object({
-    cpu    = any
-    memory = any
-  })
-
-  description = "CPU and memory limit for ECS worker task (number or string format)"
-}
+# TODO : Configure task sizes for api
 
 variable "api_task_size" {
   type = object({
@@ -89,23 +81,20 @@ variable "api_task_size" {
   description = "CPU and memory limit for ECS API task (number or string format)"
 }
 
-variable "num_workers" {
-  type = string
-
-  description = "Number of worker processes per each ECS worker node"
-}
-
-variable "worker_autoscaler_min_capacity" {
-  type = number
-
-  description = "Minimum number of worker nodes requested from capacity provider"
-}
-
-variable "worker_capacity_provider_strategy" {
-  type = list(object({
-    capacity_provider = string # Valid values: FARGATE, FARGATE_SPOT
-    weight            = number
+variable "workers" {
+  type = map(object({
+    task_size = object({
+      cpu    = any
+      memory = any
+    })
+    num_workers             = number
+    queues                  = string
+    autoscaler_min_capacity = number
+    capacity_provider_strategy = list(object({
+      capacity_provider = string # Valid values: FARGATE, FARGATE_SPOT
+      weight            = number
+    }))
   }))
 
-  description = "Capacity provider strategy for worker service"
+  description = "Map of worker configurations. Each key represents a worker service name with its configuration."
 }

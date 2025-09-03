@@ -36,6 +36,16 @@ resource "aws_s3_bucket_lifecycle_configuration" "nexus_obp" {
       days_after_initiation = 7
     }
   }
+  rule {
+    id     = "IntelligentTiering"
+    status = "Enabled"
+    filter {}
+
+    transition {
+      days          = 0         # Transition immediately upon creation
+      storage_class = "GLACIER" # AKA Amazon S3 Glacier Flexible Retrieval
+    }
+  }
 }
 
 resource "aws_s3_bucket_public_access_block" "nexus_obp" {
@@ -73,6 +83,16 @@ resource "aws_s3_bucket_lifecycle_configuration" "nexus_openscience" {
     filter {}
     abort_incomplete_multipart_upload {
       days_after_initiation = 7
+    }
+  }
+  rule {
+    id     = "IntelligentTiering"
+    status = "Enabled"
+    filter {}
+
+    transition {
+      days          = 0         # Transition immediately upon creation
+      storage_class = "GLACIER" # AKA Amazon S3 Glacier Flexible Retrieval
     }
   }
 }

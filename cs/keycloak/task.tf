@@ -12,7 +12,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
   container_definitions = jsonencode([
     {
       name      = "keycloak-container"
-      image     = "keycloak/keycloak:26.2.4"
+      image     = "quay.io/keycloak/keycloak:26.2.4"
       cpu       = var.keycloak_task_size.cpu
       memory    = var.keycloak_task_size.memory
       command   = ["start"]
@@ -34,11 +34,11 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
       healthcheck = {
         command = [
           "CMD-SHELL",
-          "exec 3<>/dev/tcp/127.0.0.1/${var.keycloak_management_port};echo -e 'GET /health/ready HTTP/1.1\r\nhost: http://localhost\r\nConnection: close\r\n\r\n' >&3;if [ $? -eq 0 ]; then echo 'Healthcheck Successful';exit 0;else echo 'Healthcheck Failed';exit 1;fi;"
+          "[ -f /tmp/HealthCheck.java ] || echo 'public class HealthCheck { public static void main(String[] args) throws java.lang.Throwable { java.net.URI uri = java.net.URI.create(args[0]); System.exit(java.net.HttpURLConnection.HTTP_OK == ((java.net.HttpURLConnection)uri.toURL().openConnection()).getResponseCode() ? 0 : 1); } }' > /tmp/HealthCheck.java && java /tmp/HealthCheck.java http://localhost:${var.keycloak_management_port}/auth/health/ready"
         ]
-        interval    = 30
+        interval    = 10
         timeout     = 5
-        startPeriod = 120
+        startPeriod = 90
         retries     = 3
       }
       environment = [
@@ -84,7 +84,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
         },
         {
           name  = "KC_EVENT_METRICS_USER_ENABLED"
-          value = "true"
+          value = "false"
         },
         {
           name  = "KC_HTTP_METRICS_HISTOGRAMS_ENABLED"
@@ -146,7 +146,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
     },
     {
       name  = "aws-collector"
-      image = "public.ecr.aws/aws-observability/aws-otel-collector:v0.43.2"
+      image = "public.ecr.aws/aws-observability/aws-otel-collector:v0.43.3"
       command = [
         "--config=/etc/ecs/otel-agent-config.yaml"
       ]
@@ -183,7 +183,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
     },
     {
       name      = "keycloak-otel-agent-config"
-      image     = "bash"
+      image     = "public.ecr.aws/docker/library/bash:alpine3.22"
       essential = false
       command = [
         "sh",

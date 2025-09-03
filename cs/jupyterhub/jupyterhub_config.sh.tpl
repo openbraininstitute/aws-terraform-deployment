@@ -60,6 +60,11 @@ done
 JUPYTERHUB_ADMINS_SET=$(printf "'%s', " ${JUPYTERHUB_ADMINS})
 JUPYTERHUB_ADMINS_SET="$${JUPYTERHUB_ADMINS_SET%, }"  # remove trailing comma and space
 
+# additional Jupyter server config
+cat <<EOF > /opt/tljh/user/etc/jupyter/jupyter_server_config.json
+{"FileContentsManager":{"always_delete_dir":true}}
+EOF
+
 # Setup Keycloak as a GenericOAuthenticator
 cat <<EOF > /opt/tljh/config/jupyterhub_config.d/keycloak.py
 c.JupyterHub.authenticator_class = "generic-oauth"
