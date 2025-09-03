@@ -57,6 +57,13 @@ variable "core_web_app_dev_docker_image_url" {
   sensitive   = false
 }
 
+variable "core_web_app_preview_docker_image_url" {
+  default     = null
+  type        = string
+  description = "docker image for the core-web-app-preview"
+  sensitive   = false
+}
+
 variable "core_webapp_s3_bucket_name" {
   type        = string
   description = "S3 bucket name for core webapp main assets"
