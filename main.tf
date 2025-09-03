@@ -10,6 +10,16 @@ locals {
   public_nlb_sg_id = data.terraform_remote_state.common.outputs.public_nlb_sg_id
   nat_gateway_id   = data.terraform_remote_state.common.outputs.nat_gateway_id
 
+  core_web_app_origins = concat(
+    ["https://${local.primary_domain}"],
+    var.is_staging ? [
+      "http://127.0.0.1:3000",
+      "http://localhost:3000",
+      "https://preview.openbraininstitute.org",
+      "https://dev.openbraininstitute.org",
+    ] : []
+  )
+
   vpc_cidr_block    = data.terraform_remote_state.common.outputs.vpc_cidr_block
   vpc_default_sg_id = data.terraform_remote_state.common.outputs.vpc_default_sg_id
 
@@ -195,11 +205,8 @@ module "small_scale_simulator" {
   api_docker_image_url    = var.small_scale_simulator_api_docker_image_url
   worker_docker_image_url = var.small_scale_simulator_worker_docker_image_url
 
-  base_path = "/api/small-scale-simulator"
-  cors_origins = concat(
-    ["https://${local.primary_domain}"],
-    var.is_staging ? ["http://localhost:3000", "https://dev.openbraininstitute.org"] : []
-  )
+  base_path    = "/api/small-scale-simulator"
+  cors_origins = local.core_web_app_origins
 
   accounting_base_url = "https://${local.primary_domain}${var.accounting_svc_base_path}"
   entitycore_url      = "https://${local.primary_domain}/api/entitycore"
@@ -370,6 +377,38 @@ module "core_webapp_dev" {
   env_KEYCLOAK_ISSUER = "https://${local.primary_domain}/auth/realms/SBO"
 }
 
+module "core_webapp_preview" {
+  source = "./core_webapp"
+
+  count = var.is_staging ? 1 : 0
+
+  key               = "preview"
+  log_group_name    = "core_webapp_preview"
+  vpc_id            = local.vpc_id
+  subnet_cidr_block = "10.0.21.32/28"
+  alb_listener_arn  = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
+  # The following priority has to be higher (lower number)
+  # than the priority of the main core-web-app listener rule.
+  hostname                      = "preview.openbraininstitute.org"
+  alb_listener_rule_priority    = 981
+  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
+  aws_region                    = local.aws_region
+  docker_image_url              = var.core_web_app_preview_docker_image_url
+  route_table_id                = local.route_table_private_subnets_id
+  vpc_cidr_block                = local.vpc_cidr_block
+  secrets_arn                   = local.core_webapp_secrets_arn
+  accounting_base_url           = "https://${local.primary_domain}${var.accounting_svc_base_path}"
+
+  // These are not used in preview
+  s3_bucket_name            = var.core_webapp_s3_bucket_name
+  s3_bucket_allowed_origins = ["https://preview.openbraininstitute.org"]
+
+  sbo_billing_tag = "core_webapp_preview"
+
+  env_NEXTAUTH_URL    = "https://preview.openbraininstitute.org/api/auth"
+  env_KEYCLOAK_ISSUER = "https://${local.primary_domain}/auth/realms/SBO"
+}
+
 module "github_core_webapp_main_ecs_redeploy_role" {
   source = "./github_ecs_redeploy_role"
 
@@ -399,6 +438,22 @@ module "github_core_webapp_dev_ecs_redeploy_role" {
   ecs_cluster_name         = module.core_webapp_dev[0].ecs_cluster_name
   ecs_service_name         = module.core_webapp_dev[0].ecs_service_name
   ecs_task_definition_name = module.core_webapp_dev[0].ecs_task_definition_name
+  # The ARN of the generated role is needed in GH and is part of the outputs.
+}
+
+module "github_core_webapp_preview_ecs_redeploy_role" {
+  source = "./github_ecs_redeploy_role"
+
+  # for now we only want such a redeploy role in staging
+  count = var.is_staging ? 1 : 0
+
+  account_id               = local.account_id
+  aws_region               = local.aws_region
+  github_organisation      = local.github_organisation
+  repo_name                = "core-web-app"
+  ecs_cluster_name         = module.core_webapp_preview[0].ecs_cluster_name
+  ecs_service_name         = module.core_webapp_preview[0].ecs_service_name
+  ecs_task_definition_name = module.core_webapp_preview[0].ecs_task_definition_name
   # The ARN of the generated role is needed in GH and is part of the outputs.
 }
 
@@ -432,10 +487,7 @@ module "entitycore_svc" {
   internet_access_route_id      = local.route_table_private_subnets_id
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 
-  cors_origins = concat(
-    ["https://${local.primary_domain}"],
-    var.is_staging ? ["http://localhost:3000", "http://127.0.0.1:3000", "https://dev.openbraininstitute.org"] : []
-  )
+  cors_origins = local.core_web_app_origins
 
   entitycore_service_secrets_arn = local.entitycore_service_secrets_arn
 
@@ -482,10 +534,7 @@ module "obi_one" {
 
   task_size = var.obi_one_task_size
 
-  cors_origins = concat(
-    ["https://${local.primary_domain}"],
-    var.is_staging ? ["http://localhost:3000", "http://127.0.0.1:3000", "https://dev.openbraininstitute.org"] : []
-  )
+  cors_origins = local.core_web_app_origins
 }
 
 module "obi_generative_gui" {
@@ -524,7 +573,7 @@ module "thumbnail_generation_api" {
   thumbnail_generation_api_docker_image_url = var.thumbnail_generation_api_docker_image_url
   thumbnail_generation_api_base_path        = "/api/thumbnail-generation"
   thumbnail_generation_api_log_group_name   = "thumbnail_generation_api"
-  thumbnail_generation_api_cors_origins     = ["http://localhost:3000", "https://dev.openbraininstitute.org"]
+  thumbnail_generation_api_cors_origins     = local.core_web_app_origins
   entitycore_url                            = "https://${local.primary_domain}/api/entitycore"
 }
 
@@ -571,7 +620,7 @@ module "virtual_lab_manager" {
 
   virtual_lab_manager_mail_starttls   = "True"
   virtual_lab_manager_use_credentials = "True"
-  virtual_lab_manager_cors_origins    = ["http://localhost:3000", "https://dev.openbraininstitute.org"]
+  virtual_lab_manager_cors_origins    = local.core_web_app_origins
 
   virtual_lab_manager_admin_base_path      = "{}/app/virtual-lab/lab/{}/admin?panel=billing"
   virtual_lab_manager_deployment_namespace = "https://${local.primary_domain}"
@@ -585,16 +634,22 @@ module "dashboards" {
   aws_region = local.aws_region
 
   private_load_balancer_id = local.private_alb_https_listener_arn
-  private_load_balancer_target_suffixes = merge({
-    "AccountingService"   = module.accounting_svc.private_lb_rule_suffix
-    "CoreWebAppMain"      = module.core_webapp_main.private_lb_rule_suffix
-    "EntityCoreService"   = module.entitycore_svc.private_lb_rule_suffix
-    "KeyCloak"            = module.cs.private_keycloak_lb_rule_suffix
-    "SmallScaleSimulator" = module.small_scale_simulator.private_lb_rule_suffix
-    "SonataCellService"   = module.cells_svc.private_lb_rule_suffix
-    "ThumbnailGenerator"  = module.thumbnail_generation_api.private_lb_rule_suffix
-    "VLabManager"         = module.virtual_lab_manager.private_arn_suffix
-  }, var.is_staging ? { "CoreWebAppDev" = module.core_webapp_dev[0].private_lb_rule_suffix } : {})
+  private_load_balancer_target_suffixes = merge(
+    {
+      "AccountingService"   = module.accounting_svc.private_lb_rule_suffix
+      "CoreWebAppMain"      = module.core_webapp_main.private_lb_rule_suffix
+      "EntityCoreService"   = module.entitycore_svc.private_lb_rule_suffix
+      "KeyCloak"            = module.cs.private_keycloak_lb_rule_suffix
+      "SmallScaleSimulator" = module.small_scale_simulator.private_lb_rule_suffix
+      "SonataCellService"   = module.cells_svc.private_lb_rule_suffix
+      "ThumbnailGenerator"  = module.thumbnail_generation_api.private_lb_rule_suffix
+      "VLabManager"         = module.virtual_lab_manager.private_arn_suffix
+    },
+    var.is_staging ? {
+      "CoreWebAppDev"     = module.core_webapp_dev[0].private_lb_rule_suffix
+      "CoreWebAppPreview" = module.core_webapp_preview[0].private_lb_rule_suffix
+    } : {}
+  )
 }
 
 
