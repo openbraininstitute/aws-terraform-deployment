@@ -4,7 +4,7 @@ data "aws_vpc" "main" {
 
 resource "aws_network_acl" "cs_subnet" {
   vpc_id     = var.vpc_id
-  subnet_ids = [aws_subnet.cs_subnet_a.id, aws_subnet.cs_subnet_b.id, aws_subnet.cs_jupyterhub_subnet.id]
+  subnet_ids = [aws_subnet.cs_subnet_a.id, aws_subnet.cs_subnet_b.id, aws_subnet.cs_secret_sharing_svc_subnet.id, aws_subnet.cs_jupyterhub_subnet.id]
 
   # Allow local traffic
   ingress {
