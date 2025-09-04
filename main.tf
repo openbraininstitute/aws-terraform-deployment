@@ -75,6 +75,7 @@ module "github_oidc_provider" {
 module "cs" {
   source = "./cs"
 
+  is_staging                     = var.is_staging
   vpc_id                         = local.vpc_id
   route_table_private_subnets_id = local.route_table_private_subnets_id
   db_instance_class              = "db.t3.micro"

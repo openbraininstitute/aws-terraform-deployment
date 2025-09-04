@@ -5,3 +5,7 @@ output "keycloak_private_subnets" {
 output "jupyterhub_private_subnet" {
   value = aws_subnet.cs_jupyterhub_subnet.id
 }
+
+output "secret_sharing_svc_private_subnet" {
+  value = aws_subnet.cs_secret_sharing_svc_subnet.id
+}
