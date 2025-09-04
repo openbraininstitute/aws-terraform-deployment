@@ -67,3 +67,19 @@ module "keycloak" {
 
   allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
 }
+
+module "secret_sharing_svc" {
+  count                          = var.is_staging ? 1 : 0 # only deployed in staging
+  source                         = "./secret_sharing_svc"
+  vpc_id                         = var.vpc_id
+  private_alb_https_listener_arn = var.private_alb_https_listener_arn
+
+  secret_sharing_svc_hostname               = "secrets.openbraininstitute.org"
+  secret_sharing_svc_port                   = 8787
+  secret_sharing_svc_listener_rule_priority = 571
+  secret_sharing_svc_subnet                 = module.networking.secret_sharing_svc_private_subnet
+  secret_sharing_svc_task_size = {
+    cpu    = 256
+    memory = 512
+  }
+}

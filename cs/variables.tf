@@ -4,6 +4,12 @@ variable "vpc_id" {
   type = string
 }
 
+variable "is_staging" {
+  description = "Whether deployment is happening in staging"
+  type        = bool
+  default     = false
+}
+
 variable "route_table_private_subnets_id" {
   type = string
 }
