@@ -151,10 +151,6 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
           valueFrom = "${var.secrets_arn}:nextauth_secret::"
         },
         {
-          name      = "KEYCLOAK_CLIENT_ID"
-          valueFrom = "${var.secrets_arn}:cognito_client_id::"
-        },
-        {
           name      = "MAILCHIMP_API_KEY"
           valueFrom = "${var.secrets_arn}:MAILCHIMP_API_KEY::"
         },
