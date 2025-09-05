@@ -129,6 +129,10 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
           value = var.env_KEYCLOAK_ISSUER
         },
         {
+          name  = "KEYCLOAK_CLIENT_ID"
+          value = "core-webapp-${var.key}"
+        },
+        {
           name  = "NEXT_PUBLIC_CDN_URI"
           value = var.key == "main" ? "https://${aws_cloudfront_distribution.core_webapp_cdn[0].domain_name}" : "https://placeholder"
         },
@@ -136,7 +140,7 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
       secrets = [
         {
           name      = "KEYCLOAK_CLIENT_SECRET"
-          valueFrom = "${var.secrets_arn}:cognito_client_secret::"
+          valueFrom = "${var.secrets_arn}:client_secret_${var.key}::"
         },
         {
           name      = "GITHUB_TOKEN"
