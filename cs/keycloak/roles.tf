@@ -48,7 +48,10 @@ resource "aws_iam_policy" "ecsTaskLogs" {
           "logs:DescribeLogStreams",
           "logs:PutLogEvents",
         ]
-        Resource = "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:*"
+        Resource = [
+          "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${aws_cloudwatch_log_group.keycloak_aws_otel_collector.name}*",
+          "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${aws_cloudwatch_log_group.keycloak_ecs_task.name}*"
+        ]
       }
     ]
   })
