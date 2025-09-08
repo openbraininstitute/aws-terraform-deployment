@@ -83,3 +83,8 @@ variable "secrets_arn" {
   description = "Secrets ARN for the notebook service"
   type        = string
 }
+
+variable "cors_allowed_origins" {
+  description = "comma separated list with the list of allowed origins for the CORS settings"
+  type        = string
+}

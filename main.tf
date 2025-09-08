@@ -238,6 +238,8 @@ module "notebook_service" {
   ecs_cidr_block_a           = "10.0.2.192/27"
   ecs_cidr_block_b           = "10.0.2.224/27"
 
+  cors_allowed_origins = var.notebook_service_cors_allowed_origins
+
   task_size = {
     cpu    = 512
     memory = 1024

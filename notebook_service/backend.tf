@@ -160,6 +160,10 @@ resource "aws_ecs_task_definition" "ecs_definition" {
         {
           name  = "ACCOUNTING_ENABLED",
           value = var.accounting_enabled ? "True" : "False"
+        },
+        {
+          name  = "CORS_ALLOWED_ORIGINS",
+          value = var.cors_allowed_origins
         }
       ]
       secrets = [
