@@ -221,7 +221,7 @@ resource "aws_ecs_service" "ecs_service" {
 }
 
 resource "aws_iam_role" "ecs_task_execution_role" {
-  name_prefix = "notebook_service_ecs"
+  name_prefix = "notebook_service_task_exec_ecs"
 
   assume_role_policy = jsonencode({
     Version : "2012-10-17",
@@ -239,7 +239,7 @@ resource "aws_iam_role" "ecs_task_execution_role" {
 }
 
 resource "aws_iam_role" "ecs_task_role" {
-  name_prefix = "notebook_service_ecs"
+  name_prefix = "notebook_service_task_ecs"
 
   assume_role_policy = jsonencode({
     Version : "2012-10-17",
