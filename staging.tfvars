@@ -18,6 +18,7 @@ accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/a
 jupyterhub_ec2_type                       = "c7i.large"
 notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:staging"
 notebook_hub_on_eks_full_url              = "https://jupyterhub.staging.openbrainplatform.com/hub/"
+notebook_service_cors_allowed_origins     = "https://dev.openbraininstitute.org,https://staging.openbraininstitute.org,https://preview.openbraininstitute.org"
 
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-staging"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-staging"
@@ -66,7 +67,7 @@ entitycore_svc_aws_s3_internal_region    = "us-east-1"
 entitycore_svc_aws_s3_open_bucket        = "openbluebrain"
 entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["*"]
-entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.9.0"
+entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.9.1"
 
 obi_one_docker_image_url = "public.ecr.aws/openbraininstitute/obi-one:2025.8.3"
 obi_one_task_size = {
