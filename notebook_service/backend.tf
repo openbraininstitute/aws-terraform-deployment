@@ -162,14 +162,26 @@ resource "aws_ecs_task_definition" "ecs_definition" {
           value = var.accounting_enabled ? "True" : "False"
         },
         {
+          name  = "KUBERNETES_THREAD_ENABLED",
+          value = var.kubernetes_thread_enabled ? "True" : "False"
+        },
+        {
           name  = "CORS_ALLOWED_ORIGINS",
           value = var.cors_allowed_origins
         }
       ]
       secrets = [
         {
-          name      = "EKS_CLUSTER_ENDPOINT_URL"
-          valueFrom = "${var.secrets_arn}:eks_cluster_endpoint_url::"
+          name      = "JUPYTERHUB_ROOT_FULL_URL"
+          valueFrom = "${var.secrets_arn}:jupyterhub_root_full_url::"
+        },
+        {
+          name      = "HUB_ON_EKS_ADMIN_TOKEN"
+          valueFrom = "${var.secrets_arn}:hub_on_eks_admin_token::"
+        },
+        {
+          name      = "EKS_CLUSTER_NAME"
+          valueFrom = "${var.secrets_arn}:eks_cluster_name::"
         }
       ]
       logConfiguration = {
