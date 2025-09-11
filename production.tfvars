@@ -76,7 +76,7 @@ entitycore_svc_aws_s3_internal_region    = "us-east-1"
 entitycore_svc_aws_s3_open_bucket        = "openbluebrain"
 entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["https://www.openbraininstitute.org"]
-entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.8.5"
+entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.9.1"
 
 obi_one_docker_image_url = "public.ecr.aws/openbraininstitute/obi-one:2025.9.0"
 obi_one_task_size = {
