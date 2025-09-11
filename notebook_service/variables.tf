@@ -79,6 +79,11 @@ variable "accounting_enabled" {
   type        = bool
 }
 
+variable "kubernetes_thread_enabled" {
+  description = "Start a thread which regularly checks the pods in k8s"
+  type        = bool
+}
+
 variable "secrets_arn" {
   description = "Secrets ARN for the notebook service"
   type        = string
