@@ -137,6 +137,34 @@ resource "aws_iam_role_policy_attachment" "task_efs" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonElasticFileSystemClientFullAccess"
 }
 
+# Policy to allow API service to push CloudWatch metrics
+resource "aws_iam_policy" "api_cloudwatch_metrics" {
+  name_prefix = "small-scale-simulator-api-metrics"
+  description = "Policy to allow API service to push custom metrics to CloudWatch"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "cloudwatch:PutMetricData"
+        ]
+        Resource = "*"
+        Condition = {
+          StringEquals = {
+            "cloudwatch:namespace" = "SmallScaleSimulator/JobQueue"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "api_cloudwatch_metrics" {
+  role       = aws_iam_role.ecs_task_role.name
+  policy_arn = aws_iam_policy.api_cloudwatch_metrics.arn
+}
 
 # Service Discovery Namespace
 resource "aws_service_discovery_private_dns_namespace" "main" {
