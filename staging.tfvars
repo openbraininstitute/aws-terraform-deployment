@@ -26,7 +26,7 @@ small_scale_simulator_api_task_size = {
   cpu    = 256
   memory = 512
 }
-small_scale_simulator_workers = {
+small_scale_simulator_daemon_workers = {
   default = {
     task_size = {
       cpu    = 4096
@@ -38,6 +38,19 @@ small_scale_simulator_workers = {
     capacity_provider_strategy = [
       { capacity_provider = "FARGATE_SPOT", weight = 100 }
     ]
+  }
+}
+
+small_scale_simulator_batch_workers = {
+  mesh_skeletonization = {
+    task_size = {
+      cpu    = 16384
+      memory = 32768
+    }
+    num_workers_per_task = 1
+    queues               = ["mesh_skeletonization"]
+    max_worker_tasks     = 8
+    capacity_provider    = "FARGATE_SPOT"
   }
 }
 
