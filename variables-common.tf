@@ -109,7 +109,7 @@ variable "small_scale_simulator_daemon_workers" {
   description = "Map of daemon worker configurations for small scale simulator. Each key represents a worker service name with its configuration."
 }
 
-variable "batch_workers" {
+variable "small_scale_simulator_batch_workers" {
   type = map(object({
     task_size = object({
       cpu    = any
