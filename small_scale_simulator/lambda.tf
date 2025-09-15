@@ -31,24 +31,57 @@ resource "aws_iam_policy" "on_demand_worker_lambda_policy" {
           "logs:CreateLogStream",
           "logs:PutLogEvents"
         ]
-        Resource = "arn:aws:logs:*:*:*"
+        Resource = "arn:aws:logs:${var.aws_region}:*:log-group:/aws/lambda/small-scale-simulator-on-demand-worker*"
       },
       {
         Effect = "Allow"
         Action = [
-          "cloudwatch:GetMetricStatistics",
+          "cloudwatch:GetMetricStatistics"
+        ]
+        Resource = "*"
+        Condition = {
+          StringEquals = {
+            "cloudwatch:namespace" = "SmallScaleSimulator/JobQueue"
+          }
+        }
+      },
+      {
+        Effect = "Allow"
+        Action = [
           "cloudwatch:ListMetrics"
         ]
         Resource = "*"
+        Condition = {
+          StringLike = {
+            "cloudwatch:namespace" = "SmallScaleSimulator*"
+          }
+        }
       },
       {
         Effect = "Allow"
         Action = [
-          "ecs:RunTask",
+          "ecs:RunTask"
+        ]
+        Resource = [
+          "arn:aws:ecs:${var.aws_region}:*:cluster/${aws_ecs_cluster.main.name}",
+          "arn:aws:ecs:${var.aws_region}:*:task-definition/small-scale-simulator-on-demand-worker-*"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
           "ecs:ListTasks",
           "ecs:DescribeTasks"
         ]
-        Resource = "*"
+        Resource = [
+          "arn:aws:ecs:${var.aws_region}:*:cluster/${aws_ecs_cluster.main.name}",
+          "arn:aws:ecs:${var.aws_region}:*:task/*"
+        ]
+        Condition = {
+          StringEquals = {
+            "ecs:cluster" = "arn:aws:ecs:${var.aws_region}:*:cluster/${aws_ecs_cluster.main.name}"
+          }
+        }
       },
       {
         Effect = "Allow"
