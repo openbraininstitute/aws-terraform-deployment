@@ -98,3 +98,19 @@ variable "workers" {
 
   description = "Map of worker configurations. Each key represents a worker service name with its configuration."
 }
+
+variable "on_demand_workers" {
+  type = map(object({
+    task_size = object({
+      cpu    = any
+      memory = any
+    })
+    num_workers       = number
+    queues            = list(string)
+    max_workers       = number
+    capacity_provider = string # Valid values: FARGATE, FARGATE_SPOT
+  }))
+
+  description = "Map of on-demand worker configurations. Each worker type monitors specified queues and scales based on CloudWatch job queue length metrics."
+  default     = {}
+}

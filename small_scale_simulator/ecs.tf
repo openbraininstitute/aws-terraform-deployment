@@ -547,3 +547,122 @@ resource "aws_appautoscaling_policy" "worker_cpu" {
     scale_out_cooldown = 300
   }
 }
+
+# On-Demand Worker Task Definitions
+resource "aws_ecs_task_definition" "on_demand_worker" {
+  for_each = var.on_demand_workers
+
+  family                   = "small-scale-simulator-on-demand-worker-${each.key}"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+
+  cpu    = each.value.task_size.cpu
+  memory = each.value.task_size.memory
+
+  execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn      = aws_iam_role.ecs_task_role.arn
+
+  volume {
+    name = "storage"
+
+    efs_volume_configuration {
+      file_system_id     = aws_efs_file_system.small_scale_simulator_storage.id
+      transit_encryption = "ENABLED"
+      authorization_config {
+        access_point_id = aws_efs_access_point.small_scale_simulator_storage_ap.id
+        iam             = "ENABLED"
+      }
+    }
+  }
+
+  container_definitions = jsonencode([
+    {
+      name  = "worker"
+      image = var.worker_docker_image_url
+
+      cpu    = each.value.task_size.cpu
+      memory = each.value.task_size.memory
+
+      stopTimeout = 120
+
+      mountPoints = [
+        {
+          sourceVolume  = "storage"
+          containerPath = "/app/storage"
+          readOnly      = false
+        }
+      ]
+      environment = [
+        {
+          name  = "QUEUES"
+          value = join(",", each.value.queues)
+        },
+        {
+          name  = "NUM_WORKERS"
+          value = tostring(each.value.num_workers)
+        },
+        {
+          name  = "EXIT_AFTER_JOBS_COMPLETE"
+          value = "True"
+        },
+        {
+          name  = "REDIS_URL"
+          value = "redis://redis.small-scale-simulator.local:6379"
+        },
+        {
+          name  = "DEBUG",
+          value = "True"
+        },
+        {
+          name  = "BASE_PATH"
+          value = var.base_path
+        },
+        {
+          name  = "KC_SERVER_URI"
+          value = var.keycloak_server_url
+        },
+        {
+          name  = "KC_REALM_NAME"
+          value = "SBO"
+        },
+        {
+          name  = "DEPLOYMENT_ENV"
+          value = var.deployment_env
+        },
+        {
+          name  = "ENTITYCORE_URI"
+          value = var.entitycore_url
+        },
+        {
+          name  = "ACCOUNTING_BASE_URL"
+          value = var.accounting_base_url
+        }
+      ]
+
+      secrets = [
+        {
+          name      = "KC_CLIENT_ID"
+          valueFrom = "${var.secrets_arn}:KC_CLIENT_ID::"
+        },
+        {
+          name      = "KC_CLIENT_SECRET"
+          valueFrom = "${var.secrets_arn}:KC_CLIENT_SECRET::"
+        },
+        {
+          name      = "SENTRY_DSN"
+          valueFrom = "${var.secrets_arn}:SENTRY_DSN::"
+        }
+      ]
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = aws_cloudwatch_log_group.worker.name
+          awslogs-create-group  = "true"
+          awslogs-region        = "us-east-1"
+          awslogs-stream-prefix = "small-scale-simulator-on-demand"
+        }
+      }
+    }
+  ])
+}
