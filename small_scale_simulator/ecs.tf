@@ -357,7 +357,7 @@ resource "aws_ecs_task_definition" "api" {
 
 # Worker Task Definitions
 resource "aws_ecs_task_definition" "worker" {
-  for_each = var.workers
+  for_each = var.daemon_workers
 
   family                   = "small-scale-simulator-worker-${each.key}"
   network_mode             = "awsvpc"
@@ -515,7 +515,7 @@ resource "aws_ecs_service" "api" {
 }
 
 resource "aws_ecs_service" "worker" {
-  for_each = var.workers
+  for_each = var.daemon_workers
 
   name            = "worker-${each.key}"
   cluster         = aws_ecs_cluster.main.id
@@ -547,7 +547,7 @@ resource "aws_ecs_service" "worker" {
 
 # Auto Scaling Target for Worker Services
 resource "aws_appautoscaling_target" "worker" {
-  for_each = var.workers
+  for_each = var.daemon_workers
 
   max_capacity       = 10
   min_capacity       = each.value.autoscaler_min_capacity
@@ -558,7 +558,7 @@ resource "aws_appautoscaling_target" "worker" {
 
 # Auto Scaling Policy for Worker Services (CPU-based)
 resource "aws_appautoscaling_policy" "worker_cpu" {
-  for_each = var.workers
+  for_each = var.daemon_workers
 
   name               = "small-scale-simulator-worker-${each.key}-cpu-scaling"
   policy_type        = "TargetTrackingScaling"
@@ -578,7 +578,7 @@ resource "aws_appautoscaling_policy" "worker_cpu" {
 
 # On-Demand Worker Task Definitions
 resource "aws_ecs_task_definition" "on_demand_worker" {
-  for_each = var.on_demand_workers
+  for_each = var.batch_workers
 
   family                   = "small-scale-simulator-on-demand-worker-${each.key}"
   network_mode             = "awsvpc"

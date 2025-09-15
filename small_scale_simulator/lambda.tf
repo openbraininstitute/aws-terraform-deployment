@@ -144,7 +144,7 @@ resource "aws_lambda_function" "on_demand_worker" {
 
 # EventBridge rules for each on-demand worker
 resource "aws_cloudwatch_event_rule" "on_demand_worker_schedule" {
-  for_each = var.on_demand_workers
+  for_each = var.batch_workers
 
   name                = "small-scale-simulator-on-demand-${each.key}"
   description         = "Trigger on-demand worker scaling for ${each.key}"
@@ -152,7 +152,7 @@ resource "aws_cloudwatch_event_rule" "on_demand_worker_schedule" {
 }
 
 resource "aws_cloudwatch_event_target" "lambda_target" {
-  for_each = var.on_demand_workers
+  for_each = var.batch_workers
 
   rule      = aws_cloudwatch_event_rule.on_demand_worker_schedule[each.key].name
   target_id = "TriggerOnDemandWorker"
@@ -161,7 +161,7 @@ resource "aws_cloudwatch_event_target" "lambda_target" {
   input = jsonencode({
     worker_name       = each.key
     task_definition   = aws_ecs_task_definition.on_demand_worker[each.key].arn
-    max_workers       = each.value.max_workers
+    max_worker_tasks  = each.value.max_worker_tasks
     capacity_provider = each.value.capacity_provider
     queues            = each.value.queues
     subnets           = [aws_subnet.small_scale_simulator_secondary_a.id, aws_subnet.small_scale_simulator_secondary_b.id]
@@ -170,7 +170,7 @@ resource "aws_cloudwatch_event_target" "lambda_target" {
 }
 
 resource "aws_lambda_permission" "allow_eventbridge" {
-  for_each = var.on_demand_workers
+  for_each = var.batch_workers
 
   statement_id  = "AllowExecutionFromEventBridge-${each.key}"
   action        = "lambda:InvokeFunction"
