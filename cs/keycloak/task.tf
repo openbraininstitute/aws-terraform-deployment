@@ -15,7 +15,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
       image     = "quay.io/keycloak/keycloak:26.2.4"
       cpu       = var.keycloak_task_size.cpu
       memory    = var.keycloak_task_size.memory
-      command   = ["start"]
+      command   = ["start", "--spi-events-listener-jboss-logging-success-level=info", "--spi-events-listener-jboss-logging-error-level=error"]
       essential = true
       portMappings = [
         {
