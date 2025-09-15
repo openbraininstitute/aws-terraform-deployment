@@ -294,7 +294,7 @@ resource "aws_ecs_task_definition" "api" {
           value = "redis://redis.small-scale-simulator.local:6379"
         },
         {
-          name  = "DEBUG",
+          name  = "DEBUG"
           value = "True"
         },
         {
@@ -402,7 +402,7 @@ resource "aws_ecs_task_definition" "worker" {
       environment = [
         {
           name  = "QUEUES"
-          value = each.value.queues
+          value = join(" ", each.value.queues)
         },
         {
           name  = "NUM_WORKERS"
@@ -413,7 +413,7 @@ resource "aws_ecs_task_definition" "worker" {
           value = "redis://redis.small-scale-simulator.local:6379"
         },
         {
-          name  = "DEBUG",
+          name  = "DEBUG"
           value = "True"
         },
         {
@@ -623,7 +623,7 @@ resource "aws_ecs_task_definition" "on_demand_worker" {
       environment = [
         {
           name  = "QUEUES"
-          value = join(",", each.value.queues)
+          value = join(" ", each.value.queues)
         },
         {
           name  = "NUM_WORKERS"
@@ -638,7 +638,7 @@ resource "aws_ecs_task_definition" "on_demand_worker" {
           value = "redis://redis.small-scale-simulator.local:6379"
         },
         {
-          name  = "DEBUG",
+          name  = "DEBUG"
           value = "True"
         },
         {

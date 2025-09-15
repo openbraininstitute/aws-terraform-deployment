@@ -31,7 +31,7 @@ small_scale_simulator_workers = {
       memory = 8192
     }
     num_workers             = 2
-    queues                  = "high medium"
+    queues                  = ["high", "medium"]
     autoscaler_min_capacity = 1
     capacity_provider_strategy = [
       { capacity_provider = "FARGATE_SPOT", weight = 100 }
@@ -43,7 +43,7 @@ small_scale_simulator_workers = {
       memory = 32768
     }
     num_workers             = 12
-    queues                  = "high medium low"
+    queues                  = ["high", "medium", "low"]
     autoscaler_min_capacity = 1
     capacity_provider_strategy = [
       { capacity_provider = "FARGATE", weight = 100 },

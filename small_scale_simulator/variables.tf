@@ -88,7 +88,7 @@ variable "workers" {
       memory = any
     })
     num_workers             = number
-    queues                  = string
+    queues                  = list(string)
     autoscaler_min_capacity = number
     capacity_provider_strategy = list(object({
       capacity_provider = string # Valid values: FARGATE, FARGATE_SPOT
@@ -97,6 +97,7 @@ variable "workers" {
   }))
 
   description = "Map of worker configurations. Each key represents a worker service name with its configuration."
+  default     = {}
 }
 
 variable "on_demand_workers" {
