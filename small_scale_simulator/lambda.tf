@@ -123,16 +123,16 @@ data "archive_file" "lambda_zip" {
 resource "aws_lambda_function" "on_demand_worker" {
   filename         = data.archive_file.lambda_zip.output_path
   function_name    = "small-scale-simulator-on-demand-worker"
-  role            = aws_iam_role.on_demand_worker_lambda_role.arn
-  handler         = "index.handler"
-  runtime         = "python3.11"
-  timeout         = 60
+  role             = aws_iam_role.on_demand_worker_lambda_role.arn
+  handler          = "index.handler"
+  runtime          = "python3.11"
+  timeout          = 60
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
 
   environment {
     variables = {
       ECS_CLUSTER_NAME = aws_ecs_cluster.main.name
-      AWS_REGION      = var.aws_region
+      AWS_REGION       = var.aws_region
     }
   }
 
@@ -161,11 +161,11 @@ resource "aws_cloudwatch_event_target" "lambda_target" {
   input = jsonencode({
     worker_name       = each.key
     task_definition   = aws_ecs_task_definition.on_demand_worker[each.key].arn
-    max_workers      = each.value.max_workers
+    max_workers       = each.value.max_workers
     capacity_provider = each.value.capacity_provider
-    queues           = each.value.queues
-    subnets          = [aws_subnet.small_scale_simulator_secondary_a.id, aws_subnet.small_scale_simulator_secondary_b.id]
-    security_groups  = [aws_security_group.worker.id]
+    queues            = each.value.queues
+    subnets           = [aws_subnet.small_scale_simulator_secondary_a.id, aws_subnet.small_scale_simulator_secondary_b.id]
+    security_groups   = [aws_security_group.worker.id]
   })
 }
 
