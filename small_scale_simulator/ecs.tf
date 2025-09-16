@@ -406,7 +406,7 @@ resource "aws_ecs_task_definition" "worker" {
         },
         {
           name  = "NUM_WORKERS"
-          value = tostring(each.value.num_workers)
+          value = tostring(each.value.num_workers_per_task)
         },
         {
           name  = "REDIS_URL"
@@ -627,7 +627,7 @@ resource "aws_ecs_task_definition" "on_demand_worker" {
         },
         {
           name  = "NUM_WORKERS"
-          value = tostring(each.value.num_workers)
+          value = tostring(each.value.num_workers_per_task)
         },
         {
           name  = "EXIT_AFTER_JOBS_COMPLETE"
