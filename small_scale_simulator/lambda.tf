@@ -38,26 +38,10 @@ resource "aws_iam_policy" "batch_worker_lambda_policy" {
       {
         Effect = "Allow"
         Action = [
+          "cloudwatch:ListMetrics",
           "cloudwatch:GetMetricStatistics"
         ]
         Resource = "*"
-        Condition = {
-          StringEquals = {
-            "cloudwatch:namespace" = "SmallScaleSimulator/JobQueue"
-          }
-        }
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "cloudwatch:ListMetrics"
-        ]
-        Resource = "*"
-        Condition = {
-          StringEquals = {
-            "cloudwatch:namespace" = "SmallScaleSimulator/JobQueue"
-          }
-        }
       },
       {
         Effect = "Allow"
