@@ -576,11 +576,11 @@ resource "aws_appautoscaling_policy" "worker_cpu" {
   }
 }
 
-# On-Demand Worker Task Definitions
-resource "aws_ecs_task_definition" "on_demand_worker" {
+# Batch Worker Task Definitions
+resource "aws_ecs_task_definition" "batch_worker" {
   for_each = var.batch_workers
 
-  family                   = "small-scale-simulator-on-demand-worker-${each.key}"
+  family                   = "small-scale-simulator-batch-worker-${each.key}"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
 

@@ -1,6 +1,6 @@
 # Lambda IAM Role
-resource "aws_iam_role" "on_demand_worker_lambda_role" {
-  name_prefix = "small-scale-simulator-lambda"
+resource "aws_iam_role" "batch_worker_lambda_role" {
+  name_prefix = "small-scale-simulator-batch-worker-lambda"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -17,9 +17,9 @@ resource "aws_iam_role" "on_demand_worker_lambda_role" {
 }
 
 # Lambda policy for CloudWatch metrics, ECS tasks, and logging
-resource "aws_iam_policy" "on_demand_worker_lambda_policy" {
-  name_prefix = "small-scale-simulator-lambda"
-  description = "Policy for on-demand worker Lambda function"
+resource "aws_iam_policy" "batch_worker_lambda_policy" {
+  name_prefix = "small-scale-simulator-batch-worker-lambda"
+  description = "Policy for batch worker Lambda function"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -31,7 +31,7 @@ resource "aws_iam_policy" "on_demand_worker_lambda_policy" {
           "logs:CreateLogStream",
           "logs:PutLogEvents"
         ]
-        Resource = "arn:aws:logs:${var.aws_region}:*:log-group:/aws/lambda/small-scale-simulator-on-demand-worker*"
+        Resource = "arn:aws:logs:${var.aws_region}:*:log-group:/aws/lambda/small-scale-simulator-batch-worker*"
       },
       {
         Effect = "Allow"
@@ -64,7 +64,7 @@ resource "aws_iam_policy" "on_demand_worker_lambda_policy" {
         ]
         Resource = [
           "arn:aws:ecs:${var.aws_region}:*:cluster/${aws_ecs_cluster.main.name}",
-          "arn:aws:ecs:${var.aws_region}:*:task-definition/small-scale-simulator-on-demand-worker-*"
+          "arn:aws:ecs:${var.aws_region}:*:task-definition/small-scale-simulator-batch-worker-*"
         ]
       },
       {
@@ -98,13 +98,13 @@ resource "aws_iam_policy" "on_demand_worker_lambda_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_policy" {
-  role       = aws_iam_role.on_demand_worker_lambda_role.name
-  policy_arn = aws_iam_policy.on_demand_worker_lambda_policy.arn
+  role       = aws_iam_role.batch_worker_lambda_role.name
+  policy_arn = aws_iam_policy.batch_worker_lambda_policy.arn
 }
 
 # CloudWatch Log Group for Lambda
-resource "aws_cloudwatch_log_group" "on_demand_worker_lambda" {
-  name              = "/aws/lambda/small-scale-simulator-on-demand-worker"
+resource "aws_cloudwatch_log_group" "batch_worker_lambda" {
+  name              = "/aws/lambda/small-scale-simulator-batch-worker"
   retention_in_days = 14
   kms_key_id        = null
 }
@@ -112,7 +112,7 @@ resource "aws_cloudwatch_log_group" "on_demand_worker_lambda" {
 # Create the Lambda deployment package
 data "archive_file" "lambda_zip" {
   type        = "zip"
-  output_path = "${path.module}/on_demand_worker_lambda.zip"
+  output_path = "${path.module}/batch_worker_lambda.zip"
   source {
     content  = file("${path.module}/lambda_function.py")
     filename = "index.py"
@@ -120,10 +120,10 @@ data "archive_file" "lambda_zip" {
 }
 
 # Lambda function
-resource "aws_lambda_function" "on_demand_worker" {
+resource "aws_lambda_function" "batch_worker" {
   filename         = data.archive_file.lambda_zip.output_path
-  function_name    = "small-scale-simulator-on-demand-worker"
-  role             = aws_iam_role.on_demand_worker_lambda_role.arn
+  function_name    = "small-scale-simulator-batch-worker"
+  role             = aws_iam_role.batch_worker_lambda_role.arn
   handler          = "index.handler"
   runtime          = "python3.11"
   timeout          = 60
@@ -138,29 +138,29 @@ resource "aws_lambda_function" "on_demand_worker" {
 
   depends_on = [
     aws_iam_role_policy_attachment.lambda_policy,
-    aws_cloudwatch_log_group.on_demand_worker_lambda,
+    aws_cloudwatch_log_group.batch_worker_lambda,
   ]
 }
 
 # EventBridge rules for each on-demand worker
-resource "aws_cloudwatch_event_rule" "on_demand_worker_schedule" {
+resource "aws_cloudwatch_event_rule" "batch_worker_schedule" {
   for_each = var.batch_workers
 
-  name                = "small-scale-simulator-on-demand-${each.key}"
-  description         = "Trigger on-demand worker scaling for ${each.key}"
+  name                = "small-scale-simulator-batch-worker-${each.key}"
+  description         = "Trigger batch worker scaling for ${each.key}"
   schedule_expression = "rate(1 minute)"
 }
 
 resource "aws_cloudwatch_event_target" "lambda_target" {
   for_each = var.batch_workers
 
-  rule      = aws_cloudwatch_event_rule.on_demand_worker_schedule[each.key].name
-  target_id = "TriggerOnDemandWorker"
-  arn       = aws_lambda_function.on_demand_worker.arn
+  rule      = aws_cloudwatch_event_rule.batch_worker_schedule[each.key].name
+  target_id = "TriggerBatchWorker"
+  arn       = aws_lambda_function.batch_worker.arn
 
   input = jsonencode({
     worker_name       = each.key
-    task_definition   = aws_ecs_task_definition.on_demand_worker[each.key].arn
+    task_definition   = aws_ecs_task_definition.batch_worker[each.key].arn
     max_worker_tasks  = each.value.max_worker_tasks
     capacity_provider = each.value.capacity_provider
     queues            = each.value.queues
@@ -174,7 +174,7 @@ resource "aws_lambda_permission" "allow_eventbridge" {
 
   statement_id  = "AllowExecutionFromEventBridge-${each.key}"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.on_demand_worker.function_name
+  function_name = aws_lambda_function.batch_worker.function_name
   principal     = "events.amazonaws.com"
-  source_arn    = aws_cloudwatch_event_rule.on_demand_worker_schedule[each.key].arn
+  source_arn    = aws_cloudwatch_event_rule.batch_worker_schedule[each.key].arn
 }
