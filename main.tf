@@ -519,6 +519,8 @@ module "entitycore_svc" {
   db_username = "entitycore"
 
   obi_backup_plan = "obi_plan"
+
+  api_asset_post_max_size = "524288000" # 500 * 1024**2
 }
 
 module "obi_one" {
