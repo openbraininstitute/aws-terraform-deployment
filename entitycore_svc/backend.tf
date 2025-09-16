@@ -176,8 +176,13 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
       secrets = [
         {
           name      = "DB_PASS"
-          valueFrom = var.entitycore_service_secrets_arn
-        }
+          valueFrom = "${var.entitycore_service_secrets_arn}:DB_PASS::"
+        },
+        {
+          name      = "OPENAI_API_KEY"
+          valueFrom = "${var.entitycore_service_secrets_arn}:OPENAI_API_KEY::"
+        },
+
       ]
 
       logConfiguration = {
