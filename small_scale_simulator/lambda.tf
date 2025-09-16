@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 # Lambda IAM Role
 resource "aws_iam_role" "batch_worker_lambda_role" {
   name_prefix = "small-scale-sim-batch-worker-lambda"
@@ -40,8 +42,8 @@ resource "aws_iam_policy" "batch_worker_lambda_policy" {
         ]
         Resource = "*"
         Condition = {
-          StringLike = {
-            "cloudwatch:namespace" = "SmallScaleSimulator*"
+          StringEquals = {
+            "cloudwatch:namespace" = "SmallScaleSimulator/JobQueue"
           }
         }
       },
@@ -52,8 +54,8 @@ resource "aws_iam_policy" "batch_worker_lambda_policy" {
         ]
         Resource = "*"
         Condition = {
-          StringLike = {
-            "cloudwatch:namespace" = "SmallScaleSimulator*"
+          StringEquals = {
+            "cloudwatch:namespace" = "SmallScaleSimulator/JobQueue"
           }
         }
       },
@@ -79,7 +81,7 @@ resource "aws_iam_policy" "batch_worker_lambda_policy" {
         ]
         Condition = {
           StringEquals = {
-            "ecs:cluster" = "arn:aws:ecs:${var.aws_region}:*:cluster/${aws_ecs_cluster.main.name}"
+            "ecs:cluster" = "arn:aws:ecs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:cluster/${aws_ecs_cluster.main.name}"
           }
         }
       },
