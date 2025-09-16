@@ -31,7 +31,7 @@ resource "aws_db_instance" "entitycore" {
   identifier = "entitycore"
   db_name    = var.db_name
   username   = var.db_username
-  password   = data.aws_secretsmanager_secret_version.entitycore_database_password.secret_string
+  password   = jsondecode(data.aws_secretsmanager_secret_version.entitycore_database_password.secret_string)["DB_PASS"]
 
   publicly_accessible          = false
   performance_insights_enabled = true
