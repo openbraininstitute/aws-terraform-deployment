@@ -214,7 +214,9 @@ module "small_scale_simulator" {
   keycloak_server_url = "https://${local.primary_domain}/auth/"
 
   api_task_size = var.small_scale_simulator_api_task_size
-  workers       = var.small_scale_simulator_workers
+
+  daemon_workers = var.small_scale_simulator_daemon_workers
+  batch_workers  = var.small_scale_simulator_batch_workers
 }
 
 module "github_ami_build_role" {

@@ -91,14 +91,14 @@ variable "small_scale_simulator_api_task_size" {
   description = "CPU and memory limit for the API ECS task (number or string format)"
 }
 
-variable "small_scale_simulator_workers" {
+variable "small_scale_simulator_daemon_workers" {
   type = map(object({
     task_size = object({
       cpu    = any
       memory = any
     })
-    num_workers             = number
-    queues                  = string
+    num_workers_per_task    = number
+    queues                  = list(string)
     autoscaler_min_capacity = number
     capacity_provider_strategy = list(object({
       capacity_provider = string # Valid values: FARGATE, FARGATE_SPOT
@@ -106,7 +106,23 @@ variable "small_scale_simulator_workers" {
     }))
   }))
 
-  description = "Map of worker configurations for small scale simulator. Each key represents a worker service name with its configuration."
+  description = "Map of daemon worker configurations for small scale simulator. Each key represents a worker service name with its configuration."
+}
+
+variable "small_scale_simulator_batch_workers" {
+  type = map(object({
+    task_size = object({
+      cpu    = any
+      memory = any
+    })
+    num_workers_per_task = number
+    queues               = list(string)
+    max_worker_tasks     = number
+    capacity_provider    = string # Valid values: FARGATE, FARGATE_SPOT
+  }))
+
+  description = "Map of batch worker configurations. Each key represents an on-demand worker auto-provisioned based on CloudWatch job queue length metrics."
+  default     = {}
 }
 
 ### Virtual Lab Manager service ###
