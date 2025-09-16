@@ -324,6 +324,14 @@ resource "aws_ecs_task_definition" "api" {
         {
           name  = "ACCOUNTING_BASE_URL"
           value = var.accounting_base_url
+        },
+        {
+          name  = "METRICS_CLOUD_PROVIDER"
+          value = "aws"
+        },
+        {
+          name  = "METRICS_AWS_REGION"
+          value = var.aws_region
         }
       ]
 
