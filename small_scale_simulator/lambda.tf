@@ -1,6 +1,6 @@
 # Lambda IAM Role
 resource "aws_iam_role" "batch_worker_lambda_role" {
-  name_prefix = "small-scale-simulator-batch-worker-lambda"
+  name_prefix = "small-scale-sim-batch-worker-lambda"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -18,7 +18,7 @@ resource "aws_iam_role" "batch_worker_lambda_role" {
 
 # Lambda policy for CloudWatch metrics, ECS tasks, and logging
 resource "aws_iam_policy" "batch_worker_lambda_policy" {
-  name_prefix = "small-scale-simulator-batch-worker-lambda"
+  name_prefix = "small-scale-sim-batch-worker-lambda"
   description = "Policy for batch worker Lambda function"
 
   policy = jsonencode({
