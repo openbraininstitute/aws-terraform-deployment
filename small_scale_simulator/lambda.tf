@@ -40,8 +40,8 @@ resource "aws_iam_policy" "batch_worker_lambda_policy" {
         ]
         Resource = "*"
         Condition = {
-          StringEquals = {
-            "cloudwatch:namespace" = "SmallScaleSimulator/JobQueue"
+          StringLike = {
+            "cloudwatch:namespace" = "SmallScaleSimulator*"
           }
         }
       },
