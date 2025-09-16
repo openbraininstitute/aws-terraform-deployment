@@ -132,7 +132,6 @@ resource "aws_lambda_function" "batch_worker" {
   environment {
     variables = {
       ECS_CLUSTER_NAME = aws_ecs_cluster.main.name
-      AWS_REGION       = var.aws_region
     }
   }
 
