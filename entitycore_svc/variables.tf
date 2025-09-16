@@ -81,3 +81,8 @@ variable "obi_backup_plan" {
   description = "Name of the OBI backup plan"
   type        = string
 }
+
+variable "api_asset_post_max_size" {
+  description = "Maximum size of file uploaded through API"
+  type        = string
+}

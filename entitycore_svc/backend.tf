@@ -167,6 +167,10 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
           name  = "AWS_S3_OPEN_REGION"
           value = var.aws_s3_open_region
         },
+        {
+          name  = "API_ASSET_POST_MAX_SIZE"
+          value = var.api_asset_post_max_size
+        },
       ]
 
       secrets = [
