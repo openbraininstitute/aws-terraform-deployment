@@ -1,0 +1,333 @@
+locals {
+  cpu    = 1024
+  memory = 2048
+}
+
+resource "aws_cloudwatch_log_group" "launch_ecs_task_logs" {
+  # TODO check if the logs can be encrypted
+  name_prefix       = "launch"
+  skip_destroy      = false
+  retention_in_days = 14
+
+  kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
+
+  tags = {
+    Name = "launch"
+  }
+}
+
+resource "aws_ecs_cluster" "launch" {
+  name = "launch_ecs_cluster"
+
+  tags = {
+    Name = "launch"
+  }
+
+  setting {
+    name  = "containerInsights"
+    value = "disabled" #tfsec:ignore:aws-ecs-enable-container-insight
+  }
+}
+
+# TODO make more strict
+resource "aws_security_group" "launch_ecs_task" {
+  name_prefix = "launch"
+  vpc_id      = var.vpc_id
+  description = "Sec group for launch service"
+
+  tags = {
+    Name = "launch_secgroup"
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "launch_allow_port_8000" {
+  security_group_id = aws_security_group.launch_ecs_task.id
+
+  ip_protocol = "tcp"
+  from_port   = 8000
+  to_port     = 8000
+  cidr_ipv4   = data.aws_vpc.main.cidr_block
+  description = "Allow port 8000 http"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "launch_allow_in_tcp" {
+  security_group_id = aws_security_group.launch_ecs_task.id
+  # TODO limit to what is needed
+  ip_protocol = "tcp"
+  from_port   = 0
+  to_port     = 65535
+  cidr_ipv4   = "0.0.0.0/0"
+  description = "Allow all TCP"
+}
+
+resource "aws_vpc_security_group_egress_rule" "launch_allow_outgoing_tcp" {
+  security_group_id = aws_security_group.launch_ecs_task.id
+  # TODO limit to what is needed
+  ip_protocol = "tcp"
+  from_port   = 0
+  to_port     = 65535
+  cidr_ipv4   = "0.0.0.0/0"
+  description = "Allow all TCP"
+}
+
+resource "aws_vpc_security_group_egress_rule" "launch_allow_outgoing_udp" {
+  security_group_id = aws_security_group.launch_ecs_task.id
+  # TODO limit to what is needed
+  ip_protocol = "udp"
+  from_port   = 0
+  to_port     = 65535
+  cidr_ipv4   = "0.0.0.0/0"
+  description = "Allow all UDP"
+}
+
+resource "aws_ecs_task_definition" "launch_ecs_definition" {
+  family       = "launch_task_family"
+  network_mode = "awsvpc"
+
+  container_definitions = jsonencode([
+    {
+      name   = "launch"
+      family = "launch"
+
+      cpu    = local.cpu
+      memory = local.memory
+
+      networkMode = "awsvpc"
+
+      image = var.image_url
+
+      essential = true
+
+      portMappings = [
+        {
+          hostPort      = 8000
+          containerPort = 8000
+          protocol      = "tcp"
+        }
+      ]
+
+      healthcheck = {
+        command     = ["CMD-SHELL", "exit 0"] // TODO: add a proper health check.
+        interval    = 60
+        timeout     = 5
+        startPeriod = 30
+        retries     = 3
+      }
+
+      environment = [
+        {
+          name  = "APP_DEBUG"
+          value = "false"
+        },
+        {
+          name  = "CORS_ORIGINS"
+          value = jsonencode(var.cors_origins)
+        },
+        {
+          name  = "KEYCLOAK_URL"
+          value = var.keycloak_url
+        },
+        {
+          name  = "ROOT_PATH"
+          value = var.root_path
+        },
+        {
+          name  = "DB_HOST"
+          value = aws_db_instance.launch.address
+        },
+        {
+          name  = "DB_PORT"
+          value = "5432"
+        },
+        {
+          name  = "DB_NAME"
+          value = var.db_name
+        },
+        {
+          name  = "DB_USER"
+          value = var.db_username
+        },
+        {
+          name  = "AZ_SUBSCRIPTION_ID"
+          value = var.az_subscription_id
+        },
+        {
+          name  = "AZURE_CLIENT_ID"
+          value = var.azure_client_id
+        },
+        {
+          name  = "AZURE_TENANT_ID"
+          value = var.azure_tenant_id
+        },
+        {
+          name  = "AZ_BATCH_ACCOUNT_NAME"
+          value = var.az_batch_account_name
+        },
+        {
+          name  = "AZ_REGION"
+          value = var.az_region
+        },
+        {
+          name  = "AZ_BATCH_POOL_NAME"
+          value = var.az_batch_pool_name
+        },
+        {
+          #: int = 3600
+          name  = "TOKEN_LIFETIME_EXTENSION_INTERVAL"
+          value = var.token_lifetime_extension_interval
+        },
+        {
+          name  = "TOKEN_LIFETIME_EXTENSION_URL"
+          value = var.token_lifetime_extension_url
+        },
+        {
+          name  = "ENTITYCORE_URL"
+          value = var.entitycore_url
+        },
+        {
+          name  = "LAUNCH_SERVER_URL"
+          value = var.launch_server_url
+        },
+      ]
+
+      secrets = [
+        {
+          name      = "DB_PASS"
+          valueFrom = var.launch_service_secrets_arn
+        },
+        {
+          name      = "AZURE_CLIENT_SECRET"
+          valueFrom = var.azure_client_secret_arn
+        },
+      ]
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = aws_cloudwatch_log_group.launch_ecs_task_logs.name
+          awslogs-region        = var.aws_region
+          awslogs-create-group  = "true"
+          awslogs-stream-prefix = "launch"
+        }
+      }
+    }
+  ])
+
+  cpu    = local.cpu
+  memory = local.memory
+
+  requires_compatibilities = ["FARGATE"]
+
+  execution_role_arn = aws_iam_role.ecs_launch_task_execution_role.arn
+  task_role_arn      = aws_iam_role.ecs_launch_task_role.arn
+
+  depends_on = [
+    aws_cloudwatch_log_group.launch_ecs_task_logs,
+  ]
+}
+
+resource "aws_ecs_service" "launch_ecs_service" {
+  name            = "launch_ecs_service"
+  cluster         = aws_ecs_cluster.launch.id
+  launch_type     = "FARGATE"
+  task_definition = aws_ecs_task_definition.launch_ecs_definition.arn
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.launch_private_tg.arn
+    container_name   = "launch"
+    container_port   = 8000
+  }
+
+  network_configuration {
+    security_groups = [aws_security_group.launch_ecs_task.id]
+    subnets = [aws_subnet.launch_ecs_a.id,
+      aws_subnet.launch_ecs_b.id,
+    ]
+    assign_public_ip = false
+  }
+
+  depends_on = [
+    aws_iam_role.ecs_launch_task_execution_role,
+  ]
+
+  force_new_deployment = true
+  desired_count        = 1
+
+  propagate_tags = "SERVICE"
+}
+
+resource "aws_iam_role" "ecs_launch_task_execution_role" {
+  name_prefix = "launch"
+
+  assume_role_policy = <<-EOT
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Action": "sts:AssumeRole",
+        "Principal": {
+          "Service": "ecs-tasks.amazonaws.com"
+        },
+        "Effect": "Allow",
+        "Sid": ""
+      }
+    ]
+  }
+  EOT
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_launch_task_execution_role_policy_attachment" {
+  role       = aws_iam_role.ecs_launch_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+resource "aws_iam_role" "ecs_launch_task_role" {
+  name_prefix = "launch"
+
+  assume_role_policy = <<-EOT
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Action": "sts:AssumeRole",
+        "Principal": {
+          "Service": "ecs-tasks.amazonaws.com"
+        },
+        "Effect": "Allow",
+        "Sid": ""
+      }
+    ]
+  }
+  EOT
+}
+
+resource "aws_iam_policy" "ecs_task_logs_launch" {
+  name_prefix = "launch"
+  description = "Allows ECS tasks to create log streams and log groups in CloudWatch Logs"
+
+  policy = jsonencode({
+    Version = "2012-10-17" #tfsec:ignore:aws-iam-no-policy-wildcards
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:DescribeLogStreams",
+          "logs:PutLogEvents",
+        ]
+        Resource = "arn:aws:logs:*:*:*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "secrets" {
+  role       = aws_iam_role.ecs_launch_task_execution_role.name
+  policy_arn = aws_iam_policy.secrets_access.arn
+}
+
+resource "aws_iam_role_policy_attachment" "execution_logs" {
+  role       = aws_iam_role.ecs_launch_task_execution_role.name
+  policy_arn = aws_iam_policy.ecs_task_logs_launch.arn
+}
