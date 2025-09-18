@@ -50,6 +50,8 @@ small_scale_simulator_workers = {
     ]
   }
 }
+small_scale_simulator_daemon_workers = {}
+small_scale_simulator_batch_workers = {}
 
 virtual_lab_manager_task_size = {
   cpu    = 1024
