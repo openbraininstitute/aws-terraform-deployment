@@ -18,8 +18,8 @@ notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/n
 notebook_hub_on_eks_full_url              = "none"
 notebook_service_cors_allowed_origins     = "https://www.openbraininstitute.org"
 
-small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.09.11.1"
-small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.09.11.1"
+small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.09.18.1"
+small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.09.18.1"
 small_scale_simulator_api_task_size = {
   cpu    = 1024
   memory = 2048
