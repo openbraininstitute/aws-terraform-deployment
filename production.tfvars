@@ -24,7 +24,7 @@ small_scale_simulator_api_task_size = {
   cpu    = 1024
   memory = 2048
 }
-small_scale_simulator_workers = {
+small_scale_simulator_daemon_workers = {
   small = {
     task_size = {
       cpu    = 4096
@@ -50,7 +50,6 @@ small_scale_simulator_workers = {
     ]
   }
 }
-small_scale_simulator_daemon_workers = {}
 small_scale_simulator_batch_workers = {}
 
 virtual_lab_manager_task_size = {
