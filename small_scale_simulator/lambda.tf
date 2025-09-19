@@ -56,13 +56,16 @@ resource "aws_iam_policy" "batch_worker_lambda_policy" {
       {
         Effect = "Allow"
         Action = [
-          "ecs:ListTasks",
+          "ecs:ListTasks"
+        ]
+        Resource = "arn:aws:ecs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:cluster/${aws_ecs_cluster.main.name}"
+      },
+      {
+        Effect = "Allow"
+        Action = [
           "ecs:DescribeTasks"
         ]
-        Resource = [
-          "arn:aws:ecs:${var.aws_region}:*:cluster/${aws_ecs_cluster.main.name}",
-          "arn:aws:ecs:${var.aws_region}:*:task/*"
-        ]
+        Resource = "arn:aws:ecs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:task/*"
         Condition = {
           StringEquals = {
             "ecs:cluster" = "arn:aws:ecs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:cluster/${aws_ecs_cluster.main.name}"
