@@ -188,6 +188,11 @@ resource "aws_ecs_task_definition" "launch_ecs_definition" {
           name  = "LAUNCH_SERVER_URL"
           value = var.launch_server_url
         },
+        {
+          name  = "KEYCLOAK_CLIENT_ID"
+          value = var.keycloak_client_id
+        },
+
       ]
 
       secrets = [
@@ -198,6 +203,10 @@ resource "aws_ecs_task_definition" "launch_ecs_definition" {
         {
           name      = "AZURE_CLIENT_SECRET"
           valueFrom = var.azure_client_secret_arn
+        },
+        {
+          name      = "KEYCLOAK_CLIENT_SECRET"
+          valueFrom = var.keycloak_client_secret_arn
         },
       ]
 

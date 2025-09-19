@@ -92,6 +92,17 @@ variable "obi_backup_plan" {
   type        = string
 }
 
+
+variable "keycloak_client_id" {
+  description = "ID for refreshing offline_token in keycloak"
+  type = string
+}
+
+variable "keycloak_client_secret_arn" {
+  description = "arn for secret for ID for refreshing offline_token in keycloak"
+  type        = string
+}
+
 variable "token_lifetime_extension_interval" {
   type = string
 }
