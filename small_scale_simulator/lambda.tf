@@ -49,8 +49,9 @@ resource "aws_iam_policy" "batch_worker_lambda_policy" {
           "ecs:RunTask"
         ]
         Resource = [
-          "arn:aws:ecs:${var.aws_region}:*:cluster/${aws_ecs_cluster.main.name}",
-          "arn:aws:ecs:${var.aws_region}:*:task-definition/small-scale-simulator-batch-worker-*"
+          "arn:aws:ecs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:cluster/${aws_ecs_cluster.main.name}",
+          "arn:aws:ecs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:task-definition/small-scale-simulator-batch-worker-*",
+          "arn:aws:ecs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:container-instance/${aws_ecs_cluster.main.name}/*",
         ]
       },
       {
@@ -58,7 +59,16 @@ resource "aws_iam_policy" "batch_worker_lambda_policy" {
         Action = [
           "ecs:ListTasks"
         ]
-        Resource = "arn:aws:ecs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:cluster/${aws_ecs_cluster.main.name}"
+        Resource = "arn:aws:ecs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:container-instance/${aws_ecs_cluster.main.name}/*"
+      },
+      {
+        "Action" : [
+          "ecs:TagResource"
+        ],
+        "Effect" : "Allow",
+        "Resource" : [
+          "arn:aws:ecs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:task/${aws_ecs_cluster.main.name}/*"
+        ]
       },
       {
         Effect = "Allow"
