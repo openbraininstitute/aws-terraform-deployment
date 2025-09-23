@@ -301,5 +301,5 @@ variable "notebook_hub_on_eks_full_url" {
 
 variable "notebook_service_cors_allowed_origins" {
   type        = string
-  description = "Comma separated list of allowed origins for the cors settings of the notebook service"
+  description = "JSON encoded list of allowed origins for the cors settings of the notebook service"
 }
