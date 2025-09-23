@@ -16,7 +16,7 @@ accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/a
 jupyterhub_ec2_type                       = "c7i.2xlarge"
 notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:staging"
 notebook_hub_on_eks_full_url              = "none"
-notebook_service_cors_allowed_origins     = "https://www.openbraininstitute.org"
+notebook_service_cors_allowed_origins     = "[\"https://www.openbraininstitute.org\"]"
 
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.09.18.1"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.09.18.1"
