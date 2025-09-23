@@ -96,7 +96,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_LLM__WHITELISTED_MODEL_IDS_REGEX"
-          value = "openai/gpt-4.1-mini"
+          value = "openai/gpt-5-mini"
         },
         {
           name  = "NEUROAGENT_MISC__APPLICATION_PREFIX"
@@ -140,7 +140,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_TOOLS__WHITELISTED_TOOL_REGEX"
-          value = "^(?!.*(downloadone|ionchannelmodel|measurementannotation|simulation|synaptome|scs|mcp|research|experimentalsynapsesperconnection|circuit|ephysmetrics|expert|context-analyzer)).*"
+          value = "^(?!.*(downloadone|ionchannelmodel|measurementannotation|simulation|synaptome|experimentalsynapsesperconnection|circuit|expert|context-analyzer)).*"
 
 
         },
