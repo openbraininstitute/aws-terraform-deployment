@@ -42,7 +42,7 @@ resource "aws_ecs_cluster" "main" {
 
   setting {
     name  = "containerInsights"
-    value = "disabled" #tfsec:ignore:aws-ecs-enable-container-insight
+    value = "enhanced"
   }
 
   tags = merge({ Name = "small_scale_simulator_ecs_cluster" }, var.tags)
