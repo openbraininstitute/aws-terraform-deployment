@@ -14,9 +14,7 @@ resource "aws_cloudwatch_log_group" "redis" {
 
   kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
 
-  tags = {
-    Name = "small-scale-simulator"
-  }
+  tags = merge({ Name = "small_scale_simulator_log_group_redis" }, var.tags)
 }
 
 resource "aws_cloudwatch_log_group" "api" {
@@ -26,9 +24,7 @@ resource "aws_cloudwatch_log_group" "api" {
 
   kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
 
-  tags = {
-    Name = "small-scale-simulator"
-  }
+  tags = merge({ Name = "small_scale_simulator_log_group_api" }, var.tags)
 }
 
 resource "aws_cloudwatch_log_group" "worker" {
@@ -38,9 +34,7 @@ resource "aws_cloudwatch_log_group" "worker" {
 
   kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
 
-  tags = {
-    Name = "small-scale-simulator"
-  }
+  tags = merge({ Name = "small_scale_simulator_log_group_worker" }, var.tags)
 }
 
 resource "aws_ecs_cluster" "main" {
@@ -51,9 +45,7 @@ resource "aws_ecs_cluster" "main" {
     value = "disabled" #tfsec:ignore:aws-ecs-enable-container-insight
   }
 
-  tags = {
-    Name = "small-scale-simulator"
-  }
+  tags = merge({ Name = "small_scale_simulator_ecs_cluster" }, var.tags)
 }
 
 resource "aws_ecs_cluster_capacity_providers" "main" {
@@ -508,6 +500,8 @@ resource "aws_ecs_service" "redis" {
     registry_arn = aws_service_discovery_service.redis.arn
   }
 
+  tags = merge({ Name = "small_scale_simulator_ecs_redis" }, var.tags)
+
   propagate_tags = "SERVICE"
 }
 
@@ -530,7 +524,10 @@ resource "aws_ecs_service" "api" {
     container_port   = 8000
   }
 
-  depends_on     = [aws_ecs_service.redis]
+  depends_on = [aws_ecs_service.redis]
+
+  tags = merge({ Name = "small_scale_simulator_ecs_api" }, var.tags)
+
   propagate_tags = "SERVICE"
 }
 
@@ -560,7 +557,10 @@ resource "aws_ecs_service" "worker" {
     subnets         = [aws_subnet.small_scale_simulator_secondary_a.id, aws_subnet.small_scale_simulator_secondary_b.id]
   }
 
-  depends_on     = [aws_ecs_service.redis]
+  depends_on = [aws_ecs_service.redis]
+
+  tags = merge({ Name = "small_scale_simulator_ecs_daemon_worker" }, var.tags)
+
   propagate_tags = "SERVICE"
 }
 
@@ -574,6 +574,8 @@ resource "aws_appautoscaling_target" "worker" {
   resource_id        = "service/${aws_ecs_cluster.main.name}/${aws_ecs_service.worker[each.key].name}"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
+
+  tags = merge({ Name = "small_scale_simulator_as_target" }, var.tags)
 }
 
 # Auto Scaling Policy for Worker Services (CPU-based)
@@ -713,4 +715,6 @@ resource "aws_ecs_task_definition" "batch_worker" {
       }
     }
   ])
+
+  tags = merge({ Name = "small_scale_simulator_ecs_batch_worker" }, var.tags)
 }

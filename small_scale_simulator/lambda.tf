@@ -124,7 +124,7 @@ resource "aws_lambda_function" "batch_worker" {
   function_name    = "small-scale-simulator-batch-worker"
   role             = aws_iam_role.batch_worker_lambda_role.arn
   handler          = "index.handler"
-  runtime          = "python3.11"
+  runtime          = "python3.12"
   timeout          = 60
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
 
@@ -138,6 +138,8 @@ resource "aws_lambda_function" "batch_worker" {
     aws_iam_role_policy_attachment.lambda_policy,
     aws_cloudwatch_log_group.batch_worker_lambda,
   ]
+
+  tags = merge({ Name = "small_scale_simulator_batch_worker_provisioner_lambda" }, var.tags)
 }
 
 # EventBridge rules for each on-demand worker
@@ -147,6 +149,8 @@ resource "aws_cloudwatch_event_rule" "batch_worker_schedule" {
   name                = "small-scale-simulator-batch-worker-${each.key}"
   description         = "Trigger batch worker scaling for ${each.key}"
   schedule_expression = "rate(1 minute)"
+
+  tags = merge({ Name = "small_scale_simulator_batch_worker_schedule" }, var.tags)
 }
 
 resource "aws_cloudwatch_event_target" "lambda_target" {
