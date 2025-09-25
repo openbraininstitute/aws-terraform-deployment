@@ -70,6 +70,12 @@ variable "entitycore_url" {
   type        = string
 }
 
+variable "tags" {
+  description = "Tags"
+  default     = { SBO_Billing = "small_scale_simulator" }
+  type        = map(string)
+}
+
 # TODO : Configure task sizes for api
 
 variable "api_task_size" {

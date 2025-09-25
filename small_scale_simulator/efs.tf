@@ -3,9 +3,7 @@ resource "aws_efs_file_system" "small_scale_simulator_storage" {
   performance_mode = "generalPurpose"
   encrypted        = true
 
-  tags = {
-    Name = "small_scale_simulator_efs"
-  }
+  tags = merge({ Name = "small_scale_simulator_efs" }, var.tags)
 }
 
 resource "aws_efs_mount_target" "mount_target" {

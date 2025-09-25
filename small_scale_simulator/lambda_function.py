@@ -37,10 +37,10 @@ def handler(event, context):
                 Namespace="SmallScaleSimulator/JobQueue",
                 MetricName="QueueLength",
                 Dimensions=[{"Name": "QueueName", "Value": queue_name}],
-                StartTime=datetime.utcnow() - timedelta(minutes=5),
+                StartTime=datetime.utcnow() - timedelta(minutes=2),
                 EndTime=datetime.utcnow(),
-                Period=300,  # 5 minutes
-                Statistics=["Maximum"],
+                Period=60,  # 1 minute
+                Statistics=["Minimum"],
             )
 
             if response["Datapoints"]:
@@ -48,7 +48,7 @@ def handler(event, context):
                 latest_datapoint = max(
                     response["Datapoints"], key=lambda x: x["Timestamp"]
                 )
-                queue_length = int(latest_datapoint["Maximum"])
+                queue_length = int(latest_datapoint["Minimum"])
                 total_queue_length += queue_length
                 print(f"Queue {queue_name} length: {queue_length}")
             else:
@@ -101,10 +101,6 @@ def handler(event, context):
                     "assignPublicIp": "DISABLED",
                 }
             },
-            tags=[
-                {"key": "WorkerType", "value": f"on-demand-{worker_name}"},
-                {"key": "LaunchedBy", "value": "lambda"},
-            ],
         )
 
         if run_response["tasks"]:
