@@ -334,6 +334,10 @@ resource "aws_ecs_task_definition" "api" {
           value = "aws"
         },
         {
+          name  = "METRICS_INTERVAL"
+          value = "10"
+        },
+        {
           name  = "METRICS_AWS_REGION"
           value = var.aws_region
         }

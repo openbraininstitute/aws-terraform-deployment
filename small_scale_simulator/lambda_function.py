@@ -39,11 +39,13 @@ def handler(event, context):
                 Dimensions=[{"Name": "QueueName", "Value": queue_name}],
                 StartTime=datetime.utcnow() - timedelta(minutes=2),
                 EndTime=datetime.utcnow(),
-                Period=60,  # 1 minute
+                Period=15,  # 15 seconds
                 Statistics=["Minimum"],
             )
 
             if response["Datapoints"]:
+                print("Datapoints:")
+                print(response["Datapoints"])
                 # Get the most recent datapoint
                 latest_datapoint = max(
                     response["Datapoints"], key=lambda x: x["Timestamp"]
