@@ -39,7 +39,7 @@ def handler(event, context):
                 Dimensions=[{"Name": "QueueName", "Value": queue_name}],
                 StartTime=datetime.utcnow() - timedelta(minutes=2),
                 EndTime=datetime.utcnow(),
-                Period=10,  # 10 seconds
+                Period=15,  # 15 seconds
                 Statistics=["Minimum"],
             )
 
