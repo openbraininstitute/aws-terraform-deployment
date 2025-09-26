@@ -119,7 +119,7 @@ data "archive_file" "lambda_zip" {
 }
 
 # Lambda function
-resource "aws_lambda_function" "batch_worker" {
+resource "aws_lambda_function" "batch_worker_provisioner" {
   filename         = data.archive_file.lambda_zip.output_path
   function_name    = "small-scale-simulator-batch-worker"
   role             = aws_iam_role.batch_worker_lambda_role.arn
@@ -158,7 +158,7 @@ resource "aws_cloudwatch_event_target" "lambda_target" {
 
   rule      = aws_cloudwatch_event_rule.batch_worker_schedule[each.key].name
   target_id = "TriggerBatchWorker"
-  arn       = aws_lambda_function.batch_worker.arn
+  arn       = aws_lambda_function.batch_worker_provisioner.arn
 
   input = jsonencode({
     worker_name       = each.key
@@ -176,7 +176,7 @@ resource "aws_lambda_permission" "allow_eventbridge" {
 
   statement_id  = "AllowExecutionFromEventBridge-${each.key}"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.batch_worker.function_name
+  function_name = aws_lambda_function.batch_worker_provisioner.function_name
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.batch_worker_schedule[each.key].arn
 }
