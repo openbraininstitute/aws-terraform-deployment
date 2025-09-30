@@ -4,6 +4,10 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.55, != 5.71.0"
     }
+    awscc = {
+      source  = "hashicorp/awscc"
+      version = "~> 1.53.0"
+    }
   }
 
   required_version = ">= 1.2.0"
@@ -16,4 +20,8 @@ provider "aws" {
       SBO_Billing = "common"
     }
   }
+}
+
+provider "awscc" {
+  region = "us-east-1"
 }
