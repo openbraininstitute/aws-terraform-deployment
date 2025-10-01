@@ -565,7 +565,8 @@ module "obi_one_v2" {
   container_port = 8000
   host_port      = 8000
 
-  shared_bucket_name   = aws_s3_bucket.sbo-cell-svc-perf-test.id  # TODO: change to entitycore
+  shared_bucket_name   = var.entitycore_svc_aws_s3_internal_bucket
+  shared_bucket_region = var.entitycore_svc_aws_s3_internal_region
   shared_bucket_prefix = "public/"  # must end with /
 
   mounted_volume_name           = "shared-data"
