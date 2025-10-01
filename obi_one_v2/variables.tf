@@ -1,25 +1,31 @@
-variable "cell_svc_log_group_name" {
-  default     = "cell_svc"
+variable "obi_one_v2_log_group_name" {
+  default     = "obi_one_v2"
   type        = string
-  description = "The log name within cloudwatch for the cell svc"
+  description = "The log name within cloudwatch for the service"
   sensitive   = false
 }
 
-variable "cell_svc_docker_image_url" {
+variable "obi_one_v2_docker_image_url" {
   type        = string
-  description = "docker image for the sonata-cell-service"
+  description = "Docker image for the service"
   sensitive   = false
 }
 
-variable "cell_svc_ecs_number_of_containers" {
+variable "obi_one_v2_ecs_number_of_containers" {
   type        = number
   default     = 1
   sensitive   = false
-  description = "Number of containers for the SBO sonata-cell-position service"
+  description = "Number of containers for the service"
 }
 
-variable "cell_svc_perf_bucket_name" {
+variable "obi_one_v2_shared_bucket_name" {
   type = string
+  description = "Name of the bucket containing data to be mounted"
+}
+
+variable "obi_one_v2_shared_bucket_prefix" {
+  type = string
+  description = "Prefix for public data to be mounted"
 }
 
 variable "aws_region" {
@@ -40,6 +46,31 @@ variable "private_alb_https_listener_arn" {
 
 variable "root_path" {
   description = "Base path for the API"
+  type        = string
+}
+
+variable "host_port" {
+  description = "Internal host port"
+  type        = number
+}
+
+variable "container_port" {
+  description = "Container port"
+  type        = number
+}
+
+variable "mounted_volume_name" {
+  description = "Name of the volume to be mounted"
+  type        = string
+}
+
+variable "mounted_volume_host_path" {
+  description = "Path of the mounted volume on the host"
+  type        = string
+}
+
+variable "mounted_volume_container_path" {
+  description = "Path of the mounted volume in the container"
   type        = string
 }
 
@@ -66,6 +97,6 @@ variable "allowed_source_ip_cidr_blocks" {
 
 variable "tags" {
   description = "Tags"
-  default     = { SBO_Billing = "cell_svc" }
+  default     = { SBO_Billing = "obi_one_v2" }
   type        = map(string)
 }
