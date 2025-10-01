@@ -43,7 +43,7 @@ AssertPathIsDirectory=${mounted_volume_host_path}
 Type=forking
 User=root
 Group=root
-ExecStart=/bin/mount-s3 --read-only --allow-other ${shared_bucket_name} --prefix ${shared_bucket_prefix} ${mounted_volume_host_path}
+ExecStart=/bin/mount-s3 --read-only --allow-other ${shared_bucket_name} --region ${shared_bucket_region} --prefix ${shared_bucket_prefix} ${mounted_volume_host_path}
 ExecStop=/usr/bin/fusermount -u ${mounted_volume_host_path}
 
 [Install]

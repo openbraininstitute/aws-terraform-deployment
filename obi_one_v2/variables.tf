@@ -23,6 +23,11 @@ variable "shared_bucket_name" {
   description = "Name of the bucket containing data to be mounted"
 }
 
+variable "shared_bucket_region" {
+  type = string
+  description = "Region of the bucket containing data to be mounted"
+}
+
 variable "shared_bucket_prefix" {
   type = string
   description = "Prefix for public data to be mounted"
