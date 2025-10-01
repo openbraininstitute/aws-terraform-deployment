@@ -1,7 +1,7 @@
-resource "aws_lb_target_group" "private_cell_svc" {
+resource "aws_lb_target_group" "private_obi_one_v2" {
   #ts:skip=AC_AWS_0492
-  name_prefix = "cllb"
-  port        = 8000
+  name_prefix = "obi_one_v2"
+  port        = var.container_port
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = var.vpc_id
@@ -22,13 +22,13 @@ resource "aws_lb_target_group" "private_cell_svc" {
   tags = var.tags
 }
 
-resource "aws_lb_listener_rule" "cell_svc_private_https" {
+resource "aws_lb_listener_rule" "obi_one_v2_private_https" {
   listener_arn = var.private_alb_https_listener_arn
   priority     = 700
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.private_cell_svc.arn
+    target_group_arn = aws_lb_target_group.private_obi_one_v2.arn
   }
 
   condition {

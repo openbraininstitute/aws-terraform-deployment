@@ -1,33 +1,22 @@
-# Definition for sonata-cell-service
-
-# Instead of running on Fargate, it currently runs on an EC2 instance
-# (`cells_svc_ec2_launch_template`) which is called an "ECS Instance"
-# This then hosts ECS "tasks"; which are the containers
-
-# For now, only public data is used, and it is stored on the s3 bucket:
-# ${var.cell_svc_perf_bucket_name}; this is mounted by sbo-cell-svc-perf-test
-# and then made available to all ECS tasks.
-
 # { EC2 Instance
-# The security group for the EC2 systems that run the ECS cluster for cells
-resource "aws_security_group" "cell_svc_ec2_ecs_instance_sg" {
+# The security group for the EC2 systems that run the ECS cluster
+resource "aws_security_group" "obi_one_v2_ec2_ecs_instance_sg" {
   vpc_id      = var.vpc_id
-  description = "Sec group for SBO cell svc EC2 instance"
-  tags        = merge(var.tags, { Name = "cell_svc_ec2_ecs_instance_sg" })
+  description = "Sec group for EC2 instance"
+  tags        = merge(var.tags, { Name = "obi_one_v2_ec2_ecs_instance_sg" })
 }
 
-resource "aws_vpc_security_group_ingress_rule" "cell_svc_ec2_ecs_instance_sg_ingress_tcp_udp" {
-  security_group_id = aws_security_group.cell_svc_ec2_ecs_instance_sg.id
+resource "aws_vpc_security_group_ingress_rule" "obi_one_v2_ec2_ecs_instance_sg_ingress_tcp_udp" {
+  security_group_id = aws_security_group.obi_one_v2_ec2_ecs_instance_sg.id
   ip_protocol       = -1
   cidr_ipv4         = var.vpc_cidr_block
   description       = "Allow port * TCP/UDP ingress"
   tags              = var.tags
 }
 
-resource "aws_vpc_security_group_egress_rule" "cell_svc_ec2_ecs_instance_sg_egress_tcp_udp" {
-  security_group_id = aws_security_group.cell_svc_ec2_ecs_instance_sg.id
-  # TODO limit to what is needed
-  # needs access to dockerhub and to AWS secrets manager, likely also nexus, ...
+resource "aws_vpc_security_group_egress_rule" "obi_one_v2_ec2_ecs_instance_sg_egress_tcp_udp" {
+  security_group_id = aws_security_group.obi_one_v2_ec2_ecs_instance_sg.id
+  # TODO limit to what is needed, needs access to ECR and to AWS secrets manager at least
   ip_protocol = -1
   cidr_ipv4   = "0.0.0.0/0"
   #cidr_ipv4   = var.vpc_cidr_block
@@ -35,36 +24,36 @@ resource "aws_vpc_security_group_egress_rule" "cell_svc_ec2_ecs_instance_sg_egre
   tags        = var.tags
 }
 
-# { IAM Role for the EC2 instances which will be used for the cells ECS
+# { IAM Role for the EC2 instances which will be used for the ECS
 #https://docs.aws.amazon.com/AmazonECS/latest/developerguide/security-iam-awsmanpol.html#security-iam-awsmanpol-AmazonEC2ContainerServiceforEC2Role
-resource "aws_iam_role" "cells_ec2_instance_role" {
-  name_prefix        = "cl_ec2"
-  assume_role_policy = data.aws_iam_policy_document.cells_ec2_instance_role_policy.json
+resource "aws_iam_role" "obi_one_v2_ec2_instance_role" {
+  name_prefix        = "obi_one_v2_ec2"
+  assume_role_policy = data.aws_iam_policy_document.obi_one_v2_ec2_instance_role_policy.json
   tags               = var.tags
 }
 
-# Attach policy to role for ec2 instances for cells ecs cluster
-resource "aws_iam_role_policy_attachment" "cells_ec2_instance_role_policy" {
-  role       = aws_iam_role.cells_ec2_instance_role.name
+# Attach policy to role for ec2 instances for the ecs cluster
+resource "aws_iam_role_policy_attachment" "obi_one_v2_ec2_instance_role_policy" {
+  role       = aws_iam_role.obi_one_v2_ec2_instance_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
 }
 
 # Give EC2 instance access to S3
-resource "aws_iam_role_policy_attachment" "cells_ec2_instance_role_s3_policy" {
-  role       = aws_iam_role.cells_ec2_instance_role.name
+resource "aws_iam_role_policy_attachment" "obi_one_v2_ec2_instance_role_s3_policy" {
+  role       = aws_iam_role.obi_one_v2_ec2_instance_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
 }
 
-# An IAM instance profile for the ec2 systems for the cells ecs cluster, based on the IAM role,
+# An IAM instance profile for the ec2 systems for the ecs cluster, based on the IAM role,
 # for the ec2 launch template
-resource "aws_iam_instance_profile" "cells_ec2_instance_role_profile" {
-  name_prefix = "cl_ins"
-  role        = aws_iam_role.cells_ec2_instance_role.name
+resource "aws_iam_instance_profile" "obi_one_v2_ec2_instance_role_profile" {
+  name_prefix = "obi_one_v2_instance"
+  role        = aws_iam_role.obi_one_v2_ec2_instance_role.name
   tags        = var.tags
 }
 
-# The iam policy doc to create the IAM role for the ec2 instances for the cells cluster
-data "aws_iam_policy_document" "cells_ec2_instance_role_policy" {
+# The iam policy doc to create the IAM role for the ec2 instances for the cluster
+data "aws_iam_policy_document" "obi_one_v2_ec2_instance_role_policy" {
   statement {
     actions = ["sts:AssumeRole"]
     effect  = "Allow"
@@ -78,24 +67,26 @@ data "aws_iam_policy_document" "cells_ec2_instance_role_policy" {
     }
   }
 }
-# } IAM Role for the EC2 instances which will be used for the cells ECS
+# } IAM Role for the EC2 instances which will be used for the ECS
 
 # Launch template for the EC2 machines that will be used to run the ECS cluster/containers
-resource "aws_launch_template" "cells_svc_ec2_launch_template" {
-  name          = "cells_svc_ec2_launch_template"
+resource "aws_launch_template" "obi_one_v2_ec2_launch_template" {
+  name          = "obi_one_v2_ec2_launch_template"
   image_id      = var.amazon_linux_ecs_ami_id
   instance_type = "t2.medium"
   key_name      = var.aws_coreservices_ssh_key_id
-  user_data = base64encode(templatefile("${path.module}/cells_ec2_ecs_user_data.sh", {
-    cell_svc_perf_bucket_name = var.cell_svc_perf_bucket_name,
-    ecs_cluster_name          = aws_ecs_cluster.cell_svc_ecs_cluster.name,
+  user_data = base64encode(templatefile("${path.module}/ec2_ecs_user_data.sh", {
+    obi_one_v2_shared_bucket_name   = var.obi_one_v2_shared_bucket_name,
+    obi_one_v2_shared_bucket_prefix = var.obi_one_v2_shared_bucket_prefix,
+    mounted_volume_host_path = var.mounted_volume_host_path,
+    ecs_cluster_name          = aws_ecs_cluster.obi_one_v2_ecs_cluster.name,
     ecs_cluster_tags          = join(",", [for k, v in var.tags : "\"${k}\": \"${v}\""])
   }))
-  vpc_security_group_ids = [aws_security_group.cell_svc_ec2_ecs_instance_sg.id]
+  vpc_security_group_ids = [aws_security_group.obi_one_v2_ec2_ecs_instance_sg.id]
   update_default_version = true
 
   iam_instance_profile {
-    arn = aws_iam_instance_profile.cells_ec2_instance_role_profile.arn
+    arn = aws_iam_instance_profile.obi_one_v2_ec2_instance_role_profile.arn
   }
 
   metadata_options {
@@ -119,34 +110,22 @@ resource "aws_launch_template" "cells_svc_ec2_launch_template" {
   }
 }
 
-resource "aws_cloudwatch_log_group" "cell_svc" {
+resource "aws_cloudwatch_log_group" "obi_one_v2" {
   # TODO check if the logs can be encrypted
-  name              = var.cell_svc_log_group_name
+  name              = var.obi_one_v2_log_group_name
   skip_destroy      = false
   retention_in_days = 5
 
   kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
 
-  tags = merge(var.tags, { Application = "cell_svc" })
+  tags = merge(var.tags, { Application = "obi_one_v2" })
 }
 
-# TODO check: not used?
-resource "aws_cloudwatch_log_group" "cell_svc_ecs" {
-  # TODO check if the logs can be encrypted
-  name_prefix       = "cl_log"
-  skip_destroy      = false
-  retention_in_days = 5
+# ECS cluster
+resource "aws_ecs_cluster" "obi_one_v2_ecs_cluster" {
+  name = "obi_one_v2_ecs_cluster"
 
-  kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
-
-  tags = merge(var.tags, { Application = "cell_svc" })
-}
-
-# ECS cluster for cells
-resource "aws_ecs_cluster" "cell_svc_ecs_cluster" {
-  name = "cell_svc_ecs_cluster"
-
-  tags = merge(var.tags, { Application = "cell_svc" })
+  tags = merge(var.tags, { Application = "obi_one_v2" })
 
   lifecycle {
     create_before_destroy = true
@@ -160,26 +139,26 @@ resource "aws_ecs_cluster" "cell_svc_ecs_cluster" {
 
 # { ECS Task network
 # TODO make more strict
-resource "aws_security_group" "cell_svc_ecs_task" {
-  name_prefix = "cl_tsk"
+resource "aws_security_group" "obi_one_v2_ecs_task" {
+  name_prefix = "obi_one_v2_tsk"
   vpc_id      = var.vpc_id
-  description = "Sec group for SBO cell svc ECS task"
+  description = "Sec group for ECS task"
 
-  tags = merge(var.tags, { Name = "cell_svc_ecs_task" })
+  tags = merge(var.tags, { Name = "obi_one_v2_ecs_task" })
 }
 
-resource "aws_vpc_security_group_ingress_rule" "cell_svc_task_ingress_port_8000" {
-  security_group_id = aws_security_group.cell_svc_ecs_task.id
+resource "aws_vpc_security_group_ingress_rule" "obi_one_v2_task_ingress_container_port" {
+  security_group_id = aws_security_group.obi_one_v2_ecs_task.id
   ip_protocol       = "tcp"
-  from_port         = 8000
-  to_port           = 8000
+  from_port         = var.container_port
+  to_port           = var.container_port
   cidr_ipv4         = var.vpc_cidr_block
-  description       = "Allow port 8000 tcp for SBO cell svc ECS task"
+  description       = "Allow container_port tcp for ECS task"
   tags              = var.tags
 }
 
-resource "aws_vpc_security_group_egress_rule" "cell_svc_task_egress_tcp_udp" {
-  security_group_id = aws_security_group.cell_svc_ecs_task.id
+resource "aws_vpc_security_group_egress_rule" "obi_one_v2_task_egress_tcp_udp" {
+  security_group_id = aws_security_group.obi_one_v2_ecs_task.id
   # TODO limit to what is needed
   # needs access to dockerhub and to AWS secrets manager, likely also nexus, ...
   ip_protocol = -1
@@ -191,19 +170,19 @@ resource "aws_vpc_security_group_egress_rule" "cell_svc_task_egress_tcp_udp" {
 # } ECS Task network
 
 # { ECS Task
-resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
-  family = "cell_svc_task_family"
+resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
+  family = "obi_one_v2_task_family"
 
   requires_compatibilities = ["EC2"]
 
-  execution_role_arn = aws_iam_role.ecs_cell_svc_task_execution_role.arn
-  task_role_arn      = aws_iam_role.ecs_cell_svc_task_role.arn
+  execution_role_arn = aws_iam_role.ecs_obi_one_v2_task_execution_role.arn
+  task_role_arn      = aws_iam_role.ecs_obi_one_v2_task_role.arn
 
   network_mode = "awsvpc"
 
   volume {
-    name      = "sbo-project-data"
-    host_path = "/sbo/data/project"
+    name      = var.mounted_volume_name
+    host_path = var.mounted_volume_host_path
   }
 
   container_definitions = jsonencode([
@@ -211,15 +190,15 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
       memory      = 1536
       cpu         = 256
       networkMode = "awsvpc"
-      family      = "sbocellsvc"
+      family      = "obi_one_v2"
       essential   = true
-      image       = var.cell_svc_docker_image_url
-      name        = "cell_svc"
+      image       = var.obi_one_v2_docker_image_url
+      name        = "obi_one_v2"
 
       portMappings = [
         {
-          hostPort      = 8000
-          containerPort = 8000
+          hostPort      = var.host_port
+          containerPort = var.container_port
           protocol      = "tcp"
         }
       ]
@@ -227,8 +206,8 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
       mountPoints = [
         {
           readOnly      = true
-          sourceVolume  = "sbo-project-data"
-          containerPath = "/sbo/data/project"
+          sourceVolume  = var.mounted_volume_name
+          containerPath = var.mounted_volume_container_path
         }
       ]
 
@@ -264,10 +243,10 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = var.cell_svc_log_group_name
+          awslogs-group         = var.obi_one_v2_log_group_name
           awslogs-region        = var.aws_region
           awslogs-create-group  = "true"
-          awslogs-stream-prefix = "cell_svc"
+          awslogs-stream-prefix = "obi_one_v2"
         }
       }
     }
@@ -279,12 +258,12 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
   tags = var.tags
 }
 
-resource "aws_ecs_service" "cell_svc_ecs_service" {
-  name            = "cells_ecs_service"
-  cluster         = aws_ecs_cluster.cell_svc_ecs_cluster.id
+resource "aws_ecs_service" "obi_one_v2_ecs_service" {
+  name            = "obi_one_v2_service"
+  cluster         = aws_ecs_cluster.obi_one_v2_ecs_cluster.id
   launch_type     = "EC2"
-  task_definition = aws_ecs_task_definition.cell_svc_ecs_definition.arn
-  desired_count   = var.cell_svc_ecs_number_of_containers
+  task_definition = aws_ecs_task_definition.obi_one_v2_ecs_definition.arn
+  desired_count   = var.obi_one_v2_ecs_number_of_containers
 
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
@@ -297,20 +276,20 @@ resource "aws_ecs_service" "cell_svc_ecs_service" {
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.private_cell_svc.arn
-    container_name   = "cell_svc"
-    container_port   = 8000
+    target_group_arn = aws_lb_target_group.private_obi_one_v2.arn
+    container_name   = "obi_one_v2"
+    container_port   = var.container_port
   }
 
   network_configuration {
-    security_groups  = [aws_security_group.cell_svc_ecs_task.id]
-    subnets          = [aws_subnet.cells.id]
+    security_groups  = [aws_security_group.obi_one_v2_ecs_task.id]
+    subnets          = [aws_subnet.obi_one_v2.id]
     assign_public_ip = false
   }
 
   depends_on = [
-    aws_cloudwatch_log_group.cell_svc,
-    aws_iam_role.ecs_cell_svc_task_execution_role #, # wrong?
+    aws_cloudwatch_log_group.obi_one_v2,
+    aws_iam_role.ecs_obi_one_v2_task_execution_role #, # wrong?
   ]
   # force redeployment on each tf apply
   force_new_deployment = true
@@ -324,15 +303,15 @@ resource "aws_ecs_service" "cell_svc_ecs_service" {
   tags           = var.tags
 }
 
-# { Used by the ECS service to manage the cells ECS cluster
+# { Used by the ECS service to manage the ECS cluster
 # *not* for the EC2 systems and also not for the ECS containers
-resource "aws_iam_role" "cells_ecs_service_role" {
-  name_prefix        = "cl_ecs"
-  assume_role_policy = data.aws_iam_policy_document.cells_ecs_service_policy.json
+resource "aws_iam_role" "obi_one_v2_ecs_service_role" {
+  name_prefix        = "obi_one_v2_ecs"
+  assume_role_policy = data.aws_iam_policy_document.obi_one_v2_ecs_service_policy.json
   tags               = var.tags
 }
 
-data "aws_iam_policy_document" "cells_ecs_service_policy" {
+data "aws_iam_policy_document" "obi_one_v2_ecs_service_policy" {
   statement {
     actions = ["sts:AssumeRole"]
     effect  = "Allow"
@@ -345,15 +324,15 @@ data "aws_iam_policy_document" "cells_ecs_service_policy" {
 }
 
 # for ecs service role, not for the containers itself
-resource "aws_iam_role_policy" "cells_ecs_service_role_policy" {
-  name   = "Cells_ECS_ServiceRolePolicy"
-  policy = data.aws_iam_policy_document.cells_ecs_service_role_policy.json
-  role   = aws_iam_role.cells_ecs_service_role.name
+resource "aws_iam_role_policy" "obi_one_v2_ecs_service_role_policy" {
+  name   = "obi_one_v2_ECS_ServiceRolePolicy"
+  policy = data.aws_iam_policy_document.obi_one_v2_ecs_service_role_policy.json
+  role   = aws_iam_role.obi_one_v2_ecs_service_role.name
 }
 
 # for ecs service role, not for the containers itself
 #tfsec:ignore:aws-iam-no-policy-wildcards
-data "aws_iam_policy_document" "cells_ecs_service_role_policy" {
+data "aws_iam_policy_document" "obi_one_v2_ecs_service_role_policy" {
   statement {
     effect = "Allow"
     actions = [
@@ -374,22 +353,22 @@ data "aws_iam_policy_document" "cells_ecs_service_role_policy" {
     resources = ["*"]
   }
 }
-# } Used by the ECS service to manage the cells ECS cluster
+# } Used by the ECS service to manage the ECS cluster
 
 # { ECS Task IAM
-resource "aws_iam_role" "ecs_cell_svc_task_execution_role" {
-  name_prefix        = "cl_exe"
-  assume_role_policy = data.aws_iam_policy_document.cells_ecs_task_assume_role_policy.json
+resource "aws_iam_role" "ecs_obi_one_v2_task_execution_role" {
+  name_prefix        = "obi_one_v2_exe"
+  assume_role_policy = data.aws_iam_policy_document.obi_one_v2_ecs_task_assume_role_policy.json
   tags               = var.tags
 }
 
-resource "aws_iam_role" "ecs_cell_svc_task_role" {
-  name_prefix        = "cl_svc"
-  assume_role_policy = data.aws_iam_policy_document.cells_ecs_task_assume_role_policy.json
+resource "aws_iam_role" "ecs_obi_one_v2_task_role" {
+  name_prefix        = "obi_one_v2_svc"
+  assume_role_policy = data.aws_iam_policy_document.obi_one_v2_ecs_task_assume_role_policy.json
   tags               = var.tags
 }
 
-data "aws_iam_policy_document" "cells_ecs_task_assume_role_policy" {
+data "aws_iam_policy_document" "obi_one_v2_ecs_task_assume_role_policy" {
   statement {
     actions = ["sts:AssumeRole"]
 
@@ -402,7 +381,7 @@ data "aws_iam_policy_document" "cells_ecs_task_assume_role_policy" {
 
 #tfsec:ignore:aws-iam-no-policy-wildcards
 resource "aws_iam_policy" "cloudwatch_write_policy" {
-  name        = "cl_cloudwatch_write_policy"
+  name        = "obi_one_v2_cloudwatch_write_policy"
   description = "A policy that grants write access to Cloudwatch logs"
 
   policy = jsonencode(
@@ -428,24 +407,24 @@ resource "aws_iam_policy" "cloudwatch_write_policy" {
   tags = var.tags
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_cell_svc_task_execution_role_policy_attachment" {
-  role       = aws_iam_role.ecs_cell_svc_task_execution_role.name
+resource "aws_iam_role_policy_attachment" "ecs_obi_one_v2_task_execution_role_policy_attachment" {
+  role       = aws_iam_role.ecs_obi_one_v2_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 
 }
 
 resource "aws_iam_role_policy_attachment" "cloudwatch_write_logs" {
-  role       = aws_iam_role.ecs_cell_svc_task_execution_role.name
+  role       = aws_iam_role.ecs_obi_one_v2_task_execution_role.name
   policy_arn = aws_iam_policy.cloudwatch_write_policy.arn
 }
 # }
 
 # { Capacity provider; this creates or destroys EC2 *instances* to launch, on which ECS tasks are run
-resource "aws_ecs_capacity_provider" "cells_cas" {
-  name = "cells_ecs_capacity_provider"
+resource "aws_ecs_capacity_provider" "obi_one_v2_cas" {
+  name = "obi_one_v2_ecs_capacity_provider"
 
   auto_scaling_group_provider {
-    auto_scaling_group_arn = aws_autoscaling_group.cells_ecs_autoscaling_group.arn
+    auto_scaling_group_arn = aws_autoscaling_group.obi_one_v2_ecs_autoscaling_group.arn
 
     managed_scaling {
       #maximum_scaling_step_size = 1
@@ -459,28 +438,28 @@ resource "aws_ecs_capacity_provider" "cells_cas" {
 }
 
 resource "aws_ecs_cluster_capacity_providers" "cas" {
-  cluster_name       = aws_ecs_cluster.cell_svc_ecs_cluster.name
-  capacity_providers = [aws_ecs_capacity_provider.cells_cas.name]
+  cluster_name       = aws_ecs_cluster.obi_one_v2_ecs_cluster.name
+  capacity_providers = [aws_ecs_capacity_provider.obi_one_v2_cas.name]
 }
 # } Capacity provider
 
 ## Define Target Tracking on ECS Cluster Task level
-resource "aws_appautoscaling_target" "cells_ecs_target" {
+resource "aws_appautoscaling_target" "obi_one_v2_ecs_target" {
   max_capacity       = 1 # TODO
   min_capacity       = 1 # TODO
-  resource_id        = "service/${aws_ecs_cluster.cell_svc_ecs_cluster.name}/${aws_ecs_service.cell_svc_ecs_service.name}"
+  resource_id        = "service/${aws_ecs_cluster.obi_one_v2_ecs_cluster.name}/${aws_ecs_service.obi_one_v2_ecs_service.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
   tags               = var.tags
 }
 
 ## Policy for CPU tracking
-resource "aws_appautoscaling_policy" "cells_ecs_cpu_policy" {
-  name               = "Cells_CPUTargetTrackingScaling"
+resource "aws_appautoscaling_policy" "obi_one_v2_ecs_cpu_policy" {
+  name               = "obi_one_v2_CPUTargetTrackingScaling"
   policy_type        = "TargetTrackingScaling"
-  resource_id        = aws_appautoscaling_target.cells_ecs_target.resource_id
-  scalable_dimension = aws_appautoscaling_target.cells_ecs_target.scalable_dimension
-  service_namespace  = aws_appautoscaling_target.cells_ecs_target.service_namespace
+  resource_id        = aws_appautoscaling_target.obi_one_v2_ecs_target.resource_id
+  scalable_dimension = aws_appautoscaling_target.obi_one_v2_ecs_target.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.obi_one_v2_ecs_target.service_namespace
 
   target_tracking_scaling_policy_configuration {
     # Target tracking for CPU usage in %
@@ -493,12 +472,12 @@ resource "aws_appautoscaling_policy" "cells_ecs_cpu_policy" {
 }
 
 ## Policy for memory tracking
-resource "aws_appautoscaling_policy" "cells_ecs_memory_policy" {
-  name               = "cells_MemoryTargetTrackingScaling"
+resource "aws_appautoscaling_policy" "obi_one_v2_ecs_memory_policy" {
+  name               = "obi_one_v2_MemoryTargetTrackingScaling"
   policy_type        = "TargetTrackingScaling"
-  resource_id        = aws_appautoscaling_target.cells_ecs_target.resource_id
-  scalable_dimension = aws_appautoscaling_target.cells_ecs_target.scalable_dimension
-  service_namespace  = aws_appautoscaling_target.cells_ecs_target.service_namespace
+  resource_id        = aws_appautoscaling_target.obi_one_v2_ecs_target.resource_id
+  scalable_dimension = aws_appautoscaling_target.obi_one_v2_ecs_target.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.obi_one_v2_ecs_target.service_namespace
 
   target_tracking_scaling_policy_configuration {
     # Target tracking for memory usage in %
@@ -511,11 +490,11 @@ resource "aws_appautoscaling_policy" "cells_ecs_memory_policy" {
 }
 
 ## Creates an ASG linked with our main VPC
-resource "aws_autoscaling_group" "cells_ecs_autoscaling_group" {
-  name_prefix           = "cl_asg"
+resource "aws_autoscaling_group" "obi_one_v2_ecs_autoscaling_group" {
+  name_prefix           = "obi_one_v2_asg"
   max_size              = 1
   min_size              = 1
-  vpc_zone_identifier   = [aws_subnet.cells.id]
+  vpc_zone_identifier   = [aws_subnet.obi_one_v2.id]
   health_check_type     = "EC2"
   protect_from_scale_in = true
 
@@ -531,7 +510,7 @@ resource "aws_autoscaling_group" "cells_ecs_autoscaling_group" {
   ]
 
   launch_template {
-    id      = aws_launch_template.cells_svc_ec2_launch_template.id
+    id      = aws_launch_template.obi_one_v2_ec2_launch_template.id
     version = "$Latest"
   }
 
@@ -540,13 +519,13 @@ resource "aws_autoscaling_group" "cells_ecs_autoscaling_group" {
 
   tag {
     key                 = "Name"
-    value               = "cells_autoscaling_group"
+    value               = "obi_one_v2_autoscaling_group"
     propagate_at_launch = true
   }
 
   tag {
     key                 = "SBO_Billing"
-    value               = "cell_svc"
+    value               = "obi_one_v2"
     propagate_at_launch = true
   }
 }
