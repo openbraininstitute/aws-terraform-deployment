@@ -558,12 +558,15 @@ module "obi_one_v2" {
 
   aws_coreservices_ssh_key_id = module.coreservices_key.key_pair_id
 
+  ec2_instance_type = var.obi_one_v2_ec2_instance_type
+  ecs_task_size     = var.obi_one_v2_ecs_task_size
+
   root_path    = "/api/obi-one-v2"
   container_port = 8000
   host_port      = 8000
 
-  obi_one_v2_shared_bucket_name   = aws_s3_bucket.sbo-cell-svc-perf-test.id  # TODO: change to entitycore
-  obi_one_v2_shared_bucket_prefix = "public/"  # must end with /
+  shared_bucket_name   = aws_s3_bucket.sbo-cell-svc-perf-test.id  # TODO: change to entitycore
+  shared_bucket_prefix = "public/"  # must end with /
 
   mounted_volume_name           = "shared-data"
   mounted_volume_host_path      = "/public"
@@ -575,7 +578,7 @@ module "obi_one_v2" {
 
   amazon_linux_ecs_ami_id = data.aws_ami.amazon_linux_2_ecs.id
 
-  obi_one_v2_docker_image_url = var.obi_one_docker_image_url  # same as v1
+  docker_image_url = var.obi_one_docker_image_url  # same as v1
 }
 
 module "obi_generative_gui" {
