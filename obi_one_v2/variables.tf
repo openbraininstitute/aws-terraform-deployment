@@ -1,11 +1,11 @@
-variable "obi_one_v2_log_group_name" {
+variable "log_group_name" {
   default     = "obi_one_v2"
   type        = string
   description = "The log name within cloudwatch for the service"
   sensitive   = false
 }
 
-variable "obi_one_v2_docker_image_url" {
+variable "docker_image_url" {
   type        = string
   description = "Docker image for the service"
   sensitive   = false
@@ -18,14 +18,28 @@ variable "obi_one_v2_ecs_number_of_containers" {
   description = "Number of containers for the service"
 }
 
-variable "obi_one_v2_shared_bucket_name" {
+variable "shared_bucket_name" {
   type = string
   description = "Name of the bucket containing data to be mounted"
 }
 
-variable "obi_one_v2_shared_bucket_prefix" {
+variable "shared_bucket_prefix" {
   type = string
   description = "Prefix for public data to be mounted"
+}
+
+variable "ec2_instance_type" {
+  type = string
+  description = "EC2 instance type"
+}
+
+variable "ecs_task_size" {
+  type = object({
+    cpu    = any
+    memory = any
+    tmpfs  = any  # tmpfs size in MiB
+  })
+  description = "CPU and memory limit for ECS task (number or string format)"
 }
 
 variable "aws_region" {

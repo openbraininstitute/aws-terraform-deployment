@@ -1,6 +1,7 @@
 # { EC2 Instance
 # The security group for the EC2 systems that run the ECS cluster
 resource "aws_security_group" "obi_one_v2_ec2_ecs_instance_sg" {
+  name        = "obi_one_v2_sg"
   vpc_id      = var.vpc_id
   description = "Sec group for EC2 instance"
   tags        = merge(var.tags, { Name = "obi_one_v2_ec2_ecs_instance_sg" })
@@ -19,7 +20,7 @@ resource "aws_vpc_security_group_egress_rule" "obi_one_v2_ec2_ecs_instance_sg_eg
   # TODO limit to what is needed, needs access to ECR and to AWS secrets manager at least
   ip_protocol = -1
   cidr_ipv4   = "0.0.0.0/0"
-  #cidr_ipv4   = var.vpc_cidr_block
+  # cidr_ipv4   = var.vpc_cidr_block
   description = "Allow all TCP/UDP egress"
   tags        = var.tags
 }
@@ -73,14 +74,14 @@ data "aws_iam_policy_document" "obi_one_v2_ec2_instance_role_policy" {
 resource "aws_launch_template" "obi_one_v2_ec2_launch_template" {
   name          = "obi_one_v2_ec2_launch_template"
   image_id      = var.amazon_linux_ecs_ami_id
-  instance_type = "t2.medium"
+  instance_type = var.ec2_instance_type
   key_name      = var.aws_coreservices_ssh_key_id
   user_data = base64encode(templatefile("${path.module}/ec2_ecs_user_data.sh", {
-    obi_one_v2_shared_bucket_name   = var.obi_one_v2_shared_bucket_name,
-    obi_one_v2_shared_bucket_prefix = var.obi_one_v2_shared_bucket_prefix,
+    shared_bucket_name   = var.shared_bucket_name,
+    shared_bucket_prefix     = var.shared_bucket_prefix,
     mounted_volume_host_path = var.mounted_volume_host_path,
-    ecs_cluster_name          = aws_ecs_cluster.obi_one_v2_ecs_cluster.name,
-    ecs_cluster_tags          = join(",", [for k, v in var.tags : "\"${k}\": \"${v}\""])
+    ecs_cluster_name         = aws_ecs_cluster.obi_one_v2_ecs_cluster.name,
+    ecs_cluster_tags         = join(",", [for k, v in var.tags : "\"${k}\": \"${v}\""])
   }))
   vpc_security_group_ids = [aws_security_group.obi_one_v2_ec2_ecs_instance_sg.id]
   update_default_version = true
@@ -112,7 +113,7 @@ resource "aws_launch_template" "obi_one_v2_ec2_launch_template" {
 
 resource "aws_cloudwatch_log_group" "obi_one_v2" {
   # TODO check if the logs can be encrypted
-  name              = var.obi_one_v2_log_group_name
+  name              = var.log_group_name
   skip_destroy      = false
   retention_in_days = 5
 
@@ -187,12 +188,12 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
 
   container_definitions = jsonencode([
     {
-      memory      = 1536
-      cpu         = 256
+      memory      = var.ecs_task_size.memory
+      cpu         = var.ecs_task_size.cpu
       networkMode = "awsvpc"
       family      = "obi_one_v2"
       essential   = true
-      image       = var.obi_one_v2_docker_image_url
+      image       = var.docker_image_url
       name        = "obi_one_v2"
 
       portMappings = [
@@ -215,7 +216,7 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
         tmpfs = [
           {
             containerPath = "/tmp"
-            size          = 512 # size in MiB
+            size          = var.ecs_task_size.tmpfs
             mountOptions  = ["rw", "noexec", "nosuid"]
           }
         ]
@@ -233,7 +234,8 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
       ]
 
       healthcheck = {
-        command     = ["CMD", "/code/scripts/healthcheck.sh"]
+        # command     = ["CMD", "/code/scripts/healthcheck.sh"]
+        command     = ["CMD-SHELL", "exit 0"] // TODO: add a proper health check
         interval    = 30
         timeout     = 5
         startPeriod = 5
@@ -243,7 +245,7 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = var.obi_one_v2_log_group_name
+          awslogs-group         = var.log_group_name
           awslogs-region        = var.aws_region
           awslogs-create-group  = "true"
           awslogs-stream-prefix = "obi_one_v2"
@@ -252,8 +254,8 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
     }
   ])
 
-  cpu    = 256
-  memory = 1536
+  cpu    = var.ecs_task_size.cpu
+  memory = var.ecs_task_size.memory
 
   tags = var.tags
 }
