@@ -19,22 +19,22 @@ variable "obi_one_v2_ecs_number_of_containers" {
 }
 
 variable "shared_bucket_name" {
-  type = string
+  type        = string
   description = "Name of the bucket containing data to be mounted"
 }
 
 variable "shared_bucket_region" {
-  type = string
+  type        = string
   description = "Region of the bucket containing data to be mounted"
 }
 
 variable "shared_bucket_prefix" {
-  type = string
+  type        = string
   description = "Prefix for public data to be mounted"
 }
 
 variable "ec2_instance_type" {
-  type = string
+  type        = string
   description = "EC2 instance type"
 }
 
@@ -42,7 +42,7 @@ variable "ecs_task_size" {
   type = object({
     cpu    = any
     memory = any
-    tmpfs  = any  # tmpfs size in MiB
+    tmpfs  = any # tmpfs size in MiB
   })
   description = "CPU and memory limit for ECS task (number or string format)"
 }
