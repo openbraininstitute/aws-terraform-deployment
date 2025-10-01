@@ -298,7 +298,7 @@ variable "obi_one_v2_ecs_task_size" {
   type = object({
     cpu    = any
     memory = any
-    tmpfs  = any  # tmpfs size in MiB
+    tmpfs  = any # tmpfs size in MiB
   })
   description = "CPU and memory limit for obi-one ECS task (number or string format)"
 }
