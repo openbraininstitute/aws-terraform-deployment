@@ -17,15 +17,6 @@ resource "aws_route_table_association" "obi_one_v2" {
 resource "aws_network_acl" "obi_one_v2" {
   vpc_id     = var.vpc_id
   subnet_ids = [aws_subnet.obi_one_v2.id]
-  # Allow local traffic
-  ingress {
-    protocol   = -1
-    rule_no    = 10
-    action     = "allow"
-    cidr_block = var.vpc_cidr_block
-    from_port  = 0
-    to_port    = 0
-  }
   # Allow access to ssh
   ingress {
     protocol   = "tcp"
