@@ -17,10 +17,19 @@ resource "aws_route_table_association" "obi_one_v2" {
 resource "aws_network_acl" "obi_one_v2" {
   vpc_id     = var.vpc_id
   subnet_ids = [aws_subnet.obi_one_v2.id]
-  # Allow access to the container port
+  # Allow access to ssh
   ingress {
     protocol   = "tcp"
     rule_no    = 100
+    action     = "allow"
+    cidr_block = var.vpc_cidr_block
+    from_port  = 22
+    to_port    = 22
+  }
+  # Allow access to the container port
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 105
     action     = "allow"
     cidr_block = var.vpc_cidr_block
     from_port  = var.container_port
@@ -29,7 +38,7 @@ resource "aws_network_acl" "obi_one_v2" {
   # allow ingress ephemeral ports
   ingress {
     protocol   = "tcp"
-    rule_no    = 200
+    rule_no    = 110
     action     = "allow"
     cidr_block = var.vpc_cidr_block
     from_port  = 1024
