@@ -1,6 +1,6 @@
 resource "aws_lb_target_group" "private_obi_one_v2" {
   #ts:skip=AC_AWS_0492
-  name_prefix = "obi-one-v2"
+  name        = "obi-one-v2-private"
   port        = var.container_port
   protocol    = "HTTP"
   target_type = "ip"
