@@ -28,7 +28,7 @@ resource "aws_vpc_security_group_egress_rule" "obi_one_v2_ec2_ecs_instance_sg_eg
 # { IAM Role for the EC2 instances which will be used for the ECS
 #https://docs.aws.amazon.com/AmazonECS/latest/developerguide/security-iam-awsmanpol.html#security-iam-awsmanpol-AmazonEC2ContainerServiceforEC2Role
 resource "aws_iam_role" "obi_one_v2_ec2_instance_role" {
-  name_prefix        = "obi_one_v2_ec2"
+  name_prefix        = "obi-one-v2-ec2"
   assume_role_policy = data.aws_iam_policy_document.obi_one_v2_ec2_instance_role_policy.json
   tags               = var.tags
 }
@@ -48,7 +48,7 @@ resource "aws_iam_role_policy_attachment" "obi_one_v2_ec2_instance_role_s3_polic
 # An IAM instance profile for the ec2 systems for the ecs cluster, based on the IAM role,
 # for the ec2 launch template
 resource "aws_iam_instance_profile" "obi_one_v2_ec2_instance_role_profile" {
-  name_prefix = "obi_one_v2_instance"
+  name_prefix = "obi-one-v2-ec2"
   role        = aws_iam_role.obi_one_v2_ec2_instance_role.name
   tags        = var.tags
 }
@@ -142,7 +142,7 @@ resource "aws_ecs_cluster" "obi_one_v2_ecs_cluster" {
 # { ECS Task network
 # TODO make more strict
 resource "aws_security_group" "obi_one_v2_ecs_task" {
-  name_prefix = "obi_one_v2_tsk"
+  name_prefix = "obi-one-v2-ecs"
   vpc_id      = var.vpc_id
   description = "Sec group for ECS task"
 
@@ -309,7 +309,7 @@ resource "aws_ecs_service" "obi_one_v2_ecs_service" {
 # { Used by the ECS service to manage the ECS cluster
 # *not* for the EC2 systems and also not for the ECS containers
 resource "aws_iam_role" "obi_one_v2_ecs_service_role" {
-  name_prefix        = "obi_one_v2_ecs"
+  name_prefix        = "obi-one-v2-ecs"
   assume_role_policy = data.aws_iam_policy_document.obi_one_v2_ecs_service_policy.json
   tags               = var.tags
 }
@@ -360,13 +360,13 @@ data "aws_iam_policy_document" "obi_one_v2_ecs_service_role_policy" {
 
 # { ECS Task IAM
 resource "aws_iam_role" "obi_one_v2_ecs_task_execution_role" {
-  name_prefix        = "obi_one_v2_exe"
+  name_prefix        = "obi-one-v2-ecs-exe"
   assume_role_policy = data.aws_iam_policy_document.obi_one_v2_ecs_task_assume_role_policy.json
   tags               = var.tags
 }
 
 resource "aws_iam_role" "obi_one_v2_ecs_task_role" {
-  name_prefix        = "obi_one_v2_svc"
+  name_prefix        = "obi-one-v2-ecs-svc"
   assume_role_policy = data.aws_iam_policy_document.obi_one_v2_ecs_task_assume_role_policy.json
   tags               = var.tags
 }
@@ -494,7 +494,7 @@ resource "aws_appautoscaling_policy" "obi_one_v2_ecs_memory_policy" {
 
 ## Creates an ASG linked with our main VPC
 resource "aws_autoscaling_group" "obi_one_v2_ecs_autoscaling_group" {
-  name_prefix           = "obi_one_v2_asg"
+  name_prefix           = "obi-one-v2-ecs-asg"
   max_size              = 1
   min_size              = 1
   vpc_zone_identifier   = [aws_subnet.obi_one_v2.id]

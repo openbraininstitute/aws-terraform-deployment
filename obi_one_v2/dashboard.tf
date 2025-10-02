@@ -4,7 +4,7 @@ locals {
 }
 
 resource "aws_cloudwatch_dashboard" "main" {
-  dashboard_name = "Obi One v2"
+  dashboard_name = "obi_one_v2"
 
   dashboard_body = jsonencode({
     widgets = [
