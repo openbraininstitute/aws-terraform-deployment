@@ -24,7 +24,7 @@ resource "aws_lb_target_group" "private_obi_one_v2" {
 
 resource "aws_lb_listener_rule" "obi_one_v2_private_https" {
   listener_arn = var.private_alb_https_listener_arn
-  priority     = 700
+  priority     = 701
 
   action {
     type             = "forward"
