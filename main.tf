@@ -142,7 +142,7 @@ module "ml" {
   vpc_cidr_block                 = local.vpc_cidr_block
   route_table_private_subnets_id = local.route_table_private_subnets_id
 
-  agent_image_tag = "neuroagent-v0.9.2"
+  agent_image_tag = "neuroagent-v0.10.0"
 
   neuroagent_bucket_name = var.ml_neuroagent_bucket_name
   primary_domain         = local.primary_domain
@@ -545,6 +545,43 @@ module "obi_one" {
   cors_origins = local.core_web_app_origins
 }
 
+module "obi_one_v2" {
+  source = "./obi_one_v2"
+
+  aws_region = local.aws_region
+
+  vpc_id         = local.vpc_id
+  vpc_cidr_block = local.vpc_cidr_block
+
+  private_alb_https_listener_arn = local.private_alb_https_listener_arn
+  route_table_private_subnets_id = local.route_table_private_subnets_id
+
+  aws_coreservices_ssh_key_id = module.coreservices_key.key_pair_id
+
+  ec2_instance_type = var.obi_one_v2_ec2_instance_type
+  ecs_task_size     = var.obi_one_v2_ecs_task_size
+
+  root_path      = "/api/obi-one-v2"
+  container_port = 8000
+  host_port      = 8000
+
+  shared_bucket_name   = var.entitycore_svc_aws_s3_internal_bucket
+  shared_bucket_region = var.entitycore_svc_aws_s3_internal_region
+  shared_bucket_prefix = "public/" # must end with /
+
+  mounted_volume_name           = "shared-data"
+  mounted_volume_host_path      = "/public"
+  mounted_volume_container_path = "/public"
+
+  keycloak_url = "https://${local.primary_domain}/auth/realms/SBO/"
+
+  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
+
+  amazon_linux_ecs_ami_id = data.aws_ami.amazon_linux_2_ecs.id
+
+  docker_image_url = var.obi_one_docker_image_url # same as v1
+}
+
 module "obi_generative_gui" {
   source = "./obi_generative_gui"
 
@@ -650,6 +687,7 @@ module "dashboards" {
       "KeyCloak"            = module.cs.private_keycloak_lb_rule_suffix
       "SmallScaleSimulator" = module.small_scale_simulator.private_lb_rule_suffix
       "SonataCellService"   = module.cells_svc.private_lb_rule_suffix
+      "ObiOneV2"            = module.obi_one_v2.private_lb_rule_suffix
       "ThumbnailGenerator"  = module.thumbnail_generation_api.private_lb_rule_suffix
       "VLabManager"         = module.virtual_lab_manager.private_arn_suffix
     },

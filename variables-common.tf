@@ -289,6 +289,20 @@ variable "obi_one_task_size" {
   description = "CPU and memory limit for obi-one ECS task (number or string format)"
 }
 
+variable "obi_one_v2_ec2_instance_type" {
+  type        = string
+  description = "EC2 instance type to run obi-one ECS tasks."
+}
+
+variable "obi_one_v2_ecs_task_size" {
+  type = object({
+    cpu    = any
+    memory = any
+    tmpfs  = any # tmpfs size in MiB
+  })
+  description = "CPU and memory limit for obi-one ECS task (number or string format)"
+}
+
 variable "obi_generative_gui_docker_image_url" {
   type        = string
   description = "Docker image URL for obi-generative-gui service."
