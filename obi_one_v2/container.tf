@@ -177,8 +177,8 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
 
   requires_compatibilities = ["EC2"]
 
-  execution_role_arn = aws_iam_role.ecs_obi_one_v2_task_execution_role.arn
-  task_role_arn      = aws_iam_role.ecs_obi_one_v2_task_role.arn
+  execution_role_arn = aws_iam_role.obi_one_v2_ecs_task_execution_role.arn
+  task_role_arn      = aws_iam_role.obi_one_v2_ecs_task_role.arn
 
   network_mode = "awsvpc"
 
@@ -292,7 +292,7 @@ resource "aws_ecs_service" "obi_one_v2_ecs_service" {
 
   depends_on = [
     aws_cloudwatch_log_group.obi_one_v2,
-    aws_iam_role.ecs_obi_one_v2_task_execution_role #, # wrong?
+    aws_iam_role.obi_one_v2_ecs_task_execution_role #, # wrong?
   ]
   # force redeployment on each tf apply
   force_new_deployment = true
@@ -359,13 +359,13 @@ data "aws_iam_policy_document" "obi_one_v2_ecs_service_role_policy" {
 # } Used by the ECS service to manage the ECS cluster
 
 # { ECS Task IAM
-resource "aws_iam_role" "ecs_obi_one_v2_task_execution_role" {
+resource "aws_iam_role" "obi_one_v2_ecs_task_execution_role" {
   name_prefix        = "obi_one_v2_exe"
   assume_role_policy = data.aws_iam_policy_document.obi_one_v2_ecs_task_assume_role_policy.json
   tags               = var.tags
 }
 
-resource "aws_iam_role" "ecs_obi_one_v2_task_role" {
+resource "aws_iam_role" "obi_one_v2_ecs_task_role" {
   name_prefix        = "obi_one_v2_svc"
   assume_role_policy = data.aws_iam_policy_document.obi_one_v2_ecs_task_assume_role_policy.json
   tags               = var.tags
@@ -410,14 +410,14 @@ resource "aws_iam_policy" "cloudwatch_write_policy" {
   tags = var.tags
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_obi_one_v2_task_execution_role_policy_attachment" {
-  role       = aws_iam_role.ecs_obi_one_v2_task_execution_role.name
+resource "aws_iam_role_policy_attachment" "obi_one_v2_ecs_task_execution_role_policy_attachment" {
+  role       = aws_iam_role.obi_one_v2_ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 
 }
 
 resource "aws_iam_role_policy_attachment" "cloudwatch_write_logs" {
-  role       = aws_iam_role.ecs_obi_one_v2_task_execution_role.name
+  role       = aws_iam_role.obi_one_v2_ecs_task_execution_role.name
   policy_arn = aws_iam_policy.cloudwatch_write_policy.arn
 }
 # }
