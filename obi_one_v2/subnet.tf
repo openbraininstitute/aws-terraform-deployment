@@ -17,22 +17,12 @@ resource "aws_route_table_association" "obi_one_v2" {
 resource "aws_network_acl" "obi_one_v2" {
   vpc_id     = var.vpc_id
   subnet_ids = [aws_subnet.obi_one_v2.id]
-  # Allow local traffic
-  ingress {
-    protocol   = -1
-    rule_no    = 100
-    action     = "allow"
-    cidr_block = var.vpc_cidr_block
-    from_port  = 0
-    to_port    = 0
-  }
-  # Allow access to the container port from anywhere
-  # TODO limit to just ALB?
+  # Allow access to the container port
   ingress {
     protocol   = "tcp"
     rule_no    = 100
     action     = "allow"
-    cidr_block = "0.0.0.0/0"
+    cidr_block = var.vpc_cidr_block
     from_port  = var.container_port
     to_port    = var.container_port
   }
@@ -41,7 +31,7 @@ resource "aws_network_acl" "obi_one_v2" {
     protocol   = "tcp"
     rule_no    = 200
     action     = "allow"
-    cidr_block = "0.0.0.0/0"
+    cidr_block = var.vpc_cidr_block
     from_port  = 1024
     to_port    = 65535
   }
