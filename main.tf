@@ -241,7 +241,7 @@ module "notebook_service" {
   ecs_cidr_block_b           = "10.0.2.224/27"
 
   cors_allowed_origins      = var.notebook_service_cors_allowed_origins
-  kubernetes_thread_enabled = true
+  kubernetes_thread_enabled = false
 
   task_size = {
     cpu    = 512
@@ -256,7 +256,7 @@ module "notebook_service" {
   keycloak_server_url = "https://${local.primary_domain}/auth/"
   keycloak_realm_name = "SBO"
 
-  accounting_enabled  = true
+  accounting_enabled  = false
   hub_on_eks_full_url = var.notebook_hub_on_eks_full_url
   secrets_arn         = local.notebook_service_secrets_arn
 }
