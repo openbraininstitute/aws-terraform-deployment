@@ -161,7 +161,7 @@ resource "aws_cloudwatch_log_stream" "firehose_log_stream" {
 }
 
 resource "aws_s3_bucket" "statistics" {
-  bucket = "obi-notebook-service-statistics"
+  bucket = var.notebook_service_bucket_name
 }
 
 resource "aws_s3_bucket_ownership_controls" "statistics" {
