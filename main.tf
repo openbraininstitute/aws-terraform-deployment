@@ -708,6 +708,7 @@ module "dashboards" {
     var.is_staging ? {
       "CoreWebAppDev"     = module.core_webapp_dev[0].private_lb_rule_suffix
       "CoreWebAppPreview" = module.core_webapp_preview[0].private_lb_rule_suffix
+      "ObiOneV2"          = module.obi_one_v2[0].private_lb_rule_suffix
     } : {}
   )
 }
