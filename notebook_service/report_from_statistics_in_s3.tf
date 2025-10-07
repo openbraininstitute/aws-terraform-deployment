@@ -4,7 +4,7 @@
 # The AWS Glue table contains the raw events, still in the json format as used by
 # the notebook service.
 # An AWS Athena workgroup defines where Athena can store (temporary) reports.
-# In this case, it's in the 'reports' subdir of the obi-notebook-service-statistics
+# In this case, it's in the 'reports' subdir of the obi-notebook-service-statistics-{prod/staging}
 # bucket.
 # A first named/saved query creates a view with a cleaner/flattened schema, which
 # also converts the 'time' field which is still a string into a timestamp as
@@ -135,7 +135,7 @@ resource "aws_athena_named_query" "create_notebook_events_view" {
     extra.extra.user_id         AS user_id,
     extra.extra.username        AS username,
     year, month, day
-    FROM  "AwsDataCatalog"."notebook_service_statistics"."notebook_service_statistics_raw_events" 
+    FROM  "AwsDataCatalog"."notebook_service_statistics"."notebook_service_statistics_raw_events"
   SQL
 }
 

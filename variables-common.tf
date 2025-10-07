@@ -317,3 +317,7 @@ variable "notebook_service_cors_allowed_origins" {
   type        = string
   description = "JSON encoded list of allowed origins for the cors settings of the notebook service"
 }
+
+variable "notebook_service_bucket_name" {
+  type = string
+}
