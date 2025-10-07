@@ -81,6 +81,7 @@ variable "mount_buckets" {
     volume_name           = string # Name of the volume to be mounted
     volume_host_path      = string # Path of the mounted volume on the host, should be set to /{storage_type}/{bucket_prefix}
     volume_container_path = string # Path of the mounted volume in the container, should be set to /{storage_type}/{bucket_prefix}
+    mount_extra_options   = string # Additional options to pass to mount-s3
   }))
   validation {
     condition = alltrue([
