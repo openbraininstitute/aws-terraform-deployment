@@ -702,7 +702,6 @@ module "dashboards" {
       "KeyCloak"            = module.cs.private_keycloak_lb_rule_suffix
       "SmallScaleSimulator" = module.small_scale_simulator.private_lb_rule_suffix
       "SonataCellService"   = module.cells_svc.private_lb_rule_suffix
-      "ObiOneV2"            = module.obi_one_v2.private_lb_rule_suffix
       "ThumbnailGenerator"  = module.thumbnail_generation_api.private_lb_rule_suffix
       "VLabManager"         = module.virtual_lab_manager.private_arn_suffix
     },
