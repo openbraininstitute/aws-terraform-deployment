@@ -548,6 +548,9 @@ module "obi_one" {
 module "obi_one_v2" {
   source = "./obi_one_v2"
 
+  # for now we want to deploy to staging only
+  count = var.is_staging ? 1 : 0
+
   aws_region = local.aws_region
 
   vpc_id         = local.vpc_id
@@ -565,14 +568,6 @@ module "obi_one_v2" {
   container_port = 8000
   host_port      = 8000
 
-  shared_bucket_name   = var.entitycore_svc_aws_s3_internal_bucket
-  shared_bucket_region = var.entitycore_svc_aws_s3_internal_region
-  shared_bucket_prefix = "public/" # must end with /
-
-  mounted_volume_name           = "shared-data"
-  mounted_volume_host_path      = "/public"
-  mounted_volume_container_path = "/public"
-
   keycloak_url = "https://${local.primary_domain}/auth/realms/SBO/"
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
@@ -580,6 +575,26 @@ module "obi_one_v2" {
   amazon_linux_ecs_ami_id = data.aws_ami.amazon_linux_2_ecs.id
 
   docker_image_url = var.obi_one_docker_image_url # same as v1
+
+  mount_base_dir = "/data" # used to prefix both volume_host_path and volume_container_path
+  mount_buckets = [
+    {
+      bucket_name           = var.entitycore_svc_aws_s3_internal_bucket
+      bucket_region         = var.entitycore_svc_aws_s3_internal_region
+      bucket_prefix         = "public/" # must end with / if not empty
+      volume_name           = "public-data"
+      volume_host_path      = "/aws_s3_internal/public/"
+      volume_container_path = "/aws_s3_internal/public/"
+    },
+    {
+      bucket_name           = var.entitycore_svc_aws_s3_open_bucket
+      bucket_region         = var.entitycore_svc_aws_s3_open_region
+      bucket_prefix         = "" # must end with / if not empty
+      volume_name           = "open-data"
+      volume_host_path      = "/aws_s3_open/"
+      volume_container_path = "/aws_s3_open/"
+    },
+  ]
 }
 
 module "obi_generative_gui" {
@@ -687,13 +702,13 @@ module "dashboards" {
       "KeyCloak"            = module.cs.private_keycloak_lb_rule_suffix
       "SmallScaleSimulator" = module.small_scale_simulator.private_lb_rule_suffix
       "SonataCellService"   = module.cells_svc.private_lb_rule_suffix
-      "ObiOneV2"            = module.obi_one_v2.private_lb_rule_suffix
       "ThumbnailGenerator"  = module.thumbnail_generation_api.private_lb_rule_suffix
       "VLabManager"         = module.virtual_lab_manager.private_arn_suffix
     },
     var.is_staging ? {
       "CoreWebAppDev"     = module.core_webapp_dev[0].private_lb_rule_suffix
       "CoreWebAppPreview" = module.core_webapp_preview[0].private_lb_rule_suffix
+      "ObiOneV2"          = module.obi_one_v2[0].private_lb_rule_suffix
     } : {}
   )
 }

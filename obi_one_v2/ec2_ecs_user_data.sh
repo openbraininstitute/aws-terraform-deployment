@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eux
 
 retry() {
   local attempts=0
@@ -25,32 +26,40 @@ install_s3_mount() {
     echo "install_s3_mount"
     curl -LO https://s3.amazonaws.com/mountpoint-s3-release/latest/x86_64/mount-s3.rpm || return 1
     yum install -y ./mount-s3.rpm || return 1
-    mkdir -p ${mounted_volume_host_path} || return 1
 }
 retry install_s3_mount
 
 # https://github.com/awslabs/mountpoint-s3/issues/441#issuecomment-1676918612
-echo "setup systemd service"
-cat << EOF > /etc/systemd/system/mountpoint-s3.service
+%{ for cfg in mount_buckets ~}
+echo "Setup mountpoint and systemd service for ${cfg.volume_name}"
+
+MOUNT_DIR="${mount_base_dir}${cfg.volume_host_path}"
+SERVICE="mountpoint-s3-${cfg.volume_name}.service"
+mkdir -p "$MOUNT_DIR"
+
+cat << EOF > "/etc/systemd/system/$SERVICE"
 [Unit]
-Description=Amazon S3 mount
+Description=Amazon S3 mount [${cfg.volume_name}]
 Wants=cloud-init.target
 After=cloud-init.target
-AssertPathIsDirectory=${mounted_volume_host_path}
+AssertPathIsDirectory=$MOUNT_DIR
 
 [Service]
 Type=forking
 User=root
 Group=root
-ExecStart=/bin/mount-s3 --read-only --allow-other ${shared_bucket_name} --region ${shared_bucket_region} --prefix ${shared_bucket_prefix} ${mounted_volume_host_path}
-ExecStop=/usr/bin/fusermount -u ${mounted_volume_host_path}
+ExecStart=/bin/mount-s3 --read-only --allow-other "${cfg.bucket_name}" --region "${cfg.bucket_region}" --prefix "${cfg.bucket_prefix}" "$MOUNT_DIR"
+ExecStop=/usr/bin/fusermount -u "$MOUNT_DIR"
 
 [Install]
 WantedBy=default.target
 EOF
 
-echo "systemctl enable mountpoint-s3.service"
-systemctl enable mountpoint-s3.service
+echo "systemctl enable $SERVICE"
+systemctl enable "$SERVICE"
+
+%{ endfor ~}
+
 # to make sure all the services come up cleanly, we do a reboot
 # if we try a `systemctl start mountpoint-s3.service`, then we get
 # a lock since its dependencies aren't fulfilled since cloud-init hasn't finished

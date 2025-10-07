@@ -77,12 +77,10 @@ resource "aws_launch_template" "obi_one_v2_ec2_launch_template" {
   instance_type = var.ec2_instance_type
   key_name      = var.aws_coreservices_ssh_key_id
   user_data = base64encode(templatefile("${path.module}/ec2_ecs_user_data.sh", {
-    shared_bucket_name       = var.shared_bucket_name,
-    shared_bucket_region     = var.shared_bucket_region,
-    shared_bucket_prefix     = var.shared_bucket_prefix,
-    mounted_volume_host_path = var.mounted_volume_host_path,
-    ecs_cluster_name         = aws_ecs_cluster.obi_one_v2_ecs_cluster.name,
-    ecs_cluster_tags         = join(",", [for k, v in var.tags : "\"${k}\": \"${v}\""])
+    mount_base_dir   = var.mount_base_dir,
+    mount_buckets    = var.mount_buckets,
+    ecs_cluster_name = aws_ecs_cluster.obi_one_v2_ecs_cluster.name,
+    ecs_cluster_tags = join(",", [for k, v in var.tags : "\"${k}\": \"${v}\""])
   }))
   vpc_security_group_ids = [aws_security_group.obi_one_v2_ec2_ecs_instance_sg.id]
   update_default_version = true
@@ -182,9 +180,12 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
 
   network_mode = "awsvpc"
 
-  volume {
-    name      = var.mounted_volume_name
-    host_path = var.mounted_volume_host_path
+  dynamic "volume" {
+    for_each = var.mount_buckets
+    content {
+      name      = volume.value.volume_name
+      host_path = "${var.mount_base_dir}${volume.value.volume_host_path}"
+    }
   }
 
   container_definitions = jsonencode([
@@ -206,10 +207,11 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
       ]
 
       mountPoints = [
+        for m in var.mount_buckets :
         {
           readOnly      = true
-          sourceVolume  = var.mounted_volume_name
-          containerPath = var.mounted_volume_container_path
+          sourceVolume  = m.volume_name
+          containerPath = "${var.mount_base_dir}${m.volume_container_path}"
         }
       ]
 
@@ -227,6 +229,10 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
         {
           name  = "ROOT_PATH"
           value = var.root_path
+        },
+        {
+          name  = "MOUNT_BASE_DIR"
+          value = var.mount_base_dir
         },
         {
           name  = "KEYCLOAK_URL"

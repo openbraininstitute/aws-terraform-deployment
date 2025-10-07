@@ -18,21 +18,6 @@ variable "obi_one_v2_ecs_number_of_containers" {
   description = "Number of containers for the service"
 }
 
-variable "shared_bucket_name" {
-  type        = string
-  description = "Name of the bucket containing data to be mounted"
-}
-
-variable "shared_bucket_region" {
-  type        = string
-  description = "Region of the bucket containing data to be mounted"
-}
-
-variable "shared_bucket_prefix" {
-  type        = string
-  description = "Prefix for public data to be mounted"
-}
-
 variable "ec2_instance_type" {
   type        = string
   description = "EC2 instance type"
@@ -78,19 +63,43 @@ variable "container_port" {
   type        = number
 }
 
-variable "mounted_volume_name" {
-  description = "Name of the volume to be mounted"
+variable "mount_base_dir" {
+  description = "Base directory for all the mountpoints in ECS, used to prefix for both volume_host_path and volume_container_path."
   type        = string
+  validation {
+    condition     = can(regex("^(/.*)?$", var.mount_base_dir))
+    error_message = "mount_base_dir must be empty or start with /"
+  }
 }
 
-variable "mounted_volume_host_path" {
-  description = "Path of the mounted volume on the host"
-  type        = string
-}
-
-variable "mounted_volume_container_path" {
-  description = "Path of the mounted volume in the container"
-  type        = string
+variable "mount_buckets" {
+  description = "List of buckets to be mounted in EC2 and accessible in ECS."
+  type = list(object({
+    bucket_name           = string # Name of the bucket containing data to be mounted
+    bucket_region         = string # Region of the bucket containing data to be mounted
+    bucket_prefix         = string # Prefix for data to be mounted, must end with / if not empty
+    volume_name           = string # Name of the volume to be mounted
+    volume_host_path      = string # Path of the mounted volume on the host, should be set to /{storage_type}/{bucket_prefix}
+    volume_container_path = string # Path of the mounted volume in the container, should be set to /{storage_type}/{bucket_prefix}
+  }))
+  validation {
+    condition = alltrue([
+      for m in var.mount_buckets : (
+        can(regex("^(.*/)?$", m.bucket_prefix)) &&
+        can(regex("^/", m.volume_host_path)) &&
+        can(regex("^/", m.volume_container_path))
+      )
+    ])
+    error_message = "Each bucket_prefix must end with '/', and host/container paths must start with '/'."
+  }
+  validation {
+    condition = alltrue([
+      length(var.mount_buckets) == length(distinct([for m in var.mount_buckets : m.volume_name])),
+      length(var.mount_buckets) == length(distinct([for m in var.mount_buckets : m.volume_host_path])),
+      length(var.mount_buckets) == length(distinct([for m in var.mount_buckets : m.volume_container_path]))
+    ])
+    error_message = "Each of volume_name, volume_host_path, and volume_container_path must be unique."
+  }
 }
 
 variable "keycloak_url" {
