@@ -252,9 +252,10 @@ module "notebook_service" {
 
   base_path = "/api/notebook_service"
 
-  accounting_base_url = "https://${local.primary_domain}${var.accounting_svc_base_path}"
-  keycloak_server_url = "https://${local.primary_domain}/auth/"
-  keycloak_realm_name = "SBO"
+  accounting_base_url          = "https://${local.primary_domain}${var.accounting_svc_base_path}"
+  keycloak_server_url          = "https://${local.primary_domain}/auth/"
+  keycloak_realm_name          = "SBO"
+  notebook_service_bucket_name = var.notebook_service_bucket_name
 
   accounting_enabled  = false
   hub_on_eks_full_url = var.notebook_hub_on_eks_full_url

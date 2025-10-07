@@ -17,6 +17,7 @@ jupyterhub_ec2_type                       = "c7i.2xlarge"
 notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:2025.10.06-1"
 notebook_hub_on_eks_full_url              = "none"
 notebook_service_cors_allowed_origins     = "[\"https://www.openbraininstitute.org\"]"
+notebook_service_bucket_name              = "obi-notebook-service-statistics-prod"
 
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.10.07.3"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.10.07.3"
