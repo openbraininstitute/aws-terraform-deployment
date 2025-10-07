@@ -548,6 +548,9 @@ module "obi_one" {
 module "obi_one_v2" {
   source = "./obi_one_v2"
 
+  # for now we want to deploy to staging only
+  count = var.is_staging ? 1 : 0
+
   aws_region = local.aws_region
 
   vpc_id         = local.vpc_id
