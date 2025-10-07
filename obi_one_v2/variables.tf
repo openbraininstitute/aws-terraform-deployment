@@ -90,7 +90,15 @@ variable "mount_buckets" {
         can(regex("^/", m.volume_container_path))
       )
     ])
-    error_message = "mount_buckets didn't pass the validation"
+    error_message = "Each bucket_prefix must end with '/', and host/container paths must start with '/'."
+  }
+  validation {
+    condition = alltrue([
+      length(var.mount_buckets) == length(distinct([for m in var.mount_buckets : m.volume_name])),
+      length(var.mount_buckets) == length(distinct([for m in var.mount_buckets : m.volume_host_path])),
+      length(var.mount_buckets) == length(distinct([for m in var.mount_buckets : m.volume_container_path]))
+    ])
+    error_message = "Each of volume_name, volume_host_path, and volume_container_path must be unique."
   }
 }
 
