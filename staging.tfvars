@@ -91,12 +91,19 @@ obi_one_task_size = {
 }
 obi_generative_gui_docker_image_url = "public.ecr.aws/openbraininstitute/obi-generative-gui:2025.5.4"
 
-obi_one_v2_ec2_instance_type = "t3.small" # vCPUs: 2, Memory: 2 GiB
+# TODO: reduce instance type after performance tests
+obi_one_v2_ec2_instance_type = "t3.large" # vCPUs: 2, Memory: 8 GiB
 obi_one_v2_ecs_task_size = {
   cpu    = 1024
-  memory = 1024 # need to leave some free memory for new deployments
+  memory = 7168 # need to leave some free memory for new deployments
   tmpfs  = 512
 }
+# obi_one_v2_ec2_instance_type = "t3.small" # vCPUs: 2, Memory: 2 GiB
+# obi_one_v2_ecs_task_size = {
+#   cpu    = 1024
+#   memory = 1024 # need to leave some free memory for new deployments
+#   tmpfs  = 512
+# }
 
 # CoreWebApp s3 and CloudFront configuration
 core_webapp_s3_bucket_name = "core-webapp-static-assets-staging"
