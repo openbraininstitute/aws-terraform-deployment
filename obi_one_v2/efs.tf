@@ -12,8 +12,8 @@ resource "aws_efs_mount_target" "test_perf_efs" {
 }
 
 resource "aws_security_group" "efs" {
-  name        = "efs-sg"
-  description = "Allow NFS traffic"
+  name        = "obi-one-v2-efs-sg"
+  description = "Allow EFS/NFS traffic"
   vpc_id      = var.vpc_id
 
   ingress {
