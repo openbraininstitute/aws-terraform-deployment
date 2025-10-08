@@ -14,13 +14,13 @@ resource "aws_efs_mount_target" "test_perf_efs" {
 resource "aws_security_group" "efs" {
   name        = "efs-sg"
   description = "Allow NFS traffic"
-  vpc_id      = data.aws_vpc.main.id
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port   = 2049
     to_port     = 2049
     protocol    = "tcp"
-    cidr_blocks = [data.aws_vpc.main.cidr_block]
+    cidr_blocks = [var.vpc_cidr_block]
   }
 
   egress {
