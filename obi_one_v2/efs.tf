@@ -6,7 +6,7 @@ resource "aws_efs_file_system" "test_perf_efs" {
 }
 
 resource "aws_efs_mount_target" "test_perf_efs" {
-  file_system_id  = aws_efs_file_system.test_perf.id
+  file_system_id  = aws_efs_file_system.test_perf_efs.id
   subnet_id       = aws_subnet.obi_one_v2.id
   security_groups = [aws_security_group.efs.id]
 }
