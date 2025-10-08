@@ -586,6 +586,7 @@ module "obi_one_v2" {
       volume_name           = "public-data"
       volume_host_path      = "/aws_s3_internal/public/"
       volume_container_path = "/aws_s3_internal/public/"
+      mount_extra_options   = ""
     },
     {
       bucket_name           = var.entitycore_svc_aws_s3_open_bucket
@@ -594,6 +595,7 @@ module "obi_one_v2" {
       volume_name           = "open-data"
       volume_host_path      = "/aws_s3_open/"
       volume_container_path = "/aws_s3_open/"
+      mount_extra_options   = "--no-sign-request"
     },
   ]
 }

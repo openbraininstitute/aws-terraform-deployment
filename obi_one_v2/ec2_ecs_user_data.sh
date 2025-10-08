@@ -48,7 +48,14 @@ AssertPathIsDirectory=$MOUNT_DIR
 Type=forking
 User=root
 Group=root
-ExecStart=/bin/mount-s3 --read-only --allow-other "${cfg.bucket_name}" --region "${cfg.bucket_region}" --prefix "${cfg.bucket_prefix}" "$MOUNT_DIR"
+ExecStart=/bin/mount-s3 \
+  --read-only \
+  --allow-other \
+  --region "${cfg.bucket_region}" \
+  --prefix "${cfg.bucket_prefix}" \
+  ${cfg.mount_extra_options} \
+  "${cfg.bucket_name}" \
+  "$MOUNT_DIR"
 ExecStop=/usr/bin/fusermount -u "$MOUNT_DIR"
 
 [Install]

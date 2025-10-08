@@ -81,3 +81,8 @@ resource "aws_s3_bucket_policy" "prevent_delete" {
     ]
   })
 }
+
+resource "aws_s3_bucket_metric" "entitycore-metrics" {
+  bucket = aws_s3_bucket.entitycore.id
+  name   = "EntireBucket"
+}
