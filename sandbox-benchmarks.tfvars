@@ -29,7 +29,7 @@ small_scale_simulator_api_task_size = {
   cpu    = 256
   memory = 512
 }
-small_scale_simulator_workers = {
+small_scale_simulator_daemon_workers = {
   default = {
     task_size = {
       cpu    = 4096
@@ -62,7 +62,7 @@ infrastructureassets_bucket                 = "s3://sboinfrastructureassets-sand
 hpc_resource_provisioner_containers_bucket  = "s3://sboinfrastructureassets-sandbox-benchmarks/containers"
 hpc_resource_provisioner_scratch_bucket     = "s3://sbosandbox-cn6l7t"
 hpc_resource_provisioner_scratch_bucket_arn = "arn:aws:s3:::sbosandbox-cn6l7t"
-pcluster_ami_id                             = "ami-0dfa261290e9dffe0"
+pcluster_ami_id                             = "ami-05bc9a8927ff5e4cc"
 hpc_av_zone_suffixes                        = ["d"]
 
 entitycore_svc_aws_s3_internal_bucket    = "entitycore-data-staging"
