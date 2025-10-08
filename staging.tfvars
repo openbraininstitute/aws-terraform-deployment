@@ -20,6 +20,7 @@ notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/n
 notebook_hub_on_eks_full_url              = "https://jupyterhub.staging.openbrainplatform.com/hub/"
 notebook_service_cors_allowed_origins     = "[\"https://dev.openbraininstitute.org\",\"https://staging.openbraininstitute.org\",\"https://preview.openbraininstitute.org\",\"http://127.0.0.1:8000\",\"http://127.0.0.1\",\"http://127.0.0.1:3000\",\"http://localhost:3000\"]"
 notebook_service_bucket_name              = "obi-notebook-service-statistics-staging"
+notebook_service_k8s_thread_enabled       = true
 
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-staging"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-staging"

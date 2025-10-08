@@ -241,7 +241,7 @@ module "notebook_service" {
   ecs_cidr_block_b           = "10.0.2.224/27"
 
   cors_allowed_origins      = var.notebook_service_cors_allowed_origins
-  kubernetes_thread_enabled = false
+  kubernetes_thread_enabled = var.notebook_service_k8s_thread_enabled
 
   task_size = {
     cpu    = 512

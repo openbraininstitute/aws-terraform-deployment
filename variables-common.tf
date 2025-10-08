@@ -318,6 +318,11 @@ variable "notebook_service_cors_allowed_origins" {
   description = "JSON encoded list of allowed origins for the cors settings of the notebook service"
 }
 
+variable "notebook_service_k8s_thread_enabled" {
+  type        = string
+  description = "Enable kubernetes background thread to check how long notebooks run"
+}
+
 variable "notebook_service_bucket_name" {
   type = string
 }
