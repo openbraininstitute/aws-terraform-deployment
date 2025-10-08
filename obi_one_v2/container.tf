@@ -80,7 +80,8 @@ resource "aws_launch_template" "obi_one_v2_ec2_launch_template" {
     mount_base_dir   = var.mount_base_dir,
     mount_buckets    = var.mount_buckets,
     ecs_cluster_name = aws_ecs_cluster.obi_one_v2_ecs_cluster.name,
-    ecs_cluster_tags = join(",", [for k, v in var.tags : "\"${k}\": \"${v}\""])
+    ecs_cluster_tags = join(",", [for k, v in var.tags : "\"${k}\": \"${v}\""]),
+    efs_id           = aws_efs_file_system.test_perf_efs.id,
   }))
   vpc_security_group_ids = [aws_security_group.obi_one_v2_ec2_ecs_instance_sg.id]
   update_default_version = true
@@ -188,6 +189,11 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
     }
   }
 
+  volume {
+    name      = "efs-volume"
+    host_path = "/data/efs"
+  }
+
   container_definitions = jsonencode([
     {
       memory      = var.ecs_task_size.memory
@@ -206,14 +212,23 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
         }
       ]
 
-      mountPoints = [
-        for m in var.mount_buckets :
-        {
-          readOnly      = true
-          sourceVolume  = m.volume_name
-          containerPath = "${var.mount_base_dir}${m.volume_container_path}"
-        }
-      ]
+      mountPoints = concat(
+        [
+          for m in var.mount_buckets :
+          {
+            readOnly      = true
+            sourceVolume  = m.volume_name
+            containerPath = "${var.mount_base_dir}${m.volume_container_path}"
+          }
+        ],
+        [
+          {
+            readOnly      = true
+            sourceVolume  = "efs-volume"
+            containerPath = "/data/efs"
+          }
+        ]
+      )
 
       linuxParameters = {
         tmpfs = [
