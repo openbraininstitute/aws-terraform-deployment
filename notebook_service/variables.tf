@@ -24,13 +24,8 @@ variable "docker_image_url" {
   type        = string
 }
 
-variable "keycloak_server_url" {
-  description = "URL of the Keycloak server"
-  type        = string
-}
-
-variable "keycloak_realm_name" {
-  description = "Keycloak realm name"
+variable "keycloak_url" {
+  description = "URL of the Keycloak server, including the realm"
   type        = string
 }
 

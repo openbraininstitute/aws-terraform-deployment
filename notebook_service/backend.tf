@@ -142,14 +142,6 @@ resource "aws_ecs_task_definition" "ecs_definition" {
           value = var.base_path
         },
         {
-          name  = "KC_SERVER_URI"
-          value = var.keycloak_server_url
-        },
-        {
-          name  = "KC_REALM_NAME"
-          value = var.keycloak_realm_name
-        },
-        {
           name  = "ACCOUNTING_BASE_URL"
           value = var.accounting_base_url
         },
@@ -168,6 +160,10 @@ resource "aws_ecs_task_definition" "ecs_definition" {
         {
           name  = "CORS_ALLOWED_ORIGINS",
           value = var.cors_allowed_origins
+        },
+        {
+          name  = "KEYCLOAK_URL",
+          value = var.keycloak_url
         }
       ]
       secrets = [
