@@ -98,7 +98,8 @@ resource "aws_iam_policy" "iam_build_policy" {
           "iam:TagRole",
           "iam:DeleteRole",
           "iam:DeleteRolePolicy",
-          "iam:DetachRolePolicy"
+          "iam:DetachRolePolicy",
+          "iam:UpdateRole"
         ],
         "Effect" : "Allow",
         "Resource" : [
@@ -107,7 +108,8 @@ resource "aws_iam_policy" "iam_build_policy" {
           "arn:aws:iam::${var.account_id}:role/ParallelClusterImage*",
           "arn:aws:iam::${var.account_id}:instance-profile/ParallelClusterImage*",
           "arn:aws:iam::${var.account_id}:instance-profile/parallelcluster*",
-          "arn:aws:iam::${var.account_id}:role/aws-service-role/imagebuilder.amazonaws.com*"
+          "arn:aws:iam::${var.account_id}:role/aws-service-role/imagebuilder.amazonaws.com*",
+          "arn:aws:iam::${var.account_id}:role/CleanupLambdaRole"
         ]
       },
       {

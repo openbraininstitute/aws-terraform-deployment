@@ -32,7 +32,7 @@ small_scale_simulator_api_task_size = {
   cpu    = 256
   memory = 512
 }
-small_scale_simulator_workers = {
+small_scale_simulator_daemon_workers = {
   default = {
     task_size = {
       cpu    = 4096
@@ -67,12 +67,12 @@ hpc_resource_provisioner_scratch_bucket_arn = "arn:aws:s3:::sbosandbox-lec3cn"
 pcluster_ami_id                             = "ami-027ff2490377d3048"
 hpc_av_zone_suffixes                        = ["a"]
 
-entitycore_svc_aws_s3_internal_bucket    = "entitycore-data-staging"
+entitycore_svc_aws_s3_internal_bucket    = "entitycore-data-sandbox-hpc"
 entitycore_svc_aws_s3_internal_region    = "us-east-1"
 entitycore_svc_aws_s3_open_bucket        = "openbluebrain"
 entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["*"]
-entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.4.2"
+entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.9.3"
 
 obi_one_docker_image_url = "public.ecr.aws/openbraininstitute/obi-one:2025.4.2"
 obi_one_task_size = {
