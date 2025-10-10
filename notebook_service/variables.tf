@@ -29,6 +29,11 @@ variable "keycloak_url" {
   type        = string
 }
 
+variable "environment" {
+  description = "Environment: either staging or production"
+  type        = string
+}
+
 variable "debug" {
   description = "Debug flag"
   type        = string

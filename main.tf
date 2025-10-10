@@ -249,6 +249,7 @@ module "notebook_service" {
   }
 
   docker_image_url = var.notebook_service_docker_image_url
+  environment      = var.deployment_env
 
   base_path = "/api/notebook_service"
 

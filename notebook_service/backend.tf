@@ -164,6 +164,10 @@ resource "aws_ecs_task_definition" "ecs_definition" {
         {
           name  = "KEYCLOAK_URL",
           value = var.keycloak_url
+        },
+        {
+          name  = "ENVIRONMENT",
+          value = var.environment
         }
       ]
       secrets = [
