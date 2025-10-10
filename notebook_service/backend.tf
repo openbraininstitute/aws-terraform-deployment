@@ -182,7 +182,16 @@ resource "aws_ecs_task_definition" "ecs_definition" {
         {
           name      = "EKS_CLUSTER_NAME"
           valueFrom = "${var.secrets_arn}:eks_cluster_name::"
+        },
+        {
+          name      = "INIT_SCRIPT_GITHUB_TOKEN"
+          valueFrom = "${var.secrets_arn}:init_script_github_token::"
+        },
+        {
+          name      = "INIT_SCRIPT_GITHUB_URL"
+          valueFrom = "${var.secrets_arn}:init_script_github_url::"
         }
+
       ]
       logConfiguration = {
         logDriver = "awslogs"
