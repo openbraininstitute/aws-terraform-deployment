@@ -543,9 +543,12 @@ resource "aws_ecs_service" "worker" {
   task_definition = aws_ecs_task_definition.worker[each.key].arn
   desired_count   = each.value.num_worker_tasks
 
-  # Enable auto scaling only if enabled
-  lifecycle {
-    ignore_changes = each.value.autoscaler.enabled ? [desired_count] : []
+  # Enable auto scaling - ignore desired_count changes when autoscaling is enabled
+  dynamic "lifecycle" {
+    for_each = each.value.autoscaler.enabled ? [1] : []
+    content {
+      ignore_changes = [desired_count]
+    }
   }
 
   dynamic "capacity_provider_strategy" {
