@@ -66,7 +66,7 @@ small_scale_simulator_batch_workers = {
       cpu    = 8192
       memory = 16384
     }
-    num_workers_per_task = 1
+    num_workers_per_task = 4
     queues               = ["low"]
     max_worker_tasks     = 4
     capacity_provider    = "FARGATE_SPOT"
