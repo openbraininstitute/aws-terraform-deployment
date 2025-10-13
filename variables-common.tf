@@ -97,16 +97,20 @@ variable "small_scale_simulator_daemon_workers" {
       cpu    = any
       memory = any
     })
-    num_workers_per_task    = number
-    queues                  = list(string)
-    autoscaler_min_capacity = number
+    num_workers_per_task = number
+    queues               = list(string)
+    num_worker_tasks     = optional(number, 1)
+    autoscaler = optional(object({
+      enabled              = optional(bool, false)
+      max_num_worker_tasks = optional(number, 10)
+    }), {})
     capacity_provider_strategy = list(object({
       capacity_provider = string # Valid values: FARGATE, FARGATE_SPOT
       weight            = number
     }))
   }))
 
-  description = "Map of daemon worker configurations for small scale simulator. Each key represents a worker service name with its configuration."
+  description = "Map of daemon worker configurations for small scale simulator. Each key represents a worker service name with optional auto-scaling configuration."
 }
 
 variable "small_scale_simulator_batch_workers" {

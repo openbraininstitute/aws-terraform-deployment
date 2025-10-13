@@ -541,9 +541,9 @@ resource "aws_ecs_service" "worker" {
   name            = "worker-${each.key}"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.worker[each.key].arn
-  desired_count   = 1
+  desired_count   = each.value.num_worker_tasks
 
-  # Enable auto scaling
+  # Ignore desired_count changes to allow autoscaling or manual adjustments
   lifecycle {
     ignore_changes = [desired_count]
   }
@@ -571,10 +571,10 @@ resource "aws_ecs_service" "worker" {
 
 # Auto Scaling Target for Worker Services
 resource "aws_appautoscaling_target" "worker" {
-  for_each = var.daemon_workers
+  for_each = { for k, v in var.daemon_workers : k => v if v.autoscaler.enabled }
 
-  max_capacity       = 10
-  min_capacity       = each.value.autoscaler_min_capacity
+  max_capacity       = each.value.autoscaler.max_num_worker_tasks
+  min_capacity       = each.value.num_worker_tasks
   resource_id        = "service/${aws_ecs_cluster.main.name}/${aws_ecs_service.worker[each.key].name}"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
@@ -584,7 +584,7 @@ resource "aws_appautoscaling_target" "worker" {
 
 # Auto Scaling Policy for Worker Services (CPU-based)
 resource "aws_appautoscaling_policy" "worker_cpu" {
-  for_each = var.daemon_workers
+  for_each = { for k, v in var.daemon_workers : k => v if v.autoscaler.enabled }
 
   name               = "small-scale-simulator-worker-${each.key}-cpu-scaling"
   policy_type        = "TargetTrackingScaling"
@@ -598,7 +598,7 @@ resource "aws_appautoscaling_policy" "worker_cpu" {
     }
     target_value       = 80.0
     scale_in_cooldown  = 60
-    scale_out_cooldown = 300
+    scale_out_cooldown = 600
   }
 }
 
