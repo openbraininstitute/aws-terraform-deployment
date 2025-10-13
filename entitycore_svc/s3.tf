@@ -71,7 +71,7 @@ resource "aws_s3_bucket_policy" "prevent_delete" {
       },
       {
         Sid       = "PreventLifecycleModification"
-        Effect    = "Deny"
+        Effect    = "Allow" # to allow the new lifecycle policy to be set
         Principal = "*"
         Action = [
           "s3:PutLifecycleConfiguration"
