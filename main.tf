@@ -257,7 +257,7 @@ module "notebook_service" {
   keycloak_url                 = "https://${local.primary_domain}/auth/realms/SBO"
   notebook_service_bucket_name = var.notebook_service_bucket_name
 
-  accounting_enabled  = false
+  accounting_enabled  = var.notebook_service_accounting_enabled
   hub_on_eks_full_url = var.notebook_hub_on_eks_full_url
   secrets_arn         = local.notebook_service_secrets_arn
 }

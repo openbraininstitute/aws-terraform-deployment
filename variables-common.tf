@@ -182,6 +182,11 @@ variable "notebook_service_docker_image_url" {
   description = "Docker image for the notebook service"
 }
 
+variable "notebook_service_accounting_enabled" {
+  type        = bool
+  description = "Should accounting be enabled in the notebook service?"
+}
+
 ### Keycloak ###
 
 variable "keycloak_task_size" {
