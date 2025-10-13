@@ -32,9 +32,13 @@ small_scale_simulator_daemon_workers = {
       cpu    = 4096
       memory = 8192
     }
-    num_workers_per_task    = 2
-    queues                  = ["high", "medium"]
-    autoscaler_min_capacity = 1
+    num_workers_per_task = 2
+    queues               = ["high", "medium"]
+    num_worker_tasks     = 1
+    autoscaler = {
+      enabled              = true
+      max_num_worker_tasks = 10
+    }
     capacity_provider_strategy = [
       { capacity_provider = "FARGATE_SPOT", weight = 100 }
     ]
@@ -44,9 +48,13 @@ small_scale_simulator_daemon_workers = {
       cpu    = 16384
       memory = 32768
     }
-    num_workers_per_task    = 12
-    queues                  = ["high", "medium", "low"]
-    autoscaler_min_capacity = 1
+    num_workers_per_task = 12
+    queues               = ["high", "medium", "low"]
+    num_worker_tasks     = 1
+    autoscaler = {
+      enabled              = true
+      max_num_worker_tasks = 10
+    }
     capacity_provider_strategy = [
       { capacity_provider = "FARGATE", weight = 100 },
     ]
