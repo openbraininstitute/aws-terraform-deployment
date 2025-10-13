@@ -598,7 +598,7 @@ resource "aws_appautoscaling_policy" "worker_cpu" {
     }
     target_value       = 80.0
     scale_in_cooldown  = 60
-    scale_out_cooldown = 300
+    scale_out_cooldown = 600
   }
 }
 
