@@ -39,6 +39,8 @@ locals {
   dockerhub_bbpbuildbot_policy_arn  = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_policy_arn
   notebook_service_secrets_arn      = data.terraform_remote_state.common.outputs.notebook_service_secrets_arn
 
+  virtual_lab_manager_db_ro_secret_arn = data.terraform_remote_state.common.outputs.virtual_lab_manager_database_readonly_secret_arn
+
   cloudfront_certificate_arn = data.terraform_remote_state.common.outputs.cloudfront_certificate_arn
 
   github_organisation = "openbraininstitute"
@@ -691,6 +693,9 @@ module "virtual_lab_manager" {
   virtual_lab_manager_deployment_namespace = "https://${local.primary_domain}"
 
   accounting_base_url = "https://${local.primary_domain}${var.accounting_svc_base_path}"
+
+  virtual_lab_manager_db_ro_secret_arn = local.virtual_lab_manager_db_ro_secret_arn
+  aws_deployment_env                   = var.deployment_env
 }
 
 module "dashboards" {
