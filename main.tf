@@ -526,28 +526,6 @@ module "entitycore_svc" {
   api_asset_post_max_size = "524288000" # 500 * 1024**2
 }
 
-module "obi_one" {
-  source = "./obi_one"
-
-  aws_region               = local.aws_region
-  vpc_id                   = local.vpc_id
-  private_alb_listener_arn = local.private_alb_https_listener_arn
-  internet_access_route_id = local.route_table_private_subnets_id
-
-  root_path = "/api/obi-one-v1"
-
-  container_port = 8000
-  host_port      = 8000
-
-  keycloak_url     = "https://${local.primary_domain}/auth/realms/SBO/"
-  entitycore_url   = "https://${local.primary_domain}/api/entitycore"
-  docker_image_url = var.obi_one_docker_image_url
-
-  task_size = var.obi_one_task_size
-
-  cors_origins = local.core_web_app_origins
-}
-
 module "obi_one_v2" {
   source = "./obi_one_v2"
 
@@ -579,7 +557,7 @@ module "obi_one_v2" {
 
   amazon_linux_ecs_ami_id = data.aws_ami.amazon_linux_2_ecs.id
 
-  docker_image_url = var.obi_one_docker_image_url
+  docker_image_url = var.obi_one_v2_docker_image_url
 
   mount_base_dir = "/data" # used to prefix both volume_host_path and volume_container_path
   mount_buckets = [
@@ -602,25 +580,6 @@ module "obi_one_v2" {
       mount_extra_options   = "--no-sign-request"
     },
   ]
-}
-
-module "obi_generative_gui" {
-  source = "./obi_generative_gui"
-
-  aws_region               = local.aws_region
-  vpc_id                   = local.vpc_id
-  private_alb_listener_arn = local.private_alb_https_listener_arn
-  internet_access_route_id = local.route_table_private_subnets_id
-
-  root_path = "/app/obi-generative-gui"
-
-  container_port = 8000
-  host_port      = 8000
-
-  keycloak_url     = "https://${local.primary_domain}/auth/realms/SBO/"
-  entitycore_url   = "https://${local.primary_domain}/api/entitycore"
-  obi_one_url      = "https://${local.primary_domain}/api/obi-one"
-  docker_image_url = var.obi_generative_gui_docker_image_url
 }
 
 module "kg_inference_api" {
