@@ -179,3 +179,13 @@ variable "db_multi_az" {
 
   description = "Multi AZ switch for the database"
 }
+
+variable "virtual_lab_manager_db_ro_secret_arn" {
+  type        = string
+  description = "ARN of the secret containing a username and password for read-only access to the database"
+}
+
+variable "aws_deployment_env" {
+  type        = string
+  description = "Environment in AWS for the deployment"
+}
