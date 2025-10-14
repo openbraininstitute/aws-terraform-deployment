@@ -532,7 +532,7 @@ resource "aws_autoscaling_group" "obi_one_v2_ecs_autoscaling_group" {
 
   launch_template {
     id      = aws_launch_template.obi_one_v2_ec2_launch_template.id
-    version = "$Latest"
+    version = aws_launch_template.obi_one_v2_ec2_launch_template.latest_version
   }
 
   instance_refresh { strategy = "Rolling" }
