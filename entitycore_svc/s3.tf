@@ -24,7 +24,7 @@ resource "aws_s3_bucket_cors_configuration" "entitycore" {
 resource "aws_s3_bucket_versioning" "entitycore" {
   bucket = aws_s3_bucket.entitycore.id
   versioning_configuration {
-    status = "Disabled"
+    status = "Enabled"
   }
 }
 
@@ -71,7 +71,7 @@ resource "aws_s3_bucket_policy" "prevent_delete" {
       },
       {
         Sid       = "PreventLifecycleModification"
-        Effect    = "Deny"
+        Effect    = "Allow" # to allow the new lifecycle policy to be set
         Principal = "*"
         Action = [
           "s3:PutLifecycleConfiguration"
@@ -85,4 +85,20 @@ resource "aws_s3_bucket_policy" "prevent_delete" {
 resource "aws_s3_bucket_metric" "entitycore-metrics" {
   bucket = aws_s3_bucket.entitycore.id
   name   = "EntireBucket"
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "entitycore" {
+  bucket = aws_s3_bucket.entitycore.id
+
+  rule {
+    id     = "remove-old-versions"
+    status = "Enabled"
+    filter {
+      prefix = ""
+    }
+    noncurrent_version_expiration {
+      noncurrent_days           = 90
+      newer_noncurrent_versions = 3
+    }
+  }
 }
