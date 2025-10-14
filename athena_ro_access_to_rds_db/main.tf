@@ -24,7 +24,7 @@ resource "aws_iam_role" "ro_access_to_db" {
 }
 
 resource "aws_iam_role_policy" "ro_access_to_db_policy" {
-  name = "athena-rds-connector-policy"
+  name = "${var.name_prefix}-athena-rds-connector-policy"
   role = aws_iam_role.ro_access_to_db.id
 
   policy = jsonencode({
