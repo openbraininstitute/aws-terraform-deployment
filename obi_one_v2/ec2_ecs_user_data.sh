@@ -53,7 +53,7 @@ Group=root
 ExecStart=/bin/mount-s3 \
   --read-only \
   --allow-other \
-  --cache "/cache/$MOUNT_DIR"
+  --cache "/cache/$MOUNT_DIR" \
   --region "${cfg.bucket_region}" \
   --prefix "${cfg.bucket_prefix}" \
   ${cfg.mount_extra_options} \
