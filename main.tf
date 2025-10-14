@@ -526,6 +526,11 @@ module "entitycore_svc" {
   api_asset_post_max_size = "524288000" # 500 * 1024**2
 }
 
+module "obi_one" {
+  source     = "./obi_one"
+  aws_region = local.aws_region
+}
+
 module "obi_one_v2" {
   source = "./obi_one_v2"
 
@@ -580,6 +585,11 @@ module "obi_one_v2" {
       mount_extra_options   = "--no-sign-request"
     },
   ]
+}
+
+module "obi_generative_gui" {
+  aws_region = local.aws_region
+  source     = "./obi_generative_gui"
 }
 
 module "kg_inference_api" {
