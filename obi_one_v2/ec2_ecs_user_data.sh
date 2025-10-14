@@ -34,7 +34,7 @@ retry install_s3_mount
 echo "Setup mountpoint and systemd service for ${cfg.volume_name}"
 
 MOUNT_DIR="${mount_base_dir}${cfg.volume_host_path}"
-CACHE_DIR="/cache/${cfg.volume_host_path}"
+CACHE_DIR="/cache${cfg.volume_host_path}"
 SERVICE="mountpoint-s3-${cfg.volume_name}.service"
 mkdir -p "$MOUNT_DIR"
 mkdir -p "$CACHE_DIR" --mode=700
@@ -53,7 +53,7 @@ Group=root
 ExecStart=/bin/mount-s3 \
   --read-only \
   --allow-other \
-  --cache "/cache/$MOUNT_DIR" \
+  --cache "$CACHE_DIR" \
   --region "${cfg.bucket_region}" \
   --prefix "${cfg.bucket_prefix}" \
   ${cfg.mount_extra_options} \
