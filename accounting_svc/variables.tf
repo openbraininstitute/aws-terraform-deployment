@@ -43,3 +43,13 @@ variable "internet_access_route_id" {
 variable "accounting_service_secrets_arn" {
   type = string
 }
+
+variable "accounting_db_ro_secret_arn" {
+  type        = string
+  description = "ARN of the secret containing a username and password for read-only access to the database"
+}
+
+variable "aws_deployment_env" {
+  type        = string
+  description = "Environment in AWS for the deployment"
+}
