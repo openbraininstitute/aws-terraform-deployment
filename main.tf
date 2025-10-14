@@ -534,7 +534,7 @@ module "obi_one" {
   private_alb_listener_arn = local.private_alb_https_listener_arn
   internet_access_route_id = local.route_table_private_subnets_id
 
-  root_path = "/api/obi-one"
+  root_path = "/api/obi-one-v1"
 
   container_port = 8000
   host_port      = 8000
@@ -551,8 +551,7 @@ module "obi_one" {
 module "obi_one_v2" {
   source = "./obi_one_v2"
 
-  # for now we want to deploy to staging only
-  count = var.is_staging ? 1 : 0
+  count = 1
 
   aws_region = local.aws_region
 
@@ -567,17 +566,20 @@ module "obi_one_v2" {
   ec2_instance_type = var.obi_one_v2_ec2_instance_type
   ecs_task_size     = var.obi_one_v2_ecs_task_size
 
-  root_path      = "/api/obi-one-v2"
+  root_path      = "/api/obi-one"
   container_port = 8000
   host_port      = 8000
 
-  keycloak_url = "https://${local.primary_domain}/auth/realms/SBO/"
+  keycloak_url   = "https://${local.primary_domain}/auth/realms/SBO/"
+  entitycore_url = "https://${local.primary_domain}/api/entitycore"
+
+  cors_origins = local.core_web_app_origins
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 
   amazon_linux_ecs_ami_id = data.aws_ami.amazon_linux_2_ecs.id
 
-  docker_image_url = var.obi_one_docker_image_url # same as v1
+  docker_image_url = var.obi_one_docker_image_url
 
   mount_base_dir = "/data" # used to prefix both volume_host_path and volume_container_path
   mount_buckets = [
@@ -712,11 +714,11 @@ module "dashboards" {
       "SonataCellService"   = module.cells_svc.private_lb_rule_suffix
       "ThumbnailGenerator"  = module.thumbnail_generation_api.private_lb_rule_suffix
       "VLabManager"         = module.virtual_lab_manager.private_arn_suffix
+      "ObiOneV2"            = module.obi_one_v2[0].private_lb_rule_suffix
     },
     var.is_staging ? {
       "CoreWebAppDev"     = module.core_webapp_dev[0].private_lb_rule_suffix
       "CoreWebAppPreview" = module.core_webapp_preview[0].private_lb_rule_suffix
-      "ObiOneV2"          = module.obi_one_v2[0].private_lb_rule_suffix
     } : {}
   )
 }

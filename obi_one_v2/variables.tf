@@ -108,6 +108,11 @@ variable "keycloak_url" {
   type        = string
 }
 
+variable "entitycore_url" {
+  description = "entitycore URL"
+  type        = string
+}
+
 variable "route_table_private_subnets_id" {
   type = string
 }
@@ -128,4 +133,9 @@ variable "tags" {
   description = "Tags"
   default     = { SBO_Billing = "obi_one_v2" }
   type        = map(string)
+}
+
+variable "cors_origins" {
+  description = "CORS origins"
+  type        = list(string)
 }
