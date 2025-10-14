@@ -71,8 +71,8 @@ resource "aws_s3_bucket_policy" "prevent_delete" {
       },
       {
         Sid       = "PreventLifecycleModification"
-        Effect    = "Deny"
-        Principal = "*"
+        Effect    = "Allow"
+        Principal = { "AWS" : "arn:aws:iam::992382665735:user/admin" }
         Action = [
           "s3:PutLifecycleConfiguration"
         ]
