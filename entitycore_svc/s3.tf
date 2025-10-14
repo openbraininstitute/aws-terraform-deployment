@@ -86,3 +86,19 @@ resource "aws_s3_bucket_metric" "entitycore-metrics" {
   bucket = aws_s3_bucket.entitycore.id
   name   = "EntireBucket"
 }
+
+resource "aws_s3_bucket_lifecycle_configuration" "entitycore" {
+  bucket = aws_s3_bucket.entitycore.id
+
+  rule {
+    id     = "remove-old-versions"
+    status = "Enabled"
+    filter {
+      prefix = ""
+    }
+    noncurrent_version_expiration {
+      noncurrent_days           = 90
+      newer_noncurrent_versions = 3
+    }
+  }
+}
