@@ -532,7 +532,7 @@ resource "aws_autoscaling_group" "cells_ecs_autoscaling_group" {
 
   launch_template {
     id      = aws_launch_template.cells_svc_ec2_launch_template.id
-    version = "$Latest"
+    version = aws_launch_template.cells_svc_ec2_launch_template.latest_version
   }
 
   instance_refresh { strategy = "Rolling" }
