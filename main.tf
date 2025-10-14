@@ -40,6 +40,7 @@ locals {
   notebook_service_secrets_arn      = data.terraform_remote_state.common.outputs.notebook_service_secrets_arn
 
   virtual_lab_manager_db_ro_secret_arn = data.terraform_remote_state.common.outputs.virtual_lab_manager_database_readonly_secret_arn
+  accounting_db_ro_secret_arn          = data.terraform_remote_state.common.outputs.accounting_database_readonly_secret_arn
 
   cloudfront_certificate_arn = data.terraform_remote_state.common.outputs.cloudfront_certificate_arn
 
@@ -485,6 +486,9 @@ module "accounting_svc" {
   accounting_service_secrets_arn = local.accounting_service_secrets_arn
 
   root_path = var.accounting_svc_base_path
+
+  accounting_db_ro_secret_arn = local.accounting_db_ro_secret_arn
+  aws_deployment_env          = var.deployment_env
 }
 
 module "entitycore_svc" {

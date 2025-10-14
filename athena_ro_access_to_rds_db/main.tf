@@ -166,7 +166,7 @@ resource "aws_s3_bucket_ownership_controls" "spill" {
 
 # from https://github.com/hashicorp/terraform-provider-aws/issues/41050
 resource "awscc_athena_data_catalog" "ro_access_to_db7" {
-  name        = "${var.name_prefix}-db-access7"
+  name        = "${var.name_prefix}-ro-db-access"
   description = "Read-only access to the RDS database used by ${var.name_prefix}"
   type        = "FEDERATED"
 
