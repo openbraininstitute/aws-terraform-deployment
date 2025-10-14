@@ -79,12 +79,5 @@ entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["*"]
 entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.9.3"
 
-obi_one_docker_image_url = "public.ecr.aws/openbraininstitute/obi-one:2025.4.2"
-obi_one_task_size = {
-  cpu    = 512
-  memory = 1024
-}
-obi_generative_gui_docker_image_url = "public.ecr.aws/openbraininstitute/obi-generative-gui:2025.4.5"
-
 # CoreWebApp s3 and CloudFront configuration
 core_webapp_s3_bucket_name = "core-webapp-static-assets-production"

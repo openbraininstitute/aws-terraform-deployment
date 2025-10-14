@@ -284,18 +284,9 @@ variable "thumbnail_generation_api_docker_image_url" {
   sensitive   = false
 }
 
-variable "obi_one_docker_image_url" {
+variable "obi_one_v2_docker_image_url" {
   type        = string
   description = "Docker image URL for obi-one service."
-}
-
-variable "obi_one_task_size" {
-  type = object({
-    cpu    = any
-    memory = any
-  })
-
-  description = "CPU and memory limit for obi-one ECS task (number or string format)"
 }
 
 variable "obi_one_v2_ec2_instance_type" {
@@ -310,11 +301,6 @@ variable "obi_one_v2_ecs_task_size" {
     tmpfs  = any # tmpfs size in MiB
   })
   description = "CPU and memory limit for obi-one ECS task (number or string format)"
-}
-
-variable "obi_generative_gui_docker_image_url" {
-  type        = string
-  description = "Docker image URL for obi-generative-gui service."
 }
 
 variable "notebook_hub_on_eks_full_url" {
