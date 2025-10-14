@@ -24,7 +24,7 @@ resource "aws_s3_bucket_cors_configuration" "entitycore" {
 resource "aws_s3_bucket_versioning" "entitycore" {
   bucket = aws_s3_bucket.entitycore.id
   versioning_configuration {
-    status = "Disabled"
+    status = "Enabled"
   }
 }
 
