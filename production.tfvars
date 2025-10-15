@@ -90,7 +90,7 @@ entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["https://www.openbraininstitute.org"]
 entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.10.2"
 
-obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2025.10.4"
+obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2025.10.3"
 obi_one_v2_ec2_instance_type = "t3.large" # vCPUs: 2, Memory: 8 GiB
 obi_one_v2_ecs_task_size = {
   cpu    = 1024
