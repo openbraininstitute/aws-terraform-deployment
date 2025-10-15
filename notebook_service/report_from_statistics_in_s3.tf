@@ -93,7 +93,13 @@ resource "aws_glue_catalog_table" "notebook_service_statistics_raw_events" {
         vlab_id:string,
         project_id:string,
         user_id:string,
-        username:string
+        username:string,
+        started_on:double,
+        namedserver_name:string,
+        seconds:double,
+        accounting_jobid:string,
+        analysis_notebook_template_id:string,
+        analysis_notebook_template_filename:string
         >>
         EXTRA
       , "/\n/", ""), "/ /", "")) # Removes all spaces and newlines, becomes 1 string without any spaces
