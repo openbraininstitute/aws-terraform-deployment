@@ -102,6 +102,10 @@ resource "aws_iam_role_policy" "backup_role_policy" {
   })
 }
 
+resource "aws_iam_role_policy_attachment" "backup_role_managed_s3_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AWSBackupServiceRolePolicyForS3Backup"
+  role       = aws_iam_role.backup_role.name
+}
 
 resource "aws_backup_selection" "obi_plan_selection" {
   name         = "obi_plan_selection"
@@ -114,3 +118,4 @@ resource "aws_backup_selection" "obi_plan_selection" {
     value = "obi_plan"
   }
 }
+
