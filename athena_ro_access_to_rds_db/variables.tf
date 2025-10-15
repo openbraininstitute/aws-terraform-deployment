@@ -62,3 +62,8 @@ variable "name_prefix" {
   type        = string
   description = "Prefix used in names of roles and so on to make sure they are unique"
 }
+
+variable "data_catalog_version_number" {
+  type        = number
+  description = "Version number of the athena/glue data catalog"
+}

@@ -16,5 +16,7 @@ module "athena_ro_access_to_rds_db" {
   db_database_name = var.db_name
   connection_type  = "POSTGRESQL"
 
-  name_prefix = "acc" # used as prefix to make sure roles and so on are unique
+  # used as prefix to make sure roles and so on are unique
+  name_prefix                 = "acc"
+  data_catalog_version_number = 1
 }

@@ -16,5 +16,7 @@ module "athena_ro_access_to_rds_db" {
   db_database_name = var.virtual_lab_manager_postgres_db
   connection_type  = "POSTGRESQL"
 
-  name_prefix = "vlm" # used as prefix to make sure roles and so on are unique
+  # used as prefix to make sure roles and so on are unique
+  name_prefix                 = "vlm"
+  data_catalog_version_number = 1
 }
