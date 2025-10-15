@@ -4,7 +4,7 @@ data "aws_secretsmanager_secret" "db_ro_secret" {
 }
 
 resource "aws_iam_role" "ro_access_to_db" {
-  name_prefix = "${var.name_prefix}_ro_access_to_db"
+  name = "${var.name_prefix}_ro_access_to_db"
 
   assume_role_policy = <<-EOT
   {
@@ -165,8 +165,8 @@ resource "aws_s3_bucket_ownership_controls" "spill" {
 }
 
 # from https://github.com/hashicorp/terraform-provider-aws/issues/41050
-resource "awscc_athena_data_catalog" "ro_access_to_db7" {
-  name        = "${var.name_prefix}-ro-db-access"
+resource "awscc_athena_data_catalog" "ro_access_to_db" {
+  name        = "${var.name_prefix}-ro-db-access-${var.data_catalog_version_number}"
   description = "Read-only access to the RDS database used by ${var.name_prefix}"
   type        = "FEDERATED"
 
@@ -197,4 +197,10 @@ resource "awscc_athena_data_catalog" "ro_access_to_db7" {
       parameters
     ]
   }
+  depends_on = [
+    aws_iam_role.ro_access_to_db,
+    aws_iam_role_policy.ro_access_to_db_policy,
+    aws_security_group.lambda_sg,
+    aws_s3_bucket.spill_bucket,
+  ]
 }
