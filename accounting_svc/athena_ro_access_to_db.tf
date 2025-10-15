@@ -7,8 +7,8 @@ module "athena_ro_access_to_rds_db" {
   spill_prefix                        = "spill"
   expire_spill_objects_after_num_days = 5
 
-  rds_db_subnet_az = aws_subnet.accounting_db_a.availability_zone
-  rds_db_subnet_id = aws_subnet.accounting_db_a.id
+  rds_db_subnet_az = aws_subnet.accounting_ecs_a.availability_zone
+  rds_db_subnet_id = aws_subnet.accounting_ecs_a.id
   vpc_id           = var.vpc_id
 
   db_host          = aws_db_instance.accounting.address
@@ -18,5 +18,5 @@ module "athena_ro_access_to_rds_db" {
 
   # used as prefix to make sure roles and so on are unique
   name_prefix                 = "acc"
-  data_catalog_version_number = 1
+  data_catalog_version_number = 2
 }
