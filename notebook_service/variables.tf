@@ -97,3 +97,8 @@ variable "cors_allowed_origins" {
 variable "notebook_service_bucket_name" {
   type = string
 }
+
+variable "acounting_db_athena_connector_name" {
+  type        = string
+  description = "Name of the data catalog / connector of the accounting database in Athena"
+}
