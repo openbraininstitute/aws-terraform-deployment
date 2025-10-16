@@ -263,6 +263,8 @@ module "notebook_service" {
   accounting_enabled  = var.notebook_service_accounting_enabled
   hub_on_eks_full_url = var.notebook_hub_on_eks_full_url
   secrets_arn         = local.notebook_service_secrets_arn
+
+  acounting_db_athena_connector_name = module.accounting_svc.athena_data_catalog_name
 }
 
 module "github_notebook_service_ecs_redeploy_role" {

@@ -25,3 +25,7 @@ output "private_lb_rule_suffix" {
   description = "Accounting Private Loadbalancer Rule Suffix"
   value       = aws_lb_target_group.accounting_private_tg.arn_suffix
 }
+
+output "athena_data_catalog_name" {
+  value = module.athena_ro_access_to_rds_db.athena_data_catalog_name
+}
