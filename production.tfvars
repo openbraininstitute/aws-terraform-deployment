@@ -93,8 +93,8 @@ entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/en
 obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2025.10.3"
 obi_one_v2_ec2_instance_type = "t3.large" # vCPUs: 2, Memory: 8 GiB
 obi_one_v2_ecs_task_size = {
-  cpu    = 1024
-  memory = 7168 # need to leave some free memory for new deployments
+  cpu    = 2048
+  memory = 7680
   tmpfs  = 512
 }
 
