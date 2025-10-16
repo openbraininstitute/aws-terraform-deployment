@@ -445,13 +445,13 @@ resource "aws_ecs_capacity_provider" "obi_one_v2_cas" {
   name = "obi_one_v2_ecs_capacity_provider"
 
   auto_scaling_group_provider {
-    auto_scaling_group_arn = aws_autoscaling_group.obi_one_v2_ecs_autoscaling_group.arn
-
+    auto_scaling_group_arn         = aws_autoscaling_group.obi_one_v2_ecs_autoscaling_group.arn
+    managed_termination_protection = "ENABLED"
     managed_scaling {
-      #maximum_scaling_step_size = 1
-      #minimum_scaling_step_size = 1
-      status = "ENABLED"
-      #target_capacity           = 1
+      status                    = "ENABLED"
+      target_capacity           = 100
+      minimum_scaling_step_size = 1
+      maximum_scaling_step_size = 1
     }
   }
 
@@ -513,8 +513,9 @@ resource "aws_appautoscaling_policy" "obi_one_v2_ecs_memory_policy" {
 ## Creates an ASG linked with our main VPC
 resource "aws_autoscaling_group" "obi_one_v2_ecs_autoscaling_group" {
   name_prefix           = "obi-one-v2-ecs-asg"
-  max_size              = 1
+  max_size              = 2
   min_size              = 1
+  desired_capacity      = 1
   vpc_zone_identifier   = [aws_subnet.obi_one_v2.id]
   health_check_type     = "EC2"
   protect_from_scale_in = true
