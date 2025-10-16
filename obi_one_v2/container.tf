@@ -282,13 +282,17 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
 resource "aws_ecs_service" "obi_one_v2_ecs_service" {
   name            = "obi_one_v2_service"
   cluster         = aws_ecs_cluster.obi_one_v2_ecs_cluster.id
-  launch_type     = "EC2"
   task_definition = aws_ecs_task_definition.obi_one_v2_ecs_definition.arn
   desired_count   = var.obi_one_v2_ecs_number_of_containers
 
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
   health_check_grace_period_seconds  = 180
+
+  capacity_provider_strategy {
+    capacity_provider = aws_ecs_capacity_provider.obi_one_v2_cas.name
+    weight            = 1
+  }
 
   ## Make use of all available space on the Container Instances
   ordered_placement_strategy {
@@ -548,6 +552,12 @@ resource "aws_autoscaling_group" "obi_one_v2_ecs_autoscaling_group" {
   tag {
     key                 = "SBO_Billing"
     value               = "obi_one_v2"
+    propagate_at_launch = true
+  }
+
+  tag {
+    key                 = "AmazonECSManaged"
+    value               = ""
     propagate_at_launch = true
   }
 }
