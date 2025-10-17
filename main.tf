@@ -38,6 +38,7 @@ locals {
   dockerhub_bbpbuildbot_secret_arn  = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_secret_arn
   dockerhub_bbpbuildbot_policy_arn  = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_policy_arn
   notebook_service_secrets_arn      = data.terraform_remote_state.common.outputs.notebook_service_secrets_arn
+  launch_server_secrets_arn         = data.terraform_remote_state.common.outputs.launch_server_secrets_arn
 
   virtual_lab_manager_db_ro_secret_arn = data.terraform_remote_state.common.outputs.virtual_lab_manager_database_readonly_secret_arn
   accounting_db_ro_secret_arn          = data.terraform_remote_state.common.outputs.accounting_database_readonly_secret_arn
@@ -673,6 +674,35 @@ module "virtual_lab_manager" {
   aws_deployment_env                   = var.deployment_env
 }
 
+module "launch_server" {
+  source = "./launch_server"
+
+  aws_region                    = local.aws_region
+  vpc_id                        = local.vpc_id
+  private_alb_listener_arn      = local.private_alb_https_listener_arn
+  internet_access_route_id      = local.route_table_private_subnets_id
+  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
+
+  secrets_arn  = local.launch_server_secrets_arn
+  cors_origins = local.core_web_app_origins
+
+  db_name         = "launch"
+  db_username     = "launch"
+  obi_backup_plan = "obi_plan"
+
+  root_path    = "/api/launch-service"
+  keycloak_url = "https://${local.primary_domain}/auth/realms/SBO/"
+
+  token_lifetime_extension_interval = 0
+
+  launch_server_url = "https://${local.primary_domain}/api/launch-service"
+  entitycore_url    = "https://${local.primary_domain}/api/entitycore"
+
+  az_region          = "eastus"
+  keycloak_client_id = "obi-entitysdk-auth"
+}
+
+
 module "dashboards" {
   source = "./dashboards"
 
@@ -690,6 +720,7 @@ module "dashboards" {
       "ThumbnailGenerator"  = module.thumbnail_generation_api.private_lb_rule_suffix
       "VLabManager"         = module.virtual_lab_manager.private_arn_suffix
       "ObiOneV2"            = module.obi_one_v2[0].private_lb_rule_suffix
+      "LaunchServer"        = module.launch_server.private_lb_rule_suffix
     },
     var.is_staging ? {
       "CoreWebAppDev"     = module.core_webapp_dev[0].private_lb_rule_suffix
