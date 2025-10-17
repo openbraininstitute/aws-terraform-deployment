@@ -19,7 +19,7 @@ resource "aws_lb_target_group" "launch_private_tg" {
 
 resource "aws_lb_listener_rule" "launch_private_listener_rule" {
   listener_arn = var.private_alb_listener_arn
-  priority     = 610
+  priority     = 611
 
   action {
     type             = "forward"
