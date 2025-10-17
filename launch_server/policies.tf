@@ -13,8 +13,7 @@ resource "aws_iam_policy" "secrets_access" {
           "secretsmanager:GetSecretValue"
         ],
         "Resource": [
-          "${var.launch_service_secrets_arn}",
-          "${var.azure_client_secret_arn}"
+          "${var.secrets_arn}"
         ]
       }
     ]

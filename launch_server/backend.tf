@@ -148,32 +148,8 @@ resource "aws_ecs_task_definition" "launch_ecs_definition" {
           value = var.db_username
         },
         {
-          name  = "AZ_SUBSCRIPTION_ID"
-          value = var.az_subscription_id
-        },
-        {
-          name  = "AZURE_CLIENT_ID"
-          value = var.azure_client_id
-        },
-        {
-          name  = "AZURE_TENANT_ID"
-          value = var.azure_tenant_id
-        },
-        {
-          name  = "AZ_BATCH_ACCOUNT_NAME"
-          value = var.az_batch_account_name
-        },
-        {
           name  = "AZ_REGION"
           value = var.az_region
-        },
-        {
-          name  = "AZ_BATCH_POOL_NAME"
-          value = var.az_batch_pool_name
-        },
-        {
-          name  = "AZ_UPLOAD_BLOB_SAS_URL"
-          value = var.az_upload_blob_sas_url
         },
         {
           name  = "TOKEN_LIFETIME_EXTENSION_INTERVAL"
@@ -205,12 +181,37 @@ resource "aws_ecs_task_definition" "launch_ecs_definition" {
       secrets = [
         {
           name      = "DB_PASS"
-          valueFrom = var.launch_service_secrets_arn
+          valueFrom = "${var.secrets_arn}:DB_PASS::"
+        },
+        {
+          name      = "AZURE_CLIENT_ID"
+          valueFrom = "${var.secrets_arn}:AZURE_CLIENT_ID::"
         },
         {
           name      = "AZURE_CLIENT_SECRET"
-          valueFrom = var.azure_client_secret_arn
+          valueFrom = "${var.secrets_arn}:AZURE_CLIENT_SECRET::"
         },
+        {
+          name      = "AZURE_TENANT_ID"
+          valueFrom = "${var.secrets_arn}:AZURE_TENANT_ID::"
+        },
+        {
+          name      = "AZ_SUBSCRIPTION_ID"
+          valueFrom = "${var.secrets_arn}:AZ_SUBSCRIPTION_ID::"
+        },
+        {
+          name      = "AZ_BATCH_ACCOUNT_NAME"
+          valueFrom = "${var.secrets_arn}:AZ_BATCH_ACCOUNT_NAME::"
+        },
+        {
+          name      = "AZ_BATCH_POOL_NAME"
+          valueFrom = "${var.secrets_arn}:AZ_BATCH_POOL_NAME::"
+        },
+        {
+          name      = "AZ_UPLOAD_BLOB_SAS_URL"
+          valueFrom = "${var.secrets_arn}:AZ_UPLOAD_BLOB_SAS_URL::"
+        },
+
       ]
 
       logConfiguration = {

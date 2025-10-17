@@ -32,6 +32,7 @@ variable "keycloak_url" {
 variable "image_url" {
   description = "Image for the launch service"
   type        = string
+  default     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system:latest-dev"
 }
 
 variable "db_name" {
@@ -44,43 +45,8 @@ variable "db_username" {
   type        = string
 }
 
-variable "az_subscription_id" {
-  description = "Subscription ID in Azure"
-  type        = string
-}
-
-variable "azure_client_id" {
-  description = "client ID in Azure, used for authentication"
-  type        = string
-}
-
-variable "azure_client_secret_arn" {
-  description = "client secret to go with client ID in Azure, used for authentication"
-  type        = string
-}
-
-variable "azure_tenant_id" {
-  description = "tenent id in Azure"
-  type        = string
-}
-
-variable "az_batch_account_name" {
-  description = "name of batch account in Azure"
-  type        = string
-}
-
 variable "az_region" {
   description = "region in Azure"
-  type        = string
-}
-
-variable "az_batch_pool_name" {
-  description = "batch pool name in Azure"
-  type        = string
-}
-
-variable "az_upload_blob_sas_url" {
-  description = "URL with `Create` permissions to a "
   type        = string
 }
 
@@ -88,7 +54,17 @@ variable "internet_access_route_id" {
   type = string
 }
 
-variable "launch_service_secrets_arn" {
+variable "secrets_arn" {
+  # Need the following secrets:
+  # DB_PASS
+  # AZURE_CLIENT_SECRET
+  # AZURE_CLIENT_ID
+  # AZURE_TENANT_ID
+  # AZ_SUBSCRIPTION_ID
+  # AZ_BATCH_ACCOUNT_NAME
+  # AZ_BATCH_POOL_NAME
+  # AZ_UPLOAD_BLOB_SAS_URL
+
   type = string
 }
 
@@ -101,6 +77,7 @@ variable "obi_backup_plan" {
 variable "keycloak_client_id" {
   description = "ID for refreshing offline_token in keycloak"
   type        = string
+  default     = "obi-entitysdk-auth"
 }
 
 variable "token_lifetime_extension_interval" {
@@ -108,13 +85,17 @@ variable "token_lifetime_extension_interval" {
 }
 
 variable "simulation_launch_command" {
-  type = string
+  description = "Base command launched within Azure Batch"
+  type        = string
+  default     = "/nfs/public/test-run-sim/run-simulation.py"
 }
 
 variable "entitycore_url" {
-  type = string
+  description = "URL of entitycore"
+  type        = string
 }
 
 variable "launch_server_url" {
-  type = string
+  description = "URL of this server"
+  type        = string
 }

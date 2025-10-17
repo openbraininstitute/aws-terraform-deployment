@@ -4,7 +4,7 @@ resource "aws_db_subnet_group" "launch_db_cluster_subnet_group" {
 }
 
 data "aws_secretsmanager_secret_version" "launch_database_password" {
-  secret_id = var.launch_service_secrets_arn
+  secret_id = var.secrets_arn
 }
 
 # tfsec:ignore:aws-rds-enable-performance-insights-encryption
@@ -31,7 +31,8 @@ resource "aws_db_instance" "launch" {
   identifier = "launch"
   db_name    = var.db_name
   username   = var.db_username
-  password   = data.aws_secretsmanager_secret_version.launch_database_password.secret_string
+  password   = jsondecode(data.aws_secretsmanager_secret_version.launch_database_password.secret_string)["DB_PASS"]
+
 
   publicly_accessible          = false
   performance_insights_enabled = true
