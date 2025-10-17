@@ -79,6 +79,11 @@ variable "az_batch_pool_name" {
   type        = string
 }
 
+variable "az_upload_blob_sas_url" {
+  description = "URL with `Create` permissions to a "
+  type        = string
+}
+
 variable "internet_access_route_id" {
   type = string
 }
@@ -95,11 +100,6 @@ variable "obi_backup_plan" {
 
 variable "keycloak_client_id" {
   description = "ID for refreshing offline_token in keycloak"
-  type = string
-}
-
-variable "keycloak_client_secret_arn" {
-  description = "arn for secret for ID for refreshing offline_token in keycloak"
   type        = string
 }
 
@@ -107,10 +107,8 @@ variable "token_lifetime_extension_interval" {
   type = string
 }
 
-variable "token_lifetime_extension_url" {
+variable "simulation_launch_command" {
   type = string
-
-  #TOKEN_LIFETIME_EXTENSION_URL: str = "http://example.openbraininstitute.org/auth/realms/SBO/protocol/openid-connect/userinfo"
 }
 
 variable "entitycore_url" {

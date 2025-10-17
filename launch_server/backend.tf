@@ -172,13 +172,12 @@ resource "aws_ecs_task_definition" "launch_ecs_definition" {
           value = var.az_batch_pool_name
         },
         {
-          #: int = 3600
-          name  = "TOKEN_LIFETIME_EXTENSION_INTERVAL"
-          value = var.token_lifetime_extension_interval
+          name  = "AZ_UPLOAD_BLOB_SAS_URL"
+          value = var.az_upload_blob_sas_url
         },
         {
-          name  = "TOKEN_LIFETIME_EXTENSION_URL"
-          value = var.token_lifetime_extension_url
+          name  = "TOKEN_LIFETIME_EXTENSION_INTERVAL"
+          value = var.token_lifetime_extension_interval
         },
         {
           name  = "ENTITYCORE_URL"
@@ -192,7 +191,15 @@ resource "aws_ecs_task_definition" "launch_ecs_definition" {
           name  = "KEYCLOAK_CLIENT_ID"
           value = var.keycloak_client_id
         },
-
+        {
+          name  = "SIMULATION_LAUNCH_COMMAND"
+          value = var.simulation_launch_command
+        },
+        # currently token refresh is disabled;
+        {
+          name  = "KEYCLOAK_CLIENT_SECRET"
+          value = ""
+        },
       ]
 
       secrets = [
@@ -203,10 +210,6 @@ resource "aws_ecs_task_definition" "launch_ecs_definition" {
         {
           name      = "AZURE_CLIENT_SECRET"
           valueFrom = var.azure_client_secret_arn
-        },
-        {
-          name      = "KEYCLOAK_CLIENT_SECRET"
-          valueFrom = var.keycloak_client_secret_arn
         },
       ]
 
