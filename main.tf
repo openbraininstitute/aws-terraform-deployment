@@ -541,8 +541,6 @@ module "obi_one" {
 module "obi_one_v2" {
   source = "./obi_one_v2"
 
-  count = 1
-
   aws_region = local.aws_region
 
   vpc_id         = local.vpc_id
@@ -719,7 +717,7 @@ module "dashboards" {
       "SonataCellService"   = module.cells_svc.private_lb_rule_suffix
       "ThumbnailGenerator"  = module.thumbnail_generation_api.private_lb_rule_suffix
       "VLabManager"         = module.virtual_lab_manager.private_arn_suffix
-      "ObiOneV2"            = module.obi_one_v2[0].private_lb_rule_suffix
+      "ObiOneV2"            = module.obi_one_v2.private_lb_rule_suffix
       "LaunchServer"        = module.launch_server.private_lb_rule_suffix
     },
     var.is_staging ? {
