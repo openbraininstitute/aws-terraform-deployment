@@ -247,6 +247,8 @@ module "notebook_service" {
   cors_allowed_origins      = var.notebook_service_cors_allowed_origins
   kubernetes_thread_enabled = var.notebook_service_k8s_thread_enabled
 
+  kubernetes_thread_check_interval = 15
+
   task_size = {
     cpu    = 512
     memory = 1024

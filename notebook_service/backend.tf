@@ -168,6 +168,10 @@ resource "aws_ecs_task_definition" "ecs_definition" {
         {
           name  = "ENVIRONMENT",
           value = var.environment
+        },
+        {
+          name  = "KUBERNETES_THREAD_CHECK_INTERVAL",
+          value = tostring(var.kubernetes_thread_check_interval)
         }
       ]
       secrets = [
