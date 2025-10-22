@@ -42,6 +42,7 @@ locals {
 
   virtual_lab_manager_db_ro_secret_arn = data.terraform_remote_state.common.outputs.virtual_lab_manager_database_readonly_secret_arn
   accounting_db_ro_secret_arn          = data.terraform_remote_state.common.outputs.accounting_database_readonly_secret_arn
+  teams_webhook_secrets_arn            = data.terraform_remote_state.common.outputs.teams_webhook_secrets_arn
 
   cloudfront_certificate_arn = data.terraform_remote_state.common.outputs.cloudfront_certificate_arn
 
@@ -137,6 +138,17 @@ module "notebookservice_cloudwatch_error_log_entries_to_sns" {
   unique_short_name       = "notebook_service"
   region                  = local.aws_region
   include_sqs_debug_queue = true
+}
+
+module "notebookservice_error_log_sns_entries_to_teams" {
+  source = "./sns_entries_to_teams"
+
+  webhook_secret_arn = local.teams_webhook_secrets_arn
+  webhook_secret_key = "notebook_service_logs_errors"
+
+  unique_short_name = "notebook_service"
+  sns_topic_arn     = module.notebookservice_cloudwatch_error_log_entries_to_sns.sns_topic_arn
+  python_runtime    = "python3.13"
 }
 
 
