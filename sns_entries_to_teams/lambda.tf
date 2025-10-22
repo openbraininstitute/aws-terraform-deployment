@@ -6,7 +6,7 @@ data "archive_file" "sns_to_teams_archive" {
 
 resource "aws_lambda_function" "function" {
   filename         = data.archive_file.sns_to_teams_archive.output_path
-  function_name    = var.python_function_name
+  function_name    = "${var.unique_short_name}-lambda-sns-entries-to-teams"
   role             = aws_iam_role.lambda_role.arn
   handler          = var.handler
   source_code_hash = data.archive_file.sns_to_teams_archive.output_base64sha256
