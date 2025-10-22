@@ -168,7 +168,7 @@ module "entitycore_error_log_sns_entries_to_teams" {
   webhook_secret_key = "entity_core_logs_errors"
 
   unique_short_name = "entity_core"
-  sns_topic_arn     = module.notebookservice_cloudwatch_error_log_entries_to_sns.sns_topic_arn
+  sns_topic_arn     = module.entitycore_cloudwatch_error_log_entries_to_sns.sns_topic_arn
   python_runtime    = "python3.13"
 }
 
