@@ -23,12 +23,6 @@ variable "python_script_name" {
   default     = "aws_json_error_logs_to_sns.py"
 }
 
-variable "python_function_name" {
-  description = "Name of the Lambda function within the script"
-  type        = string
-  default     = "handle_log_event"
-}
-
 variable "handler" {
   description = "Handler for the Lambda function: normally scriptname dot functionname"
   type        = string
