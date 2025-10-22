@@ -113,26 +113,26 @@ resource "aws_ecs_task_definition" "executor_launch_ecs_definition" {
   ]
 }
 
-resource "aws_ecs_service" "executor_launch_ecs_service" {
-  name            = "executor_launch_ecs_service"
-  cluster         = aws_ecs_cluster.executor_launch.id
-  launch_type     = "FARGATE"
-  task_definition = aws_ecs_task_definition.executor_launch_ecs_definition.arn
-
-  network_configuration {
-    security_groups = [aws_security_group.executor_launch_ecs_task.id]
-    subnets = [aws_subnet.launch_ecs_a.id,
-      aws_subnet.launch_ecs_b.id,
-    ]
-    assign_public_ip = false
-  }
-
-  depends_on = [
-    aws_iam_role.ecs_launch_task_execution_role,
-  ]
-
-  force_new_deployment = true
-  desired_count        = 1
-
-  propagate_tags = "SERVICE"
-}
+# resource "aws_ecs_service" "executor_launch_ecs_service" {
+#   name            = "executor_launch_ecs_service"
+#   cluster         = aws_ecs_cluster.executor_launch.id
+#   launch_type     = "FARGATE"
+#   task_definition = aws_ecs_task_definition.executor_launch_ecs_definition.arn
+#
+#   network_configuration {
+#     security_groups = [aws_security_group.executor_launch_ecs_task.id]
+#     subnets = [aws_subnet.launch_ecs_a.id,
+#       aws_subnet.launch_ecs_b.id,
+#     ]
+#     assign_public_ip = false
+#   }
+#
+#   depends_on = [
+#     aws_iam_role.ecs_launch_task_execution_role,
+#   ]
+#
+#   force_new_deployment = true
+#   desired_count        = 1
+#
+#   propagate_tags = "SERVICE"
+# }
