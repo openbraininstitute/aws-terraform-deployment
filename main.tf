@@ -151,6 +151,26 @@ module "notebookservice_error_log_sns_entries_to_teams" {
   python_runtime    = "python3.13"
 }
 
+module "entitycore_cloudwatch_error_log_entries_to_sns" {
+  source = "./cloudwatch_error_log_entries_to_sns"
+
+  log_group_name          = module.entitycore_svc.log_group_name
+  unique_short_name       = "entity_core"
+  region                  = local.aws_region
+  include_sqs_debug_queue = true
+  filter_pattern          = "{ $.level = \"ERROR\" || $.level = \"WARNING\" }"
+}
+
+module "entitycore_error_log_sns_entries_to_teams" {
+  source = "./sns_entries_to_teams"
+
+  webhook_secret_arn = local.teams_webhook_secrets_arn
+  webhook_secret_key = "entity_core_logs_errors"
+
+  unique_short_name = "entity_core"
+  sns_topic_arn     = module.notebookservice_cloudwatch_error_log_entries_to_sns.sns_topic_arn
+  python_runtime    = "python3.13"
+}
 
 module "ml" {
   source = "./ml"
