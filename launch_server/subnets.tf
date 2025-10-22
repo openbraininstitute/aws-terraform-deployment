@@ -19,7 +19,7 @@ resource "aws_subnet" "launch_db_b" {
 resource "aws_subnet" "launch_ecs_a" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}a"
-  cidr_block        = "10.0.29.32/27"
+  cidr_block        = "10.0.23.32/27"
   tags = {
     Name = "launch_ecs_a"
   }
@@ -28,7 +28,7 @@ resource "aws_subnet" "launch_ecs_a" {
 resource "aws_subnet" "launch_ecs_b" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}b"
-  cidr_block        = "10.0.29.64/27"
+  cidr_block        = "10.0.23.64/27"
   tags = {
     Name = "launch_ecs_b"
   }

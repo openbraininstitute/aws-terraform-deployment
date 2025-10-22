@@ -35,6 +35,12 @@ variable "image_url" {
   default     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system:latest-dev"
 }
 
+variable "executor_image_url" {
+  description = "Image for the launch service executor container"
+  type        = string
+  default     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-executor:latest"
+}
+
 variable "db_name" {
   description = "Name of the database"
   type        = string
