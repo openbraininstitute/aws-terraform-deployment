@@ -130,6 +130,15 @@ module "deployments_sns_to_teams" {
   secret_recovery_window_in_days = 7
 }
 
+module "notebookservice_cloudwatch_error_log_entries_to_sns" {
+  source = "./cloudwatch_error_log_entries_to_sns"
+
+  log_group_name          = module.notebook_service.log_group_name
+  unique_short_name       = "notebook_service"
+  region                  = local.aws_region
+  include_sqs_debug_queue = true
+}
+
 
 module "ml" {
   source = "./ml"

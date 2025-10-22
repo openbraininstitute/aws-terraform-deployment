@@ -1,0 +1,52 @@
+variable "unique_short_name" {
+  description = "Short name which is used as prefix for certain resource names, to make them unique"
+  type        = string
+  sensitive   = false
+}
+
+variable "log_group_name" {
+  description = "Log group name that should be filtered for json messages with level=error"
+  type        = string
+  sensitive   = false
+}
+
+variable "filter_pattern" {
+  description = "Pattern to use to select the messages that have to end up in the SNS queue"
+  type        = string
+  sensitive   = false
+  default     = "{ $.level = \"ERROR\" }"
+}
+
+variable "python_script_name" {
+  description = "Name of the Python script to be executed"
+  type        = string
+  default     = "aws_json_error_logs_to_sns.py"
+}
+
+variable "python_function_name" {
+  description = "Name of the Lambda function within the script"
+  type        = string
+  default     = "handle_log_event"
+}
+
+variable "handler" {
+  description = "Handler for the Lambda function: normally scriptname dot functionname"
+  type        = string
+  default     = "aws_json_error_logs_to_sns.handle_log_event"
+}
+
+variable "python_runtime" {
+  description = "Python runtime version"
+  type        = string
+  default     = "python3.13"
+}
+
+variable "region" {
+  description = "AWS region"
+  type        = string
+}
+
+variable "include_sqs_debug_queue" {
+  description = "Should also an SQS queue be created which makes it easier to debug as you can check the SNS messages?"
+  type        = bool
+}
