@@ -107,6 +107,11 @@ resource "aws_iam_role_policy_attachment" "backup_role_managed_s3_policy" {
   role       = aws_iam_role.backup_role.name
 }
 
+resource "aws_iam_role_policy_attachment" "backup_role_managed_s3_policy_restore" {
+  policy_arn = "arn:aws:iam::aws:policy/AWSBackupServiceRolePolicyForS3Restore"
+  role       = aws_iam_role.backup_role.name
+}
+
 resource "aws_backup_selection" "obi_plan_selection" {
   name         = "obi_plan_selection"
   plan_id      = aws_backup_plan.obi_plan.id
