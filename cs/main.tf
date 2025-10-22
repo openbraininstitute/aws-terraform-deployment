@@ -18,7 +18,7 @@ module "jupyterhub_metabolism" {
   jupyterhub_base_path              = "/jupyterhub_metabolism"
   jupyterhub_secrets_arn            = var.jupyterhub_secrets_arn
   jupyterhub_ec2_config_template    = "jupyterhub_metabolism_config.sh.tpl"
-  jupyterhub_ec2_operating_system   = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20250516"
+  jupyterhub_ec2_operating_system   = "ami-0a7d80731ae1b2435"
   jupyterhub_sg_name                = "jupyterhub-metabolism-sg"
   jupyterhub_sg_efs_name            = "jupyterhub-metabolism-homedirs"
   jupyterhub_target_group_name      = "jupyterhub-metabolism-tg"
