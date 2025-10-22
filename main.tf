@@ -172,6 +172,27 @@ module "entitycore_error_log_sns_entries_to_teams" {
   python_runtime    = "python3.13"
 }
 
+module "accounting_cloudwatch_error_log_entries_to_sns" {
+  source = "./cloudwatch_error_log_entries_to_sns"
+
+  log_group_name          = module.accounting_svc.log_group_name
+  unique_short_name       = "accounting"
+  region                  = local.aws_region
+  include_sqs_debug_queue = true
+  filter_pattern          = "{ $.level = \"ERROR\" }"
+}
+
+module "accounting_error_log_sns_entries_to_teams" {
+  source = "./sns_entries_to_teams"
+
+  webhook_secret_arn = local.teams_webhook_secrets_arn
+  webhook_secret_key = "accounting_logs_errors"
+
+  unique_short_name = "accounting"
+  sns_topic_arn     = module.accounting_cloudwatch_error_log_entries_to_sns.sns_topic_arn
+  python_runtime    = "python3.13"
+}
+
 module "ml" {
   source = "./ml"
 

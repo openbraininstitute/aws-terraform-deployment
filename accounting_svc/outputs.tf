@@ -29,3 +29,7 @@ output "private_lb_rule_suffix" {
 output "athena_data_catalog_name" {
   value = module.athena_ro_access_to_rds_db.athena_data_catalog_name
 }
+
+output "log_group_name" {
+  value = aws_cloudwatch_log_group.accounting_ecs_task_logs.name
+}
