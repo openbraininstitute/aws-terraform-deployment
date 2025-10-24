@@ -522,7 +522,7 @@ resource "aws_autoscaling_group" "obi_one_v2_ecs_autoscaling_group" {
   desired_capacity      = 1
   vpc_zone_identifier   = [aws_subnet.obi_one_v2.id]
   health_check_type     = "EC2"
-  protect_from_scale_in = true
+  protect_from_scale_in = false
 
   enabled_metrics = [
     "GroupMinSize",
