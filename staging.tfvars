@@ -121,3 +121,6 @@ obi_one_v2_ecs_task_size = {
 
 # CoreWebApp s3 and CloudFront configuration
 core_webapp_s3_bucket_name = "core-webapp-static-assets-staging"
+auth_manager_svc_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/auth-manager:2025.10.28.1"
+keycloak_client_uuid       = "589eff2d-4d3a-4003-a91f-bed9ec463ef1"
+keycloak_client_id         = "authmanager-staging"

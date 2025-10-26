@@ -1,6 +1,8 @@
 resource "aws_db_subnet_group" "auth_manager_db_cluster_subnet_group" {
   name       = "auth-manager-db-cluster-group"
   subnet_ids = [aws_subnet.auth_manager_db_a.id, aws_subnet.auth_manager_db_b.id]
+
+  tags = var.auth_manager_svc_tags
 }
 
 data "aws_secretsmanager_secret_version" "auth_manager_database_password" {
