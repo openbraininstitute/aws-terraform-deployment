@@ -65,6 +65,11 @@ def parse_ecs_json_to_readable_message(msg: Dict[str,Any]) -> str:
     return final_message
 
 
+def handle_eventbridge_aws_error_event(event: Dict[str, Any], _) -> Dict[str, Any]:
+    """Main Lambda handler for processing EventBridge AWS error events."""
+    logger.info("Received event: %s", json.dumps(event))
+
+
 def handle_log_event(event: Dict[str, Any], _) -> Dict[str, Any]:
     """Main Lambda handler for processing SNS events."""
     logger.info("Received event: %s", json.dumps(event))
