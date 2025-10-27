@@ -114,30 +114,50 @@ module "aws_backups_sns_to_teams" {
   secret_recovery_window_in_days = 7
 }
 
-module "deployments_sns_topic" {
-  source = "./deployments_sns_topic"
+module "aws_errors_sns_topic" {
+  source = "./aws_errors_sns_topic"
 }
 
-module "deployments_sns_to_teams" {
-  source = "./sns_lambda_to_teams"
+module "debug_aws_errors_sns_topic" {
+  source = "./sqs_debug_queue"
 
-  unique_name          = "aws_deployments" # to make sure certain roles and secrets have a unique name
-  sns_topic_arn        = module.deployments_sns_topic.sns_topic_arn
-  python_script_name   = "aws_deployments_sns_to_teams.py"
-  python_function_name = "handle_deployment_event"
-  handler              = "aws_deployments_sns_to_teams.handle_deployment_event"
-  python_runtime       = "python3.11"
-
-  secret_recovery_window_in_days = 7
+  sns_topic_arn             = module.aws_errors_sns_topic.sns_topic_arn
+  unique_short_name         = "aws_errors"
+  message_retention_seconds = 172800 # 2 days
 }
+
+module "generic_aws_errors_sns_entries_to_teams" {
+  source = "./sns_entries_to_teams"
+
+  webhook_secret_arn = local.teams_webhook_secrets_arn
+  webhook_secret_key = "generic_aws_errors"
+
+  unique_short_name = "generic_aws_errors"
+  sns_topic_arn     = module.aws_errors_sns_topic.sns_topic_arn
+  python_runtime    = "python3.13"
+  handler           = "aws_json_log_sns_to_teams.handle_eventbridge_aws_error_event"
+}
+
+# to be replaced soon
+# module "deployments_sns_to_teams" {
+#   source = "./sns_lambda_to_teams"
+
+#   unique_name          = "aws_deployments" # to make sure certain roles and secrets have a unique name
+#   sns_topic_arn        = module.deployments_sns_topic.sns_topic_arn
+#   python_script_name   = "aws_deployments_sns_to_teams.py"
+#   python_function_name = "handle_deployment_event"
+#   handler              = "aws_deployments_sns_to_teams.handle_deployment_event"
+#   python_runtime       = "python3.11"
+
+#   secret_recovery_window_in_days = 7
+# }
 
 module "notebookservice_cloudwatch_error_log_entries_to_sns" {
   source = "./cloudwatch_error_log_entries_to_sns"
 
-  log_group_name          = module.notebook_service.log_group_name
-  unique_short_name       = "notebook_service"
-  region                  = local.aws_region
-  include_sqs_debug_queue = true
+  log_group_name    = module.notebook_service.log_group_name
+  unique_short_name = "notebook_service"
+  region            = local.aws_region
 }
 
 module "notebookservice_error_log_sns_entries_to_teams" {
@@ -154,11 +174,10 @@ module "notebookservice_error_log_sns_entries_to_teams" {
 module "entitycore_cloudwatch_error_log_entries_to_sns" {
   source = "./cloudwatch_error_log_entries_to_sns"
 
-  log_group_name          = module.entitycore_svc.log_group_name
-  unique_short_name       = "entity_core"
-  region                  = local.aws_region
-  include_sqs_debug_queue = true
-  filter_pattern          = "{ $.level = \"ERROR\" || $.level = \"WARNING\" }"
+  log_group_name    = module.entitycore_svc.log_group_name
+  unique_short_name = "entity_core"
+  region            = local.aws_region
+  filter_pattern    = "{ $.level = \"ERROR\" || $.level = \"WARNING\" }"
 }
 
 module "entitycore_error_log_sns_entries_to_teams" {
@@ -175,11 +194,10 @@ module "entitycore_error_log_sns_entries_to_teams" {
 module "accounting_cloudwatch_error_log_entries_to_sns" {
   source = "./cloudwatch_error_log_entries_to_sns"
 
-  log_group_name          = module.accounting_svc.log_group_name
-  unique_short_name       = "accounting"
-  region                  = local.aws_region
-  include_sqs_debug_queue = true
-  filter_pattern          = "{ $.level = \"ERROR\" }"
+  log_group_name    = module.accounting_svc.log_group_name
+  unique_short_name = "accounting"
+  region            = local.aws_region
+  filter_pattern    = "{ $.level = \"ERROR\" }"
 }
 
 module "accounting_error_log_sns_entries_to_teams" {
