@@ -22,7 +22,7 @@ resource "aws_db_instance" "accounting" {
   allocated_storage   = 50   # in gigabytes
 
   backup_retention_period = 14 # in days
-  backup_window           = "04:00-05:00"
+  backup_window           = "01:00-02:00"
   maintenance_window      = "sun:05:00-sun:06:00"
 
   db_subnet_group_name = aws_db_subnet_group.accounting_db_cluster_subnet_group.name
