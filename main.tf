@@ -801,7 +801,7 @@ module "dashboards" {
       "ThumbnailGenerator"  = module.thumbnail_generation_api.private_lb_rule_suffix
       "VLabManager"         = module.virtual_lab_manager.private_arn_suffix
       "ObiOneV2"            = module.obi_one_v2.private_lb_rule_suffix
-      "LaunchServer"        = module.launch_server.private_lb_rule_suffix
+      # "LaunchServer"        = module.launch_server.private_lb_rule_suffix
     },
     var.is_staging ? {
       "CoreWebAppDev"     = module.core_webapp_dev[0].private_lb_rule_suffix
