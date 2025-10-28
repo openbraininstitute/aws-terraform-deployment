@@ -23,12 +23,6 @@ variable "python_script_name" {
   default     = "aws_json_error_logs_to_sns.py"
 }
 
-variable "python_function_name" {
-  description = "Name of the Lambda function within the script"
-  type        = string
-  default     = "handle_log_event"
-}
-
 variable "handler" {
   description = "Handler for the Lambda function: normally scriptname dot functionname"
   type        = string
@@ -46,7 +40,3 @@ variable "region" {
   type        = string
 }
 
-variable "include_sqs_debug_queue" {
-  description = "Should also an SQS queue be created which makes it easier to debug as you can check the SNS messages?"
-  type        = bool
-}
