@@ -755,6 +755,7 @@ module "virtual_lab_manager" {
 }
 
 module "launch_server" {
+  count  = var.is_production ? 0 : 1
   source = "./launch_server"
 
   aws_region                    = local.aws_region
