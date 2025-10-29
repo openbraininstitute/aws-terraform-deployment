@@ -42,58 +42,7 @@ resource "aws_iam_role_policy" "backup_role_policy" {
     Statement = [
       {
         Action = [
-          "tag:getResources",
-        ]
-        Effect   = "Allow"
-        Resource = "*"
-      },
-      {
-        Action = [
-          "rds:DescribeDBInstances",
-          "rds:DescribeDBClusters",
-          "rds:ListTagsForResource",
-          "rds:CreateDBSnapshot",
-          "rds:DeleteDBSnapshot",
-          "rds:CopyDBSnapshot",
-          "rds:DescribeDBSnapshots",
-          "rds:AddTagsToResource"
-        ]
-        Effect   = "Allow"
-        Resource = "*"
-      },
-      {
-        Action = [
-          "s3:GetBucketNotification",
-          "s3:GetBucketLocation",
-          "s3:ListBucket",
-          "s3:GetBucketTagging",
-          "s3:GetBucketVersioning",
-          "s3:GetBucketPublicAccessBlock",
-          "s3:GetBucketAcl",
-          "s3:GetBucketPolicy",
-          "s3:GetObject",
-          "s3:GetObjectVersion",
-          "s3:GetObjectTagging",
-          "s3:GetObjectAcl",
-          "s3:PutBucketNotification",
-          "s3:ListBucketVersions",
-          "events:ListRules",
-          "events:PutRule",
-          "events:ListTargetsByRule",
-          "events:PutTargets",
-          "events:RemoveTargets",
-          "events:DeleteRule",
-          "cloudwatch:GetMetricData"
-        ]
-        Effect   = "Allow"
-        Resource = "*"
-      },
-      {
-        Action = [
-          "elasticfilesystem:DescribeFileSystems",
-          "elasticfilesystem:DescribeBackupPolicy",
-          "elasticfilesystem:Backup",
-          "elasticfilesystem:DescribeTags"
+          "elasticfilesystem:DescribeBackupPolicy"
         ]
         Effect   = "Allow"
         Resource = "*"
@@ -104,6 +53,16 @@ resource "aws_iam_role_policy" "backup_role_policy" {
 
 resource "aws_iam_role_policy_attachment" "backup_role_managed_s3_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AWSBackupServiceRolePolicyForS3Backup"
+  role       = aws_iam_role.backup_role.name
+}
+
+resource "aws_iam_role_policy_attachment" "backup_role_service_linked_backup" {
+  policy_arn = "arn:aws:iam::aws:policy/aws-service-role/AWSBackupServiceLinkedRolePolicyForBackup"
+  role       = aws_iam_role.backup_role.name
+}
+
+resource "aws_iam_role_policy_attachment" "backup_role_service_backup" {
+  policy_arn = "arn:aws:iam::aws:policy/aws-service-role/AWSBackupServiceRolePolicyForBackup"
   role       = aws_iam_role.backup_role.name
 }
 
