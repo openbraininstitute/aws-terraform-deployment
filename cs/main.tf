@@ -83,3 +83,8 @@ module "secret_sharing_svc" {
     memory = 512
   }
 }
+
+module "guardduty" {
+  source     = "./guardduty"
+  is_enabled = var.is_staging ? true : false # only enabled in staging for now
+}
