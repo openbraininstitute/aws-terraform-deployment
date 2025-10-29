@@ -2,6 +2,7 @@ locals {
   cpu    = 1024
   memory = 2048
 }
+data "aws_caller_identity" "current" {}
 
 resource "aws_cloudwatch_log_group" "auth_manager_ecs_task_logs" {
   name_prefix       = "auth_manager"
@@ -104,14 +105,6 @@ resource "aws_ecs_task_definition" "auth_manager_ecs_definition" {
           protocol      = "tcp"
         }
       ]
-
-      healthcheck = {
-        command     = ["CMD-SHELL", "exit 0"] // TODO: add a proper health check.
-        interval    = 60
-        timeout     = 5
-        startPeriod = 30
-        retries     = 3
-      }
 
       environment = [
         {
@@ -317,7 +310,7 @@ resource "aws_iam_policy" "ecs_task_logs_auth_manager" {
           "logs:DescribeLogStreams",
           "logs:PutLogEvents",
         ]
-        Resource = "arn:aws:logs:*:*:*"
+        Resource = "arn:aws:logs:${var.aws_region}:${data.aws_caller_identity.current.account_id}:log-group:${aws_cloudwatch_log_group.auth_manager_ecs_task_logs.name}*"
       }
     ]
   })

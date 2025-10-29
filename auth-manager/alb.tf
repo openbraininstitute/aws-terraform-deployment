@@ -21,7 +21,7 @@ resource "aws_lb_target_group" "auth_manager_private_tg" {
 
 resource "aws_lb_listener_rule" "auth_manager_private_listener_rule" {
   listener_arn = var.private_alb_listener_arn
-  priority     = 610
+  priority     = 612
 
   action {
     type             = "forward"

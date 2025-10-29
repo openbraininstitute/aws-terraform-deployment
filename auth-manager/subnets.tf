@@ -20,7 +20,7 @@ resource "aws_subnet" "auth_manager_db_b" {
 resource "aws_subnet" "auth_manager_ecs_a" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}a"
-  cidr_block        = "10.0.23.32/27"
+  cidr_block        = "10.0.24.32/27"
   tags = {
     Name = "auth_manager_ecs_a"
   }
@@ -29,7 +29,7 @@ resource "aws_subnet" "auth_manager_ecs_a" {
 resource "aws_subnet" "auth_manager_ecs_b" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}b"
-  cidr_block        = "10.0.23.64/27"
+  cidr_block        = "10.0.24.64/27"
   tags = {
     Name = "auth_manager_ecs_b"
   }
