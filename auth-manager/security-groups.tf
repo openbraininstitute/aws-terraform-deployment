@@ -16,7 +16,7 @@ resource "aws_security_group" "auth_manager_sg" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "main_subnet_ingress" {
-  security_group_id = aws_security_group.acc_sg.id
+  security_group_id = aws_security_group.auth_manager_sg.id
   description       = "Allow everything incoming from the VPC"
   ip_protocol       = -1
   cidr_ipv4         = data.aws_vpc.main.cidr_block
@@ -25,7 +25,7 @@ resource "aws_vpc_security_group_ingress_rule" "main_subnet_ingress" {
 }
 
 resource "aws_vpc_security_group_egress_rule" "main_subnet_egress" {
-  security_group_id = aws_security_group.acc_sg.id
+  security_group_id = aws_security_group.auth_manager_sg.id
   description       = "Allow everything outgoing"
   ip_protocol       = -1
   cidr_ipv4         = "0.0.0.0/0"

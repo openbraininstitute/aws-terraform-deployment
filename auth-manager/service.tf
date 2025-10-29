@@ -325,7 +325,7 @@ resource "aws_iam_policy" "ecs_task_logs_auth_manager" {
 
 resource "aws_iam_role_policy_attachment" "secrets" {
   role       = aws_iam_role.ecs_auth_manager_task_execution_role.name
-  policy_arn = aws_iam_policy.secrets_access.arn
+  policy_arn = aws_iam_policy.auth_manager_secrets_access.arn
 }
 
 resource "aws_iam_role_policy_attachment" "execution_logs" {

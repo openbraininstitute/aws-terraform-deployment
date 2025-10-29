@@ -30,16 +30,16 @@ resource "aws_db_instance" "auth_manager" {
 
   db_subnet_group_name = aws_db_subnet_group.auth_manager_db_cluster_subnet_group.name
 
-  identifier = "auth_manager"
+  identifier = "auth-manager"
   db_name    = var.db_name
   username   = var.db_username
-  password   = jsondecode(data.aws_secretsmanager_secret_version.auth_manager_database_password.secret_string)["DB_PASS"]
+  password   = jsondecode(data.aws_secretsmanager_secret_version.auth_manager_database_password.secret_string)["DATABASE_PASSWORD"]
 
   publicly_accessible          = false
   performance_insights_enabled = true
   storage_encrypted            = false #tfsec:ignore:aws-rds-encrypt-instance-storage-data
 
-  vpc_security_group_ids = [aws_security_group.acc_sg.id]
+  vpc_security_group_ids = [aws_security_group.auth_manager_sg.id]
 
   iam_database_authentication_enabled = false
 
