@@ -40,7 +40,3 @@ variable "region" {
   type        = string
 }
 
-variable "include_sqs_debug_queue" {
-  description = "Should also an SQS queue be created which makes it easier to debug as you can check the SNS messages?"
-  type        = bool
-}

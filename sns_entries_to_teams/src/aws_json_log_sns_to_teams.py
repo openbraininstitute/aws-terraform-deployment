@@ -6,7 +6,7 @@ from zoneinfo import ZoneInfo
 from botocore.exceptions import BotoCoreError, ClientError
 import urllib.request
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, final
 
 TEAMS_WEBHOOK_SECRET_NAME: str = 'TEAMS_WEBHOOK_SECRET_NAME'
 TEAMS_WEBHOOK_SECRET_KEY: str = 'TEAMS_WEBHOOK_SECRET_KEY'
@@ -40,6 +40,20 @@ def get_teams_webhook_url() -> str:
             raise
 
 
+def parse_eventbridge_json_to_readable_message(msg: Dict[str,Any]) -> str:
+    """ Parse the raw SNS message from EventBridge and convert it to a readable format."""
+    if isinstance(msg, str):
+        msg = json.loads(msg)
+    final_message: str = ""
+    if "time" in msg:
+        final_message += f"GMT time: {msg['time']}\n"
+        dt_utc = datetime.fromisoformat(msg['time'])
+        dt_swiss = dt_utc.astimezone(ZoneInfo("Europe/Zurich"))
+        final_message += f"Swiss time: {dt_swiss}\n"
+    final_message += f"Message: \n```\n{json.dumps(msg, indent=2)}\n```\n"
+    return final_message    
+
+
 def parse_ecs_json_to_readable_message(msg: Dict[str,Any]) -> str:
     """Parse the raw SNS message from ECS and convert it to a readable format."""
     if isinstance(msg, str):
@@ -63,6 +77,27 @@ def parse_ecs_json_to_readable_message(msg: Dict[str,Any]) -> str:
     if "exception" in msg:
         final_message += f"Exception: {msg['exception']}\n"
     return final_message
+
+
+def handle_eventbridge_aws_error_event(event: Dict[str, Any], _) -> Dict[str, Any]:
+    """Main Lambda handler for processing EventBridge AWS error events."""
+    logger.info("Received event: %s", json.dumps(event))
+    try:
+        webhook_url = get_teams_webhook_url()
+        records: List[Dict[str, Any]] = event.get("Records", [])
+
+        for record in records:
+            raw_sns_message = record.get("Sns", {}).get("Message", {})
+            sns_message = parse_eventbridge_json_to_readable_message(raw_sns_message)
+            logger.info("Processing SNS message: %s", sns_message[:500])  # limit log size
+            send_to_teams(sns_message, webhook_url)
+
+        return {"statusCode": 200, "body": "Messages sent to Teams."}
+    
+    except Exception as e:
+        logger.error("Unhandled error in lambda_handler: %s", e, exc_info=True)
+        return {"statusCode": 500, "body": "Failed to process SNS messages."}
+
 
 
 def handle_log_event(event: Dict[str, Any], _) -> Dict[str, Any]:
