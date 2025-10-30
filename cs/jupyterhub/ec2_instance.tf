@@ -7,33 +7,12 @@ data "aws_key_pair" "coreservices" {
   include_public_key = true
 }
 
-data "aws_ami" "jupyterhub_os" {
-  most_recent = false
-  filter {
-    name   = "name"
-    values = ["${var.jupyterhub_ec2_operating_system}"]
-  }
-  filter {
-    name   = "owner-alias"
-    values = ["amazon"]
-  }
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-  owners = ["amazon"]
-}
-
 data "aws_secretsmanager_secret_version" "jupyterhub_secrets" {
   secret_id = var.jupyterhub_secrets_arn
 }
 
 resource "aws_instance" "jupyterhub_server" {
-  ami                         = data.aws_ami.jupyterhub_os.id
+  ami                         = var.jupyterhub_ec2_operating_system
   instance_type               = var.jupyterhub_ec2_type
   subnet_id                   = var.jupyterhub_private_subnet
   key_name                    = var.aws_coreservices_ssh_key_id
