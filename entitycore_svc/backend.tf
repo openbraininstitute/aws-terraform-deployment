@@ -132,8 +132,9 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
           value = var.root_path
         },
         {
-          name  = "DB_HOST"
-          value = aws_db_instance.entitycore.address
+          name = "DB_HOST"
+          # value = aws_db_instance.entitycore.address
+          value = "entitycore-restore.cp4s282g2hxw.us-east-1.rds.amazonaws.com"
         },
         {
           name  = "DB_PORT"
