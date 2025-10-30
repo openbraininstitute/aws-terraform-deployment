@@ -26,23 +26,23 @@ locals {
   primary_domain    = data.terraform_remote_state.common.outputs.primary_domain
   email_domain_name = data.terraform_remote_state.common.outputs.email_domain_name
 
-  virtual_lab_manager_secrets_arn   = data.terraform_remote_state.common.outputs.virtual_lab_manager_secrets_arn
-  keycloak_secrets_arn              = data.terraform_remote_state.common.outputs.keycloak_secrets_arn
-  jupyterhub_secrets_arn            = data.terraform_remote_state.common.outputs.jupyterhub_secrets_arn
-  core_webapp_secrets_arn           = data.terraform_remote_state.common.outputs.core_webapp_secrets_arn
-  ml_secrets_arn                    = data.terraform_remote_state.common.outputs.ml_secrets_arn
-  small_scale_simulator_secrets_arn = data.terraform_remote_state.common.outputs.bluenaas_service_secrets_arn
-  accounting_service_secrets_arn    = data.terraform_remote_state.common.outputs.accounting_service_secrets_arn
-  entitycore_service_secrets_arn    = data.terraform_remote_state.common.outputs.entitycore_service_secrets_arn
-  hpc_slurm_secrets_arn             = data.terraform_remote_state.common.outputs.hpc_slurm_secrets_arn
-  dockerhub_bbpbuildbot_secret_arn  = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_secret_arn
-  dockerhub_bbpbuildbot_policy_arn  = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_policy_arn
-  notebook_service_secrets_arn      = data.terraform_remote_state.common.outputs.notebook_service_secrets_arn
-  launch_server_secrets_arn         = data.terraform_remote_state.common.outputs.launch_server_secrets_arn
-
+  virtual_lab_manager_secrets_arn      = data.terraform_remote_state.common.outputs.virtual_lab_manager_secrets_arn
+  keycloak_secrets_arn                 = data.terraform_remote_state.common.outputs.keycloak_secrets_arn
+  jupyterhub_secrets_arn               = data.terraform_remote_state.common.outputs.jupyterhub_secrets_arn
+  core_webapp_secrets_arn              = data.terraform_remote_state.common.outputs.core_webapp_secrets_arn
+  ml_secrets_arn                       = data.terraform_remote_state.common.outputs.ml_secrets_arn
+  small_scale_simulator_secrets_arn    = data.terraform_remote_state.common.outputs.bluenaas_service_secrets_arn
+  accounting_service_secrets_arn       = data.terraform_remote_state.common.outputs.accounting_service_secrets_arn
+  entitycore_service_secrets_arn       = data.terraform_remote_state.common.outputs.entitycore_service_secrets_arn
+  hpc_slurm_secrets_arn                = data.terraform_remote_state.common.outputs.hpc_slurm_secrets_arn
+  dockerhub_bbpbuildbot_secret_arn     = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_secret_arn
+  dockerhub_bbpbuildbot_policy_arn     = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_policy_arn
+  notebook_service_secrets_arn         = data.terraform_remote_state.common.outputs.notebook_service_secrets_arn
+  launch_server_secrets_arn            = data.terraform_remote_state.common.outputs.launch_server_secrets_arn
   virtual_lab_manager_db_ro_secret_arn = data.terraform_remote_state.common.outputs.virtual_lab_manager_database_readonly_secret_arn
   accounting_db_ro_secret_arn          = data.terraform_remote_state.common.outputs.accounting_database_readonly_secret_arn
   teams_webhook_secrets_arn            = data.terraform_remote_state.common.outputs.teams_webhook_secrets_arn
+  auth_manager_secrets_arn             = data.terraform_remote_state.common.outputs.auth_manager_secrets_arn
 
   cloudfront_certificate_arn = data.terraform_remote_state.common.outputs.cloudfront_certificate_arn
 
@@ -613,6 +613,33 @@ module "entitycore_svc" {
   obi_backup_plan = "obi_plan"
 
   api_asset_post_max_size = "524288000" # 500 * 1024**2
+}
+module "auth_manager" {
+  source = "./auth-manager"
+
+  aws_region                    = local.aws_region
+  vpc_id                        = local.vpc_id
+  private_alb_listener_arn      = local.private_alb_https_listener_arn
+  internet_access_route_id      = local.route_table_private_subnets_id
+  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
+
+  cors_origins = local.core_web_app_origins
+
+  auth_manager_secrets_arn = local.auth_manager_secrets_arn
+
+  root_path = "/api/auth-manager"
+
+  primary_domain = local.primary_domain
+
+  image_url = var.auth_manager_svc_image_url
+
+  keycloak_client_uuid = var.keycloak_client_uuid
+  keycloak_client_id   = var.keycloak_client_id
+
+  db_name     = "auth_manager"
+  db_username = "auth_manager"
+
+  obi_backup_plan = "obi_plan"
 }
 
 module "obi_one" {
