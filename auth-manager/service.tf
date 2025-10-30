@@ -166,20 +166,20 @@ resource "aws_ecs_task_definition" "auth_manager_ecs_definition" {
       ]
       secrets = [
         {
-          name  = "DATABASE_PASSWORD"
-          value = "${var.auth_manager_secrets_arn}:DATABASE_PASSWORD::"
+          name      = "DATABASE_PASSWORD"
+          valueFrom = "${var.auth_manager_secrets_arn}:DATABASE_PASSWORD::"
         },
         {
-          name  = "KEYCLOAK_CLIENT_SECRET"
-          value = "${var.auth_manager_secrets_arn}:KEYCLOAK_CLIENT_SECRET::"
+          name      = "KEYCLOAK_CLIENT_SECRET"
+          valueFrom = "${var.auth_manager_secrets_arn}:KEYCLOAK_CLIENT_SECRET::"
         },
         {
-          name  = "AUTH_MANAGER_TOKEN_VAULT_ENCRYPTION_KEY"
-          value = "${var.auth_manager_secrets_arn}:AUTH_MANAGER_TOKEN_VAULT_ENCRYPTION_KEY::"
+          name      = "AUTH_MANAGER_TOKEN_VAULT_ENCRYPTION_KEY"
+          valueFrom = "${var.auth_manager_secrets_arn}:AUTH_MANAGER_TOKEN_VAULT_ENCRYPTION_KEY::"
         },
         {
-          name  = "ACK_STATE_SECRET"
-          value = "${var.auth_manager_secrets_arn}:STATE_TOKEN_SECRET::"
+          name      = "ACK_STATE_SECRET"
+          valueFrom = "${var.auth_manager_secrets_arn}:STATE_TOKEN_SECRET::"
         },
       ]
 
