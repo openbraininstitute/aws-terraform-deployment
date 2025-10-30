@@ -62,6 +62,24 @@ resource "aws_iam_role_policy" "backup_role_policy" {
         Resource = "*"
       },
       {
+        "Sid" : "RDSRestorePermissions",
+        "Effect" : "Allow",
+        "Action" : [
+          "rds:AddTagsToResource",
+          "rds:CreateTenantDatabase",
+          "rds:DescribeDBClusters",
+          "rds:DescribeDBClusterSnapshots",
+          "rds:DescribeDBInstances",
+          "rds:DescribeDBSnapshots",
+          "rds:ListTagsForResource",
+          "rds:RestoreDBClusterFromSnapshot",
+          "rds:RestoreDBClusterToPointInTime",
+          "rds:RestoreDBInstanceFromDBSnapshot",
+          "rds:RestoreDBInstanceToPointInTime"
+        ],
+        "Resource" : "*"
+      },
+      {
         Action = [
           "s3:GetBucketNotification",
           "s3:GetBucketLocation",
