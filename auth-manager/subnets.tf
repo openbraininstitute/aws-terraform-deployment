@@ -16,7 +16,6 @@ resource "aws_subnet" "auth_manager_db_b" {
   }
 }
 
-
 resource "aws_subnet" "auth_manager_ecs_a" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}a"
@@ -33,4 +32,14 @@ resource "aws_subnet" "auth_manager_ecs_b" {
   tags = {
     Name = "auth_manager_ecs_b"
   }
+}
+
+resource "aws_route_table_association" "auth_manager_ecs_subnet_a" {
+  subnet_id      = aws_subnet.auth_manager_ecs_a.id
+  route_table_id = var.route_table_id
+}
+
+resource "aws_route_table_association" "auth_manager_ecs_subnet_b" {
+  subnet_id      = aws_subnet.auth_manager_ecs_b.id
+  route_table_id = var.route_table_id
 }

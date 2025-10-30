@@ -622,6 +622,7 @@ module "auth_manager" {
   private_alb_listener_arn      = local.private_alb_https_listener_arn
   internet_access_route_id      = local.route_table_private_subnets_id
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
+  route_table_id                = local.route_table_private_subnets_id
 
   cors_origins = local.core_web_app_origins
 
