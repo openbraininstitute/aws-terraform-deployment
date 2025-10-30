@@ -137,7 +137,7 @@ resource "aws_ecs_task_definition" "auth_manager_ecs_definition" {
         },
         {
           name  = "KEYCLOAK_ISSUER"
-          value = "${var.primary_domain}/auth"
+          value = "https://${var.primary_domain}/auth"
         },
         {
           name  = "KEYCLOAK_CLIENT_ID"
