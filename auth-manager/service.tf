@@ -112,6 +112,10 @@ resource "aws_ecs_task_definition" "auth_manager_ecs_definition" {
           value = var.root_path
         },
         {
+          name  = "ENV"
+          value = "prod"
+        },
+        {
           name  = "DEBUG"
           value = "false"
         },
@@ -157,7 +161,7 @@ resource "aws_ecs_task_definition" "auth_manager_ecs_definition" {
         },
         {
           name  = "ACK_STATE_EXPIRY"
-          value = var.ack_state_expiry
+          value = "${tostring(var.ack_state_expiry)}"
         },
       ]
       secrets = [
