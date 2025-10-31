@@ -4,17 +4,18 @@ resource "aws_security_group" "auth_manager_sg" {
   name        = "main_auth_manager_sg"
   description = "main security group for auth manager database"
 
-  ingress {
-    description = "Allow Postgres access from the VPC"
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
-    cidr_blocks = var.allowed_source_ip_cidr_blocks
-  }
-
   tags = var.auth_manager_svc_tags
 }
 
+resource "aws_vpc_security_group_ingress_rule" "postgres_from_vpc" {
+  for_each          = toset(var.allowed_source_ip_cidr_blocks)
+  security_group_id = aws_security_group.auth_manager_sg.id
+  description       = "Allow Postgres access from the VPC"
+  from_port         = 5432
+  to_port           = 5432
+  ip_protocol       = "tcp"
+  cidr_ipv4         = each.key
+}
 resource "aws_vpc_security_group_ingress_rule" "main_subnet_ingress" {
   security_group_id = aws_security_group.auth_manager_sg.id
   description       = "Allow everything incoming from the VPC"
