@@ -39,4 +39,17 @@ resource "aws_guardduty_detector_feature" "runtime_protection" {
   detector_id = aws_guardduty_detector.obi.id
   name        = "RUNTIME_MONITORING"
   status      = "ENABLED"
+
+  additional_configuration {
+    name   = "EKS_ADDON_MANAGEMENT"
+    status = "ENABLED"
+  }
+  additional_configuration {
+    name   = "ECS_FARGATE_AGENT_MANAGEMENT"
+    status = "ENABLED"
+  }
+  additional_configuration {
+    name   = "EC2_AGENT_MANAGEMENT"
+    status = "ENABLED"
+  }
 }
