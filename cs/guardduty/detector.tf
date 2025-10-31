@@ -29,6 +29,12 @@ resource "aws_guardduty_detector_feature" "lambda_protection" {
   status      = "ENABLED"
 }
 
+resource "aws_guardduty_detector_feature" "eks_protection" {
+  detector_id = aws_guardduty_detector.obi.id
+  name        = "EKS_AUDIT_LOGS"
+  status      = "ENABLED"
+}
+
 resource "aws_guardduty_detector_feature" "runtime_protection" {
   detector_id = aws_guardduty_detector.obi.id
   name        = "RUNTIME_MONITORING"
