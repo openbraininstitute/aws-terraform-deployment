@@ -65,5 +65,5 @@ module "secret_sharing_svc" {
 
 module "guardduty" {
   source     = "./guardduty"
-  is_enabled = var.is_staging ? true : false # only enabled in staging for now
+  is_enabled = var.is_staging || var.is_production ? true : false # only enabled in staging and production
 }
