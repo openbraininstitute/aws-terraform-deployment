@@ -156,6 +156,10 @@ resource "aws_ecs_task_definition" "launch_ecs_definition" {
           value = var.token_lifetime_extension_interval
         },
         {
+          name  = "TOKEN_LIFETIME_SKIP"
+          value = "True"
+        },
+        {
           name  = "ENTITYCORE_URL"
           value = var.entitycore_url
         },
