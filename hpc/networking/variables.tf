@@ -55,3 +55,17 @@ variable "endpoints_route_table_id" {
   description = "ID for the route table that allows connecting to endpoints"
 
 }
+
+variable "is_staging" {
+  type        = bool
+  default     = false
+  sensitive   = false
+  description = "Whether deployment is happening in staging or not"
+}
+
+variable "is_production" {
+  type        = bool
+  default     = true
+  sensitive   = false
+  description = "Whether deployment is happening in production or not"
+}

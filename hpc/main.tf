@@ -40,6 +40,9 @@ module "networking" {
   security_groups           = [module.security.compute_hpc_sg_id]
   lambda_subnet_cidr        = var.lambda_subnet_cidr
   endpoints_route_table_id  = var.endpoints_route_table_id
+
+  is_staging    = var.is_staging
+  is_production = var.is_production
 }
 
 module "security" {

@@ -386,6 +386,7 @@ module "hpc" {
   av_zone_suffixes                           = var.hpc_av_zone_suffixes
   peering_route_tables                       = [local.route_table_private_subnets_id, local.route_table_public_id]
   lambda_subnet_cidr                         = "10.0.16.0/24"
+  is_staging                                 = var.is_staging
   is_production                              = var.is_production
   aws_endpoints_subnet_cidr                  = module.networking.endpoints_subnet_cidr
   endpoints_route_table_id                   = local.route_table_private_subnets_id
