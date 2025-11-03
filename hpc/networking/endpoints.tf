@@ -6,6 +6,7 @@
 # availability zone.
 
 resource "aws_vpc_endpoint" "cloudwatch" {
+  count               = var.is_staging || var.is_production ? 0 : 1 # for now not in staging or prod
   vpc_id              = var.pcluster_vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.monitoring"
   vpc_endpoint_type   = "Interface"
@@ -18,6 +19,7 @@ resource "aws_vpc_endpoint" "cloudwatch" {
 }
 
 resource "aws_vpc_endpoint" "cloudwatch_logs" {
+  count               = var.is_staging || var.is_production ? 0 : 1 # for now not in staging or prod
   vpc_id              = var.pcluster_vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.logs"
   vpc_endpoint_type   = "Interface"
@@ -30,6 +32,7 @@ resource "aws_vpc_endpoint" "cloudwatch_logs" {
 }
 
 resource "aws_vpc_endpoint" "cloudformation" {
+  count               = var.is_staging || var.is_production ? 0 : 1 # for now not in staging or prod
   vpc_id              = var.pcluster_vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.cloudformation"
   vpc_endpoint_type   = "Interface"
@@ -41,6 +44,7 @@ resource "aws_vpc_endpoint" "cloudformation" {
   }
 }
 resource "aws_vpc_endpoint" "ec2" {
+  count               = var.is_staging || var.is_production ? 0 : 1 # for now not in staging or prod
   vpc_id              = var.pcluster_vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.ec2"
   vpc_endpoint_type   = "Interface"
@@ -53,6 +57,7 @@ resource "aws_vpc_endpoint" "ec2" {
 }
 
 resource "aws_vpc_endpoint" "ssm" {
+  count               = var.is_staging || var.is_production ? 0 : 1 # for now not in staging or prod
   vpc_id              = var.pcluster_vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.ssm"
   vpc_endpoint_type   = "Interface"
@@ -65,6 +70,7 @@ resource "aws_vpc_endpoint" "ssm" {
 }
 
 resource "aws_vpc_endpoint" "s3" {
+  count           = var.is_staging || var.is_production ? 0 : 1 # for now not in staging or prod
   vpc_id          = var.pcluster_vpc_id
   service_name    = "com.amazonaws.${var.aws_region}.s3"
   route_table_ids = [aws_route_table.compute.id, data.aws_route_table.default_route_table.id]
@@ -74,6 +80,7 @@ resource "aws_vpc_endpoint" "s3" {
 }
 
 resource "aws_vpc_endpoint" "dynamodb" {
+  count           = var.is_staging || var.is_production ? 0 : 1 # for now not in staging or prod
   vpc_id          = var.pcluster_vpc_id
   service_name    = "com.amazonaws.${var.aws_region}.dynamodb"
   route_table_ids = [aws_route_table.compute.id, data.aws_route_table.default_route_table.id]
@@ -83,6 +90,7 @@ resource "aws_vpc_endpoint" "dynamodb" {
 }
 
 resource "aws_vpc_endpoint" "secretsmanager" {
+  count               = var.is_staging || var.is_production ? 0 : 1 # for now not in staging or prod
   vpc_id              = var.pcluster_vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.secretsmanager"
   vpc_endpoint_type   = "Interface"
@@ -93,6 +101,7 @@ resource "aws_vpc_endpoint" "secretsmanager" {
 }
 
 resource "aws_vpc_endpoint" "fsx" {
+  count               = var.is_staging || var.is_production ? 0 : 1 # for now not in staging or prod
   vpc_id              = var.pcluster_vpc_id
   service_name        = "com.amazonaws.${var.aws_region}.fsx"
   vpc_endpoint_type   = "Interface"

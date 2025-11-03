@@ -65,6 +65,13 @@ variable "lambda_subnet_cidr" {
   type        = string
 }
 
+variable "is_staging" {
+  type        = bool
+  default     = false
+  sensitive   = false
+  description = "Whether deployment is happening in staging or not"
+}
+
 variable "is_production" {
   type        = bool
   default     = true
