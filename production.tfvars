@@ -20,7 +20,7 @@ notebook_service_bucket_name              = "obi-notebook-service-statistics-pro
 notebook_service_k8s_thread_enabled       = false
 notebook_service_accounting_enabled       = false
 
-neuroagent_image_tag = "neuroagent-v0.11.3"
+neuroagent_image_tag = "neuroagent-v0.11.4"
 
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.10.28.1"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.10.28.1"
