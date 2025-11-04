@@ -3,7 +3,6 @@ is_production                             = false
 deployment_env                            = "sandbox-hpc"
 terraform_remote_state_bucket_name        = "obi-tfstate-sandbox-hpc"
 cell_svc_bucket_name                      = "sbo-cell-svc-perf-test-sandbox-hpc"
-ml_paper_bucket_name                      = "ml-paper-bucket-sandbox-hpc-test"
 ml_neuroagent_bucket_name                 = "ml-neuroagent-sandbox-hpc"
 nexus_obp_bucket_name                     = "nexus-obp-sandbox-hpc-test"
 nexus_ship_bucket_name                    = "nexus-ship-sandbox-hpc-test"
