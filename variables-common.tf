@@ -333,3 +333,7 @@ variable "keycloak_client_id" {
   type        = string
   description = "ID of the Keycloak client"
 }
+
+variable "neuroagent_image_tag" {
+  type = string
+}
