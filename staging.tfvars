@@ -3,7 +3,6 @@ is_production                             = false
 deployment_env                            = "staging"
 terraform_remote_state_bucket_name        = "obi-tfstate-staging"
 cell_svc_bucket_name                      = "sbo-cell-svc-perf-test-staging"
-ml_paper_bucket_name                      = "ml-paper-bucket-staging-test"
 ml_neuroagent_bucket_name                 = "ml-neuroagent-staging"
 nexus_obp_bucket_name                     = "nexus-obp-production-staging-test"
 nexus_ship_bucket_name                    = "nexus-ship-production-staging-test"
