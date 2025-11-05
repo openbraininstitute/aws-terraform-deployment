@@ -10,6 +10,11 @@ variable "is_staging" {
   default     = false
 }
 
+variable "is_production" {
+  type    = bool
+  default = false
+}
+
 variable "route_table_private_subnets_id" {
   type = string
 }

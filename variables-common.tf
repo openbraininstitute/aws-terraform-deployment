@@ -17,11 +17,6 @@ variable "cell_svc_docker_image_url" {
   sensitive = false
 }
 
-variable "ml_paper_bucket_name" {
-  type      = string
-  sensitive = false
-}
-
 variable "ml_neuroagent_bucket_name" {
   type      = string
   sensitive = false
@@ -278,6 +273,7 @@ variable "entitycore_svc_image_url" {
   description = "Image URL for entitycore service."
 }
 
+
 variable "thumbnail_generation_api_docker_image_url" {
   type        = string
   description = "Docker image for the thumbnail generation api"
@@ -319,5 +315,25 @@ variable "notebook_service_k8s_thread_enabled" {
 }
 
 variable "notebook_service_bucket_name" {
+  type = string
+}
+
+variable "auth_manager_svc_image_url" {
+  type        = string
+  description = "Image URL for auth manager service."
+}
+
+
+variable "keycloak_client_uuid" {
+  type        = string
+  description = "UUID of the Keycloak client"
+}
+
+variable "keycloak_client_id" {
+  type        = string
+  description = "ID of the Keycloak client"
+}
+
+variable "neuroagent_image_tag" {
   type = string
 }

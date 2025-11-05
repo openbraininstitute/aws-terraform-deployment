@@ -62,6 +62,24 @@ resource "aws_iam_role_policy" "backup_role_policy" {
         Resource = "*"
       },
       {
+        "Sid" : "RDSRestorePermissions",
+        "Effect" : "Allow",
+        "Action" : [
+          "rds:AddTagsToResource",
+          "rds:CreateTenantDatabase",
+          "rds:DescribeDBClusters",
+          "rds:DescribeDBClusterSnapshots",
+          "rds:DescribeDBInstances",
+          "rds:DescribeDBSnapshots",
+          "rds:ListTagsForResource",
+          "rds:RestoreDBClusterFromSnapshot",
+          "rds:RestoreDBClusterToPointInTime",
+          "rds:RestoreDBInstanceFromDBSnapshot",
+          "rds:RestoreDBInstanceToPointInTime"
+        ],
+        "Resource" : "*"
+      },
+      {
         Action = [
           "s3:GetBucketNotification",
           "s3:GetBucketLocation",
@@ -104,6 +122,11 @@ resource "aws_iam_role_policy" "backup_role_policy" {
 
 resource "aws_iam_role_policy_attachment" "backup_role_managed_s3_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AWSBackupServiceRolePolicyForS3Backup"
+  role       = aws_iam_role.backup_role.name
+}
+
+resource "aws_iam_role_policy_attachment" "backup_role_managed_s3_policy_restore" {
+  policy_arn = "arn:aws:iam::aws:policy/AWSBackupServiceRolePolicyForS3Restore"
   role       = aws_iam_role.backup_role.name
 }
 

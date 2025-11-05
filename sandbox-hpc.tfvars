@@ -3,13 +3,13 @@ is_production                             = false
 deployment_env                            = "sandbox-hpc"
 terraform_remote_state_bucket_name        = "obi-tfstate-sandbox-hpc"
 cell_svc_bucket_name                      = "sbo-cell-svc-perf-test-sandbox-hpc"
-ml_paper_bucket_name                      = "ml-paper-bucket-sandbox-hpc-test"
-ml_neuroagent_bucket_name                 = "ml-neuroagent-staging"
+ml_neuroagent_bucket_name                 = "ml-neuroagent-sandbox-hpc"
 nexus_obp_bucket_name                     = "nexus-obp-sandbox-hpc-test"
 nexus_ship_bucket_name                    = "nexus-ship-sandbox-hpc-test"
 nexus_openscience_bucket_name             = "nexus-openscience-sandbox-hpc-test"
 core_web_app_docker_image_url             = "bluebrain/sbo-core-web-app:2025.1.0-prod"
 core_web_app_dev_docker_image_url         = "public.ecr.aws/openbraininstitute/core-web-app:dev"
+core_web_app_preview_docker_image_url     = "public.ecr.aws/openbraininstitute/core-web-app:preview"
 virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:20250226.1"
 thumbnail_generation_api_docker_image_url = "bluebrain/thumbnail-generation-api:latest"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.5.0"
@@ -18,14 +18,9 @@ jupyterhub_ec2_type                       = "t3.micro"
 notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:staging"
 notebook_hub_on_eks_full_url              = "none"
 notebook_service_cors_allowed_origins     = "[\"https://dev.openbraininstitute.org\",\"https://staging.openbraininstitute.org\",\"https://preview.openbraininstitute.org\"]"
+notebook_service_bucket_name              = "obi-notebook-service-statistics-sandbox-hpc"
 notebook_service_k8s_thread_enabled       = false
 notebook_service_accounting_enabled       = false
-
-bluenaas_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:staging"
-bluenaas_task_size = {
-  cpu    = 4096
-  memory = 8192
-}
 
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-staging"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-staging"
@@ -49,6 +44,29 @@ small_scale_simulator_daemon_workers = {
     capacity_provider_strategy = [
       { capacity_provider = "FARGATE_SPOT", weight = 100 }
     ]
+  }
+}
+
+small_scale_simulator_batch_workers = {
+  circuit_sim = {
+    task_size = {
+      cpu    = 8192
+      memory = 16384
+    }
+    num_workers_per_task = 4
+    queues               = ["low"]
+    max_worker_tasks     = 4
+    capacity_provider    = "FARGATE_SPOT"
+  }
+  mesh_skeletonization = {
+    task_size = {
+      cpu    = 16384
+      memory = 32768
+    }
+    num_workers_per_task = 1
+    queues               = ["mesh_skeletonization"]
+    max_worker_tasks     = 8
+    capacity_provider    = "FARGATE_SPOT"
   }
 }
 
@@ -79,5 +97,16 @@ entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["*"]
 entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.9.3"
 
+obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2025.10.9"
+obi_one_v2_ec2_instance_type = "t3.small" # vCPUs: 2, Memory: 2 GiB
+obi_one_v2_ecs_task_size = {
+  cpu    = 2048
+  memory = 1536
+  tmpfs  = 512
+}
+
 # CoreWebApp s3 and CloudFront configuration
-core_webapp_s3_bucket_name = "core-webapp-static-assets-production"
+core_webapp_s3_bucket_name = "core-webapp-static-assets-sandbox-hpc"
+auth_manager_svc_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/auth-manager:2025.10.28.1"
+keycloak_client_uuid       = "569228c5-674f-4f54-b9cb-8d179be66bda"
+keycloak_client_id         = "core-webapp-dev"

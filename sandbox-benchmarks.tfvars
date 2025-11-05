@@ -4,7 +4,6 @@ is_production                             = false
 deployment_env                            = "sandbox-benchmarks"
 terraform_remote_state_bucket_name        = "obi-tfstate-sandbox-benchmarks"
 cell_svc_bucket_name                      = "sbo-cell-svc-perf-test-sandbox-benchmarks"
-ml_paper_bucket_name                      = "ml-paper-bucket-sandbox-benchmarks-test"
 ml_neuroagent_bucket_name                 = "ml-neuroagent-staging"
 nexus_domain_name                         = "sandboxbenchmarks.openbluebrain.com"
 nexus_obp_bucket_name                     = "nexus-obp-sandbox-benchmarks-test"

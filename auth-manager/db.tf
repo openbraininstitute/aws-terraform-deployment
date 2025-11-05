@@ -1,14 +1,16 @@
-resource "aws_db_subnet_group" "entitycore_db_cluster_subnet_group" {
-  name       = "entitycore-db-cluster-group"
-  subnet_ids = [aws_subnet.entitycore_db_a.id, aws_subnet.entitycore_db_b.id]
+resource "aws_db_subnet_group" "auth_manager_db_cluster_subnet_group" {
+  name       = "auth-manager-db-cluster-group"
+  subnet_ids = [aws_subnet.auth_manager_db_a.id, aws_subnet.auth_manager_db_b.id]
+
+  tags = var.auth_manager_svc_tags
 }
 
-data "aws_secretsmanager_secret_version" "entitycore_database_password" {
-  secret_id = var.entitycore_service_secrets_arn
+data "aws_secretsmanager_secret_version" "auth_manager_database_password" {
+  secret_id = var.auth_manager_secrets_arn
 }
 
 # tfsec:ignore:aws-rds-enable-performance-insights-encryption
-resource "aws_db_instance" "entitycore" {
+resource "aws_db_instance" "auth_manager" {
   #ts:skip=AC_AWS_0053
   #ts:skip=AC_AWS_0454
   #ts:skip=AC_AWS_0058
@@ -20,31 +22,31 @@ resource "aws_db_instance" "entitycore" {
   instance_class              = "db.t3.small"
 
   deletion_protection = true #tfsec:ignore:AVD-AWS-0177
-  allocated_storage   = 50   # in gigabytes
+  allocated_storage   = 10   # in gigabytes
 
   backup_retention_period = 14 # in days
   backup_window           = "01:00-02:00"
   maintenance_window      = "sun:05:00-sun:06:00"
 
-  db_subnet_group_name = aws_db_subnet_group.entitycore_db_cluster_subnet_group.name
+  db_subnet_group_name = aws_db_subnet_group.auth_manager_db_cluster_subnet_group.name
 
-  identifier = "entitycore"
+  identifier = "auth-manager"
   db_name    = var.db_name
   username   = var.db_username
-  password   = jsondecode(data.aws_secretsmanager_secret_version.entitycore_database_password.secret_string)["DB_PASS"]
+  password   = jsondecode(data.aws_secretsmanager_secret_version.auth_manager_database_password.secret_string)["DATABASE_PASSWORD"]
 
   publicly_accessible          = false
   performance_insights_enabled = true
   storage_encrypted            = false #tfsec:ignore:aws-rds-encrypt-instance-storage-data
 
-  vpc_security_group_ids = [aws_security_group.acc_sg.id]
+  vpc_security_group_ids = [aws_security_group.auth_manager_sg.id]
 
   iam_database_authentication_enabled = false
 
   copy_tags_to_snapshot = true
 
   tags = {
-    Name            = "entitycore-db"
-    obi_backup_plan = var.obi_backup_plan
+    Name            = "auth-manager-db"
+    obi_backup_plan = "obi_plan"
   }
 }

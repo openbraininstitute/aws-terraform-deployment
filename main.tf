@@ -26,22 +26,23 @@ locals {
   primary_domain    = data.terraform_remote_state.common.outputs.primary_domain
   email_domain_name = data.terraform_remote_state.common.outputs.email_domain_name
 
-  virtual_lab_manager_secrets_arn   = data.terraform_remote_state.common.outputs.virtual_lab_manager_secrets_arn
-  keycloak_secrets_arn              = data.terraform_remote_state.common.outputs.keycloak_secrets_arn
-  jupyterhub_secrets_arn            = data.terraform_remote_state.common.outputs.jupyterhub_secrets_arn
-  core_webapp_secrets_arn           = data.terraform_remote_state.common.outputs.core_webapp_secrets_arn
-  ml_secrets_arn                    = data.terraform_remote_state.common.outputs.ml_secrets_arn
-  small_scale_simulator_secrets_arn = data.terraform_remote_state.common.outputs.bluenaas_service_secrets_arn
-  accounting_service_secrets_arn    = data.terraform_remote_state.common.outputs.accounting_service_secrets_arn
-  entitycore_service_secrets_arn    = data.terraform_remote_state.common.outputs.entitycore_service_secrets_arn
-  hpc_slurm_secrets_arn             = data.terraform_remote_state.common.outputs.hpc_slurm_secrets_arn
-  dockerhub_bbpbuildbot_secret_arn  = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_secret_arn
-  dockerhub_bbpbuildbot_policy_arn  = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_policy_arn
-  notebook_service_secrets_arn      = data.terraform_remote_state.common.outputs.notebook_service_secrets_arn
-  launch_server_secrets_arn         = data.terraform_remote_state.common.outputs.launch_server_secrets_arn
-
+  virtual_lab_manager_secrets_arn      = data.terraform_remote_state.common.outputs.virtual_lab_manager_secrets_arn
+  keycloak_secrets_arn                 = data.terraform_remote_state.common.outputs.keycloak_secrets_arn
+  jupyterhub_secrets_arn               = data.terraform_remote_state.common.outputs.jupyterhub_secrets_arn
+  core_webapp_secrets_arn              = data.terraform_remote_state.common.outputs.core_webapp_secrets_arn
+  ml_secrets_arn                       = data.terraform_remote_state.common.outputs.ml_secrets_arn
+  small_scale_simulator_secrets_arn    = data.terraform_remote_state.common.outputs.bluenaas_service_secrets_arn
+  accounting_service_secrets_arn       = data.terraform_remote_state.common.outputs.accounting_service_secrets_arn
+  entitycore_service_secrets_arn       = data.terraform_remote_state.common.outputs.entitycore_service_secrets_arn
+  hpc_slurm_secrets_arn                = data.terraform_remote_state.common.outputs.hpc_slurm_secrets_arn
+  dockerhub_bbpbuildbot_secret_arn     = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_secret_arn
+  dockerhub_bbpbuildbot_policy_arn     = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_policy_arn
+  notebook_service_secrets_arn         = data.terraform_remote_state.common.outputs.notebook_service_secrets_arn
+  launch_server_secrets_arn            = data.terraform_remote_state.common.outputs.launch_server_secrets_arn
   virtual_lab_manager_db_ro_secret_arn = data.terraform_remote_state.common.outputs.virtual_lab_manager_database_readonly_secret_arn
   accounting_db_ro_secret_arn          = data.terraform_remote_state.common.outputs.accounting_database_readonly_secret_arn
+  teams_webhook_secrets_arn            = data.terraform_remote_state.common.outputs.teams_webhook_secrets_arn
+  auth_manager_secrets_arn             = data.terraform_remote_state.common.outputs.auth_manager_secrets_arn
 
   cloudfront_certificate_arn = data.terraform_remote_state.common.outputs.cloudfront_certificate_arn
 
@@ -79,6 +80,7 @@ module "github_oidc_provider" {
 module "cs" {
   source = "./cs"
 
+  is_production                  = var.is_production
   is_staging                     = var.is_staging
   vpc_id                         = local.vpc_id
   route_table_private_subnets_id = local.route_table_private_subnets_id
@@ -113,23 +115,102 @@ module "aws_backups_sns_to_teams" {
   secret_recovery_window_in_days = 7
 }
 
-module "deployments_sns_topic" {
-  source = "./deployments_sns_topic"
+module "aws_errors_sns_topic" {
+  source = "./aws_errors_sns_topic"
 }
 
-module "deployments_sns_to_teams" {
-  source = "./sns_lambda_to_teams"
+module "debug_aws_errors_sns_topic" {
+  source = "./sqs_debug_queue"
 
-  unique_name          = "aws_deployments" # to make sure certain roles and secrets have a unique name
-  sns_topic_arn        = module.deployments_sns_topic.sns_topic_arn
-  python_script_name   = "aws_deployments_sns_to_teams.py"
-  python_function_name = "handle_deployment_event"
-  handler              = "aws_deployments_sns_to_teams.handle_deployment_event"
-  python_runtime       = "python3.11"
-
-  secret_recovery_window_in_days = 7
+  sns_topic_arn             = module.aws_errors_sns_topic.sns_topic_arn
+  unique_short_name         = "aws_errors"
+  message_retention_seconds = 172800 # 2 days
 }
 
+module "generic_aws_errors_sns_entries_to_teams" {
+  source = "./sns_entries_to_teams"
+
+  webhook_secret_arn = local.teams_webhook_secrets_arn
+  webhook_secret_key = "generic_aws_errors"
+
+  unique_short_name = "generic_aws_errors"
+  sns_topic_arn     = module.aws_errors_sns_topic.sns_topic_arn
+  python_runtime    = "python3.13"
+  handler           = "aws_json_log_sns_to_teams.handle_eventbridge_aws_error_event"
+}
+
+# to be replaced soon
+# module "deployments_sns_to_teams" {
+#   source = "./sns_lambda_to_teams"
+
+#   unique_name          = "aws_deployments" # to make sure certain roles and secrets have a unique name
+#   sns_topic_arn        = module.deployments_sns_topic.sns_topic_arn
+#   python_script_name   = "aws_deployments_sns_to_teams.py"
+#   python_function_name = "handle_deployment_event"
+#   handler              = "aws_deployments_sns_to_teams.handle_deployment_event"
+#   python_runtime       = "python3.11"
+
+#   secret_recovery_window_in_days = 7
+# }
+
+module "notebookservice_cloudwatch_error_log_entries_to_sns" {
+  source = "./cloudwatch_error_log_entries_to_sns"
+
+  log_group_name    = module.notebook_service.log_group_name
+  unique_short_name = "notebook_service"
+  region            = local.aws_region
+}
+
+module "notebookservice_error_log_sns_entries_to_teams" {
+  source = "./sns_entries_to_teams"
+
+  webhook_secret_arn = local.teams_webhook_secrets_arn
+  webhook_secret_key = "notebook_service_logs_errors"
+
+  unique_short_name = "notebook_service"
+  sns_topic_arn     = module.notebookservice_cloudwatch_error_log_entries_to_sns.sns_topic_arn
+  python_runtime    = "python3.13"
+}
+
+module "entitycore_cloudwatch_error_log_entries_to_sns" {
+  source = "./cloudwatch_error_log_entries_to_sns"
+
+  log_group_name    = module.entitycore_svc.log_group_name
+  unique_short_name = "entity_core"
+  region            = local.aws_region
+  filter_pattern    = "{ $.level = \"ERROR\" || $.level = \"WARNING\" }"
+}
+
+module "entitycore_error_log_sns_entries_to_teams" {
+  source = "./sns_entries_to_teams"
+
+  webhook_secret_arn = local.teams_webhook_secrets_arn
+  webhook_secret_key = "entity_core_logs_errors"
+
+  unique_short_name = "entity_core"
+  sns_topic_arn     = module.entitycore_cloudwatch_error_log_entries_to_sns.sns_topic_arn
+  python_runtime    = "python3.13"
+}
+
+module "accounting_cloudwatch_error_log_entries_to_sns" {
+  source = "./cloudwatch_error_log_entries_to_sns"
+
+  log_group_name    = module.accounting_svc.log_group_name
+  unique_short_name = "accounting"
+  region            = local.aws_region
+  filter_pattern    = "{ $.level = \"ERROR\" }"
+}
+
+module "accounting_error_log_sns_entries_to_teams" {
+  source = "./sns_entries_to_teams"
+
+  webhook_secret_arn = local.teams_webhook_secrets_arn
+  webhook_secret_key = "accounting_logs_errors"
+
+  unique_short_name = "accounting"
+  sns_topic_arn     = module.accounting_cloudwatch_error_log_entries_to_sns.sns_topic_arn
+  python_runtime    = "python3.13"
+}
 
 module "ml" {
   source = "./ml"
@@ -146,7 +227,7 @@ module "ml" {
   vpc_cidr_block                 = local.vpc_cidr_block
   route_table_private_subnets_id = local.route_table_private_subnets_id
 
-  agent_image_tag = "neuroagent-v0.10.0"
+  agent_image_tag = var.neuroagent_image_tag
 
   neuroagent_bucket_name = var.ml_neuroagent_bucket_name
   primary_domain         = local.primary_domain
@@ -247,6 +328,8 @@ module "notebook_service" {
   cors_allowed_origins      = var.notebook_service_cors_allowed_origins
   kubernetes_thread_enabled = var.notebook_service_k8s_thread_enabled
 
+  kubernetes_thread_check_interval = 15
+
   task_size = {
     cpu    = 512
     memory = 1024
@@ -304,6 +387,7 @@ module "hpc" {
   av_zone_suffixes                           = var.hpc_av_zone_suffixes
   peering_route_tables                       = [local.route_table_private_subnets_id, local.route_table_public_id]
   lambda_subnet_cidr                         = "10.0.16.0/24"
+  is_staging                                 = var.is_staging
   is_production                              = var.is_production
   aws_endpoints_subnet_cidr                  = module.networking.endpoints_subnet_cidr
   endpoints_route_table_id                   = local.route_table_private_subnets_id
@@ -531,6 +615,34 @@ module "entitycore_svc" {
   obi_backup_plan = "obi_plan"
 
   api_asset_post_max_size = "524288000" # 500 * 1024**2
+}
+module "auth_manager" {
+  source = "./auth-manager"
+
+  aws_region                    = local.aws_region
+  vpc_id                        = local.vpc_id
+  private_alb_listener_arn      = local.private_alb_https_listener_arn
+  internet_access_route_id      = local.route_table_private_subnets_id
+  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
+  route_table_id                = local.route_table_private_subnets_id
+
+  cors_origins = local.core_web_app_origins
+
+  auth_manager_secrets_arn = local.auth_manager_secrets_arn
+
+  root_path = "/api/auth-manager"
+
+  primary_domain = local.primary_domain
+
+  image_url = var.auth_manager_svc_image_url
+
+  keycloak_client_uuid = var.keycloak_client_uuid
+  keycloak_client_id   = var.keycloak_client_id
+
+  db_name     = "auth_manager"
+  db_username = "auth_manager"
+
+  obi_backup_plan = "obi_plan"
 }
 
 module "obi_one" {

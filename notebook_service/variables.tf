@@ -50,6 +50,12 @@ variable "accounting_base_url" {
   sensitive   = false
 }
 
+variable "kubernetes_thread_check_interval" {
+  type        = number
+  description = "How often should the kubernetes thread check the running pods, in seconds"
+  sensitive   = false
+}
+
 variable "task_size" {
   type = object({
     cpu    = any

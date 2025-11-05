@@ -140,7 +140,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_TOOLS__WHITELISTED_TOOL_REGEX"
-          value = "^(?!.*(downloadone|ionchannelmodel|measurementannotation|simulation|synaptome|experimentalsynapsesperconnection|circuit|expert|context-analyzer)).*"
+          value = "^(?!.*(downloadone|measurementannotation|simulation|synaptome|experimentalsynapsesperconnection|expert)).*"
 
 
         },
@@ -153,6 +153,10 @@ module "ecs_service_agent" {
         {
           name      = "NEUROAGENT_LLM__OPENAI_TOKEN"
           valueFrom = "${var.ml_secrets_arn}:OPENAI_API_KEY::"
+        },
+        {
+          name      = "NEUROAGENT_LLM__OPEN_ROUTER_TOKEN"
+          valueFrom = "${var.ml_secrets_arn}:OPENROUTER_API_KEY::"
         },
         {
           name      = "NEUROAGENT_MCP__SECRETS__EXA_API_KEY"
