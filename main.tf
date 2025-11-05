@@ -31,7 +31,7 @@ locals {
   jupyterhub_secrets_arn               = data.terraform_remote_state.common.outputs.jupyterhub_secrets_arn
   core_webapp_secrets_arn              = data.terraform_remote_state.common.outputs.core_webapp_secrets_arn
   ml_secrets_arn                       = data.terraform_remote_state.common.outputs.ml_secrets_arn
-  small_scale_simulator_secrets_arn    = data.terraform_remote_state.common.outputs.bluenaas_service_secrets_arn
+  small_scale_simulator_secrets_arn    = data.terraform_remote_state.common.outputs.small_scale_simulator_secrets_arn
   accounting_service_secrets_arn       = data.terraform_remote_state.common.outputs.accounting_service_secrets_arn
   entitycore_service_secrets_arn       = data.terraform_remote_state.common.outputs.entitycore_service_secrets_arn
   hpc_slurm_secrets_arn                = data.terraform_remote_state.common.outputs.hpc_slurm_secrets_arn
