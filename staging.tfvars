@@ -10,7 +10,7 @@ nexus_openscience_bucket_name             = "nexus-openscience-production-stagin
 core_web_app_docker_image_url             = "public.ecr.aws/openbraininstitute/core-web-app:staging"
 core_web_app_dev_docker_image_url         = "public.ecr.aws/openbraininstitute/core-web-app:dev"
 core_web_app_preview_docker_image_url     = "public.ecr.aws/openbraininstitute/core-web-app:preview"
-virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:2025.11.03.1"
+virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:2025.11.05.1"
 thumbnail_generation_api_docker_image_url = "public.ecr.aws/openbraininstitute/thumbnail-generation-api:2025.10.27.1"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.9.0"
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2025.10.3"
@@ -24,8 +24,8 @@ notebook_service_accounting_enabled       = true
 
 neuroagent_image_tag = "neuroagent-v0.11.4"
 
-small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.10.28.1"
-small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.10.28.1"
+small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.11.05.1"
+small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.11.05.1"
 small_scale_simulator_api_task_size = {
   cpu    = 256
   memory = 512
@@ -112,7 +112,7 @@ entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["*"]
 entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.10.11"
 
-obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2025.10.9"
+obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2025.11.0"
 obi_one_v2_ec2_instance_type = "t3.small" # vCPUs: 2, Memory: 2 GiB
 obi_one_v2_ecs_task_size = {
   cpu    = 2048
@@ -122,6 +122,6 @@ obi_one_v2_ecs_task_size = {
 
 # CoreWebApp s3 and CloudFront configuration
 core_webapp_s3_bucket_name = "core-webapp-static-assets-staging"
-auth_manager_svc_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/auth-manager:2025.10.28.1"
+auth_manager_svc_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/auth-manager:2025.11.06.1"
 keycloak_client_uuid       = "569228c5-674f-4f54-b9cb-8d179be66bda"
 keycloak_client_id         = "core-webapp-dev"

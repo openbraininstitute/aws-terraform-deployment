@@ -7,9 +7,6 @@ locals {
   route_table_private_subnets_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
   route_table_public_id          = data.terraform_remote_state.common.outputs.route_table_public_id
 
-  public_nlb_sg_id = data.terraform_remote_state.common.outputs.public_nlb_sg_id
-  nat_gateway_id   = data.terraform_remote_state.common.outputs.nat_gateway_id
-
   core_web_app_origins = concat(
     ["https://${local.primary_domain}"],
     var.is_staging ? [
@@ -31,12 +28,10 @@ locals {
   jupyterhub_secrets_arn               = data.terraform_remote_state.common.outputs.jupyterhub_secrets_arn
   core_webapp_secrets_arn              = data.terraform_remote_state.common.outputs.core_webapp_secrets_arn
   ml_secrets_arn                       = data.terraform_remote_state.common.outputs.ml_secrets_arn
-  small_scale_simulator_secrets_arn    = data.terraform_remote_state.common.outputs.bluenaas_service_secrets_arn
+  small_scale_simulator_secrets_arn    = data.terraform_remote_state.common.outputs.small_scale_simulator_secrets_arn
   accounting_service_secrets_arn       = data.terraform_remote_state.common.outputs.accounting_service_secrets_arn
   entitycore_service_secrets_arn       = data.terraform_remote_state.common.outputs.entitycore_service_secrets_arn
   hpc_slurm_secrets_arn                = data.terraform_remote_state.common.outputs.hpc_slurm_secrets_arn
-  dockerhub_bbpbuildbot_secret_arn     = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_secret_arn
-  dockerhub_bbpbuildbot_policy_arn     = data.terraform_remote_state.common.outputs.dockerhub_bbpbuildbot_policy_arn
   notebook_service_secrets_arn         = data.terraform_remote_state.common.outputs.notebook_service_secrets_arn
   launch_server_secrets_arn            = data.terraform_remote_state.common.outputs.launch_server_secrets_arn
   virtual_lab_manager_db_ro_secret_arn = data.terraform_remote_state.common.outputs.virtual_lab_manager_database_readonly_secret_arn
