@@ -24,8 +24,8 @@ notebook_service_accounting_enabled       = true
 
 neuroagent_image_tag = "neuroagent-v0.11.4"
 
-small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.11.05.1"
-small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.11.05.1"
+small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.11.07.1"
+small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.11.07.1"
 small_scale_simulator_api_task_size = {
   cpu    = 256
   memory = 512
