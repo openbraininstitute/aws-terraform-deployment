@@ -337,3 +337,49 @@ variable "keycloak_client_id" {
 variable "neuroagent_image_tag" {
   type = string
 }
+
+### launch-system ###
+
+variable "launch_system_api_image_url" {
+  description = "Image for the API"
+  type        = string
+}
+
+variable "launch_system_orchestrator_image_url" {
+  description = "Image for the orchestrator"
+  type        = string
+}
+
+variable "launch_system_default_executor_image_url" {
+  description = "Image for the default executor"
+  type        = string
+}
+
+variable "launch_system_api_task_size" {
+  type = object({
+    cpu    = any
+    memory = any
+  })
+  description = "CPU and memory limit for launch-system API task (number or string format)"
+}
+
+variable "launch_system_orchestrator_task_size" {
+  type = object({
+    cpu    = any
+    memory = any
+  })
+  description = "CPU and memory limit for launch-system orchestrator task (number or string format)"
+}
+
+variable "launch_system_executor_task_size" {
+  type = object({
+    cpu    = any
+    memory = any
+  })
+  description = "CPU and memory limit for launch-system executor tasks (number or string format)"
+}
+
+variable "launch_system_orchestrator_num_workers" {
+  description = "Number of workers processing the queues in the orchestrator task."
+  type        = number
+}

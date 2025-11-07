@@ -1,6 +1,6 @@
 resource "aws_iam_policy" "secrets_access" {
-  name        = "launch-service-secrets-access-policy"
-  description = "Policy that gives access to the launch service secrets"
+  name        = "launch-system-secrets-access-policy"
+  description = "Policy that gives access to the launch system secrets"
 
   policy = <<-EOT
   {

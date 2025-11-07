@@ -1,27 +1,19 @@
-locals {
-  cpu    = 1024
-  memory = 2048
-}
-
-resource "aws_cloudwatch_log_group" "launch_ecs_task_logs" {
+resource "aws_cloudwatch_log_group" "api" {
   # TODO check if the logs can be encrypted
-  name_prefix       = "launch"
+  name_prefix       = "launch_system_api"
   skip_destroy      = false
   retention_in_days = 14
 
   kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
 
-  tags = {
-    Name = "launch"
-  }
+  tags = merge(var.tags, { Name = "launch_system_api" })
 }
 
-resource "aws_ecs_cluster" "launch" {
-  name = "launch_ecs_cluster"
+resource "aws_ecs_cluster" "api" {
+  name = "launch_system_api"
 
-  tags = {
-    Name = "launch"
-  }
+  tags = merge(var.tags, { Name = "launch_system_api" })
+
 
   setting {
     name  = "containerInsights"
@@ -30,18 +22,16 @@ resource "aws_ecs_cluster" "launch" {
 }
 
 # TODO make more strict
-resource "aws_security_group" "launch_ecs_task" {
-  name_prefix = "launch"
+resource "aws_security_group" "api" {
+  name_prefix = "launch_system_api"
   vpc_id      = var.vpc_id
-  description = "Sec group for launch service"
+  description = "Sec group for launch system api"
 
-  tags = {
-    Name = "launch_secgroup"
-  }
+  tags = merge(var.tags, { Name = "launch_system_api" })
 }
 
-resource "aws_vpc_security_group_ingress_rule" "launch_allow_port_8000" {
-  security_group_id = aws_security_group.launch_ecs_task.id
+resource "aws_vpc_security_group_ingress_rule" "api_allow_port_8000" {
+  security_group_id = aws_security_group.api.id
 
   ip_protocol = "tcp"
   from_port   = 8000
@@ -50,8 +40,8 @@ resource "aws_vpc_security_group_ingress_rule" "launch_allow_port_8000" {
   description = "Allow port 8000 http"
 }
 
-resource "aws_vpc_security_group_ingress_rule" "launch_allow_in_tcp" {
-  security_group_id = aws_security_group.launch_ecs_task.id
+resource "aws_vpc_security_group_egress_rule" "api_allow_outgoing_tcp" {
+  security_group_id = aws_security_group.api.id
   # TODO limit to what is needed
   ip_protocol = "tcp"
   from_port   = 0
@@ -60,18 +50,8 @@ resource "aws_vpc_security_group_ingress_rule" "launch_allow_in_tcp" {
   description = "Allow all TCP"
 }
 
-resource "aws_vpc_security_group_egress_rule" "launch_allow_outgoing_tcp" {
-  security_group_id = aws_security_group.launch_ecs_task.id
-  # TODO limit to what is needed
-  ip_protocol = "tcp"
-  from_port   = 0
-  to_port     = 65535
-  cidr_ipv4   = "0.0.0.0/0"
-  description = "Allow all TCP"
-}
-
-resource "aws_vpc_security_group_egress_rule" "launch_allow_outgoing_udp" {
-  security_group_id = aws_security_group.launch_ecs_task.id
+resource "aws_vpc_security_group_egress_rule" "api_allow_outgoing_udp" {
+  security_group_id = aws_security_group.api.id
   # TODO limit to what is needed
   ip_protocol = "udp"
   from_port   = 0
@@ -80,21 +60,21 @@ resource "aws_vpc_security_group_egress_rule" "launch_allow_outgoing_udp" {
   description = "Allow all UDP"
 }
 
-resource "aws_ecs_task_definition" "launch_ecs_definition" {
-  family       = "launch_task_family"
+resource "aws_ecs_task_definition" "api" {
+  family       = "launch_system_api_task_family"
   network_mode = "awsvpc"
 
   container_definitions = jsonencode([
     {
-      name   = "launch"
-      family = "launch"
+      name   = "launch_system_api"
+      family = "launch_system_api"
 
-      cpu    = local.cpu
-      memory = local.memory
+      cpu    = var.api_task_size.cpu
+      memory = var.api_task_size.memory
 
       networkMode = "awsvpc"
 
-      image = var.image_url
+      image = var.api_image_url
 
       essential = true
 
@@ -133,7 +113,7 @@ resource "aws_ecs_task_definition" "launch_ecs_definition" {
         },
         {
           name  = "DB_HOST"
-          value = aws_db_instance.launch.address
+          value = aws_db_instance.main.address
         },
         {
           name  = "DB_PORT"
@@ -164,8 +144,12 @@ resource "aws_ecs_task_definition" "launch_ecs_definition" {
           value = var.entitycore_url
         },
         {
-          name  = "LAUNCH_SERVER_URL"
-          value = var.launch_server_url
+          name  = "LAUNCH_SYSTEM_API_URL"
+          value = var.launch_system_api_url
+        },
+        {
+          name  = "LAUNCH_SERVER_URL" # for backward compatibility
+          value = var.launch_system_api_url
         },
         {
           name  = "KEYCLOAK_CLIENT_ID"
@@ -221,50 +205,51 @@ resource "aws_ecs_task_definition" "launch_ecs_definition" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = aws_cloudwatch_log_group.launch_ecs_task_logs.name
+          awslogs-group         = aws_cloudwatch_log_group.api.name
           awslogs-region        = var.aws_region
           awslogs-create-group  = "true"
-          awslogs-stream-prefix = "launch"
+          awslogs-stream-prefix = "launch_system_api"
         }
       }
     }
   ])
 
-  cpu    = local.cpu
-  memory = local.memory
+  cpu    = var.api_task_size.cpu
+  memory = var.api_task_size.memory
 
   requires_compatibilities = ["FARGATE"]
 
-  execution_role_arn = aws_iam_role.ecs_launch_task_execution_role.arn
-  task_role_arn      = aws_iam_role.ecs_launch_task_role.arn
+  execution_role_arn = aws_iam_role.api_execution_role.arn
+  task_role_arn      = aws_iam_role.api_task_role.arn
 
   depends_on = [
-    aws_cloudwatch_log_group.launch_ecs_task_logs,
+    aws_cloudwatch_log_group.api,
   ]
 }
 
-resource "aws_ecs_service" "launch_ecs_service" {
-  name            = "launch_ecs_service"
-  cluster         = aws_ecs_cluster.launch.id
+resource "aws_ecs_service" "api" {
+  name            = "launch_system_api"
+  cluster         = aws_ecs_cluster.api.id
   launch_type     = "FARGATE"
-  task_definition = aws_ecs_task_definition.launch_ecs_definition.arn
+  task_definition = aws_ecs_task_definition.api.arn
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.launch_private_tg.arn
-    container_name   = "launch"
+    target_group_arn = aws_lb_target_group.private.arn
+    container_name   = "launch_system_api"
     container_port   = 8000
   }
 
   network_configuration {
-    security_groups = [aws_security_group.launch_ecs_task.id]
-    subnets = [aws_subnet.launch_ecs_a.id,
-      aws_subnet.launch_ecs_b.id,
+    security_groups = [aws_security_group.api.id]
+    subnets = [
+      aws_subnet.trusted_a.id,
+      aws_subnet.trusted_b.id,
     ]
     assign_public_ip = false
   }
 
   depends_on = [
-    aws_iam_role.ecs_launch_task_execution_role,
+    aws_iam_role.api_execution_role,
   ]
 
   force_new_deployment = true
@@ -273,8 +258,8 @@ resource "aws_ecs_service" "launch_ecs_service" {
   propagate_tags = "SERVICE"
 }
 
-resource "aws_iam_role" "ecs_launch_task_execution_role" {
-  name_prefix = "launch"
+resource "aws_iam_role" "api_execution_role" {
+  name_prefix = "launch_system_api"
 
   assume_role_policy = <<-EOT
   {
@@ -293,13 +278,13 @@ resource "aws_iam_role" "ecs_launch_task_execution_role" {
   EOT
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_launch_task_execution_role_policy_attachment" {
-  role       = aws_iam_role.ecs_launch_task_execution_role.name
+resource "aws_iam_role_policy_attachment" "api_execution_role" {
+  role       = aws_iam_role.api_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-resource "aws_iam_role" "ecs_launch_task_role" {
-  name_prefix = "launch"
+resource "aws_iam_role" "api_task_role" {
+  name_prefix = "launch_system_api"
 
   assume_role_policy = <<-EOT
   {
@@ -319,7 +304,7 @@ resource "aws_iam_role" "ecs_launch_task_role" {
 }
 
 resource "aws_iam_policy" "ecs_task_logs_launch" {
-  name_prefix = "launch"
+  name_prefix = "launch_system_api"
   description = "Allows ECS tasks to create log streams and log groups in CloudWatch Logs"
 
   policy = jsonencode({
@@ -340,11 +325,11 @@ resource "aws_iam_policy" "ecs_task_logs_launch" {
 }
 
 resource "aws_iam_role_policy_attachment" "secrets" {
-  role       = aws_iam_role.ecs_launch_task_execution_role.name
+  role       = aws_iam_role.api_execution_role.name
   policy_arn = aws_iam_policy.secrets_access.arn
 }
 
 resource "aws_iam_role_policy_attachment" "execution_logs" {
-  role       = aws_iam_role.ecs_launch_task_execution_role.name
+  role       = aws_iam_role.api_execution_role.name
   policy_arn = aws_iam_policy.ecs_task_logs_launch.arn
 }

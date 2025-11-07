@@ -1,14 +1,17 @@
-resource "aws_db_subnet_group" "launch_db_cluster_subnet_group" {
-  name       = "launch-db-cluster-group"
-  subnet_ids = [aws_subnet.launch_db_a.id, aws_subnet.launch_db_b.id]
+resource "aws_db_subnet_group" "db" {
+  name = "launch_system_db_subnet_group"
+  subnet_ids = [
+    aws_subnet.trusted_a.id,
+    aws_subnet.trusted_b.id,
+  ]
 }
 
-data "aws_secretsmanager_secret_version" "launch_database_password" {
+data "aws_secretsmanager_secret_version" "db" {
   secret_id = var.secrets_arn
 }
 
 # tfsec:ignore:aws-rds-enable-performance-insights-encryption
-resource "aws_db_instance" "launch" {
+resource "aws_db_instance" "main" {
   #ts:skip=AC_AWS_0053
   #ts:skip=AC_AWS_0454
   #ts:skip=AC_AWS_0058
@@ -17,21 +20,21 @@ resource "aws_db_instance" "launch" {
   engine_version              = "17"
   allow_major_version_upgrade = true
   multi_az                    = true
-  instance_class              = "db.t4g.micro"
+  instance_class              = var.db_instance_class
 
   deletion_protection = true #tfsec:ignore:AVD-AWS-0177
-  allocated_storage   = 50   # in gigabytes
+  allocated_storage   = var.db_allocated_storage
 
   backup_retention_period = 14 # in days
   backup_window           = "01:00-02:00"
   maintenance_window      = "sun:05:00-sun:06:00"
 
-  db_subnet_group_name = aws_db_subnet_group.launch_db_cluster_subnet_group.name
+  db_subnet_group_name = aws_db_subnet_group.db.name
 
-  identifier = "launch"
+  identifier = "launch-system"
   db_name    = var.db_name
   username   = var.db_username
-  password   = jsondecode(data.aws_secretsmanager_secret_version.launch_database_password.secret_string)["DB_PASS"]
+  password   = jsondecode(data.aws_secretsmanager_secret_version.db.secret_string)["DB_PASS"]
 
 
   publicly_accessible          = false
@@ -44,8 +47,13 @@ resource "aws_db_instance" "launch" {
 
   copy_tags_to_snapshot = true
 
-  tags = {
-    Name            = "launch-db"
-    obi_backup_plan = var.obi_backup_plan
+  lifecycle {
+    prevent_destroy = true
   }
+
+  tags = merge(var.tags, {
+    Name            = "launch_system_db"
+    obi_backup_plan = var.obi_backup_plan
+  })
+
 }

@@ -33,7 +33,7 @@ locals {
   entitycore_service_secrets_arn       = data.terraform_remote_state.common.outputs.entitycore_service_secrets_arn
   hpc_slurm_secrets_arn                = data.terraform_remote_state.common.outputs.hpc_slurm_secrets_arn
   notebook_service_secrets_arn         = data.terraform_remote_state.common.outputs.notebook_service_secrets_arn
-  launch_server_secrets_arn            = data.terraform_remote_state.common.outputs.launch_server_secrets_arn
+  launch_system_secrets_arn            = data.terraform_remote_state.common.outputs.launch_system_secrets_arn
   virtual_lab_manager_db_ro_secret_arn = data.terraform_remote_state.common.outputs.virtual_lab_manager_database_readonly_secret_arn
   accounting_db_ro_secret_arn          = data.terraform_remote_state.common.outputs.accounting_database_readonly_secret_arn
   teams_webhook_secrets_arn            = data.terraform_remote_state.common.outputs.teams_webhook_secrets_arn
@@ -641,6 +641,7 @@ module "auth_manager" {
 }
 
 module "obi_one" {
+  # TODO: remove after the deployment for deletion
   source     = "./obi_one"
   aws_region = local.aws_region
 }
@@ -780,32 +781,59 @@ module "virtual_lab_manager" {
 }
 
 module "launch_server" {
-  source = "./launch_server"
+  # TODO: remove after the deployment for deletion
+  source     = "./launch_server"
+  aws_region = local.aws_region
+}
+
+module "launch_system" {
+  source = "./launch_system"
+
+  count = var.is_staging ? 1 : 0
 
   aws_region                    = local.aws_region
   vpc_id                        = local.vpc_id
   private_alb_listener_arn      = local.private_alb_https_listener_arn
   internet_access_route_id      = local.route_table_private_subnets_id
+  vpc_cidr_block                = local.vpc_cidr_block
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
+  # allowed_source_ip_cidr_blocks = [local.vpc_cidr_block]
 
-  secrets_arn  = local.launch_server_secrets_arn
+  secrets_arn  = local.launch_system_secrets_arn
   cors_origins = local.core_web_app_origins
+
+  ec_node_type = "cache.t4g.micro" # for redis
+
+  db_instance_class    = "db.t4g.micro"
+  db_allocated_storage = 50
 
   db_name         = "launch"
   db_username     = "launch"
   obi_backup_plan = "obi_plan"
 
-  root_path    = "/api/launch-service"
+  api_image_url              = var.launch_system_api_image_url
+  orchestrator_image_url     = var.launch_system_orchestrator_image_url
+  default_executor_image_url = var.launch_system_default_executor_image_url
+
+  api_task_size          = var.launch_system_api_task_size
+  executor_task_size     = var.launch_system_executor_task_size
+  orchestrator_task_size = var.launch_system_orchestrator_task_size
+
+  orchestrator_num_workers = var.launch_system_orchestrator_num_workers
+  queues                   = ["high", "medium", "low"]
+
+  root_path    = "/api/launch-system"
   keycloak_url = "https://${local.primary_domain}/auth/realms/SBO/"
 
   token_lifetime_extension_interval = 0
 
-  launch_server_url = "https://${local.primary_domain}/api/launch-service"
-  entitycore_url    = "https://${local.primary_domain}/api/entitycore"
+  launch_system_api_url = "https://${local.primary_domain}/api/launch-system"
+  entitycore_url        = "https://${local.primary_domain}/api/entitycore"
 
   az_region          = "eastus"
   keycloak_client_id = "obi-entitysdk-auth"
 }
+
 
 
 module "dashboards" {
@@ -825,11 +853,11 @@ module "dashboards" {
       "ThumbnailGenerator"  = module.thumbnail_generation_api.private_lb_rule_suffix
       "VLabManager"         = module.virtual_lab_manager.private_arn_suffix
       "ObiOneV2"            = module.obi_one_v2.private_lb_rule_suffix
-      "LaunchServer"        = module.launch_server.private_lb_rule_suffix
     },
     var.is_staging ? {
       "CoreWebAppDev"     = module.core_webapp_dev[0].private_lb_rule_suffix
       "CoreWebAppPreview" = module.core_webapp_preview[0].private_lb_rule_suffix
+      "LaunchSystem"      = module.launch_system[0].private_lb_rule_suffix
     } : {}
   )
 }

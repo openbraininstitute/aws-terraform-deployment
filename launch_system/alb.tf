@@ -1,6 +1,6 @@
-resource "aws_lb_target_group" "launch_private_tg" {
+resource "aws_lb_target_group" "private" {
   #ts:skip=AC_AWS_0492
-  name        = "launch-private"
+  name        = "launch-system"
   port        = 8000
   protocol    = "HTTP"
   target_type = "ip"
@@ -23,7 +23,7 @@ resource "aws_lb_listener_rule" "launch_private_listener_rule" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.launch_private_tg.arn
+    target_group_arn = aws_lb_target_group.private.arn
   }
 
   condition {

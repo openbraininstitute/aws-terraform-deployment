@@ -1,7 +1,3 @@
-variable "aws_region" {
-  type = string
-}
-
 terraform {
   required_providers {
     aws = {
@@ -12,5 +8,8 @@ terraform {
 }
 
 provider "aws" {
+  default_tags {
+    tags = var.tags
+  }
   region = var.aws_region
 }

@@ -1,0 +1,237 @@
+resource "aws_cloudwatch_log_group" "orchestrator" {
+  # TODO check if the logs can be encrypted
+  name_prefix       = "launch_system_orchestrator"
+  skip_destroy      = false
+  retention_in_days = 14
+
+  kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
+
+  tags = merge(var.tags, { Name = "launch_system_orchestrator" })
+}
+
+resource "aws_ecs_cluster" "orchestrator" {
+  name = "launch_system_orchestrator"
+
+  tags = merge(var.tags, { Name = "launch_system_orchestrator" })
+
+
+  setting {
+    name  = "containerInsights"
+    value = "disabled" #tfsec:ignore:aws-ecs-enable-container-insight
+  }
+}
+
+# TODO make more strict
+resource "aws_security_group" "orchestrator" {
+  name_prefix = "launch_system_orchestrator"
+  vpc_id      = var.vpc_id
+  description = "Sec group for launch system orchestrator"
+
+  tags = merge(var.tags, { Name = "launch_system_orchestrator" })
+}
+
+resource "aws_vpc_security_group_egress_rule" "orchestrator_allow_outgoing_tcp" {
+  security_group_id = aws_security_group.orchestrator.id
+  # TODO limit to what is needed
+  ip_protocol = "tcp"
+  from_port   = 0
+  to_port     = 65535
+  cidr_ipv4   = "0.0.0.0/0"
+  description = "Allow all TCP"
+}
+
+resource "aws_vpc_security_group_egress_rule" "orchestrator_allow_outgoing_udp" {
+  security_group_id = aws_security_group.orchestrator.id
+  # TODO limit to what is needed
+  ip_protocol = "udp"
+  from_port   = 0
+  to_port     = 65535
+  cidr_ipv4   = "0.0.0.0/0"
+  description = "Allow all UDP"
+}
+
+resource "aws_ecs_task_definition" "orchestrator" {
+  family       = "launch_system_orchestrator_task_family"
+  network_mode = "awsvpc"
+
+  container_definitions = jsonencode([
+    {
+      name   = "launch_system_orchestrator"
+      family = "launch_system_orchestrator"
+
+      cpu    = var.orchestrator_task_size.cpu
+      memory = var.orchestrator_task_size.memory
+
+      networkMode = "awsvpc"
+
+      image = var.orchestrator_image_url
+
+      essential = true
+
+      healthcheck = {
+        command     = ["CMD-SHELL", "exit 0"] // TODO: add a proper health check.
+        interval    = 60
+        timeout     = 5
+        startPeriod = 30
+        retries     = 3
+      }
+
+      environment = [
+        {
+          name  = "LAUNCH_SYSTEM_API_URL"
+          value = var.launch_system_api_url
+        },
+        {
+          name  = "LAUNCH_SERVER_URL" # deprecated, use LAUNCH_SYSTEM_API_URL
+          value = var.launch_system_api_url
+        },
+        {
+          name  = "REDIS_HOST"
+          value = aws_elasticache_cluster.redis.cache_nodes[0].address
+        },
+        {
+          name  = "REDIS_PORT"
+          value = tostring(aws_elasticache_cluster.redis.port)
+        },
+        {
+          name  = "REDIS_URL" # deprecated, use REDIS_HOST and REDIS_PORT
+          value = "redis://${aws_elasticache_cluster.redis.cache_nodes[0].address}:${aws_elasticache_cluster.redis.port}/0"
+        },
+        {
+          name  = "QUEUES"
+          value = join(" ", var.queues)
+        },
+        {
+          name  = "NUM_WORKERS"
+          value = tostring(var.orchestrator_num_workers)
+        },
+      ]
+
+      secrets = [
+      ]
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = aws_cloudwatch_log_group.orchestrator.name
+          awslogs-region        = var.aws_region
+          awslogs-create-group  = "true"
+          awslogs-stream-prefix = "launch_system_orchestrator"
+        }
+      }
+    }
+  ])
+
+  cpu    = var.orchestrator_task_size.cpu
+  memory = var.orchestrator_task_size.memory
+
+  requires_compatibilities = ["FARGATE"]
+
+  execution_role_arn = aws_iam_role.orchestrator_execution_role.arn
+  task_role_arn      = aws_iam_role.orchestrator_task_role.arn
+
+  depends_on = [
+    aws_cloudwatch_log_group.orchestrator,
+  ]
+}
+
+resource "aws_ecs_service" "orchestrator" {
+  name            = "launch_system_orchestrator"
+  cluster         = aws_ecs_cluster.orchestrator.id
+  launch_type     = "FARGATE"
+  task_definition = aws_ecs_task_definition.orchestrator.arn
+
+  network_configuration {
+    security_groups = [aws_security_group.orchestrator.id]
+    subnets = [
+      aws_subnet.trusted_a.id,
+      aws_subnet.trusted_b.id,
+    ]
+    assign_public_ip = false
+  }
+
+  depends_on = [
+    aws_iam_role.api_execution_role,
+  ]
+
+  force_new_deployment = true
+  desired_count        = 1
+
+  propagate_tags = "SERVICE"
+}
+
+resource "aws_iam_role" "api_execution_role" {
+  name_prefix = "launch_system_api"
+
+  assume_role_policy = <<-EOT
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Action": "sts:AssumeRole",
+        "Principal": {
+          "Service": "ecs-tasks.amazonaws.com"
+        },
+        "Effect": "Allow",
+        "Sid": ""
+      }
+    ]
+  }
+  EOT
+}
+
+resource "aws_iam_role_policy_attachment" "api_execution_role" {
+  role       = aws_iam_role.api_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+resource "aws_iam_role" "api_task_role" {
+  name_prefix = "launch_system_api"
+
+  assume_role_policy = <<-EOT
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Action": "sts:AssumeRole",
+        "Principal": {
+          "Service": "ecs-tasks.amazonaws.com"
+        },
+        "Effect": "Allow",
+        "Sid": ""
+      }
+    ]
+  }
+  EOT
+}
+
+resource "aws_iam_policy" "ecs_task_logs_launch" {
+  name_prefix = "launch_system_api"
+  description = "Allows ECS tasks to create log streams and log groups in CloudWatch Logs"
+
+  policy = jsonencode({
+    Version = "2012-10-17" #tfsec:ignore:aws-iam-no-policy-wildcards
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:DescribeLogStreams",
+          "logs:PutLogEvents",
+        ]
+        Resource = "arn:aws:logs:*:*:*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "secrets" {
+  role       = aws_iam_role.api_execution_role.name
+  policy_arn = aws_iam_policy.secrets_access.arn
+}
+
+resource "aws_iam_role_policy_attachment" "execution_logs" {
+  role       = aws_iam_role.api_execution_role.name
+  policy_arn = aws_iam_policy.ecs_task_logs_launch.arn
+}
