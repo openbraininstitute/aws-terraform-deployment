@@ -54,4 +54,10 @@ resource "aws_db_instance" "main" {
   lifecycle {
     prevent_destroy = true
   }
+
+  tags = merge(var.tags, {
+    Name            = "launch_system_db"
+    obi_backup_plan = var.obi_backup_plan
+  })
+
 }
