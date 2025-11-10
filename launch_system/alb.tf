@@ -1,6 +1,6 @@
 resource "aws_lb_target_group" "private" {
   #ts:skip=AC_AWS_0492
-  name        = "launch-system"
+  name        = "launch_system"
   port        = 8000
   protocol    = "HTTP"
   target_type = "ip"

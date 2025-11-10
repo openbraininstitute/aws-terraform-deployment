@@ -41,7 +41,7 @@ resource "aws_db_instance" "main" {
   performance_insights_enabled = true
   storage_encrypted            = false #tfsec:ignore:aws-rds-encrypt-instance-storage-data
 
-  vpc_security_group_ids = [aws_security_group.acc_sg.id]
+  vpc_security_group_ids = [aws_security_group.main.id]
 
   iam_database_authentication_enabled = false
 
