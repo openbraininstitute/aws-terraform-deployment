@@ -28,7 +28,7 @@ resource "aws_elasticache_subnet_group" "redis" {
 
 # Create ElastiCache cluster in the default VPC
 resource "aws_elasticache_cluster" "redis" {
-  cluster_id           = "launch_system_redis_cluster"
+  cluster_id           = "launch-system-redis-cluster" # only alphanumeric characters and hyphens
   engine               = "redis"
   node_type            = var.ec_node_type
   num_cache_nodes      = 1

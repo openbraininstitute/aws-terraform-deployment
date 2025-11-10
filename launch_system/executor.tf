@@ -59,8 +59,8 @@ resource "aws_ecs_task_definition" "default_executor" {
       family = "launch_system_default_executor"
 
       # cpu and memory should be overridden by the orchestrator
-      cpu    = var.default_executor_task_size.cpu
-      memory = var.default_executor_task_size.memory
+      cpu    = var.executor_task_size.cpu
+      memory = var.executor_task_size.memory
 
       networkMode = "awsvpc"
 
@@ -89,8 +89,8 @@ resource "aws_ecs_task_definition" "default_executor" {
   ])
 
   # cpu and memory should be overridden by the orchestrator
-  cpu    = var.default_executor_task_size.cpu
-  memory = var.default_executor_task_size.memory
+  cpu    = var.executor_task_size.cpu
+  memory = var.executor_task_size.memory
 
   requires_compatibilities = ["FARGATE"]
 
