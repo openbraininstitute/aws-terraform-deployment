@@ -340,21 +340,6 @@ variable "neuroagent_image_tag" {
 
 ### launch-system ###
 
-variable "launch_system_api_image_url" {
-  description = "Image for the API"
-  type        = string
-}
-
-variable "launch_system_orchestrator_image_url" {
-  description = "Image for the orchestrator"
-  type        = string
-}
-
-variable "launch_system_default_executor_image_url" {
-  description = "Image for the default executor"
-  type        = string
-}
-
 variable "launch_system_api_task_size" {
   type = object({
     cpu    = any

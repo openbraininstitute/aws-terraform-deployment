@@ -126,7 +126,18 @@ auth_manager_svc_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/auth-
 keycloak_client_uuid       = "569228c5-674f-4f54-b9cb-8d179be66bda"
 keycloak_client_id         = "core-webapp-dev"
 
-launch_system_ecs_executor_task_size = {
-  cpu    = 2048
-  memory = 1536
+# launch-system configuration
+launch_system_api_task_size = {
+  cpu    = 512
+  memory = 1024
 }
+launch_system_orchestrator_task_size = {
+  cpu    = 512
+  memory = 1024
+}
+launch_system_executor_task_size = {
+  cpu    = 512
+  memory = 1024
+}
+
+launch_system_orchestrator_num_workers = 2

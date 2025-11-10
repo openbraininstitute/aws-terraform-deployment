@@ -104,3 +104,18 @@ core_webapp_s3_bucket_name = "core-webapp-static-assets-production"
 auth_manager_svc_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/auth-manager:2025.10.28.1"
 keycloak_client_uuid       = "50e91a7d-6dfe-4f69-b4c1-2faf9ce81d84"
 keycloak_client_id         = "authmanager-production"
+
+# launch-system configuration
+launch_system_api_task_size = {
+  cpu    = 512
+  memory = 1024
+}
+launch_system_orchestrator_task_size = {
+  cpu    = 512
+  memory = 1024
+}
+launch_system_executor_task_size = {
+  cpu    = 512
+  memory = 1024
+}
+launch_system_orchestrator_num_workers = 2
