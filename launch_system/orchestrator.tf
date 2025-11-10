@@ -205,7 +205,7 @@ resource "aws_iam_role" "orchestrator_task" {
   EOT
 }
 
-resource "aws_iam_policy" "ecs_task_logs_launch" {
+resource "aws_iam_policy" "orchestrator_logs_access" {
   name_prefix = "launch_system_orchestrator"
   description = "Allows ECS tasks to create log streams and log groups in CloudWatch Logs"
 
@@ -226,12 +226,12 @@ resource "aws_iam_policy" "ecs_task_logs_launch" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "secrets" {
+resource "aws_iam_role_policy_attachment" "orchestrator_secrets_access" {
   role       = aws_iam_role.orchestrator_execution.name
   policy_arn = aws_iam_policy.secrets_access.arn
 }
 
-resource "aws_iam_role_policy_attachment" "execution_logs" {
+resource "aws_iam_role_policy_attachment" "orchestrator_logs_access" {
   role       = aws_iam_role.orchestrator_execution.name
-  policy_arn = aws_iam_policy.ecs_task_logs_launch.arn
+  policy_arn = aws_iam_policy.orchestrator_logs_access.arn
 }

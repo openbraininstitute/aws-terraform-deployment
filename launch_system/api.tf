@@ -303,7 +303,7 @@ resource "aws_iam_role" "api_task" {
   EOT
 }
 
-resource "aws_iam_policy" "ecs_task_logs_launch" {
+resource "aws_iam_policy" "api_logs_access" {
   name_prefix = "launch_system_api"
   description = "Allows ECS tasks to create log streams and log groups in CloudWatch Logs"
 
@@ -324,12 +324,12 @@ resource "aws_iam_policy" "ecs_task_logs_launch" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "secrets" {
+resource "aws_iam_role_policy_attachment" "api_secrets_access" {
   role       = aws_iam_role.api_execution.name
   policy_arn = aws_iam_policy.secrets_access.arn
 }
 
-resource "aws_iam_role_policy_attachment" "execution_logs" {
+resource "aws_iam_role_policy_attachment" "api_logs_access" {
   role       = aws_iam_role.api_execution.name
-  policy_arn = aws_iam_policy.ecs_task_logs_launch.arn
+  policy_arn = aws_iam_policy.api_logs_access.arn
 }
