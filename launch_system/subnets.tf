@@ -5,7 +5,7 @@ resource "aws_subnet" "trusted_a" {
   tags              = merge(var.tags, { Name = "launch_system_db_a" })
 }
 
-resource "aws_subnet" "trusted_a" {
+resource "aws_subnet" "trusted_b" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}b"
   cidr_block        = "10.0.29.16/28"
