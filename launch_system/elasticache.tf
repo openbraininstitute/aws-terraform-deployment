@@ -19,8 +19,8 @@ resource "aws_security_group" "redis" {
 resource "aws_elasticache_subnet_group" "redis" {
   name = "launch_system_redis_subnet_group"
   subnet_ids = [
-    aws_subnet.trusted_a,
-    aws_subnet.trusted_b,
+    aws_subnet.trusted_a.id,
+    aws_subnet.trusted_b.id,
   ]
 
   tags = merge(var.tags, { Name = "launch_system_redis" })
