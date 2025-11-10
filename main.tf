@@ -903,3 +903,10 @@ module "ses_user_virtuallab" {
 
   user_name = "ses-smtp-user.obp.virtuallabs"
 }
+
+module "public_shared_storage" {
+  source     = "./shared_filesystems"
+  vpc_id     = local.vpc_id
+  subnet_ids = [module.launch_server.executor_subnet_id]
+  vpc_cidr   = local.vpc_cidr_block
+}
