@@ -25,17 +25,12 @@ resource "aws_db_instance" "main" {
   deletion_protection = true #tfsec:ignore:AVD-AWS-0177
   allocated_storage   = var.db_allocated_storage
 
-  backup_retention_period = 14 # in days
-  backup_window           = "01:00-02:00"
-  maintenance_window      = "sun:05:00-sun:06:00"
-
   db_subnet_group_name = aws_db_subnet_group.db.name
 
   identifier = "launch-system"
   db_name    = var.db_name
   username   = var.db_username
   password   = jsondecode(data.aws_secretsmanager_secret_version.db.secret_string)["DB_PASS"]
-
 
   publicly_accessible          = false
   performance_insights_enabled = true
