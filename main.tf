@@ -907,6 +907,6 @@ module "ses_user_virtuallab" {
 module "public_shared_storage" {
   source     = "./shared_filesystems"
   vpc_id     = local.vpc_id
-  subnet_ids = [module.launch_server.executor_subnet_id]
+  subnet_ids = module.launch_server.executor_subnet_ids
   vpc_cidr   = local.vpc_cidr_block
 }
