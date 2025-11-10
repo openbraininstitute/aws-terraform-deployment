@@ -219,8 +219,8 @@ resource "aws_ecs_task_definition" "api" {
 
   requires_compatibilities = ["FARGATE"]
 
-  execution_role_arn = aws_iam_role.api_execution_role.arn
-  task_role_arn      = aws_iam_role.api_task_role.arn
+  execution_role_arn = aws_iam_role.api_execution.arn
+  task_role_arn      = aws_iam_role.api_task.arn
 
   depends_on = [
     aws_cloudwatch_log_group.api,
@@ -249,7 +249,7 @@ resource "aws_ecs_service" "api" {
   }
 
   depends_on = [
-    aws_iam_role.api_execution_role,
+    aws_iam_role.api_execution,
   ]
 
   force_new_deployment = true
@@ -258,7 +258,7 @@ resource "aws_ecs_service" "api" {
   propagate_tags = "SERVICE"
 }
 
-resource "aws_iam_role" "api_execution_role" {
+resource "aws_iam_role" "api_execution" {
   name_prefix = "launch_system_api"
 
   assume_role_policy = <<-EOT
@@ -278,12 +278,12 @@ resource "aws_iam_role" "api_execution_role" {
   EOT
 }
 
-resource "aws_iam_role_policy_attachment" "api_execution_role" {
-  role       = aws_iam_role.api_execution_role.name
+resource "aws_iam_role_policy_attachment" "api_execution" {
+  role       = aws_iam_role.api_execution.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-resource "aws_iam_role" "api_task_role" {
+resource "aws_iam_role" "api_task" {
   name_prefix = "launch_system_api"
 
   assume_role_policy = <<-EOT
@@ -325,11 +325,11 @@ resource "aws_iam_policy" "ecs_task_logs_launch" {
 }
 
 resource "aws_iam_role_policy_attachment" "secrets" {
-  role       = aws_iam_role.api_execution_role.name
+  role       = aws_iam_role.api_execution.name
   policy_arn = aws_iam_policy.secrets_access.arn
 }
 
 resource "aws_iam_role_policy_attachment" "execution_logs" {
-  role       = aws_iam_role.api_execution_role.name
+  role       = aws_iam_role.api_execution.name
   policy_arn = aws_iam_policy.ecs_task_logs_launch.arn
 }

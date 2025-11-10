@@ -127,8 +127,8 @@ resource "aws_ecs_task_definition" "orchestrator" {
 
   requires_compatibilities = ["FARGATE"]
 
-  execution_role_arn = aws_iam_role.orchestrator_execution_role.arn
-  task_role_arn      = aws_iam_role.orchestrator_task_role.arn
+  execution_role_arn = aws_iam_role.orchestrator_execution.arn
+  task_role_arn      = aws_iam_role.orchestrator_task.arn
 
   depends_on = [
     aws_cloudwatch_log_group.orchestrator,
@@ -151,7 +151,7 @@ resource "aws_ecs_service" "orchestrator" {
   }
 
   depends_on = [
-    aws_iam_role.api_execution_role,
+    aws_iam_role.orchestrator_execution,
   ]
 
   force_new_deployment = true
@@ -160,8 +160,8 @@ resource "aws_ecs_service" "orchestrator" {
   propagate_tags = "SERVICE"
 }
 
-resource "aws_iam_role" "api_execution_role" {
-  name_prefix = "launch_system_api"
+resource "aws_iam_role" "orchestrator_execution" {
+  name_prefix = "launch_system_orchestrator"
 
   assume_role_policy = <<-EOT
   {
@@ -180,13 +180,13 @@ resource "aws_iam_role" "api_execution_role" {
   EOT
 }
 
-resource "aws_iam_role_policy_attachment" "api_execution_role" {
-  role       = aws_iam_role.api_execution_role.name
+resource "aws_iam_role_policy_attachment" "orchestrator_execution" {
+  role       = aws_iam_role.orchestrator_execution.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-resource "aws_iam_role" "api_task_role" {
-  name_prefix = "launch_system_api"
+resource "aws_iam_role" "orchestrator_task" {
+  name_prefix = "launch_system_orchestrator"
 
   assume_role_policy = <<-EOT
   {
@@ -206,7 +206,7 @@ resource "aws_iam_role" "api_task_role" {
 }
 
 resource "aws_iam_policy" "ecs_task_logs_launch" {
-  name_prefix = "launch_system_api"
+  name_prefix = "launch_system_orchestrator"
   description = "Allows ECS tasks to create log streams and log groups in CloudWatch Logs"
 
   policy = jsonencode({
@@ -227,11 +227,11 @@ resource "aws_iam_policy" "ecs_task_logs_launch" {
 }
 
 resource "aws_iam_role_policy_attachment" "secrets" {
-  role       = aws_iam_role.api_execution_role.name
+  role       = aws_iam_role.orchestrator_execution.name
   policy_arn = aws_iam_policy.secrets_access.arn
 }
 
 resource "aws_iam_role_policy_attachment" "execution_logs" {
-  role       = aws_iam_role.api_execution_role.name
+  role       = aws_iam_role.orchestrator_execution.name
   policy_arn = aws_iam_policy.ecs_task_logs_launch.arn
 }
