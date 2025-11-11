@@ -17,7 +17,7 @@ resource "aws_security_group" "redis" {
 
 # Create ElastiCache subnet group with private subnets
 resource "aws_elasticache_subnet_group" "redis" {
-  name = "launch_system_redis_subnet_group"
+  name = "launch-system-redis-subnet-group" # only alphanumeric characters and hyphens
   subnet_ids = [
     aws_subnet.trusted_a.id,
     aws_subnet.trusted_b.id,
