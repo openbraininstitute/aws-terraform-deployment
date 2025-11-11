@@ -99,7 +99,7 @@ resource "aws_ecs_task_definition" "orchestrator" {
         },
         {
           name  = "WORKER_AWS_ECS_TASK_SUBNETS"
-          value = tostring([aws_subnet.untrusted_a.id, aws_subnet.untrusted_b.id])
+          value = jsonencode([aws_subnet.untrusted_a.id, aws_subnet.untrusted_b.id])
         },
         {
           name  = "REDIS_HOST"
