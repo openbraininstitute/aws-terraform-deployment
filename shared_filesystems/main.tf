@@ -29,10 +29,32 @@ resource "aws_security_group" "public_launch_efs" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "public_launch_nfs_access" {
-  security_group_id = aws_security_group.efs_sg.id
+  security_group_id = aws_security_group.public_launch_efs.id
   description       = "Allow NFS traffic from VPC"
   from_port         = 2049
   to_port           = 2049
   ip_protocol       = "tcp"
   cidr_ipv4         = var.vpc_cidr
+}
+
+resource "aws_efs_access_point" "public_launch_readonly" {
+  file_system_id = aws_efs_file_system.public_launch_data.id
+
+  root_directory {
+    path = "/"
+    creation_info {
+      owner_gid   = 1000
+      owner_uid   = 1000
+      permissions = "555"
+    }
+  }
+
+  posix_user {
+    gid = 1000
+    uid = 1000
+  }
+
+  tags = {
+    Name = "public-launch-readonly"
+  }
 }
