@@ -78,12 +78,28 @@ resource "aws_ecs_task_definition" "orchestrator" {
 
       environment = [
         {
-          name  = "LAUNCH_SYSTEM_API_URL"
+          name  = "WORKER_API_URL"
           value = var.launch_system_api_url
         },
         {
-          name  = "LAUNCH_SERVER_URL" # deprecated, use LAUNCH_SYSTEM_API_URL
-          value = var.launch_system_api_url
+          name  = "WORKER_AWS_REGION"
+          value = var.aws_region
+        },
+        {
+          name  = "WORKER_AWS_ACCOUNT_ID"
+          value = ""
+        },
+        {
+          name  = "WORKER_AWS_ECS_CLUSTER_NAME"
+          value = aws_ecs_cluster.executor.name
+        },
+        {
+          name  = "WORKER_AWS_ECS_TASK_FAMILY"
+          value = aws_ecs_task_definition.default_executor.family
+        },
+        {
+          name  = "WORKER_AWS_ECS_TASK_SUBNETS"
+          value = tostring([aws_subnet.untrusted_a.id, aws_subnet.untrusted_b.id])
         },
         {
           name  = "REDIS_HOST"

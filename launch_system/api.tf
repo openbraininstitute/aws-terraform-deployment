@@ -148,8 +148,28 @@ resource "aws_ecs_task_definition" "api" {
           value = var.launch_system_api_url
         },
         {
-          name  = "LAUNCH_SERVER_URL" # for backward compatibility
+          name  = "LAUNCH_SERVER_URL" # deprecated, use LAUNCH_SYSTEM_API_URL
           value = var.launch_system_api_url
+        },
+        {
+          name  = "ACCOUNTING_URL"
+          value = var.accounting_url
+        },
+        {
+          name  = "AUTH_MANAGER_URL"
+          value = var.auth_manager_url
+        },
+        {
+          name  = "REDIS_HOST"
+          value = aws_elasticache_cluster.redis.cache_nodes[0].address
+        },
+        {
+          name  = "REDIS_PORT"
+          value = tostring(aws_elasticache_cluster.redis.port)
+        },
+        {
+          name  = "REDIS_URL" # deprecated, use REDIS_HOST and REDIS_PORT
+          value = "redis://${aws_elasticache_cluster.redis.cache_nodes[0].address}:${aws_elasticache_cluster.redis.port}/0"
         },
         {
           name  = "KEYCLOAK_CLIENT_ID"

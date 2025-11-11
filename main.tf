@@ -829,6 +829,8 @@ module "launch_system" {
 
   launch_system_api_url = "https://${local.primary_domain}/api/launch-system"
   entitycore_url        = "https://${local.primary_domain}/api/entitycore"
+  accounting_url        = "https://${local.primary_domain}/api/accounting"
+  auth_manager_url      = "https://${local.primary_domain}/api/auth-manager"
 
   az_region          = "eastus"
   keycloak_client_id = "obi-entitysdk-auth"

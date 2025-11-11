@@ -42,13 +42,16 @@ resource "aws_db_instance" "main" {
 
   copy_tags_to_snapshot = true
 
-  lifecycle {
-    prevent_destroy = true
-  }
+  backup_retention_period = 0 # in days
+  backup_window           = "01:00-02:00"
+  maintenance_window      = "sun:05:00-sun:06:00"
 
   tags = merge(var.tags, {
     Name            = "launch_system_db"
     obi_backup_plan = var.obi_backup_plan
   })
 
+  lifecycle {
+    prevent_destroy = true
+  }
 }

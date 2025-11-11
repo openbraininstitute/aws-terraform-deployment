@@ -121,6 +121,16 @@ variable "entitycore_url" {
   type        = string
 }
 
+variable "accounting_url" {
+  description = "URL of the accounting service"
+  type        = string
+}
+
+variable "auth_manager_url" {
+  description = "URL of the auth-manager service"
+  type        = string
+}
+
 variable "launch_system_api_url" {
   description = "URL of the launch system API"
   type        = string
