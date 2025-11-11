@@ -793,6 +793,7 @@ module "launch_system" {
 
   aws_region                    = local.aws_region
   vpc_id                        = local.vpc_id
+  account_id                    = local.account_id
   private_alb_listener_arn      = local.private_alb_https_listener_arn
   internet_access_route_id      = local.route_table_private_subnets_id
   vpc_cidr_block                = local.vpc_cidr_block

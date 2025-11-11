@@ -87,7 +87,7 @@ resource "aws_ecs_task_definition" "orchestrator" {
         },
         {
           name  = "WORKER_AWS_ACCOUNT_ID"
-          value = ""
+          value = var.account_id
         },
         {
           name  = "WORKER_AWS_ECS_CLUSTER_NAME"
