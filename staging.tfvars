@@ -24,8 +24,8 @@ notebook_service_accounting_enabled       = true
 
 neuroagent_image_tag = "neuroagent-v0.11.4"
 
-small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.11.05.1"
-small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.11.05.1"
+small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.11.11.2"
+small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.11.11.2"
 small_scale_simulator_api_task_size = {
   cpu    = 256
   memory = 512
@@ -110,9 +110,9 @@ entitycore_svc_aws_s3_internal_region    = "us-east-1"
 entitycore_svc_aws_s3_open_bucket        = "openbluebrain"
 entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["*"]
-entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.11.0"
+entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.11.1"
 
-obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2025.11.0"
+obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2025.11.1"
 obi_one_v2_ec2_instance_type = "t3.small" # vCPUs: 2, Memory: 2 GiB
 obi_one_v2_ecs_task_size = {
   cpu    = 2048
