@@ -156,6 +156,14 @@ module "notebookservice_cloudwatch_error_log_entries_to_sns" {
   region            = local.aws_region
 }
 
+module "debug_notebookservice_cloudwatch_error_log_sns_topic" {
+  source = "./sqs_debug_queue"
+
+  sns_topic_arn             = module.notebookservice_cloudwatch_error_log_entries_to_sns.sns_topic_arn
+  unique_short_name         = "notebook_service"
+  message_retention_seconds = 172800 # 2 days
+}
+
 module "notebookservice_error_log_sns_entries_to_teams" {
   source = "./sns_entries_to_teams"
 
@@ -176,6 +184,14 @@ module "entitycore_cloudwatch_error_log_entries_to_sns" {
   filter_pattern    = "{ $.level = \"ERROR\" || $.level = \"WARNING\" }"
 }
 
+module "debug_entitycore_cloudwatch_error_log_sns_topic" {
+  source = "./sqs_debug_queue"
+
+  sns_topic_arn             = module.entitycore_cloudwatch_error_log_entries_to_sns.sns_topic_arn
+  unique_short_name         = "entitycore"
+  message_retention_seconds = 172800 # 2 days
+}
+
 module "entitycore_error_log_sns_entries_to_teams" {
   source = "./sns_entries_to_teams"
 
@@ -194,6 +210,14 @@ module "accounting_cloudwatch_error_log_entries_to_sns" {
   unique_short_name = "accounting"
   region            = local.aws_region
   filter_pattern    = "{ $.level = \"ERROR\" }"
+}
+
+module "debug_accounting_cloudwatch_error_log_sns_topic" {
+  source = "./sqs_debug_queue"
+
+  sns_topic_arn             = module.accounting_cloudwatch_error_log_entries_to_sns.sns_topic_arn
+  unique_short_name         = "accounting"
+  message_retention_seconds = 172800 # 2 days
 }
 
 module "accounting_error_log_sns_entries_to_teams" {
