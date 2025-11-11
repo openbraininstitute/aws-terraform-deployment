@@ -60,4 +60,7 @@ resource "aws_db_instance" "main" {
     obi_backup_plan = var.obi_backup_plan
   })
 
+  lifecycle {
+    prevent_destroy = true
+  }
 }
