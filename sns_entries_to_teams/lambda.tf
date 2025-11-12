@@ -19,8 +19,10 @@ resource "aws_lambda_function" "function" {
 
   environment {
     variables = {
-      TEAMS_WEBHOOK_SECRET_NAME = var.webhook_secret_arn
-      TEAMS_WEBHOOK_SECRET_KEY  = var.webhook_secret_key
+      TEAMS_WEBHOOK_SECRET_NAME            = var.webhook_secret_arn
+      TEAMS_WEBHOOK_SECRET_KEY             = var.webhook_secret_key
+      TEAMS_WEBHOOK_SECRET_KEY_UNIMPORTANT = "${var.webhook_secret_key}_unimportant"
+      UNIQUE_SHORT_NAME                    = var.unique_short_name
     }
   }
   architectures = ["arm64"] # should be cheaper
