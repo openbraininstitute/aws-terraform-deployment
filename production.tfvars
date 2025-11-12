@@ -7,7 +7,7 @@ ml_neuroagent_bucket_name                 = "ml-neuroagent-production"
 nexus_obp_bucket_name                     = "nexus-obp-production"
 nexus_ship_bucket_name                    = "nexus-ship-production"
 nexus_openscience_bucket_name             = "nexus-openscience-production"
-core_web_app_docker_image_url             = "public.ecr.aws/openbraininstitute/core-web-app:2025.11.12.1"
+core_web_app_docker_image_url             = "public.ecr.aws/openbraininstitute/core-web-app:2025.11.12.2"
 virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:2025.11.05.1"
 thumbnail_generation_api_docker_image_url = "public.ecr.aws/openbraininstitute/thumbnail-generation-api:2025.10.27.1"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.9.0"
@@ -20,7 +20,7 @@ notebook_service_bucket_name              = "obi-notebook-service-statistics-pro
 notebook_service_k8s_thread_enabled       = true
 notebook_service_accounting_enabled       = true
 
-neuroagent_image_tag = "neuroagent-v0.11.4"
+neuroagent_image_tag = "neuroagent-v0.11.4-hotfix"
 
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.11.12.1"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.11.12.1"
