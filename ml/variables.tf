@@ -47,8 +47,8 @@ variable "generic_private_alb_security_group_id" {
   type        = string
 }
 
-variable "agent_image_tag" {
-  description = "Url of the ECR imageof the agent (format repo:tag)"
+variable "neuroagent_docker_image_url" {
+  description = "URL of the ECR image of the neuroagent"
   type        = string
 }
 
