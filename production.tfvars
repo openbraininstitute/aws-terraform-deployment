@@ -34,7 +34,7 @@ small_scale_simulator_daemon_workers = {
       cpu    = 4096
       memory = 8192
     }
-    num_workers_per_task = 2
+    num_workers_per_task = 4
     queues               = ["high", "medium"]
     num_worker_tasks     = 1
     autoscaler = {
@@ -42,7 +42,7 @@ small_scale_simulator_daemon_workers = {
       max_num_worker_tasks = 10
     }
     capacity_provider_strategy = [
-      { capacity_provider = "FARGATE_SPOT", weight = 100 }
+      { capacity_provider = "FARGATE", weight = 100 }
     ]
   }
   large = {
@@ -51,18 +51,36 @@ small_scale_simulator_daemon_workers = {
       memory = 32768
     }
     num_workers_per_task = 12
-    queues               = ["high", "medium", "low"]
+    queues               = ["medium", "low"]
     num_worker_tasks     = 1
-    autoscaler = {
-      enabled              = true
-      max_num_worker_tasks = 10
-    }
     capacity_provider_strategy = [
       { capacity_provider = "FARGATE", weight = 100 },
     ]
   }
 }
-small_scale_simulator_batch_workers = {}
+
+small_scale_simulator_batch_workers = {
+  circuit_sim = {
+    task_size = {
+      cpu    = 8192
+      memory = 16384
+    }
+    num_workers_per_task = 4
+    queues               = ["low"]
+    max_worker_tasks     = 4
+    capacity_provider    = "FARGATE_SPOT"
+  }
+  mesh_skeletonization = {
+    task_size = {
+      cpu    = 16384
+      memory = 32768
+    }
+    num_workers_per_task = 1
+    queues               = ["mesh_skeletonization"]
+    max_worker_tasks     = 8
+    capacity_provider    = "FARGATE"
+  }
+}
 
 virtual_lab_manager_task_size = {
   cpu    = 1024
