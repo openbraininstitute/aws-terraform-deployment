@@ -250,10 +250,10 @@ module "ml" {
   vpc_cidr_block                 = local.vpc_cidr_block
   route_table_private_subnets_id = local.route_table_private_subnets_id
 
-  agent_image_tag = var.neuroagent_image_tag
+  neuroagent_docker_image_url = var.neuroagent_docker_image_url
+  neuroagent_bucket_name      = var.ml_neuroagent_bucket_name
 
-  neuroagent_bucket_name = var.ml_neuroagent_bucket_name
-  primary_domain         = local.primary_domain
+  primary_domain = local.primary_domain
 
   # NEW PRIVATE ALB
   generic_private_alb_listener_arn      = local.private_alb_https_listener_arn

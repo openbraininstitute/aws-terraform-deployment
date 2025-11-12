@@ -59,6 +59,13 @@ variable "core_web_app_preview_docker_image_url" {
   sensitive   = false
 }
 
+variable "neuroagent_docker_image_url" {
+  default     = null
+  type        = string
+  description = "docker image for neuroagent"
+  sensitive   = false
+}
+
 variable "core_webapp_s3_bucket_name" {
   type        = string
   description = "S3 bucket name for core webapp main assets"
@@ -332,10 +339,6 @@ variable "keycloak_client_uuid" {
 variable "keycloak_client_id" {
   type        = string
   description = "ID of the Keycloak client"
-}
-
-variable "neuroagent_image_tag" {
-  type = string
 }
 
 # JupyterHub on EKS

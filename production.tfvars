@@ -21,7 +21,7 @@ notebook_service_k8s_thread_enabled       = true
 notebook_service_accounting_enabled       = true
 jupyterhub_eks_shared_home_dirs_efs_id    = "fs-0cbe348ff3a9a55a1"
 
-neuroagent_image_tag = "neuroagent-v0.11.4-hotfix"
+neuroagent_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-v0.11.4-hotfix"
 
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.11.12.1"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.11.12.1"

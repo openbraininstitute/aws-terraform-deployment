@@ -54,7 +54,7 @@ module "ecs_service_agent" {
       networkMode              = "awsvpc"
       family                   = "ml_agent"
       essential                = true
-      image                    = "${module.ml_ecr.repository_url}:${var.agent_image_tag}"
+      image                    = var.neuroagent_docker_image_url
       name                     = "ml_agent"
       readonly_root_filesystem = false
       port_mappings = [
