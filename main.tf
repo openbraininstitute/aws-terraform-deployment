@@ -816,6 +816,19 @@ module "launch_server" {
   aws_region = local.aws_region
 }
 
+module "public_data_efs" {
+  source = "./public_data_efs"
+
+  count = var.is_staging ? 1 : 0
+
+  vpc_id                      = local.vpc_id
+  vpc_cidr_block              = local.vpc_cidr_block
+  access_point_subnet_ids     = module.launch_system[0].executor_network_ids
+  account_id                  = local.account_id
+  aws_region                  = local.aws_region
+  entitycore_open_data_bucket = var.entitycore_svc_aws_s3_open_bucket
+}
+
 module "launch_system" {
   source = "./launch_system"
 
@@ -867,6 +880,10 @@ module "launch_system" {
 
   az_region          = "eastus"
   keycloak_client_id = "obi-entitysdk-auth"
+
+  public_launch_data_efs_id            = module.public_data_efs[0].public_launch_data_efs_id
+  internal_public_data_access_point_id = module.public_data_efs[0].internal_public_data_access_point_id
+  open_public_data_access_point_id     = module.public_data_efs[0].open_public_data_access_point_id
 }
 
 
@@ -902,11 +919,4 @@ module "ses_user_virtuallab" {
   source = "./ses_user"
 
   user_name = "ses-smtp-user.obp.virtuallabs"
-}
-
-module "public_shared_storage" {
-  source     = "./shared_filesystems"
-  vpc_id     = local.vpc_id
-  subnet_ids = module.launch_server.executor_subnet_ids
-  vpc_cidr   = local.vpc_cidr_block
 }
