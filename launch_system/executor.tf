@@ -69,6 +69,17 @@ resource "aws_ecs_task_definition" "default_executor" {
 
       essential = true
 
+      mountPoints = [
+        {
+          containerPath = "/data/aws_s3_internal/public",
+          sourceVolume  = "public-internal-data"
+        },
+        {
+          containerPath = "/data/aws_s3_open",
+          sourceVolume  = "public-open-data"
+        }
+      ]
+
       healthcheck = {
         command     = ["CMD-SHELL", "exit 0"] // TODO: add a proper health check once there is something to check the health of.
         interval    = 60
