@@ -21,6 +21,7 @@ notebook_service_cors_allowed_origins     = "[\"https://dev.openbraininstitute.o
 notebook_service_bucket_name              = "obi-notebook-service-statistics-staging"
 notebook_service_k8s_thread_enabled       = true
 notebook_service_accounting_enabled       = true
+jupyterhub_eks_shared_home_dirs_efs_id    = "fs-05d5f395f0f265f91"
 
 neuroagent_image_tag = "neuroagent-v0.11.4-hotfix"
 
