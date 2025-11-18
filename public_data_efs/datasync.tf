@@ -84,7 +84,8 @@ resource "aws_datasync_task" "internal_s3_to_efs" {
   }
 
   schedule {
-    schedule_expression = "cron(0 0 ? * SUN *)"
+    # minute | hour | day of month | month | day of week | year
+    schedule_expression = "cron(0 0 * * * *)"
   }
 }
 
