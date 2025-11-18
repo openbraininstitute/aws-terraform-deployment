@@ -233,6 +233,10 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
           name  = "WELCOME_BONUS_CREDITS"
           value = "100"
         },
+        {
+          name  = "MAX_PROJECTS_NUMBER"
+          value = "40"
+        },
 
       ]
       secrets = [
