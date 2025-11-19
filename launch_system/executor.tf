@@ -76,6 +76,13 @@ resource "aws_ecs_task_definition" "default_executor" {
         retries     = 3
       }
 
+      environment = [
+        {
+          name  = "DEPLOYMENT"
+          value = var.deployment_env
+        },
+      ]
+
       logConfiguration = {
         logDriver = "awslogs"
         options = {

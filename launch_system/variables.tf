@@ -26,6 +26,11 @@ variable "private_alb_listener_arn" {
   type = string
 }
 
+variable "deployment_env" {
+  type        = string
+  description = "The deployment environment, values: 'staging', 'production'"
+}
+
 variable "root_path" {
   description = "Base path for the API"
   type        = string

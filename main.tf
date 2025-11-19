@@ -827,6 +827,8 @@ module "launch_system" {
   secrets_arn  = local.launch_system_secrets_arn
   cors_origins = local.core_web_app_origins
 
+  deployment_env = var.deployment_env
+
   ec_node_type = "cache.t4g.micro" # for redis
 
   db_instance_class    = "db.t4g.micro"
