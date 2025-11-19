@@ -84,8 +84,9 @@ resource "aws_datasync_task" "internal_s3_to_efs" {
   }
 
   schedule {
+    # apparently you can't have `*` in both day-of-month and day-of-week - one needs to be a ? instead
     # minute | hour | day of month | month | day of week | year
-    schedule_expression = "cron(0 0 * * * *)"
+    schedule_expression = "cron(0 0 ? * * *)"
   }
 }
 
