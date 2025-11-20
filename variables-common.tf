@@ -338,6 +338,13 @@ variable "neuroagent_image_tag" {
   type = string
 }
 
+# JupyterHub on EKS
+
+variable "jupyterhub_eks_shared_home_dirs_efs_id" {
+  type        = string
+  description = "ID of the EFS filesystem used for the homedirs in JupyterHub in EKS"
+}
+
 ### launch-system ###
 
 variable "launch_system_api_task_size" {

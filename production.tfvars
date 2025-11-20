@@ -7,23 +7,24 @@ ml_neuroagent_bucket_name                 = "ml-neuroagent-production"
 nexus_obp_bucket_name                     = "nexus-obp-production"
 nexus_ship_bucket_name                    = "nexus-ship-production"
 nexus_openscience_bucket_name             = "nexus-openscience-production"
-core_web_app_docker_image_url             = "public.ecr.aws/openbraininstitute/core-web-app:2025.10.28.1"
-virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:2025.10.28.1"
+core_web_app_docker_image_url             = "public.ecr.aws/openbraininstitute/core-web-app:2025.11.18.1"
+virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:2025.11.05.1"
 thumbnail_generation_api_docker_image_url = "public.ecr.aws/openbraininstitute/thumbnail-generation-api:2025.10.27.1"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.9.0"
-accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2025.10.1"
+accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2025.10.3"
 jupyterhub_ec2_type                       = "c7i.2xlarge"
-notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:2025.10.28-1"
+notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:2025.11.04-2"
 notebook_hub_on_eks_full_url              = "none"
 notebook_service_cors_allowed_origins     = "[\"https://www.openbraininstitute.org\"]"
 notebook_service_bucket_name              = "obi-notebook-service-statistics-prod"
-notebook_service_k8s_thread_enabled       = false
-notebook_service_accounting_enabled       = false
+notebook_service_k8s_thread_enabled       = true
+notebook_service_accounting_enabled       = true
+jupyterhub_eks_shared_home_dirs_efs_id    = "fs-0cbe348ff3a9a55a1"
 
-neuroagent_image_tag = "neuroagent-v0.11.3"
+neuroagent_image_tag = "neuroagent-v0.11.4-hotfix"
 
-small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.10.28.1"
-small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.10.28.1"
+small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.11.12.1"
+small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.11.12.1"
 small_scale_simulator_api_task_size = {
   cpu    = 1024
   memory = 2048
@@ -34,7 +35,7 @@ small_scale_simulator_daemon_workers = {
       cpu    = 4096
       memory = 8192
     }
-    num_workers_per_task = 2
+    num_workers_per_task = 4
     queues               = ["high", "medium"]
     num_worker_tasks     = 1
     autoscaler = {
@@ -42,7 +43,7 @@ small_scale_simulator_daemon_workers = {
       max_num_worker_tasks = 10
     }
     capacity_provider_strategy = [
-      { capacity_provider = "FARGATE_SPOT", weight = 100 }
+      { capacity_provider = "FARGATE", weight = 100 }
     ]
   }
   large = {
@@ -51,18 +52,36 @@ small_scale_simulator_daemon_workers = {
       memory = 32768
     }
     num_workers_per_task = 12
-    queues               = ["high", "medium", "low"]
+    queues               = ["medium", "low"]
     num_worker_tasks     = 1
-    autoscaler = {
-      enabled              = true
-      max_num_worker_tasks = 10
-    }
     capacity_provider_strategy = [
       { capacity_provider = "FARGATE", weight = 100 },
     ]
   }
 }
-small_scale_simulator_batch_workers = {}
+
+small_scale_simulator_batch_workers = {
+  circuit_sim = {
+    task_size = {
+      cpu    = 8192
+      memory = 16384
+    }
+    num_workers_per_task = 4
+    queues               = ["low"]
+    max_worker_tasks     = 4
+    capacity_provider    = "FARGATE_SPOT"
+  }
+  mesh_skeletonization = {
+    task_size = {
+      cpu    = 16384
+      memory = 32768
+    }
+    num_workers_per_task = 1
+    queues               = ["mesh_skeletonization"]
+    max_worker_tasks     = 8
+    capacity_provider    = "FARGATE"
+  }
+}
 
 virtual_lab_manager_task_size = {
   cpu    = 1024
@@ -89,9 +108,9 @@ entitycore_svc_aws_s3_internal_region    = "us-east-1"
 entitycore_svc_aws_s3_open_bucket        = "openbluebrain"
 entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["https://www.openbraininstitute.org"]
-entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.10.8"
+entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.11.1"
 
-obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2025.10.6"
+obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2025.11.2"
 obi_one_v2_ec2_instance_type = "t3.large" # vCPUs: 2, Memory: 8 GiB
 obi_one_v2_ecs_task_size = {
   cpu    = 2048
@@ -101,7 +120,7 @@ obi_one_v2_ecs_task_size = {
 
 # CoreWebApp s3 and CloudFront configuration
 core_webapp_s3_bucket_name = "core-webapp-static-assets-production"
-auth_manager_svc_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/auth-manager:2025.10.28.1"
+auth_manager_svc_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/auth-manager:2025.11.06.1"
 keycloak_client_uuid       = "50e91a7d-6dfe-4f69-b4c1-2faf9ce81d84"
 keycloak_client_id         = "authmanager-production"
 

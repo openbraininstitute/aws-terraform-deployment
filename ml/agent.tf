@@ -96,7 +96,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_LLM__WHITELISTED_MODEL_IDS_REGEX"
-          value = "openai/gpt-5-mini"
+          value = "openai/gpt-5.*"
         },
         {
           name  = "NEUROAGENT_MISC__APPLICATION_PREFIX"
@@ -159,7 +159,7 @@ module "ecs_service_agent" {
           valueFrom = "${var.ml_secrets_arn}:OPENROUTER_API_KEY::"
         },
         {
-          name      = "NEUROAGENT_MCP__SECRETS__EXA_API_KEY"
+          name      = "NEUROAGENT_TOOLS__EXA_API_KEY"
           valueFrom = "${var.ml_secrets_arn}:EXA_API_KEY::"
         },
       ]

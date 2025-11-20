@@ -165,6 +165,14 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
         {
           name      = "SENTRY_DSN"
           valueFrom = "${var.secrets_arn}:SENTRY_DSN::"
+        },
+        {
+          name      = "GITHUB_FEEDBACK_PROJECT_ID"
+          valueFrom = "${var.secrets_arn}:GITHUB_FEEDBACK_PROJECT_ID::"
+        },
+        {
+          name      = "GITHUB_FEEDBACK_TOKEN"
+          valueFrom = "${var.secrets_arn}:GITHUB_FEEDBACK_TOKEN::"
         }
       ]
       logConfiguration = {
