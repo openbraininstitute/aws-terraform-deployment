@@ -1,12 +1,12 @@
-resource "aws_security_group" "acc_sg" {
+resource "aws_security_group" "main" {
   vpc_id = var.vpc_id
 
-  name        = "main_launch_sg"
-  description = "main security group for launch resources"
+  name        = "launch_system_main"
+  description = "Main security group for launch system"
 }
 
 resource "aws_vpc_security_group_ingress_rule" "main_subnet_ingress" {
-  security_group_id = aws_security_group.acc_sg.id
+  security_group_id = aws_security_group.main.id
   description       = "Allow everything incoming from the VPC"
   ip_protocol       = -1
   cidr_ipv4         = data.aws_vpc.main.cidr_block
@@ -15,7 +15,7 @@ resource "aws_vpc_security_group_ingress_rule" "main_subnet_ingress" {
 }
 
 resource "aws_vpc_security_group_egress_rule" "main_subnet_egress" {
-  security_group_id = aws_security_group.acc_sg.id
+  security_group_id = aws_security_group.main.id
   description       = "Allow everything outgoing"
   ip_protocol       = -1
   cidr_ipv4         = "0.0.0.0/0"

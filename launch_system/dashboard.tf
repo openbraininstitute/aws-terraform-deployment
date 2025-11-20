@@ -1,10 +1,10 @@
 locals {
-  clustername = "launch_ecs_cluster"
-  servicename = "launch_ecs_service"
+  clustername = "launch_system_api"
+  servicename = "launch_system_api"
 }
 
 resource "aws_cloudwatch_dashboard" "main" {
-  dashboard_name = "launch"
+  dashboard_name = "launch_system"
 
   dashboard_body = jsonencode({
     widgets = [
@@ -17,12 +17,16 @@ resource "aws_cloudwatch_dashboard" "main" {
 
         properties = {
           metrics = [
-            ["AWS/ECS",
+            [
+              "AWS/ECS",
               "CPUUtilization",
               "ClusterName", local.clustername,
               "ServiceName", local.servicename,
-              { "stat" : "Average",
-            "region" : var.aws_region }]
+              {
+                "stat" : "Average",
+                "region" : var.aws_region
+              }
+            ]
           ]
           view    = "timeSeries"
           stacked = false
@@ -40,11 +44,16 @@ resource "aws_cloudwatch_dashboard" "main" {
 
         properties = {
           metrics = [
-            ["AWS/ECS",
+            [
+              "AWS/ECS",
               "MemoryUtilization",
               "ClusterName", local.clustername,
               "ServiceName", local.servicename,
-            { "stat" : "Average", "region" : var.aws_region }]
+              {
+                "stat" : "Average",
+                "region" : var.aws_region
+              }
+            ]
           ]
           view    = "timeSeries"
           stacked = false

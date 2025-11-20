@@ -126,3 +126,19 @@ core_webapp_s3_bucket_name = "core-webapp-static-assets-staging"
 auth_manager_svc_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/auth-manager:2025.11.14.1"
 keycloak_client_uuid       = "edad02be-fd16-44b4-9864-1513d47b54b4"
 keycloak_client_id         = "core-webapp-main"
+
+# launch-system configuration
+launch_system_api_task_size = {
+  cpu    = 512
+  memory = 1024
+}
+launch_system_orchestrator_task_size = {
+  cpu    = 512
+  memory = 1024
+}
+launch_system_executor_task_size = {
+  cpu    = 512
+  memory = 1024
+}
+
+launch_system_orchestrator_num_workers = 2

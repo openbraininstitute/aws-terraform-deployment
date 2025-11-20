@@ -1,3 +1,7 @@
+variable "aws_region" {
+  type = string
+}
+
 terraform {
   required_providers {
     aws = {
@@ -8,10 +12,5 @@ terraform {
 }
 
 provider "aws" {
-  default_tags {
-    tags = {
-      SBO_Billing = "launch"
-    }
-  }
   region = var.aws_region
 }

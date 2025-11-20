@@ -344,3 +344,34 @@ variable "jupyterhub_eks_shared_home_dirs_efs_id" {
   type        = string
   description = "ID of the EFS filesystem used for the homedirs in JupyterHub in EKS"
 }
+
+### launch-system ###
+
+variable "launch_system_api_task_size" {
+  type = object({
+    cpu    = any
+    memory = any
+  })
+  description = "CPU and memory limit for launch-system API task (number or string format)"
+}
+
+variable "launch_system_orchestrator_task_size" {
+  type = object({
+    cpu    = any
+    memory = any
+  })
+  description = "CPU and memory limit for launch-system orchestrator task (number or string format)"
+}
+
+variable "launch_system_executor_task_size" {
+  type = object({
+    cpu    = any
+    memory = any
+  })
+  description = "CPU and memory limit for launch-system executor tasks (number or string format)"
+}
+
+variable "launch_system_orchestrator_num_workers" {
+  description = "Number of workers processing the queues in the orchestrator task."
+  type        = number
+}
