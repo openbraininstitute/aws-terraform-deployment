@@ -10,11 +10,12 @@ locals {
   efs_sg_name = "jupyterhub_homedirs_mount_on_notebook_service"
 }
 
-resource "aws_efs_mount_target" "homedirs_efs" {
-  file_system_id  = data.aws_efs_file_system.homedirs_efs.id
-  security_groups = [aws_security_group.homedirs_efs.id]
-  subnet_id       = aws_subnet.ecs_a.id
-}
+# requested subnet not in same VPC as existing mount targets :-(
+# resource "aws_efs_mount_target" "homedirs_efs" {
+#   file_system_id  = data.aws_efs_file_system.homedirs_efs.id
+#   security_groups = [aws_security_group.homedirs_efs.id]
+#   subnet_id       = aws_subnet.ecs_a.id
+# }
 
 resource "aws_security_group" "homedirs_efs" {
   name        = local.efs_sg_name
@@ -29,9 +30,9 @@ resource "aws_vpc_security_group_egress_rule" "jupyterhub_efs_sg_egress" {
   security_group_id = aws_security_group.homedirs_efs.id
   description       = "Allow egress to any destination"
 
-  from_port                    = 0
-  to_port                      = 0
-  ip_protocol                  = "-1"
+  from_port                    = -1
+  to_port                      = -1
+  ip_protocol                  = -1
   referenced_security_group_id = aws_security_group.ecs_security_group.id
 
   tags = {
@@ -52,3 +53,4 @@ resource "aws_vpc_security_group_ingress_rule" "jupyterhub_efs_sg_ingress" {
     Name = local.efs_sg_name
   }
 }
+
