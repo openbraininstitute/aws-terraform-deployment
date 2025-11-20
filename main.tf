@@ -33,7 +33,7 @@ locals {
   entitycore_service_secrets_arn       = data.terraform_remote_state.common.outputs.entitycore_service_secrets_arn
   hpc_slurm_secrets_arn                = data.terraform_remote_state.common.outputs.hpc_slurm_secrets_arn
   notebook_service_secrets_arn         = data.terraform_remote_state.common.outputs.notebook_service_secrets_arn
-  launch_system_secrets_arn            = data.terraform_remote_state.common.outputs.launch_server_secrets_arn # TODO: replace server with system
+  launch_system_secrets_arn            = data.terraform_remote_state.common.outputs.launch_system_secrets_arn
   virtual_lab_manager_db_ro_secret_arn = data.terraform_remote_state.common.outputs.virtual_lab_manager_database_readonly_secret_arn
   accounting_db_ro_secret_arn          = data.terraform_remote_state.common.outputs.accounting_database_readonly_secret_arn
   teams_webhook_secrets_arn            = data.terraform_remote_state.common.outputs.teams_webhook_secrets_arn
