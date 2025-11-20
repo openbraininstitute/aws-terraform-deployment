@@ -65,3 +65,27 @@ variable "jupyterhub_ec2_type" {
   type        = string
   description = "JupyterHub service Amazon EC2 Instance type"
 }
+
+variable "route_table_public_subnets_id" {
+  description = "Route table ID for public subnets"
+  type        = string
+  sensitive   = false
+}
+
+variable "aws_region" {
+  description = "AWS region for availability zones"
+  type        = string
+  sensitive   = false
+}
+
+variable "vpc_cidr_block" {
+  description = "VPC CIDR block for network ACL rules"
+  type        = string
+  sensitive   = false
+}
+
+variable "nat_gateway_id" {
+  description = "NAT Gateway ID"
+  type        = string
+  sensitive   = false
+}
