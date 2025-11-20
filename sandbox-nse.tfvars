@@ -18,6 +18,7 @@ notebook_hub_on_eks_full_url              = "none"
 notebook_service_cors_allowed_origins     = "[\"https://dev.openbraininstitute.org\",\"https://staging.openbraininstitute.org\",\"https://preview.openbraininstitute.org\"]"
 notebook_service_k8s_thread_enabled       = false
 notebook_service_accounting_enabled       = false
+jupyterhub_eks_shared_home_dirs_efs_id    = "fs-abc"
 
 virtual_lab_manager_task_size = {
   cpu    = 512

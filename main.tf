@@ -349,6 +349,8 @@ module "notebook_service" {
 
   kubernetes_thread_check_interval = 15
 
+  jupyterhub_eks_shared_home_dirs_efs_id = var.jupyterhub_eks_shared_home_dirs_efs_id
+
   task_size = {
     cpu    = 512
     memory = 1024

@@ -93,6 +93,17 @@ resource "aws_vpc_security_group_egress_rule" "ecs_allow_outgoing_dns_udp" {
   description = "Allow all DNS UDP"
 }
 
+resource "aws_vpc_security_group_egress_rule" "ecs_allow_outgoing_efs" {
+  security_group_id = aws_security_group.ecs_security_group.id
+
+  ip_protocol = "tcp"
+  from_port   = 2049
+  to_port     = 2049
+  description = "Allow access to homedirs EFS"
+
+  referenced_security_group_id = aws_security_group.homedirs_efs.id
+}
+
 resource "aws_ecs_task_definition" "ecs_definition" {
   family       = "notebook_service_task_family"
   network_mode = "awsvpc"
@@ -101,6 +112,15 @@ resource "aws_ecs_task_definition" "ecs_definition" {
   memory = var.task_size.memory
 
   requires_compatibilities = ["FARGATE"]
+
+  volume {
+    name = "homedirs"
+    efs_volume_configuration {
+      file_system_id     = data.aws_efs_file_system.homedirs_efs.id
+      transit_encryption = "ENABLED"
+      root_directory     = "/"
+    }
+  }
 
   container_definitions = jsonencode([
     {
@@ -115,6 +135,13 @@ resource "aws_ecs_task_definition" "ecs_definition" {
       image = var.docker_image_url
 
       essential = true
+
+      mountPoints = [
+        {
+          sourceVolume  = "homedirs"
+          containerPath = "/mnt/homedirs"
+        }
+      ]
 
       portMappings = [
         {
