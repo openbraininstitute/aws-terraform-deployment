@@ -169,7 +169,7 @@ resource "aws_network_acl_rule" "jupyterhub_eks_public_deny_rest_of_vpc_egress" 
 
 resource "aws_network_acl_rule" "jupyterhub_eks_public_egress" {
   network_acl_id = aws_network_acl.jupyterhub_eks_public.id
-  rule_number    = 100
+  rule_number    = 101
   protocol       = "-1"
   rule_action    = "allow"
   cidr_block     = "0.0.0.0/0"
