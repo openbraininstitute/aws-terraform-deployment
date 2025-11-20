@@ -29,9 +29,9 @@ resource "aws_vpc_security_group_egress_rule" "jupyterhub_efs_sg_egress" {
   security_group_id = aws_security_group.homedirs_efs.id
   description       = "Allow egress to any destination"
 
-  from_port                    = 0
-  to_port                      = 0
-  ip_protocol                  = "-1"
+  from_port                    = -1
+  to_port                      = -1
+  ip_protocol                  = -1
   referenced_security_group_id = aws_security_group.ecs_security_group.id
 
   tags = {
@@ -52,3 +52,4 @@ resource "aws_vpc_security_group_ingress_rule" "jupyterhub_efs_sg_ingress" {
     Name = local.efs_sg_name
   }
 }
+
