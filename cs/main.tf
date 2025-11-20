@@ -32,7 +32,7 @@ module "jupyterhub_metabolism" {
 module "jupyterhub_eks" {
   source = "./jupyterhub_eks"
 
-  jupyterhub_eks_public_a_cidr  = "10.0.31.128/25"
+  jupyterhub_eks_public_a_cidr  = "10.0.31.0/25"
   jupyterhub_eks_public_b_cidr  = "10.0.31.128/25"
   jupyterhub_eks_private_a_cidr = "10.0.32.0/23"
   jupyterhub_eks_private_b_cidr = "10.0.34.0/23"
