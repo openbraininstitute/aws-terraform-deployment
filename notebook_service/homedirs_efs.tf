@@ -10,11 +10,12 @@ locals {
   efs_sg_name = "jupyterhub_homedirs_mount_on_notebook_service"
 }
 
-resource "aws_efs_mount_target" "homedirs_efs" {
-  file_system_id  = data.aws_efs_file_system.homedirs_efs.id
-  security_groups = [aws_security_group.homedirs_efs.id]
-  subnet_id       = aws_subnet.ecs_a.id
-}
+# requested subnet not in same VPC as existing mount targets :-(
+# resource "aws_efs_mount_target" "homedirs_efs" {
+#   file_system_id  = data.aws_efs_file_system.homedirs_efs.id
+#   security_groups = [aws_security_group.homedirs_efs.id]
+#   subnet_id       = aws_subnet.ecs_a.id
+# }
 
 resource "aws_security_group" "homedirs_efs" {
   name        = local.efs_sg_name
