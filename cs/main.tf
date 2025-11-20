@@ -26,6 +26,26 @@ module "jupyterhub_metabolism" {
   jupyterhub_listener_rule_priority = 350
 }
 
+# Small part of the setup of the EKS cluster for JupyterHub
+# Just fyi to avoid confusion: there's also cs/jupyterhub/ which defines
+# the single EC2 VM with a JupyterHub for Polina's metabolism notebook
+module "jupyterhub_eks" {
+  source = "./jupyterhub_eks"
+
+  jupyterhub_eks_public_a_cidr  = "10.0.31.128/25"
+  jupyterhub_eks_public_b_cidr  = "10.0.31.128/25"
+  jupyterhub_eks_private_a_cidr = "10.0.32.0/23"
+  jupyterhub_eks_private_b_cidr = "10.0.34.0/23"
+
+  vpc_id         = var.vpc_id
+  aws_region     = var.aws_region
+  vpc_cidr_block = var.vpc_cidr_block
+  nat_gateway_id = var.nat_gateway_id
+
+  route_table_private_subnets_id = var.route_table_private_subnets_id
+  route_table_public_subnets_id  = var.route_table_public_subnets_id
+}
+
 module "keycloak" {
   source                         = "./keycloak"
   private_subnets                = module.networking.keycloak_private_subnets

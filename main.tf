@@ -79,11 +79,15 @@ module "cs" {
   is_staging                     = var.is_staging
   vpc_id                         = local.vpc_id
   route_table_private_subnets_id = local.route_table_private_subnets_id
+  route_table_public_subnets_id  = local.route_table_public_id
   db_instance_class              = "db.t3.micro"
   private_alb_https_listener_arn = local.private_alb_https_listener_arn
   keycloak_secrets_arn           = local.keycloak_secrets_arn
   keycloak_task_size             = var.keycloak_task_size
   aws_coreservices_ssh_key_id    = module.coreservices_key.key_pair_id
+  vpc_cidr_block                 = local.vpc_cidr_block
+  aws_region                     = local.aws_region
+  nat_gateway_id                 = data.terraform_remote_state.common.outputs.nat_gateway_id
 
   domain_name = local.primary_domain
 
