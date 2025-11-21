@@ -57,7 +57,6 @@ variable "internet_access_route_id" {
   type = string
 }
 
-
 variable "auth_manager_svc_tags" {
   description = "tags of the resources."
   type        = map(string)
@@ -79,4 +78,8 @@ variable "ack_state_expiry" {
 
 variable "keycloak_client_id" {
   type = string
+}
+
+variable "number_of_containers" {
+  type = number
 }
