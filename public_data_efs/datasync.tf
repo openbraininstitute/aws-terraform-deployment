@@ -37,8 +37,8 @@ resource "aws_iam_role_policy" "datasync_s3_policy" {
           "s3:PutObjectTagging"
         ]
         Resource = [
-          "arn:aws:s3:::${var.entitycore_open_data_bucket}",
-          "arn:aws:s3:::${var.entitycore_open_data_bucket}/*"
+          "arn:aws:s3:::${var.entitycore_internal_bucket}",
+          "arn:aws:s3:::${var.entitycore_internal_bucket}/*"
         ]
       }
     ]
@@ -46,7 +46,7 @@ resource "aws_iam_role_policy" "datasync_s3_policy" {
 }
 
 resource "aws_datasync_location_s3" "internal_source" {
-  s3_bucket_arn = "arn:aws:s3:::${var.entitycore_open_data_bucket}"
+  s3_bucket_arn = "arn:aws:s3:::${var.entitycore_internal_bucket}"
   subdirectory  = "/public"
 
   s3_config {
