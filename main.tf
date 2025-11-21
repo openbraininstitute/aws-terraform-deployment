@@ -818,6 +818,23 @@ module "launch_server" {
   aws_region = local.aws_region
 }
 
+module "public_data_efs" {
+  source = "./public_data_efs"
+
+  count = var.is_staging ? 1 : 0
+
+  vpc_id                  = local.vpc_id
+  vpc_cidr_block          = local.vpc_cidr_block
+  access_point_subnet_ids = module.launch_system[0].executor_network_ids
+  account_id              = local.account_id
+  aws_region              = local.aws_region
+
+  entitycore_internal_bucket = var.entitycore_svc_aws_s3_internal_bucket
+  entitycore_internal_region = var.entitycore_svc_aws_s3_internal_region
+  open_data_bucket           = var.entitycore_svc_aws_s3_open_bucket
+  open_data_region           = var.entitycore_svc_aws_s3_open_region
+}
+
 module "launch_system" {
   source = "./launch_system"
 
@@ -869,6 +886,10 @@ module "launch_system" {
 
   az_region          = "eastus"
   keycloak_client_id = "obi-entitysdk-auth"
+
+  public_launch_data_efs_id            = module.public_data_efs[0].public_launch_data_efs_id
+  internal_public_data_access_point_id = module.public_data_efs[0].internal_public_data_access_point_id
+  open_public_data_access_point_id     = module.public_data_efs[0].open_public_data_access_point_id
 }
 
 

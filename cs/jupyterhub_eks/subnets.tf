@@ -241,6 +241,15 @@ resource "aws_network_acl_rule" "jupyterhub_eks_private_deny_rest_of_vpc_ingress
   egress         = false
 }
 
+resource "aws_network_acl_rule" "jupyterhub_eks_private_allow_internet_ingress" {
+  network_acl_id = aws_network_acl.jupyterhub_eks_private.id
+  rule_number    = 101
+  protocol       = "-1"
+  rule_action    = "allow"
+  cidr_block     = "0.0.0.0/0"
+  egress         = false
+}
+
 resource "aws_network_acl_rule" "jupyterhub_eks_private_nat_gateway_egress" {
   network_acl_id = aws_network_acl.jupyterhub_eks_private.id
   rule_number    = 50
@@ -292,6 +301,15 @@ resource "aws_network_acl_rule" "jupyterhub_eks_private_deny_rest_of_vpc_egress"
   protocol       = "-1"
   rule_action    = "deny"
   cidr_block     = var.vpc_cidr_block
+  egress         = true
+}
+
+resource "aws_network_acl_rule" "jupyterhub_eks_private_deny_allow_internet_ingress" {
+  network_acl_id = aws_network_acl.jupyterhub_eks_private.id
+  rule_number    = 101
+  protocol       = "-1"
+  rule_action    = "allow"
+  cidr_block     = "0.0.0.0/0"
   egress         = true
 }
 

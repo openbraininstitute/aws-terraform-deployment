@@ -23,6 +23,8 @@ notebook_service_k8s_thread_enabled       = false
 notebook_service_accounting_enabled       = false
 jupyterhub_eks_shared_home_dirs_efs_id    = "fs-abc"
 
+neuroagent_image_tag = "neuroagent-v0.11.4"
+
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-staging"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-staging"
 small_scale_simulator_api_task_size = {
@@ -111,3 +113,19 @@ core_webapp_s3_bucket_name = "core-webapp-static-assets-sandbox-hpc"
 auth_manager_svc_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/auth-manager:2025.10.28.1"
 keycloak_client_uuid       = "569228c5-674f-4f54-b9cb-8d179be66bda"
 keycloak_client_id         = "core-webapp-dev"
+
+# launch-system configuration
+launch_system_api_task_size = {
+  cpu    = 512
+  memory = 1024
+}
+launch_system_orchestrator_task_size = {
+  cpu    = 512
+  memory = 1024
+}
+launch_system_executor_task_size = {
+  cpu    = 512
+  memory = 1024
+}
+
+launch_system_orchestrator_num_workers = 2

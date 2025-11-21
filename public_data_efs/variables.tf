@@ -1,0 +1,39 @@
+variable "vpc_id" {
+  type = string
+}
+
+variable "vpc_cidr_block" {
+  type = string
+}
+
+variable "access_point_subnet_ids" {
+  type = list(string)
+}
+
+variable "aws_region" {
+  type = string
+}
+
+variable "account_id" {
+  type = string
+}
+
+variable "entitycore_internal_bucket" {
+  type        = string
+  description = "S3 bucket name in which entitycore data lives."
+}
+
+variable "entitycore_internal_region" {
+  type        = string
+  description = "S3 region name in which entitycore data lives."
+}
+
+variable "open_data_bucket" {
+  type        = string
+  description = "S3 bucket name in which open data lives."
+}
+
+variable "open_data_region" {
+  type        = string
+  description = "S3 region name in which open data lives."
+}
