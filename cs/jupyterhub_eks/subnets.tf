@@ -68,6 +68,15 @@ resource "aws_network_acl" "jupyterhub_eks_public" {
   }
 }
 
+resource "aws_network_acl_rule" "jupyterhub_eks_public_endpoints_ingress" {
+  network_acl_id = aws_network_acl.jupyterhub_eks_public.id
+  rule_number    = 50
+  protocol       = "-1"
+  rule_action    = "allow"
+  cidr_block     = var.aws_endpoints_subnet_cidr
+  egress         = false
+}
+
 resource "aws_network_acl_rule" "jupyterhub_eks_public_public_a_ingress" {
   network_acl_id = aws_network_acl.jupyterhub_eks_public.id
   rule_number    = 60
@@ -120,6 +129,15 @@ resource "aws_network_acl_rule" "jupyterhub_eks_public_ingress" {
   rule_action    = "allow"
   cidr_block     = "0.0.0.0/0"
   egress         = false
+}
+
+resource "aws_network_acl_rule" "jupyterhub_eks_public_endpoints_egress" {
+  network_acl_id = aws_network_acl.jupyterhub_eks_public.id
+  rule_number    = 50
+  protocol       = "-1"
+  rule_action    = "allow"
+  cidr_block     = var.aws_endpoints_subnet_cidr
+  egress         = true
 }
 
 resource "aws_network_acl_rule" "jupyterhub_eks_public_public_a_egress" {
@@ -196,6 +214,15 @@ resource "aws_network_acl_rule" "jupyterhub_eks_private_nat_gateway_ingress" {
   egress         = false
 }
 
+resource "aws_network_acl_rule" "jupyterhub_eks_private_endpoints_ingress" {
+  network_acl_id = aws_network_acl.jupyterhub_eks_public.id
+  rule_number    = 51
+  protocol       = "-1"
+  rule_action    = "allow"
+  cidr_block     = var.aws_endpoints_subnet_cidr
+  egress         = false
+}
+
 resource "aws_network_acl_rule" "jupyterhub_eks_private_public_a_ingress" {
   network_acl_id = aws_network_acl.jupyterhub_eks_private.id
   rule_number    = 60
@@ -256,6 +283,15 @@ resource "aws_network_acl_rule" "jupyterhub_eks_private_nat_gateway_egress" {
   protocol       = "-1"
   rule_action    = "allow"
   cidr_block     = "${data.aws_nat_gateway.nat_gateway.private_ip}/32"
+  egress         = true
+}
+
+resource "aws_network_acl_rule" "jupyterhub_eks_private_endpoints_egress" {
+  network_acl_id = aws_network_acl.jupyterhub_eks_public.id
+  rule_number    = 51
+  protocol       = "-1"
+  rule_action    = "allow"
+  cidr_block     = var.aws_endpoints_subnet_cidr
   egress         = true
 }
 

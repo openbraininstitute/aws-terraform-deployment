@@ -88,6 +88,7 @@ module "cs" {
   vpc_cidr_block                 = local.vpc_cidr_block
   aws_region                     = local.aws_region
   nat_gateway_id                 = data.terraform_remote_state.common.outputs.nat_gateway_id
+  aws_endpoints_subnet_cidr      = module.networking.endpoints_subnet_cidr
 
   domain_name = local.primary_domain
 
