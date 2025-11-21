@@ -10,7 +10,7 @@ resource "aws_cloudwatch_log_group" "executor" {
 }
 
 resource "aws_ecs_cluster" "executor" {
-  name = "launch_system_executor_ecs_cluster"
+  name = "launch_system_executor"
 
   tags = merge(var.tags, { Name = "launch_system_executor" })
 
