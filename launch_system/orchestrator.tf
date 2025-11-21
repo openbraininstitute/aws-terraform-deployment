@@ -274,6 +274,15 @@ resource "aws_iam_policy" "orchestrator_ecs_run_task" {
       {
         Effect = "Allow"
         Action = [
+          "ecs:TagResource",
+        ]
+        Resource = [
+          "arn:aws:ecs:${var.aws_region}:${var.account_id}:task/${aws_ecs_cluster.executor.name}/*",
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
           "iam:PassRole",
         ]
         Resource = [
