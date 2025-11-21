@@ -242,6 +242,52 @@ resource "aws_iam_policy" "orchestrator_logs_access" {
   })
 }
 
+
+resource "aws_iam_policy" "orchestrator_ecs_run_task" {
+  name_prefix = "launch_system_orchestrator"
+  description = "Allows orchestrator to run ECS tasks in the executor cluster"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ecs:RunTask",
+        ]
+        Resource = [
+          aws_ecs_task_definition.default_executor.arn,
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ecs:DescribeTasks",
+          "ecs:StopTask",
+          "ecs:ListTasks",
+        ]
+        Resource = [
+          "${aws_ecs_cluster.executor.arn}/*",
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "iam:PassRole",
+        ]
+        Resource = [
+          aws_iam_role.executor_execution.arn,
+          aws_iam_role.executor_task.arn,
+        ]
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "orchestrator_ecs_run_task" {
+  role       = aws_iam_role.orchestrator_task.name
+  policy_arn = aws_iam_policy.orchestrator_ecs_run_task.arn
+}
 resource "aws_iam_role_policy_attachment" "orchestrator_secrets_access" {
   role       = aws_iam_role.orchestrator_execution.name
   policy_arn = aws_iam_policy.secrets_access.arn
