@@ -56,8 +56,7 @@ resource "aws_ecs_task_definition" "default_executor" {
 
   container_definitions = jsonencode([
     {
-      name   = "launch_system_default_executor"
-      family = "launch_system_default_executor"
+      name = "main"
 
       # cpu and memory should be overridden by the orchestrator
       cpu    = var.executor_task_size.cpu

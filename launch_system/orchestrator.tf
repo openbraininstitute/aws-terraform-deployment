@@ -56,8 +56,7 @@ resource "aws_ecs_task_definition" "orchestrator" {
 
   container_definitions = jsonencode([
     {
-      name   = "launch_system_orchestrator"
-      family = "launch_system_orchestrator"
+      name = "main"
 
       cpu    = var.orchestrator_task_size.cpu
       memory = var.orchestrator_task_size.memory
