@@ -1,3 +1,8 @@
+locals {
+  api_container_name = "main"
+  api_container_port = 8000
+}
+
 resource "aws_cloudwatch_log_group" "api" {
   # TODO check if the logs can be encrypted
   name_prefix       = "launch_system_api"
@@ -66,7 +71,7 @@ resource "aws_ecs_task_definition" "api" {
 
   container_definitions = jsonencode([
     {
-      name = "main"
+      name = local.api_container_name
 
       cpu    = var.api_task_size.cpu
       memory = var.api_task_size.memory
@@ -254,8 +259,8 @@ resource "aws_ecs_service" "api" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.private.arn
-    container_name   = "launch_system_api"
-    container_port   = 8000
+    container_name   = local.api_container_name
+    container_port   = local.api_container_port
   }
 
   network_configuration {
