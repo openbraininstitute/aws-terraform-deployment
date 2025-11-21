@@ -89,7 +89,6 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
       cpu         = var.task_size.cpu
       memory      = var.task_size.memory
       networkMode = "awsvpc"
-      family      = "virtuallabmanager"
       essential   = true
       image       = var.virtual_lab_manager_docker_image_url
       name        = "virtual_lab_manager"

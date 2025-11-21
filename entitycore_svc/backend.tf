@@ -86,8 +86,7 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
 
   container_definitions = jsonencode([
     {
-      name   = "entitycore"
-      family = "entitycore"
+      name = "entitycore"
 
       cpu    = local.cpu
       memory = local.memory

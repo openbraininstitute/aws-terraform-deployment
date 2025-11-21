@@ -211,7 +211,6 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
       memory      = 1536
       cpu         = 256
       networkMode = "awsvpc"
-      family      = "sbocellsvc"
       essential   = true
       image       = var.cell_svc_docker_image_url
       name        = "cell_svc"

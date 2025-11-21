@@ -86,8 +86,7 @@ resource "aws_ecs_task_definition" "auth_manager_ecs_definition" {
 
   container_definitions = jsonencode([
     {
-      name   = "auth_manager"
-      family = "auth_manager"
+      name = "auth_manager"
 
       cpu    = local.cpu
       memory = local.memory
