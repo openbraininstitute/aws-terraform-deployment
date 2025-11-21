@@ -237,7 +237,7 @@ resource "aws_ecs_service" "auth_manager_ecs_service" {
   ]
 
   force_new_deployment = true
-  desired_count        = 1
+  desired_count        = var.number_of_containers
 
   propagate_tags = "SERVICE"
 
