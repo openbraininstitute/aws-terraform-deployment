@@ -189,3 +189,19 @@ variable "queues" {
   description = "List of Redis queues."
   type        = list(string)
 }
+
+
+variable "public_launch_data_efs_id" {
+  description = "The ID for the EFS on which the public data lives"
+  type        = string
+}
+
+variable "internal_public_data_access_point_id" {
+  description = "The ID for the access point with internal public data"
+  type        = string
+}
+
+variable "open_public_data_access_point_id" {
+  description = "The ID for the access point with open public data"
+  type        = string
+}

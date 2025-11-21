@@ -10,7 +10,7 @@ resource "aws_cloudwatch_log_group" "executor" {
 }
 
 resource "aws_ecs_cluster" "executor" {
-  name = "launch_system_executor_ecs_cluster"
+  name = "launch_system_executor"
 
   tags = merge(var.tags, { Name = "launch_system_executor" })
 
@@ -32,6 +32,7 @@ resource "aws_security_group" "executor" {
 resource "aws_vpc_security_group_egress_rule" "executor_allow_outgoing_tcp" {
   security_group_id = aws_security_group.executor.id
   # TODO limit to what is needed
+  #  * NFS: port 2049 to the security group of the shared filesystem
   ip_protocol = "tcp"
   from_port   = 0
   to_port     = 65535
@@ -68,6 +69,17 @@ resource "aws_ecs_task_definition" "default_executor" {
 
       essential = true
 
+      mountPoints = [
+        {
+          containerPath = "/data/aws_s3_internal/public",
+          sourceVolume  = "public-internal-data"
+        },
+        {
+          containerPath = "/data/aws_s3_open",
+          sourceVolume  = "public-open-data"
+        }
+      ]
+
       healthcheck = {
         command     = ["CMD-SHELL", "exit 0"] // TODO: add a proper health check once there is something to check the health of.
         interval    = 60
@@ -94,6 +106,33 @@ resource "aws_ecs_task_definition" "default_executor" {
       }
     }
   ])
+
+  volume {
+    name = "public-internal-data"
+
+    efs_volume_configuration {
+      file_system_id     = var.public_launch_data_efs_id
+      transit_encryption = "ENABLED"
+      authorization_config {
+        access_point_id = var.internal_public_data_access_point_id
+        iam             = "ENABLED"
+      }
+    }
+  }
+
+  volume {
+    name = "public-open-data"
+
+    efs_volume_configuration {
+      file_system_id     = var.public_launch_data_efs_id
+      transit_encryption = "ENABLED"
+      authorization_config {
+        access_point_id = var.open_public_data_access_point_id
+        iam             = "ENABLED"
+      }
+    }
+  }
+
 
   # cpu and memory should be overridden by the orchestrator
   cpu    = var.executor_task_size.cpu
