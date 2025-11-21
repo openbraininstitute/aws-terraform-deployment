@@ -66,8 +66,7 @@ resource "aws_ecs_task_definition" "api" {
 
   container_definitions = jsonencode([
     {
-      name   = "launch_system_api"
-      family = "launch_system_api"
+      name = "main"
 
       cpu    = var.api_task_size.cpu
       memory = var.api_task_size.memory
