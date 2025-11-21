@@ -53,3 +53,9 @@ variable "nat_gateway_id" {
   type        = string
   sensitive   = false
 }
+
+variable "aws_endpoints_subnet_cidr" {
+  description = "CIDR of the network containing the interface endpoints"
+  type        = string
+  sensitive   = false
+}

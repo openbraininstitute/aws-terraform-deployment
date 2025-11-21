@@ -44,6 +44,7 @@ module "jupyterhub_eks" {
 
   route_table_private_subnets_id = var.route_table_private_subnets_id
   route_table_public_subnets_id  = var.route_table_public_subnets_id
+  aws_endpoints_subnet_cidr      = var.aws_endpoints_subnet_cidr
 }
 
 module "keycloak" {
