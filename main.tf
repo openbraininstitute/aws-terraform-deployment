@@ -821,12 +821,16 @@ module "public_data_efs" {
 
   count = var.is_staging ? 1 : 0
 
-  vpc_id                      = local.vpc_id
-  vpc_cidr_block              = local.vpc_cidr_block
-  access_point_subnet_ids     = module.launch_system[0].executor_network_ids
-  account_id                  = local.account_id
-  aws_region                  = local.aws_region
-  entitycore_open_data_bucket = var.entitycore_svc_aws_s3_open_bucket
+  vpc_id                  = local.vpc_id
+  vpc_cidr_block          = local.vpc_cidr_block
+  access_point_subnet_ids = module.launch_system[0].executor_network_ids
+  account_id              = local.account_id
+  aws_region              = local.aws_region
+
+  entitycore_internal_bucket = var.entitycore_svc_aws_s3_internal_bucket
+  entitycore_internal_region = var.entitycore_svc_aws_s3_internal_region
+  open_data_bucket           = var.entitycore_svc_aws_s3_open_bucket
+  open_data_region           = var.entitycore_svc_aws_s3_open_region
 }
 
 module "launch_system" {

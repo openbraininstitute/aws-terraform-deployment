@@ -54,37 +54,6 @@ small_scale_simulator_daemon_workers = {
   }
 }
 
-bluenaas_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:staging"
-bluenaas_task_size = {
-  cpu    = 4096
-  memory = 8192
-}
-
-small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-staging"
-small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-staging"
-small_scale_simulator_api_task_size = {
-  cpu    = 256
-  memory = 512
-}
-small_scale_simulator_daemon_workers = {
-  default = {
-    task_size = {
-      cpu    = 4096
-      memory = 8192
-    }
-    num_workers_per_task = 4
-    queues               = ["high", "medium", "low"]
-    num_worker_tasks     = 1
-    autoscaler = {
-      enabled              = true
-      max_num_worker_tasks = 10
-    }
-    capacity_provider_strategy = [
-      { capacity_provider = "FARGATE_SPOT", weight = 100 }
-    ]
-  }
-}
-
 virtual_lab_manager_task_size = {
   cpu    = 512
   memory = 1024
