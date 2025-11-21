@@ -264,7 +264,6 @@ resource "aws_iam_policy" "orchestrator_ecs_run_task" {
           "ecs:DescribeTasks",
           "ecs:StopTask",
           "ecs:ListTasks",
-          "ecs:TagResource",
         ]
         Resource = [
           "${aws_ecs_cluster.executor.arn}/*",
