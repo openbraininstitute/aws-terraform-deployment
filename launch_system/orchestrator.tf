@@ -56,8 +56,7 @@ resource "aws_ecs_task_definition" "orchestrator" {
 
   container_definitions = jsonencode([
     {
-      name   = "launch_system_orchestrator"
-      family = "launch_system_orchestrator"
+      name = "main"
 
       cpu    = var.orchestrator_task_size.cpu
       memory = var.orchestrator_task_size.memory
@@ -265,7 +264,6 @@ resource "aws_iam_policy" "orchestrator_ecs_run_task" {
           "ecs:DescribeTasks",
           "ecs:StopTask",
           "ecs:ListTasks",
-          "ecs:TagResource",
         ]
         Resource = [
           "${aws_ecs_cluster.executor.arn}/*",
