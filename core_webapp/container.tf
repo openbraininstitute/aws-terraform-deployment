@@ -96,7 +96,6 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
       cpu         = local.cpu
       memory      = local.memory
       networkMode = "awsvpc"
-      family      = "corewebapp"
       essential   = true
       image       = var.docker_image_url
       name        = "core_webapp"

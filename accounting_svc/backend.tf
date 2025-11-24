@@ -86,8 +86,7 @@ resource "aws_ecs_task_definition" "accounting_ecs_definition" {
 
   container_definitions = jsonencode([
     {
-      name   = "accounting"
-      family = "accounting"
+      name = "accounting"
 
       cpu    = local.cpu
       memory = local.memory

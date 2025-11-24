@@ -193,7 +193,6 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
       memory      = var.ecs_task_size.memory
       cpu         = var.ecs_task_size.cpu
       networkMode = "awsvpc"
-      family      = "obi_one_v2"
       essential   = true
       image       = var.docker_image_url
       name        = "obi_one_v2"

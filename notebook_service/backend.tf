@@ -124,8 +124,7 @@ resource "aws_ecs_task_definition" "ecs_definition" {
 
   container_definitions = jsonencode([
     {
-      name   = "notebook_service"
-      family = "notebook_service"
+      name = "notebook_service"
 
       cpu    = var.task_size.cpu
       memory = var.task_size.memory
