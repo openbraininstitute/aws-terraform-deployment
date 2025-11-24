@@ -52,7 +52,6 @@ module "ecs_service_agent" {
       memory                   = 2048
       cpu                      = 1024
       networkMode              = "awsvpc"
-      family                   = "ml_agent"
       essential                = true
       image                    = var.neuroagent_docker_image_url
       name                     = "ml_agent"

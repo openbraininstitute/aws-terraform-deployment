@@ -150,7 +150,6 @@ resource "aws_ecs_task_definition" "this" {
       memory      = var.ecs_memory
       cpu         = var.ecs_cpu
       networkMode = "awsvpc"
-      family      = local.cluster_name
       essential   = true
       image       = var.svc_image
       linuxParameters = var.ecs_task_type == "EC2" ? {
