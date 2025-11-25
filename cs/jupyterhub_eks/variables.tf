@@ -59,3 +59,9 @@ variable "aws_endpoints_subnet_cidr" {
   type        = string
   sensitive   = false
 }
+
+variable "jupyterhub_eks_cluster_name" {
+  description = "Name of the EKS cluster for Jupyterhub"
+  type        = string
+  sensitive   = false
+}
