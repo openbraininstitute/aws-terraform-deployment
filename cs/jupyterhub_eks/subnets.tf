@@ -90,7 +90,7 @@ resource "aws_network_acl_rule" "jupyterhub_eks_public_alb_a_ingress" {
 
 resource "aws_network_acl_rule" "jupyterhub_eks_public_alb_b_ingress" {
   network_acl_id = aws_network_acl.jupyterhub_eks_public.id
-  rule_number    = 55
+  rule_number    = 56
   protocol       = "tcp"
   from_port      = 1024
   to_port        = 65535
@@ -175,7 +175,7 @@ resource "aws_network_acl_rule" "jupyterhub_eks_public_alb_a_egress" {
 
 resource "aws_network_acl_rule" "jupyterhub_eks_public_alb_b_egress" {
   network_acl_id = aws_network_acl.jupyterhub_eks_public.id
-  rule_number    = 55
+  rule_number    = 56
   protocol       = "tcp"
   from_port      = 443
   to_port        = 443
@@ -280,7 +280,7 @@ resource "aws_network_acl_rule" "jupyterhub_eks_private_alb_a_ingress" {
 
 resource "aws_network_acl_rule" "jupyterhub_eks_private_alb_b_ingress" {
   network_acl_id = aws_network_acl.jupyterhub_eks_private.id
-  rule_number    = 55
+  rule_number    = 56
   protocol       = "tcp"
   from_port      = 1024
   to_port        = 65535
@@ -374,7 +374,7 @@ resource "aws_network_acl_rule" "jupyterhub_eks_private_alb_a_egress" {
 
 resource "aws_network_acl_rule" "jupyterhub_eks_private_alb_b_egress" {
   network_acl_id = aws_network_acl.jupyterhub_eks_private.id
-  rule_number    = 55
+  rule_number    = 56
   protocol       = "tcp"
   from_port      = 443
   to_port        = 443
