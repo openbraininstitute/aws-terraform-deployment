@@ -341,12 +341,6 @@ variable "keycloak_client_id" {
   description = "ID of the Keycloak client"
 }
 
-# JupyterHub on EKS
-
-variable "jupyterhub_eks_shared_home_dirs_efs_id" {
-  type        = string
-  description = "ID of the EFS filesystem used for the homedirs in JupyterHub in EKS"
-}
 
 ### launch-system ###
 

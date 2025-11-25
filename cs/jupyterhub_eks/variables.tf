@@ -77,3 +77,15 @@ variable "private_alb_cidr_b" {
   type        = string
   sensitive   = false
 }
+
+variable "notebook_service_cidr_a" {
+  description = "CIDR of the first subnet for the notebook service"
+  type        = string
+  sensitive   = false
+}
+
+variable "notebook_service_cidr_b" {
+  description = "CIDR of the second subnet for the notebook service"
+  type        = string
+  sensitive   = false
+}

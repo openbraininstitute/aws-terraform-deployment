@@ -49,6 +49,8 @@ module "jupyterhub_eks" {
   jupyterhub_eks_cluster_name = "jupyterhub"
   private_alb_cidr_a          = var.private_alb_cidr_a
   private_alb_cidr_b          = var.private_alb_cidr_b
+  notebook_service_cidr_a     = var.notebook_service_cidr_a
+  notebook_service_cidr_b     = var.notebook_service_cidr_b
 
 }
 

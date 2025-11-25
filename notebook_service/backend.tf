@@ -101,7 +101,7 @@ resource "aws_vpc_security_group_egress_rule" "ecs_allow_outgoing_efs" {
   to_port     = 2049
   description = "Allow access to homedirs EFS"
 
-  referenced_security_group_id = aws_security_group.homedirs_efs.id
+  referenced_security_group_id = var.jupyterhub_homedirs_efs_security_group_id
 }
 
 resource "aws_ecs_task_definition" "ecs_definition" {
@@ -116,7 +116,7 @@ resource "aws_ecs_task_definition" "ecs_definition" {
   volume {
     name = "homedirs"
     efs_volume_configuration {
-      file_system_id     = data.aws_efs_file_system.homedirs_efs.id
+      file_system_id     = var.jupyterhub_homedirs_efs_file_system_id
       transit_encryption = "ENABLED"
       root_directory     = "/"
     }
