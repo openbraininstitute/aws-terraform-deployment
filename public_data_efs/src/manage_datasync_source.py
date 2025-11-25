@@ -113,6 +113,7 @@ def create_location(ds_client, location: str):
                 "Mtime": "PRESERVE",
                 "TaskQueueing": "ENABLED",
             },
+            Schedule={"ScheduleExpression": "cron(0 0 ? * * *)", "Status": "ENABLED"},
             Tags=[{"Key": key, "Value": value} for key, value in TAGS.items()],
         )
 
