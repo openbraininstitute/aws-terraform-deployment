@@ -47,6 +47,8 @@ module "jupyterhub_eks" {
   aws_endpoints_subnet_cidr      = var.aws_endpoints_subnet_cidr
 
   jupyterhub_eks_cluster_name = "jupyterhub"
+  private_alb_cidr_a          = var.private_alb_cidr_a
+  private_alb_cidr_b          = var.private_alb_cidr_b
 
 }
 
