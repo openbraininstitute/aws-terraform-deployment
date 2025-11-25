@@ -269,6 +269,8 @@ resource "aws_ecs_service" "ecs_service" {
   desired_count        = 1
 
   propagate_tags = "SERVICE"
+
+  enable_execute_command = true # Allow SSM access
 }
 
 resource "aws_iam_role" "ecs_task_execution_role" {
@@ -288,6 +290,43 @@ resource "aws_iam_role" "ecs_task_execution_role" {
     ]
   })
 }
+
+# For SSM access - start
+resource "aws_iam_policy" "ecs_execution_role_policy_ssm" {
+  name = "notebook_ecs_execution_policy_ssm"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      # Allow ECS Exec
+      {
+        Effect = "Allow"
+        Action = [
+          "ssmmessages:CreateControlChannel",
+          "ssmmessages:CreateDataChannel",
+          "ssmmessages:OpenControlChannel",
+          "ssmmessages:OpenDataChannel"
+        ]
+        Resource = "*"
+      },
+      # CloudWatch logs
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_execution_role_policy_ssm" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = aws_iam_policy.ecs_execution_role_policy_ssm.arn
+}
+# For SSM access - end
 
 resource "aws_iam_role" "ecs_task_role" {
   name_prefix = "notebook_service_task_ecs"
