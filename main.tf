@@ -96,6 +96,9 @@ module "cs" {
   jupyterhub_ec2_type    = var.jupyterhub_ec2_type
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
+
+  private_alb_cidr_a = data.terraform_remote_state.common.outputs.private_alb_cidr_a
+  private_alb_cidr_b = data.terraform_remote_state.common.outputs.private_alb_cidr_b
 }
 
 module "backups" {

@@ -65,3 +65,15 @@ variable "jupyterhub_eks_cluster_name" {
   type        = string
   sensitive   = false
 }
+
+variable "private_alb_cidr_a" {
+  description = "CIDR of the first subnet for the private ALB"
+  type        = string
+  sensitive   = false
+}
+
+variable "private_alb_cidr_b" {
+  description = "CIDR of the second subnet for the private ALB"
+  type        = string
+  sensitive   = false
+}

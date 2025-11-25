@@ -77,6 +77,28 @@ resource "aws_network_acl_rule" "jupyterhub_eks_public_endpoints_ingress" {
   egress         = false
 }
 
+resource "aws_network_acl_rule" "jupyterhub_eks_public_alb_a_ingress" {
+  network_acl_id = aws_network_acl.jupyterhub_eks_public.id
+  rule_number    = 55
+  protocol       = "tcp"
+  from_port      = 1024
+  to_port        = 65535
+  rule_action    = "allow"
+  cidr_block     = var.private_alb_cidr_a
+  egress         = false
+}
+
+resource "aws_network_acl_rule" "jupyterhub_eks_public_alb_b_ingress" {
+  network_acl_id = aws_network_acl.jupyterhub_eks_public.id
+  rule_number    = 55
+  protocol       = "tcp"
+  from_port      = 1024
+  to_port        = 65535
+  rule_action    = "allow"
+  cidr_block     = var.private_alb_cidr_b
+  egress         = false
+}
+
 resource "aws_network_acl_rule" "jupyterhub_eks_public_public_a_ingress" {
   network_acl_id = aws_network_acl.jupyterhub_eks_public.id
   rule_number    = 60
@@ -137,6 +159,28 @@ resource "aws_network_acl_rule" "jupyterhub_eks_public_endpoints_egress" {
   protocol       = "-1"
   rule_action    = "allow"
   cidr_block     = var.aws_endpoints_subnet_cidr
+  egress         = true
+}
+
+resource "aws_network_acl_rule" "jupyterhub_eks_public_alb_a_egress" {
+  network_acl_id = aws_network_acl.jupyterhub_eks_public.id
+  rule_number    = 55
+  protocol       = "tcp"
+  from_port      = 443
+  to_port        = 443
+  rule_action    = "allow"
+  cidr_block     = var.private_alb_cidr_a
+  egress         = true
+}
+
+resource "aws_network_acl_rule" "jupyterhub_eks_public_alb_b_egress" {
+  network_acl_id = aws_network_acl.jupyterhub_eks_public.id
+  rule_number    = 55
+  protocol       = "tcp"
+  from_port      = 443
+  to_port        = 443
+  rule_action    = "allow"
+  cidr_block     = var.private_alb_cidr_b
   egress         = true
 }
 
@@ -215,11 +259,33 @@ resource "aws_network_acl_rule" "jupyterhub_eks_private_nat_gateway_ingress" {
 }
 
 resource "aws_network_acl_rule" "jupyterhub_eks_private_endpoints_ingress" {
-  network_acl_id = aws_network_acl.jupyterhub_eks_public.id
+  network_acl_id = aws_network_acl.jupyterhub_eks_private.id
   rule_number    = 51
   protocol       = "-1"
   rule_action    = "allow"
   cidr_block     = var.aws_endpoints_subnet_cidr
+  egress         = false
+}
+
+resource "aws_network_acl_rule" "jupyterhub_eks_private_alb_a_ingress" {
+  network_acl_id = aws_network_acl.jupyterhub_eks_private.id
+  rule_number    = 55
+  protocol       = "tcp"
+  from_port      = 1024
+  to_port        = 65535
+  rule_action    = "allow"
+  cidr_block     = var.private_alb_cidr_a
+  egress         = false
+}
+
+resource "aws_network_acl_rule" "jupyterhub_eks_private_alb_b_ingress" {
+  network_acl_id = aws_network_acl.jupyterhub_eks_private.id
+  rule_number    = 55
+  protocol       = "tcp"
+  from_port      = 1024
+  to_port        = 65535
+  rule_action    = "allow"
+  cidr_block     = var.private_alb_cidr_b
   egress         = false
 }
 
@@ -287,11 +353,33 @@ resource "aws_network_acl_rule" "jupyterhub_eks_private_nat_gateway_egress" {
 }
 
 resource "aws_network_acl_rule" "jupyterhub_eks_private_endpoints_egress" {
-  network_acl_id = aws_network_acl.jupyterhub_eks_public.id
+  network_acl_id = aws_network_acl.jupyterhub_eks_private.id
   rule_number    = 51
   protocol       = "-1"
   rule_action    = "allow"
   cidr_block     = var.aws_endpoints_subnet_cidr
+  egress         = true
+}
+
+resource "aws_network_acl_rule" "jupyterhub_eks_private_alb_a_egress" {
+  network_acl_id = aws_network_acl.jupyterhub_eks_private.id
+  rule_number    = 55
+  protocol       = "tcp"
+  from_port      = 443
+  to_port        = 443
+  rule_action    = "allow"
+  cidr_block     = var.private_alb_cidr_a
+  egress         = true
+}
+
+resource "aws_network_acl_rule" "jupyterhub_eks_private_alb_b_egress" {
+  network_acl_id = aws_network_acl.jupyterhub_eks_private.id
+  rule_number    = 55
+  protocol       = "tcp"
+  from_port      = 443
+  to_port        = 443
+  rule_action    = "allow"
+  cidr_block     = var.private_alb_cidr_b
   egress         = true
 }
 
