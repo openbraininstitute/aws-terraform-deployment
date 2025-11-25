@@ -109,7 +109,12 @@ variable "acounting_db_athena_connector_name" {
   description = "Name of the data catalog / connector of the accounting database in Athena"
 }
 
-variable "jupyterhub_eks_shared_home_dirs_efs_id" {
+variable "jupyterhub_homedirs_efs_file_system_id" {
+  description = "ID of the EFS file system that is used to store user home directories on."
   type        = string
-  description = "ID of the EFS filesystem used for the homedirs of jupyterhub users in EKS"
+}
+
+variable "jupyterhub_homedirs_efs_security_group_id" {
+  description = "ID of the security group of the EFS filesystem with the jupyterhub home dirs"
+  type        = string
 }

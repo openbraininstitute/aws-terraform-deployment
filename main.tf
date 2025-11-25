@@ -97,8 +97,10 @@ module "cs" {
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 
-  private_alb_cidr_a = data.terraform_remote_state.common.outputs.private_alb_cidr_a
-  private_alb_cidr_b = data.terraform_remote_state.common.outputs.private_alb_cidr_b
+  private_alb_cidr_a      = data.terraform_remote_state.common.outputs.private_alb_cidr_a
+  private_alb_cidr_b      = data.terraform_remote_state.common.outputs.private_alb_cidr_b
+  notebook_service_cidr_a = module.notebook_service.ecs_cidr_block_a
+  notebook_service_cidr_b = module.notebook_service.ecs_cidr_block_b
 }
 
 module "backups" {
@@ -357,8 +359,6 @@ module "notebook_service" {
 
   kubernetes_thread_check_interval = 15
 
-  jupyterhub_eks_shared_home_dirs_efs_id = var.jupyterhub_eks_shared_home_dirs_efs_id
-
   task_size = {
     cpu    = 512
     memory = 1024
@@ -378,6 +378,10 @@ module "notebook_service" {
   secrets_arn         = local.notebook_service_secrets_arn
 
   acounting_db_athena_connector_name = module.accounting_svc.athena_data_catalog_name
+
+  jupyterhub_homedirs_efs_file_system_id    = module.cs.jupyterhub_homedirs_efs_file_system_id
+  jupyterhub_homedirs_efs_security_group_id = module.cs.jupyterhub_homedirs_efs_security_group_id
+
 }
 
 module "github_notebook_service_ecs_redeploy_role" {

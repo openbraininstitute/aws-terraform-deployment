@@ -18,3 +18,11 @@ output "ecs_task_definition_name" {
 output "log_group_name" {
   value = aws_cloudwatch_log_group.ecs_task_logs.name
 }
+
+output "ecs_cidr_block_a" {
+  value = var.ecs_cidr_block_a
+}
+
+output "ecs_cidr_block_b" {
+  value = var.ecs_cidr_block_b
+}
