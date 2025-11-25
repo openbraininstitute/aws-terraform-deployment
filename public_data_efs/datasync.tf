@@ -16,30 +16,53 @@ resource "aws_iam_role" "datasync_s3_role" {
 }
 
 resource "aws_iam_role_policy" "datasync_s3_policy" {
-  name = "datasync-s3-policy"
+  name = "datasync_s3_policy"
   role = aws_iam_role.datasync_s3_role.id
 
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
+        Sid    = "AWSDataSyncS3BucketPermissions"
         Effect = "Allow"
         Action = [
           "s3:GetBucketLocation",
           "s3:ListBucket",
-          "s3:ListBucketMultipartUploads",
+          "s3:ListBucketMultipartUploads"
+        ]
+        Resource = [
+          "arn:aws:s3:::${var.open_data_bucket}",
+          "arn:aws:s3:::${var.entitycore_internal_bucket}"
+        ]
+        Condition = {
+          StringEquals = {
+            "aws:ResourceAccount" = var.account_id
+          }
+        }
+      },
+      {
+        Sid    = "AWSDataSyncS3ObjectPermissions"
+        Effect = "Allow"
+        Action = [
           "s3:AbortMultipartUpload",
           "s3:DeleteObject",
           "s3:GetObject",
+          "s3:GetObjectTagging",
+          "s3:GetObjectVersion",
+          "s3:GetObjectVersionTagging",
           "s3:ListMultipartUploadParts",
           "s3:PutObject",
-          "s3:GetObjectTagging",
           "s3:PutObjectTagging"
         ]
         Resource = [
-          "arn:aws:s3:::${var.entitycore_internal_bucket}",
+          "arn:aws:s3:::${var.open_data_bucket}/*",
           "arn:aws:s3:::${var.entitycore_internal_bucket}/*"
         ]
+        Condition = {
+          StringEquals = {
+            "aws:ResourceAccount" = var.account_id
+          }
+        }
       }
     ]
   })
@@ -57,6 +80,18 @@ resource "aws_datasync_location_s3" "internal_source" {
 resource "aws_datasync_location_efs" "internal_destination" {
   efs_file_system_arn = aws_efs_file_system.public_launch_data.arn
   subdirectory        = "/data/aws_s3_internal/public"
+
+  ec2_config {
+    security_group_arns = [aws_security_group.public_launch_efs.arn]
+    subnet_arn          = "arn:aws:ec2:${var.aws_region}:${var.account_id}:subnet/${var.access_point_subnet_ids[0]}"
+  }
+
+  depends_on = [aws_efs_mount_target.public_launch_data]
+}
+
+resource "aws_datasync_location_efs" "opendata_destination" {
+  efs_file_system_arn = aws_efs_file_system.public_launch_data.arn
+  subdirectory        = "/data/aws_s3_open/"
 
   ec2_config {
     security_group_arns = [aws_security_group.public_launch_efs.arn]
