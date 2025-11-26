@@ -112,7 +112,7 @@ resource "aws_ecs_task_definition" "auth_manager_ecs_definition" {
         },
         {
           name  = "ENV"
-          value = "prod"
+          value = "staging"
         },
         {
           name  = "DEBUG"
