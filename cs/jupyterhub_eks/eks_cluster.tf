@@ -1,4 +1,5 @@
 
 data "aws_eks_cluster" "jupyterhub" {
-  name = var.jupyterhub_eks_cluster_name
+  count = var.is_staging ? 1 : 0
+  name  = var.jupyterhub_eks_cluster_name
 }

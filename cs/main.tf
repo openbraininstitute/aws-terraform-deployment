@@ -52,6 +52,7 @@ module "jupyterhub_eks" {
   notebook_service_cidr_a     = var.notebook_service_cidr_a
   notebook_service_cidr_b     = var.notebook_service_cidr_b
 
+  is_staging = var.is_staging
 }
 
 module "keycloak" {
