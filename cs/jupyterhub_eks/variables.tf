@@ -89,3 +89,7 @@ variable "notebook_service_cidr_b" {
   type        = string
   sensitive   = false
 }
+
+variable "is_staging" {
+  type = bool
+}

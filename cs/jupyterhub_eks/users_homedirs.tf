@@ -20,8 +20,10 @@ resource "aws_security_group_rule" "efs_homedirs_allow_cluster" {
   from_port                = 2049
   to_port                  = 2049
   protocol                 = "tcp"
-  source_security_group_id = data.aws_eks_cluster.jupyterhub.vpc_config[0].cluster_security_group_id
+  source_security_group_id = data.aws_eks_cluster.jupyterhub[0].vpc_config[0].cluster_security_group_id
   security_group_id        = aws_security_group.efs_homedirs_sg.id
+
+  count = var.is_staging ? 1 : 0
 }
 
 resource "aws_efs_mount_target" "users_homedirs_a" {
@@ -31,6 +33,7 @@ resource "aws_efs_mount_target" "users_homedirs_a" {
   security_groups = [
     aws_security_group.efs_homedirs_sg.id,
   ]
+  count = var.is_staging ? 1 : 0
 }
 
 resource "aws_efs_mount_target" "users_homedirs_b" {
@@ -40,4 +43,5 @@ resource "aws_efs_mount_target" "users_homedirs_b" {
   security_groups = [
     aws_security_group.efs_homedirs_sg.id,
   ]
+  count = var.is_staging ? 1 : 0
 }
