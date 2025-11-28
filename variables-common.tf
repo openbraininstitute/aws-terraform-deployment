@@ -59,6 +59,11 @@ variable "core_web_app_preview_docker_image_url" {
   sensitive   = false
 }
 
+variable "core_web_app_stripe_publishable_key" {
+  type        = string
+  description = "Stripe publishable key for the core-web-app"
+}
+
 variable "neuroagent_docker_image_url" {
   default     = null
   type        = string

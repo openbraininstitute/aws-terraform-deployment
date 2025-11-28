@@ -81,21 +81,61 @@ variable "secrets_arn" {
   sensitive   = false
 }
 
-variable "accounting_base_url" {
+variable "auth_url" {
   type        = string
-  description = "Accounting service base URL"
   sensitive   = false
+  description = "NextAuth endpoint URL"
 }
 
-variable "env_NEXTAUTH_URL" {
+variable "deployment_env" {
   type        = string
   sensitive   = false
-  description = "NEXTAUTH_URL environment value for the webapp"
+  description = "Name of the deployment environment"
+  validation {
+    condition     = contains(["preview", "development", "staging", "production"], var.deployment_env)
+    error_message = "Invalid deployment environment name"
+  }
 }
-variable "env_KEYCLOAK_ISSUER" {
+
+variable "sanity_dataset" {
   type        = string
   sensitive   = false
-  description = "KEYCLOAK_ISSUER environment value for the webapp"
+  description = "Sanity dataset name"
+  validation {
+    condition     = contains(["staging", "production"], var.sanity_dataset)
+    error_message = "Invalid Sanity dataset name"
+  }
+}
+
+variable "stripe_publishable_key" {
+  type        = string
+  sensitive   = false
+  description = "Stripe publishable key"
+}
+
+variable "matomo_site_id" {
+  type        = string
+  sensitive   = false
+  description = "Matomo site ID"
+}
+
+# TODO: Check if we still need domain redirects, clean up if not.
+variable "primary_hostname" {
+  type        = string
+  sensitive   = false
+  description = "Used for domain redirect, e.g. https://openbluebrain.com -> https://www.openbraininstitute.org/"
+}
+
+variable "api_origin" {
+  type        = string
+  sensitive   = false
+  description = "Default origin for all API services"
+}
+
+variable "keycloak_issuer" {
+  type        = string
+  sensitive   = false
+  description = "Keycloak issuer URL"
 }
 
 # S3 and CloudFront Configuration Variables
