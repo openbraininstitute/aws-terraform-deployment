@@ -1,3 +1,77 @@
+locals {
+  # Shared task definition configuration
+  executor_base_config = {
+    network_mode             = "awsvpc"
+    cpu                      = var.executor_task_size.cpu
+    memory                   = var.executor_task_size.memory
+    requires_compatibilities = ["FARGATE"]
+    execution_role_arn       = aws_iam_role.executor_execution.arn
+    task_role_arn            = aws_iam_role.executor_task.arn
+  }
+
+  # Shared container base configuration
+  executor_container_base = {
+    name      = "main"
+    cpu       = var.executor_task_size.cpu
+    memory    = var.executor_task_size.memory
+    essential = true
+
+    mountPoints = [
+      {
+        containerPath = "/data/aws_s3_internal/public"
+        sourceVolume  = "public-internal-data"
+      },
+      {
+        containerPath = "/data/aws_s3_open"
+        sourceVolume  = "public-open-data"
+      }
+    ]
+
+    healthcheck = {
+      command     = ["CMD-SHELL", "exit 0"]
+      interval    = 60
+      timeout     = 5
+      startPeriod = 30
+      retries     = 3
+    }
+
+    logConfiguration = {
+      logDriver = "awslogs"
+      options = {
+        awslogs-group        = aws_cloudwatch_log_group.executor.name
+        awslogs-region       = var.aws_region
+        awslogs-create-group = "true"
+      }
+    }
+  }
+
+  # Shared volumes configuration
+  executor_volumes = [
+    {
+      name = "public-internal-data"
+      efs_volume_configuration = {
+        file_system_id     = var.public_launch_data_efs_id
+        transit_encryption = "ENABLED"
+        authorization_config = {
+          access_point_id = var.internal_public_data_access_point_id
+          iam             = "ENABLED"
+        }
+      }
+    },
+    {
+      name = "public-open-data"
+      efs_volume_configuration = {
+        file_system_id     = var.public_launch_data_efs_id
+        transit_encryption = "ENABLED"
+        authorization_config = {
+          access_point_id = var.open_public_data_access_point_id
+          iam             = "ENABLED"
+        }
+      }
+    }
+  ]
+}
+
 resource "aws_cloudwatch_log_group" "executor" {
   # TODO check if the logs can be encrypted
   name_prefix       = "launch_system_executor"
@@ -51,96 +125,104 @@ resource "aws_vpc_security_group_egress_rule" "executor_allow_outgoing_udp" {
 }
 
 resource "aws_ecs_task_definition" "default_executor" {
-  family       = "launch_system_default_executor_task_family"
-  network_mode = "awsvpc"
+  family                   = "launch_system_default_executor_task_family"
+  network_mode             = local.executor_base_config.network_mode
+  cpu                      = local.executor_base_config.cpu
+  memory                   = local.executor_base_config.memory
+  requires_compatibilities = local.executor_base_config.requires_compatibilities
+  execution_role_arn       = local.executor_base_config.execution_role_arn
+  task_role_arn            = local.executor_base_config.task_role_arn
 
   container_definitions = jsonencode([
-    {
-      name = "main"
-
-      # cpu and memory should be overridden by the orchestrator
-      cpu    = var.executor_task_size.cpu
-      memory = var.executor_task_size.memory
-
-      networkMode = "awsvpc"
-
+    merge(local.executor_container_base, {
       image = var.default_executor_image_url
-
-      essential = true
-
-      mountPoints = [
-        {
-          containerPath = "/data/aws_s3_internal/public",
-          sourceVolume  = "public-internal-data"
-        },
-        {
-          containerPath = "/data/aws_s3_open",
-          sourceVolume  = "public-open-data"
-        }
-      ]
-
-      healthcheck = {
-        command     = ["CMD-SHELL", "exit 0"] // TODO: add a proper health check once there is something to check the health of.
-        interval    = 60
-        timeout     = 5
-        startPeriod = 30
-        retries     = 3
-      }
-
       environment = [
         {
           name  = "DEPLOYMENT"
           value = var.deployment_env
         },
+        {
+          name  = "EXECUTOR_NAME"
+          value = "default"
+        },
       ]
-
-      logConfiguration = {
-        logDriver = "awslogs"
-        options = {
-          awslogs-group         = aws_cloudwatch_log_group.executor.name
-          awslogs-region        = var.aws_region
-          awslogs-create-group  = "true"
+      logConfiguration = merge(local.executor_container_base.logConfiguration, {
+        options = merge(local.executor_container_base.logConfiguration.options, {
           awslogs-stream-prefix = "launch_system_default_executor"
+        })
+      })
+    })
+  ])
+
+  dynamic "volume" {
+    for_each = local.executor_volumes
+    content {
+      name = volume.value.name
+      efs_volume_configuration {
+        file_system_id     = volume.value.efs_volume_configuration.file_system_id
+        transit_encryption = volume.value.efs_volume_configuration.transit_encryption
+        authorization_config {
+          access_point_id = volume.value.efs_volume_configuration.authorization_config.access_point_id
+          iam             = volume.value.efs_volume_configuration.authorization_config.iam
         }
       }
     }
+  }
+
+  depends_on = [
+    aws_cloudwatch_log_group.executor,
+  ]
+}
+resource "aws_ecs_task_definition" "inait_executor" {
+  family                   = "launch_system_inait_executor_task_family"
+  network_mode             = local.executor_base_config.network_mode
+  cpu                      = local.executor_base_config.cpu
+  memory                   = local.executor_base_config.memory
+  requires_compatibilities = local.executor_base_config.requires_compatibilities
+  execution_role_arn       = local.executor_base_config.execution_role_arn
+  task_role_arn            = local.executor_base_config.task_role_arn
+
+  container_definitions = jsonencode([
+    merge(local.executor_container_base, {
+      image = var.default_executor_image_url
+      environment = [
+        {
+          name  = "DEPLOYMENT"
+          value = var.deployment_env
+        },
+        {
+          name  = "EXECUTOR_NAME"
+          value = "inait"
+        },
+      ]
+      secrets = [
+        {
+          name      = "GITHUB_DEPLOY_KEY_B64"
+          valueFrom = "${var.secrets_arn}:GITHUB_DEPLOY_KEY_B64__inait::"
+        },
+      ]
+      logConfiguration = merge(local.executor_container_base.logConfiguration, {
+        options = merge(local.executor_container_base.logConfiguration.options, {
+          awslogs-stream-prefix = "launch_system_inait_executor"
+        })
+      })
+    })
   ])
 
-  volume {
-    name = "public-internal-data"
-
-    efs_volume_configuration {
-      file_system_id     = var.public_launch_data_efs_id
-      transit_encryption = "ENABLED"
-      authorization_config {
-        access_point_id = var.internal_public_data_access_point_id
-        iam             = "ENABLED"
+  dynamic "volume" {
+    for_each = local.executor_volumes
+    content {
+      name = volume.value.name
+      efs_volume_configuration {
+        file_system_id     = volume.value.efs_volume_configuration.file_system_id
+        transit_encryption = volume.value.efs_volume_configuration.transit_encryption
+        authorization_config {
+          access_point_id = volume.value.efs_volume_configuration.authorization_config.access_point_id
+          iam             = volume.value.efs_volume_configuration.authorization_config.iam
+        }
       }
     }
   }
-
-  volume {
-    name = "public-open-data"
-
-    efs_volume_configuration {
-      file_system_id     = var.public_launch_data_efs_id
-      transit_encryption = "ENABLED"
-      authorization_config {
-        access_point_id = var.open_public_data_access_point_id
-        iam             = "ENABLED"
-      }
-    }
-  }
-
-
-  # cpu and memory should be overridden by the orchestrator
-  cpu    = var.executor_task_size.cpu
-  memory = var.executor_task_size.memory
-
-  requires_compatibilities = ["FARGATE"]
-
-  execution_role_arn = aws_iam_role.executor_execution.arn
-  task_role_arn      = aws_iam_role.executor_task.arn
 
   depends_on = [
     aws_cloudwatch_log_group.executor,
