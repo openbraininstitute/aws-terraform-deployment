@@ -58,6 +58,16 @@ resource "aws_datasync_location_s3" "internal_source" {
   }
 }
 
+resource "aws_datasync_location_s3" "opendata_source" {
+  count         = length(local.opendata_paths)
+  s3_bucket_arn = "arn:aws:s3:::${var.entitycore_internal_bucket}"
+  subdirectory  = local.opendata_paths[count.index]
+
+  s3_config {
+    bucket_access_role_arn = aws_iam_role.datasync_s3_role.arn
+  }
+}
+
 resource "aws_datasync_location_efs" "internal_destination" {
   efs_file_system_arn = aws_efs_file_system.public_launch_data.arn
   subdirectory        = var.internal_public_data_mountpath
@@ -101,5 +111,30 @@ resource "aws_datasync_location_efs" "opendata_destination" {
   ec2_config {
     security_group_arns = [aws_security_group.public_launch_efs.arn]
     subnet_arn          = "arn:aws:ec2:${var.aws_region}:${var.account_id}:subnet/${var.access_point_subnet_ids[0]}"
+  }
+}
+
+resource "aws_datasync_taks" "opendata_s3_to_efs" {
+  count                    = length(local.opendata_paths)
+  destination_location_arn = aws_datasync_location_efs.opendata_destination.arn
+  source_location_arn      = aws_datasync_location_s3.opendata_source[count.index].arn
+  name                     = "opendata-s3-to-efs-sync"
+
+  options {
+    verify_mode            = "ONLY_FILES_TRANSFERRED"
+    preserve_deleted_files = "REMOVE"
+    atime                  = "BEST_EFFORT"
+    mtime                  = "PRESERVE"
+    uid                    = "INT_VALUE"
+    gid                    = "INT_VALUE"
+    posix_permissions      = "PRESERVE"
+    preserve_devices       = "NONE"
+    bytes_per_second       = -1 # unlimited
+  }
+
+  schedule {
+    # apparently you can't have `*` in both day-of-month and day-of-week - one needs to be a ? instead
+    # minute | hour | day of month | month | day of week | year
+    schedule_expression = "cron(0 0 ? * * *)"
   }
 }
