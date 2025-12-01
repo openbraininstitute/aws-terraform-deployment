@@ -11,10 +11,11 @@ locals {
 
   # Shared container base configuration
   executor_container_base = {
-    name      = "main"
-    cpu       = var.executor_task_size.cpu
-    memory    = var.executor_task_size.memory
-    essential = true
+    name               = "main"
+    cpu                = var.executor_task_size.cpu
+    memory             = var.executor_task_size.memory
+    essential          = true
+    initProcessEnabled = true # prevent zombies
 
     mountPoints = [
       {
