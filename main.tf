@@ -842,6 +842,9 @@ module "public_data_efs" {
   entitycore_internal_region = var.entitycore_svc_aws_s3_internal_region
   open_data_bucket           = var.entitycore_svc_aws_s3_open_bucket
   open_data_region           = var.entitycore_svc_aws_s3_open_region
+
+  internal_public_data_mountpath = "/data/aws_s3_internal/public"
+  open_data_mountpath            = "/data/aws_s3_internal/public"
 }
 
 module "launch_system" {

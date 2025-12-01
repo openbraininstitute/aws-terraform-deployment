@@ -37,3 +37,13 @@ variable "open_data_region" {
   type        = string
   description = "S3 region name in which open data lives."
 }
+
+variable "internal_public_data_mountpath" {
+  type        = string
+  description = "Path on which internal public data will be available in EFS"
+}
+
+variable "open_data_mountpath" {
+  type        = string
+  description = "Path on which opendata will be available in EFS"
+}

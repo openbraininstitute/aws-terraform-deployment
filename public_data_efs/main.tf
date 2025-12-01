@@ -50,7 +50,7 @@ resource "aws_efs_access_point" "internal_public_data_readonly" {
   file_system_id = aws_efs_file_system.public_launch_data.id
 
   root_directory {
-    path = "/data/aws_s3_internal/public"
+    path = var.internal_public_data_mountpath
     creation_info {
       owner_gid   = 1000
       owner_uid   = 1000
@@ -72,7 +72,7 @@ resource "aws_efs_access_point" "open_public_data_readonly" {
   file_system_id = aws_efs_file_system.public_launch_data.id
 
   root_directory {
-    path = "/data/aws_s3_open"
+    path = var.open_data_mountpath
     creation_info {
       owner_gid   = 1000
       owner_uid   = 1000

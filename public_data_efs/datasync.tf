@@ -56,7 +56,7 @@ resource "aws_datasync_location_s3" "internal_source" {
 
 resource "aws_datasync_location_efs" "internal_destination" {
   efs_file_system_arn = aws_efs_file_system.public_launch_data.arn
-  subdirectory        = "/data/aws_s3_internal/public"
+  subdirectory        = var.internal_public_data_mountpath
 
   ec2_config {
     security_group_arns = [aws_security_group.public_launch_efs.arn]
@@ -91,3 +91,14 @@ resource "aws_datasync_task" "internal_s3_to_efs" {
 }
 
 # TODO add datasync source / destination / task for opendata once we know exactly which prefixes we want to sync
+
+resource "aws_datasync_location_efs" "opendata_destinations" {
+  count               = 1
+  efs_file_system_arn = aws_efs_file_system.public_launch_data.arn
+  subdirectory        = var.open_data_mountpath
+
+  ec2_config {
+    security_group_arns = [aws_security_group.public_launch_efs.arn]
+    subnet_arn          = "arn:aws:ec2:${var.aws_region}:${var.account_id}:subnet/${var.access_point_subnet_ids[0]}"
+  }
+}
