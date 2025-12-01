@@ -28,12 +28,12 @@ variable "entitycore_internal_region" {
   description = "S3 region name in which entitycore data lives."
 }
 
-variable "open_data_bucket" {
+variable "opendata_bucket" {
   type        = string
   description = "S3 bucket name in which open data lives."
 }
 
-variable "open_data_region" {
+variable "opendata_region" {
   type        = string
   description = "S3 region name in which open data lives."
 }
@@ -43,12 +43,12 @@ variable "internal_public_data_mountpath" {
   description = "Path on which internal public data will be available in EFS"
 }
 
-variable "open_data_mountpath" {
+variable "opendata_mountpath" {
   type        = string
   description = "Path on which opendata will be available in EFS"
 }
 
-variable "open_data_paths_list" {
+variable "opendata_paths_list" {
   type        = string
   description = "File in which the paths to sync on opendata are listed, one per line"
 }

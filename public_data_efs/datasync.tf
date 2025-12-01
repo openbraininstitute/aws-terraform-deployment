@@ -1,5 +1,5 @@
 locals {
-  opendata_paths = split("\n", file(var.open_data_paths_list))
+  opendata_paths = split("\n", file(var.opendata_paths_list))
 }
 
 resource "aws_iam_role" "datasync_s3_role" {
@@ -96,7 +96,7 @@ resource "aws_datasync_task" "internal_s3_to_efs" {
 
 resource "aws_datasync_location_efs" "opendata_destination" {
   efs_file_system_arn = aws_efs_file_system.public_launch_data.arn
-  subdirectory        = var.open_data_mountpath
+  subdirectory        = var.opendata_mountpath
 
   ec2_config {
     security_group_arns = [aws_security_group.public_launch_efs.arn]
