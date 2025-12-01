@@ -372,3 +372,8 @@ variable "launch_system_orchestrator_num_workers" {
   description = "Number of workers processing the queues in the orchestrator task."
   type        = number
 }
+
+variable "open_data_paths_list" {
+  type        = string
+  description = "File in which the paths to sync on opendata are listed, one per line"
+}

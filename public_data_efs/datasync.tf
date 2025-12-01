@@ -1,3 +1,7 @@
+locals {
+  opendata_paths = split("\n", file(var.open_data_paths_list))
+}
+
 resource "aws_iam_role" "datasync_s3_role" {
   name = "datasync-s3-role"
 
@@ -90,10 +94,7 @@ resource "aws_datasync_task" "internal_s3_to_efs" {
   }
 }
 
-# TODO add datasync source / destination / task for opendata once we know exactly which prefixes we want to sync
-
-resource "aws_datasync_location_efs" "opendata_destinations" {
-  count               = 1
+resource "aws_datasync_location_efs" "opendata_destination" {
   efs_file_system_arn = aws_efs_file_system.public_launch_data.arn
   subdirectory        = var.open_data_mountpath
 

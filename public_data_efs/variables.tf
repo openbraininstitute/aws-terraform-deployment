@@ -47,3 +47,8 @@ variable "open_data_mountpath" {
   type        = string
   description = "Path on which opendata will be available in EFS"
 }
+
+variable "open_data_paths_list" {
+  type        = string
+  description = "File in which the paths to sync on opendata are listed, one per line"
+}

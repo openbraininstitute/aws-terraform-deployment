@@ -845,6 +845,7 @@ module "public_data_efs" {
 
   internal_public_data_mountpath = "/data/aws_s3_internal/public"
   open_data_mountpath            = "/data/aws_s3_internal/public"
+  open_data_paths_list           = var.open_data_paths_list
 }
 
 module "launch_system" {
