@@ -375,5 +375,5 @@ variable "launch_system_orchestrator_num_workers" {
 
 variable "opendata_paths_list" {
   type        = string
-  description = "File in which the paths to sync on opendata are listed, one per line"
+  description = "File in which the paths to sync on opendata are listed, one per line. Should exist in modules/public_data_efs"
 }

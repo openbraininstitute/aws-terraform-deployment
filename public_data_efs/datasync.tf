@@ -1,5 +1,5 @@
 locals {
-  opendata_paths = split("\n", file(var.opendata_paths_list))
+  opendata_paths = split("\n", file("${path.module}/${var.opendata_paths_list}"))
 }
 
 resource "aws_iam_role" "datasync_s3_role" {
@@ -114,7 +114,7 @@ resource "aws_datasync_location_efs" "opendata_destination" {
   }
 }
 
-resource "aws_datasync_taks" "opendata_s3_to_efs" {
+resource "aws_datasync_task" "opendata_s3_to_efs" {
   count                    = length(local.opendata_paths)
   destination_location_arn = aws_datasync_location_efs.opendata_destination.arn
   source_location_arn      = aws_datasync_location_s3.opendata_source[count.index].arn
