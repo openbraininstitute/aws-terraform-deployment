@@ -94,5 +94,5 @@ module "secret_sharing_svc" {
 
 module "guardduty" {
   source     = "./guardduty"
-  is_enabled = var.is_staging || var.is_production ? true : false # only enabled in staging and production
+  is_enabled = false # enabled via https://github.com/openbraininstitute/aws-terraform-security-governance
 }
