@@ -469,6 +469,7 @@ module "core_webapp_main" {
 
   # remove 'www.' from local.primary_domain and prepend 'cdn'. ie: cdn.openbraininstitute.org
   cloudfront_aliases         = [join(".", ["cdn", trimprefix(local.primary_domain, "www.")])]
+  domain_name                = local.primary_domain
   cloudfront_certificate_arn = local.cloudfront_certificate_arn
 
   env_NEXTAUTH_URL    = "https://${local.primary_domain}/api/auth"

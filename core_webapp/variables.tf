@@ -129,3 +129,10 @@ variable "sbo_billing_tag" {
   default     = "core_webapp"
   sensitive   = false
 }
+
+variable "domain_name" {
+  type        = string
+  description = "ALB domain name"
+  default     = null
+  sensitive   = false
+}
