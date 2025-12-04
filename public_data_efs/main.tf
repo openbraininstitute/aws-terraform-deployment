@@ -30,7 +30,7 @@ resource "aws_security_group" "public_launch_efs" {
 
 resource "aws_vpc_security_group_egress_rule" "datasync_nfs_access" {
   security_group_id = aws_security_group.public_launch_efs.id
-  description       = "Allow NFS traffic from VPC"
+  description       = "Allow NFS traffic to VPC"
   from_port         = 2049
   to_port           = 2049
   ip_protocol       = "tcp"

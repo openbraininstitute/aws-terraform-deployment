@@ -1,5 +1,5 @@
 locals {
-  opendata_paths = split("\n", file("${path.module}/${var.opendata_paths_list}"))
+  opendata_paths = trim(replace(file("${path.module}/${var.opendata_paths_list}"), "\n", "|"), "|")
 }
 
 resource "aws_iam_role" "datasync_s3_role" {
@@ -42,7 +42,9 @@ resource "aws_iam_role_policy" "datasync_s3_policy" {
         ]
         Resource = [
           "arn:aws:s3:::${var.entitycore_internal_bucket}",
-          "arn:aws:s3:::${var.entitycore_internal_bucket}/*"
+          "arn:aws:s3:::${var.entitycore_internal_bucket}/*",
+          "arn:aws:s3:::${var.opendata_bucket}",
+          "arn:aws:s3:::${var.opendata_bucket}/*"
         ]
       }
     ]
@@ -59,9 +61,8 @@ resource "aws_datasync_location_s3" "internal_source" {
 }
 
 resource "aws_datasync_location_s3" "opendata_source" {
-  count         = length(local.opendata_paths)
-  s3_bucket_arn = "arn:aws:s3:::${var.entitycore_internal_bucket}"
-  subdirectory  = local.opendata_paths[count.index]
+  s3_bucket_arn = "arn:aws:s3:::${var.opendata_bucket}"
+  subdirectory  = "/"
 
   s3_config {
     bucket_access_role_arn = aws_iam_role.datasync_s3_role.arn
@@ -115,10 +116,14 @@ resource "aws_datasync_location_efs" "opendata_destination" {
 }
 
 resource "aws_datasync_task" "opendata_s3_to_efs" {
-  count                    = length(local.opendata_paths)
   destination_location_arn = aws_datasync_location_efs.opendata_destination.arn
-  source_location_arn      = aws_datasync_location_s3.opendata_source[count.index].arn
-  name                     = "opendata-s3-to-efs-sync"
+  source_location_arn      = aws_datasync_location_s3.opendata_source.arn
+  includes {
+    filter_type = "SIMPLE_PATTERN"     # there's such an overwhelming amount of choice I had difficulty making a decision
+    value       = local.opendata_paths # may the Gods (past, present, and future) have mercy on whoever tries to read this in the console
+  }
+
+  name = "opendata-s3-to-efs-sync"
 
   options {
     verify_mode            = "ONLY_FILES_TRANSFERRED"
