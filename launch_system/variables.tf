@@ -86,6 +86,11 @@ variable "az_region" {
   type        = string
 }
 
+variable "az_instance_types" {
+  description = "JSON of what the the mapping of instance type to azure queue is; format is 'name' -> 'batchpoolname'."
+  type        = string
+}
+
 variable "internet_access_route_id" {
   type = string
 }

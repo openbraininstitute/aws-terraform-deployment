@@ -892,7 +892,11 @@ module "launch_system" {
   accounting_url        = "https://${local.primary_domain}/api/accounting"
   auth_manager_url      = "https://${local.primary_domain}/api/auth-manager"
 
-  az_region          = "eastus"
+  az_region = "eastus"
+  az_instance_types = jsonencode({
+    "large" = "largenode",
+    "small" = "timestamped-neurodamus",
+  })
   keycloak_client_id = "obi-entitysdk-auth"
 
   public_launch_data_efs_id            = module.public_data_efs[0].public_launch_data_efs_id

@@ -136,6 +136,10 @@ resource "aws_ecs_task_definition" "api" {
           value = var.az_region
         },
         {
+          name  = "AZ_INSTANCE_TYPES"
+          value = var.az_instance_types
+        },
+        {
           name  = "TOKEN_LIFETIME_EXTENSION_INTERVAL"
           value = var.token_lifetime_extension_interval
         },
