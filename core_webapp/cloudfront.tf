@@ -147,8 +147,8 @@ resource "aws_cloudfront_cache_policy" "core_webapp_next_image" {
   count       = var.key == "main" ? 1 : 0
   name        = "core-webapp-${var.key}-next-image-policy"
   comment     = "Cache policy for Next.js image optimization"
-  default_ttl = 86400 # 1 day
-  max_ttl     = 86400 # 1 day
+  default_ttl = 1209600 # 14 days
+  max_ttl     = 2592000 # 1 month
   min_ttl     = 0
 
   parameters_in_cache_key_and_forwarded_to_origin {
