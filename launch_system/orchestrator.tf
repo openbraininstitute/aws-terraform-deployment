@@ -126,6 +126,10 @@ resource "aws_ecs_task_definition" "orchestrator" {
           name  = "NUM_WORKERS"
           value = tostring(var.orchestrator_num_workers)
         },
+        {
+          name  = "VENDOR"
+          value = "aws"
+        },
       ]
 
       secrets = [
