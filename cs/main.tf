@@ -91,8 +91,3 @@ module "secret_sharing_svc" {
     memory = 512
   }
 }
-
-module "guardduty" {
-  source     = "./guardduty"
-  is_enabled = false # enabled via https://github.com/openbraininstitute/aws-terraform-security-governance
-}

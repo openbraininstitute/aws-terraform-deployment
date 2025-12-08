@@ -142,6 +142,36 @@ resource "aws_cloudfront_cache_policy" "core_webapp_images" {
   }
 }
 
+# next image optimization cache policy
+resource "aws_cloudfront_cache_policy" "core_webapp_next_image" {
+  count       = var.key == "main" ? 1 : 0
+  name        = "core-webapp-${var.key}-next-image-policy"
+  comment     = "Cache policy for Next.js image optimization"
+  default_ttl = 1209600 # 14 days
+  max_ttl     = 2592000 # 1 month
+  min_ttl     = 0
+
+  parameters_in_cache_key_and_forwarded_to_origin {
+    enable_accept_encoding_brotli = true
+    enable_accept_encoding_gzip   = true
+
+    query_strings_config {
+      query_string_behavior = "all"
+    }
+
+    headers_config {
+      header_behavior = "whitelist"
+      headers {
+        items = ["Accept"]
+      }
+    }
+
+    cookies_config {
+      cookie_behavior = "none"
+    }
+  }
+}
+
 # CloudFront distribution
 resource "aws_cloudfront_distribution" "core_webapp_cdn" {
   count           = var.key == "main" ? 1 : 0
@@ -160,6 +190,20 @@ resource "aws_cloudfront_distribution" "core_webapp_cdn" {
     origin_access_control_id = aws_cloudfront_origin_access_control.core_webapp_oac[0].id
   }
 
+  dynamic "origin" {
+    for_each = var.key == "main" ? ["main"] : []
+    content {
+      domain_name = var.domain_name
+      origin_id   = "ALB-${var.key}"
+      custom_origin_config {
+        http_port              = 80
+        https_port             = 443
+        origin_protocol_policy = "https-only"
+        origin_ssl_protocols   = ["TLSv1.2"]
+      }
+    }
+  }
+
   default_cache_behavior {
     allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods         = ["GET", "HEAD"]
@@ -167,6 +211,19 @@ resource "aws_cloudfront_distribution" "core_webapp_cdn" {
     cache_policy_id        = aws_cloudfront_cache_policy.core_webapp_default[0].id
     compress               = true
     viewer_protocol_policy = "redirect-to-https"
+  }
+
+  dynamic "ordered_cache_behavior" {
+    for_each = var.key == "main" ? ["main"] : []
+    content {
+      path_pattern           = "/_next/image/*"
+      allowed_methods        = ["GET", "HEAD"]
+      cached_methods         = ["GET", "HEAD"]
+      target_origin_id       = "ALB-${var.key}"
+      cache_policy_id        = aws_cloudfront_cache_policy.core_webapp_next_image[0].id
+      compress               = true
+      viewer_protocol_policy = "redirect-to-https"
+    }
   }
 
   ordered_cache_behavior {
