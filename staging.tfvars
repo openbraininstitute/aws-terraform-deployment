@@ -141,5 +141,3 @@ launch_system_executor_task_size = {
 }
 
 launch_system_orchestrator_num_workers = 2
-
-opendata_paths_list = "staging_opendata_paths.txt"
