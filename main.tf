@@ -844,7 +844,7 @@ module "public_data_efs" {
   opendata_region            = var.entitycore_svc_aws_s3_open_region
 
   internal_public_data_mountpath = "/data/aws_s3_internal/public"
-  opendata_mountpath             = "/data/aws_s3_internal/public"
+  opendata_mountpath             = "/data/aws_s3_open"
   opendata_paths_list            = var.opendata_paths_list
 }
 
