@@ -119,8 +119,8 @@ resource "aws_datasync_task" "opendata_s3_to_efs" {
   destination_location_arn = aws_datasync_location_efs.opendata_destination.arn
   source_location_arn      = aws_datasync_location_s3.opendata_source.arn
   includes {
-    filter_type = "SIMPLE_PATTERN"     # there's such an overwhelming amount of choice I had difficulty making a decision
-    value       = local.opendata_paths # may the Gods (past, present, and future) have mercy on whoever tries to read this in the console
+    filter_type = "SIMPLE_PATTERN"
+    value       = local.opendata_paths
   }
 
   name = "opendata-s3-to-efs-sync"
