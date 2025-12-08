@@ -1,3 +1,7 @@
+locals {
+  opendata_paths = trim(replace(file("${path.module}/${var.opendata_paths_list}"), "\n", "|"), "|")
+}
+
 resource "aws_iam_role" "datasync_s3_role" {
   name = "datasync-s3-role"
 
@@ -38,7 +42,9 @@ resource "aws_iam_role_policy" "datasync_s3_policy" {
         ]
         Resource = [
           "arn:aws:s3:::${var.entitycore_internal_bucket}",
-          "arn:aws:s3:::${var.entitycore_internal_bucket}/*"
+          "arn:aws:s3:::${var.entitycore_internal_bucket}/*",
+          "arn:aws:s3:::${var.opendata_bucket}",
+          "arn:aws:s3:::${var.opendata_bucket}/*"
         ]
       }
     ]
@@ -54,9 +60,18 @@ resource "aws_datasync_location_s3" "internal_source" {
   }
 }
 
+resource "aws_datasync_location_s3" "opendata_source" {
+  s3_bucket_arn = "arn:aws:s3:::${var.opendata_bucket}"
+  subdirectory  = "/"
+
+  s3_config {
+    bucket_access_role_arn = aws_iam_role.datasync_s3_role.arn
+  }
+}
+
 resource "aws_datasync_location_efs" "internal_destination" {
   efs_file_system_arn = aws_efs_file_system.public_launch_data.arn
-  subdirectory        = "/data/aws_s3_internal/public"
+  subdirectory        = var.internal_public_data_mountpath
 
   ec2_config {
     security_group_arns = [aws_security_group.public_launch_efs.arn]
@@ -90,4 +105,41 @@ resource "aws_datasync_task" "internal_s3_to_efs" {
   }
 }
 
-# TODO add datasync source / destination / task for opendata once we know exactly which prefixes we want to sync
+resource "aws_datasync_location_efs" "opendata_destination" {
+  efs_file_system_arn = aws_efs_file_system.public_launch_data.arn
+  subdirectory        = var.opendata_mountpath
+
+  ec2_config {
+    security_group_arns = [aws_security_group.public_launch_efs.arn]
+    subnet_arn          = "arn:aws:ec2:${var.aws_region}:${var.account_id}:subnet/${var.access_point_subnet_ids[0]}"
+  }
+}
+
+resource "aws_datasync_task" "opendata_s3_to_efs" {
+  destination_location_arn = aws_datasync_location_efs.opendata_destination.arn
+  source_location_arn      = aws_datasync_location_s3.opendata_source.arn
+  includes {
+    filter_type = "SIMPLE_PATTERN"
+    value       = local.opendata_paths
+  }
+
+  name = "opendata-s3-to-efs-sync"
+
+  options {
+    verify_mode            = "ONLY_FILES_TRANSFERRED"
+    preserve_deleted_files = "REMOVE"
+    atime                  = "BEST_EFFORT"
+    mtime                  = "PRESERVE"
+    uid                    = "INT_VALUE"
+    gid                    = "INT_VALUE"
+    posix_permissions      = "PRESERVE"
+    preserve_devices       = "NONE"
+    bytes_per_second       = -1 # unlimited
+  }
+
+  schedule {
+    # apparently you can't have `*` in both day-of-month and day-of-week - one needs to be a ? instead
+    # minute | hour | day of month | month | day of week | year
+    schedule_expression = "cron(0 0 ? * * *)"
+  }
+}
