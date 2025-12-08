@@ -30,7 +30,7 @@ resource "aws_security_group" "public_launch_efs" {
 
 resource "aws_vpc_security_group_egress_rule" "datasync_nfs_access" {
   security_group_id = aws_security_group.public_launch_efs.id
-  description       = "Allow NFS traffic to VPC"
+  description       = "Allow NFS traffic from VPC"
   from_port         = 2049
   to_port           = 2049
   ip_protocol       = "tcp"
@@ -50,7 +50,7 @@ resource "aws_efs_access_point" "internal_public_data_readonly" {
   file_system_id = aws_efs_file_system.public_launch_data.id
 
   root_directory {
-    path = var.internal_public_data_mountpath
+    path = "/data/aws_s3_internal/public"
     creation_info {
       owner_gid   = 1000
       owner_uid   = 1000
@@ -72,7 +72,7 @@ resource "aws_efs_access_point" "open_public_data_readonly" {
   file_system_id = aws_efs_file_system.public_launch_data.id
 
   root_directory {
-    path = var.opendata_mountpath
+    path = "/data/aws_s3_open"
     creation_info {
       owner_gid   = 1000
       owner_uid   = 1000

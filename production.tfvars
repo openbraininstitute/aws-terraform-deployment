@@ -137,5 +137,3 @@ launch_system_executor_task_size = {
   memory = 1024
 }
 launch_system_orchestrator_num_workers = 2
-
-opendata_paths_list = "production_opendata_paths.txt"
