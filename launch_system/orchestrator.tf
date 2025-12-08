@@ -61,8 +61,6 @@ resource "aws_ecs_task_definition" "orchestrator" {
       cpu    = var.orchestrator_task_size.cpu
       memory = var.orchestrator_task_size.memory
 
-      networkMode = "awsvpc"
-
       image = var.orchestrator_image_url
 
       essential = true
@@ -95,6 +93,14 @@ resource "aws_ecs_task_definition" "orchestrator" {
         {
           name  = "WORKER_AWS_ECS_TASK_FAMILY"
           value = aws_ecs_task_definition.default_executor.family
+        },
+        {
+          name = "WORKER_AWS_ECS_TASK_FAMILIES"
+          value = jsonencode(
+            {
+              "openbraininstitute-partners/inait" : aws_ecs_task_definition.inait_executor.family,
+            }
+          )
         },
         {
           name  = "WORKER_AWS_ECS_TASK_SUBNETS"
@@ -256,6 +262,7 @@ resource "aws_iam_policy" "orchestrator_ecs_run_task" {
         ]
         Resource = [
           aws_ecs_task_definition.default_executor.arn,
+          aws_ecs_task_definition.inait_executor.arn,
         ]
       },
       {

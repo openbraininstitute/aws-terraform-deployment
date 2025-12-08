@@ -105,6 +105,7 @@ variable "secrets_arn" {
   # AZ_BATCH_ACCOUNT_NAME
   # AZ_BATCH_POOL_NAME
   # AZ_UPLOAD_BLOB_SAS_URL
+  # GITHUB_DEPLOY_KEY_B64__inait
 
   type = string
 }
