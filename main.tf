@@ -469,6 +469,7 @@ module "core_webapp_main" {
 
   # remove 'www.' from local.primary_domain and prepend 'cdn'. ie: cdn.openbraininstitute.org
   cloudfront_aliases         = [join(".", ["cdn", trimprefix(local.primary_domain, "www.")])]
+  domain_name                = local.primary_domain
   cloudfront_certificate_arn = local.cloudfront_certificate_arn
 
   env_NEXTAUTH_URL    = "https://${local.primary_domain}/api/auth"
@@ -855,9 +856,9 @@ module "launch_system" {
   db_username     = "launch"
   obi_backup_plan = "obi_plan"
 
-  api_image_url              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2025.11.4"
-  orchestrator_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2025.11.4"
-  default_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/default-executor:2025.11.4"
+  api_image_url              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2025.12.0"
+  orchestrator_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2025.12.0"
+  default_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/default-executor:2025.12.0"
 
   api_task_size          = var.launch_system_api_task_size
   executor_task_size     = var.launch_system_executor_task_size
@@ -876,7 +877,11 @@ module "launch_system" {
   accounting_url        = "https://${local.primary_domain}/api/accounting"
   auth_manager_url      = "https://${local.primary_domain}/api/auth-manager"
 
-  az_region          = "eastus"
+  az_region = "eastus"
+  az_instance_types = jsonencode({
+    "large" = "largenode",
+    "small" = "timestamped-neurodamus",
+  })
   keycloak_client_id = "obi-entitysdk-auth"
 
   public_launch_data_efs_id            = module.public_data_efs[0].public_launch_data_efs_id
