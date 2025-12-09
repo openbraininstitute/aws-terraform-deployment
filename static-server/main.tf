@@ -52,7 +52,7 @@ resource "aws_lb_target_group" "static_data_tg" {
     timeout             = 10
     healthy_threshold   = 2
     unhealthy_threshold = 2
-    matcher             = "200"
+    matcher             = "200,301"
   }
 }
 
