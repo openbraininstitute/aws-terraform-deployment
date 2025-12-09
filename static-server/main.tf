@@ -46,7 +46,7 @@ resource "aws_lb_target_group" "static_data_tg" {
 
   // TODO: improve the health check not to rely on a static file.
   health_check {
-    path                = "/static/coming-soon/index.html"
+    path                = "/sitemap.xml"
     protocol            = "HTTP"
     interval            = 30
     timeout             = 10
@@ -142,74 +142,6 @@ resource "aws_s3_bucket_policy" "static_storage" {
       }
     ]
   })
-}
-
-resource "aws_lb_listener_rule" "static_data" {
-  listener_arn = var.alb_listener_arn
-  priority     = var.alb_listener_rule_priority
-
-  action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.static_data_tg.arn
-  }
-
-  condition {
-    host_header {
-      values = [var.domain_name]
-    }
-  }
-
-  condition {
-    path_pattern {
-      values = ["/static/*"]
-    }
-  }
-}
-
-locals {
-  coming_soon_page_files = [
-    {
-      key          = "static/coming-soon/index.html"
-      source       = "${path.module}/coming-soon-page/index.html"
-      content_type = "text/html"
-    },
-    {
-      key          = "static/coming-soon/css/BBOPLogo.png"
-      source       = "${path.module}/coming-soon-page/css/BBOPLogo.png"
-      content_type = "text/png"
-    },
-    {
-      key          = "static/coming-soon/css/styles.css"
-      source       = "${path.module}/coming-soon-page/css/styles.css"
-      content_type = "text/css"
-    },
-    {
-      key          = "static/coming-soon/css/hippocampus-light.avif"
-      source       = "${path.module}/coming-soon-page/css/hippocampus-light.avif"
-      content_type = "image/avif"
-    },
-    {
-      key          = "static/coming-soon/css/hippocampus-light.png"
-      source       = "${path.module}/coming-soon-page/css/hippocampus-light.png"
-      content_type = "image/png"
-    },
-    {
-      key          = "static/coming-soon/css/hippocampus-light.webp"
-      source       = "${path.module}/coming-soon-page/css/hippocampus-light.webp"
-      content_type = "image/webp"
-    }
-  ]
-}
-
-resource "aws_s3_object" "coming_soon_page" {
-  count  = length(local.coming_soon_page_files)
-  bucket = var.static_content_bucket_name
-
-  key          = local.coming_soon_page_files[count.index].key
-  source       = local.coming_soon_page_files[count.index].source
-  content_type = local.coming_soon_page_files[count.index].content_type
-
-  etag = filemd5(local.coming_soon_page_files[count.index].source)
 }
 
 locals {
