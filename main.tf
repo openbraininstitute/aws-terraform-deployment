@@ -654,6 +654,9 @@ module "auth_manager" {
 
   primary_domain = local.primary_domain
 
+  # TODO Revert this back to staging. once the core web app with auth-manager support is deployed.
+  client_redirect_domain = "dev.openbraininstitute.org"
+
   image_url = var.auth_manager_svc_image_url
 
   keycloak_client_uuid = var.keycloak_client_uuid
