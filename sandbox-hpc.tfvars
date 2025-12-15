@@ -94,7 +94,7 @@ hpc_av_zone_suffixes                        = ["a"]
 
 entitycore_svc_aws_s3_internal_bucket    = "sbonexusdata-sandbox" # while testing launch system public data
 entitycore_svc_aws_s3_internal_region    = "us-east-1"
-entitycore_svc_aws_s3_open_bucket        = "sbosandbox-lec3cn" # while testing launch system public data
+entitycore_svc_aws_s3_open_bucket        = "openbluebrain" # while testing launch system public data
 entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["*"]
 entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.9.3"
