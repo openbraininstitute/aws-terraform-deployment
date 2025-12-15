@@ -92,9 +92,9 @@ hpc_resource_provisioner_scratch_bucket_arn = "arn:aws:s3:::sbosandbox-lec3cn"
 pcluster_ami_id                             = "ami-027ff2490377d3048"
 hpc_av_zone_suffixes                        = ["a"]
 
-entitycore_svc_aws_s3_internal_bucket    = "entitycore-data-sandbox-hpc"
+entitycore_svc_aws_s3_internal_bucket    = "sbonexusdata-sandbox" # while testing launch system public data
 entitycore_svc_aws_s3_internal_region    = "us-east-1"
-entitycore_svc_aws_s3_open_bucket        = "openbluebrain"
+entitycore_svc_aws_s3_open_bucket        = "sbosandbox-lec3cn" # while testing launch system public data
 entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["*"]
 entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.9.3"
@@ -128,3 +128,5 @@ launch_system_executor_task_size = {
 }
 
 launch_system_orchestrator_num_workers = 2
+
+opendata_paths_list = "staging_opendata_paths.txt"

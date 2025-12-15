@@ -25,3 +25,13 @@ provider "aws" {
 provider "awscc" {
   region = "us-east-1"
 }
+
+provider "aws" {
+  region = "us-west-2"
+  alias  = "uswest2"
+  default_tags {
+    tags = {
+      SBO_Billing = "common"
+    }
+  }
+}

@@ -1,3 +1,7 @@
+locals {
+  opendata_paths = trim(replace(file("${path.module}/${var.opendata_paths_list}"), "\n", "|"), "|")
+}
+
 resource "aws_iam_role" "datasync_s3_role" {
   name = "datasync-s3-role"
 
@@ -38,7 +42,9 @@ resource "aws_iam_role_policy" "datasync_s3_policy" {
         ]
         Resource = [
           "arn:aws:s3:::${var.entitycore_internal_bucket}",
-          "arn:aws:s3:::${var.entitycore_internal_bucket}/*"
+          "arn:aws:s3:::${var.entitycore_internal_bucket}/*",
+          "arn:aws:s3:::${var.opendata_bucket}",
+          "arn:aws:s3:::${var.opendata_bucket}/*"
         ]
       }
     ]
@@ -56,7 +62,7 @@ resource "aws_datasync_location_s3" "internal_source" {
 
 resource "aws_datasync_location_efs" "internal_destination" {
   efs_file_system_arn = aws_efs_file_system.public_launch_data.arn
-  subdirectory        = "/data/aws_s3_internal/public"
+  subdirectory        = var.internal_public_data_mountpath
 
   ec2_config {
     security_group_arns = [aws_security_group.public_launch_efs.arn]
