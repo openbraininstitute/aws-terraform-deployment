@@ -156,7 +156,7 @@ resource "aws_ecs_task_definition" "auth_manager_ecs_definition" {
         },
         {
           name  = "KEYCLOAK_AFTER_CONSENT_REDIRECT_URI"
-          value = "https://${var.primary_domain}/app/consent-feedback"
+          value = "https://${var.client_redirect_domain}/app/consent-feedback"
         },
         {
           name  = "ACK_STATE_EXPIRY"
