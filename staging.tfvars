@@ -84,6 +84,8 @@ small_scale_simulator_batch_workers = {
   }
 }
 
+core_web_app_stripe_publishable_key = "pk_test_51QjjHBKGUR5u3ofLgNUOpljnvy27UTTpkhwgsLiwK9xlNjnR7CZfiMjtZWMjgN7GW3eDyzMJ7Z1pIqC9LiwkfQRX00ebb5c9XI"
+
 virtual_lab_manager_task_size = {
   cpu    = 512
   memory = 1024

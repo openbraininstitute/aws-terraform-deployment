@@ -463,7 +463,6 @@ module "core_webapp_main" {
   route_table_id                = local.route_table_private_subnets_id
   vpc_cidr_block                = local.vpc_cidr_block
   secrets_arn                   = local.core_webapp_secrets_arn
-  accounting_base_url           = "https://${local.primary_domain}${var.accounting_svc_base_path}"
   s3_bucket_name                = var.core_webapp_s3_bucket_name
   s3_bucket_allowed_origins     = ["https://${local.primary_domain}", "https://${join(".", ["cdn", trimprefix(local.primary_domain, "www.")])}"]
 
@@ -472,8 +471,14 @@ module "core_webapp_main" {
   domain_name                = local.primary_domain
   cloudfront_certificate_arn = local.cloudfront_certificate_arn
 
-  env_NEXTAUTH_URL    = "https://${local.primary_domain}/api/auth"
-  env_KEYCLOAK_ISSUER = "https://${local.primary_domain}/auth/realms/SBO"
+  api_origin             = "https://${local.primary_domain}"
+  auth_url               = "https://${local.primary_domain}/api/auth"
+  deployment_env         = var.is_staging ? "staging" : "production"
+  keycloak_issuer        = "https://${local.primary_domain}/auth/realms/SBO"
+  matomo_site_id         = var.is_production ? "1" : "3"
+  primary_hostname       = local.primary_domain
+  sanity_dataset         = var.is_production ? "production" : "staging"
+  stripe_publishable_key = var.core_web_app_stripe_publishable_key
 }
 
 module "core_webapp_dev" {
@@ -496,7 +501,6 @@ module "core_webapp_dev" {
   route_table_id                = local.route_table_private_subnets_id
   vpc_cidr_block                = local.vpc_cidr_block
   secrets_arn                   = local.core_webapp_secrets_arn
-  accounting_base_url           = "https://${local.primary_domain}${var.accounting_svc_base_path}"
 
   // These are not used in dev
   s3_bucket_name            = var.core_webapp_s3_bucket_name
@@ -504,8 +508,14 @@ module "core_webapp_dev" {
 
   sbo_billing_tag = "core_webapp_dev"
 
-  env_NEXTAUTH_URL    = "https://dev.openbraininstitute.org/api/auth"
-  env_KEYCLOAK_ISSUER = "https://${local.primary_domain}/auth/realms/SBO"
+  api_origin             = "https://${local.primary_domain}"
+  auth_url               = "https://dev.openbraininstitute.org/api/auth"
+  deployment_env         = "development"
+  keycloak_issuer        = "https://${local.primary_domain}/auth/realms/SBO"
+  matomo_site_id         = "3"
+  primary_hostname       = "dev.openbraininstitute.org"
+  sanity_dataset         = "staging"
+  stripe_publishable_key = var.core_web_app_stripe_publishable_key
 }
 
 module "core_webapp_preview" {
@@ -528,7 +538,6 @@ module "core_webapp_preview" {
   route_table_id                = local.route_table_private_subnets_id
   vpc_cidr_block                = local.vpc_cidr_block
   secrets_arn                   = local.core_webapp_secrets_arn
-  accounting_base_url           = "https://${local.primary_domain}${var.accounting_svc_base_path}"
 
   // These are not used in preview
   s3_bucket_name            = var.core_webapp_s3_bucket_name
@@ -536,8 +545,14 @@ module "core_webapp_preview" {
 
   sbo_billing_tag = "core_webapp_preview"
 
-  env_NEXTAUTH_URL    = "https://preview.openbraininstitute.org/api/auth"
-  env_KEYCLOAK_ISSUER = "https://${local.primary_domain}/auth/realms/SBO"
+  api_origin             = "https://${local.primary_domain}"
+  auth_url               = "https://preview.openbraininstitute.org/api/auth"
+  deployment_env         = "preview"
+  keycloak_issuer        = "https://${local.primary_domain}/auth/realms/SBO"
+  matomo_site_id         = "3"
+  primary_hostname       = "preview.openbraininstitute.org"
+  sanity_dataset         = "staging"
+  stripe_publishable_key = var.core_web_app_stripe_publishable_key
 }
 
 module "github_core_webapp_dev_ecs_redeploy_role" {
