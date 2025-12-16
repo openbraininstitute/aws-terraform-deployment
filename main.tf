@@ -833,6 +833,10 @@ module "public_data_efs" {
   internal_public_data_mountpath = "/data/aws_s3_internal/public"
   opendata_mountpath             = "/data/aws_s3_open"
   opendata_paths_list            = var.opendata_paths_list
+  providers = {
+    aws         = aws
+    aws.uswest2 = aws.uswest2
+  }
 }
 
 module "launch_system" {
