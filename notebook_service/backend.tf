@@ -172,10 +172,6 @@ resource "aws_ecs_task_definition" "ecs_definition" {
           value = var.accounting_base_url
         },
         {
-          name  = "HUB_ON_EKS_FULL_URL",
-          value = var.hub_on_eks_full_url
-        },
-        {
           name  = "ACCOUNTING_ENABLED",
           value = var.accounting_enabled ? "True" : "False"
         },
@@ -198,6 +194,18 @@ resource "aws_ecs_task_definition" "ecs_definition" {
         {
           name  = "KUBERNETES_THREAD_CHECK_INTERVAL",
           value = tostring(var.kubernetes_thread_check_interval)
+        },
+        {
+          name  = "AZURE_ACCOUNTING_ENABLED",
+          value = var.azure_accounting_enabled ? "True" : "False"
+        },
+        {
+          name  = "AZURE_KUBERNETES_THREAD_ENABLED",
+          value = var.azure_kubernetes_thread_enabled ? "True" : "False"
+        },
+        {
+          name  = "AZURE_KUBERNETES_THREAD_CHECK_INTERVAL",
+          value = tostring(var.azure_kubernetes_thread_check_interval)
         }
       ]
       secrets = [
@@ -220,8 +228,39 @@ resource "aws_ecs_task_definition" "ecs_definition" {
         {
           name      = "INIT_SCRIPT_GITHUB_URL"
           valueFrom = "${var.secrets_arn}:init_script_github_url::"
+        },
+        {
+          name      = "AZURE_JUPYTERHUB_ROOT_FULL_URL"
+          valueFrom = "${var.secrets_arn}:azure_jupyterhub_root_full_url::"
+        },
+        {
+          name      = "AZURE_HUB_ON_AKS_ADMIN_TOKEN"
+          valueFrom = "${var.secrets_arn}:azure_hub_on_aks_admin_token::"
+        },
+        {
+          name      = "AZURE_TENANT_ID"
+          valueFrom = "${var.secrets_arn}:azure_tenant_id::"
+        },
+        {
+          name      = "AZURE_CLIENT_ID"
+          valueFrom = "${var.secrets_arn}:azure_client_id::"
+        },
+        {
+          name      = "AZURE_CLIENT_SECRET"
+          valueFrom = "${var.secrets_arn}:azure_client_secret::"
+        },
+        {
+          name      = "AZURE_AKS_SERVER_APP_ID"
+          valueFrom = "${var.secrets_arn}:azure_aks_server_app_id::"
+        },
+        {
+          name      = "AZURE_AKS_CLUSTER_CA_CERT_BASE64"
+          valueFrom = "${var.secrets_arn}:azure_aks_cluster_ca_cert_base64::"
+        },
+        {
+          name      = "AZURE_AKS_CLUSTER_SERVER_URL"
+          valueFrom = "${var.secrets_arn}:azure_aks_cluster_server_url::"
         }
-
       ]
       logConfiguration = {
         logDriver = "awslogs"

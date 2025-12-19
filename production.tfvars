@@ -14,11 +14,13 @@ cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/s
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2025.10.3"
 jupyterhub_ec2_type                       = "c7i.2xlarge"
 notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:2025.12.06-1"
-notebook_hub_on_eks_full_url              = "none"
 notebook_service_cors_allowed_origins     = "[\"https://www.openbraininstitute.org\"]"
 notebook_service_bucket_name              = "obi-notebook-service-statistics-prod"
-notebook_service_k8s_thread_enabled       = true
-notebook_service_accounting_enabled       = true
+notebook_service_aws_k8s_thread_enabled   = true
+notebook_service_azure_k8s_thread_enabled = false
+notebook_service_aws_accounting_enabled   = true
+notebook_service_azure_accounting_enabled = false
+
 
 neuroagent_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-v0.13.0"
 
