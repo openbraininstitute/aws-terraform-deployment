@@ -20,7 +20,7 @@ notebook_service_aws_k8s_thread_enabled   = true
 notebook_service_azure_k8s_thread_enabled = false
 notebook_service_aws_accounting_enabled   = true
 notebook_service_azure_accounting_enabled = false
-
+notebook_service_azure_storage_account    = "obijupyterproduction"
 
 neuroagent_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-v0.13.0"
 
