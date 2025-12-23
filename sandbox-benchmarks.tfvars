@@ -23,6 +23,7 @@ notebook_service_aws_k8s_thread_enabled   = false
 notebook_service_azure_k8s_thread_enabled = false
 notebook_service_aws_accounting_enabled   = false
 notebook_service_azure_accounting_enabled = false
+notebook_service_azure_storage_account    = ""
 
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-staging"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-staging"

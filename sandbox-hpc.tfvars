@@ -22,6 +22,7 @@ notebook_service_aws_k8s_thread_enabled   = false
 notebook_service_azure_k8s_thread_enabled = false
 notebook_service_aws_accounting_enabled   = false
 notebook_service_azure_accounting_enabled = false
+notebook_service_azure_storage_account    = ""
 
 neuroagent_image_tag = "neuroagent-v0.11.4"
 

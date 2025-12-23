@@ -206,6 +206,14 @@ resource "aws_ecs_task_definition" "ecs_definition" {
         {
           name  = "AZURE_KUBERNETES_THREAD_CHECK_INTERVAL",
           value = tostring(var.azure_kubernetes_thread_check_interval)
+        },
+        {
+          name  = "AWS_HOMEDIRS_MOUNT_PATH",
+          value = "/mnt/homedirs"
+        },
+        {
+          name  = "AZURE_FILES_STORAGE_ACCOUNT_NAME",
+          value = var.azure_files_storage_account_name
         }
       ]
       secrets = [

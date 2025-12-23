@@ -129,3 +129,8 @@ variable "azure_kubernetes_thread_check_interval" {
   description = "How often should the kubernetes thread check the aks running pods, in seconds"
   sensitive   = false
 }
+
+variable "azure_files_storage_account_name" {
+  type        = string
+  description = "Name of the Azure Files storage account for jupyterhub homedirs"
+}

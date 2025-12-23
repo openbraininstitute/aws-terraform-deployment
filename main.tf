@@ -385,6 +385,8 @@ module "notebook_service" {
 
   jupyterhub_homedirs_efs_file_system_id    = module.cs.jupyterhub_homedirs_efs_file_system_id
   jupyterhub_homedirs_efs_security_group_id = module.cs.jupyterhub_homedirs_efs_security_group_id
+
+  azure_files_storage_account_name = var.notebook_service_azure_storage_account
 }
 
 module "github_notebook_service_ecs_redeploy_role" {

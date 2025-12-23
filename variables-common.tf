@@ -203,8 +203,10 @@ variable "notebook_service_azure_accounting_enabled" {
   description = "Should accounting be enabled in the notebook service in azure?"
 }
 
-
-
+variable "notebook_service_azure_storage_account" {
+  type        = string
+  description = "Azure storage account for the notebook service homedirs for jupyter"
+}
 
 ### Keycloak ###
 
