@@ -15,13 +15,13 @@ thumbnail_generation_api_docker_image_url = "public.ecr.aws/openbraininstitute/t
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.9.0"
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2025.10.3"
 jupyterhub_ec2_type                       = "c7i.large"
-notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:2025.12.23-1"
+notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:2025.12.24-1"
 notebook_service_cors_allowed_origins     = "[\"https://dev.openbraininstitute.org\",\"https://staging.openbraininstitute.org\",\"https://preview.openbraininstitute.org\",\"http://127.0.0.1:8000\",\"http://127.0.0.1\",\"http://127.0.0.1:3000\",\"http://localhost:3000\"]"
 notebook_service_bucket_name              = "obi-notebook-service-statistics-staging"
 notebook_service_aws_k8s_thread_enabled   = true
-notebook_service_azure_k8s_thread_enabled = false
+notebook_service_azure_k8s_thread_enabled = true
 notebook_service_aws_accounting_enabled   = true
-notebook_service_azure_accounting_enabled = false
+notebook_service_azure_accounting_enabled = true
 notebook_service_azure_storage_account    = "obijupyterstaging"
 
 neuroagent_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-v0.14.1"
