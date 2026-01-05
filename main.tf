@@ -354,10 +354,13 @@ module "notebook_service" {
   ecs_cidr_block_a           = "10.0.2.192/27"
   ecs_cidr_block_b           = "10.0.2.224/27"
 
-  cors_allowed_origins      = var.notebook_service_cors_allowed_origins
-  kubernetes_thread_enabled = var.notebook_service_k8s_thread_enabled
+  cors_allowed_origins = var.notebook_service_cors_allowed_origins
 
-  kubernetes_thread_check_interval = 15
+  kubernetes_thread_enabled       = var.notebook_service_aws_k8s_thread_enabled
+  azure_kubernetes_thread_enabled = var.notebook_service_azure_k8s_thread_enabled
+
+  kubernetes_thread_check_interval       = 15
+  azure_kubernetes_thread_check_interval = 15
 
   task_size = {
     cpu    = 512
@@ -373,15 +376,17 @@ module "notebook_service" {
   keycloak_url                 = "https://${local.primary_domain}/auth/realms/SBO"
   notebook_service_bucket_name = var.notebook_service_bucket_name
 
-  accounting_enabled  = var.notebook_service_accounting_enabled
-  hub_on_eks_full_url = var.notebook_hub_on_eks_full_url
-  secrets_arn         = local.notebook_service_secrets_arn
+  accounting_enabled       = var.notebook_service_aws_accounting_enabled
+  azure_accounting_enabled = var.notebook_service_azure_accounting_enabled
+
+  secrets_arn = local.notebook_service_secrets_arn
 
   acounting_db_athena_connector_name = module.accounting_svc.athena_data_catalog_name
 
   jupyterhub_homedirs_efs_file_system_id    = module.cs.jupyterhub_homedirs_efs_file_system_id
   jupyterhub_homedirs_efs_security_group_id = module.cs.jupyterhub_homedirs_efs_security_group_id
 
+  azure_files_storage_account_name = var.notebook_service_azure_storage_account
 }
 
 module "github_notebook_service_ecs_redeploy_role" {
