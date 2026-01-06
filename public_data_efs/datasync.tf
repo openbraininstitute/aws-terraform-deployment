@@ -74,7 +74,13 @@ resource "aws_datasync_location_s3" "opendata_source" {
 
 resource "aws_datasync_location_efs" "internal_destination" {
   efs_file_system_arn = aws_efs_file_system.public_launch_data.arn
-  subdirectory        = var.internal_public_data_mountpath
+
+  # When recreating, remove subdirectory and uncomment the next two lines
+  # See https://github.com/openbraininstitute/prod-platform-architecture/issues/163
+  subdirectory = var.internal_public_data_mountpath
+  # in_transit_encryption = "TLS1_2"
+  # access_point_arn      = aws_efs_access_point.internal_public_data_readonly.arn
+  # #############
 
   ec2_config {
     security_group_arns = [aws_security_group.public_launch_efs.arn]
@@ -89,6 +95,8 @@ resource "aws_datasync_task" "internal_s3_to_efs" {
   source_location_arn      = aws_datasync_location_s3.internal_source.arn
   name                     = "s3-to-efs-sync"
 
+  # When recreating, set atime, mtime, uid, gid to NONE
+  # See https://github.com/openbraininstitute/prod-platform-architecture/issues/163
   options {
     verify_mode            = "ONLY_FILES_TRANSFERRED"
     preserve_deleted_files = "REMOVE"
@@ -96,9 +104,13 @@ resource "aws_datasync_task" "internal_s3_to_efs" {
     mtime                  = "PRESERVE"
     uid                    = "INT_VALUE"
     gid                    = "INT_VALUE"
-    posix_permissions      = "PRESERVE"
-    preserve_devices       = "NONE"
-    bytes_per_second       = -1 # unlimited
+    # atime             = "NONE"
+    # mtime             = "NONE"
+    # uid               = "NONE"
+    # gid               = "NONE"
+    posix_permissions = "PRESERVE"
+    preserve_devices  = "NONE"
+    bytes_per_second  = -1 # unlimited
   }
 
   schedule {
@@ -110,7 +122,13 @@ resource "aws_datasync_task" "internal_s3_to_efs" {
 
 resource "aws_datasync_location_efs" "opendata_destination" {
   efs_file_system_arn = aws_efs_file_system.public_launch_data.arn
-  subdirectory        = var.opendata_mountpath
+
+  # When recreating, remove subdirectory and uncomment the next two lines
+  # See https://github.com/openbraininstitute/prod-platform-architecture/issues/163
+  subdirectory = var.opendata_mountpath
+  # in_transit_encryption = "TLS1_2"
+  # access_point_arn      = aws_efs_access_point.open_public_data_readonly.arn
+  # ###
 
   ec2_config {
     security_group_arns = [aws_security_group.public_launch_efs.arn]
@@ -132,6 +150,8 @@ resource "aws_datasync_task" "opendata_s3_to_efs" {
 
   name = "opendata-s3-to-efs-sync"
 
+  # When recreating, set atime, mtime, uid, gid to NONE
+  # See https://github.com/openbraininstitute/prod-platform-architecture/issues/163
   options {
     verify_mode            = "ONLY_FILES_TRANSFERRED"
     preserve_deleted_files = "REMOVE"
@@ -139,9 +159,13 @@ resource "aws_datasync_task" "opendata_s3_to_efs" {
     mtime                  = "PRESERVE"
     uid                    = "INT_VALUE"
     gid                    = "INT_VALUE"
-    posix_permissions      = "PRESERVE"
-    preserve_devices       = "NONE"
-    bytes_per_second       = -1 # unlimited
+    # atime             = "NONE"
+    # mtime             = "NONE"
+    # uid               = "NONE"
+    # gid               = "NONE"
+    posix_permissions = "PRESERVE"
+    preserve_devices  = "NONE"
+    bytes_per_second  = -1 # unlimited
   }
 
   schedule {
