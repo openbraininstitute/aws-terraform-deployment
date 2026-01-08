@@ -7,7 +7,7 @@ ml_neuroagent_bucket_name                 = "ml-neuroagent-staging"
 nexus_obp_bucket_name                     = "nexus-obp-production-staging-test"
 nexus_ship_bucket_name                    = "nexus-ship-production-staging-test"
 nexus_openscience_bucket_name             = "nexus-openscience-production-staging-test"
-core_web_app_docker_image_url             = "public.ecr.aws/openbraininstitute/core-web-app:2026.01.06.2"
+core_web_app_docker_image_url             = "public.ecr.aws/openbraininstitute/core-web-app:2026.01.07.1"
 core_web_app_dev_docker_image_url         = "public.ecr.aws/openbraininstitute/core-web-app:dev"
 core_web_app_preview_docker_image_url     = "public.ecr.aws/openbraininstitute/core-web-app:preview"
 virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:2025.12.03.1"
@@ -24,7 +24,7 @@ notebook_service_aws_accounting_enabled   = true
 notebook_service_azure_accounting_enabled = true
 notebook_service_azure_storage_account    = "obijupyterstaging"
 
-neuroagent_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-v0.14.1"
+neuroagent_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-v0.14.2"
 
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.12.11.1"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.12.11.1"
