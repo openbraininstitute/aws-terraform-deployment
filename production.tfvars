@@ -22,7 +22,7 @@ notebook_service_aws_accounting_enabled   = true
 notebook_service_azure_accounting_enabled = false
 notebook_service_azure_storage_account    = "obijupyterproduction"
 
-neuroagent_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-v0.14.1"
+neuroagent_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-v0.14.2"
 
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.12.11.1"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.12.11.1"
