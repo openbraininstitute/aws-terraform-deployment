@@ -14,7 +14,8 @@ locals {
       "http://localhost:3000",
       "https://preview.openbraininstitute.org",
       "https://dev.openbraininstitute.org",
-    ] : []
+      "https://staging.cell-b.openbraininstitute.org"
+    ] : ["https://cell-b.openbraininstitute.org", "https://www.cell-b.openbraininstitute.org"]
   )
 
   vpc_cidr_block    = data.terraform_remote_state.common.outputs.vpc_cidr_block
