@@ -74,6 +74,8 @@ small_scale_simulator_batch_workers = {
   }
 }
 
+core_web_app_stripe_publishable_key = "dummy_value"
+
 virtual_lab_manager_task_size = {
   cpu    = 512
   memory = 1024
@@ -131,4 +133,4 @@ launch_system_executor_task_size = {
 
 launch_system_orchestrator_num_workers = 2
 
-opendata_paths_list = "staging_opendata_paths.txt"
+opendata_paths_list = "hpc_opendata_paths.txt"

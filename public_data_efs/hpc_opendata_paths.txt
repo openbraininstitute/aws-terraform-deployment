@@ -1,0 +1,2 @@
+/Simulatable_Circuit/ConnectivityMatrixFolders/nbS1-HEX0-L6
+/staging/Simulation_data/Simulation_Campaigns/Rat/SSCx/3f6517825f/27/reporting/spikes.h5
