@@ -43,10 +43,6 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
       }
       environment = [
         {
-          name  = "KC_HOSTNAME"
-          value = var.domain_name
-        },
-        {
           name  = "KC_DB"
           value = aws_db_instance.keycloak_database.engine
         },
@@ -99,16 +95,20 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
           value = "xforwarded"
         },
         {
+          name  = "KC_HOSTNAME_STRICT"
+          value = "false"
+        },
+        {
+          name  = "KC_HOSTNAME_BACKCHANNEL_DYNAMIC"
+          value = "false"
+        },
+        {
           name  = "KEYCLOAK_ADMIN"
           value = "admin"
         },
         {
           name  = "JAVA_OPTS_APPEND"
           value = "-XX:MaxRAMPercentage=75.0"
-        },
-        {
-          name  = "PROXY_ADDRESS_FORWARDING"
-          value = "true"
         },
       ]
       secrets = [
