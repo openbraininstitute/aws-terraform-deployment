@@ -1,6 +1,6 @@
 locals {
   clustername = "obi_one_v2_ecs_cluster"
-  servicename = "obi_one_v2_ecs_service"
+  servicename = "obi_one_v2_service"
 }
 
 resource "aws_cloudwatch_dashboard" "main" {
