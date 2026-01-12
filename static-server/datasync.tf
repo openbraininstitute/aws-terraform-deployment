@@ -1,5 +1,5 @@
 resource "aws_iam_role" "datasync_s3_role" {
-  name = "datasync-s3-role"
+  name = "datasync-s3-role-static"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
