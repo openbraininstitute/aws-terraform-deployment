@@ -456,6 +456,9 @@ module "static-server" {
   static_content_bucket_name = local.old_primary_domain
   alb_listener_arn           = local.private_alb_https_listener_arn
   alb_listener_rule_priority = 600
+
+  cell_static_content_bucket_name = local.cell_a_primary_domain
+  is_production                   = var.is_production
 }
 
 module "core_webapp_main" {

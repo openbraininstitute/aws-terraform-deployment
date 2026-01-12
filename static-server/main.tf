@@ -74,9 +74,13 @@ resource "aws_lb_target_group_attachment" "s3_vpc_endpoint_eip" {
 #tfsec:ignore:aws-s3-enable-versioning
 #tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket" "static_storage" {
-  bucket = var.static_content_bucket_name
-  # TODO: Make sure force_destroy is not used for production deployments.
-  force_destroy = true
+  bucket        = var.static_content_bucket_name
+  force_destroy = !var.is_production
+}
+
+resource "aws_s3_bucket" "cell_static_storage" {
+  bucket        = var.cell_static_content_bucket_name
+  force_destroy = !var.is_production
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "static_storage" {
