@@ -42,3 +42,12 @@ variable "static_content_bucket_name" {
   description = "S3 Bucket to store static content"
   type        = string
 }
+
+variable "cell_static_content_bucket_name" {
+  description = "S3 Bucket to store static content for the `cell` subdomain"
+  type        = string
+}
+
+variable "is_production" {
+  type = bool
+}
