@@ -16,11 +16,13 @@ cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/s
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:latest"
 jupyterhub_ec2_type                       = "t3.micro"
 notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:staging"
-notebook_hub_on_eks_full_url              = "none"
-notebook_service_cors_allowed_origins     = "[\"https://dev.openbraininstitute.org\",\"https://staging.openbraininstitute.org\",\"https://preview.openbraininstitute.org\"]"
+notebook_service_cors_allowed_origins     = "[\"https://staging.cell-a.openbraininstitute.org\",\"https://staging.cell-b.openbraininstitute.org\",\"https://dev.openbraininstitute.org\",\"https://staging.openbraininstitute.org\",\"https://preview.openbraininstitute.org\"]"
 notebook_service_bucket_name              = "obi-notebook-service-statistics-sandbox-hpc"
-notebook_service_k8s_thread_enabled       = false
-notebook_service_accounting_enabled       = false
+notebook_service_aws_k8s_thread_enabled   = false
+notebook_service_azure_k8s_thread_enabled = false
+notebook_service_aws_accounting_enabled   = false
+notebook_service_azure_accounting_enabled = false
+notebook_service_azure_storage_account    = ""
 
 neuroagent_image_tag = "neuroagent-v0.11.4"
 
@@ -92,9 +94,9 @@ hpc_resource_provisioner_scratch_bucket_arn = "arn:aws:s3:::sbosandbox-lec3cn"
 pcluster_ami_id                             = "ami-027ff2490377d3048"
 hpc_av_zone_suffixes                        = ["a"]
 
-entitycore_svc_aws_s3_internal_bucket    = "entitycore-data-sandbox-hpc"
+entitycore_svc_aws_s3_internal_bucket    = "sbonexusdata-sandbox" # while testing launch system public data
 entitycore_svc_aws_s3_internal_region    = "us-east-1"
-entitycore_svc_aws_s3_open_bucket        = "openbluebrain"
+entitycore_svc_aws_s3_open_bucket        = "openbluebrain" # while testing launch system public data
 entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["*"]
 entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.9.3"
@@ -128,3 +130,5 @@ launch_system_executor_task_size = {
 }
 
 launch_system_orchestrator_num_workers = 2
+
+opendata_paths_list = "staging_opendata_paths.txt"

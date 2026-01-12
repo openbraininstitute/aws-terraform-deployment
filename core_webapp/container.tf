@@ -116,23 +116,43 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
       }
       environment = [
         {
-          name  = "ACCOUNTING_BASE_URL"
-          value = var.accounting_base_url
+          name  = "DEPLOYMENT_ENV"
+          value = var.deployment_env
         },
         {
-          name  = "NEXTAUTH_URL"
-          value = var.env_NEXTAUTH_URL
+          name  = "API_ORIGIN"
+          value = var.api_origin
         },
         {
           name  = "KEYCLOAK_ISSUER"
-          value = var.env_KEYCLOAK_ISSUER
+          value = var.keycloak_issuer
         },
         {
           name  = "KEYCLOAK_CLIENT_ID"
           value = "core-webapp-${var.key}"
         },
         {
-          name  = "NEXT_PUBLIC_CDN_URI"
+          name  = "MATOMO_SITE_ID"
+          value = var.matomo_site_id
+        },
+        {
+          name  = "NEXTAUTH_URL"
+          value = var.auth_url
+        },
+        {
+          name  = "PRIMARY_HOSTNAME"
+          value = var.primary_hostname
+        },
+        {
+          name  = "SANITY_DATASET"
+          value = var.sanity_dataset
+        },
+        {
+          name  = "STRIPE_PUBLISHABLE_KEY"
+          value = var.stripe_publishable_key
+        },
+        {
+          name  = "CDN_URL"
           value = var.key == "main" ? "https://${aws_cloudfront_distribution.core_webapp_cdn[0].domain_name}" : "https://placeholder"
         },
       ]

@@ -59,6 +59,11 @@ variable "core_web_app_preview_docker_image_url" {
   sensitive   = false
 }
 
+variable "core_web_app_stripe_publishable_key" {
+  type        = string
+  description = "Stripe publishable key for the core-web-app"
+}
+
 variable "neuroagent_docker_image_url" {
   default     = null
   type        = string
@@ -188,9 +193,19 @@ variable "notebook_service_docker_image_url" {
   description = "Docker image for the notebook service"
 }
 
-variable "notebook_service_accounting_enabled" {
+variable "notebook_service_aws_accounting_enabled" {
   type        = bool
-  description = "Should accounting be enabled in the notebook service?"
+  description = "Should accounting be enabled in the notebook service in aws?"
+}
+
+variable "notebook_service_azure_accounting_enabled" {
+  type        = bool
+  description = "Should accounting be enabled in the notebook service in azure?"
+}
+
+variable "notebook_service_azure_storage_account" {
+  type        = string
+  description = "Azure storage account for the notebook service homedirs for jupyter"
 }
 
 ### Keycloak ###
@@ -306,19 +321,19 @@ variable "obi_one_v2_ecs_task_size" {
   description = "CPU and memory limit for obi-one ECS task (number or string format)"
 }
 
-variable "notebook_hub_on_eks_full_url" {
-  type        = string
-  description = "URL of /hub of the JupyterHub on EKS instance, needed for the notebooks service"
-}
-
 variable "notebook_service_cors_allowed_origins" {
   type        = string
   description = "JSON encoded list of allowed origins for the cors settings of the notebook service"
 }
 
-variable "notebook_service_k8s_thread_enabled" {
+variable "notebook_service_aws_k8s_thread_enabled" {
   type        = string
-  description = "Enable kubernetes background thread to check how long notebooks run"
+  description = "Enable kubernetes background thread to check how long notebooks run in aws"
+}
+
+variable "notebook_service_azure_k8s_thread_enabled" {
+  type        = string
+  description = "Enable kubernetes background thread to check how long notebooks run in azure"
 }
 
 variable "notebook_service_bucket_name" {
@@ -371,4 +386,9 @@ variable "launch_system_executor_task_size" {
 variable "launch_system_orchestrator_num_workers" {
   description = "Number of workers processing the queues in the orchestrator task."
   type        = number
+}
+
+variable "opendata_paths_list" {
+  type        = string
+  description = "File in which the paths to sync on opendata are listed, one per line. Should exist in modules/public_data_efs"
 }

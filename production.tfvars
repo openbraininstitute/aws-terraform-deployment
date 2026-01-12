@@ -7,23 +7,25 @@ ml_neuroagent_bucket_name                 = "ml-neuroagent-production"
 nexus_obp_bucket_name                     = "nexus-obp-production"
 nexus_ship_bucket_name                    = "nexus-ship-production"
 nexus_openscience_bucket_name             = "nexus-openscience-production"
-core_web_app_docker_image_url             = "public.ecr.aws/openbraininstitute/core-web-app:2025.12.04.1"
-virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:2025.11.20.1"
+core_web_app_docker_image_url             = "public.ecr.aws/openbraininstitute/core-web-app:2026.01.07.1"
+virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:2025.12.03.1"
 thumbnail_generation_api_docker_image_url = "public.ecr.aws/openbraininstitute/thumbnail-generation-api:2025.10.27.1"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.9.0"
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2025.10.3"
 jupyterhub_ec2_type                       = "c7i.2xlarge"
-notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:2025.11.04-2"
-notebook_hub_on_eks_full_url              = "none"
-notebook_service_cors_allowed_origins     = "[\"https://www.openbraininstitute.org\"]"
+notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:2025.12.06-1"
+notebook_service_cors_allowed_origins     = "[\"https://www.openbraininstitute.org\", \"https://cell-a.openbraininstitute.org\", \"https://cell-b.openbraininstitute.org\", \"https://www.cell-b.openbraininstitute.org\"]"
 notebook_service_bucket_name              = "obi-notebook-service-statistics-prod"
-notebook_service_k8s_thread_enabled       = true
-notebook_service_accounting_enabled       = true
+notebook_service_aws_k8s_thread_enabled   = true
+notebook_service_azure_k8s_thread_enabled = false
+notebook_service_aws_accounting_enabled   = true
+notebook_service_azure_accounting_enabled = false
+notebook_service_azure_storage_account    = "obijupyterproduction"
 
-neuroagent_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-v0.12.3"
+neuroagent_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-v0.14.2"
 
-small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.11.21.1"
-small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.11.21.1"
+small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.12.11.1"
+small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.12.11.1"
 small_scale_simulator_api_task_size = {
   cpu    = 1024
   memory = 2048
@@ -82,6 +84,8 @@ small_scale_simulator_batch_workers = {
   }
 }
 
+core_web_app_stripe_publishable_key = "pk_live_51QjjHBKGUR5u3ofL3U1YQwXofi5vIEpo6mOfWOVqBiV6aWy0Gz7y6h1lMos5uzTseL2UExqBMuYq5uwUUWZss5SH00dP35riR3"
+
 virtual_lab_manager_task_size = {
   cpu    = 1024
   memory = 2048
@@ -107,9 +111,9 @@ entitycore_svc_aws_s3_internal_region    = "us-east-1"
 entitycore_svc_aws_s3_open_bucket        = "openbluebrain"
 entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["https://www.openbraininstitute.org"]
-entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2025.11.3"
+entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2026.1.2"
 
-obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2025.11.2"
+obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2025.11.5"
 obi_one_v2_ec2_instance_type = "t3.large" # vCPUs: 2, Memory: 8 GiB
 obi_one_v2_ecs_task_size = {
   cpu    = 2048
@@ -119,7 +123,7 @@ obi_one_v2_ecs_task_size = {
 
 # CoreWebApp s3 and CloudFront configuration
 core_webapp_s3_bucket_name = "core-webapp-static-assets-production"
-auth_manager_svc_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/auth-manager:2025.11.26.1"
+auth_manager_svc_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/auth-manager:2025.12.12.1"
 keycloak_client_uuid       = "50e91a7d-6dfe-4f69-b4c1-2faf9ce81d84"
 keycloak_client_id         = "authmanager-production"
 
@@ -137,3 +141,5 @@ launch_system_executor_task_size = {
   memory = 1024
 }
 launch_system_orchestrator_num_workers = 2
+
+opendata_paths_list = "production_opendata_paths.txt"

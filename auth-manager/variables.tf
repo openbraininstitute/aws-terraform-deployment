@@ -67,6 +67,11 @@ variable "primary_domain" {
   type = string
 }
 
+variable "client_redirect_domain" {
+  type        = string
+  description = "Domain where users are redirected after granting offline token consent"
+}
+
 variable "keycloak_client_uuid" {
   type = string
 }

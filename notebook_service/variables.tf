@@ -75,11 +75,6 @@ variable "ecs_cidr_block_b" {
   description = "CIDR block for ECS subnet b"
 }
 
-variable "hub_on_eks_full_url" {
-  description = "Full url to reach /hub on the EKS cluster"
-  type        = string
-}
-
 variable "accounting_enabled" {
   description = "Is accounting (credits required or not) enabled or not"
   type        = bool
@@ -117,4 +112,25 @@ variable "jupyterhub_homedirs_efs_file_system_id" {
 variable "jupyterhub_homedirs_efs_security_group_id" {
   description = "ID of the security group of the EFS filesystem with the jupyterhub home dirs"
   type        = string
+}
+
+variable "azure_accounting_enabled" {
+  description = "Is accounting (credits required or not) enabled or not for azure pods"
+  type        = bool
+}
+
+variable "azure_kubernetes_thread_enabled" {
+  description = "Start a thread which regularly checks the pods in azure aks k8s"
+  type        = bool
+}
+
+variable "azure_kubernetes_thread_check_interval" {
+  type        = number
+  description = "How often should the kubernetes thread check the aks running pods, in seconds"
+  sensitive   = false
+}
+
+variable "azure_files_storage_account_name" {
+  type        = string
+  description = "Name of the Azure Files storage account for jupyterhub homedirs"
 }

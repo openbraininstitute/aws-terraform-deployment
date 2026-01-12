@@ -8,19 +8,23 @@ locals {
   route_table_public_id          = data.terraform_remote_state.common.outputs.route_table_public_id
 
   core_web_app_origins = concat(
-    ["https://${local.primary_domain}"],
+    ["https://${local.old_primary_domain}"],
     var.is_staging ? [
       "http://127.0.0.1:3000",
       "http://localhost:3000",
       "https://preview.openbraininstitute.org",
       "https://dev.openbraininstitute.org",
-    ] : []
+      "https://staging.cell-b.openbraininstitute.org",
+      "https://staging.cell-a.openbraininstitute.org"
+    ] : ["https://cell-a.openbraininstitute.org", "https://cell-b.openbraininstitute.org", "https://www.cell-b.openbraininstitute.org"]
   )
 
   vpc_cidr_block    = data.terraform_remote_state.common.outputs.vpc_cidr_block
   vpc_default_sg_id = data.terraform_remote_state.common.outputs.vpc_default_sg_id
 
-  primary_domain    = data.terraform_remote_state.common.outputs.primary_domain
+  old_primary_domain    = data.terraform_remote_state.common.outputs.primary_domain
+  cell_a_primary_domain = var.is_production ? "cell-a.openbraininstitute.org" : "staging.cell-a.openbraininstitute.org"
+
   email_domain_name = data.terraform_remote_state.common.outputs.email_domain_name
 
   virtual_lab_manager_secrets_arn      = data.terraform_remote_state.common.outputs.virtual_lab_manager_secrets_arn
@@ -90,7 +94,7 @@ module "cs" {
   nat_gateway_id                 = data.terraform_remote_state.common.outputs.nat_gateway_id
   aws_endpoints_subnet_cidr      = module.networking.endpoints_subnet_cidr
 
-  domain_name = local.primary_domain
+  domain_name = local.old_primary_domain
 
   jupyterhub_secrets_arn = local.jupyterhub_secrets_arn
   jupyterhub_ec2_type    = var.jupyterhub_ec2_type
@@ -259,7 +263,7 @@ module "ml" {
   neuroagent_docker_image_url = var.neuroagent_docker_image_url
   neuroagent_bucket_name      = var.ml_neuroagent_bucket_name
 
-  primary_domain = local.primary_domain
+  primary_domain = local.old_primary_domain
 
   # NEW PRIVATE ALB
   generic_private_alb_listener_arn      = local.private_alb_https_listener_arn
@@ -297,7 +301,7 @@ module "cells_svc" {
   aws_coreservices_ssh_key_id = module.coreservices_key.key_pair_id
 
   root_path    = "/api/circuit"
-  keycloak_url = "https://${local.primary_domain}/auth/realms/SBO/"
+  keycloak_url = "https://${local.old_primary_domain}/auth/realms/SBO/"
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 
@@ -323,9 +327,9 @@ module "small_scale_simulator" {
   base_path    = "/api/small-scale-simulator"
   cors_origins = local.core_web_app_origins
 
-  accounting_base_url = "https://${local.primary_domain}${var.accounting_svc_base_path}"
-  entitycore_url      = "https://${local.primary_domain}/api/entitycore"
-  keycloak_server_url = "https://${local.primary_domain}/auth/"
+  accounting_base_url = "https://${local.old_primary_domain}${var.accounting_svc_base_path}"
+  entitycore_url      = "https://${local.old_primary_domain}/api/entitycore"
+  keycloak_server_url = "https://${local.old_primary_domain}/auth/"
 
   api_task_size = var.small_scale_simulator_api_task_size
 
@@ -354,10 +358,13 @@ module "notebook_service" {
   ecs_cidr_block_a           = "10.0.2.192/27"
   ecs_cidr_block_b           = "10.0.2.224/27"
 
-  cors_allowed_origins      = var.notebook_service_cors_allowed_origins
-  kubernetes_thread_enabled = var.notebook_service_k8s_thread_enabled
+  cors_allowed_origins = var.notebook_service_cors_allowed_origins
 
-  kubernetes_thread_check_interval = 15
+  kubernetes_thread_enabled       = var.notebook_service_aws_k8s_thread_enabled
+  azure_kubernetes_thread_enabled = var.notebook_service_azure_k8s_thread_enabled
+
+  kubernetes_thread_check_interval       = 15
+  azure_kubernetes_thread_check_interval = 15
 
   task_size = {
     cpu    = 512
@@ -369,19 +376,21 @@ module "notebook_service" {
 
   base_path = "/api/notebook_service"
 
-  accounting_base_url          = "https://${local.primary_domain}${var.accounting_svc_base_path}"
-  keycloak_url                 = "https://${local.primary_domain}/auth/realms/SBO"
+  accounting_base_url          = "https://${local.old_primary_domain}${var.accounting_svc_base_path}"
+  keycloak_url                 = "https://${local.old_primary_domain}/auth/realms/SBO"
   notebook_service_bucket_name = var.notebook_service_bucket_name
 
-  accounting_enabled  = var.notebook_service_accounting_enabled
-  hub_on_eks_full_url = var.notebook_hub_on_eks_full_url
-  secrets_arn         = local.notebook_service_secrets_arn
+  accounting_enabled       = var.notebook_service_aws_accounting_enabled
+  azure_accounting_enabled = var.notebook_service_azure_accounting_enabled
+
+  secrets_arn = local.notebook_service_secrets_arn
 
   acounting_db_athena_connector_name = module.accounting_svc.athena_data_catalog_name
 
   jupyterhub_homedirs_efs_file_system_id    = module.cs.jupyterhub_homedirs_efs_file_system_id
   jupyterhub_homedirs_efs_security_group_id = module.cs.jupyterhub_homedirs_efs_security_group_id
 
+  azure_files_storage_account_name = var.notebook_service_azure_storage_account
 }
 
 module "github_notebook_service_ecs_redeploy_role" {
@@ -442,8 +451,8 @@ module "static-server" {
   account_id                 = local.account_id
   vpc_id                     = local.vpc_id
   public_subnet_ids          = [data.terraform_remote_state.common.outputs.public_a_subnet_id, data.terraform_remote_state.common.outputs.public_b_subnet_id]
-  domain_name                = local.primary_domain
-  static_content_bucket_name = local.primary_domain
+  domain_name                = local.old_primary_domain
+  static_content_bucket_name = local.old_primary_domain
   alb_listener_arn           = local.private_alb_https_listener_arn
   alb_listener_rule_priority = 600
 }
@@ -463,17 +472,57 @@ module "core_webapp_main" {
   route_table_id                = local.route_table_private_subnets_id
   vpc_cidr_block                = local.vpc_cidr_block
   secrets_arn                   = local.core_webapp_secrets_arn
-  accounting_base_url           = "https://${local.primary_domain}${var.accounting_svc_base_path}"
   s3_bucket_name                = var.core_webapp_s3_bucket_name
-  s3_bucket_allowed_origins     = ["https://${local.primary_domain}", "https://${join(".", ["cdn", trimprefix(local.primary_domain, "www.")])}"]
+  s3_bucket_allowed_origins     = ["https://${local.old_primary_domain}", "https://${join(".", ["cdn", trimprefix(local.old_primary_domain, "www.")])}"]
 
   # remove 'www.' from local.primary_domain and prepend 'cdn'. ie: cdn.openbraininstitute.org
-  cloudfront_aliases         = [join(".", ["cdn", trimprefix(local.primary_domain, "www.")])]
-  domain_name                = local.primary_domain
+  cloudfront_aliases         = [join(".", ["cdn", trimprefix(local.old_primary_domain, "www.")])]
+  domain_name                = local.old_primary_domain
   cloudfront_certificate_arn = local.cloudfront_certificate_arn
 
-  env_NEXTAUTH_URL    = "https://${local.primary_domain}/api/auth"
-  env_KEYCLOAK_ISSUER = "https://${local.primary_domain}/auth/realms/SBO"
+  api_origin             = "https://${local.old_primary_domain}"
+  auth_url               = "https://${local.old_primary_domain}/api/auth"
+  deployment_env         = var.is_staging ? "staging" : "production"
+  keycloak_issuer        = "https://${local.old_primary_domain}/auth/realms/SBO"
+  matomo_site_id         = var.is_production ? "1" : "3"
+  primary_hostname       = local.old_primary_domain
+  sanity_dataset         = var.is_production ? "production" : "staging"
+  stripe_publishable_key = var.core_web_app_stripe_publishable_key
+}
+
+module "core_webapp_cell_a" {
+  source = "./core_webapp"
+
+  key                           = "cella"
+  log_group_name                = "core_webapp_cell_a"
+  vpc_id                        = local.vpc_id
+  subnet_cidr_block             = "10.0.21.64/28"
+  alb_listener_arn              = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
+  alb_listener_rule_priority    = 970
+  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
+  aws_region                    = local.aws_region
+  docker_image_url              = var.core_web_app_docker_image_url
+  route_table_id                = local.route_table_private_subnets_id
+  vpc_cidr_block                = local.vpc_cidr_block
+  secrets_arn                   = local.core_webapp_secrets_arn
+  s3_bucket_name                = var.core_webapp_s3_bucket_name
+  s3_bucket_allowed_origins     = ["https://${local.cell_a_primary_domain}", "https://${join(".", ["cdn", trimprefix(local.cell_a_primary_domain, "www.")])}"]
+
+  hostname = local.cell_a_primary_domain
+
+  # remove 'www.' from local.primary_domain and prepend 'cdn'. ie: cdn.openbraininstitute.org
+  cloudfront_aliases         = [join(".", ["cdn", trimprefix(local.cell_a_primary_domain, "www.")])]
+  domain_name                = local.cell_a_primary_domain
+  cloudfront_certificate_arn = local.cloudfront_certificate_arn
+
+  api_origin             = "https://${local.cell_a_primary_domain}"
+  auth_url               = "https://${local.cell_a_primary_domain}/api/auth"
+  deployment_env         = var.is_staging ? "staging" : "production"
+  keycloak_issuer        = "https://${local.cell_a_primary_domain}/auth/realms/SBO"
+  matomo_site_id         = var.is_production ? "1" : "3"
+  primary_hostname       = local.cell_a_primary_domain
+  sanity_dataset         = var.is_production ? "production" : "staging"
+  stripe_publishable_key = var.core_web_app_stripe_publishable_key
 }
 
 module "core_webapp_dev" {
@@ -496,7 +545,6 @@ module "core_webapp_dev" {
   route_table_id                = local.route_table_private_subnets_id
   vpc_cidr_block                = local.vpc_cidr_block
   secrets_arn                   = local.core_webapp_secrets_arn
-  accounting_base_url           = "https://${local.primary_domain}${var.accounting_svc_base_path}"
 
   // These are not used in dev
   s3_bucket_name            = var.core_webapp_s3_bucket_name
@@ -504,14 +552,21 @@ module "core_webapp_dev" {
 
   sbo_billing_tag = "core_webapp_dev"
 
-  env_NEXTAUTH_URL    = "https://dev.openbraininstitute.org/api/auth"
-  env_KEYCLOAK_ISSUER = "https://${local.primary_domain}/auth/realms/SBO"
+  api_origin             = "https://${local.old_primary_domain}"
+  auth_url               = "https://dev.openbraininstitute.org/api/auth"
+  deployment_env         = "development"
+  keycloak_issuer        = "https://${local.old_primary_domain}/auth/realms/SBO"
+  matomo_site_id         = "3"
+  primary_hostname       = "dev.openbraininstitute.org"
+  sanity_dataset         = "staging"
+  stripe_publishable_key = var.core_web_app_stripe_publishable_key
 }
 
 module "core_webapp_preview" {
   source = "./core_webapp"
 
-  count = var.is_staging ? 1 : 0
+  count = var.is_staging ? 1 : 0 # Deprecated: preview.openbraininstitute.org currently points to
+  # a zone in a sandbox managed by Pavlo, this deployment isn't accessible anymore.
 
   key               = "preview"
   log_group_name    = "core_webapp_preview"
@@ -528,7 +583,6 @@ module "core_webapp_preview" {
   route_table_id                = local.route_table_private_subnets_id
   vpc_cidr_block                = local.vpc_cidr_block
   secrets_arn                   = local.core_webapp_secrets_arn
-  accounting_base_url           = "https://${local.primary_domain}${var.accounting_svc_base_path}"
 
   // These are not used in preview
   s3_bucket_name            = var.core_webapp_s3_bucket_name
@@ -536,8 +590,14 @@ module "core_webapp_preview" {
 
   sbo_billing_tag = "core_webapp_preview"
 
-  env_NEXTAUTH_URL    = "https://preview.openbraininstitute.org/api/auth"
-  env_KEYCLOAK_ISSUER = "https://${local.primary_domain}/auth/realms/SBO"
+  api_origin             = "https://${local.old_primary_domain}"
+  auth_url               = "https://preview.openbraininstitute.org/api/auth"
+  deployment_env         = "preview"
+  keycloak_issuer        = "https://${local.old_primary_domain}/auth/realms/SBO"
+  matomo_site_id         = "3"
+  primary_hostname       = "preview.openbraininstitute.org"
+  sanity_dataset         = "staging"
+  stripe_publishable_key = var.core_web_app_stripe_publishable_key
 }
 
 module "github_core_webapp_dev_ecs_redeploy_role" {
@@ -613,7 +673,7 @@ module "entitycore_svc" {
 
   # use staging keycloak url in sandboxes
   keycloak_url = (var.is_staging || var.is_production) ? (
-    "https://${local.primary_domain}/auth/realms/SBO/"
+    "https://${local.old_primary_domain}/auth/realms/SBO/"
     ) : (
     "https://staging.openbraininstitute.org/auth/realms/SBO/"
   )
@@ -652,7 +712,10 @@ module "auth_manager" {
 
   root_path = "/api/auth-manager"
 
-  primary_domain = local.primary_domain
+  primary_domain = local.old_primary_domain
+
+  # TODO Revert this back to staging. once the core web app with auth-manager support is deployed.
+  client_redirect_domain = "dev.openbraininstitute.org"
 
   image_url = var.auth_manager_svc_image_url
 
@@ -691,8 +754,8 @@ module "obi_one_v2" {
   container_port = 8000
   host_port      = 8000
 
-  keycloak_url   = "https://${local.primary_domain}/auth/realms/SBO/"
-  entitycore_url = "https://${local.primary_domain}/api/entitycore"
+  keycloak_url   = "https://${local.old_primary_domain}/auth/realms/SBO/"
+  entitycore_url = "https://${local.old_primary_domain}/api/entitycore"
 
   cors_origins = local.core_web_app_origins
 
@@ -748,7 +811,7 @@ module "thumbnail_generation_api" {
   thumbnail_generation_api_base_path        = "/api/thumbnail-generation"
   thumbnail_generation_api_log_group_name   = "thumbnail_generation_api"
   thumbnail_generation_api_cors_origins     = local.core_web_app_origins
-  entitycore_url                            = "https://${local.primary_domain}/api/entitycore"
+  entitycore_url                            = "https://${local.old_primary_domain}/api/entitycore"
 }
 
 module "virtual_lab_manager" {
@@ -762,7 +825,7 @@ module "virtual_lab_manager" {
   private_lb_listener_https_arn  = local.private_alb_https_listener_arn
   route_table_private_subnets_id = local.route_table_private_subnets_id
 
-  invite_link = "https://${local.primary_domain}/app"
+  invite_link = "https://${local.old_primary_domain}/app"
   mail_from   = "no-reply@${local.email_domain_name}"
 
   db_multi_az = var.is_production
@@ -774,7 +837,7 @@ module "virtual_lab_manager" {
 
   virtual_lab_manager_docker_image_url = var.virtual_lab_manager_docker_image_url
 
-  keycloak_server_url = "https://${local.primary_domain}/auth/"
+  keycloak_server_url = "https://${local.old_primary_domain}/auth/"
 
   virtual_lab_manager_secrets_arn = local.virtual_lab_manager_secrets_arn
 
@@ -797,9 +860,9 @@ module "virtual_lab_manager" {
   virtual_lab_manager_cors_origins    = local.core_web_app_origins
 
   virtual_lab_manager_admin_base_path      = "{}/app/virtual-lab/lab/{}/admin?panel=billing"
-  virtual_lab_manager_deployment_namespace = "https://${local.primary_domain}"
+  virtual_lab_manager_deployment_namespace = "https://${local.old_primary_domain}"
 
-  accounting_base_url = "https://${local.primary_domain}${var.accounting_svc_base_path}"
+  accounting_base_url = "https://${local.old_primary_domain}${var.accounting_svc_base_path}"
 
   virtual_lab_manager_db_ro_secret_arn = local.virtual_lab_manager_db_ro_secret_arn
   aws_deployment_env                   = var.deployment_env
@@ -824,8 +887,16 @@ module "public_data_efs" {
 
   entitycore_internal_bucket = var.entitycore_svc_aws_s3_internal_bucket
   entitycore_internal_region = var.entitycore_svc_aws_s3_internal_region
-  open_data_bucket           = var.entitycore_svc_aws_s3_open_bucket
-  open_data_region           = var.entitycore_svc_aws_s3_open_region
+  opendata_bucket            = var.entitycore_svc_aws_s3_open_bucket
+  opendata_region            = var.entitycore_svc_aws_s3_open_region
+
+  internal_public_data_mountpath = "/data/aws_s3_internal/public"
+  opendata_mountpath             = "/data/aws_s3_open"
+  opendata_paths_list            = var.opendata_paths_list
+  providers = {
+    aws         = aws
+    aws.uswest2 = aws.uswest2
+  }
 }
 
 module "launch_system" {
@@ -856,9 +927,9 @@ module "launch_system" {
   db_username     = "launch"
   obi_backup_plan = "obi_plan"
 
-  api_image_url              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2025.12.0"
-  orchestrator_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2025.12.0"
-  default_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/default-executor:2025.12.0"
+  api_image_url              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.1.2"
+  orchestrator_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.1.2"
+  default_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/default-executor:2026.1.2"
 
   api_task_size          = var.launch_system_api_task_size
   executor_task_size     = var.launch_system_executor_task_size
@@ -868,14 +939,14 @@ module "launch_system" {
   queues                   = ["high", "medium", "low"]
 
   root_path    = "/api/launch-system"
-  keycloak_url = "https://${local.primary_domain}/auth/realms/SBO/"
+  keycloak_url = "https://${local.old_primary_domain}/auth/realms/SBO/"
 
   token_lifetime_extension_interval = 0
 
-  launch_system_api_url = "https://${local.primary_domain}/api/launch-system"
-  entitycore_url        = "https://${local.primary_domain}/api/entitycore"
-  accounting_url        = "https://${local.primary_domain}/api/accounting"
-  auth_manager_url      = "https://${local.primary_domain}/api/auth-manager"
+  launch_system_api_url = "https://${local.old_primary_domain}/api/launch-system"
+  entitycore_url        = "https://${local.old_primary_domain}/api/entitycore"
+  accounting_url        = "https://${local.old_primary_domain}/api/accounting"
+  auth_manager_url      = "https://${local.old_primary_domain}/api/auth-manager"
 
   az_region = "eastus"
   az_instance_types = jsonencode({
