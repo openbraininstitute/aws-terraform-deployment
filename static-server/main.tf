@@ -148,6 +148,71 @@ resource "aws_s3_bucket_policy" "static_storage" {
   })
 }
 
+resource "aws_s3_bucket_lifecycle_configuration" "cell_static_storage" {
+  bucket = aws_s3_bucket.cell_static_storage.id
+  rule {
+    id     = "DeleteOldMultipartUploads"
+    status = "Enabled"
+    filter {}
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+  }
+}
+
+resource "aws_s3_bucket_metric" "cell_static_storage_metrics" {
+  bucket = aws_s3_bucket.cell_static_storage.id
+  name   = "EntireBucket"
+}
+
+resource "aws_s3_bucket_public_access_block" "cell_static_storage" {
+  bucket = aws_s3_bucket.cell_static_storage.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_policy" "cell_static_storage" {
+  bucket = aws_s3_bucket.cell_static_storage.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "VPCEndpointAccess"
+        Effect    = "Allow"
+        Principal = "*"
+        Action    = ["s3:GetObject"]
+        Resource  = ["arn:aws:s3:::${var.cell_static_content_bucket_name}/*"]
+        Condition = {
+          StringEquals = {
+            "aws:SourceVpce" = aws_vpc_endpoint.s3_vpc_endpoint.id
+          }
+        }
+      },
+      {
+        Sid    = "Write"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${var.account_id}:user/cell_svc_bucket_user"
+        }
+        Action   = ["s3:*Object"]
+        Resource = ["arn:aws:s3:::${var.cell_static_content_bucket_name}/*"]
+      },
+      {
+        Sid    = "List"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${var.account_id}:user/cell_svc_bucket_user"
+        }
+        Action   = ["s3:ListBucket"]
+        Resource = ["arn:aws:s3:::${var.cell_static_content_bucket_name}"]
+      }
+    ]
+  })
+}
+
 locals {
   favicon = [
     {
