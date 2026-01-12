@@ -76,4 +76,10 @@ resource "aws_datasync_task" "sync_static_content" {
   schedule {
     schedule_expression = "cron(0 7 ? * * *)"
   }
+
+  options {
+    uid               = "NONE"
+    gid               = "NONE"
+    posix_permissions = "NONE"
+  }
 }
