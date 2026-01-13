@@ -844,7 +844,7 @@ module "virtual_lab_manager" {
 
   virtual_lab_manager_docker_image_url = var.virtual_lab_manager_docker_image_url
 
-  keycloak_server_url = "https://${local.old_primary_domain}/auth/"
+  keycloak_server_url = var.keycloak_url_with_auth
 
   virtual_lab_manager_secrets_arn = local.virtual_lab_manager_secrets_arn
 
