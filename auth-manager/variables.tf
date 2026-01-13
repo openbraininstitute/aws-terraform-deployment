@@ -88,3 +88,7 @@ variable "keycloak_client_id" {
 variable "number_of_containers" {
   type = number
 }
+
+variable "keycloak_server_url" {
+  type = string
+}

@@ -726,6 +726,7 @@ module "auth_manager" {
 
   image_url = var.auth_manager_svc_image_url
 
+  keycloak_server_url  = var.keycloak_url_with_auth
   keycloak_client_uuid = var.keycloak_client_uuid
   keycloak_client_id   = var.keycloak_client_id
 
