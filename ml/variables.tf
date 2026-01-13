@@ -154,3 +154,8 @@ variable "obi_backup_plan" {
   type        = string
   description = "Name of the backup plan to use for production s3 buckets"
 }
+
+variable "keycloak_sbo_realm_url" {
+  type        = string
+  description = "URL of the Keycloak SBO realm"
+}

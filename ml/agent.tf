@@ -91,7 +91,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_KEYCLOAK__ISSUER"
-          value = "https://${var.primary_domain}/auth/realms/SBO"
+          value = var.keycloak_sbo_realm_url
         },
         {
           name  = "NEUROAGENT_LLM__WHITELISTED_MODEL_IDS_REGEX"

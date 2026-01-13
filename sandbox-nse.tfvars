@@ -24,6 +24,9 @@ notebook_service_aws_accounting_enabled   = false
 notebook_service_azure_accounting_enabled = false
 notebook_service_azure_storage_account    = ""
 
+keycloak_sbo_realm_url = "https://staging.cell-a.openbraininstitute.org/auth/realms/SBO"
+keycloak_url_with_auth = "https://staging.cell-a.openbraininstitute.org/auth/"
+
 bluenaas_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:staging"
 bluenaas_task_size = {
   cpu    = 4096

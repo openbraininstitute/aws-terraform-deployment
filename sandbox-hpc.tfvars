@@ -24,6 +24,9 @@ notebook_service_aws_accounting_enabled   = false
 notebook_service_azure_accounting_enabled = false
 notebook_service_azure_storage_account    = ""
 
+keycloak_sbo_realm_url = "https://staging.cell-a.openbraininstitute.org/auth/realms/SBO"
+keycloak_url_with_auth = "https://staging.cell-a.openbraininstitute.org/auth/"
+
 neuroagent_image_tag = "neuroagent-v0.11.4"
 
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-staging"
