@@ -22,6 +22,9 @@ notebook_service_aws_accounting_enabled   = true
 notebook_service_azure_accounting_enabled = false
 notebook_service_azure_storage_account    = "obijupyterproduction"
 
+keycloak_sbo_realm_url = "https://cell-a.openbraininstitute.org/auth/realms/SBO"
+keycloak_url_with_auth = "https://cell-a.openbraininstitute.org/auth/"
+
 neuroagent_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-v0.14.2"
 
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.12.11.1"

@@ -272,6 +272,8 @@ module "ml" {
   github_oidc_provider_arn = module.github_oidc_provider.oidc_provider_arn
 
   github_repos = ["openbraininstitute/neuroagent"]
+
+  keycloak_sbo_realm_url = var.keycloak_sbo_realm_url
 }
 
 # NOTE: The Nexus service has been fully decommissioned.
@@ -301,7 +303,7 @@ module "cells_svc" {
   aws_coreservices_ssh_key_id = module.coreservices_key.key_pair_id
 
   root_path    = "/api/circuit"
-  keycloak_url = "https://${local.old_primary_domain}/auth/realms/SBO/"
+  keycloak_url = "${var.keycloak_sbo_realm_url}/"
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 
@@ -329,7 +331,7 @@ module "small_scale_simulator" {
 
   accounting_base_url = "https://${local.old_primary_domain}${var.accounting_svc_base_path}"
   entitycore_url      = "https://${local.old_primary_domain}/api/entitycore"
-  keycloak_server_url = "https://${local.old_primary_domain}/auth/"
+  keycloak_server_url = var.keycloak_url_with_auth
 
   api_task_size = var.small_scale_simulator_api_task_size
 
@@ -377,7 +379,7 @@ module "notebook_service" {
   base_path = "/api/notebook_service"
 
   accounting_base_url          = "https://${local.old_primary_domain}${var.accounting_svc_base_path}"
-  keycloak_url                 = "https://${local.old_primary_domain}/auth/realms/SBO"
+  keycloak_url                 = var.keycloak_sbo_realm_url
   notebook_service_bucket_name = var.notebook_service_bucket_name
 
   accounting_enabled       = var.notebook_service_aws_accounting_enabled
@@ -487,7 +489,7 @@ module "core_webapp_main" {
   api_origin             = "https://${local.old_primary_domain}"
   auth_url               = "https://${local.old_primary_domain}/api/auth"
   deployment_env         = var.is_staging ? "staging" : "production"
-  keycloak_issuer        = "https://${local.old_primary_domain}/auth/realms/SBO"
+  keycloak_issuer        = var.keycloak_sbo_realm_url
   matomo_site_id         = var.is_production ? "1" : "3"
   primary_hostname       = local.old_primary_domain
   sanity_dataset         = var.is_production ? "production" : "staging"
@@ -522,7 +524,7 @@ module "core_webapp_cell_a" {
   api_origin             = "https://${local.cell_a_primary_domain}"
   auth_url               = "https://${local.cell_a_primary_domain}/api/auth"
   deployment_env         = var.is_staging ? "staging" : "production"
-  keycloak_issuer        = "https://${local.cell_a_primary_domain}/auth/realms/SBO"
+  keycloak_issuer        = var.keycloak_sbo_realm_url
   matomo_site_id         = var.is_production ? "1" : "3"
   primary_hostname       = local.cell_a_primary_domain
   sanity_dataset         = var.is_production ? "production" : "staging"
@@ -559,7 +561,7 @@ module "core_webapp_dev" {
   api_origin             = "https://${local.old_primary_domain}"
   auth_url               = "https://dev.openbraininstitute.org/api/auth"
   deployment_env         = "development"
-  keycloak_issuer        = "https://${local.old_primary_domain}/auth/realms/SBO"
+  keycloak_issuer        = var.keycloak_sbo_realm_url
   matomo_site_id         = "3"
   primary_hostname       = "dev.openbraininstitute.org"
   sanity_dataset         = "staging"
@@ -597,7 +599,7 @@ module "core_webapp_preview" {
   api_origin             = "https://${local.old_primary_domain}"
   auth_url               = "https://preview.openbraininstitute.org/api/auth"
   deployment_env         = "preview"
-  keycloak_issuer        = "https://${local.old_primary_domain}/auth/realms/SBO"
+  keycloak_issuer        = var.keycloak_sbo_realm_url
   matomo_site_id         = "3"
   primary_hostname       = "preview.openbraininstitute.org"
   sanity_dataset         = "staging"
@@ -676,11 +678,12 @@ module "entitycore_svc" {
   root_path = "/api/entitycore"
 
   # use staging keycloak url in sandboxes
-  keycloak_url = (var.is_staging || var.is_production) ? (
-    "https://${local.old_primary_domain}/auth/realms/SBO/"
-    ) : (
-    "https://staging.openbraininstitute.org/auth/realms/SBO/"
-  )
+  keycloak_url = "${var.keycloak_sbo_realm_url}/"
+  # keycloak_url = (var.is_staging || var.is_production) ? (
+  #   "https://${local.old_primary_domain}/auth/realms/SBO/"
+  #   ) : (
+  #   "https://staging.cell-a.openbraininstitute.org/auth/realms/SBO/"
+  # )
 
   s3_bucket_allowed_origins = var.entitycore_svc_s3_bucket_allowed_origins
   aws_s3_internal_bucket    = var.entitycore_svc_aws_s3_internal_bucket
@@ -758,7 +761,7 @@ module "obi_one_v2" {
   container_port = 8000
   host_port      = 8000
 
-  keycloak_url   = "https://${local.old_primary_domain}/auth/realms/SBO/"
+  keycloak_url   = "${var.keycloak_sbo_realm_url}/"
   entitycore_url = "https://${local.old_primary_domain}/api/entitycore"
 
   cors_origins = local.core_web_app_origins
@@ -943,7 +946,7 @@ module "launch_system" {
   queues                   = ["high", "medium", "low"]
 
   root_path    = "/api/launch-system"
-  keycloak_url = "https://${local.old_primary_domain}/auth/realms/SBO/"
+  keycloak_url = "${var.keycloak_sbo_realm_url}/"
 
   token_lifetime_extension_interval = 0
 

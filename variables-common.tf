@@ -392,3 +392,15 @@ variable "opendata_paths_list" {
   type        = string
   description = "File in which the paths to sync on opendata are listed, one per line. Should exist in modules/public_data_efs"
 }
+
+variable "keycloak_sbo_realm_url" {
+  type        = string
+  description = "Keycloak realm URL for SBO, for example https://staging.cell-a.openbraininstitute.org/auth/realms/SBO"
+  sensitive   = false
+}
+
+variable "keycloak_url_with_auth" {
+  type        = string
+  description = "Keycloak URL with auth and slash, for example for example https://staging.cell-a.openbraininstitute.org/auth/"
+  sensitive   = false
+}
