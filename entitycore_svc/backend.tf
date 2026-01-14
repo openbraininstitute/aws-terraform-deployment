@@ -50,16 +50,6 @@ resource "aws_vpc_security_group_ingress_rule" "entitycore_allow_port_8000" {
   description = "Allow port 8000 http"
 }
 
-resource "aws_vpc_security_group_ingress_rule" "entitycore_allow_in_tcp" {
-  security_group_id = aws_security_group.entitycore_ecs_task.id
-  # TODO limit to what is needed
-  ip_protocol = "tcp"
-  from_port   = 0
-  to_port     = 65535
-  cidr_ipv4   = "0.0.0.0/0"
-  description = "Allow all TCP"
-}
-
 resource "aws_vpc_security_group_egress_rule" "entitycore_allow_outgoing_tcp" {
   security_group_id = aws_security_group.entitycore_ecs_task.id
   # TODO limit to what is needed
