@@ -20,7 +20,6 @@ variable "db_username" {
   type        = string
 }
 
-
 variable "obi_backup_plan" {
   description = "Name of the OBI backup plan"
   type        = string
@@ -43,10 +42,6 @@ variable "root_path" {
 variable "cors_origins" {
   description = "CORS origins"
   type        = list(string)
-}
-
-variable "allowed_source_ip_cidr_blocks" {
-  type = list(string)
 }
 
 variable "private_alb_listener_arn" {

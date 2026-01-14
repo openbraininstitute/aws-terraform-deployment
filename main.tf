@@ -706,12 +706,11 @@ module "auth_manager" {
 
   number_of_containers = var.is_staging ? 1 : 0
 
-  aws_region                    = local.aws_region
-  vpc_id                        = local.vpc_id
-  private_alb_listener_arn      = local.private_alb_https_listener_arn
-  internet_access_route_id      = local.route_table_private_subnets_id
-  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
-  route_table_id                = local.route_table_private_subnets_id
+  aws_region               = local.aws_region
+  vpc_id                   = local.vpc_id
+  private_alb_listener_arn = local.private_alb_https_listener_arn
+  internet_access_route_id = local.route_table_private_subnets_id
+  route_table_id           = local.route_table_private_subnets_id
 
   cors_origins = local.core_web_app_origins
 
