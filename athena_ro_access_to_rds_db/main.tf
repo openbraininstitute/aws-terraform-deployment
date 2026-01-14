@@ -1,3 +1,6 @@
+data "aws_vpc" "main" {
+  id = var.vpc_id
+}
 
 data "aws_secretsmanager_secret" "db_ro_secret" {
   arn = var.secret_with_ro_db_credentials_arn
@@ -103,8 +106,8 @@ resource "aws_security_group_rule" "rds_ingress_to_lambda" {
   to_port           = 32000
   protocol          = "-1"
   security_group_id = aws_security_group.lambda_sg.id
-  cidr_blocks       = ["0.0.0.0/0"]
-  description       = "allow ingress all"
+  cidr_blocks       = [data.aws_vpc.main.cidr_block]
+  description       = "allow ingress all vpc"
 }
 
 resource "aws_security_group_rule" "rds_egress_from_lambda" {
