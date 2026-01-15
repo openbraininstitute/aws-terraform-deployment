@@ -130,8 +130,8 @@ obi_one_v2_ecs_task_size = {
 # CoreWebApp s3 and CloudFront configuration
 core_webapp_s3_bucket_name = "core-webapp-static-assets-staging"
 auth_manager_svc_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/auth-manager:2025.12.12.1"
-keycloak_client_uuid       = "edad02be-fd16-44b4-9864-1513d47b54b4"
-keycloak_client_id         = "core-webapp-main"
+keycloak_client_uuid       = "a40fd6ea-79f8-4212-b087-45c75e4703a4"
+keycloak_client_id         = "core-webapp-cell-b-azure-staging"
 
 # launch-system configuration
 launch_system_api_task_size = {
