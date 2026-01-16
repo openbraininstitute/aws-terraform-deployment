@@ -8,14 +8,14 @@ resource "aws_security_group" "auth_manager_sg" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "postgres_from_vpc" {
-  for_each          = toset(var.allowed_source_ip_cidr_blocks)
   security_group_id = aws_security_group.auth_manager_sg.id
   description       = "Allow Postgres access from the VPC"
   from_port         = 5432
   to_port           = 5432
   ip_protocol       = "tcp"
-  cidr_ipv4         = each.key
+  cidr_ipv4         = data.aws_vpc.main.cidr_block
 }
+
 resource "aws_vpc_security_group_ingress_rule" "main_subnet_ingress" {
   security_group_id = aws_security_group.auth_manager_sg.id
   description       = "Allow everything incoming from the VPC"
