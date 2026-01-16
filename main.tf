@@ -368,6 +368,8 @@ module "notebook_service" {
   kubernetes_thread_check_interval       = 15
   azure_kubernetes_thread_check_interval = 15
 
+  enable_run_command_in_ecs_container = var.is_staging
+
   task_size = {
     cpu    = 512
     memory = 1024
