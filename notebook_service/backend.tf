@@ -338,6 +338,20 @@ resource "aws_iam_role" "ecs_task_execution_role" {
   })
 }
 
+resource "aws_iam_role_policy_attachment" "ecs_execution_role_ssm_core" {
+  count = var.enable_run_command_in_ecs_container ? 1 : 0
+
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_role_ssm_core" {
+  count = var.enable_run_command_in_ecs_container ? 1 : 0
+
+  role       = aws_iam_role.ecs_task_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
 resource "aws_iam_role" "ecs_task_role" {
   name_prefix = "notebook_service_task_ecs"
 
