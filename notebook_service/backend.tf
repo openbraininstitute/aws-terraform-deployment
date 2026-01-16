@@ -296,6 +296,8 @@ resource "aws_ecs_service" "ecs_service" {
   launch_type     = "FARGATE"
   task_definition = aws_ecs_task_definition.ecs_definition.arn
 
+  enable_execute_command = var.enable_run_command_in_ecs_container
+
   load_balancer {
     target_group_arn = aws_lb_target_group.private_tg.arn
     container_name   = "notebook_service"
@@ -334,6 +336,20 @@ resource "aws_iam_role" "ecs_task_execution_role" {
       }
     ]
   })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_execution_role_ssm_core" {
+  count = var.enable_run_command_in_ecs_container ? 1 : 0
+
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_role_ssm_core" {
+  count = var.enable_run_command_in_ecs_container ? 1 : 0
+
+  role       = aws_iam_role.ecs_task_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 resource "aws_iam_role" "ecs_task_role" {
