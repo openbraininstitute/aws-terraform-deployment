@@ -296,6 +296,8 @@ resource "aws_ecs_service" "ecs_service" {
   launch_type     = "FARGATE"
   task_definition = aws_ecs_task_definition.ecs_definition.arn
 
+  enable_execute_command = var.enable_run_command_in_ecs_container
+
   load_balancer {
     target_group_arn = aws_lb_target_group.private_tg.arn
     container_name   = "notebook_service"
