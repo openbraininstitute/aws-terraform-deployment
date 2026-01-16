@@ -29,8 +29,8 @@ keycloak_url_with_auth = "https://staging.cell-a.openbraininstitute.org/auth/"
 
 neuroagent_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-v0.14.2"
 
-small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2026.01.12.1"
-small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2026.01.12.1"
+small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2026.01.14.2"
+small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2026.01.14.2"
 small_scale_simulator_api_task_size = {
   cpu    = 256
   memory = 512
@@ -117,7 +117,7 @@ entitycore_svc_aws_s3_internal_region    = "us-east-1"
 entitycore_svc_aws_s3_open_bucket        = "openbluebrain"
 entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["*"]
-entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2026.1.5"
+entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2026.1.6"
 
 obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2026.1.2"
 obi_one_v2_ec2_instance_type = "t3.small" # vCPUs: 2, Memory: 2 GiB
@@ -130,8 +130,8 @@ obi_one_v2_ecs_task_size = {
 # CoreWebApp s3 and CloudFront configuration
 core_webapp_s3_bucket_name = "core-webapp-static-assets-staging"
 auth_manager_svc_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/auth-manager:2025.12.12.1"
-keycloak_client_uuid       = "edad02be-fd16-44b4-9864-1513d47b54b4"
-keycloak_client_id         = "core-webapp-main"
+keycloak_client_uuid       = "a40fd6ea-79f8-4212-b087-45c75e4703a4"
+keycloak_client_id         = "core-webapp-cell-b-azure-staging"
 
 # launch-system configuration
 launch_system_api_task_size = {

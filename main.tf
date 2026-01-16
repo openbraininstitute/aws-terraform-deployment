@@ -762,7 +762,7 @@ module "obi_one_v2" {
   host_port      = 8000
 
   keycloak_url   = "${var.keycloak_sbo_realm_url}/"
-  entitycore_url = "https://${local.old_primary_domain}/api/entitycore"
+  entitycore_url = "https://${local.cell_a_primary_domain}/api/entitycore"
 
   cors_origins = local.core_web_app_origins
 
@@ -950,10 +950,10 @@ module "launch_system" {
 
   token_lifetime_extension_interval = 0
 
-  launch_system_api_url = "https://${local.old_primary_domain}/api/launch-system"
-  entitycore_url        = "https://${local.old_primary_domain}/api/entitycore"
-  accounting_url        = "https://${local.old_primary_domain}/api/accounting"
-  auth_manager_url      = "https://${local.old_primary_domain}/api/auth-manager"
+  launch_system_api_url = "https://${local.cell_a_primary_domain}/api/launch-system"
+  entitycore_url        = "https://${local.cell_a_primary_domain}/api/entitycore"
+  accounting_url        = "https://${local.cell_a_primary_domain}/api/accounting"
+  auth_manager_url      = "https://${local.cell_a_primary_domain}/api/auth-manager"
 
   az_region = "eastus"
   az_instance_types = jsonencode({
