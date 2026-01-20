@@ -390,7 +390,7 @@ module "notebook_service" {
 
   base_path = "/api/notebook_service"
 
-  accounting_base_url          = "https://${local.old_primary_domain}${var.accounting_svc_base_path}"
+  accounting_base_url          = "https://${local.cell_a_primary_domain}${var.accounting_svc_base_path}"
   keycloak_url                 = var.keycloak_sbo_realm_url
   notebook_service_bucket_name = var.notebook_service_bucket_name
 
