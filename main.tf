@@ -7,6 +7,11 @@ locals {
   route_table_private_subnets_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
   route_table_public_id          = data.terraform_remote_state.common.outputs.route_table_public_id
 
+  # preview.openbraininstitute.org was deployed in staging, but the DNS of godaddy now delegates preview
+  # as a subdomain towards DNS servers of an AWS zone in Pavlo's AWS sandbox account => preview is no longer
+  # accessible via the load balancers of the staging environment.
+  is_preview_enabled = false
+
   core_web_app_origins = concat(
     ["https://${local.old_primary_domain}"],
     var.is_staging ? [
@@ -578,7 +583,7 @@ module "core_webapp_dev" {
 module "core_webapp_preview" {
   source = "./core_webapp"
 
-  count = var.is_staging ? 1 : 0 # Deprecated: preview.openbraininstitute.org currently points to
+  count = local.is_preview_enabled ? 1 : 0 # Deprecated: preview.openbraininstitute.org currently points to
   # a zone in a sandbox managed by Pavlo, this deployment isn't accessible anymore.
 
   key               = "preview"
@@ -633,7 +638,7 @@ module "github_core_webapp_preview_ecs_redeploy_role" {
   source = "./github_ecs_redeploy_role"
 
   # for now we only want such a redeploy role in staging
-  count = var.is_staging ? 1 : 0
+  count = local.is_preview_enabled ? 1 : 0
 
   account_id               = local.account_id
   aws_region               = local.aws_region
@@ -995,9 +1000,11 @@ module "dashboards" {
       "ObiOneV2"            = module.obi_one_v2.private_lb_rule_suffix
     },
     var.is_staging ? {
-      "CoreWebAppDev"     = module.core_webapp_dev[0].private_lb_rule_suffix
+      "CoreWebAppDev" = module.core_webapp_dev[0].private_lb_rule_suffix
+      "LaunchSystem"  = module.launch_system[0].private_lb_rule_suffix
+    } : {},
+    local.is_preview_enabled ? {
       "CoreWebAppPreview" = module.core_webapp_preview[0].private_lb_rule_suffix
-      "LaunchSystem"      = module.launch_system[0].private_lb_rule_suffix
     } : {}
   )
 }
