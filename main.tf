@@ -48,6 +48,11 @@ locals {
   github_organisation = "openbraininstitute"
 }
 
+# manage default SG via terraform, ensures the default security group is locked down (no egress, no ingress)
+resource "aws_default_security_group" "default" {
+  vpc_id = local.vpc_id
+}
+
 module "coreservices_key" {
   source = "./ssh_key"
 
