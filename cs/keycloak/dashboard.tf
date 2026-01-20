@@ -42,7 +42,7 @@ resource "aws_cloudwatch_dashboard" "main" {
           "metrics" : [
             [
               "AWS/ECS",
-              "CPUUtilization",
+              "MemoryUtilization",
               "ClusterName",
               var.keycloak_ecs_cluster_name,
               "ServiceName",
