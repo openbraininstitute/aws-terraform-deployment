@@ -659,7 +659,7 @@ module "accounting_svc" {
   vpc_id                         = local.vpc_id
   private_alb_listener_arn       = local.private_alb_https_listener_arn
   internet_access_route_id       = local.route_table_private_subnets_id
-  allowed_source_ip_cidr_blocks  = [local.vpc_cidr_block]
+  allowed_source_ip_cidr_blocks  = [local.vpc_cidr_block, var.core_web_app_in_azure_cidr_block]
   docker_image_url               = var.accounting_svc_docker_image_url
   accounting_service_secrets_arn = local.accounting_service_secrets_arn
 
