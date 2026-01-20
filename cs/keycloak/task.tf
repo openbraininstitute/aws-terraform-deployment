@@ -234,23 +234,26 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
   volume {
     name = "keycloak-theme-volume"
     efs_volume_configuration {
-      file_system_id = aws_efs_file_system.keycloak-theme.id
-      root_directory = "/"
+      file_system_id     = aws_efs_file_system.keycloak-theme.id
+      root_directory     = "/"
+      transit_encryption = "ENABLED"
     }
   }
   volume {
     name = "keycloak-providers-volume"
     efs_volume_configuration {
-      file_system_id = aws_efs_file_system.keycloak-providers.id
-      root_directory = "/"
+      file_system_id     = aws_efs_file_system.keycloak-providers.id
+      root_directory     = "/"
+      transit_encryption = "ENABLED"
     }
   }
 
   volume {
     name = "otel-config-volume"
     efs_volume_configuration {
-      file_system_id = aws_efs_file_system.otel-config.id
-      root_directory = "/"
+      file_system_id     = aws_efs_file_system.otel-config.id
+      root_directory     = "/"
+      transit_encryption = "ENABLED"
     }
   }
 
