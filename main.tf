@@ -22,7 +22,7 @@ locals {
   vpc_cidr_block    = data.terraform_remote_state.common.outputs.vpc_cidr_block
   vpc_default_sg_id = data.terraform_remote_state.common.outputs.vpc_default_sg_id
 
-  old_primary_domain    = data.terraform_remote_state.common.outputs.primary_domain
+  old_primary_domain    = data.terraform_remote_state.common.outputs.primary_domain # "staging.openbraininstitute.org" or "www.openbraininstitute.org"
   cell_a_primary_domain = var.is_production ? "cell-a.openbraininstitute.org" : "staging.cell-a.openbraininstitute.org"
 
   email_domain_name = data.terraform_remote_state.common.outputs.email_domain_name
@@ -820,7 +820,7 @@ module "thumbnail_generation_api" {
   thumbnail_generation_api_base_path        = "/api/thumbnail-generation"
   thumbnail_generation_api_log_group_name   = "thumbnail_generation_api"
   thumbnail_generation_api_cors_origins     = local.core_web_app_origins
-  entitycore_url                            = "https://${local.old_primary_domain}/api/entitycore"
+  entitycore_url                            = "https://${local.cell_a_primary_domain}/api/entitycore"
 }
 
 module "virtual_lab_manager" {
@@ -834,7 +834,7 @@ module "virtual_lab_manager" {
   private_lb_listener_https_arn  = local.private_alb_https_listener_arn
   route_table_private_subnets_id = local.route_table_private_subnets_id
 
-  invite_link = "https://${local.old_primary_domain}/app"
+  invite_link = "https://${local.old_primary_domain}/app" # TODO This has to point to the public url of core web app?
   mail_from   = "no-reply@${local.email_domain_name}"
 
   db_multi_az = var.is_production
@@ -871,7 +871,7 @@ module "virtual_lab_manager" {
   virtual_lab_manager_admin_base_path      = "{}/app/virtual-lab/lab/{}/admin?panel=billing"
   virtual_lab_manager_deployment_namespace = "https://${local.old_primary_domain}"
 
-  accounting_base_url = "https://${local.old_primary_domain}${var.accounting_svc_base_path}"
+  accounting_base_url = "https://${local.cell_a_primary_domain}${var.accounting_svc_base_path}"
 
   virtual_lab_manager_db_ro_secret_arn = local.virtual_lab_manager_db_ro_secret_arn
   aws_deployment_env                   = var.deployment_env
