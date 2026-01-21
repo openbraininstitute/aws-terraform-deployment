@@ -27,8 +27,8 @@ keycloak_url_with_auth = "https://cell-a.openbraininstitute.org/auth/"
 
 neuroagent_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-v0.14.2"
 
-small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2025.12.11.1"
-small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2025.12.11.1"
+small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2026.01.14.2"
+small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2026.01.14.2"
 small_scale_simulator_api_task_size = {
   cpu    = 1024
   memory = 2048
@@ -114,9 +114,9 @@ entitycore_svc_aws_s3_internal_region    = "us-east-1"
 entitycore_svc_aws_s3_open_bucket        = "openbluebrain"
 entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["https://www.openbraininstitute.org"]
-entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2026.1.2"
+entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2026.1.6"
 
-obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2025.11.5"
+obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2026.1.2"
 obi_one_v2_ec2_instance_type = "t3.large" # vCPUs: 2, Memory: 8 GiB
 obi_one_v2_ecs_task_size = {
   cpu    = 2048
@@ -127,8 +127,8 @@ obi_one_v2_ecs_task_size = {
 # CoreWebApp s3 and CloudFront configuration
 core_webapp_s3_bucket_name = "core-webapp-static-assets-production"
 auth_manager_svc_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/auth-manager:2025.12.12.1"
-keycloak_client_uuid       = "50e91a7d-6dfe-4f69-b4c1-2faf9ce81d84"
-keycloak_client_id         = "authmanager-production"
+keycloak_client_uuid       = "5c060da0-5f9f-4a35-b9fd-32c5fafb1aca"
+keycloak_client_id         = "core-webapp-cell-b-azure"
 
 # launch-system configuration
 launch_system_api_task_size = {
@@ -146,3 +146,5 @@ launch_system_executor_task_size = {
 launch_system_orchestrator_num_workers = 2
 
 opendata_paths_list = "production_opendata_paths.txt"
+
+core_web_app_in_azure_cidr_block = "10.103.1.0/27" # staging azure core web app aca range

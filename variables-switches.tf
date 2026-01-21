@@ -29,3 +29,8 @@ variable "deployment_env" {
   type        = string
   description = "The deployment environment, values: 'staging', 'production'"
 }
+
+variable "core_web_app_in_azure_cidr_block" {
+  type        = string
+  description = "The cidr used by the corewebapp containers which are deployed within azure"
+}

@@ -134,3 +134,8 @@ variable "azure_files_storage_account_name" {
   type        = string
   description = "Name of the Azure Files storage account for jupyterhub homedirs"
 }
+
+variable "enable_run_command_in_ecs_container" {
+  description = "Enable the run command in the ECS container, normally only meant for debugging in staging"
+  type        = bool
+}

@@ -7,6 +7,11 @@ locals {
   route_table_private_subnets_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
   route_table_public_id          = data.terraform_remote_state.common.outputs.route_table_public_id
 
+  # preview.openbraininstitute.org was deployed in staging, but the DNS of godaddy now delegates preview
+  # as a subdomain towards DNS servers of an AWS zone in Pavlo's AWS sandbox account => preview is no longer
+  # accessible via the load balancers of the staging environment.
+  is_preview_enabled = false
+
   core_web_app_origins = concat(
     ["https://${local.old_primary_domain}"],
     var.is_staging ? [
@@ -22,7 +27,7 @@ locals {
   vpc_cidr_block    = data.terraform_remote_state.common.outputs.vpc_cidr_block
   vpc_default_sg_id = data.terraform_remote_state.common.outputs.vpc_default_sg_id
 
-  old_primary_domain    = data.terraform_remote_state.common.outputs.primary_domain
+  old_primary_domain    = data.terraform_remote_state.common.outputs.primary_domain # "staging.openbraininstitute.org" or "www.openbraininstitute.org"
   cell_a_primary_domain = var.is_production ? "cell-a.openbraininstitute.org" : "staging.cell-a.openbraininstitute.org"
 
   email_domain_name = data.terraform_remote_state.common.outputs.email_domain_name
@@ -46,6 +51,11 @@ locals {
   cloudfront_certificate_arn = data.terraform_remote_state.common.outputs.cloudfront_certificate_arn
 
   github_organisation = "openbraininstitute"
+}
+
+# manage default SG via terraform, ensures the default security group is locked down (no egress, no ingress)
+resource "aws_default_security_group" "default" {
+  vpc_id = local.vpc_id
 }
 
 module "coreservices_key" {
@@ -368,6 +378,8 @@ module "notebook_service" {
   kubernetes_thread_check_interval       = 15
   azure_kubernetes_thread_check_interval = 15
 
+  enable_run_command_in_ecs_container = var.is_staging
+
   task_size = {
     cpu    = 512
     memory = 1024
@@ -378,7 +390,7 @@ module "notebook_service" {
 
   base_path = "/api/notebook_service"
 
-  accounting_base_url          = "https://${local.old_primary_domain}${var.accounting_svc_base_path}"
+  accounting_base_url          = "https://${local.cell_a_primary_domain}${var.accounting_svc_base_path}"
   keycloak_url                 = var.keycloak_sbo_realm_url
   notebook_service_bucket_name = var.notebook_service_bucket_name
 
@@ -571,7 +583,7 @@ module "core_webapp_dev" {
 module "core_webapp_preview" {
   source = "./core_webapp"
 
-  count = var.is_staging ? 1 : 0 # Deprecated: preview.openbraininstitute.org currently points to
+  count = local.is_preview_enabled ? 1 : 0 # Deprecated: preview.openbraininstitute.org currently points to
   # a zone in a sandbox managed by Pavlo, this deployment isn't accessible anymore.
 
   key               = "preview"
@@ -626,7 +638,7 @@ module "github_core_webapp_preview_ecs_redeploy_role" {
   source = "./github_ecs_redeploy_role"
 
   # for now we only want such a redeploy role in staging
-  count = var.is_staging ? 1 : 0
+  count = local.is_preview_enabled ? 1 : 0
 
   account_id               = local.account_id
   aws_region               = local.aws_region
@@ -652,7 +664,7 @@ module "accounting_svc" {
   vpc_id                         = local.vpc_id
   private_alb_listener_arn       = local.private_alb_https_listener_arn
   internet_access_route_id       = local.route_table_private_subnets_id
-  allowed_source_ip_cidr_blocks  = [local.vpc_cidr_block]
+  allowed_source_ip_cidr_blocks  = [local.vpc_cidr_block, var.core_web_app_in_azure_cidr_block]
   docker_image_url               = var.accounting_svc_docker_image_url
   accounting_service_secrets_arn = local.accounting_service_secrets_arn
 
@@ -706,12 +718,11 @@ module "auth_manager" {
 
   number_of_containers = var.is_staging ? 1 : 0
 
-  aws_region                    = local.aws_region
-  vpc_id                        = local.vpc_id
-  private_alb_listener_arn      = local.private_alb_https_listener_arn
-  internet_access_route_id      = local.route_table_private_subnets_id
-  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
-  route_table_id                = local.route_table_private_subnets_id
+  aws_region               = local.aws_region
+  vpc_id                   = local.vpc_id
+  private_alb_listener_arn = local.private_alb_https_listener_arn
+  internet_access_route_id = local.route_table_private_subnets_id
+  route_table_id           = local.route_table_private_subnets_id
 
   cors_origins = local.core_web_app_origins
 
@@ -763,7 +774,7 @@ module "obi_one_v2" {
   host_port      = 8000
 
   keycloak_url   = "${var.keycloak_sbo_realm_url}/"
-  entitycore_url = "https://${local.old_primary_domain}/api/entitycore"
+  entitycore_url = "https://${local.cell_a_primary_domain}/api/entitycore"
 
   cors_origins = local.core_web_app_origins
 
@@ -819,7 +830,7 @@ module "thumbnail_generation_api" {
   thumbnail_generation_api_base_path        = "/api/thumbnail-generation"
   thumbnail_generation_api_log_group_name   = "thumbnail_generation_api"
   thumbnail_generation_api_cors_origins     = local.core_web_app_origins
-  entitycore_url                            = "https://${local.old_primary_domain}/api/entitycore"
+  entitycore_url                            = "https://${local.cell_a_primary_domain}/api/entitycore"
 }
 
 module "virtual_lab_manager" {
@@ -833,7 +844,7 @@ module "virtual_lab_manager" {
   private_lb_listener_https_arn  = local.private_alb_https_listener_arn
   route_table_private_subnets_id = local.route_table_private_subnets_id
 
-  invite_link = "https://${local.old_primary_domain}/app"
+  invite_link = "https://${local.old_primary_domain}/app" # TODO This has to point to the public url of core web app?
   mail_from   = "no-reply@${local.email_domain_name}"
 
   db_multi_az = var.is_production
@@ -870,7 +881,7 @@ module "virtual_lab_manager" {
   virtual_lab_manager_admin_base_path      = "{}/app/virtual-lab/lab/{}/admin?panel=billing"
   virtual_lab_manager_deployment_namespace = "https://${local.old_primary_domain}"
 
-  accounting_base_url = "https://${local.old_primary_domain}${var.accounting_svc_base_path}"
+  accounting_base_url = "https://${local.cell_a_primary_domain}${var.accounting_svc_base_path}"
 
   virtual_lab_manager_db_ro_secret_arn = local.virtual_lab_manager_db_ro_secret_arn
   aws_deployment_env                   = var.deployment_env
@@ -935,9 +946,9 @@ module "launch_system" {
   db_username     = "launch"
   obi_backup_plan = "obi_plan"
 
-  api_image_url              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.1.2"
-  orchestrator_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.1.2"
-  default_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/default-executor:2026.1.2"
+  api_image_url              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.1.5"
+  orchestrator_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.1.5"
+  default_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/default-executor:2026.1.5"
 
   api_task_size          = var.launch_system_api_task_size
   executor_task_size     = var.launch_system_executor_task_size
@@ -989,9 +1000,11 @@ module "dashboards" {
       "ObiOneV2"            = module.obi_one_v2.private_lb_rule_suffix
     },
     var.is_staging ? {
-      "CoreWebAppDev"     = module.core_webapp_dev[0].private_lb_rule_suffix
+      "CoreWebAppDev" = module.core_webapp_dev[0].private_lb_rule_suffix
+      "LaunchSystem"  = module.launch_system[0].private_lb_rule_suffix
+    } : {},
+    local.is_preview_enabled ? {
       "CoreWebAppPreview" = module.core_webapp_preview[0].private_lb_rule_suffix
-      "LaunchSystem"      = module.launch_system[0].private_lb_rule_suffix
     } : {}
   )
 }

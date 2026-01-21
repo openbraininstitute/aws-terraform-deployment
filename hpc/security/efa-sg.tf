@@ -14,7 +14,15 @@ resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
   from_port         = 22
   to_port           = 22
   ip_protocol       = "tcp"
-  cidr_ipv4         = "0.0.0.0/0"
+  cidr_ipv4         = data.aws_vpc.provided_vpc.cidr_block
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_ssh_peering" {
+  security_group_id = aws_security_group.efa.id
+  from_port         = 22
+  to_port           = 22
+  ip_protocol       = "tcp"
+  cidr_ipv4         = data.aws_vpc.peering_vpc.cidr_block
 }
 
 resource "aws_vpc_security_group_egress_rule" "ring_of_trust_out" {

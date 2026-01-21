@@ -110,6 +110,10 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
           name  = "JAVA_OPTS_APPEND"
           value = "-XX:MaxRAMPercentage=75.0"
         },
+        {
+          name  = "KC_HTTP_ACCEPT_NON_NORMALIZED_PATHS"
+          value = "true"
+        },
       ]
       secrets = [
         {
@@ -146,7 +150,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
     },
     {
       name  = "aws-collector"
-      image = "public.ecr.aws/aws-observability/aws-otel-collector:v0.43.3"
+      image = "public.ecr.aws/aws-observability/aws-otel-collector:v0.46.0"
       command = [
         "--config=/etc/ecs/otel-agent-config.yaml"
       ]
@@ -183,7 +187,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
     },
     {
       name      = "keycloak-otel-agent-config"
-      image     = "public.ecr.aws/docker/library/bash:alpine3.22"
+      image     = "public.ecr.aws/docker/library/bash:alpine3.23"
       essential = false
       command = [
         "sh",
@@ -234,23 +238,26 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
   volume {
     name = "keycloak-theme-volume"
     efs_volume_configuration {
-      file_system_id = aws_efs_file_system.keycloak-theme.id
-      root_directory = "/"
+      file_system_id     = aws_efs_file_system.keycloak-theme.id
+      root_directory     = "/"
+      transit_encryption = "ENABLED"
     }
   }
   volume {
     name = "keycloak-providers-volume"
     efs_volume_configuration {
-      file_system_id = aws_efs_file_system.keycloak-providers.id
-      root_directory = "/"
+      file_system_id     = aws_efs_file_system.keycloak-providers.id
+      root_directory     = "/"
+      transit_encryption = "ENABLED"
     }
   }
 
   volume {
     name = "otel-config-volume"
     efs_volume_configuration {
-      file_system_id = aws_efs_file_system.otel-config.id
-      root_directory = "/"
+      file_system_id     = aws_efs_file_system.otel-config.id
+      root_directory     = "/"
+      transit_encryption = "ENABLED"
     }
   }
 

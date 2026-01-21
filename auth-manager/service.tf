@@ -42,22 +42,11 @@ resource "aws_security_group" "auth_manager_ecs_task" {
 
 resource "aws_vpc_security_group_ingress_rule" "auth_manager_allow_port_8000" {
   security_group_id = aws_security_group.auth_manager_ecs_task.id
-
-  ip_protocol = "tcp"
-  from_port   = 8000
-  to_port     = 8000
-  cidr_ipv4   = data.aws_vpc.main.cidr_block
-  description = "Allow port 8000 http"
-}
-
-resource "aws_vpc_security_group_ingress_rule" "auth_manager_allow_in_tcp" {
-  security_group_id = aws_security_group.auth_manager_ecs_task.id
-  # TODO limit to what is needed
-  ip_protocol = "tcp"
-  from_port   = 0
-  to_port     = 65535
-  cidr_ipv4   = "0.0.0.0/0"
-  description = "Allow all TCP"
+  ip_protocol       = "tcp"
+  from_port         = 8000
+  to_port           = 8000
+  cidr_ipv4         = data.aws_vpc.main.cidr_block
+  description       = "Allow port 8000 http"
 }
 
 resource "aws_vpc_security_group_egress_rule" "auth_manager_allow_outgoing_tcp" {

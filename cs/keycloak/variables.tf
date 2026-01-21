@@ -13,11 +13,6 @@ variable "keycloak_subnets" {
   type = list(string)
 }
 
-variable "domain_name" {
-  type      = string
-  sensitive = false
-}
-
 variable "private_alb_https_listener_arn" {
   type = string
 }

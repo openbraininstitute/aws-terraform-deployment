@@ -2,7 +2,7 @@
 resource "aws_efs_file_system" "keycloak-theme" {
   performance_mode = "generalPurpose"
   throughput_mode  = "bursting"
-  encrypted        = "false" #tfsec:ignore:aws-efs-enable-at-rest-encryption
+  encrypted        = false #tfsec:ignore:aws-efs-enable-at-rest-encryption
   tags = {
     Name        = "keycloak-theme"
     SBO_Billing = "keycloak"
@@ -21,7 +21,7 @@ resource "aws_efs_mount_target" "keycloak-theme-mt" {
 resource "aws_efs_file_system" "keycloak-providers" {
   performance_mode = "generalPurpose"
   throughput_mode  = "bursting"
-  encrypted        = "false" #tfsec:ignore:aws-efs-enable-at-rest-encryption
+  encrypted        = false #tfsec:ignore:aws-efs-enable-at-rest-encryption
   tags = {
     Name        = "keycloak-providers"
     SBO_Billing = "keycloak"
@@ -39,7 +39,7 @@ resource "aws_efs_mount_target" "keycloak-providers-mt" {
 resource "aws_efs_file_system" "otel-config" {
   performance_mode = "generalPurpose"
   throughput_mode  = "bursting"
-  encrypted        = "true"
+  encrypted        = true
   tags = {
     Name        = "otel-config"
     SBO_Billing = "keycloak"

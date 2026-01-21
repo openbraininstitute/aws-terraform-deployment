@@ -8,6 +8,10 @@ resource "aws_vpc" "pcluster_vpc" {
   }
 }
 
+resource "aws_default_security_group" "hpc_default" {
+  vpc_id = aws_vpc.pcluster_vpc.id
+}
+
 resource "aws_vpc_peering_connection" "test_to_pcluster" {
   peer_vpc_id = aws_vpc.pcluster_vpc.id
   vpc_id      = var.obp_vpc_id

@@ -34,10 +34,5 @@ resource "aws_lb_listener_rule" "auth_manager_private_listener_rule" {
     }
   }
 
-  condition {
-    source_ip {
-      values = var.allowed_source_ip_cidr_blocks
-    }
-  }
   tags = var.auth_manager_svc_tags
 }

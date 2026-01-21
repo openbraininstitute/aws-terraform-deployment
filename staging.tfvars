@@ -15,7 +15,7 @@ thumbnail_generation_api_docker_image_url = "public.ecr.aws/openbraininstitute/t
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.9.0"
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2025.10.3"
 jupyterhub_ec2_type                       = "c7i.large"
-notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:2025.12.24-1"
+notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:2026.01.19-1"
 notebook_service_cors_allowed_origins     = "[\"https://staging.cell-a.openbraininstitute.org\",\"https://staging.cell-b.openbraininstitute.org\",\"https://dev.openbraininstitute.org\",\"https://staging.openbraininstitute.org\",\"https://preview.openbraininstitute.org\",\"http://127.0.0.1:8000\",\"http://127.0.0.1\",\"http://127.0.0.1:3000\",\"http://localhost:3000\"]"
 notebook_service_bucket_name              = "obi-notebook-service-statistics-staging"
 notebook_service_aws_k8s_thread_enabled   = true
@@ -117,9 +117,9 @@ entitycore_svc_aws_s3_internal_region    = "us-east-1"
 entitycore_svc_aws_s3_open_bucket        = "openbluebrain"
 entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["*"]
-entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2026.1.5"
+entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2026.1.7"
 
-obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2026.1.2"
+obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2026.1.3"
 obi_one_v2_ec2_instance_type = "t3.small" # vCPUs: 2, Memory: 2 GiB
 obi_one_v2_ecs_task_size = {
   cpu    = 2048
@@ -130,8 +130,8 @@ obi_one_v2_ecs_task_size = {
 # CoreWebApp s3 and CloudFront configuration
 core_webapp_s3_bucket_name = "core-webapp-static-assets-staging"
 auth_manager_svc_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/auth-manager:2025.12.12.1"
-keycloak_client_uuid       = "edad02be-fd16-44b4-9864-1513d47b54b4"
-keycloak_client_id         = "core-webapp-main"
+keycloak_client_uuid       = "a40fd6ea-79f8-4212-b087-45c75e4703a4"
+keycloak_client_id         = "core-webapp-cell-b-azure-staging"
 
 # launch-system configuration
 launch_system_api_task_size = {
@@ -150,3 +150,5 @@ launch_system_executor_task_size = {
 launch_system_orchestrator_num_workers = 2
 
 opendata_paths_list = "staging_opendata_paths.txt"
+
+core_web_app_in_azure_cidr_block = "10.102.1.0/27" # staging azure core web app aca range
