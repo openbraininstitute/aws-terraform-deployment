@@ -155,6 +155,42 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
           name  = "CDN_URL"
           value = var.key == "main" ? "https://${aws_cloudfront_distribution.core_webapp_cdn[0].domain_name}" : "https://placeholder"
         },
+        {
+          name  = "AI_AGENT_URL"
+          value = var.env_AI_AGENT_URL
+        },
+        {
+          name  = "AUTH_MANAGER_URL"
+          value = var.env_AUTH_MANAGER_URL
+        },
+        {
+          name  = "CELL_API_URL"
+          value = var.env_CELL_API_URL
+        },
+        {
+          name  = "ENTITY_CORE_URL"
+          value = var.env_ENTITY_CORE_URL
+        },
+        {
+          name  = "NOTEBOOK_API_URL"
+          value = var.env_NOTEBOOK_API_URL
+        },
+        {
+          name  = "OBI_ONE_URL"
+          value = var.env_OBI_ONE_URL
+        },
+        {
+          name  = "SMALL_SCALE_SIMULATOR_URL"
+          value = var.env_SMALL_SCALE_SIMULATOR_URL
+        },
+        {
+          name  = "THUMBNAIL_API_URL"
+          value = var.env_THUMBNAIL_API_URL
+        },
+        {
+          name  = "VIRTUAL_LAB_API_URL"
+          value = var.env_VIRTUAL_LAB_API_URL
+        },
       ]
       secrets = [
         {

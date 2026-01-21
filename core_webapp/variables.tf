@@ -176,3 +176,48 @@ variable "domain_name" {
   default     = null
   sensitive   = false
 }
+
+variable "env_AI_AGENT_URL" {
+  type      = string
+  sensitive = false
+}
+
+variable "env_AUTH_MANAGER_URL" {
+  type      = string
+  sensitive = false
+}
+
+variable "env_CELL_API_URL" {
+  type      = string
+  sensitive = false
+}
+
+variable "env_ENTITY_CORE_URL" {
+  type      = string
+  sensitive = false
+}
+
+variable "env_NOTEBOOK_API_URL" {
+  type      = string
+  sensitive = false
+}
+
+variable "env_OBI_ONE_URL" {
+  type      = string
+  sensitive = false
+}
+
+variable "env_SMALL_SCALE_SIMULATOR_URL" {
+  type      = string
+  sensitive = false
+}
+
+variable "env_THUMBNAIL_API_URL" {
+  type      = string
+  sensitive = false
+}
+
+variable "env_VIRTUAL_LAB_API_URL" {
+  type      = string
+  sensitive = false
+}
