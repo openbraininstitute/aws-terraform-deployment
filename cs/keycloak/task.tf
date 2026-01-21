@@ -114,6 +114,10 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
           name  = "KC_HTTP_ACCEPT_NON_NORMALIZED_PATHS"
           value = "true"
         },
+        {
+          name  = "KC_LOG_LEVEL"
+          value = "INFO,org.keycloak.quarkus.runtime.services.RejectNonNormalizedPathFilter:DEBUG"
+        },
       ]
       secrets = [
         {
