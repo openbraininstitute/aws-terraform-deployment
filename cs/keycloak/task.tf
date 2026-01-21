@@ -183,7 +183,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
     },
     {
       name      = "keycloak-otel-agent-config"
-      image     = "public.ecr.aws/docker/library/bash:alpine3.22"
+      image     = "public.ecr.aws/docker/library/bash:alpine3.23"
       essential = false
       command = [
         "sh",
