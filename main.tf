@@ -11,6 +11,10 @@ locals {
   # as a subdomain towards DNS servers of an AWS zone in Pavlo's AWS sandbox account => preview is no longer
   # accessible via the load balancers of the staging environment.
   is_preview_enabled = false
+  # the sites staging.openbraininstitute.org and www.openbraininstitute.org are handled by
+  # the corewebapp deployment in azure now, so the 'main' corewebapp in AWS became
+  # inaccessible => removing the deployment.
+  is_core_webapp_main_enabled = false
 
   core_web_app_origins = concat(
     ["https://${local.old_primary_domain}"],
@@ -476,6 +480,10 @@ module "static-server" {
 }
 
 module "core_webapp_main" {
+  count = local.is_core_webapp_main_enabled ? 1 : 0
+  # offline now, as the main URL staging.openbraininstitute.org
+  # and www.openbraininstitute.org point to Azure now.
+
   source = "./core_webapp"
 
   key                           = "main"
@@ -506,6 +514,17 @@ module "core_webapp_main" {
   primary_hostname       = local.old_primary_domain
   sanity_dataset         = var.is_production ? "production" : "staging"
   stripe_publishable_key = var.core_web_app_stripe_publishable_key
+
+  # based on https://github.com/openbraininstitute/core-web-app/blob/develop/src/config/README.md
+  env_AI_AGENT_URL              = "https://${local.cell_a_primary_domain}/api/agent"
+  env_AUTH_MANAGER_URL          = "https://${local.cell_a_primary_domain}/api/auth-manager/v1"
+  env_CELL_API_URL              = "https://${local.cell_a_primary_domain}/api/circuit"
+  env_ENTITY_CORE_URL           = "https://${local.cell_a_primary_domain}/api/entitycore"
+  env_NOTEBOOK_API_URL          = "https://${local.cell_a_primary_domain}/api/notebook_service"
+  env_OBI_ONE_URL               = "https://${local.cell_a_primary_domain}/api/obi-one"
+  env_SMALL_SCALE_SIMULATOR_URL = "https://${local.cell_a_primary_domain}/api/small-scale-simulator"
+  env_THUMBNAIL_API_URL         = "https://${local.cell_a_primary_domain}/api/thumbnail-generation"
+  env_VIRTUAL_LAB_API_URL       = "https://${local.cell_a_primary_domain}/api/virtual-lab-manager"
 }
 
 module "core_webapp_cell_a" {
@@ -541,6 +560,17 @@ module "core_webapp_cell_a" {
   primary_hostname       = local.cell_a_primary_domain
   sanity_dataset         = var.is_production ? "production" : "staging"
   stripe_publishable_key = var.core_web_app_stripe_publishable_key
+
+  # based on https://github.com/openbraininstitute/core-web-app/blob/develop/src/config/README.md
+  env_AI_AGENT_URL              = "https://${local.cell_a_primary_domain}/api/agent"
+  env_AUTH_MANAGER_URL          = "https://${local.cell_a_primary_domain}/api/auth-manager/v1"
+  env_CELL_API_URL              = "https://${local.cell_a_primary_domain}/api/circuit"
+  env_ENTITY_CORE_URL           = "https://${local.cell_a_primary_domain}/api/entitycore"
+  env_NOTEBOOK_API_URL          = "https://${local.cell_a_primary_domain}/api/notebook_service"
+  env_OBI_ONE_URL               = "https://${local.cell_a_primary_domain}/api/obi-one"
+  env_SMALL_SCALE_SIMULATOR_URL = "https://${local.cell_a_primary_domain}/api/small-scale-simulator"
+  env_THUMBNAIL_API_URL         = "https://${local.cell_a_primary_domain}/api/thumbnail-generation"
+  env_VIRTUAL_LAB_API_URL       = "https://${local.cell_a_primary_domain}/api/virtual-lab-manager"
 }
 
 module "core_webapp_dev" {
@@ -578,6 +608,17 @@ module "core_webapp_dev" {
   primary_hostname       = "dev.openbraininstitute.org"
   sanity_dataset         = "staging"
   stripe_publishable_key = var.core_web_app_stripe_publishable_key
+
+  # based on https://github.com/openbraininstitute/core-web-app/blob/develop/src/config/README.md
+  env_AI_AGENT_URL              = "https://${local.cell_a_primary_domain}/api/agent"
+  env_AUTH_MANAGER_URL          = "https://${local.cell_a_primary_domain}/api/auth-manager/v1"
+  env_CELL_API_URL              = "https://${local.cell_a_primary_domain}/api/circuit"
+  env_ENTITY_CORE_URL           = "https://${local.cell_a_primary_domain}/api/entitycore"
+  env_NOTEBOOK_API_URL          = "https://${local.cell_a_primary_domain}/api/notebook_service"
+  env_OBI_ONE_URL               = "https://${local.cell_a_primary_domain}/api/obi-one"
+  env_SMALL_SCALE_SIMULATOR_URL = "https://${local.cell_a_primary_domain}/api/small-scale-simulator"
+  env_THUMBNAIL_API_URL         = "https://${local.cell_a_primary_domain}/api/thumbnail-generation"
+  env_VIRTUAL_LAB_API_URL       = "https://${local.cell_a_primary_domain}/api/virtual-lab-manager"
 }
 
 module "core_webapp_preview" {
@@ -616,6 +657,17 @@ module "core_webapp_preview" {
   primary_hostname       = "preview.openbraininstitute.org"
   sanity_dataset         = "staging"
   stripe_publishable_key = var.core_web_app_stripe_publishable_key
+
+  # based on https://github.com/openbraininstitute/core-web-app/blob/develop/src/config/README.md
+  env_AI_AGENT_URL              = "https://${local.cell_a_primary_domain}/api/agent"
+  env_AUTH_MANAGER_URL          = "https://${local.cell_a_primary_domain}/api/auth-manager/v1"
+  env_CELL_API_URL              = "https://${local.cell_a_primary_domain}/api/circuit"
+  env_ENTITY_CORE_URL           = "https://${local.cell_a_primary_domain}/api/entitycore"
+  env_NOTEBOOK_API_URL          = "https://${local.cell_a_primary_domain}/api/notebook_service"
+  env_OBI_ONE_URL               = "https://${local.cell_a_primary_domain}/api/obi-one"
+  env_SMALL_SCALE_SIMULATOR_URL = "https://${local.cell_a_primary_domain}/api/small-scale-simulator"
+  env_THUMBNAIL_API_URL         = "https://${local.cell_a_primary_domain}/api/thumbnail-generation"
+  env_VIRTUAL_LAB_API_URL       = "https://${local.cell_a_primary_domain}/api/virtual-lab-manager"
 }
 
 module "github_core_webapp_dev_ecs_redeploy_role" {
@@ -990,7 +1042,6 @@ module "dashboards" {
   private_load_balancer_target_suffixes = merge(
     {
       "AccountingService"   = module.accounting_svc.private_lb_rule_suffix
-      "CoreWebAppMain"      = module.core_webapp_main.private_lb_rule_suffix
       "EntityCoreService"   = module.entitycore_svc.private_lb_rule_suffix
       "KeyCloak"            = module.cs.private_keycloak_lb_rule_suffix
       "SmallScaleSimulator" = module.small_scale_simulator.private_lb_rule_suffix
@@ -999,6 +1050,9 @@ module "dashboards" {
       "VLabManager"         = module.virtual_lab_manager.private_arn_suffix
       "ObiOneV2"            = module.obi_one_v2.private_lb_rule_suffix
     },
+    local.is_core_webapp_main_enabled ? {
+      "CoreWebAppMain" = module.core_webapp_main[0].private_lb_rule_suffix
+    } : {},
     var.is_staging ? {
       "CoreWebAppDev" = module.core_webapp_dev[0].private_lb_rule_suffix
       "LaunchSystem"  = module.launch_system[0].private_lb_rule_suffix
