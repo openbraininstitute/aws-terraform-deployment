@@ -110,6 +110,10 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
           name  = "JAVA_OPTS_APPEND"
           value = "-XX:MaxRAMPercentage=75.0"
         },
+        {
+          name  = "KC_HTTP_ACCEPT_NON_NORMALIZED_PATHS"
+          value = "true"
+        },
       ]
       secrets = [
         {
