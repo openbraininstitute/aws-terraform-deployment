@@ -159,3 +159,8 @@ variable "keycloak_sbo_realm_url" {
   type        = string
   description = "URL of the Keycloak SBO realm"
 }
+
+variable "cors_origins" {
+  type        = list(string)
+  description = "List of origins allowed in the CORS header"
+}
