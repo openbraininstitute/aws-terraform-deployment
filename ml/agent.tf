@@ -11,10 +11,7 @@ module "s3_bucket" {
   cors_rule = [
     {
       allowed_methods = ["GET"]
-      allowed_origins = concat(
-        ["https://${var.primary_domain}"],
-        startswith(var.primary_domain, "staging.") ? ["https://dev.openbraininstitute.org", "http://localhost:3000"] : []
-      )
+      allowed_origins = var.cors_origins
       allowed_headers = ["x-amz-meta-category"]
       expose_headers  = ["x-amz-meta-category"]
     }
@@ -103,7 +100,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT_MISC__CORS_ORIGINS"
-          value = "https://${var.primary_domain},https://www.${var.primary_domain}"
+          value = join(",", var.cors_origins)
         },
         {
           name  = "NEUROAGENT_STORAGE__BUCKET_NAME"
