@@ -343,8 +343,8 @@ module "small_scale_simulator" {
   base_path    = "/api/small-scale-simulator"
   cors_origins = local.core_web_app_origins
 
-  accounting_base_url = "https://${local.old_primary_domain}${var.accounting_svc_base_path}"
-  entitycore_url      = "https://${local.old_primary_domain}/api/entitycore"
+  accounting_base_url = "https://${local.cell_a_primary_domain}${var.accounting_svc_base_path}"
+  entitycore_url      = "https://${local.cell_a_primary_domain}/api/entitycore"
   keycloak_server_url = var.keycloak_url_with_auth
 
   api_task_size = var.small_scale_simulator_api_task_size
