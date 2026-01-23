@@ -8,7 +8,7 @@ locals {
   route_table_public_id          = data.terraform_remote_state.common.outputs.route_table_public_id
 
   core_web_app_origins = concat(
-    ["https://${local.old_primary_domain}"],
+    ["https://${local.public_primary_domain_in_azure}"],
     var.is_staging ? [
       "http://127.0.0.1:3000",
       "http://localhost:3000",
@@ -22,8 +22,9 @@ locals {
   vpc_cidr_block    = data.terraform_remote_state.common.outputs.vpc_cidr_block
   vpc_default_sg_id = data.terraform_remote_state.common.outputs.vpc_default_sg_id
 
-  old_primary_domain    = data.terraform_remote_state.common.outputs.primary_domain # "staging.openbraininstitute.org" or "www.openbraininstitute.org"
-  cell_a_primary_domain = var.is_production ? "cell-a.openbraininstitute.org" : "staging.cell-a.openbraininstitute.org"
+  old_primary_domain             = data.terraform_remote_state.common.outputs.primary_domain # "staging.openbraininstitute.org" or "www.openbraininstitute.org"
+  public_primary_domain_in_azure = data.terraform_remote_state.common.outputs.primary_domain # "staging.openbraininstitute.org" or "www.openbraininstitute.org"
+  cell_a_primary_domain          = var.is_production ? "cell-a.openbraininstitute.org" : "staging.cell-a.openbraininstitute.org"
 
   email_domain_name = data.terraform_remote_state.common.outputs.email_domain_name
 
@@ -545,7 +546,7 @@ module "core_webapp_dev" {
 
   sbo_billing_tag = "core_webapp_dev"
 
-  api_origin             = "https://${local.old_primary_domain}"
+  api_origin             = "https://${local.public_primary_domain_in_azure}"
   auth_url               = "https://dev.openbraininstitute.org/api/auth"
   deployment_env         = "development"
   keycloak_issuer        = var.keycloak_sbo_realm_url
@@ -657,7 +658,8 @@ module "auth_manager" {
 
   root_path = "/api/auth-manager"
 
-  primary_domain = local.old_primary_domain
+  # Used for the keycloak consent redirect URL => pointing to cell-a as keycloak is in AWS.
+  primary_domain = local.cell_a_primary_domain
 
   # TODO Revert this back to staging. once the core web app with auth-manager support is deployed.
   client_redirect_domain = "dev.openbraininstitute.org"
@@ -771,7 +773,8 @@ module "virtual_lab_manager" {
   private_lb_listener_https_arn  = local.private_alb_https_listener_arn
   route_table_private_subnets_id = local.route_table_private_subnets_id
 
-  invite_link = "https://${local.old_primary_domain}/app" # TODO This has to point to the public url of core web app?
+  # The invite link points to the public corewebapp which is currently in Azure.
+  invite_link = "https://${local.public_primary_domain_in_azure}/app"
   mail_from   = "no-reply@${local.email_domain_name}"
 
   db_multi_az = var.is_production
@@ -805,8 +808,10 @@ module "virtual_lab_manager" {
   virtual_lab_manager_use_credentials = "True"
   virtual_lab_manager_cors_origins    = local.core_web_app_origins
 
-  virtual_lab_manager_admin_base_path      = "{}/app/virtual-lab/lab/{}/admin?panel=billing"
-  virtual_lab_manager_deployment_namespace = "https://${local.old_primary_domain}"
+  virtual_lab_manager_admin_base_path = "{}/app/virtual-lab/lab/{}/admin?panel=billing"
+  # The deployment namespace has to point to the public URL of corewebapp. It's used for
+  # links in emails and in the Stripe API. The public corewebapp is currently in Azure.
+  virtual_lab_manager_deployment_namespace = "https://${local.public_primary_domain_in_azure}"
 
   accounting_base_url = "https://${local.cell_a_primary_domain}${var.accounting_svc_base_path}"
 
