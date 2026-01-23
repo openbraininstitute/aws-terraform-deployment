@@ -172,6 +172,10 @@ resource "aws_ecs_task_definition" "ecs_definition" {
           value = var.accounting_base_url
         },
         {
+          name  = "ENTITYCORE_BASE_URL"
+          value = var.entitycore_base_url
+        },
+        {
           name  = "ACCOUNTING_ENABLED",
           value = var.accounting_enabled ? "True" : "False"
         },
