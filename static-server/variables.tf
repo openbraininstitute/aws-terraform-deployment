@@ -8,11 +8,6 @@ variable "account_id" {
   type        = string
 }
 
-variable "old_domain_name" {
-  description = "The old domain name for the static website"
-  type        = string
-}
-
 variable "domain_name" {
   description = "The domain name for the static website"
   type        = string
