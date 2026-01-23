@@ -50,6 +50,12 @@ variable "accounting_base_url" {
   sensitive   = false
 }
 
+variable "entitycore_base_url" {
+  type        = string
+  description = "Entitycore service base URL"
+  sensitive   = false
+}
+
 variable "kubernetes_thread_check_interval" {
   type        = number
   description = "How often should the kubernetes thread check the running pods, in seconds"
