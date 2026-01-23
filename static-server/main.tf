@@ -231,7 +231,7 @@ locals {
     content = templatefile(
       "${path.module}/microsoft-identity-association.json.tftpl",
       {
-        applicationId = var.old_domain_name == "www.openbraininstitute.org" ? "3c33faf6-86d5-4e53-afa6-d707d273bdf2" : "5345f792-e550-4ee2-896a-cb207e13d144"
+        applicationId = var.is_production ? "3c33faf6-86d5-4e53-afa6-d707d273bdf2" : "5345f792-e550-4ee2-896a-cb207e13d144"
       }
     )
     content_type = "text/json"
@@ -307,7 +307,7 @@ resource "aws_lb_listener_rule" "favicon" {
 
   condition {
     host_header {
-      values = [var.old_domain_name, var.domain_name]
+      values = [var.domain_name]
     }
   }
 
@@ -329,7 +329,7 @@ resource "aws_lb_listener_rule" "google_search_verification" {
 
   condition {
     host_header {
-      values = [var.old_domain_name, var.domain_name]
+      values = [var.domain_name]
     }
   }
 
@@ -351,7 +351,7 @@ resource "aws_lb_listener_rule" "sitemap_xml" {
 
   condition {
     host_header {
-      values = [var.old_domain_name, var.domain_name]
+      values = [var.domain_name]
     }
   }
 
@@ -373,7 +373,7 @@ resource "aws_lb_listener_rule" "entraid_verification" {
 
   condition {
     host_header {
-      values = [var.old_domain_name, var.domain_name]
+      values = [var.domain_name]
     }
   }
 
@@ -395,7 +395,7 @@ resource "aws_lb_listener_rule" "jupyterhub_requirements" {
 
   condition {
     host_header {
-      values = [var.old_domain_name, var.domain_name]
+      values = [var.domain_name]
     }
   }
 

@@ -464,9 +464,8 @@ module "static-server" {
   account_id                 = local.account_id
   vpc_id                     = local.vpc_id
   public_subnet_ids          = [data.terraform_remote_state.common.outputs.public_a_subnet_id, data.terraform_remote_state.common.outputs.public_b_subnet_id]
-  old_domain_name            = local.old_primary_domain
   domain_name                = local.cell_a_primary_domain
-  static_content_bucket_name = local.old_primary_domain
+  static_content_bucket_name = local.public_primary_domain_in_azure
   alb_listener_arn           = local.private_alb_https_listener_arn
   alb_listener_rule_priority = 600
 
