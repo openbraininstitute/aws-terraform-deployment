@@ -22,7 +22,6 @@ locals {
   vpc_cidr_block    = data.terraform_remote_state.common.outputs.vpc_cidr_block
   vpc_default_sg_id = data.terraform_remote_state.common.outputs.vpc_default_sg_id
 
-  old_primary_domain             = data.terraform_remote_state.common.outputs.primary_domain # "staging.openbraininstitute.org" or "www.openbraininstitute.org"
   public_primary_domain_in_azure = data.terraform_remote_state.common.outputs.primary_domain # "staging.openbraininstitute.org" or "www.openbraininstitute.org"
   cell_a_primary_domain          = var.is_production ? "cell-a.openbraininstitute.org" : "staging.cell-a.openbraininstitute.org"
 
@@ -100,7 +99,9 @@ module "cs" {
   nat_gateway_id                 = data.terraform_remote_state.common.outputs.nat_gateway_id
   aws_endpoints_subnet_cidr      = module.networking.endpoints_subnet_cidr
 
-  domain_name = local.old_primary_domain
+  # This should be the 'new' hostname containing cell-a in the URL, but the changes
+  # have been applied manually on the metabolism jupyterhub VMs.
+  domain_name = local.public_primary_domain_in_azure
 
   jupyterhub_secrets_arn = local.jupyterhub_secrets_arn
   jupyterhub_ec2_type    = var.jupyterhub_ec2_type
