@@ -39,9 +39,9 @@ variable "nexus_openscience_bucket_name" {
 
 ### Core Web App ###
 
-variable "core_web_app_docker_image_url" {
+variable "core_web_app_cell_a_docker_image_url" {
   type        = string
-  description = "docker image for the core-web-app"
+  description = "docker image for the cell-a core-web-app"
   sensitive   = false
 }
 
@@ -49,13 +49,6 @@ variable "core_web_app_dev_docker_image_url" {
   default     = null
   type        = string
   description = "docker image for the core-web-app-dev"
-  sensitive   = false
-}
-
-variable "core_web_app_preview_docker_image_url" {
-  default     = null
-  type        = string
-  description = "docker image for the core-web-app-preview"
   sensitive   = false
 }
 

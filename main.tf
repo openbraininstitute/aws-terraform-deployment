@@ -7,15 +7,6 @@ locals {
   route_table_private_subnets_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
   route_table_public_id          = data.terraform_remote_state.common.outputs.route_table_public_id
 
-  # preview.openbraininstitute.org was deployed in staging, but the DNS of godaddy now delegates preview
-  # as a subdomain towards DNS servers of an AWS zone in Pavlo's AWS sandbox account => preview is no longer
-  # accessible via the load balancers of the staging environment.
-  is_preview_enabled = false
-  # the sites staging.openbraininstitute.org and www.openbraininstitute.org are handled by
-  # the corewebapp deployment in azure now, so the 'main' corewebapp in AWS became
-  # inaccessible => removing the deployment.
-  is_core_webapp_main_enabled = false
-
   core_web_app_origins = concat(
     ["https://${local.old_primary_domain}"],
     var.is_staging ? [
@@ -481,54 +472,6 @@ module "static-server" {
   is_production                   = var.is_production
 }
 
-module "core_webapp_main" {
-  count = local.is_core_webapp_main_enabled ? 1 : 0
-  # offline now, as the main URL staging.openbraininstitute.org
-  # and www.openbraininstitute.org point to Azure now.
-
-  source = "./core_webapp"
-
-  key                           = "main"
-  log_group_name                = "core_webapp_main"
-  vpc_id                        = local.vpc_id
-  subnet_cidr_block             = "10.0.21.0/28"
-  alb_listener_arn              = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
-  alb_listener_rule_priority    = 1000
-  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
-  aws_region                    = local.aws_region
-  docker_image_url              = var.core_web_app_docker_image_url
-  route_table_id                = local.route_table_private_subnets_id
-  vpc_cidr_block                = local.vpc_cidr_block
-  secrets_arn                   = local.core_webapp_secrets_arn
-  s3_bucket_name                = var.core_webapp_s3_bucket_name
-  s3_bucket_allowed_origins     = ["https://${local.old_primary_domain}", "https://${join(".", ["cdn", trimprefix(local.old_primary_domain, "www.")])}"]
-
-  # remove 'www.' from local.primary_domain and prepend 'cdn'. ie: cdn.openbraininstitute.org
-  cloudfront_aliases         = [join(".", ["cdn", trimprefix(local.old_primary_domain, "www.")])]
-  domain_name                = local.old_primary_domain
-  cloudfront_certificate_arn = local.cloudfront_certificate_arn
-
-  api_origin             = "https://${local.old_primary_domain}"
-  auth_url               = "https://${local.old_primary_domain}/api/auth"
-  deployment_env         = var.is_staging ? "staging" : "production"
-  keycloak_issuer        = var.keycloak_sbo_realm_url
-  matomo_site_id         = var.is_production ? "1" : "3"
-  primary_hostname       = local.old_primary_domain
-  sanity_dataset         = var.is_production ? "production" : "staging"
-  stripe_publishable_key = var.core_web_app_stripe_publishable_key
-
-  # based on https://github.com/openbraininstitute/core-web-app/blob/develop/src/config/README.md
-  env_AI_AGENT_URL              = "https://${local.cell_a_primary_domain}/api/agent"
-  env_AUTH_MANAGER_URL          = "https://${local.cell_a_primary_domain}/api/auth-manager/v1"
-  env_CELL_API_URL              = "https://${local.cell_a_primary_domain}/api/circuit"
-  env_ENTITY_CORE_URL           = "https://${local.cell_a_primary_domain}/api/entitycore"
-  env_NOTEBOOK_API_URL          = "https://${local.cell_a_primary_domain}/api/notebook_service"
-  env_OBI_ONE_URL               = "https://${local.cell_a_primary_domain}/api/obi-one"
-  env_SMALL_SCALE_SIMULATOR_URL = "https://${local.cell_a_primary_domain}/api/small-scale-simulator"
-  env_THUMBNAIL_API_URL         = "https://${local.cell_a_primary_domain}/api/thumbnail-generation"
-  env_VIRTUAL_LAB_API_URL       = "https://${local.cell_a_primary_domain}/api/virtual-lab-manager"
-}
-
 module "core_webapp_cell_a" {
   source = "./core_webapp"
 
@@ -540,7 +483,7 @@ module "core_webapp_cell_a" {
   alb_listener_rule_priority    = 970
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
   aws_region                    = local.aws_region
-  docker_image_url              = var.core_web_app_docker_image_url
+  docker_image_url              = var.core_web_app_cell_a_docker_image_url
   route_table_id                = local.route_table_private_subnets_id
   vpc_cidr_block                = local.vpc_cidr_block
   secrets_arn                   = local.core_webapp_secrets_arn
@@ -623,55 +566,6 @@ module "core_webapp_dev" {
   env_VIRTUAL_LAB_API_URL       = "https://${local.cell_a_primary_domain}/api/virtual-lab-manager"
 }
 
-module "core_webapp_preview" {
-  source = "./core_webapp"
-
-  count = local.is_preview_enabled ? 1 : 0 # Deprecated: preview.openbraininstitute.org currently points to
-  # a zone in a sandbox managed by Pavlo, this deployment isn't accessible anymore.
-
-  key               = "preview"
-  log_group_name    = "core_webapp_preview"
-  vpc_id            = local.vpc_id
-  subnet_cidr_block = "10.0.21.48/28"
-  alb_listener_arn  = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
-  # The following priority has to be higher (lower number)
-  # than the priority of the main core-web-app listener rule.
-  hostname                      = "preview.openbraininstitute.org"
-  alb_listener_rule_priority    = 981
-  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
-  aws_region                    = local.aws_region
-  docker_image_url              = var.core_web_app_preview_docker_image_url
-  route_table_id                = local.route_table_private_subnets_id
-  vpc_cidr_block                = local.vpc_cidr_block
-  secrets_arn                   = local.core_webapp_secrets_arn
-
-  // These are not used in preview
-  s3_bucket_name            = var.core_webapp_s3_bucket_name
-  s3_bucket_allowed_origins = ["https://preview.openbraininstitute.org"]
-
-  sbo_billing_tag = "core_webapp_preview"
-
-  api_origin             = "https://${local.old_primary_domain}"
-  auth_url               = "https://preview.openbraininstitute.org/api/auth"
-  deployment_env         = "preview"
-  keycloak_issuer        = var.keycloak_sbo_realm_url
-  matomo_site_id         = "3"
-  primary_hostname       = "preview.openbraininstitute.org"
-  sanity_dataset         = "staging"
-  stripe_publishable_key = var.core_web_app_stripe_publishable_key
-
-  # based on https://github.com/openbraininstitute/core-web-app/blob/develop/src/config/README.md
-  env_AI_AGENT_URL              = "https://${local.cell_a_primary_domain}/api/agent"
-  env_AUTH_MANAGER_URL          = "https://${local.cell_a_primary_domain}/api/auth-manager/v1"
-  env_CELL_API_URL              = "https://${local.cell_a_primary_domain}/api/circuit"
-  env_ENTITY_CORE_URL           = "https://${local.cell_a_primary_domain}/api/entitycore"
-  env_NOTEBOOK_API_URL          = "https://${local.cell_a_primary_domain}/api/notebook_service"
-  env_OBI_ONE_URL               = "https://${local.cell_a_primary_domain}/api/obi-one"
-  env_SMALL_SCALE_SIMULATOR_URL = "https://${local.cell_a_primary_domain}/api/small-scale-simulator"
-  env_THUMBNAIL_API_URL         = "https://${local.cell_a_primary_domain}/api/thumbnail-generation"
-  env_VIRTUAL_LAB_API_URL       = "https://${local.cell_a_primary_domain}/api/virtual-lab-manager"
-}
-
 module "github_core_webapp_dev_ecs_redeploy_role" {
   source = "./github_ecs_redeploy_role"
 
@@ -685,22 +579,6 @@ module "github_core_webapp_dev_ecs_redeploy_role" {
   ecs_cluster_name         = module.core_webapp_dev[0].ecs_cluster_name
   ecs_service_name         = module.core_webapp_dev[0].ecs_service_name
   ecs_task_definition_name = module.core_webapp_dev[0].ecs_task_definition_name
-  # The ARN of the generated role is needed in GH and is part of the outputs.
-}
-
-module "github_core_webapp_preview_ecs_redeploy_role" {
-  source = "./github_ecs_redeploy_role"
-
-  # for now we only want such a redeploy role in staging
-  count = local.is_preview_enabled ? 1 : 0
-
-  account_id               = local.account_id
-  aws_region               = local.aws_region
-  github_organisation      = local.github_organisation
-  repo_name                = "core-web-app"
-  ecs_cluster_name         = module.core_webapp_preview[0].ecs_cluster_name
-  ecs_service_name         = module.core_webapp_preview[0].ecs_service_name
-  ecs_task_definition_name = module.core_webapp_preview[0].ecs_task_definition_name
   # The ARN of the generated role is needed in GH and is part of the outputs.
 }
 
@@ -745,11 +623,6 @@ module "entitycore_svc" {
 
   # use staging keycloak url in sandboxes
   keycloak_url = "${var.keycloak_sbo_realm_url}/"
-  # keycloak_url = (var.is_staging || var.is_production) ? (
-  #   "https://${local.old_primary_domain}/auth/realms/SBO/"
-  #   ) : (
-  #   "https://staging.cell-a.openbraininstitute.org/auth/realms/SBO/"
-  # )
 
   s3_bucket_allowed_origins = var.entitycore_svc_s3_bucket_allowed_origins
   aws_s3_internal_bucket    = var.entitycore_svc_aws_s3_internal_bucket
@@ -1052,16 +925,10 @@ module "dashboards" {
       "VLabManager"         = module.virtual_lab_manager.private_arn_suffix
       "ObiOneV2"            = module.obi_one_v2.private_lb_rule_suffix
     },
-    local.is_core_webapp_main_enabled ? {
-      "CoreWebAppMain" = module.core_webapp_main[0].private_lb_rule_suffix
-    } : {},
     var.is_staging ? {
       "CoreWebAppDev" = module.core_webapp_dev[0].private_lb_rule_suffix
       "LaunchSystem"  = module.launch_system[0].private_lb_rule_suffix
     } : {},
-    local.is_preview_enabled ? {
-      "CoreWebAppPreview" = module.core_webapp_preview[0].private_lb_rule_suffix
-    } : {}
   )
 }
 
