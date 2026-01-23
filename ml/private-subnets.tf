@@ -2,7 +2,7 @@ resource "aws_subnet" "ml_subnet_a" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}a"
   cidr_block        = "10.0.4.0/24"
-  tags              = var.tags
+  tags              = merge(var.tags, { Name = "ml_a" })
 }
 
 resource "aws_route_table_association" "ml_rta_a" {
@@ -46,7 +46,7 @@ resource "aws_subnet" "ml_subnet_b" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}b"
   cidr_block        = "10.0.27.0/24"
-  tags              = var.tags
+  tags              = merge(var.tags, { Name = "ml_b" })
 }
 
 resource "aws_route_table_association" "ml_rta_b" {

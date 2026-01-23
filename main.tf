@@ -277,7 +277,7 @@ module "ml" {
   neuroagent_docker_image_url = var.neuroagent_docker_image_url
   neuroagent_bucket_name      = var.ml_neuroagent_bucket_name
 
-  primary_domain = local.old_primary_domain
+  primary_domain = local.cell_a_primary_domain
 
   # NEW PRIVATE ALB
   generic_private_alb_listener_arn      = local.private_alb_https_listener_arn
@@ -288,6 +288,8 @@ module "ml" {
   github_repos = ["openbraininstitute/neuroagent"]
 
   keycloak_sbo_realm_url = var.keycloak_sbo_realm_url
+
+  cors_origins = local.core_web_app_origins
 }
 
 # NOTE: The Nexus service has been fully decommissioned.
