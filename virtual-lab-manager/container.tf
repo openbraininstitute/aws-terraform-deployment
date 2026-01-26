@@ -84,14 +84,25 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
   family       = "virtual_lab_manager_task_family"
   network_mode = "awsvpc"
 
+  volume {
+    name = "tmp"
+  }
+
   container_definitions = jsonencode([
     {
-      cpu         = var.task_size.cpu
-      memory      = var.task_size.memory
-      networkMode = "awsvpc"
-      essential   = true
-      image       = var.virtual_lab_manager_docker_image_url
-      name        = "virtual_lab_manager"
+      cpu                    = var.task_size.cpu
+      memory                 = var.task_size.memory
+      networkMode            = "awsvpc"
+      essential              = true
+      image                  = var.virtual_lab_manager_docker_image_url
+      name                   = "virtual_lab_manager"
+      readonlyRootFilesystem = true
+      mountPoints = [
+        {
+          sourceVolume  = "tmp"
+          containerPath = "/tmp"
+        }
+      ]
 
       portMappings = [
         {
