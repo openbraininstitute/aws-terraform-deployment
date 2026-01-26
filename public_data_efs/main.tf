@@ -1,10 +1,10 @@
 resource "aws_efs_file_system" "public_launch_data" {
-  creation_token = "public-launch-data"
+  creation_token = var.public_data_efs_fs_name
 
   encrypted = false
 
   tags = {
-    Name = "public-launch-data"
+    Name = var.public_data_efs_fs_name
   }
 
   lifecycle_policy {

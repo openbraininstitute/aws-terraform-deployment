@@ -133,6 +133,7 @@ launch_system_executor_task_size = {
 
 launch_system_orchestrator_num_workers = 2
 
-opendata_paths_list = "staging_opendata_paths.txt"
+opendata_paths_list     = "staging_opendata_paths.txt"
+public_data_efs_fs_name = ""
 
 core_web_app_in_azure_cidr_block = "10.102.1.0/27" # staging azure core web app aca range

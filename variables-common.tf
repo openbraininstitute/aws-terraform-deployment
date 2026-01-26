@@ -397,3 +397,9 @@ variable "keycloak_url_with_auth" {
   description = "Keycloak URL with auth and slash, for example for example https://staging.cell-a.openbraininstitute.org/auth/"
   sensitive   = false
 }
+
+variable "public_data_efs_fs_name" {
+  type        = string
+  description = "Name of the EFS filesystem used for public data"
+  sensitive   = false
+}

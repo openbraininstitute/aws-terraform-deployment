@@ -829,6 +829,8 @@ module "launch_server" {
 module "public_data_efs" {
   source = "./public_data_efs"
 
+  public_data_efs_fs_name = var.public_data_efs_fs_name
+
   count = var.is_staging ? 1 : 0
 
   vpc_id                  = local.vpc_id

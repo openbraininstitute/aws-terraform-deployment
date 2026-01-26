@@ -52,3 +52,9 @@ variable "opendata_paths_list" {
   type        = string
   description = "File in which the paths to sync on opendata are listed, one per line"
 }
+
+variable "public_data_efs_fs_name" {
+  type        = string
+  description = "Name of the EFS filesystem used for public data"
+  sensitive   = false
+}
