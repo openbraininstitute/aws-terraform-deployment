@@ -48,10 +48,30 @@ resource "aws_ecs_task_definition" "secret_sharing_svc_task" {
 
   volume {
     name = "app-data"
+    docker_volume_configuration {
+      scope         = "task"
+      autoprovision = true
+      driver        = "local"
+      driver_opts = {
+        type   = "tmpfs"
+        device = "tmpfs"
+        o      = "uid=100,gid=101"
+      }
+    }
   }
 
   volume {
     name = "tmp"
+    docker_volume_configuration {
+      scope         = "task"
+      autoprovision = true
+      driver        = "local"
+      driver_opts = {
+        type   = "tmpfs"
+        device = "tmpfs"
+        o      = "uid=100,gid=101"
+      }
+    }
   }
 
   container_definitions = jsonencode([
