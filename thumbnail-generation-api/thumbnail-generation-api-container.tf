@@ -226,7 +226,7 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
             value = "/tmp/matplotlib"
           },
           {
-            name  = "FONTCONFIG_PATH",
+            name  = "FONTCONFIG_CACHE_DIR",
             value = "/tmp/fontconfig"
           }
         ],
