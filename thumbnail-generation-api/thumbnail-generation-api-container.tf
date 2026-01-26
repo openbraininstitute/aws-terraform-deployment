@@ -144,14 +144,40 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
   memory                   = 4096
   cpu                      = 2048
 
+  volume {
+    name = "tmp"
+  }
+
+  volume {
+    name = "var-cache-nginx"
+  }
+
+  volume {
+    name = "app-output"
+  }
 
   # Container definition for FastAPI
   container_definitions = jsonencode(
     [
       {
-        name      = "thumbnail-generation-api-container",
-        image     = var.thumbnail_generation_api_docker_image_url,
-        essential = true,
+        name                   = "thumbnail-generation-api-container",
+        image                  = var.thumbnail_generation_api_docker_image_url,
+        essential              = true,
+        readonlyRootFilesystem = true,
+        mountPoints = [
+          {
+            sourceVolume  = "tmp",
+            containerPath = "/tmp"
+          },
+          {
+            sourceVolume  = "var-cache-nginx",
+            containerPath = "/var/cache/nginx"
+          },
+          {
+            sourceVolume  = "app-output",
+            containerPath = "/app/output"
+          }
+        ],
         portMappings = [
           {
             containerPort = 80,
