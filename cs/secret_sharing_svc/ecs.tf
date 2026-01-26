@@ -45,51 +45,10 @@ resource "aws_ecs_task_definition" "secret_sharing_svc_task" {
     operating_system_family = "LINUX"
     cpu_architecture        = "ARM64"
   }
-
-  volume {
-    name = "app-data"
-    docker_volume_configuration {
-      scope         = "task"
-      autoprovision = true
-      driver        = "local"
-      driver_opts = {
-        type   = "tmpfs"
-        device = "tmpfs"
-        o      = "uid=100,gid=101"
-      }
-    }
-  }
-
-  volume {
-    name = "tmp"
-    docker_volume_configuration {
-      scope         = "task"
-      autoprovision = true
-      driver        = "local"
-      driver_opts = {
-        type   = "tmpfs"
-        device = "tmpfs"
-        o      = "uid=100,gid=101"
-      }
-    }
-  }
-
   container_definitions = jsonencode([
     {
-      name                   = local.container_name
-      image                  = "ghcr.io/corentinth/enclosed:1.16.0-rootless"
-      user                   = "100:101" # enclosed nonroot uid and gid
-      readonlyRootFilesystem = true
-      mountPoints = [
-        {
-          sourceVolume  = "app-data"
-          containerPath = "/app/.data"
-        },
-        {
-          sourceVolume  = "tmp"
-          containerPath = "/tmp"
-        }
-      ]
+      name  = local.container_name
+      image = "ghcr.io/corentinth/enclosed:1.16.0-rootless"
       portMappings = [
         {
           name          = "secret-sharing-svc-port-tcp"
