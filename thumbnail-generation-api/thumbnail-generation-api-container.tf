@@ -228,6 +228,10 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
           {
             name  = "FONTCONFIG_CACHE_DIR",
             value = "/tmp/fontconfig"
+          },
+          {
+            name  = "FONTCONFIG_PATH",
+            value = "/etc/fonts"
           }
         ],
         memory = 2048
