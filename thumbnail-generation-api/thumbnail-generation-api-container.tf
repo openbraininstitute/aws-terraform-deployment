@@ -153,6 +153,10 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
   }
 
   volume {
+    name = "var-run"
+  }
+
+  volume {
     name = "app-output"
   }
 
@@ -172,6 +176,10 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
           {
             sourceVolume  = "var-cache-nginx",
             containerPath = "/var/cache/nginx"
+          },
+          {
+            sourceVolume  = "var-run",
+            containerPath = "/var/run"
           },
           {
             sourceVolume  = "app-output",
@@ -204,6 +212,10 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
           {
             name : "ENTITY_CORE_URI",
             value : var.entitycore_url
+          },
+          {
+            name  = "MPLCONFIGDIR",
+            value = "/tmp/matplotlib"
           }
         ],
         memory = 2048
