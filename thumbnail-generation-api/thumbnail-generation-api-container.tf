@@ -157,6 +157,10 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
   }
 
   volume {
+    name = "var-lib-nginx"
+  }
+
+  volume {
     name = "app-output"
   }
 
@@ -180,6 +184,10 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
           {
             sourceVolume  = "var-run",
             containerPath = "/var/run"
+          },
+          {
+            sourceVolume  = "var-lib-nginx",
+            containerPath = "/var/lib/nginx"
           },
           {
             sourceVolume  = "app-output",
@@ -216,6 +224,10 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
           {
             name  = "MPLCONFIGDIR",
             value = "/tmp/matplotlib"
+          },
+          {
+            name  = "FONTCONFIG_PATH",
+            value = "/tmp/fontconfig"
           }
         ],
         memory = 2048
