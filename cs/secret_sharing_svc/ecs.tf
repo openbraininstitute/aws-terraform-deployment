@@ -47,6 +47,10 @@ resource "aws_ecs_task_definition" "secret_sharing_svc_task" {
   }
 
   volume {
+    name = "app-data"
+  }
+
+  volume {
     name = "tmp"
   }
 
@@ -54,8 +58,13 @@ resource "aws_ecs_task_definition" "secret_sharing_svc_task" {
     {
       name                   = local.container_name
       image                  = "ghcr.io/corentinth/enclosed:1.16.0-rootless"
+      user                   = "100:101" # enclosed nonroot uid and gid
       readonlyRootFilesystem = true
       mountPoints = [
+        {
+          sourceVolume  = "app-data"
+          containerPath = "/app/.data"
+        },
         {
           sourceVolume  = "tmp"
           containerPath = "/tmp"
@@ -73,10 +82,6 @@ resource "aws_ecs_task_definition" "secret_sharing_svc_task" {
         {
           name  = "PUBLIC_IS_SETTING_NO_EXPIRATION_ALLOWED"
           value = "false"
-        },
-        {
-          name  = "STORAGE_DRIVER_FS_LITE_PATH"
-          value = "/tmp"
         }
       ]
       logConfiguration = {
