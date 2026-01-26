@@ -289,7 +289,7 @@ resource "aws_ecs_task_definition" "api" {
         {
           sourceVolume  = "storage"
           containerPath = "/app/storage"
-          readOnly      = true
+          readOnly      = false
         }
       ]
       environment = [
