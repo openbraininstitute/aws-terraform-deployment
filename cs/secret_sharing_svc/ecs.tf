@@ -47,7 +47,7 @@ resource "aws_ecs_task_definition" "secret_sharing_svc_task" {
   }
 
   volume {
-    name = "app-data"
+    name = "tmp"
   }
 
   container_definitions = jsonencode([
@@ -57,8 +57,8 @@ resource "aws_ecs_task_definition" "secret_sharing_svc_task" {
       readonlyRootFilesystem = true
       mountPoints = [
         {
-          sourceVolume  = "app-data"
-          containerPath = "/app/.data"
+          sourceVolume  = "tmp"
+          containerPath = "/tmp"
         }
       ]
       portMappings = [
@@ -73,6 +73,10 @@ resource "aws_ecs_task_definition" "secret_sharing_svc_task" {
         {
           name  = "PUBLIC_IS_SETTING_NO_EXPIRATION_ALLOWED"
           value = "false"
+        },
+        {
+          name  = "STORAGE_DRIVER_FS_LITE_PATH"
+          value = "/tmp"
         }
       ]
       logConfiguration = {
