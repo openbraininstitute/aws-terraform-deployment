@@ -122,6 +122,10 @@ resource "aws_ecs_task_definition" "ecs_definition" {
     }
   }
 
+  volume {
+    name = "tmp"
+  }
+
   container_definitions = jsonencode([
     {
       name = "notebook_service"
@@ -135,10 +139,16 @@ resource "aws_ecs_task_definition" "ecs_definition" {
 
       essential = true
 
+      readonlyRootFilesystem = true
+
       mountPoints = [
         {
           sourceVolume  = "homedirs"
           containerPath = "/mnt/homedirs"
+        },
+        {
+          sourceVolume  = "tmp"
+          containerPath = "/tmp"
         }
       ]
 
