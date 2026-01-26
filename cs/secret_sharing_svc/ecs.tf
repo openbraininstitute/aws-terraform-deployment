@@ -45,10 +45,22 @@ resource "aws_ecs_task_definition" "secret_sharing_svc_task" {
     operating_system_family = "LINUX"
     cpu_architecture        = "ARM64"
   }
+
+  volume {
+    name = "app-data"
+  }
+
   container_definitions = jsonencode([
     {
-      name  = local.container_name
-      image = "ghcr.io/corentinth/enclosed:1.16.0-rootless"
+      name                   = local.container_name
+      image                  = "ghcr.io/corentinth/enclosed:1.16.0-rootless"
+      readonlyRootFilesystem = true
+      mountPoints = [
+        {
+          sourceVolume  = "app-data"
+          containerPath = "/app/.data"
+        }
+      ]
       portMappings = [
         {
           name          = "secret-sharing-svc-port-tcp"
