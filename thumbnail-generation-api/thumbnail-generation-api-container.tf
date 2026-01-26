@@ -164,6 +164,10 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
     name = "app-output"
   }
 
+  volume {
+    name = "var-cache-fontconfig"
+  }
+
   # Container definition for FastAPI
   container_definitions = jsonencode(
     [
@@ -180,6 +184,10 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
           {
             sourceVolume  = "var-cache-nginx",
             containerPath = "/var/cache/nginx"
+          },
+          {
+            sourceVolume  = "var-cache-fontconfig",
+            containerPath = "/var/cache/fontconfig"
           },
           {
             sourceVolume  = "var-run",
@@ -225,14 +233,6 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
             name  = "MPLCONFIGDIR",
             value = "/tmp/matplotlib"
           },
-          {
-            name  = "FONTCONFIG_CACHE_DIR",
-            value = "/tmp/fontconfig"
-          },
-          {
-            name  = "FONTCONFIG_PATH",
-            value = "/etc/fonts"
-          }
         ],
         memory = 2048
         cpu    = 1024
