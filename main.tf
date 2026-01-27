@@ -828,24 +828,37 @@ module "launch_server" {
   aws_region = local.aws_region
 }
 
-module "public_data_efs" {
-  source = "./public_data_efs"
+module "public_data_efs_storage" {
+  source = "./public_data_efs_storage"
+
+  vpc_id         = local.vpc_id
+  vpc_cidr_block = local.vpc_cidr_block
+
+  access_point_subnet_ids = module.launch_system_network.executor_network_ids
+
+  internal_public_data_mountpath = "/data/aws_s3_internal/public"
+  opendata_mountpath             = "/data/aws_s3_open"
+}
+
+module "public_data_sync_opendata" {
+  source = "./public_data_sync_opendata"
 
   count = var.is_staging ? 1 : 0
 
-  vpc_id                  = local.vpc_id
-  vpc_cidr_block          = local.vpc_cidr_block
   access_point_subnet_ids = module.launch_system_network.executor_network_ids
   account_id              = local.account_id
   aws_region              = local.aws_region
 
+  public_launch_data_efs_arn = module.public_data_efs_storage.public_launch_data_efs_arn
   entitycore_internal_bucket = var.entitycore_svc_aws_s3_internal_bucket
   entitycore_internal_region = var.entitycore_svc_aws_s3_internal_region
   opendata_bucket            = var.entitycore_svc_aws_s3_open_bucket
   opendata_region            = var.entitycore_svc_aws_s3_open_region
 
-  internal_public_data_mountpath = "/data/aws_s3_internal/public"
-  opendata_mountpath             = "/data/aws_s3_open"
+  public_launch_efs_securitygroup_arn = module.public_data_efs_storage.public_launch_efs_securitygroup_arn
+
+  internal_public_data_mountpath = module.public_data_efs_storage.internal_public_data_mountpath
+  opendata_mountpath             = module.public_data_efs_storage.opendata_mountpath
   opendata_paths_list            = var.opendata_paths_list
   providers = {
     aws         = aws
@@ -926,9 +939,9 @@ module "launch_system" {
   })
   keycloak_client_id = "obi-entitysdk-auth"
 
-  public_launch_data_efs_id            = module.public_data_efs[0].public_launch_data_efs_id
-  internal_public_data_access_point_id = module.public_data_efs[0].internal_public_data_access_point_id
-  open_public_data_access_point_id     = module.public_data_efs[0].open_public_data_access_point_id
+  public_launch_data_efs_id            = module.public_data_efs_storage.public_launch_data_efs_id
+  internal_public_data_access_point_id = module.public_data_efs_storage.internal_public_data_access_point_id
+  open_public_data_access_point_id     = module.public_data_efs_storage.open_public_data_access_point_id
 }
 
 
