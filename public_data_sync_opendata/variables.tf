@@ -1,11 +1,3 @@
-variable "vpc_id" {
-  type = string
-}
-
-variable "vpc_cidr_block" {
-  type = string
-}
-
 variable "access_point_subnet_ids" {
   type = list(string)
 }
@@ -51,4 +43,14 @@ variable "opendata_mountpath" {
 variable "opendata_paths_list" {
   type        = string
   description = "File in which the paths to sync on opendata are listed, one per line"
+}
+
+variable "public_launch_data_efs_arn" {
+  type        = string
+  description = "ARN of the EFS for the public launch data"
+}
+
+variable "public_launch_efs_securitygroup_arn" {
+  type        = string
+  description = "ARN of the security group of the EFS for the public launch data"
 }
