@@ -73,7 +73,7 @@ resource "aws_datasync_location_s3" "opendata_source" {
 }
 
 resource "aws_datasync_location_efs" "internal_destination" {
-  efs_file_system_arn = aws_efs_file_system.public_launch_data.arn
+  efs_file_system_arn = var.public_launch_data_efs_arn
 
   # When recreating, remove subdirectory and uncomment the next two lines
   # See https://github.com/openbraininstitute/prod-platform-architecture/issues/163
@@ -83,11 +83,9 @@ resource "aws_datasync_location_efs" "internal_destination" {
   # #############
 
   ec2_config {
-    security_group_arns = [aws_security_group.public_launch_efs.arn]
+    security_group_arns = [var.public_launch_efs_securitygroup_arn]
     subnet_arn          = "arn:aws:ec2:${var.aws_region}:${var.account_id}:subnet/${var.access_point_subnet_ids[0]}"
   }
-
-  depends_on = [aws_efs_mount_target.public_launch_data]
 }
 
 resource "aws_datasync_task" "internal_s3_to_efs" {
@@ -121,7 +119,7 @@ resource "aws_datasync_task" "internal_s3_to_efs" {
 }
 
 resource "aws_datasync_location_efs" "opendata_destination" {
-  efs_file_system_arn = aws_efs_file_system.public_launch_data.arn
+  efs_file_system_arn = var.public_launch_data_efs_arn
 
   # When recreating, remove subdirectory and uncomment the next two lines
   # See https://github.com/openbraininstitute/prod-platform-architecture/issues/163
@@ -131,11 +129,9 @@ resource "aws_datasync_location_efs" "opendata_destination" {
   # ###
 
   ec2_config {
-    security_group_arns = [aws_security_group.public_launch_efs.arn]
+    security_group_arns = [var.public_launch_efs_securitygroup_arn]
     subnet_arn          = "arn:aws:ec2:${var.aws_region}:${var.account_id}:subnet/${var.access_point_subnet_ids[0]}"
   }
-
-  depends_on = [aws_efs_mount_target.public_launch_data]
 }
 
 resource "aws_datasync_task" "opendata_s3_to_efs" {
