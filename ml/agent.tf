@@ -52,13 +52,7 @@ module "ecs_service_agent" {
       essential                = true
       image                    = var.neuroagent_docker_image_url
       name                     = "ml_agent"
-      readonly_root_filesystem = true
-      mount_points = [
-        {
-          sourceVolume  = "tmp"
-          containerPath = "/tmp"
-        }
-      ]
+      readonly_root_filesystem = false
       port_mappings = [
         {
           name          = "ml_agent"
@@ -143,6 +137,8 @@ module "ecs_service_agent" {
         {
           name  = "NEUROAGENT_TOOLS__WHITELISTED_TOOL_REGEX"
           value = "^(?!.*(downloadone|measurementannotation|simulation|synaptome|experimentalsynapsesperconnection|expert)).*"
+
+
         },
       ]
       secrets = [
@@ -163,11 +159,8 @@ module "ecs_service_agent" {
           valueFrom = "${var.ml_secrets_arn}:EXA_API_KEY::"
         },
       ]
+      readonly_root_filesystem = false
     }
-  }
-
-  volume = {
-    tmp = {}
   }
 
   task_exec_iam_role_policies = {
