@@ -570,6 +570,27 @@ module "core_webapp_dev" {
   env_VIRTUAL_LAB_API_URL       = "https://${local.cell_a_primary_domain}/api/virtual-lab-manager"
 }
 
+module "core_webapp_preview" {
+  source = "./core_webapp_preview"
+
+  count = var.is_staging ? 1 : 0
+
+  app_name                 = "core-webapp-preview"
+  github_access_token      = "ghp_dummy_token_12345"
+  repository_url           = "https://github.com/openbraininstitute/core-web-app"
+  default_branch           = "main"
+  domain_name              = data.terraform_remote_state.common.outputs.preview_domain
+  route53_zone_id          = data.terraform_remote_state.common.outputs.preview_domain_zone_id
+  secrets_arn              = local.core_webapp_secrets_arn
+  github_oidc_provider_arn = module.github_oidc_provider.oidc_provider_arn
+
+  api_origin             = "https://${local.cell_a_primary_domain}"
+  deployment_env         = "preview"
+  keycloak_issuer        = var.keycloak_sbo_realm_url
+  sanity_dataset         = "staging"
+  stripe_publishable_key = var.core_web_app_stripe_publishable_key
+}
+
 module "github_core_webapp_dev_ecs_redeploy_role" {
   source = "./github_ecs_redeploy_role"
 
