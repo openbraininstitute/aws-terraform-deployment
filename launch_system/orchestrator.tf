@@ -104,7 +104,7 @@ resource "aws_ecs_task_definition" "orchestrator" {
         },
         {
           name  = "WORKER_AWS_ECS_TASK_SUBNETS"
-          value = jsonencode([aws_subnet.untrusted_a.id, aws_subnet.untrusted_b.id])
+          value = jsonencode([var.untrusted_a_subnet_id, var.untrusted_b_subnet_id])
         },
         {
           name  = "REDIS_HOST"
@@ -169,8 +169,8 @@ resource "aws_ecs_service" "orchestrator" {
   network_configuration {
     security_groups = [aws_security_group.orchestrator.id]
     subnets = [
-      aws_subnet.trusted_a.id,
-      aws_subnet.trusted_b.id,
+      var.trusted_a_subnet_id,
+      var.trusted_b_subnet_id,
     ]
     assign_public_ip = false
   }

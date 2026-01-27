@@ -1,8 +1,8 @@
 resource "aws_db_subnet_group" "db" {
   name = "launch_system_db_subnet_group"
   subnet_ids = [
-    aws_subnet.trusted_a.id,
-    aws_subnet.trusted_b.id,
+    var.trusted_a_subnet_id,
+    var.trusted_b_subnet_id,
   ]
 }
 

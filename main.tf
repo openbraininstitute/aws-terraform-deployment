@@ -112,6 +112,8 @@ module "cs" {
   private_alb_cidr_b      = data.terraform_remote_state.common.outputs.private_alb_cidr_b
   notebook_service_cidr_a = module.notebook_service.ecs_cidr_block_a
   notebook_service_cidr_b = module.notebook_service.ecs_cidr_block_b
+
+  # public_launch_data_efs_cidrs = module.launch_system_network.executor_network_cidr_ranges
 }
 
 module "backups" {
@@ -833,7 +835,7 @@ module "public_data_efs" {
 
   vpc_id                  = local.vpc_id
   vpc_cidr_block          = local.vpc_cidr_block
-  access_point_subnet_ids = module.launch_system[0].executor_network_ids
+  access_point_subnet_ids = module.launch_system_network.executor_network_ids
   account_id              = local.account_id
   aws_region              = local.aws_region
 
@@ -851,16 +853,33 @@ module "public_data_efs" {
   }
 }
 
+# Goal: always create certain network infrastructure as its re-used
+# by other components such as the EFS for public data.
+# TODO: the subnets do not have their own network ACL but are using
+# the default which is fully open.
+module "launch_system_network" {
+  source = "./launch_system_network"
+
+  aws_region               = local.aws_region
+  vpc_id                   = local.vpc_id
+  internet_access_route_id = local.route_table_private_subnets_id
+}
+
 module "launch_system" {
   source = "./launch_system"
 
   count = var.is_staging ? 1 : 0
 
-  aws_region                    = local.aws_region
-  vpc_id                        = local.vpc_id
-  account_id                    = local.account_id
-  private_alb_listener_arn      = local.private_alb_https_listener_arn
-  internet_access_route_id      = local.route_table_private_subnets_id
+  aws_region               = local.aws_region
+  vpc_id                   = local.vpc_id
+  account_id               = local.account_id
+  private_alb_listener_arn = local.private_alb_https_listener_arn
+
+  trusted_a_subnet_id   = module.launch_system_network.trusted_a_subnet_id
+  trusted_b_subnet_id   = module.launch_system_network.trusted_b_subnet_id
+  untrusted_a_subnet_id = module.launch_system_network.untrusted_a_subnet_id
+  untrusted_b_subnet_id = module.launch_system_network.untrusted_b_subnet_id
+
   vpc_cidr_block                = local.vpc_cidr_block
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
   # allowed_source_ip_cidr_blocks = [local.vpc_cidr_block]
