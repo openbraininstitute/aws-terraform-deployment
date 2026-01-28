@@ -137,6 +137,12 @@ module "aws_errors_sns_topic" {
   source = "./aws_errors_sns_topic"
 }
 
+module "bastion_host" {
+  source                         = "./bastion_host"
+  vpc_id                         = local.vpc_id
+  route_table_private_subnets_id = local.route_table_private_subnets_id
+}
+
 module "debug_aws_errors_sns_topic" {
   source = "./sqs_debug_queue"
 
