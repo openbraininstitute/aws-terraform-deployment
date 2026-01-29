@@ -43,8 +43,6 @@ locals {
   teams_webhook_secrets_arn            = data.terraform_remote_state.common.outputs.teams_webhook_secrets_arn
   auth_manager_secrets_arn             = data.terraform_remote_state.common.outputs.auth_manager_secrets_arn
 
-  cloudfront_certificate_arn = data.terraform_remote_state.common.outputs.cloudfront_certificate_arn
-
   github_organisation = "openbraininstitute"
 }
 
@@ -135,6 +133,12 @@ module "aws_backups_sns_to_teams" {
 
 module "aws_errors_sns_topic" {
   source = "./aws_errors_sns_topic"
+}
+
+module "bastion_host" {
+  source                         = "./bastion_host"
+  vpc_id                         = local.vpc_id
+  route_table_private_subnets_id = local.route_table_private_subnets_id
 }
 
 module "debug_aws_errors_sns_topic" {
@@ -496,10 +500,7 @@ module "core_webapp_cell_a" {
 
   hostname = local.cell_a_primary_domain
 
-  # remove 'www.' from local.primary_domain and prepend 'cdn'. ie: cdn.openbraininstitute.org
-  cloudfront_aliases         = [join(".", ["cdn", trimprefix(local.cell_a_primary_domain, "www.")])]
-  domain_name                = local.cell_a_primary_domain
-  cloudfront_certificate_arn = local.cloudfront_certificate_arn
+  domain_name = local.cell_a_primary_domain
 
   api_origin             = "https://${local.cell_a_primary_domain}"
   auth_url               = "https://${local.cell_a_primary_domain}/api/auth"
