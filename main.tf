@@ -43,8 +43,6 @@ locals {
   teams_webhook_secrets_arn            = data.terraform_remote_state.common.outputs.teams_webhook_secrets_arn
   auth_manager_secrets_arn             = data.terraform_remote_state.common.outputs.auth_manager_secrets_arn
 
-  cloudfront_certificate_arn = data.terraform_remote_state.common.outputs.cloudfront_certificate_arn
-
   github_organisation = "openbraininstitute"
 }
 
@@ -502,10 +500,7 @@ module "core_webapp_cell_a" {
 
   hostname = local.cell_a_primary_domain
 
-  # remove 'www.' from local.primary_domain and prepend 'cdn'. ie: cdn.openbraininstitute.org
-  cloudfront_aliases         = [join(".", ["cdn", trimprefix(local.cell_a_primary_domain, "www.")])]
-  domain_name                = local.cell_a_primary_domain
-  cloudfront_certificate_arn = local.cloudfront_certificate_arn
+  domain_name = local.cell_a_primary_domain
 
   api_origin             = "https://${local.cell_a_primary_domain}"
   auth_url               = "https://${local.cell_a_primary_domain}/api/auth"
