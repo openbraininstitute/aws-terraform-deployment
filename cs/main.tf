@@ -53,6 +53,9 @@ module "jupyterhub_eks" {
   notebook_service_cidr_b     = var.notebook_service_cidr_b
 
   is_staging = var.is_staging
+
+  public_data_efs_ip_address1_as_cidr = var.public_data_efs_ip_address1_as_cidr
+  public_data_efs_ip_address2_as_cidr = var.public_data_efs_ip_address2_as_cidr
 }
 
 module "keycloak" {

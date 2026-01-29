@@ -111,7 +111,8 @@ module "cs" {
   notebook_service_cidr_a = module.notebook_service.ecs_cidr_block_a
   notebook_service_cidr_b = module.notebook_service.ecs_cidr_block_b
 
-  # public_launch_data_efs_cidrs = module.launch_system_network.executor_network_cidr_ranges
+  public_data_efs_ip_address1_as_cidr = module.public_data_efs_storage.mount_target_ip_address1_as_cidr
+  public_data_efs_ip_address2_as_cidr = module.public_data_efs_storage.mount_target_ip_address2_as_cidr
 }
 
 module "backups" {

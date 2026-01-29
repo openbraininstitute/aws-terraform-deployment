@@ -93,3 +93,15 @@ variable "notebook_service_cidr_b" {
 variable "is_staging" {
   type = bool
 }
+
+variable "public_data_efs_ip_address1_as_cidr" {
+  description = "IP address 1 as a /32 cidr of the 'public launch data' EFS filesystem, needed for network ACLs"
+  type        = string
+  sensitive   = false
+}
+
+variable "public_data_efs_ip_address2_as_cidr" {
+  description = "IP address 2 as a /32 cidr of the 'public launch data' EFS filesystem, needed for network ACLs"
+  type        = string
+  sensitive   = false
+}
