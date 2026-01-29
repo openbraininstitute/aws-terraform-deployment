@@ -12,6 +12,6 @@ output "notebook_service_redeploy_role" {
 }
 
 output "github_core_web_app_preview_deploy_role_arn" {
-  value = var.is_staging ? module.core_webapp_preview[0].github_role_arn : null
+  value = var.is_staging ? module.core_webapp_preview[0].github_deploy_role_arn : null
 
 }
