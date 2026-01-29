@@ -46,6 +46,11 @@ locals {
   github_organisation = "openbraininstitute"
 }
 
+data "aws_secretsmanager_secret_version" "core_webapp_secrets" {
+  count     = var.is_staging ? 1 : 0
+  secret_id = local.core_webapp_secrets_arn
+}
+
 # manage default SG via terraform, ensures the default security group is locked down (no egress, no ingress)
 resource "aws_default_security_group" "default" {
   vpc_id = local.vpc_id
@@ -577,7 +582,7 @@ module "core_webapp_preview" {
   count = var.is_staging ? 1 : 0
 
   app_name                 = "core-webapp-preview"
-  github_access_token      = "ghp_dummy_token_12345"
+  github_access_token      = jsondecode(data.aws_secretsmanager_secret_version.core_webapp_secrets[0].secret_string)["GITHUB_REPO_PREVIEW_DEPLOYMENT_PAT"]
   repository_url           = "https://github.com/openbraininstitute/core-web-app"
   default_branch           = "main"
   domain_name              = data.terraform_remote_state.common.outputs.preview_domain
