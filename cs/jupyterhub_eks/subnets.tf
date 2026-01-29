@@ -307,7 +307,7 @@ resource "aws_network_acl_rule" "jupyterhub_eks_private_launch_data_efs_ingress1
 
 resource "aws_network_acl_rule" "jupyterhub_eks_private_launch_data_efs_ingress2" {
   network_acl_id = aws_network_acl.jupyterhub_eks_private.id
-  rule_number    = 40
+  rule_number    = 41
   protocol       = "tcp"
   from_port      = 1024
   to_port        = 65535
@@ -446,7 +446,7 @@ resource "aws_network_acl_rule" "jupyterhub_eks_private_access_to_public_launch_
 
 resource "aws_network_acl_rule" "jupyterhub_eks_private_access_to_public_launch_nfs2" {
   network_acl_id = aws_network_acl.jupyterhub_eks_private.id
-  rule_number    = 40
+  rule_number    = 41
   protocol       = "tcp"
   from_port      = 2049
   to_port        = 2049
