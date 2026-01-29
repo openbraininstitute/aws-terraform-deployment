@@ -25,3 +25,13 @@ output "opendata_mountpath" {
 output "public_launch_efs_securitygroup_arn" {
   value = aws_security_group.public_launch_efs.arn
 }
+
+output "mount_target_ip_address1_as_cidr" {
+  value       = "${aws_efs_mount_target.public_launch_data[0].ip_address}/32"
+  description = "ip address 1 of the mount target, which can be used in network acl rules"
+}
+
+output "mount_target_ip_address2_as_cidr" {
+  value       = "${aws_efs_mount_target.public_launch_data[1].ip_address}/32"
+  description = "ip address 1 of the mount target, which can be used in network acl rules"
+}
