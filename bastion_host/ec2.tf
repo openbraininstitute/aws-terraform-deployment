@@ -13,7 +13,11 @@ resource "aws_launch_template" "ssm_instance" {
     user_groups = local.user_groups
   }))
 
-  vpc_security_group_ids = [aws_security_group.ssm_sg.id]
+  network_interfaces {
+    associate_public_ip_address = false
+    security_groups             = [aws_security_group.ssm_sg.id]
+    subnet_id                   = aws_subnet.bastion.id
+  }
 
   metadata_options {
     http_endpoint = "enabled"
@@ -34,9 +38,6 @@ resource "aws_instance" "bastion" {
     id      = aws_launch_template.ssm_instance.id
     version = "$Latest"
   }
-
-  subnet_id                   = aws_subnet.bastion.id
-  associate_public_ip_address = false
 
   tags = {
     Name = "SSM-Bastion-Host"
