@@ -187,6 +187,26 @@ resource "aws_vpc_endpoint" "ssm" {
   tags                = { Name = "SSM Endpoint" }
 }
 
+resource "aws_vpc_endpoint" "ssmmessages" {
+  service_name        = "com.amazonaws.${var.aws_region}.ssmmessages"
+  vpc_endpoint_type   = "Interface"
+  vpc_id              = var.vpc_id
+  subnet_ids          = [aws_subnet.aws_endpoints.id]
+  security_group_ids  = [aws_security_group.aws_endpoints_sg.id]
+  private_dns_enabled = false
+  tags                = { Name = "SSM Messages Endpoint" }
+}
+
+resource "aws_vpc_endpoint" "ec2messages" {
+  service_name        = "com.amazonaws.${var.aws_region}.ec2messages"
+  vpc_endpoint_type   = "Interface"
+  vpc_id              = var.vpc_id
+  subnet_ids          = [aws_subnet.aws_endpoints.id]
+  security_group_ids  = [aws_security_group.aws_endpoints_sg.id]
+  private_dns_enabled = false
+  tags                = { Name = "EC2 Messages Endpoint" }
+}
+
 resource "aws_vpc_endpoint" "sts" {
   service_name        = "com.amazonaws.${var.aws_region}.sts"
   vpc_endpoint_type   = "Interface"

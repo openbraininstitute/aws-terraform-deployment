@@ -9,21 +9,21 @@ resource "aws_iam_policy" "ssm_user_access" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid    = "AllowStartSessionOnInstances"
+        Sid      = "AllowStartSessionOnInstances"
+        Effect   = "Allow"
+        Action   = "ssm:StartSession"
+        Resource = "arn:aws:ec2:*:${data.aws_caller_identity.current.account_id}:instance/*"
+      },
+      {
+        Sid    = "AllowStartSessionWithOwnDocument"
         Effect = "Allow"
         Action = "ssm:StartSession"
         Resource = [
-          "arn:aws:ec2:*:${data.aws_caller_identity.current.account_id}:instance/*"
+          "arn:aws:ssm:*:${data.aws_caller_identity.current.account_id}:document/SSM-UserMapping-*"
         ]
-      },
-      {
-        Sid      = "AllowStartSessionWithOwnDocument"
-        Effect   = "Allow"
-        Action   = "ssm:StartSession"
-        Resource = "arn:aws:ssm:*:${data.aws_caller_identity.current.account_id}:document/SSM-UserMapping-*"
         Condition = {
-          StringEquals = {
-            "ssm:resourceTag/AllowedEmail" = "$${aws:username}"
+          StringLike = {
+            "aws:userid" = "*:$${ssm:resourceTag/AllowedEmail}"
           }
         }
       },
@@ -39,7 +39,19 @@ resource "aws_iam_policy" "ssm_user_access" {
         Action = [
           "ec2:DescribeInstances",
           "ssm:DescribeSessions",
-          "ssm:GetConnectionStatus"
+          "ssm:GetConnectionStatus",
+          "ssm:DescribeDocument",
+          "ssm:GetDocument",
+          "ssm:ListDocuments"
+        ]
+        Resource = "*"
+      },
+      {
+        Sid    = "AllowKMSForSessionEncryption"
+        Effect = "Allow"
+        Action = [
+          "kms:Decrypt",
+          "kms:GenerateDataKey"
         ]
         Resource = "*"
       }
