@@ -77,6 +77,8 @@ resource "aws_amplify_app" "this" {
   enable_branch_auto_build    = true
   enable_auto_branch_creation = true
   enable_branch_auto_deletion = true
+
+  auto_branch_creation_patterns = ["*"]
 }
 
 resource "aws_amplify_branch" "default" {
