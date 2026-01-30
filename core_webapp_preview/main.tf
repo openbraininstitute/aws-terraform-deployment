@@ -46,8 +46,8 @@ resource "aws_iam_role_policy" "amplify_service" {
         Resource = "arn:aws:route53:::hostedzone/${var.route53_zone_id}"
       },
       {
-        Effect = "Allow"
-        Action = "route53:ListHostedZones"
+        Effect   = "Allow"
+        Action   = "route53:ListHostedZones"
         Resource = "*"
       }
     ]
