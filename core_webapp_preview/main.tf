@@ -11,14 +11,6 @@ resource "aws_iam_role" "amplify_service" {
         Service = "amplify.amazonaws.com"
       }
       Action = "sts:AssumeRole"
-      Condition = {
-        StringEquals = {
-          "aws:SourceAccount" = data.aws_caller_identity.current.account_id
-        }
-        ArnLike = {
-          "aws:SourceArn" = "arn:aws:amplify:*:${data.aws_caller_identity.current.account_id}:apps/*"
-        }
-      }
     }]
   })
 }
