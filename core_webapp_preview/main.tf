@@ -31,11 +31,25 @@ resource "aws_iam_role_policy" "amplify_service" {
     Version = "2012-10-17"
     Statement = [
       {
+        Sid    = "PushLogs"
         Effect = "Allow"
         Action = [
-          "secretsmanager:GetSecretValue"
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
         ]
-        Resource = var.secrets_arn
+        Resource = "arn:aws:logs:*:${data.aws_caller_identity.current.account_id}:log-group:/aws/amplify/*:log-stream:*"
+      },
+      {
+        Sid      = "CreateLogGroup"
+        Effect   = "Allow"
+        Action   = "logs:CreateLogGroup"
+        Resource = "arn:aws:logs:*:${data.aws_caller_identity.current.account_id}:log-group:/aws/amplify/*"
+      },
+      {
+        Sid      = "DescribeLogGroups"
+        Effect   = "Allow"
+        Action   = "logs:DescribeLogGroups"
+        Resource = "arn:aws:logs:*:${data.aws_caller_identity.current.account_id}:log-group:*"
       },
       {
         Effect = "Allow"
