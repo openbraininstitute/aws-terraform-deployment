@@ -249,6 +249,10 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
           name  = "ENTITYCORE_URL"
           value = var.entitycore_url
         },
+        {
+          name  = "LAUNCH_SYSTEM_URL"
+          value = var.launch_system_url
+        },
       ]
 
       healthcheck = {
