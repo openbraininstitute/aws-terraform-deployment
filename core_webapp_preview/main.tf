@@ -97,11 +97,6 @@ resource "aws_amplify_domain_association" "this" {
     prefix      = "main"
   }
 
-  sub_domain {
-    branch_name = "develop"
-    prefix      = "dev"
-  }
-
   enable_auto_sub_domain = true
 }
 
