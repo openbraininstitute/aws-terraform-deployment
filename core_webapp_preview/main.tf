@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 resource "aws_iam_role" "amplify_service" {
   name = "${var.app_name}-amplify-service-role"
 
@@ -19,13 +21,42 @@ resource "aws_iam_role_policy" "amplify_service" {
 
   policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Action = [
-        "secretsmanager:GetSecretValue"
-      ]
-      Resource = var.secrets_arn
-    }]
+    Statement = [
+      {
+        Sid    = "PushLogs"
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Resource = "arn:aws:logs:*:${data.aws_caller_identity.current.account_id}:log-group:/aws/amplify/*:log-stream:*"
+      },
+      {
+        Sid      = "CreateLogGroup"
+        Effect   = "Allow"
+        Action   = "logs:CreateLogGroup"
+        Resource = "arn:aws:logs:*:${data.aws_caller_identity.current.account_id}:log-group:/aws/amplify/*"
+      },
+      {
+        Sid      = "DescribeLogGroups"
+        Effect   = "Allow"
+        Action   = "logs:DescribeLogGroups"
+        Resource = "arn:aws:logs:*:${data.aws_caller_identity.current.account_id}:log-group:*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "route53:ChangeResourceRecordSets",
+          "route53:ListResourceRecordSets"
+        ]
+        Resource = "arn:aws:route53:::hostedzone/${var.route53_zone_id}"
+      },
+      {
+        Effect   = "Allow"
+        Action   = "route53:ListHostedZones"
+        Resource = "*"
+      }
+    ]
   })
 }
 
@@ -50,7 +81,10 @@ resource "aws_amplify_app" "this" {
   }
 
   enable_branch_auto_build    = true
-  enable_auto_branch_creation = false
+  enable_auto_branch_creation = true
+  enable_branch_auto_deletion = true
+
+  auto_branch_creation_patterns = ["*"]
 }
 
 resource "aws_amplify_branch" "default" {
@@ -65,9 +99,11 @@ resource "aws_amplify_domain_association" "this" {
   domain_name = var.domain_name
 
   sub_domain {
-    branch_name = aws_amplify_branch.default.branch_name
+    branch_name = "main"
     prefix      = "main"
   }
+
+  enable_auto_sub_domain = true
 }
 
 resource "aws_iam_role" "github_deploy" {
