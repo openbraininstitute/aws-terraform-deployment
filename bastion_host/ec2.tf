@@ -10,7 +10,7 @@ resource "aws_launch_template" "ssm_instance" {
   }
 
   user_data = base64encode(templatefile("${path.module}/scripts/user_setup.sh", {
-    user_groups = local.user_groups
+    user_groups = jsonencode(local.user_groups)
   }))
 
   network_interfaces {

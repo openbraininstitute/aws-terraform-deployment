@@ -7,7 +7,7 @@ dnf install -y jq curl sudo
 dnf install -y amazon-ssm-agent
 
 # Setup users and groups from terraform variables
-user_groups='${jsonencode(user_groups)}'
+user_groups='${user_groups}'
 
 echo "$user_groups" | jq -r 'to_entries[] | .key as $group | .value as $groupinfo | .value.users[] | [$group, .username, $groupinfo.sudo_access] | @tsv' | while IFS=$'\t' read -r group user sudo_access; do
     # Create group if it doesn't exist
