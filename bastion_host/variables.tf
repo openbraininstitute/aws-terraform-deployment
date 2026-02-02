@@ -26,6 +26,10 @@ variable "route_table_private_subnets_id" {
 
 variable "instance_type" {
   type        = string
-  default     = "t3.micro"
   description = "EC2 instance type for the bastion host"
+}
+
+variable "instance_volume_size" {
+  type        = number
+  description = "Size of the root volume in GB for the bastion host"
 }
