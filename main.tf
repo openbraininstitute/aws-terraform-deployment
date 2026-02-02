@@ -145,6 +145,8 @@ module "bastion_host" {
   source                         = "./bastion_host"
   vpc_id                         = local.vpc_id
   route_table_private_subnets_id = local.route_table_private_subnets_id
+  instance_type                  = "t3.medium"
+  instance_volume_size           = 50
 }
 
 module "debug_aws_errors_sns_topic" {
