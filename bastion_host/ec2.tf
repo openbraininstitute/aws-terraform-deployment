@@ -19,6 +19,15 @@ resource "aws_launch_template" "ssm_instance" {
     subnet_id                   = aws_subnet.bastion.id
   }
 
+  block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      volume_size = var.instance_volume_size
+      volume_type = "gp3"
+      encrypted   = true
+    }
+  }
+
   metadata_options {
     http_endpoint = "enabled"
     http_tokens   = "required" # IMDSv2
