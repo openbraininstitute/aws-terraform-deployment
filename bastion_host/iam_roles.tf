@@ -5,9 +5,17 @@ locals {
   user_groups = {
     obi_users = {
       users = [
-        { username = "alina.busuioc", email = "alina.busuioc@openbraininstitute.org" },
-        { username = "aurelien.jaquier", email = "aurelien.jaquier@openbraininstitute.org" },
-        # Add other users here with their email mappings
+        { username = "bilal.meddah", email = "bilal.meddah@openbraininstitute.org" },
+        { username = "boris.bergsma", email = "boris.bergsma@openbraininstitute.org" },
+        { username = "eleftherios.zisis", email = "eleftherios.zisis@openbraininstitute.org" },
+        { username = "georges.khazen", email = "georges.khazen@openbraininstitute.org" },
+        { username = "gianluca.ficarelli", email = "gianluca.ficarelli@openbraininstitute.org" },
+        { username = "jan.krepl", email = "jan.krepl@openbraininstitute.org" },
+        { username = "jean-denis.courcol", email = "jean-denis.courcol@openbraininstitute.org" },
+        { username = "juanjose.garcia", email = "juanjose.garcia@openbraininstitute.org" },
+        { username = "mgevaert", email = "mgevaert@openbraininstitute.org" },
+        { username = "nicolas.frank", email = "nicolas.frank@openbraininstitute.org" },
+        { username = "pavlo.getta", email = "pavlo.getta@openbraininstitute.org" },
       ]
       sudo_access = false
     }
