@@ -31,7 +31,12 @@ resource "aws_iam_policy" "ssm_user_access" {
         Sid      = "AllowTerminateOwnSessions"
         Effect   = "Allow"
         Action   = "ssm:TerminateSession"
-        Resource = "arn:aws:ssm:*:${data.aws_caller_identity.current.account_id}:session/$${aws:username}-*"
+        Resource = "arn:aws:ssm:*:${data.aws_caller_identity.current.account_id}:session/*"
+        Condition = {
+          StringLike = {
+            "ssm:resourceTag/aws:ssmmessages:session-id" = "$${aws:username}-*"
+          }
+        }
       },
       {
         Sid    = "AllowDescribeInstances"
