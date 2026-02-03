@@ -4,7 +4,24 @@ This guide explains how to connect to a bastion host using AWS Systems Manager (
 
 ## Prerequisites
 - AWS CLI installed and configured.
+- Session Manager plugin installed (see installation instructions below).
 - The `BastionUserAccess` permission set assigned to your AWS user.
+
+### Install Session Manager Plugin (macOS)
+
+```bash
+# Download the installer
+curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/mac_arm64/session-manager-plugin.pkg" -o "session-manager-plugin.pkg"
+
+# Install the plugin
+sudo installer -pkg session-manager-plugin.pkg -target /
+
+# Create symlink to make it available in PATH
+sudo ln -s /usr/local/sessionmanagerplugin/bin/session-manager-plugin /usr/local/bin/session-manager-plugin
+
+# Verify installation
+session-manager-plugin --version
+```
 
 ## Step 1: Configure AWS Profile
 
