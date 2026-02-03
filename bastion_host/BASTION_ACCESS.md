@@ -51,11 +51,11 @@ export AWS_PROFILE="BastionUserAccess-staging"
 INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=*Bastion*" "Name=instance-state-name,Values=running" --query 'Reservations[0].Instances[0].InstanceId' --output text)
 
 # Get your username from your AWS identity
-USERNAME=$(aws sts get-caller-identity --query 'UserId' --output text | cut -d: -f2 | cut -d'@' -f1)
+BASTION_USERNAME=$(aws sts get-caller-identity --query 'UserId' --output text | cut -d: -f2 | cut -d'@' -f1)
 
 # Start the SSM session
-echo "Connecting to instance $INSTANCE_ID as user $USERNAME..."
-aws ssm start-session --target "$INSTANCE_ID" --document-name "SSM-UserMapping-$USERNAME"
+echo "Connecting to instance $INSTANCE_ID as user $BASTION_USERNAME..."
+aws ssm start-session --target "$INSTANCE_ID" --document-name "SSM-UserMapping-$BASTION_USERNAME"
 ```
 
 ### For PRODUCTION Environment
@@ -74,11 +74,11 @@ export AWS_PROFILE="BastionUserAccess-prod"
 INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=*Bastion*" "Name=instance-state-name,Values=running" --query 'Reservations[0].Instances[0].InstanceId' --output text)
 
 # Get your username from your AWS identity
-USERNAME=$(aws sts get-caller-identity --query 'UserId' --output text | cut -d: -f2 | cut -d'@' -f1)
+BASTION_USERNAME=$(aws sts get-caller-identity --query 'UserId' --output text | cut -d: -f2 | cut -d'@' -f1)
 
 # Start the SSM session
-echo "Connecting to instance $INSTANCE_ID as user $USERNAME..."
-aws ssm start-session --target "$INSTANCE_ID" --document-name "SSM-UserMapping-$USERNAME"
+echo "Connecting to instance $INSTANCE_ID as user $BASTION_USERNAME..."
+aws ssm start-session --target "$INSTANCE_ID" --document-name "SSM-UserMapping-$BASTION_USERNAME"
 ```
 
 ## Troubleshooting
