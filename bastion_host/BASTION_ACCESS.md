@@ -24,6 +24,11 @@ sso_account_id = 671250183987
 sso_role_name = BastionUserAccess
 region = us-east-1
 output = json
+
+[sso-session obi]
+sso_start_url = https://openbraininstitute.awsapps.com/start/
+sso_region = us-east-1
+sso_registration_scopes = sso:account:access
 ```
 
 ## Step 2: Log in and Connect
