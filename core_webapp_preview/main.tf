@@ -68,9 +68,9 @@ resource "aws_amplify_app" "this" {
     KEYCLOAK_ISSUER        = var.keycloak_issuer
     SANITY_DATASET         = var.sanity_dataset
     STRIPE_PUBLISHABLE_KEY = var.stripe_publishable_key
-    KEYCLOAK_CLIENT_ID     = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["KEYCLOAK_CLIENT_ID"]
-    KEYCLOAK_CLIENT_SECRET = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["KEYCLOAK_CLIENT_SECRET"]
-    NEXTAUTH_SECRET        = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["NEXTAUTH_SECRET"]
+    KEYCLOAK_CLIENT_ID     = "<REPLACE_ME>"
+    KEYCLOAK_CLIENT_SECRET = "<REPLACE_ME>"
+    NEXTAUTH_SECRET        = "<REPLACE_ME>"
   }
 
   enable_branch_auto_build    = false
