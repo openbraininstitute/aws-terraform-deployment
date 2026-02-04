@@ -73,16 +73,21 @@ resource "aws_amplify_app" "this" {
     NEXTAUTH_SECRET        = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["NEXTAUTH_SECRET"]
   }
 
-  enable_branch_auto_build    = true
-  enable_auto_branch_creation = true
+  enable_branch_auto_build    = false
+  enable_auto_branch_creation = false
   enable_branch_auto_deletion = true
-
-  auto_branch_creation_patterns = ["*"]
 }
 
 resource "aws_amplify_branch" "default" {
   app_id      = aws_amplify_app.this.id
   branch_name = var.default_branch
+
+  enable_auto_build = true
+}
+
+resource "aws_amplify_branch" "develop" {
+  app_id      = aws_amplify_app.this.id
+  branch_name = "develop"
 
   enable_auto_build = true
 }
@@ -138,6 +143,11 @@ resource "aws_amplify_domain_association" "this" {
   sub_domain {
     branch_name = var.default_branch
     prefix      = var.default_branch
+  }
+
+  sub_domain {
+    branch_name = "develop"
+    prefix      = "dev"
   }
 
   enable_auto_sub_domain = true
