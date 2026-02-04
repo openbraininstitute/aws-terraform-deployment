@@ -172,7 +172,7 @@ resource "aws_datasync_task" "opendata_s3_to_efs" {
 }
 
 resource "aws_datasync_task" "opendata_s3_to_azure" {
-  destination_location_arn = awscc_datasync_location_azure_blob.azure_blobstore.location_arn
+  destination_location_arn = awscc_datasync_location_azure_blob.azure_blobstore_opendata.location_arn
   source_location_arn      = aws_datasync_location_s3.opendata_source.arn
   includes {
     filter_type = "SIMPLE_PATTERN"
@@ -210,7 +210,7 @@ resource "aws_datasync_task" "opendata_s3_to_azure" {
 }
 
 resource "aws_datasync_task" "internal_s3_to_azure" {
-  destination_location_arn = awscc_datasync_location_azure_blob.azure_blobstore.location_arn
+  destination_location_arn = awscc_datasync_location_azure_blob.azure_blobstore_internal_public_data.location_arn
   source_location_arn      = aws_datasync_location_s3.internal_source.arn
   includes {
     filter_type = "SIMPLE_PATTERN"
