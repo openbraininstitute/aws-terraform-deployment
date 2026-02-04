@@ -93,7 +93,7 @@ resource "aws_amplify_branch" "develop" {
 }
 
 resource "aws_iam_role" "amplify_domain" {
-  name = "AWSAmplifyDomainRole-${substr(md5(var.domain_name), 0, 16)}"
+  name = "AWSAmplifyDomainRole-${var.route53_zone_id}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
