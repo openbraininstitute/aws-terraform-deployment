@@ -941,9 +941,9 @@ module "launch_system" {
   db_username     = "launch"
   obi_backup_plan = "obi_plan"
 
-  api_image_url              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.1.5"
-  orchestrator_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.1.5"
-  default_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/default-executor:2026.1.5"
+  api_image_url              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.2.0"
+  orchestrator_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.2.0"
+  default_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/default-executor:2026.2.0"
 
   api_task_size          = var.launch_system_api_task_size
   executor_task_size     = var.launch_system_executor_task_size
