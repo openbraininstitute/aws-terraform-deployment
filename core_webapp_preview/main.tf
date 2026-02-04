@@ -1,5 +1,11 @@
 data "aws_caller_identity" "current" {}
 
+data "aws_region" "current" {}
+
+data "aws_secretsmanager_secret_version" "secrets" {
+  secret_id = var.secrets_arn
+}
+
 resource "aws_iam_role" "amplify_service" {
   name = "${var.app_name}-amplify-service-role"
 
@@ -29,32 +35,19 @@ resource "aws_iam_role_policy" "amplify_service" {
           "logs:CreateLogStream",
           "logs:PutLogEvents"
         ]
-        Resource = "arn:aws:logs:*:${data.aws_caller_identity.current.account_id}:log-group:/aws/amplify/*:log-stream:*"
+        Resource = "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/amplify/*:log-stream:*"
       },
       {
         Sid      = "CreateLogGroup"
         Effect   = "Allow"
         Action   = "logs:CreateLogGroup"
-        Resource = "arn:aws:logs:*:${data.aws_caller_identity.current.account_id}:log-group:/aws/amplify/*"
+        Resource = "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/amplify/*"
       },
       {
         Sid      = "DescribeLogGroups"
         Effect   = "Allow"
         Action   = "logs:DescribeLogGroups"
-        Resource = "arn:aws:logs:*:${data.aws_caller_identity.current.account_id}:log-group:*"
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "route53:ChangeResourceRecordSets",
-          "route53:ListResourceRecordSets"
-        ]
-        Resource = "arn:aws:route53:::hostedzone/${var.route53_zone_id}"
-      },
-      {
-        Effect   = "Allow"
-        Action   = "route53:ListHostedZones"
-        Resource = "*"
+        Resource = "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:*"
       }
     ]
   })
@@ -75,9 +68,9 @@ resource "aws_amplify_app" "this" {
     KEYCLOAK_ISSUER        = var.keycloak_issuer
     SANITY_DATASET         = var.sanity_dataset
     STRIPE_PUBLISHABLE_KEY = var.stripe_publishable_key
-    KEYCLOAK_CLIENT_ID     = var.secrets_arn
-    KEYCLOAK_CLIENT_SECRET = var.secrets_arn
-    NEXTAUTH_SECRET        = var.secrets_arn
+    KEYCLOAK_CLIENT_ID     = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["KEYCLOAK_CLIENT_ID"]
+    KEYCLOAK_CLIENT_SECRET = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["KEYCLOAK_CLIENT_SECRET"]
+    NEXTAUTH_SECRET        = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["NEXTAUTH_SECRET"]
   }
 
   enable_branch_auto_build    = true
@@ -94,16 +87,62 @@ resource "aws_amplify_branch" "default" {
   enable_auto_build = true
 }
 
+resource "aws_iam_role" "amplify_domain" {
+  name = "AWSAmplifyDomainRole-${substr(md5(var.domain_name), 0, 16)}"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Principal = {
+        Service = "amplify.amazonaws.com"
+      }
+      Action = "sts:AssumeRole"
+      Condition = {
+        StringEquals = {
+          "aws:SourceAccount" = data.aws_caller_identity.current.account_id
+        }
+      }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy" "amplify_domain" {
+  name = "AmplifyDomainPolicy"
+  role = aws_iam_role.amplify_domain.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "route53:ChangeResourceRecordSets",
+          "route53:ListResourceRecordSets"
+        ]
+        Resource = "arn:aws:route53:::hostedzone/${var.route53_zone_id}"
+      },
+      {
+        Effect   = "Allow"
+        Action   = "route53:ListHostedZones"
+        Resource = "*"
+      }
+    ]
+  })
+}
+
 resource "aws_amplify_domain_association" "this" {
   app_id      = aws_amplify_app.this.id
   domain_name = var.domain_name
 
   sub_domain {
-    branch_name = "main"
-    prefix      = "main"
+    branch_name = var.default_branch
+    prefix      = var.default_branch
   }
 
   enable_auto_sub_domain = true
+
+  depends_on = [aws_iam_role_policy.amplify_domain]
 }
 
 resource "aws_iam_role" "github_deploy" {
