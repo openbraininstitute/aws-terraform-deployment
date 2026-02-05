@@ -205,8 +205,6 @@ resource "aws_datasync_task" "opendata_s3_to_azure" {
   }
 
   task_mode = "ENHANCED"
-
-  cloudwatch_log_group_arn = "arn:aws:logs:us-west-2:130659266700:log-group:/aws/datasync:*"
 }
 
 resource "aws_datasync_task" "internal_s3_to_azure" {
@@ -243,8 +241,6 @@ resource "aws_datasync_task" "internal_s3_to_azure" {
   }
 
   task_mode = "ENHANCED"
-
-  cloudwatch_log_group_arn = "arn:aws:logs:us-west-2:130659266700:log-group:/aws/datasync:*"
 }
 
 resource "awscc_datasync_location_azure_blob" "azure_blobstore_opendata" {
