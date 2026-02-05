@@ -28,6 +28,12 @@ resource "aws_iam_policy" "ssm_user_access" {
         }
       },
       {
+        Sid      = "AllowStartPortForwardingSession"
+        Effect   = "Allow"
+        Action   = "ssm:StartSession"
+        Resource = "arn:aws:ssm:*::document/AWS-StartPortForwardingSession"
+      },
+      {
         Sid      = "AllowTerminateOwnSessions"
         Effect   = "Allow"
         Action   = "ssm:TerminateSession"
