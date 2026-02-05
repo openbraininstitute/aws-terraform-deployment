@@ -13,7 +13,7 @@ systemctl start sshd
 # Setup users and groups from terraform variables
 user_groups='${user_groups}'
 
-echo "$user_groups" | jq -r 'to_entries[] | .key as $group | .value as $groupinfo | .value.users[] | [$group, .username, $groupinfo.sudo_access] | @tsv' | while IFS=$'\t' read -r group user sudo_access; do
+echo "$user_groups" | jq -r 'to_entries[] | .key as $group | .value as $groupinfo | .value.users[] | [$group, .username, $groupinfo.sudo_access, .public_key] | @tsv' | while IFS=$'\t' read -r group user sudo_access public_key; do
     # Create group if it doesn't exist
     if ! getent group "$group" > /dev/null; then
         groupadd "$group"
@@ -53,7 +53,7 @@ EOFPROFILE
 
         # Create .ssh directory for SSH key authentication
         mkdir -p "$user_home/.ssh"
-        touch "$user_home/.ssh/authorized_keys"
+        echo "$public_key" > "$user_home/.ssh/authorized_keys"
         chmod 700 "$user_home/.ssh"
         chmod 600 "$user_home/.ssh/authorized_keys"
 
