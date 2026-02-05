@@ -19,14 +19,19 @@ resource "aws_iam_policy" "ssm_user_access" {
         Effect = "Allow"
         Action = "ssm:StartSession"
         Resource = [
-          "arn:aws:ssm:*:${data.aws_caller_identity.current.account_id}:document/SSM-UserMapping-*",
-          "arn:aws:ssm:*::document/AWS-StartPortForwardingSession"
+          "arn:aws:ssm:*:${data.aws_caller_identity.current.account_id}:document/SSM-UserMapping-*"
         ]
         Condition = {
           StringLike = {
             "aws:userid" = "*:$${ssm:resourceTag/AllowedEmail}"
           }
         }
+      },
+      {
+        Sid      = "AllowStartPortForwardingSession"
+        Effect   = "Allow"
+        Action   = "ssm:StartSession"
+        Resource = "arn:aws:ssm:*::document/AWS-StartPortForwardingSession"
       },
       {
         Sid      = "AllowTerminateOwnSessions"
