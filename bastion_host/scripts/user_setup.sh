@@ -57,11 +57,12 @@ EOFPROFILE
         chmod 600 "$user_home/.bash_profile" "$user_home/.bashrc"
     fi
 
-    # Set up sudo access if enabled
-    if [[ "$sudo_access" == "true" ]]; then
-        echo "$user ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/$user"
-        chmod 0440 "/etc/sudoers.d/$user"
-    fi
+done
+
+# Set up sudo access for groups with sudo_access enabled
+echo "$user_groups" | jq -r 'to_entries[] | select(.value.sudo_access == true) | .key' | while read -r group; do
+    echo "%$group ALL=(ALL) NOPASSWD:ALL" > "/etc/sudoers.d/$group"
+    chmod 0440 "/etc/sudoers.d/$group"
 done
 
 # Configure SSM Agent
