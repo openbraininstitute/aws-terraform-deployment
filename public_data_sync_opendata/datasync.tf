@@ -194,8 +194,6 @@ resource "aws_datasync_task" "opendata_s3_to_azure" {
     preserve_devices       = "NONE"
     bytes_per_second       = -1 # unlimited
     object_tags            = "NONE"
-
-    log_level = "BASIC"
   }
 
   schedule {
@@ -210,10 +208,6 @@ resource "aws_datasync_task" "opendata_s3_to_azure" {
 resource "aws_datasync_task" "internal_s3_to_azure" {
   destination_location_arn = awscc_datasync_location_azure_blob.azure_blobstore_internal_public_data.location_arn
   source_location_arn      = aws_datasync_location_s3.internal_source.arn
-  includes {
-    filter_type = "SIMPLE_PATTERN"
-    value       = local.opendata_paths
-  }
 
   provider = aws.uswest2
 
@@ -230,8 +224,6 @@ resource "aws_datasync_task" "internal_s3_to_azure" {
     preserve_devices       = "NONE"
     bytes_per_second       = -1 # unlimited
     object_tags            = "NONE"
-
-    log_level = "BASIC"
   }
 
   schedule {
