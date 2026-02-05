@@ -217,7 +217,7 @@ resource "aws_datasync_task" "internal_s3_to_azure" {
 
   provider = aws.uswest2
 
-  name = "opendata-s3-to-azure-sync"
+  name = "internal-public-data-s3-to-azure-sync"
 
   options {
     verify_mode            = "ONLY_FILES_TRANSFERRED"
