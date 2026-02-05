@@ -98,6 +98,34 @@ echo "Connecting to instance $INSTANCE_ID as user $BASTION_USERNAME..."
 aws ssm start-session --target "$INSTANCE_ID" --document-name "SSM-UserMapping-$BASTION_USERNAME"
 ```
 
+## File Transfer with SCP
+
+### One-time Setup: Add Your SSH Public Key
+
+First, connect to the bastion and add your SSH public key:
+
+```bash
+# Connect to bastion (use commands above to set AWS_PROFILE, INSTANCE_ID, BASTION_USERNAME)
+aws ssm start-session --target "$INSTANCE_ID" --document-name "SSM-UserMapping-$BASTION_USERNAME"
+
+# Once connected, add your public key:
+echo "ssh-rsa AAAAB3... your-email@example.com" >> ~/.ssh/authorized_keys
+exit
+```
+
+### Transfer Files
+
+```bash
+# In one terminal, start port forwarding (keep it running):
+aws ssm start-session --target "$INSTANCE_ID" \
+  --document-name AWS-StartPortForwardingSession \
+  --parameters portNumber=22,localPortNumber=2222
+
+# In another terminal, use SCP:
+scp -i /path/private/key.pem -P 2222 local-file.txt $BASTION_USERNAME@localhost:~/
+scp -i /path/private/key.pem -P 2222 $BASTION_USERNAME@localhost:~/remote-file.txt ./
+```
+
 ## Troubleshooting
 
 - **`An error occurred (UnauthorizedOperation) when calling the DescribeInstances operation`**:
