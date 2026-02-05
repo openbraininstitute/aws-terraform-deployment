@@ -1,10 +1,14 @@
 #!/bin/bash
 # Install required packages
 dnf update -y
-dnf install -y git lsof nmap nmap-ncat postgresql17 rsync strace tcpdump tmux traceroute vim wget zsh
+dnf install -y git lsof nmap nmap-ncat postgresql17 rsync strace tcpdump tmux traceroute vim wget zsh openssh-server
 
 # Install SSM Agent for Amazon Linux 2023
 dnf install -y amazon-ssm-agent
+
+# Enable and start SSH daemon
+systemctl enable sshd
+systemctl start sshd
 
 # Setup users and groups from terraform variables
 user_groups='${user_groups}'
@@ -46,6 +50,12 @@ fi
 
 export PS1="[\u@\h \W]\$ "
 EOFPROFILE
+
+        # Create .ssh directory for SSH key authentication
+        mkdir -p "$user_home/.ssh"
+        touch "$user_home/.ssh/authorized_keys"
+        chmod 700 "$user_home/.ssh"
+        chmod 600 "$user_home/.ssh/authorized_keys"
 
         # Generate a random password
         password=$(openssl rand -base64 12)
