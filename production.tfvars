@@ -148,3 +148,6 @@ launch_system_orchestrator_num_workers = 2
 opendata_paths_list = "production_opendata_paths.txt"
 
 core_web_app_in_azure_cidr_block = "10.103.1.0/27" # staging azure core web app aca range
+
+azure_blobstore_opendata_container_url             = "https://obibatchstorageprod.blob.core.windows.net/opendata"
+azure_blobstore_internal_public_data_container_url = "https://obibatchstorageprod.blob.core.windows.net/publicdata"

@@ -170,3 +170,105 @@ resource "aws_datasync_task" "opendata_s3_to_efs" {
     schedule_expression = "cron(0 0 ? * * *)"
   }
 }
+
+resource "aws_datasync_task" "opendata_s3_to_azure" {
+  destination_location_arn = awscc_datasync_location_azure_blob.azure_blobstore_opendata.location_arn
+  source_location_arn      = aws_datasync_location_s3.opendata_source.arn
+  includes {
+    filter_type = "SIMPLE_PATTERN"
+    value       = local.opendata_paths
+  }
+
+  provider = aws.uswest2
+
+  name = "opendata-s3-to-azure-sync"
+
+  options {
+    verify_mode            = "ONLY_FILES_TRANSFERRED"
+    preserve_deleted_files = "REMOVE"
+    atime                  = "BEST_EFFORT"
+    mtime                  = "PRESERVE"
+    uid                    = "NONE"
+    gid                    = "NONE"
+    posix_permissions      = "NONE"
+    preserve_devices       = "NONE"
+    bytes_per_second       = -1 # unlimited
+    object_tags            = "NONE"
+
+    log_level = "BASIC"
+  }
+
+  schedule {
+    # apparently you can't have `*` in both day-of-month and day-of-week - one needs to be a ? instead
+    # minute | hour | day of month | month | day of week | year
+    schedule_expression = "cron(0 0 ? * * *)"
+  }
+
+  task_mode = "ENHANCED"
+
+  cloudwatch_log_group_arn = "arn:aws:logs:us-west-2:130659266700:log-group:/aws/datasync:*"
+}
+
+resource "aws_datasync_task" "internal_s3_to_azure" {
+  destination_location_arn = awscc_datasync_location_azure_blob.azure_blobstore_internal_public_data.location_arn
+  source_location_arn      = aws_datasync_location_s3.internal_source.arn
+  includes {
+    filter_type = "SIMPLE_PATTERN"
+    value       = local.opendata_paths
+  }
+
+  provider = aws.uswest2
+
+  name = "opendata-s3-to-azure-sync"
+
+  options {
+    verify_mode            = "ONLY_FILES_TRANSFERRED"
+    preserve_deleted_files = "REMOVE"
+    atime                  = "BEST_EFFORT"
+    mtime                  = "PRESERVE"
+    uid                    = "NONE"
+    gid                    = "NONE"
+    posix_permissions      = "NONE"
+    preserve_devices       = "NONE"
+    bytes_per_second       = -1 # unlimited
+    object_tags            = "NONE"
+
+    log_level = "BASIC"
+  }
+
+  schedule {
+    # apparently you can't have `*` in both day-of-month and day-of-week - one needs to be a ? instead
+    # minute | hour | day of month | month | day of week | year
+    schedule_expression = "cron(0 0 ? * * *)"
+  }
+
+  task_mode = "ENHANCED"
+
+  cloudwatch_log_group_arn = "arn:aws:logs:us-west-2:130659266700:log-group:/aws/datasync:*"
+}
+
+resource "awscc_datasync_location_azure_blob" "azure_blobstore_opendata" {
+
+  provider = awscc.uswest2
+
+  azure_access_tier        = "HOT"
+  azure_blob_container_url = var.azure_blobstore_opendata_container_url
+  azure_blob_sas_configuration = {
+    # When updating the token, delete the Task(s) that use(s) this Location as well as the Location - the property cannot be edited and terraform doesn't try to delete first
+    azure_blob_sas_token = var.azure_blobstore_opendata_sas_token
+  }
+  azure_blob_type = "BLOCK"
+}
+
+resource "awscc_datasync_location_azure_blob" "azure_blobstore_internal_public_data" {
+
+  provider = awscc.uswest2
+
+  azure_access_tier        = "HOT"
+  azure_blob_container_url = var.azure_blobstore_internal_public_data_container_url
+  azure_blob_sas_configuration = {
+    # When updating the token, delete the Task(s) that use(s) this Location as well as the Location - the property cannot be edited and terraform doesn't try to delete first
+    azure_blob_sas_token = var.azure_blobstore_internal_public_data_sas_token
+  }
+  azure_blob_type = "BLOCK"
+}

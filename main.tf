@@ -890,9 +890,16 @@ module "public_data_sync_opendata" {
   internal_public_data_mountpath = module.public_data_efs_storage.internal_public_data_mountpath
   opendata_mountpath             = module.public_data_efs_storage.opendata_mountpath
   opendata_paths_list            = var.opendata_paths_list
+
+  azure_blobstore_opendata_container_url             = var.azure_blobstore_opendata_container_url
+  azure_blobstore_internal_public_data_container_url = var.azure_blobstore_internal_public_data_container_url
+  azure_blobstore_opendata_sas_token                 = var.azure_blobstore_opendata_sas_token
+  azure_blobstore_internal_public_data_sas_token     = var.azure_blobstore_internal_public_data_sas_token
+
   providers = {
-    aws         = aws
-    aws.uswest2 = aws.uswest2
+    aws           = aws
+    aws.uswest2   = aws.uswest2
+    awscc.uswest2 = awscc.uswest2
   }
 }
 
