@@ -68,9 +68,9 @@ resource "aws_amplify_app" "this" {
     KEYCLOAK_ISSUER        = var.keycloak_issuer
     SANITY_DATASET         = var.sanity_dataset
     STRIPE_PUBLISHABLE_KEY = var.stripe_publishable_key
-    KEYCLOAK_CLIENT_ID     = "<REPLACE_ME>"
-    KEYCLOAK_CLIENT_SECRET = "<REPLACE_ME>"
-    NEXTAUTH_SECRET        = "<REPLACE_ME>"
+    KEYCLOAK_CLIENT_ID     = var.keycloak_client_id
+    KEYCLOAK_CLIENT_SECRET = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["client_secret_preview"]
+    NEXTAUTH_SECRET        = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["nextauth_secret"]
   }
 
   enable_branch_auto_build    = false
@@ -109,34 +109,30 @@ resource "aws_iam_role" "amplify_domain" {
         Service = "amplify.amazonaws.com"
       }
       Action = "sts:AssumeRole"
-      Condition = {
-        StringEquals = {
-          "aws:SourceAccount" = data.aws_caller_identity.current.account_id
-        }
-      }
     }]
   })
 }
 
 resource "aws_iam_role_policy" "amplify_domain" {
-  name = "AmplifyDomainPolicy"
+  name = "AWSAmplifyDomainPolicy-${var.route53_zone_id}"
   role = aws_iam_role.amplify_domain.id
 
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow"
-        Action = [
-          "route53:ChangeResourceRecordSets",
-          "route53:ListResourceRecordSets"
-        ]
-        Resource = "arn:aws:route53:::hostedzone/${var.route53_zone_id}"
+        "Effect" : "Allow",
+        "Action" : [
+          "route53:ListHostedZones"
+        ],
+        "Resource" : "*"
       },
       {
-        Effect   = "Allow"
-        Action   = "route53:ListHostedZones"
-        Resource = "*"
+        "Effect" : "Allow",
+        "Action" : [
+          "route53:ChangeResourceRecordSets"
+        ],
+        "Resource" : "arn:aws:route53:::hostedzone/${var.route53_zone_id}"
       }
     ]
   })
