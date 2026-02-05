@@ -63,6 +63,7 @@ resource "aws_amplify_app" "this" {
   access_token = var.github_access_token
 
   environment_variables = {
+    _LIVE_PACKAGE_UPDATES  = "[{\"name\":\"Node.js version\",\"pkg\":\"node\",\"type\":\"nvm\",\"version\":\"24\"}]"
     API_ORIGIN             = var.api_origin
     DEPLOYMENT_ENV         = var.deployment_env
     KEYCLOAK_ISSUER        = var.keycloak_issuer
@@ -77,10 +78,14 @@ resource "aws_amplify_app" "this" {
   enable_auto_branch_creation = true
   enable_branch_auto_deletion = true
 
-  auto_branch_creation_patterns = ["*"]
+  auto_branch_creation_patterns = ["*", "*/**"]
 
   auto_branch_creation_config {
     enable_auto_build = false
+  }
+
+  job_config {
+    build_compute_type = "LARGE_16GB"
   }
 }
 
