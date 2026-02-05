@@ -83,10 +83,6 @@ resource "aws_amplify_app" "this" {
   auto_branch_creation_config {
     enable_auto_build = false
   }
-
-  job_config {
-    build_compute_type = "LARGE_16GB"
-  }
 }
 
 resource "aws_amplify_branch" "default" {
