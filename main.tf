@@ -873,7 +873,7 @@ module "public_data_efs_storage" {
 module "public_data_sync_opendata" {
   source = "./public_data_sync_opendata"
 
-  count = var.is_staging ? 1 : 0
+  count = (var.is_staging || var.is_production) ? 1 : 0
 
   access_point_subnet_ids = module.launch_system_network.executor_network_ids
   account_id              = local.account_id
