@@ -273,7 +273,6 @@ resource "aws_iam_policy" "orchestrator_ecs_run_task" {
         Effect = "Allow"
         Action = [
           "ecs:DescribeTasks",
-          "ecs:StopTask",
           "ecs:ListTasks",
         ]
         Resource = [
@@ -283,6 +282,7 @@ resource "aws_iam_policy" "orchestrator_ecs_run_task" {
       {
         Effect = "Allow"
         Action = [
+          "ecs:StopTask",
           "ecs:TagResource",
         ]
         Resource = [
