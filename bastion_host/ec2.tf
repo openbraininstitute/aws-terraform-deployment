@@ -48,6 +48,12 @@ resource "aws_instance" "bastion" {
     version = "$Latest"
   }
 
+  user_data_replace_on_change = false
+
+  lifecycle {
+    ignore_changes = [user_data]
+  }
+
   tags = {
     Name = "SSM-Bastion-Host"
   }

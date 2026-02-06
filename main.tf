@@ -735,8 +735,9 @@ module "obi_one_v2" {
   container_port = 8000
   host_port      = 8000
 
-  keycloak_url   = "${var.keycloak_sbo_realm_url}/"
-  entitycore_url = "https://${local.cell_a_primary_domain}/api/entitycore"
+  keycloak_url      = "${var.keycloak_sbo_realm_url}/"
+  entitycore_url    = "https://${local.cell_a_primary_domain}/api/entitycore"
+  launch_system_url = "https://${local.cell_a_primary_domain}/api/launch-system"
 
   cors_origins = local.core_web_app_origins
 
@@ -948,9 +949,9 @@ module "launch_system" {
   db_username     = "launch"
   obi_backup_plan = "obi_plan"
 
-  api_image_url              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.2.0"
-  orchestrator_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.2.0"
-  default_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/default-executor:2026.2.0"
+  api_image_url              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.2.2"
+  orchestrator_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.2.2"
+  default_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/default-executor:2026.2.2"
 
   api_task_size          = var.launch_system_api_task_size
   executor_task_size     = var.launch_system_executor_task_size
