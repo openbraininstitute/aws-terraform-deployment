@@ -145,6 +145,8 @@ module "bastion_host" {
   source                         = "./bastion_host"
   vpc_id                         = local.vpc_id
   route_table_private_subnets_id = local.route_table_private_subnets_id
+  instance_type                  = "t3.medium"
+  instance_volume_size           = 50
 }
 
 module "debug_aws_errors_sns_topic" {
@@ -872,7 +874,7 @@ module "public_data_efs_storage" {
 module "public_data_sync_opendata" {
   source = "./public_data_sync_opendata"
 
-  count = var.is_staging ? 1 : 0
+  count = (var.is_staging || var.is_production) ? 1 : 0
 
   access_point_subnet_ids = module.launch_system_network.executor_network_ids
   account_id              = local.account_id
@@ -889,9 +891,16 @@ module "public_data_sync_opendata" {
   internal_public_data_mountpath = module.public_data_efs_storage.internal_public_data_mountpath
   opendata_mountpath             = module.public_data_efs_storage.opendata_mountpath
   opendata_paths_list            = var.opendata_paths_list
+
+  azure_blobstore_opendata_container_url             = var.azure_blobstore_opendata_container_url
+  azure_blobstore_internal_public_data_container_url = var.azure_blobstore_internal_public_data_container_url
+  azure_blobstore_opendata_sas_token                 = var.azure_blobstore_opendata_sas_token
+  azure_blobstore_internal_public_data_sas_token     = var.azure_blobstore_internal_public_data_sas_token
+
   providers = {
-    aws         = aws
-    aws.uswest2 = aws.uswest2
+    aws           = aws
+    aws.uswest2   = aws.uswest2
+    awscc.uswest2 = awscc.uswest2
   }
 }
 
@@ -940,9 +949,9 @@ module "launch_system" {
   db_username     = "launch"
   obi_backup_plan = "obi_plan"
 
-  api_image_url              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.1.5"
-  orchestrator_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.1.5"
-  default_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/default-executor:2026.1.5"
+  api_image_url              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.2.0"
+  orchestrator_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.2.0"
+  default_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/default-executor:2026.2.0"
 
   api_task_size          = var.launch_system_api_task_size
   executor_task_size     = var.launch_system_executor_task_size
