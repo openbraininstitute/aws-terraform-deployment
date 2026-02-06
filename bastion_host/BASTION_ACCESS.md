@@ -100,18 +100,7 @@ aws ssm start-session --target "$INSTANCE_ID" --document-name "SSM-UserMapping-$
 
 ## File Transfer with SCP
 
-### One-time Setup: Add Your SSH Public Key
-
-First, connect to the bastion and add your SSH public key:
-
-```bash
-# Connect to bastion (use commands above to set AWS_PROFILE, INSTANCE_ID, BASTION_USERNAME)
-aws ssm start-session --target "$INSTANCE_ID" --document-name "SSM-UserMapping-$BASTION_USERNAME"
-
-# Once connected, add your public key:
-echo "ssh-rsa AAAAB3... your-email@example.com" >> ~/.ssh/authorized_keys
-exit
-```
+> **Note:** SSH public keys are automatically configured during bastion installation from the keys defined in [iam_roles.tf#L7](https://github.com/OpenBrainInstitute/aws-terraform-deployment/blob/staging/bastion_host/iam_roles.tf#L7). No manual key setup is required.
 
 ### Transfer Files
 
