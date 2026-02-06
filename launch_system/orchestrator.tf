@@ -272,7 +272,6 @@ resource "aws_iam_policy" "orchestrator_ecs_run_task" {
       {
         Effect = "Allow"
         Action = [
-          "ecs:DescribeTasks",
           "ecs:ListTasks",
         ]
         Resource = [
@@ -284,6 +283,7 @@ resource "aws_iam_policy" "orchestrator_ecs_run_task" {
         Action = [
           "ecs:StopTask",
           "ecs:TagResource",
+          "ecs:DescribeTasks",
         ]
         Resource = [
           "arn:aws:ecs:${var.aws_region}:${var.account_id}:task/${aws_ecs_cluster.executor.name}/*",
