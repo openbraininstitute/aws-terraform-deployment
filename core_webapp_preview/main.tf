@@ -155,6 +155,10 @@ resource "aws_amplify_domain_association" "this" {
 
   enable_auto_sub_domain = true
 
+  lifecycle {
+    ignore_changes = [sub_domain]
+  }
+
   depends_on = [aws_iam_role_policy.amplify_domain]
 }
 
