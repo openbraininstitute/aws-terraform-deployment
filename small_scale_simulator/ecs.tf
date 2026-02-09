@@ -267,6 +267,10 @@ resource "aws_ecs_task_definition" "api" {
     }
   }
 
+  volume {
+    name = "tmp"
+  }
+
   container_definitions = jsonencode([
     {
       name  = "api"
@@ -274,6 +278,8 @@ resource "aws_ecs_task_definition" "api" {
 
       cpu    = var.api_task_size.cpu
       memory = var.api_task_size.memory
+
+      readonlyRootFilesystem = true
 
       stopTimeout = 120
 
@@ -289,6 +295,11 @@ resource "aws_ecs_task_definition" "api" {
         {
           sourceVolume  = "storage"
           containerPath = "/app/storage"
+          readOnly      = false
+        },
+        {
+          sourceVolume  = "tmp"
+          containerPath = "/tmp"
           readOnly      = false
         }
       ]
