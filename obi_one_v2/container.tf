@@ -253,6 +253,10 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
           name  = "LAUNCH_SYSTEM_URL"
           value = var.launch_system_url
         },
+        {
+          name  = "ACCOUNTING_BASE_URL"
+          value = var.accounting_base_url
+        }
       ]
 
       healthcheck = {
