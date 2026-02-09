@@ -86,6 +86,16 @@ resource "aws_ecs_task_definition" "auth_manager_ecs_definition" {
 
       essential = true
 
+      readonlyRootFilesystem = true
+
+      mountPoints = [
+        {
+          sourceVolume  = "tmp"
+          containerPath = "/tmp"
+          readOnly      = false
+        }
+      ]
+
       portMappings = [
         {
           hostPort      = 8000
@@ -185,6 +195,10 @@ resource "aws_ecs_task_definition" "auth_manager_ecs_definition" {
 
   cpu    = local.cpu
   memory = local.memory
+
+  volume {
+    name = "tmp"
+  }
 
   requires_compatibilities = ["FARGATE"]
 
