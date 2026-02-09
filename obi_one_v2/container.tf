@@ -190,12 +190,13 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
 
   container_definitions = jsonencode([
     {
-      memory      = var.ecs_task_size.memory
-      cpu         = var.ecs_task_size.cpu
-      networkMode = "awsvpc"
-      essential   = true
-      image       = var.docker_image_url
-      name        = "obi_one_v2"
+      memory                 = var.ecs_task_size.memory
+      cpu                    = var.ecs_task_size.cpu
+      networkMode            = "awsvpc"
+      essential              = true
+      readonlyRootFilesystem = true
+      image                  = var.docker_image_url
+      name                   = "obi_one_v2"
 
       portMappings = [
         {
