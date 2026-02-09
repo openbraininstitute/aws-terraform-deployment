@@ -6,7 +6,7 @@ resource "aws_cloudwatch_log_group" "virtual_lab_manager" {
   # TODO check if the logs can be encrypted
   name              = var.log_group_name
   skip_destroy      = false
-  retention_in_days = 5
+  retention_in_days = 14
 
   kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
 

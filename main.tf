@@ -43,9 +43,12 @@ locals {
   teams_webhook_secrets_arn            = data.terraform_remote_state.common.outputs.teams_webhook_secrets_arn
   auth_manager_secrets_arn             = data.terraform_remote_state.common.outputs.auth_manager_secrets_arn
 
-  cloudfront_certificate_arn = data.terraform_remote_state.common.outputs.cloudfront_certificate_arn
-
   github_organisation = "openbraininstitute"
+}
+
+data "aws_secretsmanager_secret_version" "core_webapp_secrets" {
+  count     = var.is_staging ? 1 : 0
+  secret_id = local.core_webapp_secrets_arn
 }
 
 # manage default SG via terraform, ensures the default security group is locked down (no egress, no ingress)
@@ -112,6 +115,9 @@ module "cs" {
   private_alb_cidr_b      = data.terraform_remote_state.common.outputs.private_alb_cidr_b
   notebook_service_cidr_a = module.notebook_service.ecs_cidr_block_a
   notebook_service_cidr_b = module.notebook_service.ecs_cidr_block_b
+
+  public_data_efs_ip_address1_as_cidr = module.public_data_efs_storage.mount_target_ip_address1_as_cidr
+  public_data_efs_ip_address2_as_cidr = module.public_data_efs_storage.mount_target_ip_address2_as_cidr
 }
 
 module "backups" {
@@ -133,6 +139,14 @@ module "aws_backups_sns_to_teams" {
 
 module "aws_errors_sns_topic" {
   source = "./aws_errors_sns_topic"
+}
+
+module "bastion_host" {
+  source                         = "./bastion_host"
+  vpc_id                         = local.vpc_id
+  route_table_private_subnets_id = local.route_table_private_subnets_id
+  instance_type                  = "t3.medium"
+  instance_volume_size           = 50
 }
 
 module "debug_aws_errors_sns_topic" {
@@ -494,10 +508,7 @@ module "core_webapp_cell_a" {
 
   hostname = local.cell_a_primary_domain
 
-  # remove 'www.' from local.primary_domain and prepend 'cdn'. ie: cdn.openbraininstitute.org
-  cloudfront_aliases         = [join(".", ["cdn", trimprefix(local.cell_a_primary_domain, "www.")])]
-  domain_name                = local.cell_a_primary_domain
-  cloudfront_certificate_arn = local.cloudfront_certificate_arn
+  domain_name = local.cell_a_primary_domain
 
   api_origin             = "https://${local.cell_a_primary_domain}"
   auth_url               = "https://${local.cell_a_primary_domain}/api/auth"
@@ -566,6 +577,27 @@ module "core_webapp_dev" {
   env_SMALL_SCALE_SIMULATOR_URL = "https://${local.cell_a_primary_domain}/api/small-scale-simulator"
   env_THUMBNAIL_API_URL         = "https://${local.cell_a_primary_domain}/api/thumbnail-generation"
   env_VIRTUAL_LAB_API_URL       = "https://${local.cell_a_primary_domain}/api/virtual-lab-manager"
+}
+
+module "core_webapp_preview" {
+  source = "./core_webapp_preview"
+
+  count = var.is_staging ? 1 : 0
+
+  app_name                 = "core-webapp-preview"
+  github_access_token      = jsondecode(data.aws_secretsmanager_secret_version.core_webapp_secrets[0].secret_string)["GITHUB_REPO_PREVIEW_DEPLOYMENT_PAT"]
+  repository_url           = "https://github.com/openbraininstitute/core-web-app"
+  default_branch           = "main"
+  domain_name              = data.terraform_remote_state.common.outputs.preview_domain
+  route53_zone_id          = data.terraform_remote_state.common.outputs.preview_domain_zone_id
+  secrets_arn              = local.core_webapp_secrets_arn
+  github_oidc_provider_arn = module.github_oidc_provider.oidc_provider_arn
+
+  api_origin             = "https://${local.cell_a_primary_domain}"
+  deployment_env         = "preview"
+  keycloak_issuer        = var.keycloak_sbo_realm_url
+  sanity_dataset         = "staging"
+  stripe_publishable_key = var.core_web_app_stripe_publishable_key
 }
 
 module "github_core_webapp_dev_ecs_redeploy_role" {
@@ -703,8 +735,10 @@ module "obi_one_v2" {
   container_port = 8000
   host_port      = 8000
 
-  keycloak_url   = "${var.keycloak_sbo_realm_url}/"
-  entitycore_url = "https://${local.cell_a_primary_domain}/api/entitycore"
+  keycloak_url        = "${var.keycloak_sbo_realm_url}/"
+  entitycore_url      = "https://${local.cell_a_primary_domain}/api/entitycore"
+  launch_system_url   = "https://${local.cell_a_primary_domain}/api/launch-system"
+  accounting_base_url = "https://${local.cell_a_primary_domain}${var.accounting_svc_base_path}"
 
   cors_origins = local.core_web_app_origins
 
@@ -826,29 +860,61 @@ module "launch_server" {
   aws_region = local.aws_region
 }
 
-module "public_data_efs" {
-  source = "./public_data_efs"
+module "public_data_efs_storage" {
+  source = "./public_data_efs_storage"
 
-  count = var.is_staging ? 1 : 0
+  vpc_id         = local.vpc_id
+  vpc_cidr_block = local.vpc_cidr_block
 
-  vpc_id                  = local.vpc_id
-  vpc_cidr_block          = local.vpc_cidr_block
-  access_point_subnet_ids = module.launch_system[0].executor_network_ids
+  access_point_subnet_ids = module.launch_system_network.executor_network_ids
+
+  internal_public_data_mountpath = "/data/aws_s3_internal/public"
+  opendata_mountpath             = "/data/aws_s3_open"
+}
+
+module "public_data_sync_opendata" {
+  source = "./public_data_sync_opendata"
+
+  count = (var.is_staging || var.is_production) ? 1 : 0
+
+  access_point_subnet_ids = module.launch_system_network.executor_network_ids
   account_id              = local.account_id
   aws_region              = local.aws_region
 
+  public_launch_data_efs_arn = module.public_data_efs_storage.public_launch_data_efs_arn
   entitycore_internal_bucket = var.entitycore_svc_aws_s3_internal_bucket
   entitycore_internal_region = var.entitycore_svc_aws_s3_internal_region
   opendata_bucket            = var.entitycore_svc_aws_s3_open_bucket
   opendata_region            = var.entitycore_svc_aws_s3_open_region
 
-  internal_public_data_mountpath = "/data/aws_s3_internal/public"
-  opendata_mountpath             = "/data/aws_s3_open"
+  public_launch_efs_securitygroup_arn = module.public_data_efs_storage.public_launch_efs_securitygroup_arn
+
+  internal_public_data_mountpath = module.public_data_efs_storage.internal_public_data_mountpath
+  opendata_mountpath             = module.public_data_efs_storage.opendata_mountpath
   opendata_paths_list            = var.opendata_paths_list
+
+  azure_blobstore_opendata_container_url             = var.azure_blobstore_opendata_container_url
+  azure_blobstore_internal_public_data_container_url = var.azure_blobstore_internal_public_data_container_url
+  azure_blobstore_opendata_sas_token                 = var.azure_blobstore_opendata_sas_token
+  azure_blobstore_internal_public_data_sas_token     = var.azure_blobstore_internal_public_data_sas_token
+
   providers = {
-    aws         = aws
-    aws.uswest2 = aws.uswest2
+    aws           = aws
+    aws.uswest2   = aws.uswest2
+    awscc.uswest2 = awscc.uswest2
   }
+}
+
+# Goal: always create certain network infrastructure as its re-used
+# by other components such as the EFS for public data.
+# TODO: the subnets do not have their own network ACL but are using
+# the default which is fully open.
+module "launch_system_network" {
+  source = "./launch_system_network"
+
+  aws_region               = local.aws_region
+  vpc_id                   = local.vpc_id
+  internet_access_route_id = local.route_table_private_subnets_id
 }
 
 module "launch_system" {
@@ -856,11 +922,16 @@ module "launch_system" {
 
   count = var.is_staging ? 1 : 0
 
-  aws_region                    = local.aws_region
-  vpc_id                        = local.vpc_id
-  account_id                    = local.account_id
-  private_alb_listener_arn      = local.private_alb_https_listener_arn
-  internet_access_route_id      = local.route_table_private_subnets_id
+  aws_region               = local.aws_region
+  vpc_id                   = local.vpc_id
+  account_id               = local.account_id
+  private_alb_listener_arn = local.private_alb_https_listener_arn
+
+  trusted_a_subnet_id   = module.launch_system_network.trusted_a_subnet_id
+  trusted_b_subnet_id   = module.launch_system_network.trusted_b_subnet_id
+  untrusted_a_subnet_id = module.launch_system_network.untrusted_a_subnet_id
+  untrusted_b_subnet_id = module.launch_system_network.untrusted_b_subnet_id
+
   vpc_cidr_block                = local.vpc_cidr_block
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
   # allowed_source_ip_cidr_blocks = [local.vpc_cidr_block]
@@ -879,9 +950,9 @@ module "launch_system" {
   db_username     = "launch"
   obi_backup_plan = "obi_plan"
 
-  api_image_url              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.1.5"
-  orchestrator_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.1.5"
-  default_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/default-executor:2026.1.5"
+  api_image_url              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.2.2"
+  orchestrator_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.2.2"
+  default_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/default-executor:2026.2.2"
 
   api_task_size          = var.launch_system_api_task_size
   executor_task_size     = var.launch_system_executor_task_size
@@ -907,9 +978,9 @@ module "launch_system" {
   })
   keycloak_client_id = "obi-entitysdk-auth"
 
-  public_launch_data_efs_id            = module.public_data_efs[0].public_launch_data_efs_id
-  internal_public_data_access_point_id = module.public_data_efs[0].internal_public_data_access_point_id
-  open_public_data_access_point_id     = module.public_data_efs[0].open_public_data_access_point_id
+  public_launch_data_efs_id            = module.public_data_efs_storage.public_launch_data_efs_id
+  internal_public_data_access_point_id = module.public_data_efs_storage.internal_public_data_access_point_id
+  open_public_data_access_point_id     = module.public_data_efs_storage.open_public_data_access_point_id
 }
 
 

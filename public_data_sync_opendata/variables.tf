@@ -1,11 +1,3 @@
-variable "vpc_id" {
-  type = string
-}
-
-variable "vpc_cidr_block" {
-  type = string
-}
-
 variable "access_point_subnet_ids" {
   type = list(string)
 }
@@ -52,3 +44,36 @@ variable "opendata_paths_list" {
   type        = string
   description = "File in which the paths to sync on opendata are listed, one per line"
 }
+
+variable "public_launch_data_efs_arn" {
+  type        = string
+  description = "ARN of the EFS for the public launch data"
+}
+
+variable "public_launch_efs_securitygroup_arn" {
+  type        = string
+  description = "ARN of the security group of the EFS for the public launch data"
+}
+
+variable "azure_blobstore_opendata_container_url" {
+  type        = string
+  description = "The URL to the container that will hold opendata"
+}
+
+variable "azure_blobstore_internal_public_data_container_url" {
+  type        = string
+  description = "The URL to the container that will hold internal public data"
+}
+
+variable "azure_blobstore_opendata_sas_token" {
+  type        = string
+  sensitive   = true
+  description = "SAS token with write access to the opendata blobstore container"
+}
+
+variable "azure_blobstore_internal_public_data_sas_token" {
+  type        = string
+  sensitive   = true
+  description = "SAS token with write access to the internal public data blobstore container"
+}
+

@@ -91,10 +91,6 @@ variable "az_instance_types" {
   type        = string
 }
 
-variable "internet_access_route_id" {
-  type = string
-}
-
 variable "secrets_arn" {
   # Need the following secrets:
   # DB_PASS
@@ -209,5 +205,25 @@ variable "internal_public_data_access_point_id" {
 
 variable "open_public_data_access_point_id" {
   description = "The ID for the access point with open public data"
+  type        = string
+}
+
+variable "trusted_a_subnet_id" {
+  description = "The ID of the subnet A containing the trusted services"
+  type        = string
+}
+
+variable "trusted_b_subnet_id" {
+  description = "The ID of the subnet B containing the trusted services"
+  type        = string
+}
+
+variable "untrusted_a_subnet_id" {
+  description = "The ID of the subnet A containing the untrusted services"
+  type        = string
+}
+
+variable "untrusted_b_subnet_id" {
+  description = "The ID of the subnet B containing the untrusted services"
   type        = string
 }

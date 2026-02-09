@@ -43,14 +43,29 @@ def parse_eventbridge_json_to_readable_message(msg: Dict[str,Any]) -> str:
     """ Parse the raw SNS message from EventBridge and convert it to a readable format."""
     if isinstance(msg, str):
         msg = json.loads(msg)
-    final_message: str = ""
-    if "time" in msg:
-        final_message += f"GMT time: {msg['time']}\n\n"
+    # In case it's a cost anomaly message, don't bother with the original message but only log some fields
+    if 'source' in msg and msg['source'] == 'aws.ce':
+        logger.info("aws.ce message, cost anomaly => replacing the message")
+        dimensionValue = msg['detail']['dimensionValue']
+        totalActualSpend = msg['detail']['impact']['totalActualSpend']
+        anomalyDetailsLink = msg['detail']['anomalyDetailsLink']
         dt_utc = datetime.fromisoformat(msg['time'])
         dt_swiss = dt_utc.astimezone(ZoneInfo("Europe/Zurich"))
-        final_message += f"Swiss time: {dt_swiss}\n\n"
-    final_message += f"Message:\n\n```\n{json.dumps(msg, indent=2)}\n```\n"
-    return final_message    
+        final_message = f"Swiss time: {dt_swiss}\n\n" + \
+            f"Total actual spend: {totalActualSpend}\n\n" + \
+            f"Anomaly details link: {anomalyDetailsLink}\n\n" + \
+            f"Dimension value: {dimensionValue}\n\n"
+        return final_message
+    else:
+        # all other types of messages
+        final_message: str = ""
+        if "time" in msg:
+            final_message += f"GMT time: {msg['time']}\n\n"
+            dt_utc = datetime.fromisoformat(msg['time'])
+            dt_swiss = dt_utc.astimezone(ZoneInfo("Europe/Zurich"))
+            final_message += f"Swiss time: {dt_swiss}\n\n"
+        final_message += f"Message:\n\n```\n{json.dumps(msg, indent=2)}\n```\n"
+        return final_message    
 
 
 def parse_log_event_json_to_readable_message(msg: Dict[str,Any]) -> str:

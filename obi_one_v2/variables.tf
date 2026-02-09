@@ -113,6 +113,16 @@ variable "entitycore_url" {
   type        = string
 }
 
+variable "launch_system_url" {
+  description = "launch system URL"
+  type        = string
+}
+
+variable "accounting_base_url" {
+  description = "accounting base URL"
+  type        = string
+}
+
 variable "route_table_private_subnets_id" {
   type = string
 }

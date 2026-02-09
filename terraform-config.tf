@@ -35,3 +35,8 @@ provider "aws" {
     }
   }
 }
+
+provider "awscc" {
+  region = "us-west-2"
+  alias  = "uswest2"
+}
