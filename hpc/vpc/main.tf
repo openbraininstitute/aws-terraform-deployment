@@ -8,8 +8,12 @@ resource "aws_vpc" "pcluster_vpc" {
   }
 }
 
+# manage default pcluster_vpc SG via terraform, ensures the default security group is locked down (no egress, no ingress)
 resource "aws_default_security_group" "hpc_default" {
   vpc_id = aws_vpc.pcluster_vpc.id
+
+  ingress = []
+  egress  = []
 }
 
 resource "aws_vpc_peering_connection" "test_to_pcluster" {

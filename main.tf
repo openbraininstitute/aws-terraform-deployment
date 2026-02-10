@@ -56,6 +56,9 @@ data "aws_secretsmanager_secret_version" "core_webapp_secrets" {
 # manage default SG via terraform, ensures the default security group is locked down (no egress, no ingress)
 resource "aws_default_security_group" "default" {
   vpc_id = local.vpc_id
+
+  ingress = []
+  egress  = []
 }
 
 module "coreservices_key" {
