@@ -234,6 +234,10 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
           value = jsonencode(var.cors_origins)
         },
         {
+          name  = "CORS_ORIGIN_REGEX"
+          value = var.cors_origin_regex
+        },
+        {
           name  = "ROOT_PATH"
           value = var.root_path
         },

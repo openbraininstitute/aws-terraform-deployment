@@ -321,6 +321,10 @@ resource "aws_ecs_task_definition" "api" {
           value = jsonencode(var.cors_origins)
         },
         {
+          name  = "CORS_ORIGIN_REGEX"
+          value = var.cors_origin_regex
+        },
+        {
           name  = "KC_SERVER_URI"
           value = var.keycloak_server_url
         },
