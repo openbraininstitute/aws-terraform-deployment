@@ -24,6 +24,12 @@ variable "cors_origins" {
   type        = list(string)
 }
 
+variable "cors_origin_regex" {
+  description = "CORS origin regex"
+  type        = string
+  default     = null
+}
+
 variable "keycloak_url" {
   description = "Keycloak URL"
   type        = string
