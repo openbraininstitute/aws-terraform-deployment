@@ -209,6 +209,14 @@ resource "aws_ecs_task_definition" "redis" {
     cpu_architecture        = "ARM64"
   }
 
+  volume {
+    name = "redis-data"
+  }
+
+  volume {
+    name = "tmp"
+  }
+
   container_definitions = jsonencode([
     {
       name  = "redis"
@@ -217,10 +225,25 @@ resource "aws_ecs_task_definition" "redis" {
       cpu    = local.redis_task_size.cpu
       memory = local.redis_task_size.memory
 
+      readonlyRootFilesystem = true
+
       portMappings = [
         {
           containerPort = 6379
           protocol      = "tcp"
+        }
+      ]
+
+      mountPoints = [
+        {
+          sourceVolume  = "redis-data"
+          containerPath = "/data"
+          readOnly      = false
+        },
+        {
+          sourceVolume  = "tmp"
+          containerPath = "/tmp"
+          readOnly      = false
         }
       ]
       logConfiguration = {
