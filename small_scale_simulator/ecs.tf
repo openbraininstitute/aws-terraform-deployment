@@ -413,6 +413,10 @@ resource "aws_ecs_task_definition" "worker" {
     }
   }
 
+  volume {
+    name = "tmp"
+  }
+
   container_definitions = jsonencode([
     {
       name  = "worker"
@@ -421,12 +425,19 @@ resource "aws_ecs_task_definition" "worker" {
       cpu    = each.value.task_size.cpu
       memory = each.value.task_size.memory
 
+      readonlyRootFilesystem = true
+
       stopTimeout = 120
 
       mountPoints = [
         {
           sourceVolume  = "storage"
           containerPath = "/app/storage"
+          readOnly      = false
+        },
+        {
+          sourceVolume  = "tmp"
+          containerPath = "/tmp"
           readOnly      = false
         }
       ]
@@ -644,6 +655,10 @@ resource "aws_ecs_task_definition" "batch_worker" {
     }
   }
 
+  volume {
+    name = "tmp"
+  }
+
   container_definitions = jsonencode([
     {
       name  = "worker"
@@ -652,12 +667,19 @@ resource "aws_ecs_task_definition" "batch_worker" {
       cpu    = each.value.task_size.cpu
       memory = each.value.task_size.memory
 
+      readonlyRootFilesystem = true
+
       stopTimeout = 120
 
       mountPoints = [
         {
           sourceVolume  = "storage"
           containerPath = "/app/storage"
+          readOnly      = false
+        },
+        {
+          sourceVolume  = "tmp"
+          containerPath = "/tmp"
           readOnly      = false
         }
       ]
