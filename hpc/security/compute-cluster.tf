@@ -1,8 +1,3 @@
-# Default security group under Terraform management (e.g., for tagging)
-resource "aws_default_security_group" "default" {
-  vpc_id = var.pcluster_vpc_id
-}
-
 resource "aws_security_group" "jumphost" {
   name        = "jumphost"
   count       = var.create_jumphost ? 1 : 0
