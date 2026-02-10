@@ -100,10 +100,17 @@ variable "virtual_lab_manager_use_credentials" {
   sensitive   = false
 }
 
-variable "virtual_lab_manager_cors_origins" {
+variable "cors_origins" {
   type        = list(string)
   description = "Origins that are allowed to make requests to the virtual lab api through a browser"
   sensitive   = false
+}
+
+variable "cors_origin_regex" {
+  type        = string
+  description = "Regex string covering additional origins to make requests to the virtual lab api through a browser"
+  sensitive   = false
+  default     = null
 }
 
 variable "virtual_lab_manager_admin_base_path" {

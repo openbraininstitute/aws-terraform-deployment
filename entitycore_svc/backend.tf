@@ -113,6 +113,10 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
           value = jsonencode(var.cors_origins)
         },
         {
+          name  = "CORS_ORIGIN_REGEX"
+          value = var.cors_origin_regex
+        },
+        {
           name  = "KEYCLOAK_URL"
           value = var.keycloak_url
         },
