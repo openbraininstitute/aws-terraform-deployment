@@ -130,6 +130,10 @@ resource "aws_ecs_task_definition" "orchestrator" {
           name  = "VENDOR"
           value = "aws"
         },
+        {
+          name  = "CLUSTER_TASK_MAXIMUM_RUNTIME"
+          value = var.cluster_task_maximum_runtime
+        },
       ]
 
       secrets = [

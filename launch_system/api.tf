@@ -140,14 +140,6 @@ resource "aws_ecs_task_definition" "api" {
           value = var.az_instance_types
         },
         {
-          name  = "TOKEN_LIFETIME_EXTENSION_INTERVAL"
-          value = var.token_lifetime_extension_interval
-        },
-        {
-          name  = "TOKEN_LIFETIME_SKIP"
-          value = "True"
-        },
-        {
           name  = "ENTITYCORE_URL"
           value = var.entitycore_url
         },
@@ -158,10 +150,6 @@ resource "aws_ecs_task_definition" "api" {
         {
           name  = "LAUNCH_SERVER_URL" # deprecated, use LAUNCH_SYSTEM_API_URL
           value = var.launch_system_api_url
-        },
-        {
-          name  = "ACCOUNTING_URL"
-          value = var.accounting_url
         },
         {
           name  = "AUTH_MANAGER_URL"
@@ -186,11 +174,6 @@ resource "aws_ecs_task_definition" "api" {
         {
           name  = "SIMULATION_LAUNCH_COMMAND"
           value = var.simulation_launch_command
-        },
-        # currently token refresh is disabled;
-        {
-          name  = "KEYCLOAK_CLIENT_SECRET"
-          value = ""
         },
       ]
 
