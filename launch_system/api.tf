@@ -182,35 +182,6 @@ resource "aws_ecs_task_definition" "api" {
           name      = "DB_PASS"
           valueFrom = "${var.secrets_arn}:DB_PASS::"
         },
-        {
-          name      = "AZURE_CLIENT_ID"
-          valueFrom = "${var.secrets_arn}:AZURE_CLIENT_ID::"
-        },
-        {
-          name      = "AZURE_CLIENT_SECRET"
-          valueFrom = "${var.secrets_arn}:AZURE_CLIENT_SECRET::"
-        },
-        {
-          name      = "AZURE_TENANT_ID"
-          valueFrom = "${var.secrets_arn}:AZURE_TENANT_ID::"
-        },
-        {
-          name      = "AZ_SUBSCRIPTION_ID"
-          valueFrom = "${var.secrets_arn}:AZ_SUBSCRIPTION_ID::"
-        },
-        {
-          name      = "AZ_BATCH_ACCOUNT_NAME"
-          valueFrom = "${var.secrets_arn}:AZ_BATCH_ACCOUNT_NAME::"
-        },
-        {
-          name      = "AZ_BATCH_POOL_NAME"
-          valueFrom = "${var.secrets_arn}:AZ_BATCH_POOL_NAME::"
-        },
-        {
-          name      = "AZ_UPLOAD_BLOB_SAS_URL"
-          valueFrom = "${var.secrets_arn}:AZ_UPLOAD_BLOB_SAS_URL::"
-        },
-
       ]
 
       logConfiguration = {
