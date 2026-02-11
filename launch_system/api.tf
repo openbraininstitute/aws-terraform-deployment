@@ -110,6 +110,10 @@ resource "aws_ecs_task_definition" "api" {
 
       environment = [
         {
+          name  = "PYTHONDONTWRITEBYTECODE"
+          value = "1"
+        },
+        {
           name  = "APP_DEBUG"
           value = "false"
         },
