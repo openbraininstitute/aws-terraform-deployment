@@ -21,7 +21,7 @@ notebook_service_aws_k8s_thread_enabled   = true
 notebook_service_azure_k8s_thread_enabled = true
 notebook_service_aws_accounting_enabled   = true
 notebook_service_azure_accounting_enabled = true
-notebook_service_azure_storage_account    = "obijupyterstaging"
+notebook_service_azure_storage_account    = "obijupstoragestag"
 
 keycloak_sbo_realm_url = "https://staging.cell-a.openbraininstitute.org/auth/realms/SBO"
 keycloak_url_with_auth = "https://staging.cell-a.openbraininstitute.org/auth/"
