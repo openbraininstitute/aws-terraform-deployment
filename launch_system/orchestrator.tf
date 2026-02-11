@@ -107,6 +107,10 @@ resource "aws_ecs_task_definition" "orchestrator" {
           value = jsonencode([var.untrusted_a_subnet_id, var.untrusted_b_subnet_id])
         },
         {
+          name  = "WORKER_AWS_ECS_TASK_SECURITY_GROUPS"
+          value = jsonencode([aws_security_group.executor.id])
+        },
+        {
           name  = "REDIS_HOST"
           value = aws_elasticache_cluster.redis.cache_nodes[0].address
         },
