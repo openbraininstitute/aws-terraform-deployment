@@ -973,11 +973,10 @@ module "launch_system" {
   root_path    = "/api/launch-system"
   keycloak_url = "${var.keycloak_sbo_realm_url}/"
 
-  token_lifetime_extension_interval = 0
+  cluster_task_maximum_runtime = 86400
 
   launch_system_api_url = "https://${local.cell_a_primary_domain}/api/launch-system"
   entitycore_url        = "https://${local.cell_a_primary_domain}/api/entitycore"
-  accounting_url        = "https://${local.cell_a_primary_domain}/api/accounting"
   auth_manager_url      = "https://${local.cell_a_primary_domain}/api/auth-manager"
 
   az_region = "eastus"
