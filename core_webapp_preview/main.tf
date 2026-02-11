@@ -72,6 +72,7 @@ resource "aws_amplify_app" "this" {
     KEYCLOAK_CLIENT_ID     = var.keycloak_client_id
     KEYCLOAK_CLIENT_SECRET = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["client_secret_preview"]
     NEXTAUTH_SECRET        = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["nextauth_secret"]
+    AUTH_PROXY_URL         = "https://develop.${var.domain_name}"
   }
 
   enable_branch_auto_build    = false
@@ -150,7 +151,7 @@ resource "aws_amplify_domain_association" "this" {
 
   sub_domain {
     branch_name = "develop"
-    prefix      = "dev"
+    prefix      = "develop"
   }
 
   enable_auto_sub_domain = true

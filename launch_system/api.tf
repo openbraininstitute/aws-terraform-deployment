@@ -132,20 +132,8 @@ resource "aws_ecs_task_definition" "api" {
           value = var.db_username
         },
         {
-          name  = "AZ_REGION"
-          value = var.az_region
-        },
-        {
           name  = "AZ_INSTANCE_TYPES"
           value = var.az_instance_types
-        },
-        {
-          name  = "TOKEN_LIFETIME_EXTENSION_INTERVAL"
-          value = var.token_lifetime_extension_interval
-        },
-        {
-          name  = "TOKEN_LIFETIME_SKIP"
-          value = "True"
         },
         {
           name  = "ENTITYCORE_URL"
@@ -154,14 +142,6 @@ resource "aws_ecs_task_definition" "api" {
         {
           name  = "LAUNCH_SYSTEM_API_URL"
           value = var.launch_system_api_url
-        },
-        {
-          name  = "LAUNCH_SERVER_URL" # deprecated, use LAUNCH_SYSTEM_API_URL
-          value = var.launch_system_api_url
-        },
-        {
-          name  = "ACCOUNTING_URL"
-          value = var.accounting_url
         },
         {
           name  = "AUTH_MANAGER_URL"
@@ -187,11 +167,6 @@ resource "aws_ecs_task_definition" "api" {
           name  = "SIMULATION_LAUNCH_COMMAND"
           value = var.simulation_launch_command
         },
-        # currently token refresh is disabled;
-        {
-          name  = "KEYCLOAK_CLIENT_SECRET"
-          value = ""
-        },
       ]
 
       secrets = [
@@ -199,35 +174,6 @@ resource "aws_ecs_task_definition" "api" {
           name      = "DB_PASS"
           valueFrom = "${var.secrets_arn}:DB_PASS::"
         },
-        {
-          name      = "AZURE_CLIENT_ID"
-          valueFrom = "${var.secrets_arn}:AZURE_CLIENT_ID::"
-        },
-        {
-          name      = "AZURE_CLIENT_SECRET"
-          valueFrom = "${var.secrets_arn}:AZURE_CLIENT_SECRET::"
-        },
-        {
-          name      = "AZURE_TENANT_ID"
-          valueFrom = "${var.secrets_arn}:AZURE_TENANT_ID::"
-        },
-        {
-          name      = "AZ_SUBSCRIPTION_ID"
-          valueFrom = "${var.secrets_arn}:AZ_SUBSCRIPTION_ID::"
-        },
-        {
-          name      = "AZ_BATCH_ACCOUNT_NAME"
-          valueFrom = "${var.secrets_arn}:AZ_BATCH_ACCOUNT_NAME::"
-        },
-        {
-          name      = "AZ_BATCH_POOL_NAME"
-          valueFrom = "${var.secrets_arn}:AZ_BATCH_POOL_NAME::"
-        },
-        {
-          name      = "AZ_UPLOAD_BLOB_SAS_URL"
-          valueFrom = "${var.secrets_arn}:AZ_UPLOAD_BLOB_SAS_URL::"
-        },
-
       ]
 
       logConfiguration = {

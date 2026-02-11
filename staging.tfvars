@@ -9,27 +9,27 @@ nexus_ship_bucket_name                    = "nexus-ship-production-staging-test"
 nexus_openscience_bucket_name             = "nexus-openscience-production-staging-test"
 core_web_app_cell_a_docker_image_url      = "public.ecr.aws/openbraininstitute/core-web-app:2026.01.07.1" # for https://staging.cell-a.openbraininstitute.org only!
 core_web_app_dev_docker_image_url         = "public.ecr.aws/openbraininstitute/core-web-app:dev"
-virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:2026.01.23.1"
+virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:2026.02.11.1"
 thumbnail_generation_api_docker_image_url = "public.ecr.aws/openbraininstitute/thumbnail-generation-api:2025.10.27.1"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.9.0"
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2026.02.1"
 jupyterhub_ec2_type                       = "c7i.large"
-notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:2026.02.10-2"
+notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:2026.02.11-1"
 notebook_service_cors_allowed_origins     = "[\"https://staging.cell-a.openbraininstitute.org\",\"https://staging.cell-b.openbraininstitute.org\",\"https://dev.openbraininstitute.org\",\"https://staging.openbraininstitute.org\",\"https://preview.openbraininstitute.org\",\"http://127.0.0.1:8000\",\"http://127.0.0.1\",\"http://127.0.0.1:3000\",\"http://localhost:3000\"]"
 notebook_service_bucket_name              = "obi-notebook-service-statistics-staging"
 notebook_service_aws_k8s_thread_enabled   = true
 notebook_service_azure_k8s_thread_enabled = true
 notebook_service_aws_accounting_enabled   = true
 notebook_service_azure_accounting_enabled = true
-notebook_service_azure_storage_account    = "obijupyterstaging"
+notebook_service_azure_storage_account    = "obijupstoragestag"
 
 keycloak_sbo_realm_url = "https://staging.cell-a.openbraininstitute.org/auth/realms/SBO"
 keycloak_url_with_auth = "https://staging.cell-a.openbraininstitute.org/auth/"
 
 neuroagent_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-v0.15.1"
 
-small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2026.01.30.1"
-small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2026.01.30.1"
+small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2026.02.11.1"
+small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2026.02.11.1"
 small_scale_simulator_api_task_size = {
   cpu    = 256
   memory = 512

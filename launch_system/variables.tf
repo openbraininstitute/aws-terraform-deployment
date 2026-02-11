@@ -118,7 +118,7 @@ variable "keycloak_client_id" {
   default     = "obi-entitysdk-auth"
 }
 
-variable "token_lifetime_extension_interval" {
+variable "cluster_task_maximum_runtime" {
   type = string
 }
 
@@ -130,11 +130,6 @@ variable "simulation_launch_command" {
 
 variable "entitycore_url" {
   description = "URL of entitycore"
-  type        = string
-}
-
-variable "accounting_url" {
-  description = "URL of the accounting service"
   type        = string
 }
 
@@ -225,5 +220,10 @@ variable "untrusted_a_subnet_id" {
 
 variable "untrusted_b_subnet_id" {
   description = "The ID of the subnet B containing the untrusted services"
+  type        = string
+}
+
+variable "local_store_prefix" {
+  description = "Base location where public data is mounted."
   type        = string
 }

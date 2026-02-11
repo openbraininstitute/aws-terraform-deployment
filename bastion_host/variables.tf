@@ -1,6 +1,10 @@
 data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 
+data "aws_vpc" "main" {
+  id = var.vpc_id
+}
+
 data "aws_ami" "amazon_linux_2023" {
   most_recent = true
   owners      = ["amazon"]
