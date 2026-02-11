@@ -448,7 +448,8 @@ resource "aws_ecs_task_definition" "worker" {
       cpu    = each.value.task_size.cpu
       memory = each.value.task_size.memory
 
-      readonlyRootFilesystem = true
+      # TODO investigate if we can enable it
+      readonlyRootFilesystem = false
 
       stopTimeout = 120
 
@@ -690,7 +691,8 @@ resource "aws_ecs_task_definition" "batch_worker" {
       cpu    = each.value.task_size.cpu
       memory = each.value.task_size.memory
 
-      readonlyRootFilesystem = true
+      # TODO investigate if we can enable it
+      readonlyRootFilesystem = false
 
       stopTimeout = 120
 
