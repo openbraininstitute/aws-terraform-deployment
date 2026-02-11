@@ -79,4 +79,13 @@ resource "aws_security_group" "ssm_sg" {
     description = "Allow HTTPS outbound traffic for SSM"
   }
 
+  # Allow egress to VPC for database and service access
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [data.aws_vpc.main.cidr_block]
+    description = "Allow all outbound traffic within VPC"
+  }
+
 }
