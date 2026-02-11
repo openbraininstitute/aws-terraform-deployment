@@ -135,6 +135,10 @@ resource "aws_ecs_task_definition" "orchestrator" {
           value = var.cluster_task_maximum_runtime
         },
         {
+          name  = "AZ_REGION"
+          value = var.az_region
+        },
+        {
           name  = "AZ_INSTANCE_TYPES"
           value = var.az_instance_types
         },
