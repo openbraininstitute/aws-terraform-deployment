@@ -144,10 +144,6 @@ resource "aws_ecs_task_definition" "api" {
           value = var.launch_system_api_url
         },
         {
-          name  = "LAUNCH_SERVER_URL" # deprecated, use LAUNCH_SYSTEM_API_URL
-          value = var.launch_system_api_url
-        },
-        {
           name  = "AUTH_MANAGER_URL"
           value = var.auth_manager_url
         },
