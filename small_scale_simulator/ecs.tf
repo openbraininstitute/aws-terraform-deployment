@@ -378,6 +378,22 @@ resource "aws_ecs_task_definition" "api" {
         {
           name  = "METRICS_AWS_REGION"
           value = var.aws_region
+        },
+        {
+          name  = "PYTHONDONTWRITEBYTECODE"
+          value = "1"
+        },
+        {
+          name  = "XDG_CACHE_HOME"
+          value = "/tmp/.cache"
+        },
+        {
+          name  = "TMPDIR"
+          value = "/tmp"
+        },
+        {
+          name  = "MPLCONFIGDIR"
+          value = "/tmp/matplotlib"
         }
       ]
 
@@ -504,6 +520,22 @@ resource "aws_ecs_task_definition" "worker" {
         {
           name  = "ACCOUNTING_BASE_URL"
           value = var.accounting_base_url
+        },
+        {
+          name  = "PYTHONDONTWRITEBYTECODE"
+          value = "1"
+        },
+        {
+          name  = "XDG_CACHE_HOME"
+          value = "/tmp/.cache"
+        },
+        {
+          name  = "TMPDIR"
+          value = "/tmp"
+        },
+        {
+          name  = "MPLCONFIGDIR"
+          value = "/tmp/matplotlib"
         }
       ]
 
@@ -750,6 +782,22 @@ resource "aws_ecs_task_definition" "batch_worker" {
         {
           name  = "ACCOUNTING_BASE_URL"
           value = var.accounting_base_url
+        },
+        {
+          name  = "PYTHONDONTWRITEBYTECODE"
+          value = "1"
+        },
+        {
+          name  = "XDG_CACHE_HOME"
+          value = "/tmp/.cache"
+        },
+        {
+          name  = "TMPDIR"
+          value = "/tmp"
+        },
+        {
+          name  = "MPLCONFIGDIR"
+          value = "/tmp/matplotlib"
         }
       ]
 
