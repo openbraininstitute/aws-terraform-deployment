@@ -142,6 +142,18 @@ resource "aws_ecs_task_definition" "orchestrator" {
           name  = "AZ_INSTANCE_TYPES"
           value = var.az_instance_types
         },
+        {
+          name  = "ENTITYCORE_URL"
+          value = var.entitycore_url
+        },
+        {
+          name  = "LAUNCH_SYSTEM_API_URL"
+          value = var.launch_system_api_url
+        },
+        {
+          name  = "LOCAL_STORE_PREFIX"
+          value = var.local_store_prefix
+        },
       ]
 
       secrets = [

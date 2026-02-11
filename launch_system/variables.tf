@@ -222,3 +222,8 @@ variable "untrusted_b_subnet_id" {
   description = "The ID of the subnet B containing the untrusted services"
   type        = string
 }
+
+variable "local_store_prefix" {
+  description = "Base location where public data is mounted."
+  type        = string
+}

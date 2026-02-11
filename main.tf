@@ -986,6 +986,8 @@ module "launch_system" {
   })
   keycloak_client_id = "obi-entitysdk-auth"
 
+  local_store_prefix = "/nfs"
+
   public_launch_data_efs_id            = module.public_data_efs_storage.public_launch_data_efs_id
   internal_public_data_access_point_id = module.public_data_efs_storage.internal_public_data_access_point_id
   open_public_data_access_point_id     = module.public_data_efs_storage.open_public_data_access_point_id
