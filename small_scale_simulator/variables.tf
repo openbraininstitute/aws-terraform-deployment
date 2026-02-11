@@ -24,6 +24,12 @@ variable "cors_origins" {
   type        = list(string)
 }
 
+variable "cors_origin_regex" {
+  description = "CORS origin regex"
+  type        = string
+  default     = null
+}
+
 variable "api_docker_image_url" {
   description = "Docker image for the API service"
   type        = string
