@@ -140,10 +140,6 @@ resource "aws_ecs_task_definition" "api" {
           value = var.az_instance_types
         },
         {
-          name  = "CLUSTER_TASK_MAXIMUM_RUNTIME"
-          value = var.cluster_task_maximum_runtime
-        },
-        {
           name  = "ENTITYCORE_URL"
           value = var.entitycore_url
         },
