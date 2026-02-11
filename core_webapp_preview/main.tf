@@ -198,6 +198,7 @@ resource "aws_iam_role_policy" "github_deploy" {
           "amplify:GetBranch",
           "amplify:ListBranches",
           "amplify:StartJob",
+          "amplify:StopJob",
           "amplify:GetJob",
           "amplify:ListJobs",
           "amplify:CreateDeployment",

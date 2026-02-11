@@ -209,6 +209,14 @@ resource "aws_ecs_task_definition" "redis" {
     cpu_architecture        = "ARM64"
   }
 
+  volume {
+    name = "redis-data"
+  }
+
+  volume {
+    name = "tmp"
+  }
+
   container_definitions = jsonencode([
     {
       name  = "redis"
@@ -217,10 +225,25 @@ resource "aws_ecs_task_definition" "redis" {
       cpu    = local.redis_task_size.cpu
       memory = local.redis_task_size.memory
 
+      readonlyRootFilesystem = true
+
       portMappings = [
         {
           containerPort = 6379
           protocol      = "tcp"
+        }
+      ]
+
+      mountPoints = [
+        {
+          sourceVolume  = "redis-data"
+          containerPath = "/data"
+          readOnly      = false
+        },
+        {
+          sourceVolume  = "tmp"
+          containerPath = "/tmp"
+          readOnly      = false
         }
       ]
       logConfiguration = {
@@ -267,6 +290,10 @@ resource "aws_ecs_task_definition" "api" {
     }
   }
 
+  volume {
+    name = "tmp"
+  }
+
   container_definitions = jsonencode([
     {
       name  = "api"
@@ -274,6 +301,8 @@ resource "aws_ecs_task_definition" "api" {
 
       cpu    = var.api_task_size.cpu
       memory = var.api_task_size.memory
+
+      readonlyRootFilesystem = true
 
       stopTimeout = 120
 
@@ -289,6 +318,11 @@ resource "aws_ecs_task_definition" "api" {
         {
           sourceVolume  = "storage"
           containerPath = "/app/storage"
+          readOnly      = false
+        },
+        {
+          sourceVolume  = "tmp"
+          containerPath = "/tmp"
           readOnly      = false
         }
       ]
@@ -308,6 +342,10 @@ resource "aws_ecs_task_definition" "api" {
         {
           name  = "CORS_ORIGINS"
           value = jsonencode(var.cors_origins)
+        },
+        {
+          name  = "CORS_ORIGIN_REGEX"
+          value = var.cors_origin_regex
         },
         {
           name  = "KC_SERVER_URI"
@@ -398,6 +436,10 @@ resource "aws_ecs_task_definition" "worker" {
     }
   }
 
+  volume {
+    name = "tmp"
+  }
+
   container_definitions = jsonencode([
     {
       name  = "worker"
@@ -406,12 +448,19 @@ resource "aws_ecs_task_definition" "worker" {
       cpu    = each.value.task_size.cpu
       memory = each.value.task_size.memory
 
+      readonlyRootFilesystem = true
+
       stopTimeout = 120
 
       mountPoints = [
         {
           sourceVolume  = "storage"
           containerPath = "/app/storage"
+          readOnly      = false
+        },
+        {
+          sourceVolume  = "tmp"
+          containerPath = "/tmp"
           readOnly      = false
         }
       ]
@@ -629,6 +678,10 @@ resource "aws_ecs_task_definition" "batch_worker" {
     }
   }
 
+  volume {
+    name = "tmp"
+  }
+
   container_definitions = jsonencode([
     {
       name  = "worker"
@@ -637,12 +690,19 @@ resource "aws_ecs_task_definition" "batch_worker" {
       cpu    = each.value.task_size.cpu
       memory = each.value.task_size.memory
 
+      readonlyRootFilesystem = true
+
       stopTimeout = 120
 
       mountPoints = [
         {
           sourceVolume  = "storage"
           containerPath = "/app/storage"
+          readOnly      = false
+        },
+        {
+          sourceVolume  = "tmp"
+          containerPath = "/tmp"
           readOnly      = false
         }
       ]

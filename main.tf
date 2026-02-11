@@ -19,6 +19,8 @@ locals {
     ] : ["https://cell-a.openbraininstitute.org", "https://cell-b.openbraininstitute.org", "https://www.cell-b.openbraininstitute.org"]
   )
 
+  core_web_app_cors_origin_regex = var.is_staging ? "https://.*\\.preview\\.openbraininstitute\\.org" : null
+
   vpc_cidr_block    = data.terraform_remote_state.common.outputs.vpc_cidr_block
   vpc_default_sg_id = data.terraform_remote_state.common.outputs.vpc_default_sg_id
 
@@ -54,6 +56,9 @@ data "aws_secretsmanager_secret_version" "core_webapp_secrets" {
 # manage default SG via terraform, ensures the default security group is locked down (no egress, no ingress)
 resource "aws_default_security_group" "default" {
   vpc_id = local.vpc_id
+
+  ingress = []
+  egress  = []
 }
 
 module "coreservices_key" {
@@ -349,8 +354,9 @@ module "small_scale_simulator" {
   api_docker_image_url    = var.small_scale_simulator_api_docker_image_url
   worker_docker_image_url = var.small_scale_simulator_worker_docker_image_url
 
-  base_path    = "/api/small-scale-simulator"
-  cors_origins = local.core_web_app_origins
+  base_path         = "/api/small-scale-simulator"
+  cors_origins      = local.core_web_app_origins
+  cors_origin_regex = local.core_web_app_cors_origin_regex
 
   accounting_base_url = "https://${local.cell_a_primary_domain}${var.accounting_svc_base_path}"
   entitycore_url      = "https://${local.cell_a_primary_domain}/api/entitycore"
@@ -649,7 +655,8 @@ module "entitycore_svc" {
   internet_access_route_id      = local.route_table_private_subnets_id
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 
-  cors_origins = local.core_web_app_origins
+  cors_origins      = local.core_web_app_origins
+  cors_origin_regex = local.core_web_app_cors_origin_regex
 
   entitycore_service_secrets_arn = local.entitycore_service_secrets_arn
 
@@ -740,7 +747,8 @@ module "obi_one_v2" {
   launch_system_url   = "https://${local.cell_a_primary_domain}/api/launch-system"
   accounting_base_url = "https://${local.cell_a_primary_domain}${var.accounting_svc_base_path}"
 
-  cors_origins = local.core_web_app_origins
+  cors_origins      = local.core_web_app_origins
+  cors_origin_regex = local.core_web_app_cors_origin_regex
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 
@@ -841,7 +849,8 @@ module "virtual_lab_manager" {
 
   virtual_lab_manager_mail_starttls   = "True"
   virtual_lab_manager_use_credentials = "True"
-  virtual_lab_manager_cors_origins    = local.core_web_app_origins
+  cors_origins                        = local.core_web_app_origins
+  cors_origin_regex                   = local.core_web_app_cors_origin_regex
 
   virtual_lab_manager_admin_base_path = "{}/app/virtual-lab/lab/{}/admin?panel=billing"
   # The deployment namespace has to point to the public URL of corewebapp. It's used for
