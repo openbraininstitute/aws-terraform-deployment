@@ -82,6 +82,16 @@ resource "aws_ecs_task_definition" "api" {
 
       essential = true
 
+      readonlyRootFilesystem = true
+
+      mountPoints = [
+        {
+          sourceVolume  = "tmp"
+          containerPath = "/tmp"
+          readOnly      = false
+        }
+      ]
+
       portMappings = [
         {
           hostPort      = 8000
@@ -99,6 +109,10 @@ resource "aws_ecs_task_definition" "api" {
       }
 
       environment = [
+        {
+          name  = "PYTHONDONTWRITEBYTECODE"
+          value = "1"
+        },
         {
           name  = "APP_DEBUG"
           value = "false"
@@ -227,6 +241,10 @@ resource "aws_ecs_task_definition" "api" {
 
   cpu    = var.api_task_size.cpu
   memory = var.api_task_size.memory
+
+  volume {
+    name = "tmp"
+  }
 
   requires_compatibilities = ["FARGATE"]
 
