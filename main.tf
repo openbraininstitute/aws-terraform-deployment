@@ -977,9 +977,9 @@ module "launch_system" {
 
   cluster_task_maximum_runtime = 86400
 
-  entitycore_url                 = "https://${local.cell_a_primary_domain}/api/entitycore"
-  auth_manager_url               = "https://${local.cell_a_primary_domain}/api/auth-manager"
-  launch_system_api_url_template = "https://${local.cell_a_primary_domain}/api/launch-system"
+  entitycore_url        = "https://${local.cell_a_primary_domain}/api/entitycore"
+  auth_manager_url      = "https://${local.cell_a_primary_domain}/api/auth-manager"
+  launch_system_api_url = "https://${local.cell_a_primary_domain}/api/launch-system"
 
   az_region = "eastus"
   az_instance_types = jsonencode({
