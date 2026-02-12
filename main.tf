@@ -959,9 +959,9 @@ module "launch_system" {
   db_username     = "launch"
   obi_backup_plan = "obi_plan"
 
-  api_image_url              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.2.3"
-  orchestrator_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.2.3"
-  default_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/default-executor:2026.2.3"
+  api_image_url              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.2.4"
+  orchestrator_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.2.4"
+  default_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/default-executor:2026.2.4"
 
   api_task_size          = var.launch_system_api_task_size
   executor_task_size     = var.launch_system_executor_task_size
@@ -985,6 +985,8 @@ module "launch_system" {
     "small" = "timestamped-neurodamus",
   })
   keycloak_client_id = "obi-entitysdk-auth"
+
+  local_store_prefix = "/nfs"
 
   public_launch_data_efs_id            = module.public_data_efs_storage.public_launch_data_efs_id
   internal_public_data_access_point_id = module.public_data_efs_storage.internal_public_data_access_point_id

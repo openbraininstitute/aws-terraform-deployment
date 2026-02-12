@@ -107,6 +107,10 @@ resource "aws_ecs_task_definition" "orchestrator" {
           value = jsonencode([var.untrusted_a_subnet_id, var.untrusted_b_subnet_id])
         },
         {
+          name  = "WORKER_AWS_ECS_TASK_SECURITY_GROUPS"
+          value = jsonencode([aws_security_group.executor.id])
+        },
+        {
           name  = "REDIS_HOST"
           value = aws_elasticache_cluster.redis.cache_nodes[0].address
         },
@@ -134,9 +138,57 @@ resource "aws_ecs_task_definition" "orchestrator" {
           name  = "CLUSTER_TASK_MAXIMUM_RUNTIME"
           value = var.cluster_task_maximum_runtime
         },
+        {
+          name  = "AZ_REGION"
+          value = var.az_region
+        },
+        {
+          name  = "AZ_INSTANCE_TYPES"
+          value = var.az_instance_types
+        },
+        {
+          name  = "ENTITYCORE_URL"
+          value = var.entitycore_url
+        },
+        {
+          name  = "LAUNCH_SYSTEM_API_URL"
+          value = var.launch_system_api_url
+        },
+        {
+          name  = "LOCAL_STORE_PREFIX"
+          value = var.local_store_prefix
+        },
       ]
 
       secrets = [
+        {
+          name      = "AZURE_CLIENT_ID"
+          valueFrom = "${var.secrets_arn}:AZURE_CLIENT_ID::"
+        },
+        {
+          name      = "AZURE_CLIENT_SECRET"
+          valueFrom = "${var.secrets_arn}:AZURE_CLIENT_SECRET::"
+        },
+        {
+          name      = "AZURE_TENANT_ID"
+          valueFrom = "${var.secrets_arn}:AZURE_TENANT_ID::"
+        },
+        {
+          name      = "AZ_SUBSCRIPTION_ID"
+          valueFrom = "${var.secrets_arn}:AZ_SUBSCRIPTION_ID::"
+        },
+        {
+          name      = "AZ_BATCH_ACCOUNT_NAME"
+          valueFrom = "${var.secrets_arn}:AZ_BATCH_ACCOUNT_NAME::"
+        },
+        {
+          name      = "AZ_BATCH_POOL_NAME"
+          valueFrom = "${var.secrets_arn}:AZ_BATCH_POOL_NAME::"
+        },
+        {
+          name      = "AZ_UPLOAD_BLOB_SAS_URL"
+          valueFrom = "${var.secrets_arn}:AZ_UPLOAD_BLOB_SAS_URL::"
+        },
       ]
 
       logConfiguration = {
