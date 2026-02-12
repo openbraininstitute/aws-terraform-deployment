@@ -261,6 +261,10 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
         {
           name  = "ACCOUNTING_BASE_URL"
           value = var.accounting_base_url
+        },
+        {
+          name  = "MPLCONFIGDIR",
+          value = "/tmp/matplotlib"
         }
       ]
 
