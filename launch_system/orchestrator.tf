@@ -65,6 +65,16 @@ resource "aws_ecs_task_definition" "orchestrator" {
 
       essential = true
 
+      readonlyRootFilesystem = true
+
+      mountPoints = [
+        {
+          sourceVolume  = "tmp"
+          containerPath = "/tmp"
+          readOnly      = false
+        }
+      ]
+
       healthcheck = {
         command     = ["CMD-SHELL", "exit 0"] // TODO: add a proper health check.
         interval    = 60
@@ -207,6 +217,10 @@ resource "aws_ecs_task_definition" "orchestrator" {
   memory = var.orchestrator_task_size.memory
 
   requires_compatibilities = ["FARGATE"]
+
+  volume {
+    name = "tmp"
+  }
 
   execution_role_arn = aws_iam_role.orchestrator_execution.arn
   task_role_arn      = aws_iam_role.orchestrator_task.arn
