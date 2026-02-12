@@ -26,6 +26,7 @@ locals {
 
   public_primary_domain_in_azure = data.terraform_remote_state.common.outputs.primary_domain # "staging.openbraininstitute.org" or "www.openbraininstitute.org"
   cell_a_primary_domain          = var.is_production ? "cell-a.openbraininstitute.org" : "staging.cell-a.openbraininstitute.org"
+  template_primary_domain        = var.is_production ? "cell-X.openbraininstitute.org" : "staging.cell-X.openbraininstitute.org"
 
   email_domain_name = data.terraform_remote_state.common.outputs.email_domain_name
 
@@ -742,10 +743,11 @@ module "obi_one_v2" {
   container_port = 8000
   host_port      = 8000
 
-  keycloak_url        = "${var.keycloak_sbo_realm_url}/"
-  entitycore_url      = "https://${local.cell_a_primary_domain}/api/entitycore"
-  launch_system_url   = "https://${local.cell_a_primary_domain}/api/launch-system"
-  accounting_base_url = "https://${local.cell_a_primary_domain}${var.accounting_svc_base_path}"
+  keycloak_url               = "${var.keycloak_sbo_realm_url}/"
+  entitycore_url             = "https://${local.cell_a_primary_domain}/api/entitycore"
+  accounting_base_url        = "https://${local.cell_a_primary_domain}${var.accounting_svc_base_path}"
+  launch_system_url_template = "https://${local.template_primary_domain}/api/launch-system"
+  virtual_lab_api_url        = "https://${local.cell_a_primary_domain}/api/virtual-lab-manager"
 
   cors_origins      = local.core_web_app_origins
   cors_origin_regex = local.core_web_app_cors_origin_regex
@@ -975,9 +977,9 @@ module "launch_system" {
 
   cluster_task_maximum_runtime = 86400
 
-  launch_system_api_url = "https://${local.cell_a_primary_domain}/api/launch-system"
   entitycore_url        = "https://${local.cell_a_primary_domain}/api/entitycore"
   auth_manager_url      = "https://${local.cell_a_primary_domain}/api/auth-manager"
+  launch_system_api_url = "https://${local.cell_a_primary_domain}/api/launch-system"
 
   az_region = "eastus"
   az_instance_types = jsonencode({
