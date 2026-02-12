@@ -154,8 +154,12 @@ resource "aws_ecs_task_definition" "auth_manager_ecs_definition" {
           value = "https://${var.primary_domain}${var.root_path}/v1/offline-token/callback"
         },
         {
-          name  = "KEYCLOAK_AFTER_CONSENT_REDIRECT_URI"
+          name  = "KEYCLOAK_DEFAULT_CLIENT_ORIGIN"
           value = "https://${var.client_redirect_domain}/app/consent-feedback"
+        },
+        {
+          name  = "KEYCLOAK_AFTER_CONSENT_REDIRECT_PATH"
+          value = "/app/consent-feedback"
         },
         {
           name  = "ACK_STATE_EXPIRY"
