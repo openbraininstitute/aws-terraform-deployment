@@ -125,7 +125,7 @@ variable "accounting_base_url" {
 
 variable "virtual_lab_api_url" {
   description = "virtual lab manager URL"
-  type = string
+  type        = string
 }
 
 variable "route_table_private_subnets_id" {
