@@ -155,7 +155,7 @@ resource "aws_ecs_task_definition" "auth_manager_ecs_definition" {
         },
         {
           name  = "KEYCLOAK_DEFAULT_CLIENT_ORIGIN"
-          value = "https://${var.client_redirect_domain}/app/consent-feedback"
+          value = "https://${var.client_redirect_domain}"
         },
         {
           name  = "KEYCLOAK_AFTER_CONSENT_REDIRECT_PATH"
