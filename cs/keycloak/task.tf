@@ -158,7 +158,8 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
       command = [
         "--config=/etc/ecs/otel-agent-config.yaml"
       ]
-      essential = false
+      essential              = false
+      readonlyRootFilesystem = true
       mountPoints = [
         {
           sourceVolume  = "otel-config-volume"
@@ -190,9 +191,10 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
       ]
     },
     {
-      name      = "keycloak-otel-agent-config"
-      image     = "public.ecr.aws/docker/library/bash:alpine3.23"
-      essential = false
+      name                   = "keycloak-otel-agent-config"
+      image                  = "public.ecr.aws/docker/library/bash:alpine3.23"
+      essential              = false
+      readonlyRootFilesystem = true
       command = [
         "sh",
         "-c",
