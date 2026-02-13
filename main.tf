@@ -49,11 +49,6 @@ locals {
   github_organisation = "openbraininstitute"
 }
 
-data "aws_secretsmanager_secret_version" "core_webapp_secrets" {
-  count     = var.is_staging ? 1 : 0
-  secret_id = local.core_webapp_secrets_arn
-}
-
 # manage default SG via terraform, ensures the default security group is locked down (no egress, no ingress)
 resource "aws_default_security_group" "default" {
   vpc_id = local.vpc_id
@@ -590,27 +585,6 @@ module "core_webapp_dev" {
 
   keycloak_client_id     = "core-webapp-cell-b-azure-staging"
   keycloak_client_secret = "${local.core_webapp_secrets_arn}:client_secret_cellb_azure_staging::"
-}
-
-module "core_webapp_preview" {
-  source = "./core_webapp_preview"
-
-  count = var.is_staging ? 1 : 0
-
-  app_name                 = "core-webapp-preview"
-  github_access_token      = jsondecode(data.aws_secretsmanager_secret_version.core_webapp_secrets[0].secret_string)["GITHUB_REPO_PREVIEW_DEPLOYMENT_PAT"]
-  repository_url           = "https://github.com/openbraininstitute/core-web-app"
-  default_branch           = "main"
-  domain_name              = data.terraform_remote_state.common.outputs.preview_domain
-  route53_zone_id          = data.terraform_remote_state.common.outputs.preview_domain_zone_id
-  secrets_arn              = local.core_webapp_secrets_arn
-  github_oidc_provider_arn = module.github_oidc_provider.oidc_provider_arn
-
-  api_origin             = "https://${local.cell_a_primary_domain}"
-  deployment_env         = "preview"
-  keycloak_issuer        = var.keycloak_sbo_realm_url
-  sanity_dataset         = "staging"
-  stripe_publishable_key = var.core_web_app_stripe_publishable_key
 }
 
 module "github_core_webapp_dev_ecs_redeploy_role" {
