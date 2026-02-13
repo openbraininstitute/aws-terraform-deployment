@@ -221,3 +221,13 @@ variable "env_VIRTUAL_LAB_API_URL" {
   type      = string
   sensitive = false
 }
+
+variable "keycloak_client_id" {
+  type      = string
+  sensitive = false
+}
+
+variable "keycloak_client_secret" {
+  type      = string
+  sensitive = true
+}
