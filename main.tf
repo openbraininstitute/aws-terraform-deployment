@@ -536,6 +536,9 @@ module "core_webapp_cell_a" {
   env_SMALL_SCALE_SIMULATOR_URL = "https://${local.cell_a_primary_domain}/api/small-scale-simulator"
   env_THUMBNAIL_API_URL         = "https://${local.cell_a_primary_domain}/api/thumbnail-generation"
   env_VIRTUAL_LAB_API_URL       = "https://${local.cell_a_primary_domain}/api/virtual-lab-manager"
+
+  keycloak_client_id     = "core-webapp-cell-b-azure-staging"
+  keycloak_client_secret = "${local.core_webapp_secrets_arn}:client_secret_cellb_azure_staging::"
 }
 
 module "core_webapp_dev" {
@@ -584,6 +587,9 @@ module "core_webapp_dev" {
   env_SMALL_SCALE_SIMULATOR_URL = "https://${local.cell_a_primary_domain}/api/small-scale-simulator"
   env_THUMBNAIL_API_URL         = "https://${local.cell_a_primary_domain}/api/thumbnail-generation"
   env_VIRTUAL_LAB_API_URL       = "https://${local.cell_a_primary_domain}/api/virtual-lab-manager"
+
+  keycloak_client_id     = "core-webapp-cell-b-azure-staging"
+  keycloak_client_secret = "${local.core_webapp_secrets_arn}:client_secret_cellb_azure_staging::"
 }
 
 module "core_webapp_preview" {
