@@ -129,7 +129,7 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
         },
         {
           name  = "KEYCLOAK_CLIENT_ID"
-          value = "core-webapp-${var.key}"
+          value = var.keycloak_client_id
         },
         {
           name  = "MATOMO_SITE_ID"
@@ -195,7 +195,7 @@ resource "aws_ecs_task_definition" "core_webapp_ecs_definition" {
       secrets = [
         {
           name      = "KEYCLOAK_CLIENT_SECRET"
-          valueFrom = "${var.secrets_arn}:client_secret_${var.key}::"
+          valueFrom = var.keycloak_client_secret
         },
         {
           name      = "GITHUB_TOKEN"
