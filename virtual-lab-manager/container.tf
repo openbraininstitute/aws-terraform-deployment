@@ -233,11 +233,11 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         },
         {
           name  = "DISCOUNT_MONTHLY_ID"
-          value = "monthly-special-launch-price-08-10-2025"
+          value = "monthly_promotion_2nd_year"
         },
         {
           name  = "DISCOUNT_YEARLY_ID"
-          value = "yearly-special-launch-price-08-10-2025"
+          value = "yearly_promotion_2nd_year"
         },
         {
           name  = "ENABLE_WELCOME_BONUS"
