@@ -11,6 +11,7 @@ on:
         options: [sandbox-hpc]
 concurrency:
   group: terraform-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
   terraform_deployment:
     environment: ${{ inputs.environment }}  # secrets are set per environment https://github.com/openbraininstitute/aws-terraform-deployment/settings/environments
