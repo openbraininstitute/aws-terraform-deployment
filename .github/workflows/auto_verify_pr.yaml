@@ -7,6 +7,7 @@ on:
 
 concurrency:
   group: terraform-${{ github.base_ref }}
+  cancel-in-progress: false
 
 permissions:
   pull-requests: write

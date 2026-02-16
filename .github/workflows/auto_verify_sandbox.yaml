@@ -6,6 +6,7 @@ on:
     branches: [sandbox-*]
 concurrency:
   group: terraform-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
   terraform_verify:
     environment: ${{ github.ref_name }}
