@@ -1,10 +1,3 @@
-variable "create_ssh_bastion_vm_on_public_a_network" {
-  type        = bool
-  default     = true
-  sensitive   = false
-  description = "Create SSH bastion VM on public network in availability zone A: needed for access to HPC resources for example"
-}
-
 variable "virtual_lab_manager_ecs_number_of_containers" {
   type        = number
   default     = 1
