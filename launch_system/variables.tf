@@ -112,12 +112,6 @@ variable "obi_backup_plan" {
 }
 
 
-variable "keycloak_client_id" {
-  description = "ID for refreshing offline_token in keycloak"
-  type        = string
-  default     = "obi-entitysdk-auth"
-}
-
 variable "cluster_task_maximum_runtime" {
   type = string
 }
