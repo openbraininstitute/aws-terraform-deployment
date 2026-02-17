@@ -56,16 +56,13 @@ Deployment of the OBI platform in AWS with Terraform.
 | [aws_iam_role.apigw_cloudwatch](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role)                                                                                      | resource    |
 | [aws_iam_role_policy_attachments_exclusive.apigw_cloudwatch_policy_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachments_exclusive)          | resource    |
 | [aws_iam_user.cell_svc_bucket_user](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user)                                                                                  | resource    |
-| [aws_instance.ssh_bastion](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance)                                                                                           | resource    |
 | [aws_network_acl.public](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/network_acl)                                                                                          | resource    |
-| [aws_route53_record.ssh_bastion](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record)                                                                               | resource    |
 | [aws_s3_bucket.sbo-cell-svc-perf-test](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket)                                                                              | resource    |
 | [aws_s3_bucket_lifecycle_configuration.sbo-cell-svc-perf-test](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_lifecycle_configuration)                              | resource    |
 | [aws_s3_bucket_metric.sbo-cell-svc-perf-test-metrics](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_metric)                                                        | resource    |
 | [aws_s3_bucket_public_access_block.sbo-cell-svc-perf-test](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block)                                      | resource    |
 | [aws_s3_bucket_versioning.sbo-cell-svc-perf-test-versioning](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_versioning)                                             | resource    |
 | [aws_s3_object.sbo-cell-svc-perf-test-directory](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_object)                                                                    | resource    |
-| [aws_security_group.ssh_bastion_hosts](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group)                                                                         | resource    |
 | [aws_ssoadmin_permission_set.readonly_with_additional_billing_rights](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_permission_set)                                 | resource    |
 | [aws_ssoadmin_permission_set.readonly_with_additional_dashboard_rights](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_permission_set)                               | resource    |
 | [aws_ssoadmin_permission_set.readonly_with_additional_ecs_rights](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_permission_set)                                     | resource    |
@@ -78,10 +75,6 @@ Deployment of the OBI platform in AWS with Terraform.
 | [aws_ssoadmin_permission_set_inline_policy.readonly_with_additional_hpc_rights](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_permission_set_inline_policy)         | resource    |
 | [aws_ssoadmin_permission_set_inline_policy.readonly_with_additional_s3_rights](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_permission_set_inline_policy)          | resource    |
 | [aws_ssoadmin_permission_set_inline_policy.readonly_with_additional_waframework_rights](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_permission_set_inline_policy) | resource    |
-| [aws_vpc_security_group_egress_rule.ssh_bastion_hosts_allow_everything_outgoing](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_security_group_egress_rule)               | resource    |
-| [aws_vpc_security_group_ingress_rule.ssh_bastion_hosts_allow_http_internal](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_security_group_ingress_rule)                   | resource    |
-| [aws_vpc_security_group_ingress_rule.ssh_bastion_hosts_allow_https_internal](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_security_group_ingress_rule)                  | resource    |
-| [aws_vpc_security_group_ingress_rule.ssh_bastion_hosts_allow_ssh_external](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_security_group_ingress_rule)                    | resource    |
 | [aws_ami.almalinux](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami)                                                                                                    | data source |
 | [aws_ami.amazon_linux_2_ecs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami)                                                                                           | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity)                                                                              | data source |
@@ -96,7 +89,6 @@ Deployment of the OBI platform in AWS with Terraform.
 | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | -------- | ---------------------------------------- | :------: |
 | <a name="input_cell_svc_bucket_name"></a> [cell_svc_bucket_name](#input_cell_svc_bucket_name)                                                                         | n/a                                                                                                            | `string` | n/a                                      |   yes    |
 | <a name="input_core_web_app_docker_image_url"></a> [core_web_app_docker_image_url](#input_core_web_app_docker_image_url)                                              | docker image for the core-web-app                                                                              | `string` | n/a                                      |   yes    |
-| <a name="input_create_ssh_bastion_vm_on_public_a_network"></a> [create_ssh_bastion_vm_on_public_a_network](#input_create_ssh_bastion_vm_on_public_a_network)          | Create SSH bastion VM on public network in availability zone A: needed for access to HPC resources for example | `bool`   | `true`                                   |    no    |
 | <a name="input_ec_apikey"></a> [ec_apikey](#input_ec_apikey)                                                                                                          | n/a                                                                                                            | `string` | n/a                                      |   yes    |
 | <a name="input_is_production"></a> [is_production](#input_is_production)                                                                                              | Whether deployment is happening in production or not                                                           | `bool`   | `true`                                   |    no    |
 | <a name="input_nexus_az_letter_id"></a> [nexus_az_letter_id](#input_nexus_az_letter_id)                                                                               | n/a                                                                                                            | `string` | n/a                                      |   yes    |
@@ -112,13 +104,7 @@ Deployment of the OBI platform in AWS with Terraform.
 
 ## Outputs
 
-| Name                                                                                                                                   | Description |
-| -------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| <a name="output_admin_vm_on_public_a_dns_cname"></a> [admin_vm_on_public_a_dns_cname](#output_admin_vm_on_public_a_dns_cname)          | n/a         |
-| <a name="output_admin_vm_on_public_a_network_ip"></a> [admin_vm_on_public_a_network_ip](#output_admin_vm_on_public_a_network_ip)       | n/a         |
-| <a name="output_admin_vm_on_public_a_network_name"></a> [admin_vm_on_public_a_network_name](#output_admin_vm_on_public_a_network_name) | n/a         |
-| <a name="output_admin_vm_on_public_b_network_ip"></a> [admin_vm_on_public_b_network_ip](#output_admin_vm_on_public_b_network_ip)       | n/a         |
-| <a name="output_admin_vm_on_public_b_network_name"></a> [admin_vm_on_public_b_network_name](#output_admin_vm_on_public_b_network_name) | n/a         |
+
 
 <!-- END_TF_DOCS -->
 

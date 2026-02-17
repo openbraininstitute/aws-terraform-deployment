@@ -1,4 +1,3 @@
-create_ssh_bastion_vm_on_public_a_network = true
 is_staging                                = false
 is_production                             = false
 deployment_env                            = "sandbox-benchmarks"
