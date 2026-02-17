@@ -115,6 +115,37 @@ scp -i /path/private/key.pem -P 2222 local-file.txt $BASTION_USERNAME@localhost:
 scp -i /path/private/key.pem -P 2222 $BASTION_USERNAME@localhost:~/remote-file.txt ./
 ```
 
+## Database Access via Port Forwarding
+
+You can connect to databases inside the VPC by forwarding a remote database port to your local machine through the bastion host.
+
+### Connect to RDS Database
+
+```bash
+# Start port forwarding session (replace with your RDS endpoint)
+aws ssm start-session \
+  --target "$INSTANCE_ID" \
+  --document-name AWS-StartPortForwardingSessionToRemoteHost \
+  --parameters '{"host":["xxxxxxxxxxxxx.rds.amazonaws.com"],"portNumber":["5432"],"localPortNumber":["15432"]}'
+```
+
+Keep this terminal session running. The database is now accessible on your local machine at `localhost:15432`.
+
+### Connect with Database Client
+
+You can now connect using any database client (e.g., DBeaver, pgAdmin, psql) with these settings:
+
+- **Host:** `localhost`
+- **Port:** `15432`
+- **Database:** Your database name
+- **Username:** Your database username
+- **Password:** Your database password
+
+Example with psql:
+```bash
+psql -h localhost -p 15432 -U your_username -d your_database
+```
+
 ## Troubleshooting
 
 - **`An error occurred (UnauthorizedOperation) when calling the DescribeInstances operation`**:
