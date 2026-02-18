@@ -22,7 +22,7 @@ resource "aws_iam_policy" "ssm_user_access" {
           "arn:aws:ssm:*:${data.aws_caller_identity.current.account_id}:document/SSM-UserMapping-*"
         ]
         Condition = {
-          StringLikeIgnoreCase = {
+          StringLike = {
             "aws:userid" = "*:$${ssm:resourceTag/AllowedEmail}"
           }
         }
