@@ -99,6 +99,11 @@ def handle_eventbridge_aws_error_event(event: Dict[str, Any], _) -> Dict[str, An
     """Main Lambda handler for processing EventBridge AWS error events."""
     return generic_handle_eventbridge_event_with_single_channel(event)
 
+def handle_eventbridge_ses_event(event: Dict[str, Any], _) -> Dict[str, Any]:
+    """Main Lambda handler for processing EventBridge AWS error events."""
+    return generic_handle_eventbridge_event_with_single_channel(event)
+
+
 def generic_handle_eventbridge_event_with_single_channel(event: Dict[str, Any])  -> Dict[str, Any]:
     logger.info("Received event: %s", json.dumps(event))
     try:

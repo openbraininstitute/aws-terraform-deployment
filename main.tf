@@ -175,6 +175,31 @@ module "generic_aws_errors_sns_entries_to_teams" {
   handler           = "aws_json_log_sns_to_teams.handle_eventbridge_aws_error_event"
 }
 
+module "aws_ses_events_sns_topic" {
+  source = "./aws_ses_events_sns_topic"
+}
+
+module "debug_aws_ses_events_sns_topic" {
+  source = "./sqs_debug_queue"
+
+  sns_topic_arn             = module.aws_ses_events_sns_topic.sns_topic_arn
+  unique_short_name         = "ses_events"
+  message_retention_seconds = 172800 # 2 days
+}
+
+module "aws_ses_events_sns_entries_to_teams" {
+  source = "./sns_entries_to_teams"
+
+  webhook_secret_arn = local.teams_webhook_secrets_arn
+  webhook_secret_key = "ses_events"
+
+  unique_short_name = "ses_events"
+  sns_topic_arn     = module.aws_ses_events_sns_topic.sns_topic_arn
+  python_runtime    = "python3.13"
+  handler           = "aws_json_log_sns_to_teams.handle_eventbridge_ses_event"
+}
+
+
 # to be replaced soon
 # module "deployments_sns_to_teams" {
 #   source = "./sns_lambda_to_teams"
