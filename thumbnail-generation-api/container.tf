@@ -268,7 +268,7 @@ resource "aws_ecs_service" "service" {
 
   network_configuration {
     security_groups  = [aws_security_group.sec_group.id]
-    subnets          = [aws_subnet.thumbnail_generation_api.id]
+    subnets          = [aws_subnet.main.id]
     assign_public_ip = false
   }
 
