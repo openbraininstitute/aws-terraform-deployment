@@ -122,7 +122,7 @@ resource "aws_vpc_security_group_egress_rule" "allow_outgoing_tcp" {
 }
 
 resource "aws_vpc_security_group_egress_rule" "allow_outgoing_udp" {
-  security_group_id = aws_security_group.sec_group.id
+  security_group_id = aws_security_group.main.id
   ip_protocol       = "udp"
   from_port         = 0
   to_port           = 65535
