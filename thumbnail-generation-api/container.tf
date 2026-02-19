@@ -1,6 +1,6 @@
 # Cluster Definition
 
-resource "aws_ecs_cluster" "thumbnail_generation_api_cluster" {
+resource "aws_ecs_cluster" "main" {
   name = "thumbnail_generation_api_cluster"
 
   tags = {
@@ -13,7 +13,7 @@ resource "aws_ecs_cluster" "thumbnail_generation_api_cluster" {
   }
 }
 
-resource "aws_iam_role" "thumbnail_generation_api_ecs_task_execution_role" {
+resource "aws_iam_role" "ecs_task_execution_role" {
   name = "thumbnail_generation_api-ecsTaskExecutionRole"
 
   assume_role_policy = jsonencode({
@@ -35,12 +35,12 @@ resource "aws_iam_role" "thumbnail_generation_api_ecs_task_execution_role" {
 }
 
 
-resource "aws_iam_role_policy_attachment" "thumbnail_generation_api_ecs_task_execution_role_policy_attachment" {
-  role       = aws_iam_role.thumbnail_generation_api_ecs_task_execution_role.name
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy_attachment" {
+  role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
-resource "aws_iam_role" "thumbnail_generation_api_ecs_task_role" {
+resource "aws_iam_role" "ecs_task_role" {
   name = "thumbnail_generation_api-ecsTaskRole"
   assume_role_policy = jsonencode({
     "Version" = "2012-10-17",
@@ -60,7 +60,7 @@ resource "aws_iam_role" "thumbnail_generation_api_ecs_task_role" {
   }
 }
 
-resource "aws_iam_policy" "thumbnail_generation_api_ecs_task_logs" {
+resource "aws_iam_policy" "ecs_task_logs" {
   name        = "thumbnail_generation_api-ecsTaskLogs"
   description = "Allows ECS tasks to create log streams and log groups in CloudWatch Logs"
 
@@ -80,12 +80,12 @@ resource "aws_iam_policy" "thumbnail_generation_api_ecs_task_logs" {
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_attachment" {
-  role       = aws_iam_role.thumbnail_generation_api_ecs_task_execution_role.name
-  policy_arn = aws_iam_policy.thumbnail_generation_api_ecs_task_logs.arn
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = aws_iam_policy.ecs_task_logs.arn
 }
 
 
-resource "aws_security_group" "thumbnail_generation_api_sec_group" {
+resource "aws_security_group" "sec_group" {
   name        = "thumbnail_generation_api_sec_group"
   vpc_id      = var.vpc_id
   description = "Sec group for thumbnail generation api"
@@ -96,8 +96,8 @@ resource "aws_security_group" "thumbnail_generation_api_sec_group" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "thumbnail_generation_api_allow_port_80" {
-  security_group_id = aws_security_group.thumbnail_generation_api_sec_group.id
+resource "aws_vpc_security_group_ingress_rule" "allow_port_80" {
+  security_group_id = aws_security_group.sec_group.id
 
   ip_protocol = "tcp"
   from_port   = 80
@@ -109,8 +109,8 @@ resource "aws_vpc_security_group_ingress_rule" "thumbnail_generation_api_allow_p
   }
 }
 
-resource "aws_vpc_security_group_egress_rule" "thumbnail_generation_api_allow_outgoing_tcp" {
-  security_group_id = aws_security_group.thumbnail_generation_api_sec_group.id
+resource "aws_vpc_security_group_egress_rule" "allow_outgoing_tcp" {
+  security_group_id = aws_security_group.sec_group.id
   ip_protocol       = "tcp"
   from_port         = 0
   to_port           = 65535
@@ -121,8 +121,8 @@ resource "aws_vpc_security_group_egress_rule" "thumbnail_generation_api_allow_ou
   }
 }
 
-resource "aws_vpc_security_group_egress_rule" "thumbnail_generation_api_allow_outgoing_udp" {
-  security_group_id = aws_security_group.thumbnail_generation_api_sec_group.id
+resource "aws_vpc_security_group_egress_rule" "allow_outgoing_udp" {
+  security_group_id = aws_security_group.sec_group.id
   ip_protocol       = "udp"
   from_port         = 0
   to_port           = 65535
@@ -135,12 +135,12 @@ resource "aws_vpc_security_group_egress_rule" "thumbnail_generation_api_allow_ou
 
 
 # Task Definition
-resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
+resource "aws_ecs_task_definition" "task_definition" {
   family                   = "thumbnail-generation-api-task-definition"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  execution_role_arn       = aws_iam_role.thumbnail_generation_api_ecs_task_execution_role.arn
-  task_role_arn            = aws_iam_role.thumbnail_generation_api_ecs_task_role.arn
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
   memory                   = 4096
   cpu                      = 2048
 
@@ -173,7 +173,7 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
     [
       {
         name                   = "thumbnail-generation-api-container",
-        image                  = var.thumbnail_generation_api_docker_image_url,
+        image                  = var.docker_image_url,
         essential              = true,
         readonlyRootFilesystem = true,
         mountPoints = [
@@ -211,11 +211,11 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
         environment = [
           {
             name  = "WHITELISTED_CORS_URLS",
-            value = jsonencode(var.thumbnail_generation_api_cors_origins)
+            value = jsonencode(var.cors_origins)
           },
           {
             name  = "BASE_PATH"
-            value = var.thumbnail_generation_api_base_path
+            value = var.base_path
           },
           {
             name  = "ENVIRONMENT"
@@ -239,7 +239,7 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
         logConfiguration = {
           logDriver = "awslogs"
           options = {
-            awslogs-group         = var.thumbnail_generation_api_log_group_name
+            awslogs-group         = var.log_group_name
             awslogs-region        = var.aws_region
             awslogs-create-group  = "true"
             awslogs-stream-prefix = "thumbnail_generation_api"
@@ -250,10 +250,10 @@ resource "aws_ecs_task_definition" "thumbnail_generation_api_task_definition" {
 }
 
 # Service
-resource "aws_ecs_service" "thumbnail_generation_api_service" {
+resource "aws_ecs_service" "service" {
   name                 = "thumbnail-generation-api-service"
-  cluster              = aws_ecs_cluster.thumbnail_generation_api_cluster.id
-  task_definition      = aws_ecs_task_definition.thumbnail_generation_api_task_definition.arn
+  cluster              = aws_ecs_cluster.cluster.id
+  task_definition      = aws_ecs_task_definition.task_definition.arn
   desired_count        = 1
   force_new_deployment = true
   launch_type          = "FARGATE"
@@ -261,13 +261,13 @@ resource "aws_ecs_service" "thumbnail_generation_api_service" {
 
   # Load Balancer configuration
   load_balancer {
-    target_group_arn = aws_lb_target_group.thumbnail_generation_api_private_tg.arn
+    target_group_arn = aws_lb_target_group.private_tg.arn
     container_name   = "thumbnail-generation-api-container"
     container_port   = 80
   }
 
   network_configuration {
-    security_groups  = [aws_security_group.thumbnail_generation_api_sec_group.id]
+    security_groups  = [aws_security_group.sec_group.id]
     subnets          = [aws_subnet.thumbnail_generation_api.id]
     assign_public_ip = false
   }
@@ -275,8 +275,8 @@ resource "aws_ecs_service" "thumbnail_generation_api_service" {
   propagate_tags = "SERVICE"
 }
 
-resource "aws_cloudwatch_log_group" "thumbnail_generation_api" {
-  name              = var.thumbnail_generation_api_log_group_name
+resource "aws_cloudwatch_log_group" "log_group" {
+  name              = var.log_group_name
   skip_destroy      = false
   retention_in_days = 5
 
