@@ -1,6 +1,6 @@
 # Cluster Definition
 
-resource "aws_ecs_cluster" "main" {
+resource "aws_ecs_cluster" "cluster" {
   name = "thumbnail_generation_api_cluster"
 
   tags = {
