@@ -10,24 +10,21 @@
 # data.terraform_remote_state.common.outputs.vpc_id
 
 variable "allowed_source_ip_cidr_blocks" {
-  sensitive = false
-  type      = list(string)
+  type = list(string)
 }
+
 variable "aws_region" {
-  type      = string
-  sensitive = false
+  type = string
 }
 
 variable "private_alb_https_listener_arn" {
   type        = string
   description = "alb listener to which the https listener rule should be added"
-  sensitive   = false
 }
 
 variable "route_table_id" {
   type        = string
   description = "route table for private networks"
-  sensitive   = false
 }
 
 variable "vpc_cidr_block" {
@@ -37,39 +34,30 @@ variable "vpc_cidr_block" {
 
 variable "vpc_id" {
   type        = string
-  sensitive   = false
   description = "ID of the VPC"
 }
 
-variable "thumbnail_generation_api_docker_image_url" {
-  #default     = "bluebrain/thumbnail-generation-api:latest"
+variable "docker_image_url" {
   type        = string
   description = "docker image for the thumbnail generation api"
-  sensitive   = false
 }
 
-variable "thumbnail_generation_api_base_path" {
-  #default     = "/api/thumbnail-generation"
+variable "base_path" {
   type        = string
   description = "The base path for the Thumbnail Generation API"
-  sensitive   = false
 }
 
-variable "thumbnail_generation_api_log_group_name" {
-  #default     = "thumbnail_generation_api"
+variable "log_group_name" {
   type        = string
   description = "The log name within cloudwatch for the thumbnail generation api"
-  sensitive   = false
 }
 
-variable "thumbnail_generation_api_cors_origins" {
+variable "cors_origins" {
   type        = list(string)
   description = "Origins that are allowed to make requests to the virtual lab api through a browser"
-  sensitive   = false
 }
 
-
 variable "entitycore_url" {
-  description = "entitycore URL"
+  description = "Entitycore URL"
   type        = string
 }

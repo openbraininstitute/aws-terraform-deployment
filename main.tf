@@ -804,13 +804,13 @@ module "thumbnail_generation_api" {
   vpc_cidr_block                 = local.vpc_cidr_block
   vpc_id                         = local.vpc_id
 
-  aws_region                                = local.aws_region
-  allowed_source_ip_cidr_blocks             = ["0.0.0.0/0"]
-  thumbnail_generation_api_docker_image_url = var.thumbnail_generation_api_docker_image_url
-  thumbnail_generation_api_base_path        = "/api/thumbnail-generation"
-  thumbnail_generation_api_log_group_name   = "thumbnail_generation_api"
-  thumbnail_generation_api_cors_origins     = local.core_web_app_origins
-  entitycore_url                            = "https://${local.cell_a_primary_domain}/api/entitycore"
+  aws_region                    = local.aws_region
+  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
+  docker_image_url              = var.thumbnail_generation_api_docker_image_url
+  base_path                     = "/api/thumbnail-generation"
+  log_group_name                = "thumbnail_generation_api"
+  cors_origins                  = local.core_web_app_origins
+  entitycore_url                = "https://${local.cell_a_primary_domain}/api/entitycore"
 }
 
 module "virtual_lab_manager" {

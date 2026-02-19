@@ -1,5 +1,5 @@
 # Subnet for the Thumbnail Generation api
-resource "aws_subnet" "thumbnail_generation_api" {
+resource "aws_subnet" "main" {
   vpc_id                  = var.vpc_id
   availability_zone       = "${var.aws_region}a"
   cidr_block              = "10.0.8.0/24"
@@ -12,14 +12,14 @@ resource "aws_subnet" "thumbnail_generation_api" {
 }
 
 # Link route table to thumbnail_generation_api network
-resource "aws_route_table_association" "thumbnail_generation_api" {
-  subnet_id      = aws_subnet.thumbnail_generation_api.id
+resource "aws_route_table_association" "main" {
+  subnet_id      = aws_subnet.main.id
   route_table_id = var.route_table_id
 }
 
-resource "aws_network_acl" "thumbnail_generation_api" {
+resource "aws_network_acl" "main" {
   vpc_id     = var.vpc_id
-  subnet_ids = [aws_subnet.thumbnail_generation_api.id]
+  subnet_ids = [aws_subnet.main.id]
   # Allow local traffic
   ingress {
     protocol   = -1
