@@ -1,6 +1,6 @@
 
 # Target Group definition
-resource "aws_lb_target_group" "private_tg" {
+resource "aws_lb_target_group" "main" {
   name        = "thumbnail-gen-api-tg-private"
   port        = 80
   protocol    = "HTTP"
@@ -19,13 +19,13 @@ resource "aws_lb_target_group" "private_tg" {
   }
 }
 
-resource "aws_lb_listener_rule" "private" {
+resource "aws_lb_listener_rule" "main" {
   listener_arn = var.private_alb_https_listener_arn
   priority     = 400
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.private_tg.arn
+    target_group_arn = aws_lb_target_group.main.arn
   }
 
   condition {

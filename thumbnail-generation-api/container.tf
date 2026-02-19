@@ -1,6 +1,6 @@
 # Cluster Definition
 
-resource "aws_ecs_cluster" "cluster" {
+resource "aws_ecs_cluster" "main" {
   name = "thumbnail_generation_api_cluster"
 
   tags = {
@@ -79,13 +79,13 @@ resource "aws_iam_policy" "ecs_task_logs" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_attachment" {
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_log_role_attachment" {
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = aws_iam_policy.ecs_task_logs.arn
 }
 
 
-resource "aws_security_group" "sec_group" {
+resource "aws_security_group" "main" {
   name        = "thumbnail_generation_api_sec_group"
   vpc_id      = var.vpc_id
   description = "Sec group for thumbnail generation api"
@@ -97,7 +97,7 @@ resource "aws_security_group" "sec_group" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "allow_port_80" {
-  security_group_id = aws_security_group.sec_group.id
+  security_group_id = aws_security_group.main.id
 
   ip_protocol = "tcp"
   from_port   = 80
@@ -110,7 +110,7 @@ resource "aws_vpc_security_group_ingress_rule" "allow_port_80" {
 }
 
 resource "aws_vpc_security_group_egress_rule" "allow_outgoing_tcp" {
-  security_group_id = aws_security_group.sec_group.id
+  security_group_id = aws_security_group.main.id
   ip_protocol       = "tcp"
   from_port         = 0
   to_port           = 65535
@@ -135,7 +135,7 @@ resource "aws_vpc_security_group_egress_rule" "allow_outgoing_udp" {
 
 
 # Task Definition
-resource "aws_ecs_task_definition" "task_definition" {
+resource "aws_ecs_task_definition" "main" {
   family                   = "thumbnail-generation-api-task-definition"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
@@ -252,8 +252,8 @@ resource "aws_ecs_task_definition" "task_definition" {
 # Service
 resource "aws_ecs_service" "service" {
   name                 = "thumbnail-generation-api-service"
-  cluster              = aws_ecs_cluster.cluster.id
-  task_definition      = aws_ecs_task_definition.task_definition.arn
+  cluster              = aws_ecs_cluster.main.id
+  task_definition      = aws_ecs_task_definition.main.arn
   desired_count        = 1
   force_new_deployment = true
   launch_type          = "FARGATE"
@@ -261,13 +261,13 @@ resource "aws_ecs_service" "service" {
 
   # Load Balancer configuration
   load_balancer {
-    target_group_arn = aws_lb_target_group.private_tg.arn
+    target_group_arn = aws_lb_target_group.main.arn
     container_name   = "thumbnail-generation-api-container"
     container_port   = 80
   }
 
   network_configuration {
-    security_groups  = [aws_security_group.sec_group.id]
+    security_groups  = [aws_security_group.main.id]
     subnets          = [aws_subnet.main.id]
     assign_public_ip = false
   }
@@ -275,7 +275,7 @@ resource "aws_ecs_service" "service" {
   propagate_tags = "SERVICE"
 }
 
-resource "aws_cloudwatch_log_group" "log_group" {
+resource "aws_cloudwatch_log_group" "main" {
   name              = var.log_group_name
   skip_destroy      = false
   retention_in_days = 5
