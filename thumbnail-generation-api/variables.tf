@@ -60,11 +60,6 @@ variable "cors_origins" {
   description = "Origins that are allowed to make requests to the virtual lab api through a browser"
 }
 
-variable "cors_origin_regex" {
-  type        = string
-  description = "Regex covering origins that are allowed to make requests to the virtual lab api through a browser"
-}
-
 variable "entitycore_url" {
   description = "Entitycore URL"
   type        = string
