@@ -38,19 +38,16 @@ variable "vpc_id" {
 }
 
 variable "docker_image_url" {
-  #default     = "bluebrain/thumbnail-generation-api:latest"
   type        = string
   description = "docker image for the thumbnail generation api"
 }
 
 variable "base_path" {
-  #default     = "/api/thumbnail-generation"
   type        = string
   description = "The base path for the Thumbnail Generation API"
 }
 
 variable "log_group_name" {
-  #default     = "thumbnail_generation_api"
   type        = string
   description = "The log name within cloudwatch for the thumbnail generation api"
 }
