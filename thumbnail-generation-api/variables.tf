@@ -61,3 +61,10 @@ variable "entitycore_url" {
   description = "Entitycore URL"
   type        = string
 }
+
+
+variable "cors_origin_regex" {
+  description = "CORS origin regex"
+  type        = string
+  default     = null
+}

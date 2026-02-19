@@ -218,6 +218,10 @@ resource "aws_ecs_task_definition" "main" {
             value = var.base_path
           },
           {
+            name  = "CORS_ORIGIN_REGEX"
+            value = var.cors_origin_regex
+          },
+          {
             name  = "ENVIRONMENT"
             value = "production"
           },
