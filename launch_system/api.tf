@@ -174,10 +174,6 @@ resource "aws_ecs_task_definition" "api" {
           value = "redis://${aws_elasticache_cluster.redis.cache_nodes[0].address}:${aws_elasticache_cluster.redis.port}/0"
         },
         {
-          name  = "KEYCLOAK_CLIENT_ID"
-          value = var.keycloak_client_id
-        },
-        {
           name  = "SIMULATION_LAUNCH_COMMAND"
           value = var.simulation_launch_command
         },

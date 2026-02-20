@@ -1018,7 +1018,6 @@ module "launch_system" {
     "large" = "largenode",
     "small" = "timestamped-neurodamus",
   })
-  keycloak_client_id = "obi-entitysdk-auth"
 
   local_store_prefix = "/nfs"
 
