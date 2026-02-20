@@ -40,4 +40,8 @@ resource "aws_elasticache_cluster" "redis" {
   snapshot_retention_limit = 5
 
   tags = merge(var.tags, { Name = "launch_system_redis" })
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
 }
