@@ -53,7 +53,7 @@ resource "aws_iam_policy" "iam_build_policy" {
           "arn:aws:imagebuilder:${var.aws_region}:${var.account_id}:image/parallelclusterimage-obi*",
           "arn:aws:imagebuilder:${var.aws_region}:${var.account_id}:infrastructure-configuration/parallelclusterimage*",
           "arn:aws:imagebuilder:${var.aws_region}:${var.account_id}:distribution-configuration/parallelclusterimage*",
-          "arn:aws:imagebuilder:${var.aws_region}:${var.account_id}:image-recipe/parallelclusterimage-obi*",
+          "arn:aws:imagebuilder:${var.aws_region}:${var.account_id}:image-recipe/*",
           "arn:aws:imagebuilder:${var.aws_region}:*:image/amazon-linux-2023-x86*"
         ]
       },
