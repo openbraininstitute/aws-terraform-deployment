@@ -941,6 +941,12 @@ module "public_data_sync_opendata" {
   azure_blobstore_opendata_sas_token                 = var.azure_blobstore_opendata_sas_token
   azure_blobstore_internal_public_data_sas_token     = var.azure_blobstore_internal_public_data_sas_token
 
+  azure_datasync_agent_activation_key_uswest2 = var.azure_datasync_agent_activation_key_uswest2
+  azure_datasync_agent_activation_key_useast1 = var.azure_datasync_agent_activation_key_useast1
+  azure_nfs_server_hostname                   = var.azure_nfs_server_hostname
+  azure_nfs_opendata_path                     = var.azure_nfs_opendata_path
+  azure_nfs_internal_public_data_path         = var.azure_nfs_internal_public_data_path
+
   providers = {
     aws           = aws
     aws.uswest2   = aws.uswest2
