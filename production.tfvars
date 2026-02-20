@@ -151,3 +151,7 @@ core_web_app_in_azure_cidr_block = "10.103.1.0/27" # staging azure core web app 
 
 azure_blobstore_opendata_container_url             = "https://obibatchstorageprod.blob.core.windows.net/opendata"
 azure_blobstore_internal_public_data_container_url = "https://obibatchstorageprod.blob.core.windows.net/publicdata"
+
+azure_nfs_server_hostname           = "obibatchnfsprod.file.core.windows.net"
+azure_nfs_opendata_path             = "/obibatchnfsprod/opendata"
+azure_nfs_internal_public_data_path = "/obibatchnfsprod/publicdata"

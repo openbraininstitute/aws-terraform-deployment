@@ -11,5 +11,6 @@ terraform plan -target="module.hpc.module.vpc" \
                -target="module.coreservices_key" \
                -target="aws_apigatewayv2_api.this" \
                -target="module.github_ami_build_role" \
+               -var-file=staging.tfvars \
                -var-file=sandbox-benchmarks.tfvars \
                -out plan.tfplan  && terraform show plan.tfplan

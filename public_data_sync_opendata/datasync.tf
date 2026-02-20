@@ -260,3 +260,98 @@ resource "awscc_datasync_location_azure_blob" "azure_blobstore_internal_public_d
   }
   azure_blob_type = "BLOCK"
 }
+
+resource "aws_datasync_agent" "azure_agent_uswest2" {
+  name           = "azure-agent"
+  activation_key = var.azure_datasync_agent_activation_key_uswest2
+  provider       = aws.uswest2
+}
+
+resource "aws_datasync_agent" "azure_agent_useast1" {
+  name           = "azure-agent"
+  activation_key = var.azure_datasync_agent_activation_key_useast1
+}
+
+resource "aws_datasync_location_nfs" "azure_opendata" {
+  server_hostname = var.azure_nfs_server_hostname
+  subdirectory    = var.azure_nfs_opendata_path
+
+  provider = aws.uswest2
+
+  on_prem_config {
+    agent_arns = [aws_datasync_agent.azure_agent_uswest2.arn]
+  }
+}
+
+resource "aws_datasync_location_nfs" "azure_internal_publicdata" {
+  server_hostname = var.azure_nfs_server_hostname
+  subdirectory    = var.azure_nfs_internal_public_data_path
+
+  on_prem_config {
+    agent_arns = [aws_datasync_agent.azure_agent_useast1.arn]
+  }
+}
+
+resource "aws_datasync_task" "opendata_s3_to_azure_nfs" {
+  destination_location_arn = aws_datasync_location_nfs.azure_opendata.arn
+  source_location_arn      = aws_datasync_location_s3.opendata_source.arn
+
+  provider = aws.uswest2
+
+  includes {
+    filter_type = "SIMPLE_PATTERN"
+    value       = local.opendata_paths
+  }
+
+
+  name = "opendata-s3-to-azure-nfs-sync"
+
+  options {
+    verify_mode            = "ONLY_FILES_TRANSFERRED"
+    preserve_deleted_files = "REMOVE"
+    atime                  = "BEST_EFFORT"
+    mtime                  = "PRESERVE"
+    uid                    = "NONE"
+    gid                    = "NONE"
+    posix_permissions      = "NONE"
+    preserve_devices       = "NONE"
+    bytes_per_second       = -1 # unlimited
+    object_tags            = "NONE"
+  }
+
+  schedule {
+    # apparently you can't have `*` in both day-of-month and day-of-week - one needs to be a ? instead
+    # minute | hour | day of month | month | day of week | year
+    schedule_expression = "cron(0 0 ? * * *)"
+  }
+
+  task_mode = "BASIC"
+}
+
+resource "aws_datasync_task" "internal_s3_to_azure_nfs" {
+  destination_location_arn = aws_datasync_location_nfs.azure_internal_publicdata.arn
+  source_location_arn      = aws_datasync_location_s3.internal_source.arn
+
+  name = "internal-public-data-s3-to-azure-nfs-sync"
+
+  options {
+    verify_mode            = "ONLY_FILES_TRANSFERRED"
+    preserve_deleted_files = "REMOVE"
+    atime                  = "BEST_EFFORT"
+    mtime                  = "PRESERVE"
+    uid                    = "NONE"
+    gid                    = "NONE"
+    posix_permissions      = "NONE"
+    preserve_devices       = "NONE"
+    bytes_per_second       = -1 # unlimited
+    object_tags            = "NONE"
+  }
+
+  schedule {
+    # apparently you can't have `*` in both day-of-month and day-of-week - one needs to be a ? instead
+    # minute | hour | day of month | month | day of week | year
+    schedule_expression = "cron(0 0 ? * * *)"
+  }
+
+  task_mode = "BASIC"
+}

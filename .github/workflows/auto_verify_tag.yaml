@@ -13,6 +13,8 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       TF_VAR_azure_blobstore_opendata_sas_token: ${{ secrets.AZURE_BLOBSTORE_OPENDATA_SAS_TOKEN }}
       TF_VAR_azure_blobstore_internal_public_data_sas_token: ${{ secrets.AZURE_BLOBSTORE_INTERNAL_PUBLIC_DATA_SAS_TOKEN }}
+      TF_VAR_azure_datasync_agent_activation_key_uswest2: ${{ secrets.AZURE_DATASYNC_AGENT_ACTIVATION_KEY_USWEST2 }}
+      TF_VAR_azure_datasync_agent_activation_key_useast1: ${{ secrets.AZURE_DATASYNC_AGENT_ACTIVATION_KEY_USEAST1 }}
 
     runs-on: ubuntu-latest
     name: Auto Verify & plan terraform code
