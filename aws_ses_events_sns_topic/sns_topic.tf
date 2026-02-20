@@ -3,8 +3,8 @@ resource "aws_sns_topic" "topic" {
 }
 
 resource "aws_cloudwatch_event_rule" "event_rule" {
-  name        = "aws-generic-error-event-rule"
-  description = "Triggers on any event with eventType: ERROR"
+  name        = "aws-ses-event-rule"
+  description = "Triggers on SES events"
   event_pattern = jsonencode({
     "source" : ["aws.ses"],
     "detail-type" : [
