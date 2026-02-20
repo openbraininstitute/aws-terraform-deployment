@@ -34,4 +34,8 @@ resource "aws_elasticache_cluster" "vlm_redis_cluster" {
 
   snapshot_retention_limit = 5
   tags                     = var.virtual_lab_manager_tags
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
 }

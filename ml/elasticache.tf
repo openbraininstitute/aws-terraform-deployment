@@ -34,4 +34,8 @@ resource "aws_elasticache_cluster" "ml_redis_cluster" {
 
   snapshot_retention_limit = 5
   tags                     = var.tags
+
+  lifecycle {
+    ignore_changes = [tags]
+  }
 }
