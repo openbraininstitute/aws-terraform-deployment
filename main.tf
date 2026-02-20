@@ -835,6 +835,7 @@ module "thumbnail_generation_api" {
   base_path                     = "/api/thumbnail-generation"
   log_group_name                = "thumbnail_generation_api"
   cors_origins                  = local.core_web_app_origins
+  cors_origin_regex             = local.core_web_app_cors_origin_regex
   entitycore_url                = "https://${local.cell_a_primary_domain}/api/entitycore"
 }
 
