@@ -319,12 +319,6 @@ resource "aws_datasync_task" "opendata_s3_to_azure_nfs" {
     object_tags            = "NONE"
   }
 
-  schedule {
-    # apparently you can't have `*` in both day-of-month and day-of-week - one needs to be a ? instead
-    # minute | hour | day of month | month | day of week | year
-    schedule_expression = "cron(0 0 ? * * *)"
-  }
-
   task_mode = "BASIC"
 }
 
@@ -345,12 +339,6 @@ resource "aws_datasync_task" "internal_s3_to_azure_nfs" {
     preserve_devices       = "NONE"
     bytes_per_second       = -1 # unlimited
     object_tags            = "NONE"
-  }
-
-  schedule {
-    # apparently you can't have `*` in both day-of-month and day-of-week - one needs to be a ? instead
-    # minute | hour | day of month | month | day of week | year
-    schedule_expression = "cron(0 0 ? * * *)"
   }
 
   task_mode = "BASIC"
