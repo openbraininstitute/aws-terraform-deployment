@@ -175,6 +175,31 @@ module "generic_aws_errors_sns_entries_to_teams" {
   handler           = "aws_json_log_sns_to_teams.handle_eventbridge_aws_error_event"
 }
 
+module "aws_ses_events_sns_topic" {
+  source = "./aws_ses_events_sns_topic"
+}
+
+module "debug_aws_ses_events_sns_topic" {
+  source = "./sqs_debug_queue"
+
+  sns_topic_arn             = module.aws_ses_events_sns_topic.sns_topic_arn
+  unique_short_name         = "ses_events"
+  message_retention_seconds = 172800 # 2 days
+}
+
+module "aws_ses_events_sns_entries_to_teams" {
+  source = "./sns_entries_to_teams"
+
+  webhook_secret_arn = local.teams_webhook_secrets_arn
+  webhook_secret_key = "ses_events"
+
+  unique_short_name = "ses_events"
+  sns_topic_arn     = module.aws_ses_events_sns_topic.sns_topic_arn
+  python_runtime    = "python3.13"
+  handler           = "aws_json_log_sns_to_teams.handle_eventbridge_ses_event"
+}
+
+
 # to be replaced soon
 # module "deployments_sns_to_teams" {
 #   source = "./sns_lambda_to_teams"
@@ -804,13 +829,13 @@ module "thumbnail_generation_api" {
   vpc_cidr_block                 = local.vpc_cidr_block
   vpc_id                         = local.vpc_id
 
-  aws_region                                = local.aws_region
-  allowed_source_ip_cidr_blocks             = ["0.0.0.0/0"]
-  thumbnail_generation_api_docker_image_url = var.thumbnail_generation_api_docker_image_url
-  thumbnail_generation_api_base_path        = "/api/thumbnail-generation"
-  thumbnail_generation_api_log_group_name   = "thumbnail_generation_api"
-  thumbnail_generation_api_cors_origins     = local.core_web_app_origins
-  entitycore_url                            = "https://${local.cell_a_primary_domain}/api/entitycore"
+  aws_region                    = local.aws_region
+  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
+  docker_image_url              = var.thumbnail_generation_api_docker_image_url
+  base_path                     = "/api/thumbnail-generation"
+  log_group_name                = "thumbnail_generation_api"
+  cors_origins                  = local.core_web_app_origins
+  entitycore_url                = "https://${local.cell_a_primary_domain}/api/entitycore"
 }
 
 module "virtual_lab_manager" {

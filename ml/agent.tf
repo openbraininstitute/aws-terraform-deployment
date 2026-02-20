@@ -69,97 +69,97 @@ module "ecs_service_agent" {
       ]
       environment = [
         {
-          name  = "NEUROAGENT_ACCOUNTING__BASE_URL"
+          name  = "NEUROAGENT__ACCOUNTING__BASE_URL"
           value = "https://${var.primary_domain}/api/accounting"
         },
         {
-          name  = "NEUROAGENT_DB__HOST"
+          name  = "NEUROAGENT__DB__HOST"
           value = module.ml_rds_postgres.db_instance_address
         },
         {
-          name  = "NEUROAGENT_DB__NAME"
+          name  = "NEUROAGENT__DB__NAME"
           value = var.rds_db_name
         },
         {
-          name  = "NEUROAGENT_DB__PORT"
+          name  = "NEUROAGENT__DB__PORT"
           value = module.ml_rds_postgres.db_instance_port
         },
         {
-          name  = "NEUROAGENT_DB__PREFIX"
+          name  = "NEUROAGENT__DB__PREFIX"
           value = "postgresql+asyncpg://"
         },
         {
-          name  = "NEUROAGENT_DB__USER"
+          name  = "NEUROAGENT__DB__USER"
           value = module.ml_rds_postgres.db_instance_username
         },
         {
-          name  = "NEUROAGENT_KEYCLOAK__ISSUER"
+          name  = "NEUROAGENT__KEYCLOAK__ISSUER"
           value = var.keycloak_sbo_realm_url
         },
         {
-          name  = "NEUROAGENT_LLM__WHITELISTED_MODEL_IDS_REGEX"
+          name  = "NEUROAGENT__LLM__WHITELISTED_MODEL_IDS_REGEX"
           value = "openai/gpt-5.*"
         },
         {
-          name  = "NEUROAGENT_MISC__APPLICATION_PREFIX"
+          name  = "NEUROAGENT__MISC__APPLICATION_PREFIX"
           value = "/api/agent"
         },
         {
-          name  = "NEUROAGENT_MISC__CORS_ORIGINS"
+          name  = "NEUROAGENT__MISC__CORS_ORIGINS"
           value = join(",", var.cors_origins)
         },
         {
-          name  = "NEUROAGENT_STORAGE__BUCKET_NAME"
+          name  = "NEUROAGENT__STORAGE__BUCKET_NAME"
           value = var.neuroagent_bucket_name
         },
         {
-          name  = "NEUROAGENT_RATE_LIMITER__LIMIT_CHAT"
+          name  = "NEUROAGENT__RATE_LIMITER__LIMIT_CHAT"
           value = "30"
         },
         {
-          name  = "NEUROAGENT_RATE_LIMITER__REDIS_HOST"
+          name  = "NEUROAGENT__RATE_LIMITER__REDIS_HOST"
           value = aws_elasticache_cluster.ml_redis_cluster.cache_nodes[0].address
         },
         {
-          name  = "NEUROAGENT_RATE_LIMITER__REDIS_PORT"
+          name  = "NEUROAGENT__RATE_LIMITER__REDIS_PORT"
           value = aws_elasticache_cluster.ml_redis_cluster.port
         },
         {
-          name  = "NEUROAGENT_TOOLS__OBI_ONE__URL"
+          name  = "NEUROAGENT__TOOLS__OBI_ONE__URL"
           value = "https://${var.primary_domain}/api/obi-one"
         },
         {
-          name  = "NEUROAGENT_TOOLS__ENTITYCORE__URL"
+          name  = "NEUROAGENT__TOOLS__ENTITYCORE__URL"
           value = "https://${var.primary_domain}/api/entitycore"
         },
         {
-          name  = "NEUROAGENT_TOOLS__THUMBNAIL_GENERATION__URL"
+          name  = "NEUROAGENT__TOOLS__THUMBNAIL_GENERATION__URL"
           value = "https://${var.primary_domain}/api/thumbnail-generation"
         },
         {
-          name  = "NEUROAGENT_TOOlS__FRONTEND_BASE_URL"
+          name  = "NEUROAGENT__TOOlS__FRONTEND_BASE_URL"
           value = "https://${var.primary_domain}"
         },
         {
-          name  = "NEUROAGENT_TOOLS__WHITELISTED_TOOL_REGEX"
+          name  = "NEUROAGENT__TOOLS__WHITELISTED_TOOL_REGEX"
           value = "^(?!.*(downloadone|measurementannotation|entitycore-simulation|entitycore-singleneuron|synaptome|experimentalsynapsesperconnection)).*"
         },
       ]
       secrets = [
         {
-          name      = "NEUROAGENT_DB__PASSWORD"
+          name      = "NEUROAGENT__DB__PASSWORD"
           valueFrom = "${module.ml_rds_postgres.db_instance_master_user_secret_arn}:password::"
         },
         {
-          name      = "NEUROAGENT_LLM__OPENAI_TOKEN"
+          name      = "NEUROAGENT__LLM__OPENAI_TOKEN"
           valueFrom = "${var.ml_secrets_arn}:OPENAI_API_KEY::"
         },
         {
-          name      = "NEUROAGENT_LLM__OPEN_ROUTER_TOKEN"
+          name      = "NEUROAGENT__LLM__OPEN_ROUTER_TOKEN"
           valueFrom = "${var.ml_secrets_arn}:OPENROUTER_API_KEY::"
         },
         {
-          name      = "NEUROAGENT_TOOLS__EXA_API_KEY"
+          name      = "NEUROAGENT__TOOLS__EXA_API_KEY"
           valueFrom = "${var.ml_secrets_arn}:EXA_API_KEY::"
         },
       ]
