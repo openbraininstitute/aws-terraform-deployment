@@ -17,10 +17,10 @@ notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/n
 notebook_service_cors_allowed_origins     = "[\"https://www.openbraininstitute.org\", \"https://cell-a.openbraininstitute.org\", \"https://cell-b.openbraininstitute.org\", \"https://www.cell-b.openbraininstitute.org\"]"
 notebook_service_bucket_name              = "obi-notebook-service-statistics-prod"
 notebook_service_aws_k8s_thread_enabled   = true
-notebook_service_azure_k8s_thread_enabled = false
+notebook_service_azure_k8s_thread_enabled = true
 notebook_service_aws_accounting_enabled   = true
-notebook_service_azure_accounting_enabled = false
-notebook_service_azure_storage_account    = "obijupyterproduction"
+notebook_service_azure_accounting_enabled = true
+notebook_service_azure_storage_account    = "obijupstorageprod"
 
 keycloak_sbo_realm_url = "https://cell-a.openbraininstitute.org/auth/realms/SBO"
 keycloak_url_with_auth = "https://cell-a.openbraininstitute.org/auth/"
@@ -151,3 +151,7 @@ core_web_app_in_azure_cidr_block = "10.103.1.0/27" # staging azure core web app 
 
 azure_blobstore_opendata_container_url             = "https://obibatchstorageprod.blob.core.windows.net/opendata"
 azure_blobstore_internal_public_data_container_url = "https://obibatchstorageprod.blob.core.windows.net/publicdata"
+
+azure_nfs_server_hostname           = "obibatchnfsprod.file.core.windows.net"
+azure_nfs_opendata_path             = "/obibatchnfsprod/opendata"
+azure_nfs_internal_public_data_path = "/obibatchnfsprod/publicdata"

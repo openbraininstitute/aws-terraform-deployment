@@ -419,3 +419,30 @@ variable "azure_blobstore_internal_public_data_sas_token" {
   sensitive   = true
   description = "SAS token with write access to the internal public data blobstore container"
 }
+
+variable "azure_datasync_agent_activation_key_uswest2" {
+  type        = string
+  sensitive   = true
+  description = "Activation key for the AWS DataSync agent deployed on Azure for the uswest2 AWS region. Short-lived, must be set right before deploy."
+}
+
+variable "azure_datasync_agent_activation_key_useast1" {
+  type        = string
+  sensitive   = true
+  description = "Activation key for the AWS DataSync agent deployed on Azure for the useast1 AWS region. Short-lived, must be set right before deploy."
+}
+
+variable "azure_nfs_server_hostname" {
+  type        = string
+  description = "Hostname for the NFS share for opendata and internal_public_data"
+}
+
+variable "azure_nfs_opendata_path" {
+  type        = string
+  description = "NFS export path for opendata on azure"
+}
+
+variable "azure_nfs_internal_public_data_path" {
+  type        = string
+  description = "NFS export path for internal_public_data on azure"
+}

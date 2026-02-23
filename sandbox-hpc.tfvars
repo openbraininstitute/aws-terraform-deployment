@@ -86,7 +86,7 @@ keycloak_task_size = {
   memory = 2048
 }
 coreservices_public_key                    = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCy8UW1JdUjIuiiaI+xFId3smXFe6iwxdn6Klqi8y4E+cFHP/uQxW4AuCfJVoOjOQ2CNU0UIGRlCkw3IwUmZvwGjFZS1Vs6jt+KjWiDRdFzQQrz5+vuqPX2576wXlT+EHe0W6r7Qla5i1L6cjz6/E4u5yFZ3MJQSBYjLqXjT7Da4R72gPx9oiIoSH2JBu3vHyfkTEo3l6C+WJlYnUGOLnUxGGGnhJrBKmIRNMmtRNgQlBkPR4mnCAFABJfgpzgNf4bpqLbma5DabQGbvpX6qCLSAV5Zdd4gBQLIAJfS/a5pMWaIy9qDTWB2vy4Z39HI45k6efrLL+xgo+XYSRqn5jDT heeren@Mac"
-hpc_resource_provisioner_container_version = "0.5.12.dev12"
+hpc_resource_provisioner_container_version = "0.5.13.dev4"
 
 hpc_resource_provisioner_data_bucket        = "s3://sbonexusdata-sandbox"
 infrastructureassets_bucket                 = "s3://sboinfrastructureassets-sandbox"
@@ -133,6 +133,18 @@ launch_system_executor_task_size = {
 
 launch_system_orchestrator_num_workers = 2
 
-opendata_paths_list = "staging_opendata_paths.txt"
+opendata_paths_list = "sandbox-hpc_opendata_paths.txt"
 
-core_web_app_in_azure_cidr_block = "10.102.1.0/27" # staging azure core web app aca range
+core_web_app_in_azure_cidr_block    = "10.102.1.0/27" # staging azure core web app aca range
+core_web_app_stripe_publishable_key = "placeholder"
+
+azure_blobstore_opendata_container_url             = "https://obibatchstorageehe.blob.core.windows.net/opendata"
+azure_blobstore_internal_public_data_container_url = "https://obibatchstorageehe.blob.core.windows.net/publicdata"
+azure_blobstore_opendata_sas_token                 = "placeholder"
+azure_blobstore_internal_public_data_sas_token     = "placeholder"
+
+azure_datasync_agent_activation_key_uswest2 = "placeholder"
+azure_datasync_agent_activation_key_useast1 = "placeholder"
+azure_nfs_server_hostname                   = "obibatchnfsehe.file.core.windows.net"
+azure_nfs_opendata_path                     = "/obibatchnfsehe/opendata"
+azure_nfs_internal_public_data_path         = "/obibatchnfsehe/publicdata"
