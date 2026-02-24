@@ -37,6 +37,24 @@ resource "aws_network_acl" "public" {
     from_port  = 443
     to_port    = 443
   }
+  # Deny RDP from anywhere
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 120
+    action     = "deny"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 3389
+    to_port    = 3389
+  }
+  # Allow ingress to all other ephemeral ports
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 900
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 1024
+    to_port    = 65535
+  }
   egress {
     protocol   = -1
     rule_no    = 100
