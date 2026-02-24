@@ -28,8 +28,8 @@ keycloak_url_with_auth = "https://staging.cell-a.openbraininstitute.org/auth/"
 
 neuroagent_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-v0.16.1"
 
-small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2026.02.20.1"
-small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2026.02.20.1"
+small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2026.02.24.1"
+small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2026.02.24.1"
 small_scale_simulator_api_task_size = {
   cpu    = 256
   memory = 512
