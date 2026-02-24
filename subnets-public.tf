@@ -19,15 +19,6 @@ resource "aws_network_acl" "public" {
     from_port  = 0
     to_port    = 0
   }
-  # Allow ssh port 22 from anywhere
-  ingress {
-    protocol   = "tcp"
-    rule_no    = 102
-    action     = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port  = 22
-    to_port    = 22
-  }
   # Allow port 80 from anywhere
   ingress {
     protocol   = "tcp"
@@ -46,17 +37,7 @@ resource "aws_network_acl" "public" {
     from_port  = 443
     to_port    = 443
   }
-  # Allow ingress to all other ephemeral ports
-  ingress {
-    protocol   = "tcp"
-    rule_no    = 900
-    action     = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port  = 1024
-    to_port    = 65535
-  }
   egress {
-    # TODO limit to dockerhub, secretsmanager, nexus...
     protocol   = -1
     rule_no    = 100
     action     = "allow"
