@@ -141,17 +141,9 @@ resource "aws_ecs_task_definition" "default_executor" {
       image = var.default_executor_image_url
       environment = [
         {
-          name  = "DEPLOYMENT"
-          value = var.deployment_env
-        },
-        {
           name  = "EXECUTOR_NAME"
           value = "default"
-        },
-        {
-          name  = "LOCAL_STORE_PREFIX"
-          value = local.local_store_prefix
-        },
+        }
       ]
       logConfiguration = merge(local.executor_container_base.logConfiguration, {
         options = merge(local.executor_container_base.logConfiguration.options, {
@@ -194,17 +186,9 @@ resource "aws_ecs_task_definition" "inait_executor" {
       image = var.default_executor_image_url
       environment = [
         {
-          name  = "DEPLOYMENT"
-          value = var.deployment_env
-        },
-        {
           name  = "EXECUTOR_NAME"
           value = "inait"
-        },
-        {
-          name  = "LOCAL_STORE_PREFIX"
-          value = local.local_store_prefix
-        },
+        }
       ]
       secrets = [
         {

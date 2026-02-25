@@ -92,6 +92,10 @@ resource "aws_ecs_task_definition" "orchestrator" {
           name  = "ORCHESTRATOR_CLUSTER_TASK_MAXIMUM_RUNTIME"
           value = var.cluster_task_maximum_runtime
         },
+	{
+	  name = "ORCHESTRATOR_DEPLOYMENT"
+	  value = var.deployment_env
+	},
         {
           name  = "ORCHESTRATOR_ENTITYCORE_URL"
           value = var.entitycore_url
