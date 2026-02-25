@@ -995,7 +995,6 @@ module "launch_system" {
   # allowed_source_ip_cidr_blocks = [local.vpc_cidr_block]
 
   secrets_arn  = local.launch_system_secrets_arn
-  secrets      = jsondecode(local.launch_system_secrets_arn)
 
   cors_origins = local.core_web_app_origins
 
