@@ -1044,8 +1044,8 @@ module "launch_system" {
             type            = "machine"
             launch_type     = "FARGATE"
             cluster_name    = aws_ecs_cluster.executor.name
-            subnets         = jsonencode([var.untrusted_a_subnet_id, var.untrusted_b_subnet_id])
-            security_groups = jsonencode([aws_security_group.executor.id])
+            subnets         = [var.untrusted_a_subnet_id, var.untrusted_b_subnet_id]
+            security_groups = [aws_security_group.executor.id]
             task_family     = aws_ecs_task_definition.default_executor.family
           },
           {
@@ -1056,23 +1056,22 @@ module "launch_system" {
             type            = "machine"
             launch_type     = "FARGATE"
             cluster_name    = aws_ecs_cluster.executor.name
-            subnets         = jsonencode([var.untrusted_a_subnet_id, var.untrusted_b_subnet_id])
-            security_groups = jsonencode([aws_security_group.executor.id])
+            subnets         = [var.untrusted_a_subnet_id, var.untrusted_b_subnet_id]
+            security_groups = [aws_security_group.executor.id]
             task_family     = aws_ecs_task_definition.inait_executor.family
           }
         ]
 
         cluster = []
       }
-    }
-
+    },
     cell_b = {
       region          = "southcentralus"
       vendor          = "azure"
-      subscription_id = "${SECRET:AZ_SUBSCRIPTION_ID"
-      tenant_id       = "${SECRET:AZ_TENANT_ID}"
-      client_id       = "${SECRET:AZ_CLIENT_ID}"
-      client_secret   = "${SECRET:AZ_CLIENT_SECRET}"
+      subscription_id = "$${SECRET:AZ_SUBSCRIPTION_ID}"
+      tenant_id       = "$${SECRET:AZ_TENANT_ID}"
+      client_id       = "$${SECRET:AZ_CLIENT_ID}"
+      client_secret   = "$${SECRET:AZ_CLIENT_SECRET}"
 
       executors = {
         machine = [
@@ -1100,9 +1099,9 @@ module "launch_system" {
 
         cluster = {
           type                = "cluster"
-          batch_account_url   = "${SECRET:AZ_BATCH_ACCOUNT_URL}"
+          batch_account_url   = "$${SECRET:AZ_BATCH_ACCOUNT_URL}"
           username            = "?"
-          upload_blob_sas_url = "${SECRET:AZ_UPLOAD_BLOB_SAS_URL}"
+          upload_blob_sas_url = "$${SECRET:AZ_UPLOAD_BLOB_SAS_URL}"
           instance_types = {
             large = "largenode"
             small = "timestamped-neurodamus"
