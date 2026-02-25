@@ -92,10 +92,10 @@ resource "aws_ecs_task_definition" "orchestrator" {
           name  = "ORCHESTRATOR_CLUSTER_TASK_MAXIMUM_RUNTIME"
           value = var.cluster_task_maximum_runtime
         },
-	{
-	  name = "ORCHESTRATOR_DEPLOYMENT"
-	  value = var.deployment_env
-	},
+        {
+          name  = "ORCHESTRATOR_DEPLOYMENT"
+          value = var.deployment_env
+        },
         {
           name  = "ORCHESTRATOR_ENTITYCORE_URL"
           value = var.entitycore_url
@@ -104,10 +104,10 @@ resource "aws_ecs_task_definition" "orchestrator" {
           name  = "ORCHESTRATOR_LOCAL_STORE_PREFIX"
           value = var.local_store_prefix
         },
-	{
-	  name = "ORCHESTRATOR_COMPUTE_CELL_DEFINITIONS"
-	  value = var.compute_cell_definitions_tmpl
-	}
+        {
+          name  = "ORCHESTRATOR_COMPUTE_CELL_DEFINITIONS"
+          value = var.compute_cell_definitions_tmpl
+        },
         {
           name  = "REDIS_HOST"
           value = aws_elasticache_cluster.redis.cache_nodes[0].address
@@ -132,9 +132,9 @@ resource "aws_ecs_task_definition" "orchestrator" {
 
       secrets = [
         {
-	  name      = "ORCHESTRATOR_SECRETS"
-	  valueFrom = ${var.secrets_arn}
-	}
+          name      = "ORCHESTRATOR_SECRETS"
+          valueFrom = var.secrets_arn
+        }
       ]
 
       logConfiguration = {

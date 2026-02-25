@@ -222,7 +222,7 @@ variable "local_store_prefix" {
   type        = string
 }
 
-variable compute_cell_definitions_tmpl {
+variable "compute_cell_definitions_tmpl" {
   description = "Definitions of available executors in all compute cell domains"
   type        = string
 }

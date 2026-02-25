@@ -1109,9 +1109,7 @@ module "launch_system" {
         }
       }
     }
-  }
-})
-
+  })
 
   local_store_prefix = "/nfs"
 
