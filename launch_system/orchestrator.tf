@@ -130,6 +130,30 @@ resource "aws_ecs_task_definition" "orchestrator" {
         },
       ]
 
+      # ORCHESTRATOR_SECRETS
+      # --------------------
+      # This must be the ARN of an AWS Secrets Manager secret containing a JSON object. 
+      #
+      # The JSON keys must match the $${SECRET:<KEY>} placeholders defined in
+      # launch_system/compute_cell_definitions.tf under `compute_cell_definitions`.
+      #
+      # These secrets are interpolated into ORCHESTRATOR_COMPUTE_CELL_DEFINITIONS
+      # at runtime.
+      #
+      # Example expected secret JSON structure:
+      #
+      # {
+      #   "AZ_SUBSCRIPTION_ID": "...",
+      #   "AZ_TENANT_ID": "...",
+      #   "AZ_CLIENT_ID": "...",
+      #   "AZ_CLIENT_SECRET": "...",
+      #   "AZ_BATCH_ACCOUNT_URL": "...",
+      #   "AZ_UPLOAD_BLOB_SAS_URL": "..."
+      # }
+      #
+      # See launch_system/compute_cell_definitions.tf for the full list of
+      # required SECRET placeholders.
+      #
       secrets = [
         {
           name      = "ORCHESTRATOR_SECRETS"
