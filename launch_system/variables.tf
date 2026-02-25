@@ -81,15 +81,6 @@ variable "db_allocated_storage" {
   type        = number
 }
 
-variable "az_region" {
-  description = "region in Azure"
-  type        = string
-}
-
-variable "az_instance_types" {
-  description = "JSON of what the the mapping of instance type to azure queue is; format is 'name' -> 'batchpoolname'."
-  type        = string
-}
 
 variable "secrets_arn" {
   # Need the following secrets:
