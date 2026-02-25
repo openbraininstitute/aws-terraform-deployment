@@ -146,16 +146,8 @@ resource "aws_ecs_task_definition" "api" {
           value = var.db_username
         },
         {
-          name  = "AZ_INSTANCE_TYPES"
-          value = var.az_instance_types
-        },
-        {
           name  = "ENTITYCORE_URL"
           value = var.entitycore_url
-        },
-        {
-          name  = "LAUNCH_SYSTEM_API_URL"
-          value = var.launch_system_api_url
         },
         {
           name  = "AUTH_MANAGER_URL"
@@ -172,10 +164,6 @@ resource "aws_ecs_task_definition" "api" {
         {
           name  = "REDIS_URL" # deprecated, use REDIS_HOST and REDIS_PORT
           value = "redis://${aws_elasticache_cluster.redis.cache_nodes[0].address}:${aws_elasticache_cluster.redis.port}/0"
-        },
-        {
-          name  = "SIMULATION_LAUNCH_COMMAND"
-          value = var.simulation_launch_command
         },
       ]
 
