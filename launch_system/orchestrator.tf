@@ -106,7 +106,7 @@ resource "aws_ecs_task_definition" "orchestrator" {
         },
         {
           name  = "ORCHESTRATOR_COMPUTE_CELL_DEFINITIONS"
-          value = var.compute_cell_definitions_tmpl
+          value = local.compute_cell_definitions_tmpl
         },
         {
           name  = "REDIS_HOST"
