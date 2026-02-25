@@ -74,7 +74,7 @@ locals {
         cluster = {
           type                = "cluster"
           batch_account_url   = "$${SECRET:AZ_BATCH_ACCOUNT_URL}"
-          username            = "?"
+          username            = "obiuser"
           upload_blob_sas_url = "$${SECRET:AZ_UPLOAD_BLOB_SAS_URL}"
           instance_types = {
             large = "largenode"
