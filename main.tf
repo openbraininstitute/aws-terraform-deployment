@@ -199,6 +199,14 @@ module "aws_ses_events_sns_entries_to_teams" {
   handler           = "aws_json_log_sns_to_teams.handle_eventbridge_ses_event"
 }
 
+module "eventbridge_archive_for_ses_events" {
+  source = "./eventbridge_archive"
+
+  eventbridge_pattern_source      = ["aws.ses"]
+  eventbridge_archive_description = "Test archive of SES events"
+  eventbridge_archive_name        = "aws_ses_archive"
+  eventbridge_retention_days      = 4
+}
 
 # to be replaced soon
 # module "deployments_sns_to_teams" {
