@@ -56,7 +56,24 @@ module "jupyterhub_eks" {
 
   public_data_efs_ip_address1_as_cidr = var.public_data_efs_ip_address1_as_cidr
   public_data_efs_ip_address2_as_cidr = var.public_data_efs_ip_address2_as_cidr
+
+  # Only used in staging
+  is_lustre_filesystem_enabled = var.is_staging
+  s3_bucket_name               = "jupyterhub-s3-shared-volume"
 }
+
+module "filesystems_test_vm" {
+  count  = var.is_staging ? 1 : 0
+  source = "./filesystems_test_vm"
+
+  ec2_type                           = "m6i.large"
+  jupyterhub_eks_private_a_subnet_id = module.jupyterhub_eks.private_subnet_a_id
+  jupyterhub_eks_private_b_subnet_id = module.jupyterhub_eks.private_subnet_b_id
+  aws_coreservices_ssh_key_id        = var.aws_coreservices_ssh_key_id
+  vpc_id                             = var.vpc_id
+  public_data_efs_arn                = var.public_data_efs_arn
+}
+
 
 module "keycloak" {
   source                         = "./keycloak"

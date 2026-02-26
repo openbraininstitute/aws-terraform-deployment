@@ -7,3 +7,11 @@ output "jupyterhub_homedirs_efs_security_group_id" {
   description = "ID of the security group of the EFS filesystem with the jupyterhub home dirs"
   value       = aws_security_group.efs_homedirs_sg.id
 }
+
+output "private_subnet_a_id" {
+  value = aws_subnet.jupyterhub_eks_private_a.id
+}
+
+output "private_subnet_b_id" {
+  value = aws_subnet.jupyterhub_eks_private_b.id
+}

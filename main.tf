@@ -124,6 +124,7 @@ module "cs" {
 
   public_data_efs_ip_address1_as_cidr = module.public_data_efs_storage.mount_target_ip_address1_as_cidr
   public_data_efs_ip_address2_as_cidr = module.public_data_efs_storage.mount_target_ip_address2_as_cidr
+  public_data_efs_arn                 = module.public_data_efs_storage.public_launch_data_efs_arn
 }
 
 module "backups" {

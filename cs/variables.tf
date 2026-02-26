@@ -131,3 +131,9 @@ variable "public_data_efs_ip_address2_as_cidr" {
   type        = string
   sensitive   = false
 }
+
+variable "public_data_efs_arn" {
+  description = "ARN of the 'public launch data' EFS filesystem"
+  type        = string
+  sensitive   = false
+}
