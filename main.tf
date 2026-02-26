@@ -1031,10 +1031,10 @@ module "launch_system" {
   local_store_prefix = "/nfs"
 
   codeartifact_config = {
-    domain = "openbraininstitute"
+    domain       = "openbraininstitute"
     domain_owner = "985539765147"
-    repository = "pypi-prod"
-    region = "us-east-1"
+    repository   = "pypi-prod"
+    region       = "us-east-1"
   }
 
   public_launch_data_efs_id            = module.public_data_efs_storage.public_launch_data_efs_id
