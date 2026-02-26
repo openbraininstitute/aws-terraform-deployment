@@ -317,6 +317,32 @@ resource "aws_iam_role_policy_attachment" "api_secrets_access" {
   policy_arn = aws_iam_policy.secrets_access.arn
 }
 
+resource "aws_iam_policy" "api_codeartifact_read" {
+  name_prefix = "launch_system_api_codeartifact"
+  description = "Allow the launch system API task to pull packages from CodeArtifact"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "sts:GetServiceBearerToken",
+          "codeartifact:GetAuthorizationToken",
+          "codeartifact:GetRepositoryEndpoint",
+          "codeartifact:ReadFromRepository",
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "api_codeartifact_read" {
+  role       = aws_iam_role.api_task.name
+  policy_arn = aws_iam_policy.api_codeartifact_read.arn
+}
+
 resource "aws_iam_role_policy_attachment" "api_logs_access" {
   role       = aws_iam_role.api_execution.name
   policy_arn = aws_iam_policy.api_logs_access.arn
