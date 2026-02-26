@@ -88,6 +88,8 @@ def parse_log_event_json_to_readable_message(msg: Dict[str,Any]) -> str:
         final_message += f"Message: {msg['message']}\n\n"
     if "exception" in msg:
         final_message += f"Exception: {msg['exception']}\n\n"
+    if "extra" in msg and "request_id" in msg["extra"]:
+        final_message += f"Request id: {msg['extra']['request_id']}\n\n"
     return final_message
 
 def handle_eventbridge_cost_anomaly_event(event: Dict[str, Any], _) -> Dict[str, Any]:
