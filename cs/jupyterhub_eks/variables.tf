@@ -105,3 +105,12 @@ variable "public_data_efs_ip_address2_as_cidr" {
   type        = string
   sensitive   = false
 }
+
+variable "is_lustre_filesystem_enabled" {
+  type = bool
+}
+
+variable "s3_bucket_name" {
+  type        = string
+  description = "The S3 bucket that will be associated with the lustre fileystems"
+}
