@@ -2,33 +2,8 @@ resource "aws_sns_topic" "topic" {
   name = "ses-emails-events"
 }
 
-resource "aws_cloudwatch_event_rule" "event_rule" {
-  name        = "aws-ses-event-rule"
-  description = "Triggers on SES events"
-  event_pattern = jsonencode({
-    "source" : ["aws.ses"],
-    "detail-type" : [
-      "Email Bounced",
-      "Email Clicked",
-      "Email Complaint Received",
-      "Email Delivered",
-      "Email Delivery Delayed",
-      "Email Opened",
-      "Email Rejected",
-      "Email Rendering Failed",
-      "Email Sent",
-      "Email Subscribed"
-    ]
-  })
-}
 
-resource "aws_cloudwatch_event_target" "send_to_sns" {
-  rule      = aws_cloudwatch_event_rule.event_rule.name
-  target_id = "aws-ses-events-to-sns"
-  arn       = aws_sns_topic.topic.arn
-}
-
-data "aws_iam_policy_document" "allow_eventbridge_sns_topic" {
+data "aws_iam_policy_document" "allow_access_to_sns_topic" {
   policy_id = "aws_ses_events_sns_topic_policy"
 
   statement {
@@ -40,7 +15,7 @@ data "aws_iam_policy_document" "allow_eventbridge_sns_topic" {
 
     principals {
       type        = "Service"
-      identifiers = ["events.amazonaws.com"]
+      identifiers = ["ses.amazonaws.com"]
     }
 
     resources = [
@@ -51,7 +26,7 @@ data "aws_iam_policy_document" "allow_eventbridge_sns_topic" {
   }
 }
 
-resource "aws_sns_topic_policy" "allow_eventbridge" {
+resource "aws_sns_topic_policy" "allow_access_to_sns_topic" {
   arn    = aws_sns_topic.topic.arn
-  policy = data.aws_iam_policy_document.allow_eventbridge_sns_topic.json
+  policy = data.aws_iam_policy_document.allow_access_to_sns_topic.json
 }
