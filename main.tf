@@ -1028,7 +1028,7 @@ module "launch_system" {
   auth_manager_url      = "https://${local.cell_a_primary_domain}/api/auth-manager"
   launch_system_api_url = "https://${local.cell_a_primary_domain}/api/launch-system"
 
-  local_store_prefix = "/nfs"
+  local_store_prefix = "/data"
 
   codeartifact_config = {
     domain       = "openbraininstitute"
