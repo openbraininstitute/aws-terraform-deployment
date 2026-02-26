@@ -105,6 +105,10 @@ resource "aws_ecs_task_definition" "orchestrator" {
           value = var.local_store_prefix
         },
         {
+          name  = "ORCHESTRATOR_CODEARTIFACT_CONFIG"
+          value = jsonencode(var.codeartifact_config)
+        },
+        {
           name  = "ORCHESTRATOR_COMPUTE_CELL_DEFINITIONS"
           value = local.compute_cell_definitions_tmpl
         },

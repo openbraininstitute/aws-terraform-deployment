@@ -165,6 +165,10 @@ resource "aws_ecs_task_definition" "api" {
           name  = "REDIS_URL" # deprecated, use REDIS_HOST and REDIS_PORT
           value = "redis://${aws_elasticache_cluster.redis.cache_nodes[0].address}:${aws_elasticache_cluster.redis.port}/0"
         },
+        {
+          name  = "CODEARTIFACT_CONFIG"
+          value = jsonencode(var.codeartifact_config)
+        }
       ]
 
       secrets = [

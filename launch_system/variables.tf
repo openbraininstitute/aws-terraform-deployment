@@ -213,3 +213,22 @@ variable "local_store_prefix" {
   type        = string
 }
 
+variable "codeartifact_config" {
+  description = "Configuration for AWS CodeArtifact Python repository access"
+  type = object({
+    domain       = string
+    domain_owner = string
+    repository   = string
+    region       = string
+  })
+
+  validation {
+    condition = (
+      length(var.codeartifact_config.domain) > 0 &&
+      length(var.codeartifact_config.domain_owner) > 0 &&
+      length(var.codeartifact_config.repository) > 0 &&
+      length(var.codeartifact_config.region) > 0
+    )
+    error_message = "All CodeArtifact configuration fields must be non-empty strings."
+  }
+}
