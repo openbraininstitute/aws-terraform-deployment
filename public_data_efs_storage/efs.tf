@@ -8,7 +8,10 @@ resource "aws_efs_file_system" "public_launch_data" {
   }
 
   lifecycle_policy {
-    transition_to_ia                    = "AFTER_30_DAYS"
+    transition_to_ia = "AFTER_30_DAYS"
+  }
+
+  lifecycle_policy {
     transition_to_primary_storage_class = "AFTER_1_ACCESS"
   }
 
