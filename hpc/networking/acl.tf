@@ -127,6 +127,17 @@ resource "aws_network_acl_rule" "allow_other_traffic_to_obp_vpc" {
   to_port        = -1
 }
 
+resource "aws_network_acl_rule" "deny_rdp_in" {
+  count          = var.compute_subnet_count
+  network_acl_id = aws_network_acl.compute[count.index].id
+  protocol       = "tcp"
+  rule_number    = 3000 + count.index
+  rule_action    = "deny"
+  cidr_block     = "0.0.0.0/0"
+  from_port      = 3389
+  to_port        = 3389
+}
+
 resource "aws_network_acl_rule" "allow_return_traffic_in" {
   count          = var.compute_subnet_count
   network_acl_id = aws_network_acl.compute[count.index].id
