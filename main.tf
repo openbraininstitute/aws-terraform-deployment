@@ -13,6 +13,7 @@ locals {
       "http://127.0.0.1:3000",
       "http://localhost:3000",
       "https://preview.openbraininstitute.org",
+      "https://*.preview.openbrainionstitute.org",
       "https://dev.openbraininstitute.org",
       "https://staging.cell-b.openbraininstitute.org",
       "https://staging.cell-a.openbraininstitute.org"
