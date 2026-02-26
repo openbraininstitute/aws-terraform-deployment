@@ -81,15 +81,6 @@ variable "db_allocated_storage" {
   type        = number
 }
 
-variable "az_region" {
-  description = "region in Azure"
-  type        = string
-}
-
-variable "az_instance_types" {
-  description = "JSON of what the the mapping of instance type to azure queue is; format is 'name' -> 'batchpoolname'."
-  type        = string
-}
 
 variable "secrets_arn" {
   # Need the following secrets:
@@ -220,4 +211,24 @@ variable "untrusted_b_subnet_id" {
 variable "local_store_prefix" {
   description = "Base location where public data is mounted."
   type        = string
+}
+
+variable "codeartifact_config" {
+  description = "Configuration for AWS CodeArtifact Python repository access"
+  type = object({
+    domain       = string
+    domain_owner = string
+    repository   = string
+    region       = string
+  })
+
+  validation {
+    condition = (
+      length(var.codeartifact_config.domain) > 0 &&
+      length(var.codeartifact_config.domain_owner) > 0 &&
+      length(var.codeartifact_config.repository) > 0 &&
+      length(var.codeartifact_config.region) > 0
+    )
+    error_message = "All CodeArtifact configuration fields must be non-empty strings."
+  }
 }
