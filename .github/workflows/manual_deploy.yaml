@@ -1,4 +1,9 @@
 name: Manual - Apply changes
+
+env:
+  AWS_ROLE_ARN_STAGING: arn:aws:iam::992382665735:role/GithubTerraformDeploy
+  AWS_ROLE_ARN_PRODUCTION: arn:aws:iam::671250183987:role/GithubTerraformDeploy
+
 on:
   workflow_dispatch:
     inputs:
@@ -18,9 +23,10 @@ concurrency:
 jobs:
   terraform_deployment:
     environment: ${{ inputs.environment }} # secrets are set per environment https://github.com/openbraininstitute/aws-terraform-deployment/settings/environments
+    permissions:
+      id-token: write
+      contents: read
     env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       TF_VAR_azure_blobstore_opendata_sas_token: ${{ secrets.AZURE_BLOBSTORE_OPENDATA_SAS_TOKEN }}
       TF_VAR_azure_blobstore_internal_public_data_sas_token: ${{ secrets.AZURE_BLOBSTORE_INTERNAL_PUBLIC_DATA_SAS_TOKEN }}
       TF_VAR_azure_datasync_agent_activation_key_uswest2: ${{ secrets.AZURE_DATASYNC_AGENT_ACTIVATION_KEY_USWEST2 }}
@@ -31,6 +37,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ inputs.environment == 'production' && env.AWS_ROLE_ARN_PRODUCTION || env.AWS_ROLE_ARN_STAGING }}
+          aws-region: us-east-1
 
       - name: Configure Terraform
         uses: hashicorp/setup-terraform@v3
