@@ -56,6 +56,29 @@ def parse_eventbridge_json_to_readable_message(msg: Dict[str,Any]) -> str:
             f"Anomaly details link: {anomalyDetailsLink}\n\n" + \
             f"Dimension value: {dimensionValue}\n\n"
         return final_message
+    # In case it's a SES email message, also only keep certain fields
+    if 'mail' in msg:
+        logger.info("aws.ses message, email delivery => replacing the message")
+        final_message = ""
+        if 'eventType' in msg:
+            event_type = msg['eventType']
+            final_message = f"{final_message}Type: {event_type}\n\n"
+        mailmsg = msg['mail']
+        if 'timestamp' in mailmsg:
+            dt_utc = datetime.fromisoformat(mailmsg['timestamp'])
+            dt_swiss = dt_utc.astimezone(ZoneInfo("Europe/Zurich"))
+            final_message = f"{final_message}Swiss time: {dt_swiss}\n\n"
+        if 'destination' in mailmsg:
+            destination = mailmsg['destination']
+            final_message = f"{final_message}Destination: {destination}\n\n"
+        if 'commonHeaders' in mailmsg:
+            if 'subject' in mailmsg['commonHeaders']:
+                subject = mailmsg['commonHeaders']['subject']
+                final_message = f"{final_message}Subject: {subject}\n\n"
+            if 'to' in mailmsg['commonHeaders']:
+                to = mailmsg['commonHeaders']['to']
+                final_message = f"{final_message}To: {to}\n\n"
+        return final_message
     else:
         # all other types of messages
         final_message: str = ""
