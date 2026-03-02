@@ -255,8 +255,8 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
           value = var.entitycore_url
         },
         {
-          name  = "LAUNCH_SYSTEM_URL_TEMPLATE"
-          value = var.launch_system_url_template
+          name  = "LAUNCH_SYSTEM_URL"
+          value = var.launch_system_url
         },
         {
           name  = "VIRTUAL_LAB_API_URL"
