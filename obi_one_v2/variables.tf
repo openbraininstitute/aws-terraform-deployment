@@ -113,8 +113,8 @@ variable "entitycore_url" {
   type        = string
 }
 
-variable "launch_system_url_template" {
-  description = "launch system URL template"
+variable "launch_system_url" {
+  description = "launch system URL"
   type        = string
 }
 
