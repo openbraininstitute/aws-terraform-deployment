@@ -179,6 +179,31 @@ resource "aws_s3_bucket_public_access_block" "statistics" {
   restrict_public_buckets = true
 }
 
+resource "aws_s3_bucket_policy" "statistics" {
+  bucket = aws_s3_bucket.statistics.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "DenyInsecureTransport"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = "s3:*"
+        Resource = [
+          aws_s3_bucket.statistics.arn,
+          "${aws_s3_bucket.statistics.arn}/*"
+        ]
+        Condition = {
+          Bool = {
+            "aws:SecureTransport" = "false"
+          }
+        }
+      }
+    ]
+  })
+}
+
 resource "aws_iam_role" "firehose_role" {
   name = "firehose-s3-role"
   assume_role_policy = jsonencode({

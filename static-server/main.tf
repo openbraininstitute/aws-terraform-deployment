@@ -115,6 +115,21 @@ resource "aws_s3_bucket_policy" "static_storage" {
     Version = "2012-10-17"
     Statement = [
       {
+        Sid       = "DenyInsecureTransport"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = "s3:*"
+        Resource = [
+          "arn:aws:s3:::${var.static_content_bucket_name}",
+          "arn:aws:s3:::${var.static_content_bucket_name}/*"
+        ]
+        Condition = {
+          Bool = {
+            "aws:SecureTransport" = "false"
+          }
+        }
+      },
+      {
         Sid       = "VPCEndpointAccess"
         Effect    = "Allow"
         Principal = "*"
@@ -179,6 +194,21 @@ resource "aws_s3_bucket_policy" "cell_static_storage" {
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
+      {
+        Sid       = "DenyInsecureTransport"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = "s3:*"
+        Resource = [
+          "arn:aws:s3:::${var.cell_static_content_bucket_name}",
+          "arn:aws:s3:::${var.cell_static_content_bucket_name}/*"
+        ]
+        Condition = {
+          Bool = {
+            "aws:SecureTransport" = "false"
+          }
+        }
+      },
       {
         Sid       = "VPCEndpointAccess"
         Effect    = "Allow"

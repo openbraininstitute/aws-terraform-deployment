@@ -58,6 +58,24 @@ resource "aws_s3_bucket_public_access_block" "core_webapp" {
 data "aws_iam_policy_document" "core_webapp_policy" {
   count = var.key == "main" ? 1 : 0
   statement {
+    sid    = "DenyInsecureTransport"
+    effect = "Deny"
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+    actions = ["s3:*"]
+    resources = [
+      aws_s3_bucket.core_webapp[0].arn,
+      "${aws_s3_bucket.core_webapp[0].arn}/*"
+    ]
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values   = ["false"]
+    }
+  }
+  statement {
     sid    = "AllowCloudFrontServicePrincipal"
     effect = "Allow"
     principals {

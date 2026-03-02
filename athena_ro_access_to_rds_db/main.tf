@@ -124,6 +124,31 @@ resource "aws_s3_bucket" "spill_bucket" {
   bucket = var.spill_bucket_name
 }
 
+resource "aws_s3_bucket_policy" "spill_bucket" {
+  bucket = aws_s3_bucket.spill_bucket.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "DenyInsecureTransport"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = "s3:*"
+        Resource = [
+          aws_s3_bucket.spill_bucket.arn,
+          "${aws_s3_bucket.spill_bucket.arn}/*"
+        ]
+        Condition = {
+          Bool = {
+            "aws:SecureTransport" = "false"
+          }
+        }
+      }
+    ]
+  })
+}
+
 resource "aws_s3_bucket_lifecycle_configuration" "spill_cleanup" {
   bucket = aws_s3_bucket.spill_bucket.id
 
