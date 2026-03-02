@@ -40,7 +40,7 @@ resource "aws_db_instance" "virtual_lab_manager" {
   db_subnet_group_name = aws_db_subnet_group.virtual_lab_manager_db_subnet_group.name
 
   engine                     = "postgres"
-  engine_version             = "17"
+  engine_version             = "17.9"
   auto_minor_version_upgrade = true
   multi_az                   = var.db_multi_az
   instance_class             = "db.t3.small"
