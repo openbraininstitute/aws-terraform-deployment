@@ -56,3 +56,28 @@ resource "aws_s3_bucket_metric" "nexus_ship_metrics" {
   bucket = aws_s3_bucket.nexus_ship.id
   name   = "EntireBucket"
 }
+
+resource "aws_s3_bucket_policy" "nexus_ship" {
+  bucket = aws_s3_bucket.nexus_ship.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "DenyInsecureTransport"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = "s3:*"
+        Resource = [
+          aws_s3_bucket.nexus_ship.arn,
+          "${aws_s3_bucket.nexus_ship.arn}/*"
+        ]
+        Condition = {
+          Bool = {
+            "aws:SecureTransport" = "false"
+          }
+        }
+      }
+    ]
+  })
+}

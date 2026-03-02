@@ -57,6 +57,21 @@ resource "aws_s3_bucket_policy" "prevent_delete" {
     Version = "2012-10-17"
     Statement = [
       {
+        Sid       = "DenyInsecureTransport"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = "s3:*"
+        Resource = [
+          aws_s3_bucket.entitycore.arn,
+          "${aws_s3_bucket.entitycore.arn}/*"
+        ]
+        Condition = {
+          Bool = {
+            "aws:SecureTransport" = "false"
+          }
+        }
+      },
+      {
         Sid       = "PreventDeleteBucketAndObjects"
         Effect    = "Deny"
         Principal = "*"

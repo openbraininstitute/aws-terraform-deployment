@@ -62,6 +62,31 @@ resource "aws_s3_bucket_metric" "nexus_obp" {
   name   = "EntireBucket"
 }
 
+resource "aws_s3_bucket_policy" "nexus_obp" {
+  bucket = aws_s3_bucket.nexus_obp.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "DenyInsecureTransport"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = "s3:*"
+        Resource = [
+          aws_s3_bucket.nexus_obp.arn,
+          "${aws_s3_bucket.nexus_obp.arn}/*"
+        ]
+        Condition = {
+          Bool = {
+            "aws:SecureTransport" = "false"
+          }
+        }
+      }
+    ]
+  })
+}
+
 ######################################
 ## Bucket used by Nexus Openscience ##
 ######################################
@@ -109,4 +134,29 @@ resource "aws_s3_bucket_public_access_block" "nexus_openscience" {
 resource "aws_s3_bucket_metric" "nexus_openscience" {
   bucket = aws_s3_bucket.nexus_openscience.id
   name   = "EntireBucket"
+}
+
+resource "aws_s3_bucket_policy" "nexus_openscience" {
+  bucket = aws_s3_bucket.nexus_openscience.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "DenyInsecureTransport"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = "s3:*"
+        Resource = [
+          aws_s3_bucket.nexus_openscience.arn,
+          "${aws_s3_bucket.nexus_openscience.arn}/*"
+        ]
+        Condition = {
+          Bool = {
+            "aws:SecureTransport" = "false"
+          }
+        }
+      }
+    ]
+  })
 }

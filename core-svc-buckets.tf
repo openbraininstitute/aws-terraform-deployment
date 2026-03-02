@@ -54,6 +54,31 @@ resource "aws_s3_bucket_versioning" "sbo-cell-svc-perf-test-versioning" {
   }
 }
 
+resource "aws_s3_bucket_policy" "sbo-cell-svc-perf-test" {
+  bucket = aws_s3_bucket.sbo-cell-svc-perf-test.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "DenyInsecureTransport"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = "s3:*"
+        Resource = [
+          aws_s3_bucket.sbo-cell-svc-perf-test.arn,
+          "${aws_s3_bucket.sbo-cell-svc-perf-test.arn}/*"
+        ]
+        Condition = {
+          Bool = {
+            "aws:SecureTransport" = "false"
+          }
+        }
+      }
+    ]
+  })
+}
+
 # ---------------------------------------------------
 # User configuration
 # ---------------------------------------------------
