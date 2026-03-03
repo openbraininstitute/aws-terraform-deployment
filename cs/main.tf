@@ -56,6 +56,7 @@ module "jupyterhub_eks" {
 
   public_data_efs_ip_address1_as_cidr = var.public_data_efs_ip_address1_as_cidr
   public_data_efs_ip_address2_as_cidr = var.public_data_efs_ip_address2_as_cidr
+  bastion_instance_private_ip         = var.bastion_instance_private_ip
 
   # Only used in staging
   is_lustre_filesystem_enabled = var.is_staging
