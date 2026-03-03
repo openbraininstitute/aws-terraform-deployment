@@ -339,6 +339,17 @@ resource "aws_network_acl" "jupyterhub_eks_private" {
 }
 
 # for public launch data EFS
+resource "aws_network_acl_rule" "jupyterhub_eks_private_allow_ssh_from_bastion_ingress" {
+  network_acl_id = aws_network_acl.jupyterhub_eks_private.id
+  rule_number    = 20
+  protocol       = "tcp"
+  from_port      = 22
+  to_port        = 22
+  rule_action    = "allow"
+  cidr_block     = "${var.bastion_instance_private_ip}/32"
+  egress         = false
+}
+
 resource "aws_network_acl_rule" "jupyterhub_eks_private_launch_data_efs_ingress1" {
   network_acl_id = aws_network_acl.jupyterhub_eks_private.id
   rule_number    = 40
@@ -477,6 +488,18 @@ resource "aws_network_acl_rule" "jupyterhub_eks_private_allow_internet_ingress" 
   cidr_block     = "0.0.0.0/0"
   egress         = false
 }
+
+resource "aws_network_acl_rule" "jupyterhub_eks_private_allow_ssh_from_bastion_egress" {
+  network_acl_id = aws_network_acl.jupyterhub_eks_private.id
+  rule_number    = 20
+  protocol       = "tcp"
+  from_port      = 1024
+  to_port        = 65535
+  rule_action    = "allow"
+  cidr_block     = "${var.bastion_instance_private_ip}/32"
+  egress         = true
+}
+
 
 resource "aws_network_acl_rule" "jupyterhub_eks_private_access_to_public_launch_nfs1" {
   network_acl_id = aws_network_acl.jupyterhub_eks_private.id

@@ -114,3 +114,8 @@ variable "s3_bucket_name" {
   type        = string
   description = "The S3 bucket that will be associated with the lustre fileystems"
 }
+
+variable "bastion_instance_private_ip" {
+  type        = string
+  description = "Private IP of the bastion instance, needed to allow access to the test vm for filesystems"
+}

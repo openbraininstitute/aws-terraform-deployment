@@ -137,3 +137,9 @@ variable "public_data_efs_arn" {
   type        = string
   sensitive   = false
 }
+
+variable "bastion_instance_private_ip" {
+  description = "Private IP address of the bastion instance"
+  type        = string
+  sensitive   = false
+}
