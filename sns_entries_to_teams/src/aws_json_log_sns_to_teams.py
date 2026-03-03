@@ -63,6 +63,20 @@ def parse_eventbridge_json_to_readable_message(msg: Dict[str,Any]) -> str:
         if 'eventType' in msg:
             event_type = msg['eventType']
             final_message = f"{final_message}Type: {event_type}\n\n"
+        if 'bounce' in msg:
+            bounce = msg['bounce']
+            final_message = f"{final_message}Bounce type: {bounce.get('bounceType')}\n\n"
+            final_message = f"{final_message}Bounce subtype: {bounce.get('bounceSubType')}\n\n"
+        if 'delivery' in msg:
+            delivery = msg['delivery']
+            final_message = f"{final_message}SMTP response: {delivery.get('smtpResponse')}\n\n"
+        if 'reject' in msg:
+            reject = msg['reject']
+            final_message = f"{final_message}Reject reason: {reject.get('reason')}\n\n"
+        if 'deliveryDelay' in msg:
+            delivery_delay = msg['deliveryDelay']
+            final_message = f"{final_message}Delay type: {delivery_delay.get('delayType')}\n\n"
+            final_message = f"{final_message}Delayed recipients: {delivery_delay.get('delayedRecipients')}\n\n"
         mailmsg = msg['mail']
         if 'timestamp' in mailmsg:
             dt_utc = datetime.fromisoformat(mailmsg['timestamp'])
