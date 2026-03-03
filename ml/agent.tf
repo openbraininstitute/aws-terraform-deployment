@@ -2,8 +2,9 @@ module "s3_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "v4.11.0"
 
-  bucket = var.neuroagent_bucket_name
-  acl    = "private"
+  bucket                                = var.neuroagent_bucket_name
+  acl                                   = "private"
+  attach_deny_insecure_transport_policy = true
 
   control_object_ownership = true
   object_ownership         = "ObjectWriter"
