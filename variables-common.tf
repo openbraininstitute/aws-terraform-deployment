@@ -219,11 +219,6 @@ variable "jupyterhub_ec2_type" {
 }
 
 ### HPC ###
-variable "hpc_resource_provisioner_container_version" {
-  type        = string
-  description = "Version of hpc-resource-provisioner to deploy"
-}
-
 variable "hpc_resource_provisioner_data_bucket" {
   type        = string
   description = "S3 bucket in which OBI data lives. Includes s3:// prefix and sub-path, if any"
@@ -445,4 +440,12 @@ variable "azure_nfs_opendata_path" {
 variable "azure_nfs_internal_public_data_path" {
   type        = string
   description = "NFS export path for internal_public_data on azure"
+}
+
+variable "resource_provisioner_container_hash" {
+  type = string
+}
+
+variable "resource_provisioner_container_uri" {
+  type = string
 }

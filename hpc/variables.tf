@@ -93,10 +93,6 @@ variable "hpc_slurm_secrets_arn" {
 }
 
 
-variable "hpc_resource_provisioner_container_version" {
-  type = string
-}
-
 variable "data_bucket" {
   type = string
 }
@@ -122,5 +118,13 @@ variable "infrastructureassets_bucket_name" {
 }
 
 variable "pcluster_ami_id" {
+  type = string
+}
+
+variable "resource_provisioner_container_hash" {
+  type = string
+}
+
+variable "resource_provisioner_container_uri" {
   type = string
 }

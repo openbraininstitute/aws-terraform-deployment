@@ -94,13 +94,12 @@ module "efs" {
 module "resource-provisioner" {
   source = "./resource-provisioner/"
 
-  hpc_resource_provisioner_role              = module.security.resource_provisioner_iam_role_arn
-  hpc_resource_provisioner_subnet_ids        = [module.networking.lambda_subnet_id]
-  hpc_resource_provisioner_sg_ids            = [var.obp_vpc_default_sg_id, module.security.vpc_peering_security_group_id, module.security.resource_provisioner_security_group_id]
-  aws_region                                 = var.aws_region
-  account_id                                 = var.account_id
-  hpc_resource_provisioner_container_version = var.hpc_resource_provisioner_container_version
-  aws_security_group_efa_id                  = module.security.aws_security_group_efa_id
+  hpc_resource_provisioner_role       = module.security.resource_provisioner_iam_role_arn
+  hpc_resource_provisioner_subnet_ids = [module.networking.lambda_subnet_id]
+  hpc_resource_provisioner_sg_ids     = [var.obp_vpc_default_sg_id, module.security.vpc_peering_security_group_id, module.security.resource_provisioner_security_group_id]
+  aws_region                          = var.aws_region
+  account_id                          = var.account_id
+  aws_security_group_efa_id           = module.security.aws_security_group_efa_id
 
   data_bucket         = var.data_bucket
   containers_bucket   = var.containers_bucket
@@ -111,6 +110,9 @@ module "resource-provisioner" {
   fs_subnet_ids       = module.networking.fs_subnet_ids
   fs_sg_id            = module.security.compute_efs_sg_id
   pcluster_ami_id     = var.pcluster_ami_id
+
+  resource_provisioner_container_hash = var.resource_provisioner_container_hash
+  resource_provisioner_container_uri  = var.resource_provisioner_container_uri
 }
 
 module "dynamodb" {
