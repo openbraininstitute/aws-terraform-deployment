@@ -16,6 +16,40 @@
         },
         {
             "Action": [
+                "ecr:DescribeImages",
+                "ecr:DescribePullThroughCacheRules",
+                "ecr:ListImages",
+                "ecr:ListPullTimeUpdateExclusions",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:BatchGetImage",
+                "ecr:BatchGetRepositoryScanningConfiguration",
+                "ecr:DescribeImageReplicationStatus",
+                "ecr:DescribeImageScanFindings",
+                "ecr:DescribeImageSigningStatus",
+                "ecr:DescribeRepositories",
+                "ecr:DescribeRegistry",
+                "ecr:DescribeRepositoryCreationTemplates",
+                "ecr:GetAccountSetting",
+                "ecr:GetAuthorizationToken",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:GetImageCopyStatus",
+                "ecr:GetLifecyclePolicy",
+                "ecr:GetLifecyclePolicyPreview",
+                "ecr:GetRegistryPolicy",
+                "ecr:GetRegistryScanningConfiguration",
+                "ecr:GetRepositoryPolicy",
+                "ecr:ListTagsForResource",
+                "ecr:GetSigningConfiguration",
+                "ecr:ValidatePullThroughCacheRule"
+             ],
+            "Effect": "Allow",
+            "Resource": [
+                "*"
+             ],
+            "Sid": "LambdaPullECR"
+         },
+        {
+            "Action": [
                     "dynamodb:DescribeTable",
                     "dynamodb:DeleteItem",
                     "dynamodb:GetItem",

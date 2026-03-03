@@ -18,10 +18,6 @@ variable "account_id" {
   type = string
 }
 
-variable "hpc_resource_provisioner_container_version" {
-  type = string
-}
-
 variable "data_bucket" {
   type = string
 }
@@ -59,5 +55,13 @@ variable "fs_sg_id" {
 }
 
 variable "pcluster_ami_id" {
+  type = string
+}
+
+variable "resource_provisioner_container_hash" {
+  type = string
+}
+
+variable "resource_provisioner_container_uri" {
   type = string
 }
