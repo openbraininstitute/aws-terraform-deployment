@@ -382,7 +382,7 @@
 /staging/Simulation_data/Simulation_Campaigns/Rat/SSCx/3f6517825f/33/reporting/spikes.h5
 /staging/Simulation_data/Simulation_Campaigns/Rat/SSCx/3f6517825f/43/reporting/spikes.h5
 /staging/Simulation_data/Simulation_Campaigns/Rat/SSCx/3f6517825f/71/reporting/spikes.h5
-/Simulatable_Circuit/Circuits/Allen_V1
+/Simulatable_Circuit/Circuits/Allen-V1
 /staging/Simulation_data/Simulation_Campaigns/Rat/SSCx/3f6517825f/30/reporting/spikes.h5
 /staging/Simulation_data/Simulation_Campaigns/Rat/SSCx/3f6517825f/65/reporting/spikes.h5
 /Simulation_data/Simulation_Campaigns/Rat/SSCx/09151af2d2/30/reporting/spikes.h5
