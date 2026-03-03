@@ -154,3 +154,6 @@ azure_blobstore_internal_public_data_container_url = "https://obibatchstoragepro
 azure_nfs_server_hostname           = "obibatchnfsprod.file.core.windows.net"
 azure_nfs_opendata_path             = "/obibatchnfsprod/opendata"
 azure_nfs_internal_public_data_path = "/obibatchnfsprod/publicdata"
+
+resource_provisioner_container_hash = "1837363b2413d5e7cfd8c7a859ba4b3cd35c685acd4240f70101364aaaeee0b8"
+resource_provisioner_container_uri  = "985539765147.dkr.ecr.us-east-1.amazonaws.com/hpc-resource-provisioner:0.5.13.dev8"
