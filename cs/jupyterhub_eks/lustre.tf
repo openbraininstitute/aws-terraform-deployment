@@ -27,6 +27,12 @@ resource "aws_fsx_data_repository_association" "association" {
       events = ["NEW", "CHANGED", "DELETED"]
     }
   }
+
+  lifecycle {
+    ignore_changes = [
+      s3[0].auto_export_policy[0].events
+    ]
+  }
 }
 
 resource "aws_security_group" "lustre_sg" {
