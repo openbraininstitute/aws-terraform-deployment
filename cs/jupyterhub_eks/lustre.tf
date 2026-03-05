@@ -13,12 +13,32 @@ resource "aws_fsx_lustre_file_system" "lustre" {
   }
 }
 
+# just a test
 resource "aws_fsx_data_repository_association" "association" {
   count = var.is_lustre_filesystem_enabled ? 1 : 0
 
   file_system_id       = aws_fsx_lustre_file_system.lustre[0].id
   data_repository_path = "s3://${var.s3_bucket_name}"
   file_system_path     = "/my-bucket"
+
+  # Has to be true, otherwise you only see new or updated files
+  batch_import_meta_data_on_create = true
+
+  delete_data_in_filesystem = true
+
+  s3 {
+    auto_import_policy {
+      events = ["NEW", "CHANGED", "DELETED"]
+    }
+  }
+}
+
+resource "aws_fsx_data_repository_association" "association_entitycore_public_internal_data" {
+  count = var.is_lustre_filesystem_enabled ? 1 : 0
+
+  file_system_id       = aws_fsx_lustre_file_system.lustre[0].id
+  data_repository_path = "s3://${var.s3_bucket_entitycore_data_name}/public/"
+  file_system_path     = "/aws_s3_internal"
 
   # Has to be true, otherwise you only see new or updated files
   batch_import_meta_data_on_create = true
