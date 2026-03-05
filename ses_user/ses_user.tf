@@ -63,6 +63,11 @@ resource "aws_iam_role_policy" "ses_rotation_lambda" {
         Effect   = "Allow"
         Action   = ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"]
         Resource = "arn:aws:logs:*:*:*"
+      },
+      {
+        Effect   = "Allow"
+        Action   = "ecs:UpdateService"
+        Resource = "*"
       }
     ]
   })
@@ -96,11 +101,21 @@ def handler(event, context):
         raise ValueError("Token not found in secret versions")
 
     if step == 'createSecret':
-        # Skip if AWSPENDING already exists (idempotency)
-        if 'AWSPENDING' in meta['VersionIdsToStages'].get(token, []):
-            return
+        # Idempotency: check if THIS token already has a value
+        try:
+            sm.get_secret_value(SecretId=secret_id, VersionId=token, VersionStage='AWSPENDING')
+            return  # Already created for this token
+        except (sm.exceptions.ResourceNotFoundException, sm.exceptions.InvalidRequestException):
+            pass  # Need to create it
 
         current = json.loads(sm.get_secret_value(SecretId=secret_id, VersionStage='AWSCURRENT')['SecretString'])
+        current_key_id = current.get('mail_username')
+
+        # Delete any pre-existing key that isn't the current one (orphan from a previous failed attempt)
+        for k in iam.list_access_keys(UserName='${var.user_name}')['AccessKeyMetadata']:
+            if k['AccessKeyId'] != current_key_id:
+                iam.delete_access_key(UserName='${var.user_name}', AccessKeyId=k['AccessKeyId'])
+
         new_key = iam.create_access_key(UserName='${var.user_name}')['AccessKey']
         smtp_password = _compute_smtp_password(new_key['SecretAccessKey'], '${var.aws_region}')
         new_secret = dict(current)
@@ -118,18 +133,27 @@ def handler(event, context):
             raise ValueError("Pending secret missing credentials")
 
     elif step == 'finishSecret':
-        # Get old key ID before promoting
-        current_version_id = meta['VersionIdsToStages']['AWSCURRENT'][0]
-        current = json.loads(sm.get_secret_value(SecretId=secret_id, VersionStage='AWSCURRENT')['SecretString'])
-        old_key_id = current.get('mail_username')
+        meta = sm.describe_secret(SecretId=secret_id)
+        stages = meta['VersionIdsToStages']
 
-        # Promote AWSPENDING to AWSCURRENT
-        sm.update_secret_version_stage(
-            SecretId=secret_id,
-            VersionStage='AWSCURRENT',
-            MoveToVersionId=token,
-            RemoveFromVersionId=current_version_id
-        )
+        # Idempotency: already promoted
+        if 'AWSCURRENT' in stages.get(token, []):
+            return
+
+        # Find the version ID currently holding AWSCURRENT
+        current_version_id = next((vid for vid, s in stages.items() if 'AWSCURRENT' in s), None)
+
+        # Get old key ID before promoting
+        old_key_id = None
+        if current_version_id and current_version_id != token:
+            current = json.loads(sm.get_secret_value(SecretId=secret_id, VersionStage='AWSCURRENT')['SecretString'])
+            old_key_id = current.get('mail_username')
+
+        # Promote AWSPENDING -> AWSCURRENT
+        kwargs = {'SecretId': secret_id, 'VersionStage': 'AWSCURRENT', 'MoveToVersionId': token}
+        if current_version_id and current_version_id != token:
+            kwargs['RemoveFromVersionId'] = current_version_id
+        sm.update_secret_version_stage(**kwargs)
 
         # Delete old IAM access key
         if old_key_id:
@@ -137,6 +161,14 @@ def handler(event, context):
                 iam.delete_access_key(UserName='${var.user_name}', AccessKeyId=old_key_id)
             except iam.exceptions.NoSuchEntityException:
                 pass
+
+        # Trigger ECS redeploy so the service picks up the new credentials
+        ecs_cluster = '${var.ecs_cluster}'
+        ecs_service = '${var.ecs_service}'
+        if ecs_cluster and ecs_service:
+            boto3.client('ecs').update_service(
+                cluster=ecs_cluster, service=ecs_service, forceNewDeployment=True
+            )
 
 def _compute_smtp_password(secret_key, region):
     date     = b'11111111'
@@ -175,8 +207,11 @@ resource "aws_lambda_permission" "secrets_manager" {
 resource "aws_secretsmanager_secret_rotation" "ses_credentials" {
   secret_id           = var.secret_arn
   rotation_lambda_arn = aws_lambda_function.ses_rotation.arn
+  rotate_immediately  = true
 
   rotation_rules {
     automatically_after_days = 90
   }
+
+  depends_on = [aws_lambda_permission.secrets_manager]
 }
