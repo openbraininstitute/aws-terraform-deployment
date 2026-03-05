@@ -1074,7 +1074,9 @@ module "dashboards" {
 module "ses_user_virtuallab" {
   source = "./ses_user"
 
-  user_name  = "ses-smtp-user.obp.virtuallabs"
-  secret_arn = local.virtual_lab_manager_secrets_arn
-  aws_region = local.aws_region
+  user_name   = "ses-smtp-user.obp.virtuallabs"
+  secret_arn  = local.virtual_lab_manager_secrets_arn
+  aws_region  = local.aws_region
+  ecs_cluster = "virtual_lab_manager_ecs_cluster"
+  ecs_service = "virtual_lab_manager_ecs_service"
 }

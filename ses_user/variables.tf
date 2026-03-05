@@ -12,3 +12,15 @@ variable "aws_region" {
   type        = string
   description = "AWS region"
 }
+
+variable "ecs_cluster" {
+  type        = string
+  description = "ECS cluster name to redeploy after rotation"
+  default     = ""
+}
+
+variable "ecs_service" {
+  type        = string
+  description = "ECS service name to redeploy after rotation"
+  default     = ""
+}
