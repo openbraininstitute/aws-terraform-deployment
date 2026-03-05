@@ -36,6 +36,11 @@ resource "aws_instance" "filesystem_tests_server" {
     http_tokens   = "required"
     http_endpoint = "enabled"
   }
+
+  # Do not immediately recreate whenever the userdata script is updated.
+  lifecycle {
+    ignore_changes = [user_data]
+  }
 }
 
 

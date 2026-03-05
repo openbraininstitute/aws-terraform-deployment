@@ -19,3 +19,15 @@ sudo echo "dries.verachtert@openbraininstitute.org", public_key = "ssh-rsa AAAAB
   
 sudo chmod 700 /home/ubuntu/.ssh
 sudo chmod 600 /home/ubuntu/.ssh/authorized_keys
+
+
+wget -O - https://fsx-lustre-client-repo-public-keys.s3.amazonaws.com/fsx-ubuntu-public-key.asc | gpg --dearmor | sudo tee /usr/share/keyrings/fsx-ubuntu-public-key.gpg > /dev/null
+sudo bash -c 'echo "deb [signed-by=/usr/share/keyrings/fsx-ubuntu-public-key.gpg] https://fsx-lustre-client-repo.s3.amazonaws.com/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/fsxlustreclientrepo.list && apt-get update'
+sudo apt-get update
+sudo apt-get install -y lustre-client-utils lustre-iokit lustre-tests
+sudo apt-get install -y linux-aws lustre-client-modules-aws
+
+sudo modprobe lustre
+sudo mkdir /mnt/lustre
+
+sudo mount -t lustre fs-05be5d491103b79ba.fsx.us-east-1.amazonaws.com@tcp:/b3myxamv /mnt/lustre
