@@ -60,7 +60,10 @@ module "jupyterhub_eks" {
 
   # Only used in staging
   is_lustre_filesystem_enabled = var.is_staging
-  s3_bucket_name               = "jupyterhub-s3-shared-volume"
+  # As a test, mount the s3 bucket with the shared data for jupyterhub
+  s3_bucket_name = "jupyterhub-s3-shared-volume"
+  # Also mount the /pubic part of the s3 bucket containing the entitycore data
+  s3_bucket_entitycore_data_name = "entitycore-data-staging"
 }
 
 module "filesystems_test_vm" {
