@@ -168,10 +168,6 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
           value = var.invite_link
         },
         {
-          name  = "MAIL_USERNAME"
-          value = var.virtual_lab_manager_mail_username
-        },
-        {
           name  = "MAIL_FROM"
           value = var.mail_from
         },
@@ -210,10 +206,6 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         {
           name  = "ACCOUNTING_BASE_URL"
           value = var.accounting_base_url
-        },
-        {
-          name  = "MAIL_PASSWORD"
-          value = var.virtual_lab_manager_mail_password
         },
         {
           name  = "REDIS_HOST"
@@ -281,6 +273,14 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         {
           name      = "STRIPE_WEBHOOK_SECRET"
           valueFrom = "${var.virtual_lab_manager_secrets_arn}:STRIPE_WEBHOOK_SECRET::"
+        },
+        {
+          name      = "MAIL_USERNAME"
+          valueFrom = "${var.virtual_lab_manager_secrets_arn}:mail_username::"
+        },
+        {
+          name      = "MAIL_PASSWORD"
+          valueFrom = "${var.virtual_lab_manager_secrets_arn}:mail_password::"
         }
         # {
         #   name      = "SENTRY_DSN"
