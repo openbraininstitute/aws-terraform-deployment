@@ -1,5 +1,14 @@
 variable "user_name" {
-  sensitive   = false
   type        = string
-  description = "user name in IAM for the user that can use SES or Simple Email Service"
+  description = "IAM user name for the SES user"
+}
+
+variable "secret_arn" {
+  type        = string
+  description = "ARN of the Secrets Manager secret to store and rotate SES credentials"
+}
+
+variable "aws_region" {
+  type        = string
+  description = "AWS region"
 }

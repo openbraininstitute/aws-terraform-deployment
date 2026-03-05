@@ -887,10 +887,8 @@ module "virtual_lab_manager" {
 
   virtual_lab_manager_invite_expiration = "7"
 
-  virtual_lab_manager_mail_username = module.ses_user_virtuallab.access_key_id
-  virtual_lab_manager_mail_server   = "email-smtp.${local.aws_region}.amazonaws.com"
-  virtual_lab_manager_base_path     = var.virtual_lab_manager_base_path
-  virtual_lab_manager_mail_password = module.ses_user_virtuallab.ses_smtp_password_v4
+  virtual_lab_manager_mail_server = "email-smtp.${local.aws_region}.amazonaws.com"
+  virtual_lab_manager_base_path   = var.virtual_lab_manager_base_path
 
   virtual_lab_manager_mail_port = "587"
 
@@ -1076,5 +1074,7 @@ module "dashboards" {
 module "ses_user_virtuallab" {
   source = "./ses_user"
 
-  user_name = "ses-smtp-user.obp.virtuallabs"
+  user_name  = "ses-smtp-user.obp.virtuallabs"
+  secret_arn = local.virtual_lab_manager_secrets_arn
+  aws_region = local.aws_region
 }
