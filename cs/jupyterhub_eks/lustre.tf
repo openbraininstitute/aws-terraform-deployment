@@ -6,6 +6,11 @@ resource "aws_fsx_lustre_file_system" "lustre" {
   per_unit_storage_throughput = 125
 
   security_group_ids = [aws_security_group.lustre_sg.id]
+
+  log_configuration {
+    level       = "WARN_ERROR"
+    destination = aws_cloudwatch_log_group.lustre_log.arn
+  }
 }
 
 resource "aws_fsx_data_repository_association" "association" {
@@ -15,24 +20,21 @@ resource "aws_fsx_data_repository_association" "association" {
   data_repository_path = "s3://${var.s3_bucket_name}"
   file_system_path     = "/my-bucket"
 
-  batch_import_meta_data_on_create = false
-  delete_data_in_filesystem        = true
+  # Has to be true, otherwise you only see new or updated files
+  batch_import_meta_data_on_create = true
+
+  delete_data_in_filesystem = true
 
   s3 {
-    auto_export_policy {
-      events = []
-    }
-
     auto_import_policy {
       events = ["NEW", "CHANGED", "DELETED"]
     }
   }
+}
 
-  lifecycle {
-    ignore_changes = [
-      s3[0].auto_export_policy[0].events
-    ]
-  }
+resource "aws_cloudwatch_log_group" "lustre_log" {
+  name              = "/aws/fsx/lustre-filesystem-tests"
+  retention_in_days = 14
 }
 
 resource "aws_security_group" "lustre_sg" {
