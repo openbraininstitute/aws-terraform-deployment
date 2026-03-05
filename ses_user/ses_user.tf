@@ -96,13 +96,16 @@ def handler(event, context):
         raise ValueError("Token not found in secret versions")
 
     if step == 'createSecret':
+        # Skip if AWSPENDING already exists (idempotency)
+        if 'AWSPENDING' in meta['VersionIdsToStages'].get(token, []):
+            return
+
         current = json.loads(sm.get_secret_value(SecretId=secret_id, VersionStage='AWSCURRENT')['SecretString'])
         new_key = iam.create_access_key(UserName='${var.user_name}')['AccessKey']
         smtp_password = _compute_smtp_password(new_key['SecretAccessKey'], '${var.aws_region}')
         new_secret = dict(current)
         new_secret['mail_username'] = new_key['AccessKeyId']
         new_secret['mail_password'] = smtp_password
-        new_secret['_old_access_key_id'] = current.get('mail_username', '')
         sm.put_secret_value(SecretId=secret_id, ClientRequestToken=token,
                             SecretString=json.dumps(new_secret), VersionStages=['AWSPENDING'])
 
@@ -115,13 +118,20 @@ def handler(event, context):
             raise ValueError("Pending secret missing credentials")
 
     elif step == 'finishSecret':
-        pending = json.loads(sm.get_secret_value(SecretId=secret_id, VersionStage='AWSPENDING')['SecretString'])
-        old_key_id = pending.pop('_old_access_key_id', None)
-        sm.put_secret_value(SecretId=secret_id, ClientRequestToken=token,
-                            SecretString=json.dumps(pending), VersionStages=['AWSPENDING'])
-        sm.update_secret_version_stage(SecretId=secret_id, VersionStage='AWSCURRENT',
-                                       MoveToVersionId=token,
-                                       RemoveFromVersionId=meta['VersionIdsToStages']['AWSCURRENT'][0])
+        # Get old key ID before promoting
+        current_version_id = meta['VersionIdsToStages']['AWSCURRENT'][0]
+        current = json.loads(sm.get_secret_value(SecretId=secret_id, VersionStage='AWSCURRENT')['SecretString'])
+        old_key_id = current.get('mail_username')
+
+        # Promote AWSPENDING to AWSCURRENT
+        sm.update_secret_version_stage(
+            SecretId=secret_id,
+            VersionStage='AWSCURRENT',
+            MoveToVersionId=token,
+            RemoveFromVersionId=current_version_id
+        )
+
+        # Delete old IAM access key
         if old_key_id:
             try:
                 iam.delete_access_key(UserName='${var.user_name}', AccessKeyId=old_key_id)
