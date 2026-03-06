@@ -676,6 +676,9 @@ module "entitycore_svc" {
   db_name     = "entitycore"
   db_username = "entitycore"
 
+  db_migration_statement_timeout_ms = 60000
+  db_migration_lock_timeout_ms      = 10000
+
   obi_backup_plan = "obi_plan"
 
   api_asset_post_max_size = "524288000" # 500 * 1024**2

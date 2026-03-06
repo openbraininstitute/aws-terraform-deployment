@@ -92,3 +92,13 @@ variable "api_asset_post_max_size" {
   description = "Maximum size of file uploaded through API"
   type        = string
 }
+
+variable "db_migration_statement_timeout_ms" {
+  description = "Abort any statement that takes more than the specified amount of time"
+  type        = string
+}
+
+variable "db_migration_lock_timeout_ms" {
+  description = "Abort any statement that waits longer than the specified amount of time"
+  type        = string
+}
