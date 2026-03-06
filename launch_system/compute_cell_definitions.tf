@@ -78,7 +78,7 @@ locals {
           upload_blob_sas_url = "$${SECRET:AZ_UPLOAD_BLOB_SAS_URL}"
           instance_types = {
             large = "largenode"
-            small = "timestamped-neurodamus"
+            small = "obi-batch-pool"
           }
         }
       }
