@@ -533,52 +533,6 @@ module "static-server" {
   is_production                   = var.is_production
 }
 
-module "core_webapp_cell_a" {
-  source = "./core_webapp"
-
-  key                           = "cella"
-  log_group_name                = "core_webapp_cell_a"
-  vpc_id                        = local.vpc_id
-  subnet_cidr_block             = "10.0.21.64/28"
-  alb_listener_arn              = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
-  alb_listener_rule_priority    = 970
-  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
-  aws_region                    = local.aws_region
-  docker_image_url              = var.core_web_app_cell_a_docker_image_url
-  route_table_id                = local.route_table_private_subnets_id
-  vpc_cidr_block                = local.vpc_cidr_block
-  secrets_arn                   = local.core_webapp_secrets_arn
-  s3_bucket_name                = var.core_webapp_s3_bucket_name
-  s3_bucket_allowed_origins     = ["https://${local.cell_a_primary_domain}", "https://${join(".", ["cdn", trimprefix(local.cell_a_primary_domain, "www.")])}"]
-
-  hostname = local.cell_a_primary_domain
-
-  domain_name = local.cell_a_primary_domain
-
-  api_origin             = "https://${local.cell_a_primary_domain}"
-  auth_url               = "https://${local.cell_a_primary_domain}/api/auth"
-  deployment_env         = var.is_staging ? "staging" : "production"
-  keycloak_issuer        = var.keycloak_sbo_realm_url
-  matomo_site_id         = var.is_production ? "1" : "3"
-  primary_hostname       = local.cell_a_primary_domain
-  sanity_dataset         = var.is_production ? "production" : "staging"
-  stripe_publishable_key = var.core_web_app_stripe_publishable_key
-
-  # based on https://github.com/openbraininstitute/core-web-app/blob/develop/src/config/README.md
-  env_AI_AGENT_URL              = "https://${local.cell_a_primary_domain}/api/agent"
-  env_AUTH_MANAGER_URL          = "https://${local.cell_a_primary_domain}/api/auth-manager/v1"
-  env_CELL_API_URL              = "https://${local.cell_a_primary_domain}/api/circuit"
-  env_ENTITY_CORE_URL           = "https://${local.cell_a_primary_domain}/api/entitycore"
-  env_NOTEBOOK_API_URL          = "https://${local.cell_a_primary_domain}/api/notebook_service"
-  env_OBI_ONE_URL               = "https://${local.cell_a_primary_domain}/api/obi-one"
-  env_SMALL_SCALE_SIMULATOR_URL = "https://${local.cell_a_primary_domain}/api/small-scale-simulator"
-  env_THUMBNAIL_API_URL         = "https://${local.cell_a_primary_domain}/api/thumbnail-generation"
-  env_VIRTUAL_LAB_API_URL       = "https://${local.cell_a_primary_domain}/api/virtual-lab-manager"
-
-  keycloak_client_id     = "core-webapp-cell-b-azure-staging"
-  keycloak_client_secret = "${local.core_webapp_secrets_arn}:client_secret_cellb_azure_staging::"
-}
-
 module "core_webapp_dev" {
   source = "./core_webapp"
 
