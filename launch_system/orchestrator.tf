@@ -105,6 +105,10 @@ resource "aws_ecs_task_definition" "orchestrator" {
           value = var.local_store_prefix
         },
         {
+          name  = "ORCHESTRATOR_SIMULATION_LAUNCH_COMMAND"
+          value = var.simulation_launch_command
+        },
+        {
           name  = "ORCHESTRATOR_CODEARTIFACT_CONFIG"
           value = jsonencode(var.codeartifact_config)
         },

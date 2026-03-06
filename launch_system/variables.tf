@@ -108,9 +108,8 @@ variable "cluster_task_maximum_runtime" {
 }
 
 variable "simulation_launch_command" {
-  description = "Base command launched within Azure Batch"
+  description = "Base command used to launch the simulations."
   type        = string
-  default     = "/nfs/public/test-run-sim/run-simulation.py"
 }
 
 variable "entitycore_url" {

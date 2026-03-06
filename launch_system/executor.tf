@@ -1,6 +1,4 @@
 locals {
-  local_store_prefix = "/data"
-
   # Shared task definition configuration
   executor_base_config = {
     network_mode             = "awsvpc"
