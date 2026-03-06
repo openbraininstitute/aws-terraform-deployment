@@ -164,6 +164,14 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
           name  = "API_ASSET_POST_MAX_SIZE"
           value = var.api_asset_post_max_size
         },
+        {
+          name  = "DB_MIGRATION_STATEMENT_TIMEOUT_MS"
+          value = var.db_migration_statement_timeout_ms
+        },
+        {
+          name  = "DB_MIGRATION_LOCK_TIMEOUT_MS"
+          value = var.db_migration_lock_timeout_ms
+        },
       ]
 
       secrets = [
