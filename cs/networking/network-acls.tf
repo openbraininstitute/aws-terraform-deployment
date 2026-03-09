@@ -18,6 +18,15 @@ resource "aws_network_acl" "cs_subnet" {
 
   ingress {
     protocol   = "tcp"
+    rule_no    = 150
+    action     = "deny"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 3389
+    to_port    = 3389
+  }
+
+  ingress {
+    protocol   = "tcp"
     rule_no    = 200
     action     = "allow"
     cidr_block = data.aws_vpc.main.cidr_block
