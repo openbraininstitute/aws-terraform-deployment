@@ -987,7 +987,8 @@ module "launch_system" {
   auth_manager_url      = "https://${local.cell_a_primary_domain}/api/auth-manager"
   launch_system_api_url = "https://${local.cell_a_primary_domain}/api/launch-system"
 
-  local_store_prefix = "/data"
+  local_store_prefix        = "/data"
+  simulation_launch_command = "/data/scratch/run-simulation-venv/bin/python3 /data/scratch/run_simulation.py"
 
   codeartifact_config = {
     domain       = "openbraininstitute"
