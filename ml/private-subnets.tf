@@ -21,17 +21,15 @@ resource "aws_network_acl" "ml_acl_a" {
     from_port  = 0
     to_port    = 0
   }
-  # allow ingress ephemeral ports
   ingress {
     protocol   = "tcp"
     rule_no    = 300
     action     = "allow"
-    cidr_block = "0.0.0.0/0"
+    cidr_block = var.vpc_cidr_block
     from_port  = 1024
     to_port    = 65535
   }
   egress {
-    # TODO probably not needed
     protocol   = -1
     rule_no    = 100
     action     = "allow"
@@ -65,17 +63,15 @@ resource "aws_network_acl" "ml_acl_b" {
     from_port  = 0
     to_port    = 0
   }
-  # allow ingress ephemeral ports
   ingress {
     protocol   = "tcp"
     rule_no    = 300
     action     = "allow"
-    cidr_block = "0.0.0.0/0"
+    cidr_block = var.vpc_cidr_block
     from_port  = 1024
     to_port    = 65535
   }
   egress {
-    # TODO probably not needed
     protocol   = -1
     rule_no    = 100
     action     = "allow"

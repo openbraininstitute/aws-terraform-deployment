@@ -26,7 +26,6 @@ resource "aws_route_table_association" "aws_endpoints" {
 resource "aws_network_acl" "aws_endpoints" {
   vpc_id     = var.vpc_id
   subnet_ids = [aws_subnet.aws_endpoints.id]
-  # Allow local traffic
   ingress {
     protocol   = -1
     rule_no    = 100
@@ -35,26 +34,7 @@ resource "aws_network_acl" "aws_endpoints" {
     from_port  = 0
     to_port    = 0
   }
-  /* # Allow temporarily all
-  ingress {
-    protocol = -1
-    rule_no = 101
-    action = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port = 0
-    to_port = 0
-  }*/
-  # allow ingress ephemeral ports
-  ingress {
-    protocol   = "tcp"
-    rule_no    = 300
-    action     = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port  = 1024
-    to_port    = 65535
-  }
   egress {
-    # TODO probably egress not needed at all?
     protocol   = -1
     rule_no    = 100
     action     = "allow"

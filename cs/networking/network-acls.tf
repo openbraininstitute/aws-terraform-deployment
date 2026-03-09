@@ -20,7 +20,7 @@ resource "aws_network_acl" "cs_subnet" {
     protocol   = "tcp"
     rule_no    = 200
     action     = "allow"
-    cidr_block = "0.0.0.0/0"
+    cidr_block = data.aws_vpc.main.cidr_block
     from_port  = 1024
     to_port    = 65535
   }

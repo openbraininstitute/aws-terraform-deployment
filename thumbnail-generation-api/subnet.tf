@@ -20,7 +20,6 @@ resource "aws_route_table_association" "main" {
 resource "aws_network_acl" "main" {
   vpc_id     = var.vpc_id
   subnet_ids = [aws_subnet.main.id]
-  # Allow local traffic
   ingress {
     protocol   = -1
     rule_no    = 100
@@ -31,17 +30,9 @@ resource "aws_network_acl" "main" {
   }
   ingress {
     protocol   = "tcp"
-    rule_no    = 106
-    action     = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port  = 80
-    to_port    = 80
-  }
-  ingress {
-    protocol   = "tcp"
     rule_no    = 300
     action     = "allow"
-    cidr_block = "0.0.0.0/0"
+    cidr_block = var.vpc_cidr_block
     from_port  = 1024
     to_port    = 65535
   }
@@ -52,14 +43,6 @@ resource "aws_network_acl" "main" {
     cidr_block = "0.0.0.0/0"
     from_port  = 0
     to_port    = 0
-  }
-  egress {
-    rule_no    = 200
-    protocol   = "tcp"
-    action     = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port  = 2049
-    to_port    = 2049
   }
   tags = {
     Name        = "thumbnail_generation_api_acl"
