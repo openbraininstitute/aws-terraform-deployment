@@ -102,7 +102,7 @@ def parse_eventbridge_json_to_readable_message(msg: Dict[str,Any]) -> str:
             dt_swiss = dt_utc.astimezone(ZoneInfo("Europe/Zurich"))
             final_message += f"Swiss time: {dt_swiss}\n\n"
         final_message += f"Message:\n\n```\n{json.dumps(msg, indent=2)}\n```\n"
-        return final_message    
+        return final_message
 
 
 def parse_log_event_json_to_readable_message(msg: Dict[str,Any]) -> str:
@@ -113,21 +113,24 @@ def parse_log_event_json_to_readable_message(msg: Dict[str,Any]) -> str:
     #   "message": "pod found with name: user-scheduler-65768ff8c9-brktz - dries test",
     #   "extra": {},
     #   "exception": null }",
-    final_message: str = ""
+    messages: list[str] = []
     if "time" in msg:
-        final_message += f"GMT time: {msg['time']}\n\n"
+        messages.append(f"GMT time: {msg['time']}")
         dt_utc = datetime.fromisoformat(msg['time'])
         dt_swiss = dt_utc.astimezone(ZoneInfo("Europe/Zurich"))
-        final_message += f"Swiss time: {dt_swiss}\n\n"
+        messages.append(f"Swiss time: {dt_swiss}")
     if "name" in msg:
-        final_message += f"Name: {msg['name']}\n\n"
+        messages.append(f"Name: {msg['name']}")
     if "message" in msg:
-        final_message += f"Message: {msg['message']}\n\n"
+        messages.append(f"Message: {msg['message']}")
     if "exception" in msg:
-        final_message += f"Exception: {msg['exception']}\n\n"
-    if "extra" in msg and "request_id" in msg["extra"]:
-        final_message += f"Request id: {msg['extra']['request_id']}\n\n"
-    return final_message
+        messages.append(f"Exception: {msg['exception']}")
+    if extra := msg.get("extra"):
+        if request_id := extra.get("request_id"):
+            messages.append(f"Request id: {request_id}")
+        if user_id := extra.get("user_id"):
+            messages.append(f"User id: {user_id}")
+    return "\n\n".join(messages)
 
 def handle_eventbridge_cost_anomaly_event(event: Dict[str, Any], _) -> Dict[str, Any]:
     """Main Lambda handler for processing EventBridge AWS cost anomaly events."""
