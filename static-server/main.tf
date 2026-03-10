@@ -141,24 +141,6 @@ resource "aws_s3_bucket_policy" "static_storage" {
           }
         }
       },
-      {
-        Sid    = "Write"
-        Effect = "Allow"
-        Principal = {
-          AWS = "arn:aws:iam::${var.account_id}:user/cell_svc_bucket_user"
-        }
-        Action   = ["s3:*Object"]
-        Resource = ["arn:aws:s3:::${var.static_content_bucket_name}/*"]
-      },
-      {
-        Sid    = "List"
-        Effect = "Allow"
-        Principal = {
-          AWS = "arn:aws:iam::${var.account_id}:user/cell_svc_bucket_user"
-        }
-        Action   = ["s3:ListBucket"]
-        Resource = ["arn:aws:s3:::${var.static_content_bucket_name}"]
-      }
     ]
   })
 }
@@ -221,24 +203,6 @@ resource "aws_s3_bucket_policy" "cell_static_storage" {
           }
         }
       },
-      {
-        Sid    = "Write"
-        Effect = "Allow"
-        Principal = {
-          AWS = "arn:aws:iam::${var.account_id}:user/cell_svc_bucket_user"
-        }
-        Action   = ["s3:*Object"]
-        Resource = ["arn:aws:s3:::${var.cell_static_content_bucket_name}/*"]
-      },
-      {
-        Sid    = "List"
-        Effect = "Allow"
-        Principal = {
-          AWS = "arn:aws:iam::${var.account_id}:user/cell_svc_bucket_user"
-        }
-        Action   = ["s3:ListBucket"]
-        Resource = ["arn:aws:s3:::${var.cell_static_content_bucket_name}"]
-      }
     ]
   })
 }
