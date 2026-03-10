@@ -59,7 +59,7 @@ module "jupyterhub_eks" {
   bastion_instance_private_ip         = var.bastion_instance_private_ip
 
   # Only used in staging
-  is_lustre_filesystem_enabled = var.is_staging
+  is_lustre_filesystem_enabled = false
   # As a test, mount the s3 bucket with the shared data for jupyterhub
   s3_bucket_name = "jupyterhub-s3-shared-volume"
   # Also mount the /pubic part of the s3 bucket containing the entitycore data
@@ -67,7 +67,7 @@ module "jupyterhub_eks" {
 }
 
 module "filesystems_test_vm" {
-  count  = var.is_staging ? 1 : 0
+  count  = 0
   source = "./filesystems_test_vm"
 
   ec2_type                           = "m6i.large"
