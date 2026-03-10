@@ -424,6 +424,5 @@
 /Simulation_data/Simulation_Campaigns/Rat/SSCx/09151af2d2/55/reporting/spikes.h5
 /Simulation_data/Simulation_Campaigns/Rat/SSCx/09151af2d2/54/reporting/spikes.h5
 /Simulation_data/Simulation_Campaigns/Rat/SSCx/09151af2d2/59/reporting/spikes.h5
-/Simulatable_Circuit/ConnectivityMatrixFolders/Allen_V1
-/Simulatable_Circuit/Circuits/Allen_V1
+/Simulatable_Circuit/ConnectivityMatrixFolders/Allen-V1
 /Simulatable_Circuit/Circuits/nbS1
