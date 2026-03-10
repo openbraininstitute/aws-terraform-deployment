@@ -372,6 +372,8 @@ module "cells_svc" {
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 
+  bastion_instance_private_ip = module.bastion_host.bastion_instance_private_ip
+
   amazon_linux_ecs_ami_id = data.aws_ami.amazon_linux_2_ecs.id
 
   cell_svc_docker_image_url = var.cell_svc_docker_image_url

@@ -64,6 +64,11 @@ variable "allowed_source_ip_cidr_blocks" {
   type = list(string)
 }
 
+variable "bastion_instance_private_ip" {
+  type        = string
+  description = "Private IP of the bastion host, used to allow SSH access via SSM port forwarding"
+}
+
 variable "tags" {
   description = "Tags"
   default     = { SBO_Billing = "cell_svc" }

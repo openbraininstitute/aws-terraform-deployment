@@ -19,6 +19,14 @@ resource "aws_network_acl" "cells" {
   subnet_ids = [aws_subnet.cells.id]
   ingress {
     protocol   = "tcp"
+    rule_no    = 200
+    action     = "allow"
+    cidr_block = "${var.bastion_instance_private_ip}/32"
+    from_port  = 22
+    to_port    = 22
+  }
+  ingress {
+    protocol   = "tcp"
     rule_no    = 300
     action     = "allow"
     cidr_block = var.vpc_cidr_block
