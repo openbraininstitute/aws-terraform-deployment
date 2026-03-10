@@ -215,3 +215,20 @@ variable "codeartifact_config" {
     error_message = "All CodeArtifact configuration fields must be non-empty strings."
   }
 }
+
+variable "pcs_ami" {
+  description = "AMI to use when launching PCS worker nodes"
+  type        = string
+}
+
+variable "pcs_nat_gateway_id" {
+  description = "NAT Gateway ID for PCS to connect to the internet, instead of public IPs"
+  type        = string
+  sensitive   = false
+}
+
+variable "pcs_cidr_block" {
+  description = "CIDR of the PCS network where the workers are launched"
+  type        = string
+  sensitive   = false
+}
