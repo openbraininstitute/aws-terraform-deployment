@@ -22,6 +22,10 @@ variable "allowed_source_ip_cidr_blocks" {
   type        = list(string)
 }
 
+variable "internet_access_route_id" {
+  type = string
+}
+
 variable "private_alb_listener_arn" {
   type = string
 }
@@ -184,26 +188,6 @@ variable "internal_public_data_access_point_id" {
 
 variable "open_public_data_access_point_id" {
   description = "The ID for the access point with open public data"
-  type        = string
-}
-
-variable "trusted_a_subnet_id" {
-  description = "The ID of the subnet A containing the trusted services"
-  type        = string
-}
-
-variable "trusted_b_subnet_id" {
-  description = "The ID of the subnet B containing the trusted services"
-  type        = string
-}
-
-variable "untrusted_a_subnet_id" {
-  description = "The ID of the subnet A containing the untrusted services"
-  type        = string
-}
-
-variable "untrusted_b_subnet_id" {
-  description = "The ID of the subnet B containing the untrusted services"
   type        = string
 }
 

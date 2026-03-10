@@ -879,7 +879,7 @@ module "public_data_efs_storage" {
   vpc_id         = local.vpc_id
   vpc_cidr_block = local.vpc_cidr_block
 
-  access_point_subnet_ids = module.launch_system_network.executor_network_ids
+  access_point_subnet_ids = module.launch_system[0].executor_network_ids
 
   internal_public_data_mountpath = "/data/aws_s3_internal/public"
   opendata_mountpath             = "/data/aws_s3_open"
@@ -890,7 +890,7 @@ module "public_data_sync_opendata" {
 
   count = (var.is_staging || var.is_production) ? 1 : 0
 
-  access_point_subnet_ids = module.launch_system_network.executor_network_ids
+  access_point_subnet_ids = module.launch_system[0].executor_network_ids
   account_id              = local.account_id
   aws_region              = local.aws_region
 
@@ -924,18 +924,6 @@ module "public_data_sync_opendata" {
   }
 }
 
-# Goal: always create certain network infrastructure as its re-used
-# by other components such as the EFS for public data.
-# TODO: the subnets do not have their own network ACL but are using
-# the default which is fully open.
-module "launch_system_network" {
-  source = "./launch_system_network"
-
-  aws_region               = local.aws_region
-  vpc_id                   = local.vpc_id
-  internet_access_route_id = local.route_table_private_subnets_id
-}
-
 module "launch_system" {
   source = "./launch_system"
 
@@ -944,12 +932,8 @@ module "launch_system" {
   aws_region               = local.aws_region
   vpc_id                   = local.vpc_id
   account_id               = local.account_id
+  internet_access_route_id = local.route_table_private_subnets_id
   private_alb_listener_arn = local.private_alb_https_listener_arn
-
-  trusted_a_subnet_id   = module.launch_system_network.trusted_a_subnet_id
-  trusted_b_subnet_id   = module.launch_system_network.trusted_b_subnet_id
-  untrusted_a_subnet_id = module.launch_system_network.untrusted_a_subnet_id
-  untrusted_b_subnet_id = module.launch_system_network.untrusted_b_subnet_id
 
   vpc_cidr_block                = local.vpc_cidr_block
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
