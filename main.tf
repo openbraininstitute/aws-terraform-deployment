@@ -976,7 +976,7 @@ module "launch_system" {
   local_store_prefix        = "/data"
   simulation_launch_command = "/data/scratch/run-simulation-venv/bin/python3 /data/scratch/run_simulation.py"
 
-  pcs_ami            = ""
+  pcs_ami            = "ami-05b075d72e0d560fa"
   pcs_nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
   pcs_cidr_block     = "10.0.31.0/24"
 
