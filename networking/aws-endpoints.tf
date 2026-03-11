@@ -79,7 +79,7 @@ resource "aws_vpc_endpoint" "secretsmanager" {
   vpc_id              = var.vpc_id
   subnet_ids          = [aws_subnet.aws_endpoints.id]
   security_group_ids  = [aws_security_group.aws_endpoints_sg.id]
-  private_dns_enabled = false
+  private_dns_enabled = true
   tags                = { Name = "SecretsManager Endpoint" }
 }
 
