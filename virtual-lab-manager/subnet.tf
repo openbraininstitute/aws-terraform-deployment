@@ -46,11 +46,20 @@ resource "aws_network_acl" "core_svc" {
     from_port  = 0
     to_port    = 0
   }
+  # Deny RDP access
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 150
+    action     = "deny"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 3389
+    to_port    = 3389
+  }
   ingress {
     protocol   = "tcp"
     rule_no    = 300
     action     = "allow"
-    cidr_block = var.vpc_cidr_block
+    cidr_block = "0.0.0.0/0"
     from_port  = 1024
     to_port    = 65535
   }
