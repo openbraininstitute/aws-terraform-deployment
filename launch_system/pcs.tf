@@ -70,7 +70,7 @@ resource "awscc_pcs_compute_node_group" "pcs_nodegroup" {
     template_id = aws_launch_template.pcs_launch_template.id
     version     = aws_launch_template.pcs_launch_template.latest_version
   }
-  iam_instance_profile_arn = "arn:aws:iam::009203151042:instance-profile/AWSPCS-manual"
+  iam_instance_profile_arn = aws_iam_instance_profile.pcs_profile.arn
   instance_configs = [
     {
       instance_type = "t3a.xlarge"
@@ -189,4 +189,42 @@ resource "aws_iam_role_policy" "fsx_s3" {
       ]
     }]
   })
+}
+
+resource "aws_iam_role" "pcs_role" {
+  # the webui claims this needs:
+  # `The IAM role associated with the instance profile must either have AWSPCS as the role name prefix or contain /aws-pcs/ in the role path`
+  name_prefix = "AWSPCS-pcs_role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Principal = {
+        Service = "ec2.amazonaws.com"
+      }
+      Action = "sts:AssumeRole"
+    }]
+  })
+}
+
+resource "aws_iam_role_policy" "pcs_policy" {
+  name = "pcs-register-policy"
+  role = aws_iam_role.pcs_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = [
+        "pcs:RegisterComputeNodeGroupInstance"
+      ]
+      Resource = "*"
+    }]
+  })
+}
+
+resource "aws_iam_instance_profile" "pcs_profile" {
+  name = "pcs-compute-node-profile"
+  role = aws_iam_role.pcs_role.name
 }
