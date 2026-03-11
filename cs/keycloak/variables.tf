@@ -1,6 +1,11 @@
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
+variable "domain_name" {
+  type      = string
+  sensitive = false
+}
+
 variable "vpc_id" {
   type = string
 }

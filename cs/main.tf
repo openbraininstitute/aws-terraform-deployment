@@ -86,6 +86,7 @@ module "keycloak" {
   db_instance_class              = var.db_instance_class
   private_alb_https_listener_arn = var.private_alb_https_listener_arn
 
+  domain_name      = var.domain_name
   keycloak_subnets = module.networking.keycloak_private_subnets
 
   keycloak_secrets_arn     = var.keycloak_secrets_arn

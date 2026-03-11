@@ -43,6 +43,10 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
       }
       environment = [
         {
+          name  = "KC_HOSTNAME"
+          value = var.domain_name
+        },
+        {
           name  = "KC_DB"
           value = aws_db_instance.keycloak_database.engine
         },
@@ -95,14 +99,6 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
           value = "xforwarded"
         },
         {
-          name  = "KC_HOSTNAME_STRICT"
-          value = "false"
-        },
-        {
-          name  = "KC_HOSTNAME_BACKCHANNEL_DYNAMIC"
-          value = "false"
-        },
-        {
           name  = "KEYCLOAK_ADMIN"
           value = "admin"
         },
@@ -116,8 +112,12 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
         },
         {
           name  = "KC_LOG_LEVEL"
-          value = "INFO,org.keycloak.quarkus.runtime.services.RejectNonNormalizedPathFilter:DEBUG"
+          value = "INFO"
         },
+        {
+          name  = "PROXY_ADDRESS_FORWARDING"
+          value = "true"
+        }
       ]
       secrets = [
         {
