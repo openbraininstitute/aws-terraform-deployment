@@ -25,16 +25,16 @@ jobs:
     name: Auto Verify & plan terraform code
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ env.AWS_ROLE_ARN_PRODUCTION }}
           aws-region: us-east-1
 
       - name: Configure Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v4
 
       - name: Terraform format check
         run: terraform fmt -check -diff -recursive
