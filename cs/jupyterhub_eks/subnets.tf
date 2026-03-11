@@ -471,6 +471,28 @@ resource "aws_network_acl_rule" "jupyterhub_eks_private_private_b_ingress" {
   egress         = false
 }
 
+resource "aws_network_acl_rule" "jupyterhub_eks_private_deny_rdp_ingress" {
+  network_acl_id = aws_network_acl.jupyterhub_eks_private.id
+  rule_number    = 98
+  protocol       = "tcp"
+  from_port      = 3389
+  to_port        = 3389
+  rule_action    = "deny"
+  cidr_block     = "0.0.0.0/0"
+  egress         = false
+}
+
+resource "aws_network_acl_rule" "jupyterhub_eks_allow_ephemeral_tcp_ingress" {
+  network_acl_id = aws_network_acl.jupyterhub_eks_private.id
+  rule_number    = 99
+  protocol       = "tcp"
+  from_port      = 1024
+  to_port        = 65535
+  rule_action    = "allow"
+  cidr_block     = "0.0.0.0/0"
+  egress         = false
+}
+
 resource "aws_network_acl_rule" "jupyterhub_eks_private_deny_rest_of_vpc_ingress" {
   network_acl_id = aws_network_acl.jupyterhub_eks_private.id
   rule_number    = 100
@@ -480,7 +502,8 @@ resource "aws_network_acl_rule" "jupyterhub_eks_private_deny_rest_of_vpc_ingress
   egress         = false
 }
 
-resource "aws_network_acl_rule" "jupyterhub_eks_private_allow_internet_ingress" {
+# TODO: likely only 443 ingress needed from the internet, for access to nginx ingress / alb ?
+resource "aws_network_acl_rule" "jupyterhub_eks_private_deny_internet_ingress" {
   network_acl_id = aws_network_acl.jupyterhub_eks_private.id
   rule_number    = 101
   protocol       = "-1"
