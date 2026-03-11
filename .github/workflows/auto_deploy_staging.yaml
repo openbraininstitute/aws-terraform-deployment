@@ -31,16 +31,16 @@ jobs:
     name: Auto Apply terraform code to staging
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ env.AWS_ROLE_ARN_STAGING }}
           aws-region: us-east-1
 
       - name: Configure Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v4
 
       - name: Initialize Terraform
         run: terraform init -backend-config="./${{ github.base_ref }}.config"
