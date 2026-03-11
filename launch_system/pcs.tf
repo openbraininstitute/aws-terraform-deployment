@@ -100,6 +100,31 @@ resource "aws_s3_bucket" "pcs_fsx_data" {
   bucket = "obi-pcs-shared-fsx"
 }
 
+resource "aws_s3_bucket_policy" "deny_insecure_transport" {
+  bucket = aws_s3_bucket.pcs_fsx_data.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "DenyInsecureTransport"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = "s3:*"
+        Resource = [
+          aws_s3_bucket.pcs_fsx_data.arn,
+          "${aws_s3_bucket.pcs_fsx_data.arn}/*"
+        ]
+        Condition = {
+          Bool = {
+            "aws:SecureTransport" = "false"
+          }
+        }
+      }
+    ]
+  })
+}
+
 resource "aws_fsx_lustre_file_system" "pcs_luster" {
   storage_capacity            = 1200
   subnet_ids                  = [aws_subnet.pcs.id]
