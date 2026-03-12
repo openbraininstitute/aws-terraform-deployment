@@ -93,6 +93,16 @@ variable "api_asset_post_max_size" {
   type        = string
 }
 
+variable "pagination_default_page_size" {
+  description = "Default page size for pagination in search endpoints"
+  type        = string
+}
+
+variable "pagination_max_page_size" {
+  description = "Maximum page size for pagination in search endpoints"
+  type        = string
+}
+
 variable "db_migration_statement_timeout_ms" {
   description = "Abort any statement that takes more than the specified amount of time"
   type        = string

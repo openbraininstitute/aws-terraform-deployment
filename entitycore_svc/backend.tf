@@ -165,6 +165,14 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
           value = var.api_asset_post_max_size
         },
         {
+          name  = "PAGINATION_DEFAULT_PAGE_SIZE"
+          value = var.pagination_default_page_size
+        },
+        {
+          name  = "PAGINATION_MAX_PAGE_SIZE"
+          value = var.pagination_max_page_size
+        },
+        {
           name  = "DB_MIGRATION_STATEMENT_TIMEOUT_MS"
           value = var.db_migration_statement_timeout_ms
         },
