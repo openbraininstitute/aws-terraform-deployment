@@ -936,8 +936,7 @@ module "launch_system" {
   private_alb_listener_arn = local.private_alb_https_listener_arn
 
   vpc_cidr_block                = local.vpc_cidr_block
-  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
-  # allowed_source_ip_cidr_blocks = [local.vpc_cidr_block]
+  allowed_source_ip_cidr_blocks = [local.vpc_cidr_block]
 
   secrets_arn  = local.launch_system_secrets_arn
   cors_origins = local.core_web_app_origins
