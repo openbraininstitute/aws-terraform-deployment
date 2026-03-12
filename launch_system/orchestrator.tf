@@ -207,8 +207,8 @@ resource "aws_ecs_service" "orchestrator" {
   network_configuration {
     security_groups = [aws_security_group.orchestrator.id]
     subnets = [
-      aws_subnet.trusted_a.id,
-      aws_subnet.trusted_b.id,
+      var.trusted_a_subnet_id,
+      var.trusted_b_subnet_id,
     ]
     assign_public_ip = false
   }
