@@ -18,7 +18,7 @@ locals {
             type            = "machine"
             launch_type     = "FARGATE"
             cluster_name    = aws_ecs_cluster.executor.name
-            subnets         = [aws_subnet.untrusted_a.id, aws_subnet.untrusted_b.id]
+            subnets         = [var.untrusted_a_subnet_id, var.untrusted_b_subnet_id]
             security_groups = [aws_security_group.executor.id]
             task_family     = aws_ecs_task_definition.default_executor.family
           },
@@ -30,7 +30,7 @@ locals {
             type            = "machine"
             launch_type     = "FARGATE"
             cluster_name    = aws_ecs_cluster.executor.name
-            subnets         = [aws_subnet.untrusted_a.id, aws_subnet.untrusted_b.id]
+            subnets         = [var.untrusted_a_subnet_id, var.untrusted_b_subnet_id]
             security_groups = [aws_security_group.executor.id]
             task_family     = aws_ecs_task_definition.inait_executor.family
           }
