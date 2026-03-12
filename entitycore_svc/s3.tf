@@ -84,15 +84,6 @@ resource "aws_s3_bucket_policy" "prevent_delete" {
           "${aws_s3_bucket.entitycore.arn}/*"
         ]
       },
-      {
-        Sid       = "PreventLifecycleModification"
-        Effect    = "Allow"
-        Principal = { "AWS" : "arn:aws:iam::992382665735:user/admin" }
-        Action = [
-          "s3:PutLifecycleConfiguration"
-        ]
-        Resource = aws_s3_bucket.entitycore.arn
-      }
     ]
   })
 }
