@@ -678,6 +678,9 @@ module "entitycore_svc" {
   db_name     = "entitycore"
   db_username = "entitycore"
 
+  pagination_default_page_size = 30
+  pagination_max_page_size     = 1000
+
   db_migration_statement_timeout_ms = 60000
   db_migration_lock_timeout_ms      = 10000
 
