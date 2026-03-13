@@ -225,7 +225,7 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
         ]
       }
 
-      environment = [
+      environment = concat([
         {
           name  = "APP_DEBUG"
           value = "false"
@@ -233,10 +233,6 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
         {
           name  = "CORS_ORIGINS"
           value = jsonencode(var.cors_origins)
-        },
-        {
-          name  = "CORS_ORIGIN_REGEX"
-          value = var.cors_origin_regex
         },
         {
           name  = "ROOT_PATH"
@@ -270,7 +266,7 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
           name  = "MPLCONFIGDIR",
           value = "/tmp/matplotlib"
         }
-      ]
+      ], var.cors_origin_regex != null ? [{ name = "CORS_ORIGIN_REGEX", value = var.cors_origin_regex }] : [])
 
       healthcheck = {
         # command     = ["CMD", "/code/scripts/healthcheck.sh"]

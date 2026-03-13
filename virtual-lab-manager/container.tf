@@ -118,7 +118,7 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
         startPeriod = 30
         retries     = 3
       }
-      environment = [
+      environment = concat([
         {
           name  = "DEBUG"
           value = "true"
@@ -192,10 +192,6 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
           value = jsonencode(var.cors_origins)
         },
         {
-          name  = "CORS_ORIGIN_REGEX"
-          value = var.cors_origin_regex
-        },
-        {
           name  = "VLAB_ADMIN_PATH"
           value = var.virtual_lab_manager_admin_base_path
         },
@@ -243,8 +239,7 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
           name  = "MAX_PROJECTS_NUMBER"
           value = "40"
         },
-
-      ]
+      ], var.cors_origin_regex != null ? [{ name = "CORS_ORIGIN_REGEX", value = var.cors_origin_regex }] : [])
       secrets = [
         {
           name      = "KC_CLIENT_ID"
