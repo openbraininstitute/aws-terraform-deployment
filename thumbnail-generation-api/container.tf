@@ -208,7 +208,7 @@ resource "aws_ecs_task_definition" "main" {
             protocol      = "tcp"
           }
         ],
-        environment = [
+        environment = concat([
           {
             name  = "WHITELISTED_CORS_URLS",
             value = jsonencode(var.cors_origins)
@@ -216,10 +216,6 @@ resource "aws_ecs_task_definition" "main" {
           {
             name  = "BASE_PATH"
             value = var.base_path
-          },
-          {
-            name  = "CORS_ORIGIN_REGEX"
-            value = var.cors_origin_regex
           },
           {
             name  = "ENVIRONMENT"
@@ -237,7 +233,7 @@ resource "aws_ecs_task_definition" "main" {
             name  = "MPLCONFIGDIR",
             value = "/tmp/matplotlib"
           },
-        ],
+        ], var.cors_origin_regex != null ? [{ name = "CORS_ORIGIN_REGEX", value = var.cors_origin_regex }] : []),
         memory = 2048
         cpu    = 1024
         logConfiguration = {
