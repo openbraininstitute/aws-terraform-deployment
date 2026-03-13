@@ -998,7 +998,7 @@ module "launch_system" {
 
   pcs_ami            = "ami-05b075d72e0d560fa"
   pcs_nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
-  pcs_cidr_block     = "10.0.31.0/24"
+  pcs_cidr_block     = "10.0.35.0/24"
 
   codeartifact_config = {
     domain       = "openbraininstitute"
