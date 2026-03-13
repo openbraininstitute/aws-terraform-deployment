@@ -97,7 +97,7 @@ resource "awscc_pcs_queue" "pcs_queue" {
 }
 
 resource "aws_s3_bucket" "pcs_fsx_data" {
-  bucket = "obi-pcs-shared-fsx"
+  bucket = var.pcs_fsx_scratch_s3_bucket_name
 }
 
 resource "aws_s3_bucket_policy" "deny_insecure_transport" {
