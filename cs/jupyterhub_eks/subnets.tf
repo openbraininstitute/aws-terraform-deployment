@@ -180,6 +180,28 @@ resource "aws_network_acl_rule" "jupyterhub_eks_public_private_b_ingress" {
   egress         = false
 }
 
+resource "aws_network_acl_rule" "jupyterhub_eks_public_deny_ssh_ingress" {
+  network_acl_id = aws_network_acl.jupyterhub_eks_public.id
+  rule_number    = 96
+  protocol       = "tcp"
+  from_port      = 22
+  to_port        = 22
+  rule_action    = "deny"
+  cidr_block     = "0.0.0.0/0"
+  egress         = false
+}
+
+resource "aws_network_acl_rule" "jupyterhub_eks_public_deny_rdp_ingress" {
+  network_acl_id = aws_network_acl.jupyterhub_eks_public.id
+  rule_number    = 97
+  protocol       = "tcp"
+  from_port      = 3389
+  to_port        = 3389
+  rule_action    = "deny"
+  cidr_block     = "0.0.0.0/0"
+  egress         = false
+}
+
 resource "aws_network_acl_rule" "jupyterhub_eks_public_deny_rest_of_vpc_ingress" {
   network_acl_id = aws_network_acl.jupyterhub_eks_public.id
   rule_number    = 100
@@ -468,6 +490,17 @@ resource "aws_network_acl_rule" "jupyterhub_eks_private_private_b_ingress" {
   protocol       = "-1"
   rule_action    = "allow"
   cidr_block     = var.jupyterhub_eks_private_b_cidr
+  egress         = false
+}
+
+resource "aws_network_acl_rule" "jupyterhub_eks_private_deny_ssh_ingress" {
+  network_acl_id = aws_network_acl.jupyterhub_eks_private.id
+  rule_number    = 97
+  protocol       = "tcp"
+  from_port      = 22
+  to_port        = 22
+  rule_action    = "deny"
+  cidr_block     = "0.0.0.0/0"
   egress         = false
 }
 
