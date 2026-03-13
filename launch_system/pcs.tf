@@ -78,8 +78,8 @@ resource "awscc_pcs_compute_node_group" "pcs_nodegroup" {
   ]
   purchase_option = "ONDEMAND"
   scaling_configuration = {
-    min_instance_count = 2
-    max_instance_count = 2
+    min_instance_count = 0
+    max_instance_count = 4
   }
   subnet_ids = [aws_subnet.pcs.id]
   tags       = {}
