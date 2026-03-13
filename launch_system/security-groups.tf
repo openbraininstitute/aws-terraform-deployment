@@ -48,7 +48,7 @@ resource "aws_vpc_security_group_ingress_rule" "ssh" {
   ip_protocol       = "tcp"
   from_port         = 22
   to_port           = 22
-  cidr_ipv4         = var.pcs_cidr_block
+  cidr_ipv4         = var.vpc_cidr_block
 }
 
 resource "aws_vpc_security_group_ingress_rule" "lustre_lnet" {
