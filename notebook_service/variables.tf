@@ -96,9 +96,15 @@ variable "secrets_arn" {
   type        = string
 }
 
-variable "cors_allowed_origins" {
-  description = "comma separated list with the list of allowed origins for the CORS settings"
+variable "cors_origins" {
+  description = "List with the list of allowed origins for the CORS settings"
+  type        = list(string)
+}
+
+variable "cors_origin_regex" {
+  description = "CORS origin regex"
   type        = string
+  default     = null
 }
 
 variable "notebook_service_bucket_name" {

@@ -428,7 +428,8 @@ module "notebook_service" {
   ecs_cidr_block_a           = "10.0.2.192/27"
   ecs_cidr_block_b           = "10.0.2.224/27"
 
-  cors_allowed_origins = var.notebook_service_cors_allowed_origins
+  cors_origins      = local.core_web_app_origins
+  cors_origin_regex = local.core_web_app_cors_origin_regex
 
   kubernetes_thread_enabled       = var.notebook_service_aws_k8s_thread_enabled
   azure_kubernetes_thread_enabled = var.notebook_service_azure_k8s_thread_enabled

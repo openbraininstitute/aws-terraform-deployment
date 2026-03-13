@@ -14,7 +14,6 @@ cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/s
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2026.02.1"
 jupyterhub_ec2_type                       = "c7i.2xlarge"
 notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:2026.03.10-1"
-notebook_service_cors_allowed_origins     = "[\"https://www.openbraininstitute.org\", \"https://cell-a.openbraininstitute.org\", \"https://cell-b.openbraininstitute.org\", \"https://www.cell-b.openbraininstitute.org\"]"
 notebook_service_bucket_name              = "obi-notebook-service-statistics-prod"
 notebook_service_aws_k8s_thread_enabled   = true
 notebook_service_azure_k8s_thread_enabled = true
