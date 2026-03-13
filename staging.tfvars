@@ -12,10 +12,9 @@ core_web_app_dev_docker_image_url         = "public.ecr.aws/openbraininstitute/c
 virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:2026.03.02.1"
 thumbnail_generation_api_docker_image_url = "public.ecr.aws/openbraininstitute/thumbnail-generation-api:2026.02.12.1"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2026.2.0"
-accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2026.02.1"
+accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2026.03.1"
 jupyterhub_ec2_type                       = "c7i.large"
-notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:2026.03.10-1"
-notebook_service_cors_allowed_origins     = "[\"https://staging.cell-a.openbraininstitute.org\",\"https://staging.cell-b.openbraininstitute.org\",\"https://dev.openbraininstitute.org\",\"https://staging.openbraininstitute.org\",\"https://preview.openbraininstitute.org\",\"http://127.0.0.1:8000\",\"http://127.0.0.1\",\"http://127.0.0.1:3000\",\"http://localhost:3000\"]"
+notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:2026.03.13-1"
 notebook_service_bucket_name              = "obi-notebook-service-statistics-staging"
 notebook_service_aws_k8s_thread_enabled   = true
 notebook_service_azure_k8s_thread_enabled = true
@@ -28,8 +27,8 @@ keycloak_url_with_auth = "https://staging.cell-a.openbraininstitute.org/auth/"
 
 neuroagent_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-v0.17.1"
 
-small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2026.03.11.2"
-small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2026.03.11.2"
+small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2026.03.13.1"
+small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2026.03.13.1"
 small_scale_simulator_api_task_size = {
   cpu    = 256
   memory = 512

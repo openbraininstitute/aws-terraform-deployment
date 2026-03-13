@@ -326,7 +326,7 @@ resource "aws_ecs_task_definition" "api" {
           readOnly      = false
         }
       ]
-      environment = [
+      environment = concat([
         {
           name  = "REDIS_URL"
           value = "redis://redis.small-scale-simulator.local:6379"
@@ -342,10 +342,6 @@ resource "aws_ecs_task_definition" "api" {
         {
           name  = "CORS_ORIGINS"
           value = jsonencode(var.cors_origins)
-        },
-        {
-          name  = "CORS_ORIGIN_REGEX"
-          value = var.cors_origin_regex
         },
         {
           name  = "KC_SERVER_URI"
@@ -379,7 +375,7 @@ resource "aws_ecs_task_definition" "api" {
           name  = "METRICS_AWS_REGION"
           value = var.aws_region
         }
-      ]
+      ], var.cors_origin_regex != null ? [{ name = "CORS_ORIGIN_REGEX", value = var.cors_origin_regex }] : [])
 
       secrets = [
         {
