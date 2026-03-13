@@ -3,6 +3,8 @@ locals {
   aws_region = data.aws_region.current.name
   vpc_id     = data.terraform_remote_state.common.outputs.vpc_id
 
+  suffix = var.is_staging ? "-staging" : var.is_production ? "production" : ""
+
   private_alb_https_listener_arn = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
   route_table_private_subnets_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
   route_table_public_id          = data.terraform_remote_state.common.outputs.route_table_public_id
@@ -996,9 +998,10 @@ module "launch_system" {
   local_store_prefix        = "/data"
   simulation_launch_command = "/data/scratch/run-simulation-venv/bin/python3 /data/scratch/run_simulation.py"
 
-  pcs_ami            = "ami-05b075d72e0d560fa"
-  pcs_nat_gateway_id = data.terraform_remote_state.common.outputs.nat_gateway_id
-  pcs_cidr_block     = "10.0.35.0/24"
+  pcs_ami                        = "ami-05b075d72e0d560fa"
+  pcs_nat_gateway_id             = data.terraform_remote_state.common.outputs.nat_gateway_id
+  pcs_cidr_block                 = "10.0.36.0/24"
+  pcs_fsx_scratch_s3_bucket_name = "obi-pcs-scratch-fsx-${local.suffix}"
 
   codeartifact_config = {
     domain       = "openbraininstitute"

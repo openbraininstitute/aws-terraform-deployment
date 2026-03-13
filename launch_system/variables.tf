@@ -248,3 +248,10 @@ variable "pcs_cidr_block" {
   type        = string
   sensitive   = false
 }
+
+variable "pcs_fsx_scratch_s3_bucket_name" {
+  description = "Name of the S3 bucket for scratch FSX"
+  type        = string
+  sensitive   = false
+}
+
