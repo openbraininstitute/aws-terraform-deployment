@@ -168,7 +168,7 @@ resource "aws_ecs_task_definition" "ecs_definition" {
         retries     = 3
       }
 
-      environment = [
+      environment = concat([
         {
           name  = "APP_DEBUG"
           value = var.debug
@@ -194,8 +194,8 @@ resource "aws_ecs_task_definition" "ecs_definition" {
           value = var.kubernetes_thread_enabled ? "True" : "False"
         },
         {
-          name  = "CORS_ALLOWED_ORIGINS",
-          value = var.cors_allowed_origins
+          name  = "CORS_ORIGINS"
+          value = jsonencode(var.cors_origins)
         },
         {
           name  = "KEYCLOAK_URL",
@@ -229,7 +229,7 @@ resource "aws_ecs_task_definition" "ecs_definition" {
           name  = "AZURE_FILES_STORAGE_ACCOUNT_NAME",
           value = var.azure_files_storage_account_name
         }
-      ]
+      ], var.cors_origin_regex != null ? [{ name = "CORS_ORIGIN_REGEX", value = var.cors_origin_regex }] : [])
       secrets = [
         {
           name      = "JUPYTERHUB_ROOT_FULL_URL"
