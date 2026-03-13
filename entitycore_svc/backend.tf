@@ -103,7 +103,7 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
         retries     = 3
       }
 
-      environment = [
+      environment = concat([
         {
           name  = "APP_DEBUG"
           value = "false"
@@ -111,10 +111,6 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
         {
           name  = "CORS_ORIGINS"
           value = jsonencode(var.cors_origins)
-        },
-        {
-          name  = "CORS_ORIGIN_REGEX"
-          value = var.cors_origin_regex
         },
         {
           name  = "KEYCLOAK_URL"
@@ -180,7 +176,7 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
           name  = "DB_MIGRATION_LOCK_TIMEOUT_MS"
           value = var.db_migration_lock_timeout_ms
         },
-      ]
+      ], var.cors_origin_regex != null ? [{ name = "CORS_ORIGIN_REGEX", value = var.cors_origin_regex }] : [])
 
       secrets = [
         {

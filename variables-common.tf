@@ -309,11 +309,6 @@ variable "obi_one_v2_ecs_task_size" {
   description = "CPU and memory limit for obi-one ECS task (number or string format)"
 }
 
-variable "notebook_service_cors_allowed_origins" {
-  type        = string
-  description = "JSON encoded list of allowed origins for the cors settings of the notebook service"
-}
-
 variable "notebook_service_aws_k8s_thread_enabled" {
   type        = string
   description = "Enable kubernetes background thread to check how long notebooks run in aws"
