@@ -13,7 +13,7 @@ resource "awscc_pcs_cluster" "cluster" {
   slurm_configuration = {
     accounting = {
       default_purge_time_in_days = -1
-      mode                       = "STANDARD"
+      mode                       = "NONE"
     }
     scale_down_idle_time_in_seconds = 600
     slurm_custom_settings = [
