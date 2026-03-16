@@ -13,7 +13,7 @@ resource "awscc_pcs_cluster" "cluster" {
   slurm_configuration = {
     accounting = {
       default_purge_time_in_days = -1
-      mode                       = "STANDARD"
+      mode                       = "NONE"
     }
     scale_down_idle_time_in_seconds = 600
     slurm_custom_settings = [
@@ -37,9 +37,12 @@ resource "aws_launch_template" "pcs_launch_template" {
   image_id = var.pcs_ami
 
   user_data = base64encode(templatefile("${path.module}/cloud-init.cfg", {
-    fsx_dns_name   = aws_fsx_lustre_file_system.pcs_luster.dns_name
-    fsx_mount_name = aws_fsx_lustre_file_system.pcs_luster.mount_name
-    region         = var.aws_region
+    fsx_dns_name               = aws_fsx_lustre_file_system.pcs_luster.dns_name
+    fsx_mount_name             = aws_fsx_lustre_file_system.pcs_luster.mount_name
+    publicdata_efs_id          = var.public_launch_data_efs_id
+    opendata_access_point_id   = var.open_public_data_access_point_id
+    publicdata_access_point_id = var.internal_public_data_access_point_id
+    region                     = var.aws_region
   }))
 
   vpc_security_group_ids = [
