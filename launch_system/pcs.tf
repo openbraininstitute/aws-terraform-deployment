@@ -65,7 +65,47 @@ resource "aws_launch_template" "pcs_launch_template" {
   }
 }
 
-resource "awscc_pcs_compute_node_group" "pcs_nodegroup" {
+resource "awscc_pcs_compute_node_group" "pcs_nodegroup_small" {
+  name       = "cluster-nodegroup"
+  ami_id     = aws_launch_template.pcs_launch_template.image_id
+  cluster_id = awscc_pcs_cluster.cluster.cluster_id
+
+  custom_launch_template = {
+    template_id = aws_launch_template.pcs_launch_template.id
+    version     = aws_launch_template.pcs_launch_template.latest_version
+  }
+
+  iam_instance_profile_arn = aws_iam_instance_profile.pcs_profile.arn
+
+  instance_configs = [
+    {
+      instance_type = "t3a.xlarge"
+    },
+  ]
+
+  purchase_option = "ONDEMAND"
+
+  scaling_configuration = {
+    min_instance_count = 0
+    max_instance_count = 4
+  }
+
+  subnet_ids = [aws_subnet.pcs.id]
+  tags       = {}
+}
+
+resource "awscc_pcs_queue" "pcs_queue_small" {
+  cluster_id = awscc_pcs_cluster.cluster.cluster_id
+  compute_node_group_configurations = [
+    {
+      compute_node_group_id = awscc_pcs_compute_node_group.pcs_nodegroup_small.compute_node_group_id
+    },
+  ]
+  name = "pcs-queue-small"
+  tags = {}
+}
+
+resource "awscc_pcs_compute_node_group" "pcs_nodegroup_large" {
   name       = "cluster-nodegroup"
   ami_id     = aws_launch_template.pcs_launch_template.image_id
   cluster_id = awscc_pcs_cluster.cluster.cluster_id
@@ -76,7 +116,7 @@ resource "awscc_pcs_compute_node_group" "pcs_nodegroup" {
   iam_instance_profile_arn = aws_iam_instance_profile.pcs_profile.arn
   instance_configs = [
     {
-      instance_type = "t3a.xlarge"
+      instance_type = "hpc7a.96xlarge"
     },
   ]
   purchase_option = "ONDEMAND"
@@ -88,14 +128,14 @@ resource "awscc_pcs_compute_node_group" "pcs_nodegroup" {
   tags       = {}
 }
 
-resource "awscc_pcs_queue" "pcs_queue" {
+resource "awscc_pcs_queue" "pcs_queue_large" {
   cluster_id = awscc_pcs_cluster.cluster.cluster_id
   compute_node_group_configurations = [
     {
-      compute_node_group_id = awscc_pcs_compute_node_group.pcs_nodegroup.compute_node_group_id
+      compute_node_group_id = awscc_pcs_compute_node_group.pcs_nodegroup_large.compute_node_group_id
     },
   ]
-  name = "pcs-queue"
+  name = "pcs-queue-large"
   tags = {}
 }
 

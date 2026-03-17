@@ -1,7 +1,8 @@
-# All compute cell definitions in one place. Cell A uses this module's resources;
-# other cells are static configuration.
+# All compute cell definitions in one place
 
 locals {
+  slurmrestd_endpoint = [for e in awscc_pcs_cluster.cluster.endpoints : e if e.type == "SLURMRESTD"][0]
+
   compute_cell_definitions = {
     cell_a = {
       vendor     = "aws"
@@ -35,7 +36,20 @@ locals {
             task_family     = aws_ecs_task_definition.inait_executor.family
           }
         ]
-        cluster = []
+        cluster = {
+          type                 = "cluster"
+          username             = "obiuser"
+          uid                  = 4000
+          gid                  = 4000
+          homedir              = "/data/scratch/obiuser"
+          slurm_url            = "http://${local.slurmrestd_endpoint.private_ip_address}:6820/slurm/v0.0.43"
+          slurm_accounting_url = "http://${local.slurmrestd_endpoint.private_ip_address}:6820/slurmdb/v0.0.43"
+          slurm_secret         = "$${SECRET:SLURM_SECRET}"
+          instance_types = {
+            small = awscc_pcs_queue.pcs_queue_small.name
+            large = awscc_pcs_queue.pcs_queue_large.name
+          }
+        }
       }
     }
 
