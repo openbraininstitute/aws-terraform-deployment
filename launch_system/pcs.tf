@@ -5,6 +5,10 @@ resource "awscc_pcs_cluster" "cluster" {
     security_group_ids = [aws_security_group.pcs.id]
     subnet_ids         = [aws_subnet.pcs.id]
   }
+  # see available versions here:
+  # https://docs.aws.amazon.com/pcs/latest/userguide/slurm-versions.html
+  # note that changes to the version may require changes to the slurm `url`
+  # and the service if the slrmREST API has changed
   scheduler = {
     type    = "SLURM"
     version = "25.05"
@@ -66,7 +70,7 @@ resource "aws_launch_template" "pcs_launch_template" {
 }
 
 resource "awscc_pcs_compute_node_group" "pcs_nodegroup_small" {
-  name       = "cluster-nodegroup"
+  name       = "cluster-nodegroup-small"
   ami_id     = aws_launch_template.pcs_launch_template.image_id
   cluster_id = awscc_pcs_cluster.cluster.cluster_id
 
@@ -106,7 +110,7 @@ resource "awscc_pcs_queue" "pcs_queue_small" {
 }
 
 resource "awscc_pcs_compute_node_group" "pcs_nodegroup_large" {
-  name       = "cluster-nodegroup"
+  name       = "cluster-nodegroup-large"
   ami_id     = aws_launch_template.pcs_launch_template.image_id
   cluster_id = awscc_pcs_cluster.cluster.cluster_id
   custom_launch_template = {
