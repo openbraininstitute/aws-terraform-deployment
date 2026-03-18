@@ -120,7 +120,7 @@ resource "awscc_pcs_compute_node_group" "pcs_nodegroup_large" {
   iam_instance_profile_arn = aws_iam_instance_profile.pcs_profile.arn
   instance_configs = [
     {
-      instance_type = "hpc7a.96xlarge"
+      instance_type = "c8id.48xlarge"
     },
   ]
   purchase_option = "ONDEMAND"
