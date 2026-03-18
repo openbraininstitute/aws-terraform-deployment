@@ -110,9 +110,7 @@ module "cs" {
   nat_gateway_id                 = data.terraform_remote_state.common.outputs.nat_gateway_id
   aws_endpoints_subnet_cidr      = module.networking.endpoints_subnet_cidr
 
-  # This should be the 'new' hostname containing cell-a in the URL, but the changes
-  # have been applied manually on the metabolism jupyterhub VMs.
-  domain_name = local.public_primary_domain_in_azure
+  domain_name = local.cell_a_primary_domain
 
   jupyterhub_secrets_arn = local.jupyterhub_secrets_arn
   jupyterhub_ec2_type    = var.jupyterhub_ec2_type
