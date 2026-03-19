@@ -1,5 +1,6 @@
 resource "aws_sns_topic" "topic" {
-  name = "ses-emails-events"
+  name       = "ses-emails-events.fifo"
+  fifo_topic = true
 }
 
 
