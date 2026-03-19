@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+exec > >(tee /var/log/user-data.log | logger -t user-data) 2>&1
 
 EFS_MOUNT_OPS="nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
 
@@ -9,25 +11,32 @@ sudo mount -t nfs4 -o $${EFS_MOUNT_OPS} ${HOMEDIRS_EFS}:/ ${HOMEDIRS_PATH}
 # clean up all EFS jupyter users homedirs
 sudo rm -rf ${HOMEDIRS_PATH}/jupyter-*
 
-sudo echo -n "${HOMEDIRS_EFS}:/ ${HOMEDIRS_PATH} nfs4 $${EFS_MOUNT_OPS} 0 0" >> /etc/fstab
+echo -n "${HOMEDIRS_EFS}:/ ${HOMEDIRS_PATH} nfs4 $${EFS_MOUNT_OPS} 0 0" | sudo tee -a /etc/fstab
 sudo mount -a
 
 # to be able to ssh as ubuntu user
 sudo mkdir -p /home/ubuntu/.ssh/
 sudo chown -R ubuntu:ubuntu /home/ubuntu/
-sudo echo "${CS_SSH_KEY}" > /home/ubuntu/.ssh/authorized_keys
+echo "${CS_SSH_KEY}" | sudo tee /home/ubuntu/.ssh/authorized_keys
 sudo chmod 700 /home/ubuntu/.ssh
 sudo chmod 600 /home/ubuntu/.ssh/authorized_keys
 
 sudo systemctl enable nginx
 sudo systemctl stop nginx
 
+# Bootstrap TLJH - will fail on bcrypt/passlib incompatibility but that's expected
 curl -L https://tljh.jupyter.org/bootstrap.py \
   | sudo python3 - \
     --admin ${ADMIN_USER}:${ADMIN_PASS} \
     --version 0.2.0 \
     --user-requirements-txt-url https://gist.githubusercontent.com/danifr/6d0c4ff74a51ebb076179447855b9849/raw/1b183e30bc8513e9310bd49d0ed584dceb16e7b2/requirements.txt \
-    --show-progress-page \
+  || true
+
+# Pin bcrypt in the hub venv to fix passlib AttributeError, then re-run the installer
+/opt/tljh/hub/bin/pip install bcrypt==4.0.1
+sudo /opt/tljh/hub/bin/python3 -m tljh.installer \
+  --admin ${ADMIN_USER}:${ADMIN_PASS} \
+  --user-requirements-txt-url https://gist.githubusercontent.com/danifr/6d0c4ff74a51ebb076179447855b9849/raw/1b183e30bc8513e9310bd49d0ed584dceb16e7b2/requirements.txt
 
 sudo tljh-config set base_url ${BASE_PATH}
 sudo tljh-config set http.port ${JUPYTERHUB_PORT}
@@ -151,15 +160,10 @@ julia -e 'using IJulia; IJulia.installkernel("julia", env=Dict(
       "JUPYTER_DATA_DIR"=>"'"$JUPYTER_DATA_DIR"'"
 ))'
 
-# downgrade bcrypt to avoid AttributeError: module 'bcrypt' has no attribute '__about__' error
-source /opt/tljh/hub/bin/activate
-pip install --upgrade bcrypt==4.0.1
-deactivate
-
 source /opt/tljh/user/bin/activate
 pip install webio_jupyter_extension webio_jupyterlab_provider
 pip install --upgrade jupyterlab-pygments==0.2.0
-conda deactivate
+deactivate
 
 # Give jupyterhub-users groups access to $JULIA_DEPOT_PATH
 chgrp -R jupyterhub-users $${JULIA_DEPOT_PATH}
