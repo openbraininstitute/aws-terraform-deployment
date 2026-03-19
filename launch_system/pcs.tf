@@ -16,8 +16,7 @@ resource "awscc_pcs_cluster" "cluster" {
   size = "SMALL"
   slurm_configuration = {
     accounting = {
-      default_purge_time_in_days = 60
-      mode                       = "NONE"
+      mode = "NONE"
     }
     scale_down_idle_time_in_seconds = 600
     slurm_custom_settings = [
