@@ -73,6 +73,25 @@ def parse_eventbridge_json_to_readable_message(msg: Dict[str,Any]) -> str:
         if 'reject' in msg:
             reject = msg['reject']
             final_message = f"{final_message}Reject reason: {reject.get('reason')}\n\n"
+        if 'complaint' in msg:
+            complaint = msg['complaint']
+            final_message = f"{final_message}Complaint sub type: {complaint.get('complaintSubType')}\n\n"
+        if 'open' in msg:
+            openmsg = msg['open']
+            final_message = f"{final_message}User agent: {openmsg.get('userAgent')}\n\n"
+        if 'failure' in msg: # rendering failures, currently rendering isn't used
+            failure = msg['failure']
+            final_message = f"{final_message}Template name: {failure.get('templateName')}\n\n"
+            final_message = f"{final_message}Error message: {failure.get('errorMessage')}\n\n"
+        if 'click' in msg:
+            click = msg['click']
+            final_message = f"{final_message}Link: {click.get('link')}\n\n"
+            final_message = f"{final_message}User agent: {click.get('userAgent')}\n\n"
+        if 'subscription' in msg: # currently not used at OBI
+            subscription = msg['subscription']
+            final_message = f"{final_message}Contact list: {subscription.get('contactList')}\n\n"
+            final_message = f"{final_message}New topic prefs: {subscription.get('newTopicPreferences')}\n\n"
+            final_message = f"{final_message}Old topic prefs: {subscription.get('oldTopicPreferences')}\n\n"
         if 'deliveryDelay' in msg:
             delivery_delay = msg['deliveryDelay']
             final_message = f"{final_message}Delay type: {delivery_delay.get('delayType')}\n\n"
