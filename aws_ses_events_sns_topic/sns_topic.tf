@@ -1,6 +1,6 @@
 resource "aws_sns_topic" "topic" {
-  name       = "ses-emails-events.fifo"
-  fifo_topic = true
+  name       = "ses-emails-events"
+  fifo_topic = false # SES cannot send events to a FIFO SNS topic
 }
 
 
