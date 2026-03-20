@@ -255,3 +255,9 @@ variable "pcs_fsx_scratch_s3_bucket_name" {
   sensitive   = false
 }
 
+variable "pcs_large_alternate_node_types" {
+  description = "Names of the node types to be used as alternate or `fallbacks` if the `large` PCS fails, ordered from best to worse"
+  type        = list(string)
+  default     = []
+}
+

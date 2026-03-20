@@ -120,7 +120,7 @@ resource "awscc_pcs_compute_node_group" "pcs_nodegroup_large" {
   iam_instance_profile_arn = aws_iam_instance_profile.pcs_profile.arn
   instance_configs = [
     {
-      instance_type = "c8id.48xlarge"
+      instance_type = "c8a.48xlarge"
     },
   ]
   purchase_option = "ONDEMAND"
@@ -140,6 +140,46 @@ resource "awscc_pcs_queue" "pcs_queue_large" {
     },
   ]
   name = "pcs-queue-large"
+  tags = {}
+}
+
+locals {
+  large_fallback_map = { for i, v in var.pcs_large_alternate_node_types : "alt${i}" => v }
+}
+
+resource "awscc_pcs_compute_node_group" "pcs_ng_large_fallback" {
+  for_each = local.large_fallback_map
+
+  name       = "cluster-ng-large-${each.key}"
+  ami_id     = aws_launch_template.pcs_launch_template.image_id
+  cluster_id = awscc_pcs_cluster.cluster.cluster_id
+  custom_launch_template = {
+    template_id = aws_launch_template.pcs_launch_template.id
+    version     = aws_launch_template.pcs_launch_template.latest_version
+  }
+  iam_instance_profile_arn = local.pcs_profile_arn
+  instance_configs = [
+    { instance_type = each.value }
+  ]
+  purchase_option = "ONDEMAND"
+  scaling_configuration = {
+    min_instance_count = 0
+    max_instance_count = 4
+  }
+  subnet_ids = [aws_subnet.pcs.id]
+  tags       = {}
+}
+
+resource "awscc_pcs_queue" "pcs_queue_large_fallback" {
+  for_each = local.large_fallback_map
+
+  cluster_id = awscc_pcs_cluster.cluster.cluster_id
+  compute_node_group_configurations = [
+    {
+      compute_node_group_id = awscc_pcs_compute_node_group.pcs_nodegroup_large.compute_node_group_id
+    },
+  ]
+  name = "pcs-q-large-${each.key}"
   tags = {}
 }
 
