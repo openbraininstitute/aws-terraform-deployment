@@ -11,9 +11,9 @@ resource "aws_security_group" "s3_vpc_endpoint_sg" {
   vpc_id      = var.vpc_id
 
   ingress {
-    description = "Allow HTTP traffic from the VPC"
-    from_port   = 80
-    to_port     = 80
+    description = "Allow HTTPS traffic from the VPC"
+    from_port   = 443
+    to_port     = 443
     protocol    = "tcp"
     cidr_blocks = [data.aws_vpc.provided_vpc.cidr_block]
   }
@@ -38,16 +38,20 @@ resource "aws_vpc_endpoint" "s3_vpc_endpoint" {
 }
 
 resource "aws_lb_target_group" "static_data_tg" {
-  name        = "s3-bucket-tg"
-  port        = 80
-  protocol    = "HTTP"
+  name        = "s3-bucket-tg-https"
+  port        = 443
+  protocol    = "HTTPS"
   target_type = "ip"
   vpc_id      = var.vpc_id
+
+  lifecycle {
+    create_before_destroy = true
+  }
 
   // TODO: improve the health check not to rely on a static file.
   health_check {
     path                = "/sitemap.xml"
-    protocol            = "HTTP"
+    protocol            = "HTTPS"
     interval            = 30
     timeout             = 10
     healthy_threshold   = 2
