@@ -157,7 +157,7 @@ resource "awscc_pcs_compute_node_group" "pcs_ng_large_fallback" {
     template_id = aws_launch_template.pcs_launch_template.id
     version     = aws_launch_template.pcs_launch_template.latest_version
   }
-  iam_instance_profile_arn = local.pcs_profile_arn
+  iam_instance_profile_arn = aws_iam_instance_profile.pcs_profile.arn
   instance_configs = [
     { instance_type = each.value }
   ]
