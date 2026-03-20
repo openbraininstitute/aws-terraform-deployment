@@ -1000,6 +1000,13 @@ module "launch_system" {
   pcs_nat_gateway_id             = data.terraform_remote_state.common.outputs.nat_gateway_id
   pcs_cidr_block                 = "10.0.36.0/24"
   pcs_fsx_scratch_s3_bucket_name = "obi-pcs-scratch-fsx-${local.suffix}"
+  pcs_large_alternate_node_types = [
+    "c8i.48xlarge",
+    "c7a.48xlarge",
+    "c7i.48xlarge",
+    "c6a.48xlarge",
+    # no such thing as c6i.48xlarge
+  ]
 
   codeartifact_config = {
     domain       = "openbraininstitute"
