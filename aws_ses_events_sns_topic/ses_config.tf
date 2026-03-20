@@ -11,8 +11,11 @@ resource "aws_sesv2_configuration_set_event_destination" "sns_topic" {
   event_destination_name = "sns_topic"
 
   event_destination {
-    enabled              = true
-    matching_event_types = ["SEND", "DELIVERY", "BOUNCE", "COMPLAINT", "REJECT", "OPEN", "CLICK", "RENDERING_FAILURE", "DELIVERY_DELAY", "SUBSCRIPTION"]
+    enabled = true
+    # Other options:
+    # "OPEN": but then AWS will inject a tracking 1x1 pixel in the html part of the multipart emails
+    # "CLICK": but then AWS will replace all links with awstrack.me links in the html part of the multipart emails
+    matching_event_types = ["SEND", "DELIVERY", "BOUNCE", "COMPLAINT", "REJECT", "RENDERING_FAILURE", "DELIVERY_DELAY", "SUBSCRIPTION"]
 
     sns_destination {
       topic_arn = aws_sns_topic.topic.arn
