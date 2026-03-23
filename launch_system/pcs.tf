@@ -172,7 +172,7 @@ resource "awscc_pcs_queue" "pcs_queue_large_fallback" {
   cluster_id = awscc_pcs_cluster.cluster.cluster_id
   compute_node_group_configurations = [
     {
-      compute_node_group_id = awscc_pcs_compute_node_group.pcs_nodegroup_large.compute_node_group_id
+      compute_node_group_id = awscc_pcs_compute_node_group.pcs_ng_large_fallback[each.key].compute_node_group_id
     },
   ]
   name = "pcs-q-large-${each.key}"
