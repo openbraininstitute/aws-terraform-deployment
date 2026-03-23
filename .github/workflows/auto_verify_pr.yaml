@@ -57,7 +57,7 @@ jobs:
           terraform show -no-color -json plan.tfplan > tfplan.json
 
       - name: Run Terraform Change Pull Request Commenter Action
-        uses: liatrio/terraform-change-pr-commenter@v1.7.1
+        uses: liatrio/terraform-change-pr-commenter@v1.14.2
         with:
           json-file: 'tfplan.json'
           expand-comment: 'true'
