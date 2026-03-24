@@ -166,6 +166,33 @@ module "debug_aws_errors_sns_topic" {
   message_retention_seconds = 172800 # 2 days
 }
 
+# Requested by Juanjo, https://github.com/openbraininstitute/INFRA/issues/487
+# To be able to use that image, had to create a subscription for
+# "NVIDIA RTX Virtual Workstation - Ubuntu 24.04" at the AWS marketplace
+# at https://aws.amazon.com/marketplace/procurement/?productId=prod-3755r2gl3dkew
+module "development_vm_01" {
+  source                         = "./development_vm"
+  vpc_id                         = local.vpc_id
+  route_table_private_subnets_id = local.route_table_private_subnets_id
+  instance_type                  = "g6.xlarge"
+  instance_volume_size           = 50
+  ami_id                         = "ami-0952aa17ba9f254db"
+  vm_name                        = "dev_vm_01_Juanjo"
+  subnet_cidr_block              = "10.0.3.16/28"
+  subnet_name                    = "dev_vm_01_Juanjo"
+  user_groups = {
+    obi_users = {
+      users = [
+        { username = "juanjose.garcia", email = "juanjose.garcia@openbraininstitute.org", public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDzDi+u9H5BDwytC7NQDl6rSk/2Kbjf7Xh+YKjBxJI4t juanjose.garcia@Juans-MacBook-Pro.local" },
+        { username = "daniel.fernandez", email = "daniel.fernandez@openbraininstitute.org", public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDnwCEkde+9uNQJ+sUPJwuCGbCQM1NFa5T0uPZNbQFTe1cw3XhW8X+HZg9em5xdX6NrT+R3gHTMvpqhLepmZzcWNpautY7qGG833i/gKO2VrTWf/Vd0aRefvc9ssWChWKWxnJu0IGnOJF7gSA27MMWvFHjIoYzPG0UVmfE+Nr1OYLMjpYEsxqj+bby44xD7ii7/hVJXp1reuRjOiSK+AosO1GNIkXcw7CQJy1gQ9VAc3qpKwv5uqBTlvKG8olL42U0Ndy61slyQrbJm3GVFIQFd4aIpYjEGlY+B1jhY+wvf8RxxjCqpJ8bz+yG+/QPzGEZeaDNYsOTxWIJRVSm9voLf danielfr@aur" },
+        { username = "dries.verachtert", email = "dries.verachtert@openbraininstitute.org", public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCw84Bv2npIvI5l9F8KeHPbdxPhykNduYetKMzeFT6BlEN7GKeDsgP5hHjf54aYugYovEgPO6fVf9L+NVHh8NaXgOSnhXjI7r4Iz4hDkOIxHdDHk0VHXZ3aaKA3XhZteJtKXfez1PMFon/AOXSEZuou/kpyFYZdsGKpX1V6RcF8f3Xd1HmIDrFQ4i136RJZzWMgjZAdFEqLdQRk1uiN1MvsHOnCAyMBvgid7gYvmgJIJNLFlh6yQlketZDEnQuHsPO+q43GeakWQ4CF7nfJyds1PD8jjsI/Nhk8ZWDj4A5v1ULVdNqYMcVslC87PdhsuPEw+RA8zAquEq7TGZjmJqzPE9OEq0iD+sj8qq7ziPStp+JNHJdDaSeO3g08SeQiklFvvcQv5rNkh+uNKeln2lXPOgrNV8oajpYsomNKif/ORz1t9tUKbsIiWXeNnJyJrsDZlkll8xEJtbNJY2PDL47KdAdADEZZjOvNAo3L2jWDmA/swRBnZRX9yYaJ7zxmFuFpw4/KFpUhXH5kbckZ+BfjENuRdm/PUDtyyeYICpL6AFaGzMF91b2CGftfHI4Nq7D2Xf1yQcEwP4ZHymDwlAu+H247WGprYD71bCbKYDHGzIDgG8f4jL2PdbwuNZ0fIP42K334IfFRpfK0fhJ8kSkr0xT4Sdg8NeNHba6Vcg+uiQ== Dries Verachtert - mac" },
+        { username = "erik.heeren", email = "erik.heeren@openbraininstitute.org", public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICCwlGHR/vz8esSOTMtXT0qnO7zg+kjPJYicxjyryO3h heeren@bbd-fsczyl3" },
+      ]
+      sudo_access = true
+    }
+  }
+}
+
 module "generic_aws_errors_sns_entries_to_teams" {
   source = "./sns_entries_to_teams"
 
