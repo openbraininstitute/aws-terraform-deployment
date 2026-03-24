@@ -50,3 +50,7 @@ variable "user_groups" {
     sudo_access = bool
   }))
 }
+
+variable "vpc_cidr_block" {
+  type = string
+}
