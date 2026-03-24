@@ -171,6 +171,8 @@ module "debug_aws_errors_sns_topic" {
 # "NVIDIA RTX Virtual Workstation - Ubuntu 24.04" at the AWS marketplace
 # at https://aws.amazon.com/marketplace/procurement/?productId=prod-3755r2gl3dkew
 module "development_vm_01" {
+  count = var.is_staging ? 1 : 0
+
   source                         = "./development_vm"
   vpc_id                         = local.vpc_id
   route_table_private_subnets_id = local.route_table_private_subnets_id
@@ -180,6 +182,7 @@ module "development_vm_01" {
   vm_name                        = "dev_vm_01_Juanjo"
   subnet_cidr_block              = "10.0.3.16/28"
   subnet_name                    = "dev_vm_01_Juanjo"
+  vpc_cidr_block                 = local.vpc_cidr_block
   user_groups = {
     obi_users = {
       users = [

@@ -48,11 +48,11 @@ resource "aws_instance" "instance" {
     version = "$Latest"
   }
 
-  user_data_replace_on_change = false
+  # user_data_replace_on_change = false
 
-  lifecycle {
-    ignore_changes = [user_data]
-  }
+  # lifecycle {
+  #   ignore_changes = [user_data]
+  # }
 
   tags = {
     Name = var.vm_name
@@ -79,13 +79,13 @@ resource "aws_security_group" "sg" {
   description = "Security group for ${var.vm_name}"
   vpc_id      = var.vpc_id
 
-  # Allow HTTPS egress
+  # Allow all egress
   egress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
+    from_port   = 0
+    to_port     = 0
+    protocol    = -1
     cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow HTTPS outbound traffic for SSM"
+    description = "Allow all egress traffic"
   }
 
   # Allow egress to VPC
@@ -97,7 +97,7 @@ resource "aws_security_group" "sg" {
     description = "Allow all outbound traffic within VPC"
   }
 
-  # Allow incgress from VPC
+  # Allow ingress from VPC
   ingress {
     from_port   = 0
     to_port     = 0
