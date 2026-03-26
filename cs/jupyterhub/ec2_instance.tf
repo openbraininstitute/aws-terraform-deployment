@@ -39,6 +39,11 @@ resource "aws_iam_role_policy_attachment" "jupyterhub_cloudwatch" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
+resource "aws_iam_role_policy_attachment" "jupyterhub_ssm" {
+  role       = aws_iam_role.jupyterhub_ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
 resource "aws_iam_instance_profile" "jupyterhub_ec2_profile" {
   name = "${local.ec2_name}_ec2_profile"
   role = aws_iam_role.jupyterhub_ec2_role.name
@@ -77,7 +82,6 @@ resource "aws_instance" "jupyterhub_server" {
       CS_SSH_KEY        = "${data.aws_key_pair.coreservices.public_key}",
       HOMEDIRS_EFS      = aws_efs_file_system.jupyterhub_homedirs.dns_name,
       HOMEDIRS_PATH     = "/home",
-      SHARED_DIR_PATH   = "/home/shared",
       JUPYTERHUB_ADMINS = join(" ", var.jupyterhub_admin_users)
       JUPYTERHUB_PORT   = var.jupyterhub_port,
       KC_CLIENT_ID      = jsondecode(data.aws_secretsmanager_secret_version.jupyterhub_secrets.secret_string)["KC_CLIENT_ID"],
