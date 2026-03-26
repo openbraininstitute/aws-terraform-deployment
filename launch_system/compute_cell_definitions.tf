@@ -91,8 +91,8 @@ locals {
           username            = "obiuser"
           upload_blob_sas_url = "$${SECRET:AZ_UPLOAD_BLOB_SAS_URL}"
           instance_types = {
-            large = "largenode"
-            small = "obi-batch-pool"
+            large = "large"
+            small = "small"
           }
         }
       }
