@@ -973,7 +973,7 @@ module "launch_system_network" {
 module "launch_system" {
   source = "./launch_system"
 
-  count = var.is_staging ? 1 : 0
+  count = 1
 
   aws_region               = local.aws_region
   vpc_id                   = local.vpc_id
@@ -986,8 +986,7 @@ module "launch_system" {
   untrusted_b_subnet_id = module.launch_system_network.untrusted_b_subnet_id
 
   vpc_cidr_block                = local.vpc_cidr_block
-  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
-  # allowed_source_ip_cidr_blocks = [local.vpc_cidr_block]
+  allowed_source_ip_cidr_blocks = [local.vpc_cidr_block]
 
   secrets_arn  = local.launch_system_secrets_arn
   cors_origins = local.core_web_app_origins
