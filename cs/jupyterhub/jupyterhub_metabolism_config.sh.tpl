@@ -1,18 +1,19 @@
 #!/bin/bash
-set -euo pipefail
 exec > >(tee /var/log/user-data.log | logger -t user-data) 2>&1
 
 EFS_MOUNT_OPS="nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
 
 sudo apt update
 sudo apt install nfs-common nginx nodejs jq npm git -y
-sudo mount -t nfs4 -o $${EFS_MOUNT_OPS} ${HOMEDIRS_EFS}:/ ${HOMEDIRS_PATH}
+sudo mount -t nfs4 -o $${EFS_MOUNT_OPS} ${HOMEDIRS_EFS}:/ ${HOMEDIRS_PATH} \
+  || { echo "FATAL: EFS mount failed"; exit 1; }
 
 # clean up all EFS jupyter users homedirs
 sudo rm -rf ${HOMEDIRS_PATH}/jupyter-*
 
-echo -n "${HOMEDIRS_EFS}:/ ${HOMEDIRS_PATH} nfs4 $${EFS_MOUNT_OPS} 0 0" | sudo tee -a /etc/fstab
-sudo mount -a
+grep -qF "${HOMEDIRS_EFS}" /etc/fstab \
+  || echo -n "${HOMEDIRS_EFS}:/ ${HOMEDIRS_PATH} nfs4 $${EFS_MOUNT_OPS} 0 0" | sudo tee -a /etc/fstab
+sudo mount -a || true
 
 # to be able to ssh as ubuntu user
 sudo mkdir -p /home/ubuntu/.ssh/
@@ -36,7 +37,8 @@ curl -L https://tljh.jupyter.org/bootstrap.py \
 /opt/tljh/hub/bin/pip install bcrypt==4.0.1
 sudo /opt/tljh/hub/bin/python3 -m tljh.installer \
   --admin ${ADMIN_USER}:${ADMIN_PASS} \
-  --user-requirements-txt-url https://gist.githubusercontent.com/danifr/6d0c4ff74a51ebb076179447855b9849/raw/1b183e30bc8513e9310bd49d0ed584dceb16e7b2/requirements.txt
+  --user-requirements-txt-url https://gist.githubusercontent.com/danifr/6d0c4ff74a51ebb076179447855b9849/raw/1b183e30bc8513e9310bd49d0ed584dceb16e7b2/requirements.txt \
+  || { echo "FATAL: TLJH installer failed"; exit 1; }
 
 sudo tljh-config set base_url ${BASE_PATH}
 sudo tljh-config set http.port ${JUPYTERHUB_PORT}
@@ -126,7 +128,7 @@ URL="$BASE_URL/$JULIA_VER/julia-$JULIA_VERSION-linux-x86_64.tar.gz"
 wget -nv $URL -O /tmp/julia.tar.gz
 tar -x -f /tmp/julia.tar.gz -C /usr/local --strip-components 1
 rm /tmp/julia.tar.gz
-ln -s /usr/local/bin/julia /opt/tljh/user/bin/julia
+ln -sf /usr/local/bin/julia /opt/tljh/user/bin/julia
 
 export JULIA_DEPOT_PATH=/opt/tljh/user/share/julia/
 export JUPYTER_DATA_DIR=/opt/tljh/user/share/jupyter/
@@ -170,6 +172,7 @@ deactivate
 
 # Give jupyterhub-users groups access to $JULIA_DEPOT_PATH
 chgrp -R jupyterhub-users $${JULIA_DEPOT_PATH}
+touch $${JULIA_DEPOT_PATH}/logs/repl_history.jl $${JULIA_DEPOT_PATH}/logs/manifest_usage.toml
 chmod 664 $${JULIA_DEPOT_PATH}/logs/repl_history.jl
 chmod 664 $${JULIA_DEPOT_PATH}/logs/manifest_usage.toml
 
@@ -182,9 +185,11 @@ sudo mkdir -p /etc/skel/notebooks
 sudo cp -r /tmp/notebooks_clone/Metabolism/. /etc/skel/notebooks/
 rm -rf /tmp/notebooks_clone
 
-# Restart JupyterHub service to apply changes
+# Reload JupyterHub config - stop traefik first to free port 80 for nginx
+sudo systemctl stop traefik || true
 sudo tljh-config reload proxy
 sudo tljh-config reload
 
 # Restart nginx reverse proxy
 sudo systemctl restart nginx
+
