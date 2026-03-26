@@ -39,6 +39,11 @@ resource "aws_iam_role_policy_attachment" "jupyterhub_cloudwatch" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
+resource "aws_iam_role_policy_attachment" "jupyterhub_ssm" {
+  role       = aws_iam_role.jupyterhub_ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
 resource "aws_iam_instance_profile" "jupyterhub_ec2_profile" {
   name = "${local.ec2_name}_ec2_profile"
   role = aws_iam_role.jupyterhub_ec2_role.name
