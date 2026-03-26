@@ -754,12 +754,6 @@ module "auth_manager" {
   obi_backup_plan = "obi_plan"
 }
 
-module "obi_one" {
-  # TODO: remove after the deployment for deletion
-  source     = "./obi_one"
-  aws_region = local.aws_region
-}
-
 module "obi_one_v2" {
   source = "./obi_one_v2"
 
@@ -899,12 +893,6 @@ module "virtual_lab_manager" {
 
   virtual_lab_manager_db_ro_secret_arn = local.virtual_lab_manager_db_ro_secret_arn
   aws_deployment_env                   = var.deployment_env
-}
-
-module "launch_server" {
-  # TODO: remove after the deployment for deletion
-  source     = "./launch_server"
-  aws_region = local.aws_region
 }
 
 module "public_data_efs_storage" {
