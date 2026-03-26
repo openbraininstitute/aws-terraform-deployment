@@ -5,7 +5,7 @@ exec > >(tee /var/log/user-data.log | logger -t user-data) 2>&1
 EFS_MOUNT_OPS="nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
 
 sudo apt update
-sudo apt install nfs-common nginx nodejs jq npm -y
+sudo apt install nfs-common nginx nodejs jq npm git -y
 sudo mount -t nfs4 -o $${EFS_MOUNT_OPS} ${HOMEDIRS_EFS}:/ ${HOMEDIRS_PATH}
 
 # clean up all EFS jupyter users homedirs
@@ -43,8 +43,11 @@ sudo tljh-config set http.port ${JUPYTERHUB_PORT}
 # limit session to 30 mins
 sudo tljh-config set services.cull.max_age 1800
 
-# set default interface to jupyterlab and disable autosave feature
+# set default interface to jupyterlab, open default notebook, and disable autosave feature
 sudo tljh-config set user_environment.default_app jupyterlab
+# default_url is not a tljh-config key, set it directly in jupyterhub config
+echo 'c.Spawner.default_url = "/lab/tree/notebooks/analysis_notebook.ipynb"' \
+  | sudo tee /opt/tljh/config/jupyterhub_config.d/default_url.py
 for DIR in $(find /opt/tljh/ -name docmanager-extension -type d); do
   cat <<< $(jq '.properties.autosave.default = false' $DIR/plugin.json) > $DIR/plugin.json
 done
@@ -169,6 +172,15 @@ deactivate
 chgrp -R jupyterhub-users $${JULIA_DEPOT_PATH}
 chmod 664 $${JULIA_DEPOT_PATH}/logs/repl_history.jl
 chmod 664 $${JULIA_DEPOT_PATH}/logs/manifest_usage.toml
+
+# Clone Metabolism notebooks into /etc/skel so every new user gets a personal copy on first login
+git clone --filter=blob:none --no-checkout --depth=1 --sparse \
+  https://github.com/openbraininstitute/obi_platform_analysis_notebooks.git /tmp/notebooks_clone
+git -C /tmp/notebooks_clone sparse-checkout set Metabolism
+git -C /tmp/notebooks_clone checkout
+sudo mkdir -p /etc/skel/notebooks
+sudo cp -r /tmp/notebooks_clone/Metabolism/. /etc/skel/notebooks/
+rm -rf /tmp/notebooks_clone
 
 # Restart JupyterHub service to apply changes
 sudo tljh-config reload proxy
