@@ -48,11 +48,11 @@ resource "aws_instance" "instance" {
     version = "$Latest"
   }
 
-  # user_data_replace_on_change = false
+  user_data_replace_on_change = false
 
-  # lifecycle {
-  #   ignore_changes = [user_data]
-  # }
+  lifecycle {
+    ignore_changes = [user_data]
+  }
 
   tags = {
     Name = var.vm_name
