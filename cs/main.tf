@@ -22,7 +22,7 @@ module "jupyterhub_metabolism" {
   jupyterhub_sg_name                = "jupyterhub-metabolism-sg"
   jupyterhub_sg_efs_name            = "jupyterhub-metabolism-homedirs"
   jupyterhub_target_group_name      = "jupyterhub-metabolism-tg"
-  jupyterhub_admin_users            = ["NataliBZ", "AurelienJaquier", "danielaegassan", "chr-pok", "dkeller9", "ilkilic", "james-isbister", "darshanmandge", "lidakanari", "mwolfr", "romani79", "danifr"]
+  jupyterhub_admin_users            = ["NataliBZ", "AurelienJaquier", "chr-pok", "dkeller9", "ilkilic", "james-isbister", "darshanmandge", "lidakanari", "mwolfr", "romani79", "danifr"]
   jupyterhub_listener_rule_priority = 350
 }
 
