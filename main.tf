@@ -956,8 +956,12 @@ module "launch_system" {
 
   internet_access_route_id = local.route_table_private_subnets_id
 
-  vpc_cidr_block                = local.vpc_cidr_block
-  allowed_source_ip_cidr_blocks = [local.vpc_cidr_block]
+  vpc_cidr_block = local.vpc_cidr_block
+  allowed_source_ip_cidr_blocks = [
+    local.vpc_cidr_block,
+    var.launch_system_aca_in_azure_cidr_block,
+    var.launch_system_batch_in_azure_cidr_block,
+  ]
 
   secrets_arn  = local.launch_system_secrets_arn
   cors_origins = local.core_web_app_origins
