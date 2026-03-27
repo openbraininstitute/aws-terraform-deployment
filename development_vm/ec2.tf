@@ -48,10 +48,16 @@ resource "aws_instance" "instance" {
     version = "$Latest"
   }
 
+  disable_api_termination     = true
   user_data_replace_on_change = false
 
+  root_block_device {
+    volume_size = 50 # GB
+  }
+
   lifecycle {
-    ignore_changes = [user_data]
+    prevent_destroy = true
+    ignore_changes  = [user_data, launch_template, root_block_device]
   }
 
   tags = {
