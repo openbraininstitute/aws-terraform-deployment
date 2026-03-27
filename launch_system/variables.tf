@@ -187,23 +187,8 @@ variable "open_public_data_access_point_id" {
   type        = string
 }
 
-variable "trusted_a_subnet_id" {
-  description = "The ID of the subnet A containing the trusted services"
-  type        = string
-}
-
-variable "trusted_b_subnet_id" {
-  description = "The ID of the subnet B containing the trusted services"
-  type        = string
-}
-
-variable "untrusted_a_subnet_id" {
-  description = "The ID of the subnet A containing the untrusted services"
-  type        = string
-}
-
-variable "untrusted_b_subnet_id" {
-  description = "The ID of the subnet B containing the untrusted services"
+variable "internet_access_route_id" {
+  description = "Route table ID for internet access via NAT"
   type        = string
 }
 
