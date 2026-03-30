@@ -45,13 +45,16 @@ resource "aws_launch_template" "ssm_instance" {
 resource "aws_instance" "bastion" {
   launch_template {
     id      = aws_launch_template.ssm_instance.id
-    version = "$Latest"
+    version = tostring(aws_launch_template.ssm_instance.latest_version)
   }
 
   user_data_replace_on_change = false
 
+  # launch_template is ignored to prevent recreation when a new AMI or template change produces a new template version.
+  # To intentionally replace the instance run:
+  #   terraform apply -replace=module.bastion_host.aws_instance.bastion
   lifecycle {
-    ignore_changes = [user_data]
+    ignore_changes = [launch_template, user_data]
   }
 
   tags = {
