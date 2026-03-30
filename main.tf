@@ -852,7 +852,7 @@ module "virtual_lab_manager" {
 
   # The invite link points to the public corewebapp which is currently in Azure.
   invite_link = "https://${local.public_primary_domain_in_azure}/app"
-  mail_from   = "no-reply@${local.email_domain_name}"
+  mail_from   = "support@${local.email_domain_name}"
 
   db_multi_az = var.is_production
 
