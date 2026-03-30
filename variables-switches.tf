@@ -27,3 +27,13 @@ variable "core_web_app_in_azure_cidr_block" {
   type        = string
   description = "The cidr used by the corewebapp containers which are deployed within azure"
 }
+
+variable "launch_system_aca_in_azure_cidr_block" {
+  type        = string
+  description = "The cidr used by the launch-system ACA executors which are deployed within azure"
+}
+
+variable "launch_system_batch_in_azure_cidr_block" {
+  type        = string
+  description = "The cidr used by the launch-system batch executors which are deployed within azure"
+}

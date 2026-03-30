@@ -10,9 +10,9 @@ nexus_openscience_bucket_name             = "nexus-openscience-production-stagin
 core_web_app_cell_a_docker_image_url      = "public.ecr.aws/openbraininstitute/core-web-app:2026.01.07.1" # for https://staging.cell-a.openbraininstitute.org only!
 core_web_app_dev_docker_image_url         = "public.ecr.aws/openbraininstitute/core-web-app:dev"
 virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:2026.03.23.2"
-thumbnail_generation_api_docker_image_url = "public.ecr.aws/openbraininstitute/thumbnail-generation-api:2026.02.12.1"
+thumbnail_generation_api_docker_image_url = "public.ecr.aws/openbraininstitute/thumbnail-generation-api:2026.03.27.1"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2026.2.0"
-accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2026.03.1"
+accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2026.03.2"
 jupyterhub_ec2_type                       = "c7i.large"
 notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:2026.03.16-2"
 notebook_service_bucket_name              = "obi-notebook-service-statistics-staging"
@@ -116,7 +116,7 @@ entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["*"]
 entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2026.3.7"
 
-obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2026.3.11"
+obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2026.3.13"
 obi_one_v2_ec2_instance_type = "t3.small" # vCPUs: 2, Memory: 2 GiB
 obi_one_v2_ecs_task_size = {
   cpu    = 2048
@@ -149,6 +149,11 @@ launch_system_orchestrator_num_workers = 2
 opendata_paths_list = "staging_opendata_paths.txt"
 
 core_web_app_in_azure_cidr_block = "10.102.1.0/27" # staging azure core web app aca range
+
+# From https://github.com/openbraininstitute/azure-terraform-deployment/blob/562f3fc/staging.tfvars#L25
+launch_system_aca_in_azure_cidr_block = "10.120.0.0/16"
+# From https://github.com/openbraininstitute/azure-terraform-deployment/blob/9112e06/main.tf#L254
+launch_system_batch_in_azure_cidr_block = "10.0.0.0/16"
 
 azure_blobstore_opendata_container_url             = "https://obibatchstoragestg.blob.core.windows.net/opendata"
 azure_blobstore_internal_public_data_container_url = "https://obibatchstoragestg.blob.core.windows.net/publicdata"
