@@ -1,7 +1,7 @@
 #!/bin/bash
 # Install required packages
 dnf update -y
-dnf install -y git lsof nmap nmap-ncat postgresql17 rsync strace tcpdump tmux traceroute vim wget zsh openssh-server redis6
+dnf install -y git lsof nmap nmap-ncat postgresql17 rsync strace tcpdump tmux traceroute vim wget zsh openssh-server redis6 nfs-utils
 
 # Install SSM Agent for Amazon Linux 2023
 dnf install -y amazon-ssm-agent
