@@ -152,8 +152,8 @@ core_web_app_in_azure_cidr_block = "10.102.1.0/27" # staging azure core web app 
 
 # From https://github.com/openbraininstitute/azure-terraform-deployment/blob/562f3fc/staging.tfvars#L25
 launch_system_aca_in_azure_cidr_block = "10.120.0.0/16"
-# From https://github.com/openbraininstitute/azure-terraform-deployment/blob/9112e06/main.tf#L254
-launch_system_batch_in_azure_cidr_block = "10.0.0.0/16"
+# From https://github.com/openbraininstitute/azure-terraform-deployment/blob/0d9b29e/staging.tfvars#L30
+launch_system_batch_in_azure_cidr_block = "10.122.0.0/16"
 
 azure_blobstore_opendata_container_url             = "https://obibatchstoragestg.blob.core.windows.net/opendata"
 azure_blobstore_internal_public_data_container_url = "https://obibatchstoragestg.blob.core.windows.net/publicdata"
