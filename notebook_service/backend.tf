@@ -43,15 +43,14 @@ resource "aws_vpc_security_group_ingress_rule" "ecs_allow_port_8000" {
   description       = "Allow port 8000 http"
 }
 
-# resource "aws_vpc_security_group_ingress_rule" "ecs_allow_in_tcp" {
-#   security_group_id = aws_security_group.ecs_security_group.id
-#   # TODO limit to what is needed
-#   ip_protocol = "tcp"
-#   from_port   = 0
-#   to_port     = 65535
-#   cidr_ipv4   = "0.0.0.0/0"
-#   description = "Allow all TCP"
-# }
+resource "aws_vpc_security_group_ingress_rule" "ecs_allow_port_9090" {
+  security_group_id = aws_security_group.ecs_security_group.id
+  ip_protocol       = "tcp"
+  from_port         = 9464
+  to_port           = 9464
+  cidr_ipv4         = data.aws_vpc.main.cidr_block
+  description       = "Allow port 9464 prometheus endpoint"
+}
 
 resource "aws_vpc_security_group_egress_rule" "ecs_allow_outgoing_https" {
   security_group_id = aws_security_group.ecs_security_group.id
@@ -172,6 +171,10 @@ resource "aws_ecs_task_definition" "ecs_definition" {
         {
           name  = "APP_DEBUG"
           value = var.debug
+        },
+        {
+          name  = "APP_VERSION"
+          value = regex("[^:]+$", var.docker_image_url)
         },
         {
           name  = "BASE_PATH"
@@ -443,4 +446,10 @@ resource "aws_iam_role_policy_attachment" "ecs" {
 resource "aws_iam_role_policy_attachment" "secrets_access_policy_attachment" {
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = aws_iam_policy.secrets_access.arn
+}
+
+# to be able to send scraped metrics to Amazon Managed Service for Prometheus
+resource "aws_iam_role_policy_attachment" "ecs_task_prometheus_role_policy_attachment" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonPrometheusRemoteWriteAccess"
 }
