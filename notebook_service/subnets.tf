@@ -40,7 +40,7 @@ resource "aws_network_acl" "network_acl" {
     to_port    = 3389
   }
   ingress {
-    protocol   = -1
+    protocol   = "tcp"
     rule_no    = 100
     action     = "allow"
     cidr_block = data.aws_vpc.main.cidr_block # HTTP
@@ -48,7 +48,7 @@ resource "aws_network_acl" "network_acl" {
     to_port    = 8000
   }
   ingress {
-    protocol   = -1
+    protocol   = "tcp"
     rule_no    = 101
     action     = "allow"
     cidr_block = data.aws_vpc.main.cidr_block # Prometheus endpoint
