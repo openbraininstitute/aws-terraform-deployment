@@ -968,6 +968,8 @@ module "launch_system" {
   secrets_arn  = local.launch_system_secrets_arn
   cors_origins = local.core_web_app_origins
 
+  launch_system_capability_secrets_arn = local.launch_system_capability_secrets_arn
+
   deployment_env = var.deployment_env
 
   ec_node_type = "cache.t4g.micro" # for redis
