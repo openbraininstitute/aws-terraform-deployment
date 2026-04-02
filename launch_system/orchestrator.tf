@@ -169,7 +169,7 @@ resource "aws_ecs_task_definition" "orchestrator" {
         },
         {
           name      = "CAPABILITY_ENV_SECRETS"
-          valueFrom = local.launch_system_capability_secrets_arn
+          valueFrom = var.launch_system_capability_secrets_arn
         }
       ]
 
