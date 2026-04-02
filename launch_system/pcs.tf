@@ -31,7 +31,7 @@ resource "awscc_pcs_cluster" "cluster" {
     }
   }
   tags = {
-    SBO_Billing = "hpc"
+    SBO_Billing = "pcs-hpc"
   }
 }
 
@@ -64,13 +64,13 @@ resource "aws_launch_template" "pcs_launch_template" {
     resource_type = "instance"
     tags = {
       Name        = "pcs-cluster-node",
-      SBO_Billing = "hpc:parallelcluster"
+      SBO_Billing = "pcs-hpc:parallelcluster"
     }
   }
 
   tags = {
     Name        = "base-pcs-cluster",
-    SBO_Billing = "hpc:parallelcluster"
+    SBO_Billing = "pcs-hpc:parallelcluster"
   }
 }
 
@@ -100,7 +100,7 @@ resource "awscc_pcs_compute_node_group" "pcs_nodegroup_small" {
   }
 
   subnet_ids = [aws_subnet.pcs.id]
-  tags       = { SBO_Billing = "hpc" }
+  tags       = { SBO_Billing = "pcs-hpc" }
 }
 
 resource "awscc_pcs_queue" "pcs_queue_small" {
@@ -111,7 +111,7 @@ resource "awscc_pcs_queue" "pcs_queue_small" {
     },
   ]
   name = "pcs-queue-small"
-  tags = { SBO_Billing = "hpc" }
+  tags = { SBO_Billing = "pcs-hpc" }
 }
 
 resource "awscc_pcs_compute_node_group" "pcs_nodegroup_large" {
@@ -134,7 +134,7 @@ resource "awscc_pcs_compute_node_group" "pcs_nodegroup_large" {
     max_instance_count = 4
   }
   subnet_ids = [aws_subnet.pcs.id]
-  tags       = { SBO_Billing = "hpc" }
+  tags       = { SBO_Billing = "pcs-hpc" }
 }
 
 resource "awscc_pcs_queue" "pcs_queue_large" {
@@ -145,7 +145,7 @@ resource "awscc_pcs_queue" "pcs_queue_large" {
     },
   ]
   name = "pcs-queue-large"
-  tags = { SBO_Billing = "hpc" }
+  tags = { SBO_Billing = "pcs-hpc" }
 }
 
 locals {
@@ -172,7 +172,7 @@ resource "awscc_pcs_compute_node_group" "pcs_ng_large_fallback" {
     max_instance_count = 4
   }
   subnet_ids = [aws_subnet.pcs.id]
-  tags       = { SBO_Billing = "hpc" }
+  tags       = { SBO_Billing = "pcs-hpc" }
 }
 
 resource "awscc_pcs_queue" "pcs_queue_large_fallback" {
@@ -185,12 +185,12 @@ resource "awscc_pcs_queue" "pcs_queue_large_fallback" {
     },
   ]
   name = "pcs-q-large-${each.key}"
-  tags = { SBO_Billing = "hpc" }
+  tags = { SBO_Billing = "pcs-hpc" }
 }
 
 resource "aws_s3_bucket" "pcs_fsx_data" {
   bucket = var.pcs_fsx_scratch_s3_bucket_name
-  tags   = { SBO_Billing = "hpc" }
+  tags   = { SBO_Billing = "pcs-hpc" }
 }
 
 resource "aws_s3_bucket_policy" "deny_insecure_transport" {
@@ -227,7 +227,7 @@ resource "aws_fsx_lustre_file_system" "pcs_luster" {
   data_compression_type       = "LZ4"
 
   security_group_ids = [aws_security_group.pcs.id]
-  tags               = { SBO_Billing = "hpc" }
+  tags               = { SBO_Billing = "pcs-hpc" }
 }
 
 resource "aws_fsx_data_repository_association" "pcs_s3" {
