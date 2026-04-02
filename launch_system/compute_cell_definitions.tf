@@ -47,7 +47,7 @@ locals {
           slurm_secret         = "$${SECRET:SLURM_SECRET}"
           instance_types = {
             small = [awscc_pcs_queue.pcs_queue_small.name]
-            large = concat([wscc_pcs_queue.pcs_queue_large.name],
+            large = concat([awscc_pcs_queue.pcs_queue_large.name],
             [for k, q in awscc_pcs_queue.pcs_queue_large_fallback : q.name])
           }
         }
