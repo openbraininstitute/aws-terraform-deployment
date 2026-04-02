@@ -774,6 +774,7 @@ module "obi_one_v2" {
   container_port = 8000
   host_port      = 8000
 
+  api_url             = "https://${local.cell_a_primary_domain}/api/obi-one"
   keycloak_url        = "${var.keycloak_sbo_realm_url}/"
   entitycore_url      = "https://${local.cell_a_primary_domain}/api/entitycore"
   accounting_base_url = "https://${local.cell_a_primary_domain}${var.accounting_svc_base_path}"

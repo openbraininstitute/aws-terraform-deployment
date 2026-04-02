@@ -160,3 +160,8 @@ variable "cors_origin_regex" {
   type        = string
   default     = null
 }
+
+variable "api_url" {
+  description = "obi-one api url for callbacks"
+  type        = string
+}
