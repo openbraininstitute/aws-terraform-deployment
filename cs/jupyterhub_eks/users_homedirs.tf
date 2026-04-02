@@ -4,7 +4,8 @@ resource "aws_efs_file_system" "users_homedirs" {
   throughput_mode  = "bursting"
 
   tags = {
-    Name = "jupyterhub-svc-efs"
+    Name        = "jupyterhub-svc-efs"
+    SBO_Billing = "jupyterhub_svc"
   }
 }
 
@@ -12,6 +13,7 @@ resource "aws_security_group" "efs_homedirs_sg" {
   name        = "${var.jupyterhub_eks_cluster_name}-efs-sg"
   description = "EFS access for EKS ${var.jupyterhub_eks_cluster_name}"
   vpc_id      = var.vpc_id
+  tags        = { SBO_Billing = "jupyterhub_svc" }
 }
 
 

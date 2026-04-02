@@ -11,6 +11,7 @@ resource "aws_fsx_lustre_file_system" "lustre" {
     level       = "WARN_ERROR"
     destination = aws_cloudwatch_log_group.lustre_log.arn
   }
+  tags = { SBO_Billing = "jupyterhub_svc" }
 }
 
 # just a test
@@ -31,6 +32,7 @@ resource "aws_fsx_data_repository_association" "association" {
       events = ["NEW", "CHANGED", "DELETED"]
     }
   }
+  tags = { SBO_Billing = "jupyterhub_svc" }
 }
 
 resource "aws_fsx_data_repository_association" "association_entitycore_public_internal_data" {
@@ -50,11 +52,13 @@ resource "aws_fsx_data_repository_association" "association_entitycore_public_in
       events = ["NEW", "CHANGED", "DELETED"]
     }
   }
+  tags = { SBO_Billing = "jupyterhub_svc" }
 }
 
 resource "aws_cloudwatch_log_group" "lustre_log" {
   name              = "/aws/fsx/lustre-filesystem-tests"
   retention_in_days = 14
+  tags              = { SBO_Billing = "jupyterhub_svc" }
 }
 
 resource "aws_security_group" "lustre_sg" {
@@ -90,6 +94,7 @@ resource "aws_security_group" "lustre_sg" {
   }
 
   tags = {
-    Name = "lustre-sg"
+    Name        = "lustre-sg"
+    SBO_Billing = "jupyterhub_svc"
   }
 }
