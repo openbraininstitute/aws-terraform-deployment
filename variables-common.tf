@@ -444,3 +444,7 @@ variable "resource_provisioner_container_hash" {
 variable "resource_provisioner_container_uri" {
   type = string
 }
+
+variable "pcs_ami" {
+  type = string
+}
