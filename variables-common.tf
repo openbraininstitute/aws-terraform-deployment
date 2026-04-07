@@ -39,19 +39,6 @@ variable "nexus_openscience_bucket_name" {
 
 ### Core Web App ###
 
-variable "core_web_app_cell_a_docker_image_url" {
-  type        = string
-  description = "docker image for the cell-a core-web-app"
-  sensitive   = false
-}
-
-variable "core_web_app_dev_docker_image_url" {
-  default     = null
-  type        = string
-  description = "docker image for the core-web-app-dev"
-  sensitive   = false
-}
-
 variable "core_web_app_stripe_publishable_key" {
   type        = string
   description = "Stripe publishable key for the core-web-app"
@@ -61,12 +48,6 @@ variable "neuroagent_docker_image_url" {
   default     = null
   type        = string
   description = "docker image for neuroagent"
-  sensitive   = false
-}
-
-variable "core_webapp_s3_bucket_name" {
-  type        = string
-  description = "S3 bucket name for core webapp main assets"
   sensitive   = false
 }
 
