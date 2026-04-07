@@ -587,22 +587,6 @@ module "core_webapp_preview" {
   stripe_publishable_key = var.core_web_app_stripe_publishable_key
 }
 
-module "github_core_webapp_dev_ecs_redeploy_role" {
-  source = "./github_ecs_redeploy_role"
-
-  # for now we only want such a redeploy role in staging
-  count = var.is_staging ? 1 : 0
-
-  account_id               = local.account_id
-  aws_region               = local.aws_region
-  github_organisation      = local.github_organisation
-  repo_name                = "core-web-app"
-  ecs_cluster_name         = module.core_webapp_dev[0].ecs_cluster_name
-  ecs_service_name         = module.core_webapp_dev[0].ecs_service_name
-  ecs_task_definition_name = module.core_webapp_dev[0].ecs_task_definition_name
-  # The ARN of the generated role is needed in GH and is part of the outputs.
-}
-
 module "doi_redirect" {
   source = "./redirect_link"
 
