@@ -15,23 +15,3 @@ output "private_subnet_a_id" {
 output "private_subnet_b_id" {
   value = aws_subnet.jupyterhub_eks_private_b.id
 }
-
-output "jupyterhub_eks_public_a_cidr" {
-  value       = var.jupyterhub_eks_public_a_cidr
-  description = "CIDR of JupyterHub EKS public subnet A"
-}
-
-output "jupyterhub_eks_public_b_cidr" {
-  value       = var.jupyterhub_eks_public_b_cidr
-  description = "CIDR of JupyterHub EKS public subnet B"
-}
-
-output "jupyterhub_eks_private_a_cidr" {
-  value       = var.jupyterhub_eks_private_a_cidr
-  description = "CIDR of JupyterHub EKS private subnet A"
-}
-
-output "jupyterhub_eks_private_b_cidr" {
-  value       = var.jupyterhub_eks_private_b_cidr
-  description = "CIDR of JupyterHub EKS private subnet B"
-}
