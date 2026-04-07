@@ -140,7 +140,7 @@ resource "aws_ecs_task_definition" "orchestrator" {
 
       # ORCHESTRATOR_SECRETS
       # --------------------
-      # This must be the ARN of an AWS Secrets Manager secret containing a JSON object. 
+      # This must be the ARN of an AWS Secrets Manager secret containing a JSON object.
       #
       # The JSON keys must match the $${SECRET:<KEY>} placeholders defined in
       # launch_system/compute_cell_definitions.tf under `compute_cell_definitions`.
@@ -337,7 +337,8 @@ resource "aws_iam_policy" "orchestrator_ecs_run_task" {
           "iam:PassRole",
         ]
         Resource = [
-          aws_iam_role.executor_execution.arn,
+          aws_iam_role.default_executor_execution.arn,
+          aws_iam_role.inait_executor_execution.arn,
           aws_iam_role.executor_task.arn,
         ]
       },
@@ -352,7 +353,7 @@ resource "aws_iam_role_policy_attachment" "orchestrator_ecs_run_task" {
 
 resource "aws_iam_role_policy_attachment" "orchestrator_secrets_access" {
   role       = aws_iam_role.orchestrator_execution.name
-  policy_arn = aws_iam_policy.secrets_access.arn
+  policy_arn = aws_iam_policy.full_secrets_access.arn
 }
 
 resource "aws_iam_role_policy_attachment" "orchestrator_logs_access" {
