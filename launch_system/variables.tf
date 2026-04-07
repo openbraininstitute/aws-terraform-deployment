@@ -246,3 +246,7 @@ variable "pcs_large_alternate_node_types" {
   default     = []
 }
 
+variable "launch_system_capability_secrets_arn" {
+  description = "ARN of the secrets stored for `capabilities`"
+  type        = string
+}

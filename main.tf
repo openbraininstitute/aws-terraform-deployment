@@ -43,6 +43,7 @@ locals {
   hpc_slurm_secrets_arn                = data.terraform_remote_state.common.outputs.hpc_slurm_secrets_arn
   notebook_service_secrets_arn         = data.terraform_remote_state.common.outputs.notebook_service_secrets_arn
   launch_system_secrets_arn            = data.terraform_remote_state.common.outputs.launch_system_secrets_arn
+  launch_system_capability_secrets_arn = data.terraform_remote_state.common.outputs.launch_system_executor_secrets_arn
   virtual_lab_manager_db_ro_secret_arn = data.terraform_remote_state.common.outputs.virtual_lab_manager_database_readonly_secret_arn
   accounting_db_ro_secret_arn          = data.terraform_remote_state.common.outputs.accounting_database_readonly_secret_arn
   teams_webhook_secrets_arn            = data.terraform_remote_state.common.outputs.teams_webhook_secrets_arn
@@ -967,6 +968,8 @@ module "launch_system" {
   secrets_arn  = local.launch_system_secrets_arn
   cors_origins = local.core_web_app_origins
 
+  launch_system_capability_secrets_arn = local.launch_system_capability_secrets_arn
+
   deployment_env = var.deployment_env
 
   ec_node_type = "cache.t4g.micro" # for redis
@@ -978,9 +981,9 @@ module "launch_system" {
   db_username     = "launch"
   obi_backup_plan = "obi_plan"
 
-  api_image_url              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.3.4"
-  orchestrator_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.3.4"
-  default_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/default-executor:2026.3.4"
+  api_image_url              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.4.0"
+  orchestrator_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.4.0"
+  default_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/default-executor:2026.4.0"
 
   api_task_size          = var.launch_system_api_task_size
   executor_task_size     = var.launch_system_executor_task_size

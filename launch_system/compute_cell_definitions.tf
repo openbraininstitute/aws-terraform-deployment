@@ -46,8 +46,9 @@ locals {
           slurm_accounting_url = "http://${local.slurmrestd_endpoint.private_ip_address}:6820/slurmdb/v0.0.43"
           slurm_secret         = "$${SECRET:SLURM_SECRET}"
           instance_types = {
-            small = awscc_pcs_queue.pcs_queue_small.name
-            large = awscc_pcs_queue.pcs_queue_large.name
+            small = [awscc_pcs_queue.pcs_queue_small.name]
+            large = concat([awscc_pcs_queue.pcs_queue_large.name],
+            [for k, q in awscc_pcs_queue.pcs_queue_large_fallback : q.name])
           }
         }
       }
@@ -91,8 +92,8 @@ locals {
           username            = "obiuser"
           upload_blob_sas_url = "$${SECRET:AZ_UPLOAD_BLOB_SAS_URL}"
           instance_types = {
-            large = "large"
-            small = "small"
+            large = ["large"]
+            small = ["small"]
           }
         }
       }
