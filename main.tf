@@ -50,27 +50,6 @@ locals {
   auth_manager_secrets_arn             = data.terraform_remote_state.common.outputs.auth_manager_secrets_arn
 
   github_organisation = "openbraininstitute"
-
-  # VPC (10.0.0.0/16) CIDR sub-ranges that exclude all JupyterHub EKS subnets.
-  # IMPORTANT: If JupyterHub EKS subnet CIDRs change (defined in cs/main.tf),
-  # you MUST update this list to exclude the new ranges.
-  # Current JupyterHub subnets (from cs/jupyterhub_eks module):
-  #   - public-a:  10.0.31.0/25
-  #   - public-b:  10.0.31.128/25
-  #   - private-a: 10.0.32.0/23
-  #   - private-b: 10.0.34.0/23
-  non_jupyterhub_vpc_cidrs_strict = [
-    "10.0.0.0/20",   # 10.0.0.0   - 10.0.15.255
-    "10.0.16.0/21",  # 10.0.16.0  - 10.0.23.255
-    "10.0.24.0/22",  # 10.0.24.0  - 10.0.27.255
-    "10.0.28.0/23",  # 10.0.28.0  - 10.0.29.255
-    "10.0.30.0/24",  # 10.0.30.0  - 10.0.30.255
-    "10.0.36.0/22",  # 10.0.36.0  - 10.0.39.255
-    "10.0.40.0/21",  # 10.0.40.0  - 10.0.47.255
-    "10.0.48.0/20",  # 10.0.48.0  - 10.0.63.255
-    "10.0.64.0/18",  # 10.0.64.0  - 10.0.127.255
-    "10.0.128.0/17", # 10.0.128.0 - 10.0.255.255
-  ]
 }
 
 data "aws_secretsmanager_secret_version" "core_webapp_secrets" {
@@ -686,16 +665,11 @@ module "doi_redirect" {
 module "accounting_svc" {
   source = "./accounting_svc"
 
-  aws_region                      = local.aws_region
-  vpc_id                          = local.vpc_id
-  private_alb_listener_arn        = local.private_alb_https_listener_arn
-  internet_access_route_id        = local.route_table_private_subnets_id
-  allowed_source_ip_cidr_blocks   = slice(local.non_jupyterhub_vpc_cidrs_strict, 0, 4)
-  allowed_source_ip_cidr_blocks_2 = slice(local.non_jupyterhub_vpc_cidrs_strict, 4, 8)
-  allowed_source_ip_cidr_blocks_3 = concat(
-    slice(local.non_jupyterhub_vpc_cidrs_strict, 8, length(local.non_jupyterhub_vpc_cidrs_strict)),
-    [var.core_web_app_in_azure_cidr_block]
-  )
+  aws_region                     = local.aws_region
+  vpc_id                         = local.vpc_id
+  private_alb_listener_arn       = local.private_alb_https_listener_arn
+  internet_access_route_id       = local.route_table_private_subnets_id
+  allowed_source_ip_cidr_blocks  = [local.vpc_cidr_block, var.core_web_app_in_azure_cidr_block]
   docker_image_url               = var.accounting_svc_docker_image_url
   accounting_service_secrets_arn = local.accounting_service_secrets_arn
 
@@ -984,16 +958,12 @@ module "launch_system" {
 
   internet_access_route_id = local.route_table_private_subnets_id
 
-  vpc_cidr_block                  = local.vpc_cidr_block
-  allowed_source_ip_cidr_blocks   = slice(local.non_jupyterhub_vpc_cidrs_strict, 0, 4)
-  allowed_source_ip_cidr_blocks_2 = slice(local.non_jupyterhub_vpc_cidrs_strict, 4, 8)
-  allowed_source_ip_cidr_blocks_3 = concat(
-    slice(local.non_jupyterhub_vpc_cidrs_strict, 8, length(local.non_jupyterhub_vpc_cidrs_strict)),
-    [
-      var.launch_system_aca_in_azure_cidr_block,
-      var.launch_system_batch_in_azure_cidr_block,
-    ]
-  )
+  vpc_cidr_block = local.vpc_cidr_block
+  allowed_source_ip_cidr_blocks = [
+    local.vpc_cidr_block,
+    var.launch_system_aca_in_azure_cidr_block,
+    var.launch_system_batch_in_azure_cidr_block,
+  ]
 
   secrets_arn  = local.launch_system_secrets_arn
   cors_origins = local.core_web_app_origins

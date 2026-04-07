@@ -22,18 +22,6 @@ variable "allowed_source_ip_cidr_blocks" {
   type        = list(string)
 }
 
-variable "allowed_source_ip_cidr_blocks_2" {
-  type        = list(string)
-  default     = []
-  description = "Additional CIDR blocks for a second listener rule (overflow from condition values limit)"
-}
-
-variable "allowed_source_ip_cidr_blocks_3" {
-  type        = list(string)
-  default     = []
-  description = "Additional CIDR blocks for a third listener rule (overflow from condition values limit)"
-}
-
 variable "private_alb_listener_arn" {
   type = string
 }

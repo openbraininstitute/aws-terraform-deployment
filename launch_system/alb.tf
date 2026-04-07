@@ -19,7 +19,7 @@ resource "aws_lb_target_group" "private" {
 
 resource "aws_lb_listener_rule" "launch_private_listener_rule" {
   listener_arn = var.private_alb_listener_arn
-  priority     = 613
+  priority     = 611
 
   action {
     type             = "forward"
@@ -35,52 +35,6 @@ resource "aws_lb_listener_rule" "launch_private_listener_rule" {
   condition {
     source_ip {
       values = var.allowed_source_ip_cidr_blocks
-    }
-  }
-}
-
-resource "aws_lb_listener_rule" "launch_private_listener_rule_2" {
-  count        = length(var.allowed_source_ip_cidr_blocks_2) > 0 ? 1 : 0
-  listener_arn = var.private_alb_listener_arn
-  priority     = 614
-
-  action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.private.arn
-  }
-
-  condition {
-    path_pattern {
-      values = ["${var.root_path}*"]
-    }
-  }
-
-  condition {
-    source_ip {
-      values = var.allowed_source_ip_cidr_blocks_2
-    }
-  }
-}
-
-resource "aws_lb_listener_rule" "launch_private_listener_rule_3" {
-  count        = length(var.allowed_source_ip_cidr_blocks_3) > 0 ? 1 : 0
-  listener_arn = var.private_alb_listener_arn
-  priority     = 615
-
-  action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.private.arn
-  }
-
-  condition {
-    path_pattern {
-      values = ["${var.root_path}*"]
-    }
-  }
-
-  condition {
-    source_ip {
-      values = var.allowed_source_ip_cidr_blocks_3
     }
   }
 }
