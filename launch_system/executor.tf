@@ -5,8 +5,10 @@ locals {
     cpu                      = var.executor_task_size.cpu
     memory                   = var.executor_task_size.memory
     requires_compatibilities = ["FARGATE"]
-    execution_role_arn       = aws_iam_role.executor_execution.arn
-    task_role_arn            = aws_iam_role.executor_task.arn
+
+    inait_execution_role_arn   = aws_iam_role.inait_executor_execution.arn
+    default_execution_role_arn = aws_iam_role.default_executor_execution.arn
+    task_role_arn              = aws_iam_role.executor_task.arn
   }
 
   # Shared container base configuration
@@ -131,7 +133,7 @@ resource "aws_ecs_task_definition" "default_executor" {
   cpu                      = local.executor_base_config.cpu
   memory                   = local.executor_base_config.memory
   requires_compatibilities = local.executor_base_config.requires_compatibilities
-  execution_role_arn       = local.executor_base_config.execution_role_arn
+  execution_role_arn       = local.executor_base_config.default_execution_role_arn
   task_role_arn            = local.executor_base_config.task_role_arn
 
   container_definitions = jsonencode([
@@ -176,7 +178,7 @@ resource "aws_ecs_task_definition" "inait_executor" {
   cpu                      = local.executor_base_config.cpu
   memory                   = local.executor_base_config.memory
   requires_compatibilities = local.executor_base_config.requires_compatibilities
-  execution_role_arn       = local.executor_base_config.execution_role_arn
+  execution_role_arn       = local.executor_base_config.inait_execution_role_arn
   task_role_arn            = local.executor_base_config.task_role_arn
 
   container_definitions = jsonencode([
@@ -250,7 +252,7 @@ resource "aws_ecs_task_definition" "inait_executor" {
 #   propagate_tags = "SERVICE"
 # }
 
-resource "aws_iam_role" "executor_execution" {
+resource "aws_iam_role" "default_executor_execution" {
   name_prefix = "launch_system_executor"
 
   assume_role_policy = <<-EOT
@@ -270,8 +272,33 @@ resource "aws_iam_role" "executor_execution" {
   EOT
 }
 
-resource "aws_iam_role_policy_attachment" "executor_execution" {
-  role       = aws_iam_role.executor_execution.name
+resource "aws_iam_role" "inait_executor_execution" {
+  name_prefix = "launch_system_executor"
+
+  assume_role_policy = <<-EOT
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Action": "sts:AssumeRole",
+        "Principal": {
+          "Service": "ecs-tasks.amazonaws.com"
+        },
+        "Effect": "Allow",
+        "Sid": ""
+      }
+    ]
+  }
+  EOT
+}
+
+resource "aws_iam_role_policy_attachment" "inait_executor_execution" {
+  role       = aws_iam_role.inait_executor_execution.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+resource "aws_iam_role_policy_attachment" "default_executor_execution" {
+  role       = aws_iam_role.default_executor_execution.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
@@ -317,11 +344,16 @@ resource "aws_iam_policy" "executor_logs_access" {
 }
 
 resource "aws_iam_role_policy_attachment" "executor_secrets_access" {
-  role       = aws_iam_role.executor_execution.name
-  policy_arn = aws_iam_policy.secrets_access.arn
+  role       = aws_iam_role.inait_executor_execution.name
+  policy_arn = aws_iam_policy.launch_secrets_access.arn
 }
 
-resource "aws_iam_role_policy_attachment" "executor_logs_access" {
-  role       = aws_iam_role.executor_execution.name
+resource "aws_iam_role_policy_attachment" "inait_executor_logs_access" {
+  role       = aws_iam_role.inait_executor_execution.name
+  policy_arn = aws_iam_policy.executor_logs_access.arn
+}
+
+resource "aws_iam_role_policy_attachment" "default_executor_logs_access" {
+  role       = aws_iam_role.default_executor_execution.name
   policy_arn = aws_iam_policy.executor_logs_access.arn
 }
