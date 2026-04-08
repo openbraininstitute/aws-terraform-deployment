@@ -44,3 +44,23 @@ moved {
   from = module.launch_system_network.aws_route_table_association.untrusted_b_internet_access
   to   = module.launch_system.aws_route_table_association.untrusted_b_internet_access
 }
+
+moved {
+  from = module.launch_system.aws_iam_policy.secrets_access
+  to   = module.launch_system.aws_iam_policy.full_secrets_access
+}
+
+moved {
+  from = module.launch_system.aws_iam_role.executor_execution
+  to   = module.launch_system.aws_iam_role.inait_executor_execution
+}
+
+moved {
+  from = module.launch_system.aws_iam_role_policy_attachment.executor_execution
+  to   = module.launch_system.aws_iam_role_policy_attachment.inait_executor_execution
+}
+
+moved {
+  from = module.launch_system.aws_iam_role_policy_attachment.executor_logs_access
+  to   = module.launch_system.aws_iam_role_policy_attachment.inait_executor_logs_access
+}
