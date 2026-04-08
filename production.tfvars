@@ -7,7 +7,6 @@ ml_neuroagent_bucket_name                 = "ml-neuroagent-production"
 nexus_obp_bucket_name                     = "nexus-obp-production"
 nexus_ship_bucket_name                    = "nexus-ship-production"
 nexus_openscience_bucket_name             = "nexus-openscience-production"
-core_web_app_cell_a_docker_image_url      = "public.ecr.aws/openbraininstitute/core-web-app:2026.01.07.1" # for https://cell-a.openbraininstitute.org only!
 virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:2026.03.31.1"
 thumbnail_generation_api_docker_image_url = "public.ecr.aws/openbraininstitute/thumbnail-generation-api:2026.03.27.1"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2026.2.0"

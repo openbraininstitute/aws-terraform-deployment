@@ -16,7 +16,6 @@ locals {
       "http://localhost:3000",
       "https://preview.openbraininstitute.org",
       "https://*.preview.openbraininstitute.org",
-      "https://dev.openbraininstitute.org",
       "https://staging.cell-b.openbraininstitute.org",
       "https://staging.cell-a.openbraininstitute.org"
     ] : ["https://cell-a.openbraininstitute.org", "https://cell-b.openbraininstitute.org", "https://www.cell-b.openbraininstitute.org"]
@@ -588,57 +587,6 @@ module "static-server" {
   is_production                   = var.is_production
 }
 
-module "core_webapp_dev" {
-  source = "./core_webapp"
-
-  count = var.is_staging ? 1 : 0
-
-  key               = "dev"
-  log_group_name    = "core_webapp_dev"
-  vpc_id            = local.vpc_id
-  subnet_cidr_block = "10.0.21.32/28"
-  alb_listener_arn  = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
-  # The following priority has to be higher (lower number)
-  # than the priority of the main core-web-app listener rule.
-  hostname                      = "dev.openbraininstitute.org"
-  alb_listener_rule_priority    = 980
-  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
-  aws_region                    = local.aws_region
-  docker_image_url              = var.core_web_app_dev_docker_image_url
-  route_table_id                = local.route_table_private_subnets_id
-  vpc_cidr_block                = local.vpc_cidr_block
-  secrets_arn                   = local.core_webapp_secrets_arn
-
-  // These are not used in dev
-  s3_bucket_name            = var.core_webapp_s3_bucket_name
-  s3_bucket_allowed_origins = ["https://dev.openbraininstitute.org"]
-
-  sbo_billing_tag = "core_webapp_dev"
-
-  api_origin             = "https://${local.public_primary_domain_in_azure}"
-  auth_url               = "https://dev.openbraininstitute.org/api/auth"
-  deployment_env         = "development"
-  keycloak_issuer        = var.keycloak_sbo_realm_url
-  matomo_site_id         = "3"
-  primary_hostname       = "dev.openbraininstitute.org"
-  sanity_dataset         = "staging"
-  stripe_publishable_key = var.core_web_app_stripe_publishable_key
-
-  # based on https://github.com/openbraininstitute/core-web-app/blob/develop/src/config/README.md
-  env_AI_AGENT_URL              = "https://${local.cell_a_primary_domain}/api/agent"
-  env_AUTH_MANAGER_URL          = "https://${local.cell_a_primary_domain}/api/auth-manager/v1"
-  env_CELL_API_URL              = "https://${local.cell_a_primary_domain}/api/circuit"
-  env_ENTITY_CORE_URL           = "https://${local.cell_a_primary_domain}/api/entitycore"
-  env_NOTEBOOK_API_URL          = "https://${local.cell_a_primary_domain}/api/notebook_service"
-  env_OBI_ONE_URL               = "https://${local.cell_a_primary_domain}/api/obi-one"
-  env_SMALL_SCALE_SIMULATOR_URL = "https://${local.cell_a_primary_domain}/api/small-scale-simulator"
-  env_THUMBNAIL_API_URL         = "https://${local.cell_a_primary_domain}/api/thumbnail-generation"
-  env_VIRTUAL_LAB_API_URL       = "https://${local.cell_a_primary_domain}/api/virtual-lab-manager"
-
-  keycloak_client_id     = "core-webapp-cell-b-azure-staging"
-  keycloak_client_secret = "${local.core_webapp_secrets_arn}:client_secret_cellb_azure_staging::"
-}
-
 module "core_webapp_preview" {
   source = "./core_webapp_preview"
 
@@ -658,22 +606,6 @@ module "core_webapp_preview" {
   keycloak_issuer        = var.keycloak_sbo_realm_url
   sanity_dataset         = "staging"
   stripe_publishable_key = var.core_web_app_stripe_publishable_key
-}
-
-module "github_core_webapp_dev_ecs_redeploy_role" {
-  source = "./github_ecs_redeploy_role"
-
-  # for now we only want such a redeploy role in staging
-  count = var.is_staging ? 1 : 0
-
-  account_id               = local.account_id
-  aws_region               = local.aws_region
-  github_organisation      = local.github_organisation
-  repo_name                = "core-web-app"
-  ecs_cluster_name         = module.core_webapp_dev[0].ecs_cluster_name
-  ecs_service_name         = module.core_webapp_dev[0].ecs_service_name
-  ecs_task_definition_name = module.core_webapp_dev[0].ecs_task_definition_name
-  # The ARN of the generated role is needed in GH and is part of the outputs.
 }
 
 module "doi_redirect" {
@@ -1066,22 +998,17 @@ module "dashboards" {
   aws_region = local.aws_region
 
   private_load_balancer_id = local.private_alb_https_listener_arn
-  private_load_balancer_target_suffixes = merge(
-    {
-      "AccountingService"   = module.accounting_svc.private_lb_rule_suffix
-      "EntityCoreService"   = module.entitycore_svc.private_lb_rule_suffix
-      "KeyCloak"            = module.cs.private_keycloak_lb_rule_suffix
-      "SmallScaleSimulator" = module.small_scale_simulator.private_lb_rule_suffix
-      "SonataCellService"   = module.cells_svc.private_lb_rule_suffix
-      "ThumbnailGenerator"  = module.thumbnail_generation_api.private_lb_rule_suffix
-      "VLabManager"         = module.virtual_lab_manager.private_arn_suffix
-      "ObiOneV2"            = module.obi_one_v2.private_lb_rule_suffix
-      "LaunchSystem"        = module.launch_system.private_lb_rule_suffix
-    },
-    var.is_staging ? {
-      "CoreWebAppDev" = module.core_webapp_dev[0].private_lb_rule_suffix
-    } : {},
-  )
+  private_load_balancer_target_suffixes = {
+    "AccountingService"   = module.accounting_svc.private_lb_rule_suffix
+    "EntityCoreService"   = module.entitycore_svc.private_lb_rule_suffix
+    "KeyCloak"            = module.cs.private_keycloak_lb_rule_suffix
+    "SmallScaleSimulator" = module.small_scale_simulator.private_lb_rule_suffix
+    "SonataCellService"   = module.cells_svc.private_lb_rule_suffix
+    "ThumbnailGenerator"  = module.thumbnail_generation_api.private_lb_rule_suffix
+    "VLabManager"         = module.virtual_lab_manager.private_arn_suffix
+    "ObiOneV2"            = module.obi_one_v2.private_lb_rule_suffix
+    "LaunchSystem"        = module.launch_system.private_lb_rule_suffix
+  }
 }
 
 
