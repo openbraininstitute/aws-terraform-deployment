@@ -44,6 +44,12 @@ variable "cors_origins" {
   type        = list(string)
 }
 
+variable "cors_origin_regex" {
+  description = "CORS origin regex"
+  type        = string
+  default     = null
+}
+
 variable "private_alb_listener_arn" {
   type = string
 }
