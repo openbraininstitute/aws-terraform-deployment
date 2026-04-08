@@ -104,7 +104,7 @@ resource "aws_ecs_task_definition" "auth_manager_ecs_definition" {
         }
       ]
 
-      environment = [
+      environment = concat([
         {
           name  = "ROOT_PATH"
           value = var.root_path
@@ -165,7 +165,7 @@ resource "aws_ecs_task_definition" "auth_manager_ecs_definition" {
           name  = "ACK_STATE_EXPIRY"
           value = "${tostring(var.ack_state_expiry)}"
         },
-      ]
+      ], var.cors_origin_regex != null ? [{ name = "CORS_ORIGIN_REGEX", value = var.cors_origin_regex }] : [])
       secrets = [
         {
           name      = "DATABASE_PASSWORD"

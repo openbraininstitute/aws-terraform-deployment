@@ -689,7 +689,8 @@ module "auth_manager" {
   internet_access_route_id = local.route_table_private_subnets_id
   route_table_id           = local.route_table_private_subnets_id
 
-  cors_origins = local.core_web_app_origins
+  cors_origins      = local.core_web_app_origins
+  cors_origin_regex = local.core_web_app_cors_origin_regex
 
   auth_manager_secrets_arn = local.auth_manager_secrets_arn
 
@@ -698,8 +699,7 @@ module "auth_manager" {
   # Used for the keycloak consent redirect URL => pointing to cell-a as keycloak is in AWS.
   primary_domain = local.cell_a_primary_domain
 
-  # TODO Revert this back to staging. once the core web app with auth-manager support is deployed.
-  client_redirect_domain = "dev.openbraininstitute.org"
+  client_redirect_domain = "staging.openbraininstitute.org"
 
   image_url = var.auth_manager_svc_image_url
 
