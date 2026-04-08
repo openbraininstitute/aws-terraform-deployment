@@ -306,7 +306,7 @@ resource "aws_iam_policy" "api_logs_access" {
 
 resource "aws_iam_role_policy_attachment" "api_secrets_access" {
   role       = aws_iam_role.api_execution.name
-  policy_arn = aws_iam_policy.secrets_access.arn
+  policy_arn = aws_iam_policy.launch_secrets_access.arn
 }
 
 resource "aws_iam_policy" "api_codeartifact_read" {
