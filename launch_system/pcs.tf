@@ -23,7 +23,7 @@ resource "awscc_pcs_cluster" "cluster" {
     slurm_custom_settings = [
       {
         parameter_name  = "SelectTypeParameters"
-        parameter_value = "CR_CPU"
+        parameter_value = "CR_CPU_Memory"
       },
     ]
     slurm_rest = {
