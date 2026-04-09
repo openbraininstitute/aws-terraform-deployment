@@ -772,15 +772,6 @@ module "obi_one_v2" {
   ]
 }
 
-module "obi_generative_gui" {
-  aws_region = local.aws_region
-  source     = "./obi_generative_gui"
-}
-
-module "kg_inference_api" {
-  source = "./kg-inference-api"
-}
-
 module "thumbnail_generation_api" {
   source = "./thumbnail-generation-api"
 
