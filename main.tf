@@ -604,6 +604,7 @@ module "core_webapp_preview" {
   api_origin             = "https://${local.cell_a_primary_domain}"
   deployment_env         = "preview"
   keycloak_issuer        = var.keycloak_sbo_realm_url
+  keycloak_client_id     = var.keycloak_client_id
   sanity_dataset         = "staging"
   stripe_publishable_key = var.core_web_app_stripe_publishable_key
 }

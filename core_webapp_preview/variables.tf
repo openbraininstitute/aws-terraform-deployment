@@ -48,7 +48,6 @@ variable "keycloak_issuer" {
 variable "keycloak_client_id" {
   type        = string
   description = "Keycloak client ID"
-  default     = "core-webapp-preview"
 }
 
 variable "sanity_dataset" {

@@ -70,7 +70,7 @@ resource "aws_amplify_app" "this" {
     SANITY_DATASET         = var.sanity_dataset
     STRIPE_PUBLISHABLE_KEY = var.stripe_publishable_key
     KEYCLOAK_CLIENT_ID     = var.keycloak_client_id
-    KEYCLOAK_CLIENT_SECRET = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["client_secret_preview"]
+    KEYCLOAK_CLIENT_SECRET = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["client_secret_cellb_azure_staging"]
     NEXTAUTH_SECRET        = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["nextauth_secret"]
     AUTH_PROXY_URL         = "https://develop.${var.domain_name}"
   }
