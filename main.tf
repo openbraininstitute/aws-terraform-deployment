@@ -604,6 +604,7 @@ module "core_webapp_preview" {
   api_origin             = "https://${local.cell_a_primary_domain}"
   deployment_env         = "preview"
   keycloak_issuer        = var.keycloak_sbo_realm_url
+  keycloak_client_id     = var.keycloak_client_id
   sanity_dataset         = "staging"
   stripe_publishable_key = var.core_web_app_stripe_publishable_key
 }
@@ -770,15 +771,6 @@ module "obi_one_v2" {
       mount_extra_options   = "--no-sign-request"
     },
   ]
-}
-
-module "obi_generative_gui" {
-  aws_region = local.aws_region
-  source     = "./obi_generative_gui"
-}
-
-module "kg_inference_api" {
-  source = "./kg-inference-api"
 }
 
 module "thumbnail_generation_api" {

@@ -23,7 +23,7 @@ resource "awscc_pcs_cluster" "cluster" {
     slurm_custom_settings = [
       {
         parameter_name  = "SelectTypeParameters"
-        parameter_value = "CR_CPU"
+        parameter_value = "CR_CPU_Memory"
       },
     ]
     slurm_rest = {
@@ -99,6 +99,15 @@ resource "awscc_pcs_compute_node_group" "pcs_nodegroup_small" {
     max_instance_count = 4
   }
 
+  slurm_configuration = {
+    slurm_custom_settings = [
+      {
+        parameter_name  = "MemSpecLimit"
+        parameter_value = 750
+      },
+    ]
+  }
+
   subnet_ids = [aws_subnet.pcs.id]
   tags       = { SBO_Billing = "pcs-hpc" }
 }
@@ -118,23 +127,39 @@ resource "awscc_pcs_compute_node_group" "pcs_nodegroup_large" {
   name       = "cluster-nodegroup-large"
   ami_id     = aws_launch_template.pcs_launch_template.image_id
   cluster_id = awscc_pcs_cluster.cluster.cluster_id
+
   custom_launch_template = {
     template_id = aws_launch_template.pcs_launch_template.id
     version     = aws_launch_template.pcs_launch_template.latest_version
   }
+
   iam_instance_profile_arn = aws_iam_instance_profile.pcs_profile.arn
+
   instance_configs = [
     {
       instance_type = "c8a.48xlarge"
     },
   ]
+
   purchase_option = "ONDEMAND"
+
   scaling_configuration = {
     min_instance_count = 0
     max_instance_count = 4
   }
+
+  slurm_configuration = {
+    slurm_custom_settings = [
+      {
+        parameter_name  = "MemSpecLimit"
+        parameter_value = 750
+      },
+    ]
+  }
+
   subnet_ids = [aws_subnet.pcs.id]
-  tags       = { SBO_Billing = "pcs-hpc" }
+
+  tags = { SBO_Billing = "pcs-hpc" }
 }
 
 resource "awscc_pcs_queue" "pcs_queue_large" {
@@ -158,21 +183,37 @@ resource "awscc_pcs_compute_node_group" "pcs_ng_large_fallback" {
   name       = "cluster-ng-large-${each.key}"
   ami_id     = aws_launch_template.pcs_launch_template.image_id
   cluster_id = awscc_pcs_cluster.cluster.cluster_id
+
   custom_launch_template = {
     template_id = aws_launch_template.pcs_launch_template.id
     version     = aws_launch_template.pcs_launch_template.latest_version
   }
+
   iam_instance_profile_arn = aws_iam_instance_profile.pcs_profile.arn
+
   instance_configs = [
     { instance_type = each.value }
   ]
+
   purchase_option = "ONDEMAND"
+
+  slurm_configuration = {
+    slurm_custom_settings = [
+      {
+        parameter_name  = "MemSpecLimit"
+        parameter_value = 750
+      },
+    ]
+  }
+
   scaling_configuration = {
     min_instance_count = 0
     max_instance_count = 4
   }
+
   subnet_ids = [aws_subnet.pcs.id]
-  tags       = { SBO_Billing = "pcs-hpc" }
+
+  tags = { SBO_Billing = "pcs-hpc" }
 }
 
 resource "awscc_pcs_queue" "pcs_queue_large_fallback" {
