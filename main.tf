@@ -895,6 +895,7 @@ module "launch_system" {
   allowed_source_ip_cidr_blocks = concat(
     module.obi_one_v2.subnet_cidr_blocks,
     module.launch_system.executor_subnet_cidr_blocks,
+    module.launch_system.orchestrator_subnet_cidr_blocks,
     [module.launch_system.pcs_subnet_cidr_block],
     ["${module.bastion_host.bastion_instance_private_ip}/32"],
     [
