@@ -93,6 +93,5 @@ obi_one_v2_ecs_task_size = {
 }
 
 # CoreWebApp s3 and CloudFront configuration
-core_webapp_s3_bucket_name = "core-webapp-static-assets-production"
 
 core_web_app_in_azure_cidr_block = "10.102.1.0/27" # staging azure core web app aca range

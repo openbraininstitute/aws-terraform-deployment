@@ -111,7 +111,6 @@ obi_one_v2_ecs_task_size = {
 }
 
 # CoreWebApp s3 and CloudFront configuration
-core_webapp_s3_bucket_name = "core-webapp-static-assets-production"
 
 core_web_app_in_azure_cidr_block = "10.102.1.0/27" # staging azure core web app aca range
 auth_manager_svc_image_url       = "985539765147.dkr.ecr.us-east-1.amazonaws.com/auth-manager:2025.12.12.1"
