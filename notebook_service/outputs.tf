@@ -26,3 +26,8 @@ output "ecs_cidr_block_a" {
 output "ecs_cidr_block_b" {
   value = var.ecs_cidr_block_b
 }
+
+output "subnet_cidr_blocks" {
+  description = "CIDR blocks of the notebook_service subnets"
+  value       = [var.ecs_cidr_block_a, var.ecs_cidr_block_b]
+}

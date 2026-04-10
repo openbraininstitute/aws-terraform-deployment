@@ -10,3 +10,16 @@ output "executor_network_ids" {
     aws_subnet.untrusted_b.id,
   ]
 }
+
+output "executor_subnet_cidr_blocks" {
+  description = "CIDR blocks of the launch_system executor (untrusted) subnets"
+  value = [
+    aws_subnet.untrusted_a.cidr_block,
+    aws_subnet.untrusted_b.cidr_block,
+  ]
+}
+
+output "pcs_subnet_cidr_block" {
+  description = "CIDR block of the PCS subnet"
+  value       = aws_subnet.pcs.cidr_block
+}
