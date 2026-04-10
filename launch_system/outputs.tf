@@ -19,6 +19,14 @@ output "executor_subnet_cidr_blocks" {
   ]
 }
 
+output "orchestrator_subnet_cidr_blocks" {
+  description = "CIDR blocks of the launch_system orchestrator (trusted) subnets"
+  value = [
+    aws_subnet.trusted_a.cidr_block,
+    aws_subnet.trusted_b.cidr_block,
+  ]
+}
+
 output "pcs_subnet_cidr_block" {
   description = "CIDR block of the PCS subnet"
   value       = aws_subnet.pcs.cidr_block
