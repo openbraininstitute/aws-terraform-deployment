@@ -830,6 +830,7 @@ module "virtual_lab_manager" {
 
   virtual_lab_manager_db_ro_secret_arn = local.virtual_lab_manager_db_ro_secret_arn
   aws_deployment_env                   = var.deployment_env
+  multiple_vlabs_allowed_user_id       = var.multiple_vlabs_allowed_user_id
 }
 
 module "public_data_efs_storage" {

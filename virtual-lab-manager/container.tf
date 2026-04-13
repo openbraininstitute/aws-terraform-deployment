@@ -239,6 +239,10 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
           name  = "MAX_PROJECTS_NUMBER"
           value = "40"
         },
+        {
+          name  = "MULTIPLE_VLABS_ALLOWED_USER_ID"
+          value = var.multiple_vlabs_allowed_user_id
+        },
       ], var.cors_origin_regex != null ? [{ name = "CORS_ORIGIN_REGEX", value = var.cors_origin_regex }] : [])
       secrets = [
         {

@@ -184,3 +184,9 @@ variable "aws_deployment_env" {
   type        = string
   description = "Environment in AWS for the deployment"
 }
+
+variable "multiple_vlabs_allowed_user_id" {
+  type        = string
+  description = "User ID allowed to create multiple virtual labs"
+  sensitive   = false
+}
