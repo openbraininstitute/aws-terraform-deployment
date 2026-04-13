@@ -141,6 +141,12 @@ variable "virtual_lab_manager_task_size" {
   description = "CPU and memory limit for ECS task (number or string format) for virtual lab manager"
 }
 
+variable "multiple_vlabs_allowed_user_id" {
+  type        = string
+  description = "User ID allowed to create multiple virtual labs"
+  sensitive   = false
+}
+
 ### Accounting service ###
 
 variable "accounting_svc_docker_image_url" {

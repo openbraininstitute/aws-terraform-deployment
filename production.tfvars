@@ -92,6 +92,8 @@ virtual_lab_manager_task_size = {
   memory = 2048
 }
 
+multiple_vlabs_allowed_user_id = "a713cff1-d67d-4f3f-9c28-a92fae3ddf30"
+
 keycloak_task_size = {
   cpu    = 2048
   memory = 4096
