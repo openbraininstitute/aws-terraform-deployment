@@ -357,7 +357,8 @@ module "ml" {
   neuroagent_docker_image_url = var.neuroagent_docker_image_url
   neuroagent_bucket_name      = var.ml_neuroagent_bucket_name
 
-  primary_domain = local.cell_a_primary_domain
+  primary_domain  = local.cell_a_primary_domain
+  frontend_domain = local.public_primary_domain_in_azure
 
   # NEW PRIVATE ALB
   generic_private_alb_listener_arn      = local.private_alb_https_listener_arn
