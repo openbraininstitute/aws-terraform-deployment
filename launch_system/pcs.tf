@@ -145,7 +145,7 @@ resource "awscc_pcs_compute_node_group" "pcs_nodegroup_large" {
 
   scaling_configuration = {
     min_instance_count = 0
-    max_instance_count = 4
+    max_instance_count = var.pcs_large_nodes_max_instance_count
   }
 
   slurm_configuration = {
@@ -208,7 +208,7 @@ resource "awscc_pcs_compute_node_group" "pcs_ng_large_fallback" {
 
   scaling_configuration = {
     min_instance_count = 0
-    max_instance_count = 4
+    max_instance_count = var.pcs_large_nodes_max_instance_count
   }
 
   subnet_ids = [aws_subnet.pcs.id]
