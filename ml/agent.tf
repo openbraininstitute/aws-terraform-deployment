@@ -139,7 +139,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT__TOOlS__FRONTEND_BASE_URL"
-          value = "https://${var.primary_domain}"
+          value = "https://${var.frontend_domain}"
         },
         {
           name  = "NEUROAGENT__TOOLS__WHITELISTED_TOOL_REGEX"
