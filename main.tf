@@ -923,9 +923,9 @@ module "launch_system" {
   db_username     = "launch"
   obi_backup_plan = "obi_plan"
 
-  api_image_url              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.4.0"
-  orchestrator_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.4.0"
-  default_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/default-executor:2026.4.0"
+  api_image_url              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.4.1"
+  orchestrator_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.4.1"
+  default_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/default-executor:2026.4.1"
 
   api_task_size          = var.launch_system_api_task_size
   executor_task_size     = var.launch_system_executor_task_size
@@ -946,10 +946,11 @@ module "launch_system" {
   local_store_prefix        = "/data"
   simulation_launch_command = "/data/scratch/run-simulation-venv/bin/python3 /data/scratch/run_simulation.py"
 
-  pcs_ami                        = var.pcs_ami
-  pcs_nat_gateway_id             = data.terraform_remote_state.common.outputs.nat_gateway_id
-  pcs_cidr_block                 = "10.0.36.0/24"
-  pcs_fsx_scratch_s3_bucket_name = "obi-pcs-scratch-fsx-${local.suffix}"
+  pcs_ami                            = var.pcs_ami
+  pcs_nat_gateway_id                 = data.terraform_remote_state.common.outputs.nat_gateway_id
+  pcs_cidr_block                     = "10.0.36.0/24"
+  pcs_fsx_scratch_s3_bucket_name     = "obi-pcs-scratch-fsx-${local.suffix}"
+  pcs_large_nodes_max_instance_count = 20
   pcs_large_alternate_node_types = [
     "c8i.48xlarge",
     "c7a.48xlarge",
