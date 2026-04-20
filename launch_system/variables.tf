@@ -256,3 +256,8 @@ variable "launch_system_capability_secrets_arn" {
   description = "ARN of the secrets stored for `capabilities`"
   type        = string
 }
+
+variable "pcs_large_nodes_max_instance_count" {
+  description = "Maximum number of cluster nodes for large instances"
+  type        = number
+}
