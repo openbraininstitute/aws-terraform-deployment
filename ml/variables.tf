@@ -150,6 +150,11 @@ variable "primary_domain" {
   type = string
 }
 
+variable "frontend_domain" {
+  type        = string
+  description = "Public-facing domain for the frontend (e.g. www.openbraininstitute.org)"
+}
+
 variable "obi_backup_plan" {
   type        = string
   description = "Name of the backup plan to use for production s3 buckets"
