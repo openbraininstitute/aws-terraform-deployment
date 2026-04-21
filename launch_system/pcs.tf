@@ -74,6 +74,11 @@ resource "aws_launch_template" "pcs_launch_template" {
   }
 }
 
+resource "aws_placement_group" "efa" {
+  name     = "efa-cluster"
+  strategy = "cluster"
+}
+
 resource "aws_launch_template" "pcs_launch_template_efa" {
   name                    = "pcs_launch_template_efa"
   description             = "PCS Launch Template with EFA"
@@ -100,6 +105,10 @@ resource "aws_launch_template" "pcs_launch_template_efa" {
 
   metadata_options {
     http_tokens = "required"
+  }
+
+  placement {
+    group_name = aws_placement_group.efa.name
   }
 
   tag_specifications {
