@@ -952,6 +952,8 @@ module "launch_system" {
   pcs_fsx_scratch_s3_bucket_name     = "obi-pcs-scratch-fsx-${local.suffix}"
   pcs_large_nodes_max_instance_count = 20
   pcs_large_alternate_node_types = [
+    # Note: since our account quota doesn't allow 192CPU * 20 [max count] * (1[above] + 4[below])
+    # the following are capped at 1 node each, and don't participate in the `fallback` - mgevaert
     "c8i.48xlarge",
     "c7a.48xlarge",
     "c7i.48xlarge",

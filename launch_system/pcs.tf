@@ -74,6 +74,48 @@ resource "aws_launch_template" "pcs_launch_template" {
   }
 }
 
+resource "aws_launch_template" "pcs_launch_template_efa" {
+  name                    = "pcs_launch_template_efa"
+  description             = "PCS Launch Template with EFA"
+  disable_api_stop        = false
+  disable_api_termination = false
+
+  image_id = var.pcs_ami
+
+  user_data = base64encode(templatefile("${path.module}/cloud-init.cfg", {
+    fsx_dns_name               = aws_fsx_lustre_file_system.pcs_luster.dns_name
+    fsx_mount_name             = aws_fsx_lustre_file_system.pcs_luster.mount_name
+    publicdata_efs_id          = var.public_launch_data_efs_id
+    opendata_access_point_id   = var.open_public_data_access_point_id
+    publicdata_access_point_id = var.internal_public_data_access_point_id
+    region                     = var.aws_region
+  }))
+
+  network_interfaces {
+    device_index          = 0
+    interface_type        = "efa"
+    security_groups       = [aws_security_group.pcs.id]
+    delete_on_termination = true
+  }
+
+  metadata_options {
+    http_tokens = "required"
+  }
+
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      Name        = "pcs-cluster-node",
+      SBO_Billing = "pcs-hpc:parallelcluster"
+    }
+  }
+
+  tags = {
+    Name        = "base-pcs-cluster",
+    SBO_Billing = "pcs-hpc:parallelcluster"
+  }
+}
+
 resource "awscc_pcs_compute_node_group" "pcs_nodegroup_small" {
   name       = "cluster-nodegroup-small"
   ami_id     = aws_launch_template.pcs_launch_template.image_id
@@ -129,8 +171,8 @@ resource "awscc_pcs_compute_node_group" "pcs_nodegroup_large" {
   cluster_id = awscc_pcs_cluster.cluster.cluster_id
 
   custom_launch_template = {
-    template_id = aws_launch_template.pcs_launch_template.id
-    version     = aws_launch_template.pcs_launch_template.latest_version
+    template_id = aws_launch_template.pcs_launch_template_efa.id
+    version     = aws_launch_template.pcs_launch_template_efa.latest_version
   }
 
   iam_instance_profile_arn = aws_iam_instance_profile.pcs_profile.arn
@@ -145,7 +187,7 @@ resource "awscc_pcs_compute_node_group" "pcs_nodegroup_large" {
 
   scaling_configuration = {
     min_instance_count = 0
-    max_instance_count = 20
+    max_instance_count = var.pcs_large_nodes_max_instance_count
   }
 
   slurm_configuration = {
@@ -185,8 +227,8 @@ resource "awscc_pcs_compute_node_group" "pcs_ng_large_fallback" {
   cluster_id = awscc_pcs_cluster.cluster.cluster_id
 
   custom_launch_template = {
-    template_id = aws_launch_template.pcs_launch_template.id
-    version     = aws_launch_template.pcs_launch_template.latest_version
+    template_id = aws_launch_template.pcs_launch_template_efa.id
+    version     = aws_launch_template.pcs_launch_template_efa.latest_version
   }
 
   iam_instance_profile_arn = aws_iam_instance_profile.pcs_profile.arn
