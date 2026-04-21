@@ -164,4 +164,4 @@ azure_nfs_internal_public_data_path = "/obibatchnfsstg/publicdata"
 resource_provisioner_container_hash = "1837363b2413d5e7cfd8c7a859ba4b3cd35c685acd4240f70101364aaaeee0b8"
 resource_provisioner_container_uri  = "985539765147.dkr.ecr.us-east-1.amazonaws.com/hpc-resource-provisioner:0.5.13.dev8"
 
-pcs_ami = "ami-05b075d72e0d560fa"
+pcs_ami = "ami-0d196e97f4b5b69b4"
