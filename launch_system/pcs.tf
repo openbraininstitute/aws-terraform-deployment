@@ -188,7 +188,7 @@ resource "awscc_pcs_compute_node_group" "pcs_nodegroup_large" {
 
   instance_configs = [
     {
-      instance_type = "hpc7a.96xlarge"
+      instance_type = "c8a.48xlarge"
     },
   ]
 
