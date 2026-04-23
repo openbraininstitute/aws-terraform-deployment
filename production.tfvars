@@ -25,7 +25,7 @@ keycloak_url_with_auth = "https://cell-a.openbraininstitute.org/auth/"
 
 neuroagent_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-v0.17.2"
 
-neuroagent_typescript_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-v0.17.2"
+neuroagent_typescript_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-typescript-v0.1.0"
 ml_neuroagent_typescript_bucket_name   = "ml-neuroagent-typescript-production"
 ml_typescript_subnet_a_cidr            = "10.0.14.0/24"
 ml_typescript_subnet_b_cidr            = "10.0.15.0/24"

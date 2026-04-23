@@ -53,13 +53,15 @@ variable "neuroagent_docker_image_url" {
 
 variable "neuroagent_typescript_docker_image_url" {
   type        = string
-  description = "ECR image URL for the TypeScript neuroagent stack (module ml_typescript)."
+  description = "ECR image URL for the TypeScript neuroagent stack (module ml_typescript). Override in staging, production, and sandbox-hpc tfvars."
+  default     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-typescript-v0.1.0"
   sensitive   = false
 }
 
 variable "ml_neuroagent_typescript_bucket_name" {
   type        = string
-  description = "S3 bucket name for the TypeScript neuroagent stack artifacts."
+  description = "S3 bucket name for the TypeScript neuroagent stack. Override in staging, production, and sandbox-hpc tfvars."
+  default     = "ml-neuroagent-typescript-unspecified-env"
   sensitive   = false
 }
 
@@ -71,12 +73,14 @@ variable "ml_typescript_instance_key" {
 
 variable "ml_typescript_subnet_a_cidr" {
   type        = string
-  description = "First private subnet CIDR for module ml_typescript (must not overlap other subnets in the VPC)."
+  description = "First private subnet CIDR for module ml_typescript. Override in staging, production, and sandbox-hpc tfvars."
+  default     = "10.254.0.0/24"
 }
 
 variable "ml_typescript_subnet_b_cidr" {
   type        = string
-  description = "Second private subnet CIDR for module ml_typescript (must not overlap other subnets in the VPC)."
+  description = "Second private subnet CIDR for module ml_typescript. Override in staging, production, and sandbox-hpc tfvars."
+  default     = "10.254.1.0/24"
 }
 
 variable "ml_typescript_alb_listener_rule_priority" {
