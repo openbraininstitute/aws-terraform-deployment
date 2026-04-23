@@ -30,7 +30,7 @@ module "ecs_service_agent" {
   source  = "terraform-aws-modules/ecs/aws//modules/service"
   version = "v5.12.1"
 
-  name                  = "ecs-service-agent"
+  name                  = local.ecs_service_name
   cluster_arn           = local.ecs_cluster_arn
   task_exec_secret_arns = [var.ml_secrets_arn, module.ml_rds_postgres.db_instance_master_user_secret_arn]
 
@@ -46,13 +46,13 @@ module "ecs_service_agent" {
 
   # Container definition(s)
   container_definitions = {
-    ml_agent = {
+    (local.agent_container_name) = {
       memory                   = 2048
       cpu                      = 1024
       networkMode              = "awsvpc"
       essential                = true
       image                    = var.neuroagent_docker_image_url
-      name                     = "ml_agent"
+      name                     = local.agent_container_name
       readonly_root_filesystem = true
       mount_points = [
         {
@@ -62,7 +62,7 @@ module "ecs_service_agent" {
       ]
       port_mappings = [
         {
-          name          = "ml_agent"
+          name          = local.service_connect_port_name
           containerPort = 8078
           hostPort      = 8078
           protocol      = "tcp"
@@ -103,7 +103,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT__MISC__APPLICATION_PREFIX"
-          value = "/api/agent"
+          value = var.neuroagent_application_prefix
         },
         {
           name  = "NEUROAGENT__MISC__CORS_ORIGINS"
@@ -185,17 +185,17 @@ module "ecs_service_agent" {
     service = {
       client_alias = {
         port     = 8078
-        dns_name = "ml_agent"
+        dns_name = local.service_connect_port_name
       }
-      port_name      = "ml_agent"
-      discovery_name = "ml_agent"
+      port_name      = local.service_connect_port_name
+      discovery_name = local.service_connect_port_name
     }
   }
 
   load_balancer = {
     generic_private_service = {
       target_group_arn = aws_lb_target_group.generic_private_ml_target_group_agent.arn
-      container_name   = "ml_agent"
+      container_name   = local.agent_container_name
       container_port   = 8078
     }
   }
@@ -225,15 +225,15 @@ module "ecs_service_agent" {
 }
 
 resource "aws_service_discovery_http_namespace" "ml_agent" {
-  name        = "ml_agent"
-  description = "CloudMap namespace for ml_agent"
+  name        = local.service_discovery_namespace_name
+  description = "CloudMap namespace for neuroagent (${local.ml_prefix})"
 
   tags = var.tags
 }
 
 resource "aws_lb_listener_rule" "generic_private_agent_rule" {
   listener_arn = var.generic_private_alb_listener_arn
-  priority     = 575
+  priority     = var.agent_alb_listener_rule_priority
 
   action {
     type             = "forward"
@@ -242,13 +242,13 @@ resource "aws_lb_listener_rule" "generic_private_agent_rule" {
 
   condition {
     path_pattern {
-      values = ["/api/agent/*"]
+      values = var.agent_path_pattern
     }
   }
 }
 
 resource "aws_lb_target_group" "generic_private_ml_target_group_agent" {
-  name        = "generic-private-ml-tg-agent"
+  name        = local.agent_target_group_name
   port        = 8078
   protocol    = "HTTP"
   target_type = "ip"
@@ -259,7 +259,7 @@ resource "aws_lb_target_group" "generic_private_ml_target_group_agent" {
 }
 
 resource "aws_iam_policy" "ml_ecs_agent_log_policy" {
-  name = "ml_ecs_agent_logs"
+  name = local.iam_log_policy_name
   policy = jsonencode({
     "Version" : "2012-10-17", #tfsec:ignore:aws-iam-no-policy-wildcards
     "Statement" : [
@@ -281,7 +281,7 @@ resource "aws_iam_policy" "ml_ecs_agent_log_policy" {
 }
 
 resource "aws_iam_policy" "ml_ecs_agent_s3_policy" {
-  name = "ml_ecs_agent_s3_access"
+  name = local.iam_s3_policy_name
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

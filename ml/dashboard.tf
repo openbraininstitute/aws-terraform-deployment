@@ -1,5 +1,5 @@
 resource "aws_cloudwatch_dashboard" "neuroagent" {
-  dashboard_name = "neuroagent"
+  dashboard_name = local.cloudwatch_dashboard
 
   dashboard_body = jsonencode({
     widgets = [

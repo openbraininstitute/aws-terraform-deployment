@@ -51,6 +51,52 @@ variable "neuroagent_docker_image_url" {
   sensitive   = false
 }
 
+variable "neuroagent_typescript_docker_image_url" {
+  type        = string
+  description = "ECR image URL for the TypeScript neuroagent stack (module ml_typescript)."
+  sensitive   = false
+}
+
+variable "ml_neuroagent_typescript_bucket_name" {
+  type        = string
+  description = "S3 bucket name for the TypeScript neuroagent stack artifacts."
+  sensitive   = false
+}
+
+variable "ml_typescript_instance_key" {
+  type        = string
+  description = "instance_key passed to module ml_typescript (short suffix, e.g. ts)."
+  default     = "ts"
+}
+
+variable "ml_typescript_subnet_a_cidr" {
+  type        = string
+  description = "First private subnet CIDR for module ml_typescript (must not overlap other subnets in the VPC)."
+}
+
+variable "ml_typescript_subnet_b_cidr" {
+  type        = string
+  description = "Second private subnet CIDR for module ml_typescript (must not overlap other subnets in the VPC)."
+}
+
+variable "ml_typescript_alb_listener_rule_priority" {
+  type        = number
+  description = "ALB listener rule priority for ml_typescript neuroagent (unique on the listener)."
+  default     = 576
+}
+
+variable "ml_typescript_agent_path_pattern" {
+  type        = list(string)
+  description = "Path pattern(s) for the ml_typescript private ALB listener rule."
+  default     = ["/api/agent-ts/*"]
+}
+
+variable "neuroagent_typescript_application_prefix" {
+  type        = string
+  description = "NEUROAGENT__MISC__APPLICATION_PREFIX for ml_typescript; must match the path used in ml_typescript_agent_path_pattern."
+  default     = "/api/agent-ts"
+}
+
 ### Small Scale Simulator ###
 
 variable "small_scale_simulator_api_docker_image_url" {

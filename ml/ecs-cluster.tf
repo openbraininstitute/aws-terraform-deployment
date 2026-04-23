@@ -2,7 +2,7 @@
 module "ml_ecs_cluster" {
   source       = "terraform-aws-modules/ecs/aws//modules/cluster"
   version      = "v5.12.1"
-  cluster_name = "ml-ecs-cluster"
+  cluster_name = local.ecs_cluster_name
 
   # Capacity provider
   fargate_capacity_providers = {
