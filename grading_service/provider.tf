@@ -1,0 +1,17 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~>5.0"
+    }
+  }
+}
+
+provider "aws" {
+  default_tags {
+    tags = {
+      SBO_Billing = "grading_service"
+    }
+  }
+  region = var.aws_region
+}

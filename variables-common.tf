@@ -110,6 +110,13 @@ variable "small_scale_simulator_batch_workers" {
   default     = {}
 }
 
+### Grading Service ###
+
+variable "grading_service_docker_image_url" {
+  type        = string
+  description = "Docker image URL for the grading service API"
+}
+
 ### Virtual Lab Manager service ###
 
 variable "virtual_lab_manager_base_path" {
