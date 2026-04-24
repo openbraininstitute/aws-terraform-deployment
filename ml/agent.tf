@@ -226,7 +226,7 @@ module "ecs_service_agent" {
 
 resource "aws_service_discovery_http_namespace" "ml_agent" {
   name        = local.service_discovery_namespace_name
-  description = "CloudMap namespace for neuroagent (${local.ml_prefix})"
+  description = local.legacy ? "CloudMap namespace for ml_agent" : "CloudMap namespace for neuroagent (${local.ml_prefix})"
 
   tags = var.tags
 }
