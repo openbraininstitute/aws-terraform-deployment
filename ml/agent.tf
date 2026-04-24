@@ -101,10 +101,9 @@ module "ecs_service_agent" {
           name  = "NEUROAGENT__LLM__WHITELISTED_MODEL_IDS_REGEX"
           value = "openai/gpt-5.*"
         },
-        # TypeScript (ml_typescript) passes null here; we set "" (that stack does not use this setting).
         {
           name  = "NEUROAGENT__MISC__APPLICATION_PREFIX"
-          value = var.neuroagent_application_prefix == null ? "" : var.neuroagent_application_prefix
+          value = var.neuroagent_application_prefix
         },
         {
           name  = "NEUROAGENT__MISC__CORS_ORIGINS"

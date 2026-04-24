@@ -354,8 +354,9 @@ module "ml" {
   vpc_cidr_block                 = local.vpc_cidr_block
   route_table_private_subnets_id = local.route_table_private_subnets_id
 
-  neuroagent_docker_image_url = var.neuroagent_docker_image_url
-  neuroagent_bucket_name      = var.ml_neuroagent_bucket_name
+  neuroagent_docker_image_url   = var.neuroagent_docker_image_url
+  neuroagent_bucket_name        = var.ml_neuroagent_bucket_name
+  neuroagent_application_prefix = "/api/agent"
 
   primary_domain  = local.cell_a_primary_domain
   frontend_domain = local.public_primary_domain_in_azure
@@ -411,7 +412,7 @@ module "ml_typescript" {
 
   agent_alb_listener_rule_priority = var.ml_typescript_alb_listener_rule_priority
   agent_path_pattern               = var.ml_typescript_agent_path_pattern
-  neuroagent_application_prefix    = null
+  neuroagent_application_prefix    = "/api/agent-ts"
 }
 
 # NOTE: The Nexus service has been fully decommissioned.

@@ -202,6 +202,6 @@ variable "agent_path_pattern" {
 variable "neuroagent_application_prefix" {
   type        = string
   default     = "/api/agent"
-  nullable    = true
-  description = "NEUROAGENT__MISC__APPLICATION_PREFIX (Python default /api/agent). Use null for ml_typescript; the env var is still set but to an empty string."
+  nullable    = false
+  description = "NEUROAGENT__MISC__APPLICATION_PREFIX passed to the container as the route prefix."
 }

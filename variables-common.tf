@@ -54,7 +54,7 @@ variable "neuroagent_docker_image_url" {
 variable "neuroagent_typescript_docker_image_url" {
   type        = string
   description = "ECR image URL for the TypeScript neuroagent stack (module ml_typescript). Override in staging, production, and sandbox-hpc tfvars."
-  default     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-typescript-v0.1.0"
+  default     = null
   sensitive   = false
 }
 
