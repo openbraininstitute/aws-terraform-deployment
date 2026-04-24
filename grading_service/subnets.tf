@@ -1,9 +1,8 @@
 # Subnets for the grading service (API + Redis)
-# Placeholder CIDRs — verify these are free before applying
 resource "aws_subnet" "grading_service_a" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}a"
-  cidr_block        = "10.0.38.0/27"
+  cidr_block        = "10.0.5.0/27"
   tags = {
     Name = "grading_service_a"
   }
@@ -12,7 +11,7 @@ resource "aws_subnet" "grading_service_a" {
 resource "aws_subnet" "grading_service_b" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}b"
-  cidr_block        = "10.0.38.32/27"
+  cidr_block        = "10.0.5.32/27"
   tags = {
     Name = "grading_service_b"
   }
