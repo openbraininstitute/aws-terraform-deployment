@@ -411,7 +411,7 @@ module "ml_typescript" {
 
   agent_alb_listener_rule_priority = var.ml_typescript_alb_listener_rule_priority
   agent_path_pattern               = var.ml_typescript_agent_path_pattern
-  neuroagent_application_prefix    = var.neuroagent_typescript_application_prefix
+  neuroagent_application_prefix    = null
 }
 
 # NOTE: The Nexus service has been fully decommissioned.

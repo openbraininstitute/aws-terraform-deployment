@@ -101,12 +101,6 @@ variable "ml_typescript_agent_path_pattern" {
   default     = ["/api/agent-ts/*"]
 }
 
-variable "neuroagent_typescript_application_prefix" {
-  type        = string
-  description = "NEUROAGENT__MISC__APPLICATION_PREFIX for ml_typescript; must match the path used in ml_typescript_agent_path_pattern."
-  default     = "/api/agent-ts"
-}
-
 ### Small Scale Simulator ###
 
 variable "small_scale_simulator_api_docker_image_url" {

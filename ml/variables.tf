@@ -202,5 +202,6 @@ variable "agent_path_pattern" {
 variable "neuroagent_application_prefix" {
   type        = string
   default     = "/api/agent"
-  description = "NEUROAGENT__MISC__APPLICATION_PREFIX; must match the URL path used before '/*' in agent_path_pattern."
+  nullable    = true
+  description = "NEUROAGENT__MISC__APPLICATION_PREFIX (Python default /api/agent). Use null for ml_typescript; the env var is still set but to an empty string."
 }
