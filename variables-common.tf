@@ -73,14 +73,20 @@ variable "ml_typescript_instance_key" {
 
 variable "ml_typescript_subnet_a_cidr" {
   type        = string
-  description = "First private subnet CIDR for module ml_typescript. Override in staging, production, and sandbox-hpc tfvars."
-  default     = "10.254.0.0/24"
+  description = <<-EOT
+    First private subnet CIDR for module ml_typescript. Must not overlap module.ml subnets or other subnets in the same VPC.
+    The same values are often used across staging/production/sandbox-hpc tfvars because each deployment uses a separate VPC (or account); only in-VPC uniqueness matters.
+  EOT
+  default     = "10.0.5.0/24"
 }
 
 variable "ml_typescript_subnet_b_cidr" {
   type        = string
-  description = "Second private subnet CIDR for module ml_typescript. Override in staging, production, and sandbox-hpc tfvars."
-  default     = "10.254.1.0/24"
+  description = <<-EOT
+    Second private subnet CIDR for module ml_typescript. Must not overlap module.ml subnets or other subnets in the same VPC.
+    The same values are often used across staging/production/sandbox-hpc tfvars because each deployment uses a separate VPC (or account); only in-VPC uniqueness matters.
+  EOT
+  default     = "10.0.7.0/24"
 }
 
 variable "ml_typescript_alb_listener_rule_priority" {
