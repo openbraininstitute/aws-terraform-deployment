@@ -403,7 +403,7 @@ module "ml_typescript" {
 
   github_oidc_provider_arn = module.github_oidc_provider.oidc_provider_arn
 
-  github_repos = ["openbraininstitute/neuroagent"]
+  github_repos = ["openbraininstitute/neuroagent-ts"]
 
   keycloak_sbo_realm_url = var.keycloak_sbo_realm_url
 
