@@ -12,7 +12,7 @@ thumbnail_generation_api_docker_image_url = "public.ecr.aws/openbraininstitute/t
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2026.2.0"
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2026.04.2"
 jupyterhub_ec2_type                       = "c7i.large"
-notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:2026.03.31-1"
+notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:2026.04.24-1"
 notebook_service_bucket_name              = "obi-notebook-service-statistics-staging"
 notebook_service_aws_k8s_thread_enabled   = true
 notebook_service_azure_k8s_thread_enabled = true
@@ -114,13 +114,13 @@ entitycore_svc_aws_s3_internal_region    = "us-east-1"
 entitycore_svc_aws_s3_open_bucket        = "openbluebrain"
 entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["*"]
-entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2026.4.3"
+entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2026.4.6"
 
-obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2026.4.12"
-obi_one_v2_ec2_instance_type = "t3.small" # vCPUs: 2, Memory: 2 GiB
+obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2026.4.16"
+obi_one_v2_ec2_instance_type = "t3.medium" # vCPUs: 2, Memory: 4 GiB
 obi_one_v2_ecs_task_size = {
   cpu    = 2048
-  memory = 1536
+  memory = 3584
   tmpfs  = 512
 }
 
@@ -164,4 +164,4 @@ azure_nfs_internal_public_data_path = "/obibatchnfsstg/publicdata"
 resource_provisioner_container_hash = "1837363b2413d5e7cfd8c7a859ba4b3cd35c685acd4240f70101364aaaeee0b8"
 resource_provisioner_container_uri  = "985539765147.dkr.ecr.us-east-1.amazonaws.com/hpc-resource-provisioner:0.5.13.dev8"
 
-pcs_ami = "ami-05b075d72e0d560fa"
+pcs_ami = "ami-0d196e97f4b5b69b4"

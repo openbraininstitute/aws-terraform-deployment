@@ -105,7 +105,6 @@ resource "aws_vpc_security_group_ingress_rule" "slurm_api" {
 }
 
 # all slurm nodes need to be able to talk to each other; so open all ephemeral ports
-# TODO: should slurm be configured to only use a smaller range?
 resource "aws_vpc_security_group_ingress_rule" "slurm_internode" {
   security_group_id = aws_security_group.pcs.id
   ip_protocol       = "tcp"
@@ -119,3 +118,21 @@ resource "aws_vpc_security_group_egress_rule" "all" {
   ip_protocol       = "-1"
   cidr_ipv4         = "0.0.0.0/0"
 }
+
+# EFA wants have a self-referencing security-group for ingress...
+# see https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/efa-start.html#efa-start-security
+resource "aws_vpc_security_group_ingress_rule" "efa_self" {
+  security_group_id            = aws_security_group.pcs.id
+  ip_protocol                  = "-1"
+  referenced_security_group_id = aws_security_group.pcs.id
+  description                  = "EFA self-referencing Ingress"
+}
+
+# ... and egress
+resource "aws_vpc_security_group_egress_rule" "efa_self" {
+  security_group_id            = aws_security_group.pcs.id
+  ip_protocol                  = "-1"
+  referenced_security_group_id = aws_security_group.pcs.id
+  description                  = "EFA self-referencing Egress"
+}
+
