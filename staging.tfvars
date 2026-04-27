@@ -7,7 +7,7 @@ ml_neuroagent_bucket_name                 = "ml-neuroagent-staging"
 nexus_obp_bucket_name                     = "nexus-obp-production-staging-test"
 nexus_ship_bucket_name                    = "nexus-ship-production-staging-test"
 nexus_openscience_bucket_name             = "nexus-openscience-production-staging-test"
-virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:2026.04.17.1"
+virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:2026.04.21.1"
 thumbnail_generation_api_docker_image_url = "public.ecr.aws/openbraininstitute/thumbnail-generation-api:2026.03.27.1"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2026.2.0"
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2026.04.2"
@@ -118,7 +118,7 @@ entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["*"]
 entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2026.4.6"
 
-obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2026.4.15"
+obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2026.4.16"
 obi_one_v2_ec2_instance_type = "t3.medium" # vCPUs: 2, Memory: 4 GiB
 obi_one_v2_ecs_task_size = {
   cpu    = 2048
