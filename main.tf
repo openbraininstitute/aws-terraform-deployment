@@ -668,8 +668,6 @@ module "entitycore_svc" {
 module "auth_manager" {
   source = "./auth-manager"
 
-  number_of_containers = var.is_staging ? 1 : 0
-
   aws_region               = local.aws_region
   vpc_id                   = local.vpc_id
   private_alb_listener_arn = local.private_alb_https_listener_arn
