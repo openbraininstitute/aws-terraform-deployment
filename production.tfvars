@@ -25,7 +25,11 @@ keycloak_url_with_auth = "https://cell-a.openbraininstitute.org/auth/"
 
 neuroagent_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-v0.17.2"
 
-grading_service_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/grading-service:latest"
+neuroagent_typescript_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-typescript-v0.1.1"
+ml_neuroagent_typescript_bucket_name   = "ml-neuroagent-typescript-production"
+ml_typescript_subnet_a_cidr            = "10.0.9.0/24"
+ml_typescript_subnet_b_cidr            = "10.0.7.0/24"
+grading_service_docker_image_url       = "985539765147.dkr.ecr.us-east-1.amazonaws.com/grading-service:latest"
 
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2026.04.17.1"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2026.04.17.1"
