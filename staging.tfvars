@@ -27,7 +27,7 @@ neuroagent_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neur
 
 neuroagent_typescript_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-typescript-v0.1.1"
 ml_neuroagent_typescript_bucket_name   = "ml-neuroagent-typescript-staging"
-ml_typescript_subnet_a_cidr            = "10.0.5.0/24"
+ml_typescript_subnet_a_cidr            = "10.0.9.0/24"
 ml_typescript_subnet_b_cidr            = "10.0.7.0/24"
 grading_service_docker_image_url       = "985539765147.dkr.ecr.us-east-1.amazonaws.com/grading-service:latest"
 
