@@ -44,7 +44,11 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
       environment = [
         {
           name  = "KC_HOSTNAME"
-          value = var.domain_name
+          value = "https://${var.domain_name}/auth"
+        },
+        {
+          name  = "KC_HOSTNAME_BACKCHANNEL_DYNAMIC"
+          value = "true"
         },
         {
           name  = "KC_DB"
@@ -114,10 +118,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
           name  = "KC_LOG_LEVEL"
           value = "INFO"
         },
-        {
-          name  = "PROXY_ADDRESS_FORWARDING"
-          value = "true"
-        }
+
       ]
       secrets = [
         {
