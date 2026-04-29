@@ -711,8 +711,6 @@ module "entitycore_svc" {
 module "auth_manager" {
   source = "./auth-manager"
 
-  number_of_containers = var.is_staging ? 1 : 0
-
   aws_region               = local.aws_region
   vpc_id                   = local.vpc_id
   private_alb_listener_arn = local.private_alb_https_listener_arn
@@ -1016,7 +1014,23 @@ module "launch_system" {
   open_public_data_access_point_id     = module.public_data_efs_storage.open_public_data_access_point_id
 }
 
+module "grading_service" {
+  source = "./grading_service"
 
+  aws_region               = local.aws_region
+  vpc_id                   = local.vpc_id
+  vpc_cidr_block           = local.vpc_cidr_block
+  private_alb_listener_arn = local.private_alb_https_listener_arn
+  internet_access_route_id = local.route_table_private_subnets_id
+
+  private_alb_cidr_a        = data.terraform_remote_state.common.outputs.private_alb_cidr_a
+  private_alb_cidr_b        = data.terraform_remote_state.common.outputs.private_alb_cidr_b
+  aws_endpoints_subnet_cidr = module.networking.endpoints_subnet_cidr
+
+  docker_image_url = var.grading_service_docker_image_url
+
+  base_path = "/api/grading-service"
+}
 
 module "dashboards" {
   source = "./dashboards"
@@ -1034,6 +1048,7 @@ module "dashboards" {
     "VLabManager"         = module.virtual_lab_manager.private_arn_suffix
     "ObiOneV2"            = module.obi_one_v2.private_lb_rule_suffix
     "LaunchSystem"        = module.launch_system.private_lb_rule_suffix
+    "GradingService"      = module.grading_service.private_lb_rule_suffix
   }
 }
 

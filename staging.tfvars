@@ -29,6 +29,7 @@ neuroagent_typescript_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazona
 ml_neuroagent_typescript_bucket_name   = "ml-neuroagent-typescript-staging"
 ml_typescript_subnet_a_cidr            = "10.0.5.0/24"
 ml_typescript_subnet_b_cidr            = "10.0.7.0/24"
+grading_service_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/grading-service:latest"
 
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2026.04.17.1"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2026.04.17.1"
@@ -119,9 +120,9 @@ entitycore_svc_aws_s3_internal_region    = "us-east-1"
 entitycore_svc_aws_s3_open_bucket        = "openbluebrain"
 entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["*"]
-entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2026.4.6"
+entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2026.4.8"
 
-obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2026.4.16"
+obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2026.4.19"
 obi_one_v2_ec2_instance_type = "t3.medium" # vCPUs: 2, Memory: 4 GiB
 obi_one_v2_ecs_task_size = {
   cpu    = 2048
