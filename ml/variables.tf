@@ -1,9 +1,3 @@
-# Locals
-locals {
-  ecs_cluster_arn    = module.ml_ecs_cluster.arn
-  private_subnet_ids = [aws_subnet.ml_subnet_a.id, aws_subnet.ml_subnet_b.id]
-}
-
 # Variables
 variable "aws_region" {
   description = "AWS region."
@@ -53,7 +47,7 @@ variable "neuroagent_docker_image_url" {
 }
 
 variable "ec_cluster_name" {
-  description = "Name of the redis instance."
+  description = "ElastiCache cluster_id when instance_key is empty. Ignored when instance_key is set (derived name is used, max 20 chars)."
   default     = "redis-cluster"
 }
 
@@ -168,4 +162,46 @@ variable "keycloak_sbo_realm_url" {
 variable "cors_origins" {
   type        = list(string)
   description = "List of origins allowed in the CORS header"
+}
+
+variable "instance_key" {
+  type        = string
+  default     = ""
+  description = "Short suffix for a parallel ML stack (e.g. '', 'ts'). Lowercase letters, digits, and hyphens only; max 12 chars."
+
+  validation {
+    condition     = var.instance_key == "" || can(regex("^[a-z0-9-]{1,12}$", var.instance_key))
+    error_message = "instance_key must be empty or 1-12 chars of lowercase letters, digits, or hyphens."
+  }
+}
+
+variable "ml_subnet_a_cidr" {
+  type        = string
+  default     = "10.0.4.0/24"
+  description = "CIDR for the first private subnet used by this ML stack."
+}
+
+variable "ml_subnet_b_cidr" {
+  type        = string
+  default     = "10.0.27.0/24"
+  description = "CIDR for the second private subnet used by this ML stack."
+}
+
+variable "agent_alb_listener_rule_priority" {
+  type        = number
+  default     = 575
+  description = "ALB listener rule priority for the neuroagent service (must be unique per listener)."
+}
+
+variable "agent_path_pattern" {
+  type        = list(string)
+  default     = ["/api/agent/*"]
+  description = "Path pattern(s) forwarded to the neuroagent target group."
+}
+
+variable "neuroagent_application_prefix" {
+  type        = string
+  default     = "/api/agent"
+  nullable    = false
+  description = "NEUROAGENT__MISC__APPLICATION_PREFIX passed to the container as the route prefix."
 }

@@ -51,6 +51,56 @@ variable "neuroagent_docker_image_url" {
   sensitive   = false
 }
 
+variable "neuroagent_typescript_docker_image_url" {
+  type        = string
+  description = "ECR image URL for the TypeScript neuroagent stack (module ml_typescript). Override in staging, production, and sandbox-hpc tfvars."
+  default     = null
+  sensitive   = false
+}
+
+variable "ml_neuroagent_typescript_bucket_name" {
+  type        = string
+  description = "S3 bucket name for the TypeScript neuroagent stack. Override in staging, production, and sandbox-hpc tfvars."
+  default     = "ml-neuroagent-typescript-unspecified-env"
+  sensitive   = false
+}
+
+variable "ml_typescript_instance_key" {
+  type        = string
+  description = "instance_key passed to module ml_typescript (short suffix, e.g. ts)."
+  default     = "ts"
+}
+
+variable "ml_typescript_subnet_a_cidr" {
+  type        = string
+  description = <<-EOT
+    First private subnet CIDR for module ml_typescript. Must not overlap module.ml subnets or other subnets in the same VPC.
+    The same values are often used across staging/production/sandbox-hpc tfvars because each deployment uses a separate VPC (or account); only in-VPC uniqueness matters.
+  EOT
+  default     = "10.0.5.0/24"
+}
+
+variable "ml_typescript_subnet_b_cidr" {
+  type        = string
+  description = <<-EOT
+    Second private subnet CIDR for module ml_typescript. Must not overlap module.ml subnets or other subnets in the same VPC.
+    The same values are often used across staging/production/sandbox-hpc tfvars because each deployment uses a separate VPC (or account); only in-VPC uniqueness matters.
+  EOT
+  default     = "10.0.7.0/24"
+}
+
+variable "ml_typescript_alb_listener_rule_priority" {
+  type        = number
+  description = "ALB listener rule priority for ml_typescript neuroagent (unique on the listener)."
+  default     = 576
+}
+
+variable "ml_typescript_agent_path_pattern" {
+  type        = list(string)
+  description = "Path pattern(s) for the ml_typescript private ALB listener rule."
+  default     = ["/api/agent-ts/*"]
+}
+
 ### Small Scale Simulator ###
 
 variable "small_scale_simulator_api_docker_image_url" {
