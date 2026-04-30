@@ -557,6 +557,21 @@ module "github_notebook_service_ecs_redeploy_role" {
   # The ARN of the generated role is needed in GH and is part of the outputs.
 }
 
+module "github_keycloak_ecs_redeploy_role" {
+  source = "./github_ecs_redeploy_role"
+
+  # for now we only want such a redeploy role in staging
+  count = var.is_staging ? 1 : 0
+
+  account_id               = local.account_id
+  aws_region               = local.aws_region
+  github_organisation      = local.github_organisation
+  repo_name                = "obi-keycloak-theme"
+  ecs_cluster_name         = module.cs.keycloak_ecs_cluster_name
+  ecs_service_name         = module.cs.keycloak_ecs_service_name
+  ecs_task_definition_name = module.cs.keycloak_ecs_task_definition_name
+}
+
 
 module "hpc" {
   source = "./hpc"
