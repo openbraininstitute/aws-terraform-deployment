@@ -1,5 +1,5 @@
 resource "aws_security_group" "ml_rds" {
-  name   = "ml-rds"
+  name   = local.rds_security_group_name
   vpc_id = var.vpc_id
 
   description = "Machine Learning RDS"
@@ -19,7 +19,7 @@ module "ml_rds_postgres" {
   source  = "terraform-aws-modules/rds/aws"
   version = "v6.12.0"
 
-  identifier = "ml-rds-postgres"
+  identifier = local.rds_instance_identifier
 
   engine            = var.rds_engine
   engine_version    = var.rds_version

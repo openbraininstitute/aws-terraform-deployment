@@ -1,8 +1,8 @@
 resource "aws_subnet" "ml_subnet_a" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}a"
-  cidr_block        = "10.0.4.0/24"
-  tags              = merge(var.tags, { Name = "ml_a" })
+  cidr_block        = var.ml_subnet_a_cidr
+  tags              = merge(var.tags, { Name = local.ml_subnet_a_tag_name })
 }
 
 resource "aws_route_table_association" "ml_rta_a" {
@@ -51,8 +51,8 @@ resource "aws_network_acl" "ml_acl_a" {
 resource "aws_subnet" "ml_subnet_b" {
   vpc_id            = var.vpc_id
   availability_zone = "${var.aws_region}b"
-  cidr_block        = "10.0.27.0/24"
-  tags              = merge(var.tags, { Name = "ml_b" })
+  cidr_block        = var.ml_subnet_b_cidr
+  tags              = merge(var.tags, { Name = local.ml_subnet_b_tag_name })
 }
 
 resource "aws_route_table_association" "ml_rta_b" {

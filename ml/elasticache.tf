@@ -1,5 +1,5 @@
 resource "aws_security_group" "ml_redis_sg" {
-  name        = "redis-sg"
+  name        = local.redis_security_group_name
   description = "Security group for Redis instance"
 
   vpc_id = var.vpc_id
@@ -16,14 +16,14 @@ resource "aws_security_group" "ml_redis_sg" {
 
 # Create ElastiCache subnet group with private subnets
 resource "aws_elasticache_subnet_group" "ml_redis_subnet_group" {
-  name       = "redis-subnet-group"
+  name       = local.redis_subnet_group_name
   subnet_ids = local.private_subnet_ids
   tags       = var.tags
 }
 
 # Create ElastiCache cluster in the default VPC
 resource "aws_elasticache_cluster" "ml_redis_cluster" {
-  cluster_id           = var.ec_cluster_name
+  cluster_id           = local.elasticache_cluster_id
   engine               = var.ec_engine
   node_type            = var.ec_node_type
   num_cache_nodes      = var.ec_num_nodes
