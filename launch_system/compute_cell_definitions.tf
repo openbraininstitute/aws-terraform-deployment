@@ -22,7 +22,7 @@ locals {
             cluster_name    = aws_ecs_cluster.executor.name
             subnets         = [aws_subnet.untrusted_a.id, aws_subnet.untrusted_b.id]
             security_groups = [aws_security_group.executor.id]
-            task_family     = aws_ecs_task_definition.python_3_12_compiler_executor.family
+            task_family     = aws_ecs_task_definition.default_executor.family
           },
           {
             vcpu_min        = 1
@@ -35,7 +35,7 @@ locals {
             cluster_name    = aws_ecs_cluster.executor.name
             subnets         = [aws_subnet.untrusted_a.id, aws_subnet.untrusted_b.id]
             security_groups = [aws_security_group.executor.id]
-            task_family     = aws_ecs_task_definition.python_3_12_inait_executor.family
+            task_family     = aws_ecs_task_definition.inait_executor.family
           }
         ]
         cluster = {
@@ -73,7 +73,6 @@ locals {
             memory_min     = 2
             memory_max     = 8
             type           = "machine"
-            image_type     = "python_3_12_compiler"
             job_name       = "default-executor"
             resource_group = "launch-system-scus-rg"
             image_type     = "python_3_12_compiler"
@@ -84,7 +83,6 @@ locals {
             memory_min     = 64
             memory_max     = 64
             type           = "machine"
-            image_type     = "python_3_12_compiler"
             job_name       = "ultra-executor"
             resource_group = "launch-system-scus-rg"
             image_type     = "python_3_12_compiler"
