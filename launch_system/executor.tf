@@ -224,6 +224,52 @@ resource "aws_ecs_task_definition" "inait_executor" {
   ]
 }
 
+resource "aws_ecs_task_definition" "python_3_12_openmpi5_neuron9_neurodamus_executor" {
+  family                   = "launch_system_python_3_12_openmpi5_neuron9_neurodamus_executor_task_family"
+  network_mode             = local.executor_base_config.network_mode
+  cpu                      = local.executor_base_config.cpu
+  memory                   = local.executor_base_config.memory
+  requires_compatibilities = local.executor_base_config.requires_compatibilities
+  execution_role_arn       = local.executor_base_config.default_execution_role_arn
+  task_role_arn            = local.executor_base_config.task_role_arn
+
+  container_definitions = jsonencode([
+    merge(local.executor_container_base, {
+      image = var.python_3_12_openmpi5_neuron9_neurodamus_executor_image_url
+      environment = [
+        {
+          name  = "EXECUTOR_NAME"
+          value = "python_3_12_openmpi5_neuron9_neurodamus_executor"
+        }
+      ]
+      logConfiguration = merge(local.executor_container_base.logConfiguration, {
+        options = merge(local.executor_container_base.logConfiguration.options, {
+          awslogs-stream-prefix = "launch_system_python_3_12_openmpi5_neuron9_neurodamus_executor"
+        })
+      })
+    })
+  ])
+
+  dynamic "volume" {
+    for_each = local.executor_volumes
+    content {
+      name = volume.value.name
+      efs_volume_configuration {
+        file_system_id     = volume.value.efs_volume_configuration.file_system_id
+        transit_encryption = volume.value.efs_volume_configuration.transit_encryption
+        authorization_config {
+          access_point_id = volume.value.efs_volume_configuration.authorization_config.access_point_id
+          iam             = volume.value.efs_volume_configuration.authorization_config.iam
+        }
+      }
+    }
+  }
+
+  depends_on = [
+    aws_cloudwatch_log_group.executor,
+  ]
+}
+
 # aws_ecs_service isn't defined because the ECS tasks are started dynamically by the orchestrator,
 # with the proper cluster, taskDefinition, launchType, and networkConfiguration
 
