@@ -58,6 +58,9 @@ module "jupyterhub_eks" {
   public_data_efs_ip_address2_as_cidr = var.public_data_efs_ip_address2_as_cidr
   bastion_instance_private_ip         = var.bastion_instance_private_ip
 
+  keycloak_subnet_cidr_a = module.networking.keycloak_subnet_cidr_a
+  keycloak_subnet_cidr_b = module.networking.keycloak_subnet_cidr_b
+
   # Only used in staging
   is_lustre_filesystem_enabled = false
   # As a test, mount the s3 bucket with the shared data for jupyterhub
