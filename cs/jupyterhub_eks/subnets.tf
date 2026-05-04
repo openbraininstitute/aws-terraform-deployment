@@ -394,29 +394,6 @@ resource "aws_network_acl_rule" "jupyterhub_eks_private_launch_data_efs_ingress2
   egress         = false
 }
 
-# Allow NFS response traffic from keycloak-providers EFS mount targets
-resource "aws_network_acl_rule" "jupyterhub_eks_private_keycloak_providers_efs_ingress_a" {
-  network_acl_id = aws_network_acl.jupyterhub_eks_private.id
-  rule_number    = 42
-  protocol       = "tcp"
-  from_port      = 1024
-  to_port        = 65535
-  rule_action    = "allow"
-  cidr_block     = var.keycloak_subnet_cidr_a
-  egress         = false
-}
-
-resource "aws_network_acl_rule" "jupyterhub_eks_private_keycloak_providers_efs_ingress_b" {
-  network_acl_id = aws_network_acl.jupyterhub_eks_private.id
-  rule_number    = 43
-  protocol       = "tcp"
-  from_port      = 1024
-  to_port        = 65535
-  rule_action    = "allow"
-  cidr_block     = var.keycloak_subnet_cidr_b
-  egress         = false
-}
-
 
 resource "aws_network_acl_rule" "jupyterhub_eks_private_nat_gateway_ingress" {
   network_acl_id = aws_network_acl.jupyterhub_eks_private.id
@@ -603,25 +580,14 @@ resource "aws_network_acl_rule" "jupyterhub_eks_private_access_to_public_launch_
 }
 
 # Allow NFS egress to keycloak-providers EFS mount targets
-resource "aws_network_acl_rule" "jupyterhub_eks_private_access_to_keycloak_providers_nfs_a" {
+resource "aws_network_acl_rule" "jupyterhub_eks_private_access_to_keycloak_providers_nfs" {
   network_acl_id = aws_network_acl.jupyterhub_eks_private.id
   rule_number    = 42
   protocol       = "tcp"
   from_port      = 2049
   to_port        = 2049
   rule_action    = "allow"
-  cidr_block     = var.keycloak_subnet_cidr_a
-  egress         = true
-}
-
-resource "aws_network_acl_rule" "jupyterhub_eks_private_access_to_keycloak_providers_nfs_b" {
-  network_acl_id = aws_network_acl.jupyterhub_eks_private.id
-  rule_number    = 43
-  protocol       = "tcp"
-  from_port      = 2049
-  to_port        = 2049
-  rule_action    = "allow"
-  cidr_block     = var.keycloak_subnet_cidr_b
+  cidr_block     = var.keycloak_subnet_cidr
   egress         = true
 }
 
