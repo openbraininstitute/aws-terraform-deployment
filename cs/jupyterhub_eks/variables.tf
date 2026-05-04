@@ -120,6 +120,18 @@ variable "bastion_instance_private_ip" {
   description = "Private IP of the bastion instance, needed to allow access to the test vm for filesystems"
 }
 
+variable "keycloak_subnet_cidr_a" {
+  description = "CIDR of the first keycloak subnet, needed for NFS access to keycloak-providers EFS"
+  type        = string
+  sensitive   = false
+}
+
+variable "keycloak_subnet_cidr_b" {
+  description = "CIDR of the second keycloak subnet, needed for NFS access to keycloak-providers EFS"
+  type        = string
+  sensitive   = false
+}
+
 variable "s3_bucket_entitycore_data_name" {
   type        = string
   description = "The S3 bucket that will be associated with the lustre fileystems"
