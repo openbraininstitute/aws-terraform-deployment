@@ -58,8 +58,8 @@ module "jupyterhub_eks" {
   public_data_efs_ip_address2_as_cidr = var.public_data_efs_ip_address2_as_cidr
   bastion_instance_private_ip         = var.bastion_instance_private_ip
 
-  keycloak_subnet_cidr_a = module.networking.keycloak_subnet_cidr_a
-  keycloak_subnet_cidr_b = module.networking.keycloak_subnet_cidr_b
+  # 10.0.13.0/24 covers both keycloak subnets: 10.0.13.0/25 (az-a) and 10.0.13.128/25 (az-b)
+  keycloak_subnet_cidr = "10.0.13.0/24"
 
   # Only used in staging
   is_lustre_filesystem_enabled = false
