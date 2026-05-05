@@ -1013,7 +1013,8 @@ module "launch_system" {
     "c8i.48xlarge",
     "c7a.48xlarge",
     "c7i.48xlarge",
-    "c6a.48xlarge",
+    #"c6a.48xlarge",
+    "hpc7a.96xlarge "
     # no such thing as c6i.48xlarge
   ]
 
