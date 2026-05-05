@@ -181,10 +181,6 @@ resource "aws_amplify_domain_association" "this" {
   }
 
   depends_on = [aws_iam_role_policy.amplify_domain]
-
-  tags = merge(local.common_tags, {
-    Name = var.domain_name
-  })
 }
 
 resource "aws_iam_role" "github_deploy" {
