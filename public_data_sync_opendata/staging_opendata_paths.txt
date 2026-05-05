@@ -426,3 +426,4 @@
 /Simulation_data/Simulation_Campaigns/Rat/SSCx/09151af2d2/59/reporting/spikes.h5
 /Simulatable_Circuit/ConnectivityMatrixFolders/Allen-V1
 /Simulatable_Circuit/Circuits/nbS1
+/Simulatable_Circuit/Circuits/nbS1-O1-plastic
