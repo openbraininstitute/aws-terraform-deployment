@@ -196,15 +196,18 @@ resource "aws_iam_role_policy" "github_deploy" {
       {
         Effect = "Allow"
         Action = [
-          "amplify:GetBranch",
+          "amplify:CreateBranch",
           "amplify:ListBranches",
+          "amplify:GetBranch",
+          "amplify:DeleteBranch",
           "amplify:StartJob",
           "amplify:StopJob",
           "amplify:GetJob",
           "amplify:ListJobs",
           "amplify:CreateDeployment",
           "amplify:StartDeployment",
-          "amplify:CreateBranch"
+          "amplify:GetDomainAssociation",
+          "amplify:UpdateDomainAssociation"
         ]
         Resource = "${aws_amplify_app.this.arn}/*"
       },
