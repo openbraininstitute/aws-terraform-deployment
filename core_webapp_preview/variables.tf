@@ -70,6 +70,11 @@ variable "github_oidc_provider_arn" {
   description = "ARN of the GitHub OIDC provider"
 }
 
+variable "aws_region" {
+  type        = string
+  description = "AWS region for the Amplify app and supporting IAM resources"
+}
+
 locals {
   github_repo = replace(var.repository_url, "https://github.com/", "")
 }
