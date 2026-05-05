@@ -142,7 +142,7 @@ resource "aws_ecs_task_definition" "default_executor" {
       environment = [
         {
           name  = "EXECUTOR_NAME"
-          value = "default"
+          value = "python_3_12_compiler"
         }
       ]
       logConfiguration = merge(local.executor_container_base.logConfiguration, {
@@ -187,7 +187,7 @@ resource "aws_ecs_task_definition" "inait_executor" {
       environment = [
         {
           name  = "EXECUTOR_NAME"
-          value = "inait"
+          value = "python_3_12_inait"
         }
       ]
       secrets = [
