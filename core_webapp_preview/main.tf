@@ -20,9 +20,9 @@ resource "aws_iam_role" "amplify_service" {
     }]
   })
 
-  tags = {
+  tags = merge(local.common_tags, {
     Name = "${var.app_name}-amplify-service-role"
-  }
+  })
 }
 
 resource "aws_iam_role_policy" "amplify_service" {
@@ -89,9 +89,9 @@ resource "aws_amplify_app" "this" {
     enable_auto_build = false
   }
 
-  tags = {
+  tags = merge(local.common_tags, {
     Name = var.app_name
-  }
+  })
 }
 
 resource "aws_amplify_branch" "default" {
@@ -100,9 +100,9 @@ resource "aws_amplify_branch" "default" {
 
   enable_auto_build = true
 
-  tags = {
+  tags = merge(local.common_tags, {
     Name = "${var.app_name}-${var.default_branch}"
-  }
+  })
 }
 
 resource "aws_amplify_branch" "develop" {
@@ -111,9 +111,9 @@ resource "aws_amplify_branch" "develop" {
 
   enable_auto_build = true
 
-  tags = {
+  tags = merge(local.common_tags, {
     Name = "${var.app_name}-develop"
-  }
+  })
 }
 
 resource "aws_iam_role" "amplify_domain" {
@@ -130,9 +130,9 @@ resource "aws_iam_role" "amplify_domain" {
     }]
   })
 
-  tags = {
+  tags = merge(local.common_tags, {
     Name = "AWSAmplifyDomainRole-${var.route53_zone_id}"
-  }
+  })
 }
 
 resource "aws_iam_role_policy" "amplify_domain" {
@@ -182,9 +182,9 @@ resource "aws_amplify_domain_association" "this" {
 
   depends_on = [aws_iam_role_policy.amplify_domain]
 
-  tags = {
+  tags = merge(local.common_tags, {
     Name = var.domain_name
-  }
+  })
 }
 
 resource "aws_iam_role" "github_deploy" {
@@ -209,9 +209,9 @@ resource "aws_iam_role" "github_deploy" {
     }]
   })
 
-  tags = {
+  tags = merge(local.common_tags, {
     Name = "${var.app_name}-github-deploy-role"
-  }
+  })
 }
 
 resource "aws_iam_role_policy" "github_deploy" {
