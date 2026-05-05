@@ -11,6 +11,7 @@ virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/v
 thumbnail_generation_api_docker_image_url = "bluebrain/thumbnail-generation-api:latest"
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:latest"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.5.0"
+grading_service_docker_image_url          = "985539765147.dkr.ecr.us-east-1.amazonaws.com/grading-service:latest"
 jupyterhub_ec2_type                       = "t3.micro"
 notebook_service_docker_image_url         = "992382665735.dkr.ecr.us-east-1.amazonaws.com/notebook-service:staging"
 notebook_service_bucket_name              = "obi-notebook-service-statistics-staging"
@@ -59,6 +60,8 @@ virtual_lab_manager_task_size = {
   memory = 1024
 }
 
+multiple_vlabs_allowed_user_id = "16588c8b-ec88-4a49-a413-a0bb3a7b8541"
+
 keycloak_task_size = {
   cpu    = 1024
   memory = 2048
@@ -92,5 +95,44 @@ obi_one_v2_ecs_task_size = {
 }
 
 # CoreWebApp s3 and CloudFront configuration
+auth_manager_svc_image_url          = "985539765147.dkr.ecr.us-east-1.amazonaws.com/auth-manager:2026.04.08.1"
+keycloak_client_uuid                = "a40fd6ea-79f8-4212-b087-45c75e4703a4"
+keycloak_client_id                  = "core-webapp-cell-b-azure-staging"
+core_web_app_stripe_publishable_key = "placeholder"
 
 core_web_app_in_azure_cidr_block = "10.102.1.0/27" # staging azure core web app aca range
+
+# launch-system configuration
+launch_system_api_task_size = {
+  cpu    = 512
+  memory = 1024
+}
+launch_system_orchestrator_task_size = {
+  cpu    = 512
+  memory = 1024
+}
+launch_system_executor_task_size = {
+  cpu    = 512
+  memory = 1024
+}
+
+launch_system_orchestrator_num_workers = 2
+
+opendata_paths_list = "staging_opendata_paths.txt"
+
+launch_system_aca_in_azure_cidr_block   = "10.120.0.0/16"
+launch_system_batch_in_azure_cidr_block = "10.122.0.0/16"
+
+azure_blobstore_opendata_container_url             = "https://obibatchstoragestg.blob.core.windows.net/opendata"
+azure_blobstore_internal_public_data_container_url = "https://obibatchstoragestg.blob.core.windows.net/publicdata"
+azure_blobstore_opendata_sas_token                 = "placeholder"
+azure_blobstore_internal_public_data_sas_token     = "placeholder"
+azure_datasync_agent_activation_key_uswest2        = "placeholder"
+azure_datasync_agent_activation_key_useast1        = "placeholder"
+azure_nfs_server_hostname                          = "obibatchnfsstg.file.core.windows.net"
+azure_nfs_opendata_path                            = "/obibatchnfsstg/opendata"
+azure_nfs_internal_public_data_path                = "/obibatchnfsstg/publicdata"
+resource_provisioner_container_hash                = "1837363b2413d5e7cfd8c7a859ba4b3cd35c685acd4240f70101364aaaeee0b8"
+resource_provisioner_container_uri                 = "985539765147.dkr.ecr.us-east-1.amazonaws.com/hpc-resource-provisioner:0.5.13.dev8"
+
+pcs_ami = "ami-0d196e97f4b5b69b4"

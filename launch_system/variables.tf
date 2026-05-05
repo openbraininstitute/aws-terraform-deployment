@@ -69,6 +69,10 @@ variable "default_executor_image_url" {
 
 variable "python_3_12_openmpi5_neuron9_neurodamus_executor_image_url" {
   description = "Image for the python_3_12_openmpi5_neuron9_neurodamus executor"
+}
+
+variable "python_3_12_compiler_cuda_12_8_image_url" {
+  description = "Image for the GPU EC2 executor"
   type        = string
 }
 

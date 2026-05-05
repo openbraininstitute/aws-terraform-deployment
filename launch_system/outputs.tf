@@ -5,11 +5,7 @@ output "private_lb_rule_suffix" {
 
 output "executor_network_ids" {
   description = "Subnet ids where the Launch System Executor is deployed"
-  value = [
-    aws_subnet.untrusted_a.id,
-    aws_subnet.untrusted_b.id,
-    aws_subnet.untrusted_c.id,
-  ]
+  value       = local.executor_untrusted_subnet_ids
 }
 
 output "executor_subnet_cidr_blocks" {
@@ -18,6 +14,7 @@ output "executor_subnet_cidr_blocks" {
     aws_subnet.untrusted_a.cidr_block,
     aws_subnet.untrusted_b.cidr_block,
     aws_subnet.untrusted_c.cidr_block,
+    aws_subnet.untrusted_d.cidr_block,
   ]
 }
 

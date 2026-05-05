@@ -1,0 +1,7 @@
+#!/bin/bash
+set -euxo pipefail
+
+cat <<EOF >> /etc/ecs/ecs.config
+ECS_CLUSTER=${ecs_cluster_name}
+ECS_ENABLE_GPU_SUPPORT=true
+EOF

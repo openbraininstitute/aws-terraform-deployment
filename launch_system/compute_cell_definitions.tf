@@ -1,7 +1,12 @@
 # All compute cell definitions in one place
 
 locals {
-  slurmrestd_endpoint = [for e in awscc_pcs_cluster.cluster.endpoints : e if e.type == "SLURMRESTD"][0]
+  executor_untrusted_subnet_ids = [
+    aws_subnet.untrusted_a.id,
+    aws_subnet.untrusted_b.id,
+    aws_subnet.untrusted_c.id,
+    aws_subnet.untrusted_d.id,
+  ]
 
   compute_cell_definitions = {
     cell_a = {
@@ -22,7 +27,7 @@ locals {
               type = "fargate"
             }
             cluster_name    = aws_ecs_cluster.executor.name
-            subnets         = [aws_subnet.untrusted_a.id, aws_subnet.untrusted_b.id, aws_subnet.untrusted_c.id]
+            subnets         = local.executor_untrusted_subnet_ids
             security_groups = [aws_security_group.executor.id]
             task_family     = aws_ecs_task_definition.default_executor.family
           },
@@ -37,7 +42,7 @@ locals {
               type = "fargate"
             }
             cluster_name    = aws_ecs_cluster.executor.name
-            subnets         = [aws_subnet.untrusted_a.id, aws_subnet.untrusted_b.id, aws_subnet.untrusted_c.id]
+            subnets         = local.executor_untrusted_subnet_ids
             security_groups = [aws_security_group.executor.id]
             task_family     = aws_ecs_task_definition.inait_executor.family
           },
@@ -52,25 +57,40 @@ locals {
               type = "fargate"
             }
             cluster_name    = aws_ecs_cluster.executor.name
-            subnets         = [aws_subnet.untrusted_a.id, aws_subnet.untrusted_b.id, aws_subnet.untrusted_c.id]
+            subnets         = local.executor_untrusted_subnet_ids
             security_groups = [aws_security_group.executor.id]
             task_family     = aws_ecs_task_definition.python_3_12_openmpi5_neuron9_neurodamus_executor.family
-          }
+          },
+          {
+            vcpu_min   = 16
+            vcpu_max   = 16
+            memory_min = 128
+            memory_max = 128
+            type       = "machine"
+            image_type = "python_3_12_compiler_cuda_12_8"
+            placement = {
+              type              = "ec2_capacity_provider"
+              capacity_provider = aws_ecs_capacity_provider.executor_gpu.name
+            }
+            cluster_name    = aws_ecs_cluster.executor.name
+            subnets         = local.executor_untrusted_subnet_ids
+            security_groups = [aws_security_group.executor.id]
+            task_family     = aws_ecs_task_definition.python_3_12_compiler_cuda_12_8_executor.family
+          },
         ]
+
         cluster = {
           type                 = "cluster"
           username             = "obiuser"
           uid                  = 4000
           gid                  = 4000
           homedir              = "/data/scratch/obiuser"
-          slurm_url            = "http://${local.slurmrestd_endpoint.private_ip_address}:6820/slurm/v0.0.43"
-          slurm_accounting_url = "http://${local.slurmrestd_endpoint.private_ip_address}:6820/slurmdb/v0.0.43"
+          slurm_url            = "http://${module.pcs.slurmrestd_private_ip}:6820/slurm/v0.0.43"
+          slurm_accounting_url = "http://${module.pcs.slurmrestd_private_ip}:6820/slurmdb/v0.0.43"
           slurm_secret         = "$${SECRET:SLURM_SECRET}"
           instance_types = {
-            small = [awscc_pcs_queue.pcs_queue_small.name]
-            large = [awscc_pcs_queue.pcs_queue_large.name]
-            #large = concat([awscc_pcs_queue.pcs_queue_large.name],
-            #[for k, q in awscc_pcs_queue.pcs_queue_large_fallback : q.name])
+            small = [module.pcs.pcs_queue_small_name]
+            large = [module.pcs.pcs_queue_large_name]
           }
         }
       }
