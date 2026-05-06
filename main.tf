@@ -1007,15 +1007,7 @@ module "launch_system" {
   pcs_cidr_block                     = "10.0.36.0/24"
   pcs_fsx_scratch_s3_bucket_name     = "obi-pcs-scratch-fsx-${local.suffix}"
   pcs_large_nodes_max_instance_count = 20
-  pcs_large_alternate_node_types = [
-    # Note: since our account quota doesn't allow 192CPU * 20 [max count] * (1[above] + 4[below])
-    # the following are capped at 1 node each, and don't participate in the `fallback` - mgevaert
-    "c8i.48xlarge",
-    "c7a.48xlarge",
-    "c7i.48xlarge",
-    "c6a.48xlarge",
-    # no such thing as c6i.48xlarge
-  ]
+  pcs_large_alternate_node_types     = [] # no alternates since we are using `hpc7a.96xlarge`
 
   codeartifact_config = {
     domain       = "openbraininstitute"
