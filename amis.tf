@@ -14,9 +14,8 @@ data "aws_ami" "amazon_linux_2_ecs" {
 
   filter {
     name   = "name"
-    values = ["amzn2-ami-ecs-hvm-*-x86_64-ebs"]
+    values = ["al2023-ami-ecs-hvm-*-kernel-6.1-x86_64"]
   }
 
   owners = ["amazon"]
 }
-
