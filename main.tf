@@ -729,7 +729,6 @@ module "auth_manager" {
   aws_region               = local.aws_region
   vpc_id                   = local.vpc_id
   private_alb_listener_arn = local.private_alb_https_listener_arn
-  internet_access_route_id = local.route_table_private_subnets_id
   route_table_id           = local.route_table_private_subnets_id
 
   cors_origins      = local.core_web_app_origins
@@ -742,13 +741,15 @@ module "auth_manager" {
   # Used for the keycloak consent redirect URL => pointing to cell-a as keycloak is in AWS.
   primary_domain = local.cell_a_primary_domain
 
-  client_redirect_domain = "staging.openbraininstitute.org"
+  client_redirect_domain = local.public_primary_domain_in_azure
 
   image_url = var.auth_manager_svc_image_url
 
   keycloak_server_url  = var.keycloak_url_with_auth
   keycloak_client_uuid = var.keycloak_client_uuid
   keycloak_client_id   = var.keycloak_client_id
+
+  deployment_env = var.is_production ? "production" : "staging"
 
   db_name     = "auth_manager"
   db_username = "auth_manager"
