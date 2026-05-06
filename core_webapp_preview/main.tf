@@ -229,16 +229,16 @@ resource "aws_iam_role_policy" "github_deploy" {
           "amplify:GetJob",
           "amplify:ListJobs",
           "amplify:CreateDeployment",
-          "amplify:StartDeployment",
-          "amplify:GetDomainAssociation",
-          "amplify:UpdateDomainAssociation"
+          "amplify:StartDeployment"
         ]
         Resource = "${aws_amplify_app.this.arn}/*"
       },
       {
         Effect = "Allow"
         Action = [
-          "amplify:GetApp"
+          "amplify:GetApp",
+          "amplify:GetDomainAssociation",
+          "amplify:UpdateDomainAssociation"
         ]
         Resource = aws_amplify_app.this.arn
       }
