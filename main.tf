@@ -864,7 +864,7 @@ module "virtual_lab_manager" {
   task_size                = var.virtual_lab_manager_task_size
   ecs_number_of_containers = var.virtual_lab_manager_ecs_number_of_containers
 
-  virtual_lab_manager_depoloyment_env = "production"
+  virtual_lab_manager_depoloyment_env = var.is_production ? "production" : "staging"
 
   virtual_lab_manager_invite_expiration = "7"
 
