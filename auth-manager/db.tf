@@ -47,6 +47,6 @@ resource "aws_db_instance" "auth_manager" {
 
   tags = {
     Name            = "auth-manager-db"
-    obi_backup_plan = "obi_plan"
+    obi_backup_plan = var.obi_backup_plan
   }
 }

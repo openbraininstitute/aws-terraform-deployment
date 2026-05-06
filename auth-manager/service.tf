@@ -111,7 +111,7 @@ resource "aws_ecs_task_definition" "auth_manager_ecs_definition" {
         },
         {
           name  = "ENV"
-          value = "staging"
+          value = var.deployment_env
         },
         {
           name  = "DEBUG"
