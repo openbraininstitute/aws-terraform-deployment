@@ -238,6 +238,16 @@ resource "aws_iam_role_policy" "github_deploy" {
           aws_amplify_app.this.arn,
           "${aws_amplify_app.this.arn}/*"
         ]
+      },
+      {
+        Effect   = "Allow"
+        Action   = "iam:PassRole"
+        Resource = aws_iam_role.amplify_domain.arn
+        Condition = {
+          StringEquals = {
+            "iam:PassedToService" = "amplify.amazonaws.com"
+          }
+        }
       }
     ]
   })
