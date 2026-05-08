@@ -1,3 +1,7 @@
+locals {
+  container_names = ["notebook_service"]
+}
+
 resource "aws_cloudwatch_log_group" "ecs_task_logs" {
   # TODO check if the logs can be encrypted
   name_prefix       = "notebook_service_ecs"
@@ -20,7 +24,7 @@ resource "aws_ecs_cluster" "cluster" {
 
   setting {
     name  = "containerInsights"
-    value = "disabled" #tfsec:ignore:aws-ecs-enable-container-insight
+    value = "enhanced"
   }
 }
 
@@ -127,7 +131,7 @@ resource "aws_ecs_task_definition" "ecs_definition" {
 
   container_definitions = jsonencode([
     {
-      name = "notebook_service"
+      name = local.container_names[0]
 
       cpu    = var.task_size.cpu
       memory = var.task_size.memory

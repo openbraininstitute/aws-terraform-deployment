@@ -15,6 +15,10 @@ output "ecs_task_definition_name" {
   value = aws_ecs_task_definition.ecs_definition.family
 }
 
+output "ecs_container_names" {
+  value = local.container_names
+}
+
 output "log_group_name" {
   value = aws_cloudwatch_log_group.ecs_task_logs.name
 }

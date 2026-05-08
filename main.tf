@@ -283,6 +283,25 @@ module "notebookservice_error_log_sns_entries_to_teams" {
   python_runtime    = "python3.13"
 }
 
+module "notebookservice_cloudwatch_metric_alarms" {
+  source = "./ecs_container_cloudwatch_metric_alarms"
+
+  ecs_cluster_name                 = module.notebook_service.ecs_cluster_name
+  ecs_service_name                 = module.notebook_service.ecs_service_name
+  ecs_task_definition_name         = module.notebook_service.ecs_task_definition_name
+  ecs_container_names_memory_alarm = module.notebook_service.ecs_container_names
+
+  short_name = "notebook_svc"
+}
+
+module "debug_notebookservice_cloudwatch_metric_alarms" {
+  source = "./sqs_debug_queue"
+
+  sns_topic_arn             = module.notebookservice_cloudwatch_metric_alarms.sns_topic_arn
+  unique_short_name         = "nb_alerts"
+  message_retention_seconds = 5 * 24 * 60 * 60 # 5 days
+}
+
 module "entitycore_cloudwatch_error_log_entries_to_sns" {
   source = "./cloudwatch_error_log_entries_to_sns"
 
