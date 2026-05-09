@@ -964,6 +964,10 @@ module "public_data_sync_opendata" {
 module "launch_system" {
   source = "./launch_system"
 
+  providers = {
+    aws = aws.launch-system
+  }
+
   aws_region               = local.aws_region
   vpc_id                   = local.vpc_id
   account_id               = local.account_id
