@@ -40,3 +40,12 @@ provider "awscc" {
   region = "us-west-2"
   alias  = "uswest2"
 }
+
+provider "aws" {
+  alias = "launch-system"
+  default_tags {
+    tags = {
+      SBO_Billing = "launch_system"
+    }
+  }
+}
