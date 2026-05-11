@@ -1040,6 +1040,15 @@ module "grading_service" {
   base_path = "/api/grading-service"
 }
 
+module "kiro_amazon_q_user_stats" {
+  source = "./kiro_amazon_q_user_stats"
+
+  count = var.is_staging ? 1 : 0
+
+  account_id = local.account_id
+  aws_region = local.aws_region
+}
+
 module "dashboards" {
   source = "./dashboards"
 
