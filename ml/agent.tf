@@ -143,7 +143,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT__TOOLS__WHITELISTED_TOOL_REGEX"
-          value = "^(?!.*(downloadone|measurementannotation|entitycore-simulation|entitycore-singleneuron|synaptome|experimentalsynapsesperconnection)).*"
+          value = "^(?!.*(downloadone|measurementannotation|experimentalsynapsesperconnection|weather)).*"
         },
       ]
       secrets = [
