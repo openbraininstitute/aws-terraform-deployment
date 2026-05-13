@@ -19,6 +19,7 @@ resource "aws_cloudwatch_metric_alarm" "ecs_service_memory_high" {
   alarm_actions             = [aws_sns_topic.ecs_alerts.arn]
   ok_actions                = [aws_sns_topic.ecs_alerts.arn]
   insufficient_data_actions = [aws_sns_topic.ecs_alerts.arn]
+  tags                      = { SBO_Billing = var.sbo_billing_tag }
 }
 
 resource "aws_cloudwatch_metric_alarm" "ecs_container_memory_high" {
@@ -45,6 +46,7 @@ resource "aws_cloudwatch_metric_alarm" "ecs_container_memory_high" {
   alarm_actions             = [aws_sns_topic.ecs_alerts.arn]
   ok_actions                = [aws_sns_topic.ecs_alerts.arn]
   insufficient_data_actions = [aws_sns_topic.ecs_alerts.arn]
+  tags                      = { SBO_Billing = var.sbo_billing_tag }
 }
 
 resource "aws_cloudwatch_metric_alarm" "ecs_running_tasks_below_desired" {
@@ -100,6 +102,7 @@ resource "aws_cloudwatch_metric_alarm" "ecs_running_tasks_below_desired" {
   alarm_actions             = [aws_sns_topic.ecs_alerts.arn]
   ok_actions                = [aws_sns_topic.ecs_alerts.arn]
   insufficient_data_actions = [aws_sns_topic.ecs_alerts.arn]
+  tags                      = { SBO_Billing = var.sbo_billing_tag }
 }
 
 resource "aws_cloudwatch_metric_alarm" "ecs_task_memory_high" {
@@ -123,5 +126,6 @@ resource "aws_cloudwatch_metric_alarm" "ecs_task_memory_high" {
   alarm_actions             = [aws_sns_topic.ecs_alerts.arn]
   ok_actions                = [aws_sns_topic.ecs_alerts.arn]
   insufficient_data_actions = [aws_sns_topic.ecs_alerts.arn]
+  tags                      = { SBO_Billing = var.sbo_billing_tag }
 }
 
