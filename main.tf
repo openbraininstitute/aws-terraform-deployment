@@ -293,6 +293,8 @@ module "notebookservice_cloudwatch_metric_alarms" {
   ecs_container_names_memory_alarm = module.notebook_service.ecs_container_names
 
   short_name = "notebook_svc"
+
+  sbo_billing_tag = "notebook_service"
 }
 
 module "debug_notebookservice_cloudwatch_metric_alarms" {
