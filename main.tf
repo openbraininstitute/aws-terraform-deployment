@@ -262,6 +262,7 @@ module "notebookservice_cloudwatch_error_log_entries_to_sns" {
   log_group_name    = module.notebook_service.log_group_name
   unique_short_name = "notebook_service"
   region            = local.aws_region
+  sbo_billing_tag   = "notebook_service"
 }
 
 module "debug_notebookservice_cloudwatch_error_log_sns_topic" {
@@ -309,6 +310,7 @@ module "entitycore_cloudwatch_error_log_entries_to_sns" {
   unique_short_name = "entity_core"
   region            = local.aws_region
   filter_pattern    = "{ $.level = \"ERROR\" || $.level = \"WARNING\" }"
+  sbo_billing_tag   = "entitycore"
 }
 
 module "debug_entitycore_cloudwatch_error_log_sns_topic" {
@@ -337,6 +339,7 @@ module "accounting_cloudwatch_error_log_entries_to_sns" {
   unique_short_name = "accounting"
   region            = local.aws_region
   filter_pattern    = "{ $.level = \"ERROR\" }"
+  sbo_billing_tag   = "accounting"
 }
 
 module "debug_accounting_cloudwatch_error_log_sns_topic" {
