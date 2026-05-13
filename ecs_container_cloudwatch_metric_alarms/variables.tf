@@ -49,3 +49,7 @@ variable "ecs_task_memory_high_threshold" {
   sensitive   = false
   default     = 85
 }
+
+variable "sbo_billing_tag" {
+  type = string
+}
