@@ -17,6 +17,7 @@ resource "aws_cloudwatch_log_subscription_filter" "errors" {
 
 resource "aws_sns_topic" "errors" {
   name = "${var.unique_short_name}-errors-in-logs"
+  tags = { SBO_Billing = var.sbo_billing_tag }
 }
 
 
@@ -33,6 +34,7 @@ resource "aws_iam_role" "lambda_role" {
       }
     ]
   })
+  tags = { SBO_Billing = var.sbo_billing_tag }
 }
 
 resource "aws_iam_policy" "lambda_can_make_logs_itself_and_publish_to_sns" {
@@ -53,6 +55,7 @@ resource "aws_iam_policy" "lambda_can_make_logs_itself_and_publish_to_sns" {
       }
     ]
   })
+  tags = { SBO_Billing = var.sbo_billing_tag }
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_extra_policies" {
@@ -64,6 +67,7 @@ resource "aws_cloudwatch_log_group" "lambda_log_group" {
   name              = "/aws/lambda/${var.unique_short_name}-filter-errors-in-logs"
   retention_in_days = 5
   log_group_class   = "INFREQUENT_ACCESS"
+  tags              = { SBO_Billing = var.sbo_billing_tag }
 }
 
 data "archive_file" "sns_to_teams_archive" {
@@ -94,6 +98,7 @@ resource "aws_lambda_function" "cwlogs_to_sns" {
   architectures = ["arm64"] # should be cheaper
 
   depends_on = [aws_cloudwatch_log_group.lambda_log_group]
+  tags       = { SBO_Billing = var.sbo_billing_tag }
 }
 
 resource "aws_lambda_permission" "allow_logs" {
@@ -103,3 +108,4 @@ resource "aws_lambda_permission" "allow_logs" {
   principal     = "logs.${var.region}.amazonaws.com"
   source_arn    = "${data.aws_cloudwatch_log_group.input.arn}:*"
 }
+

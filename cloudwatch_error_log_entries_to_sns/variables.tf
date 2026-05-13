@@ -40,3 +40,7 @@ variable "region" {
   type        = string
 }
 
+
+variable "sbo_billing_tag" {
+  type = string
+}
