@@ -11,9 +11,9 @@ module "s3_bucket" {
 
   cors_rule = [
     {
-      allowed_methods = ["GET"]
+      allowed_methods = ["GET", "PUT"]
       allowed_origins = var.cors_origins
-      allowed_headers = ["x-amz-meta-category"]
+      allowed_headers = ["content-type", "x-amz-meta-category"]
       expose_headers  = ["x-amz-meta-category"]
     }
   ]
