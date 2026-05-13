@@ -79,6 +79,10 @@ module "coreservices_key" {
 module "networking" {
   source = "./networking"
 
+  providers = {
+    aws = aws.networking
+  }
+
   vpc_id         = local.vpc_id
   aws_region     = local.aws_region
   vpc_cidr_block = local.vpc_cidr_block
