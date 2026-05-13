@@ -87,6 +87,7 @@ resource "aws_amplify_app" "this" {
 
   auto_branch_creation_config {
     enable_auto_build = false
+    stage             = "DEVELOPMENT"
   }
 
   tags = merge(local.common_tags, {
@@ -99,6 +100,8 @@ resource "aws_amplify_branch" "default" {
   branch_name = var.default_branch
 
   enable_auto_build = true
+
+  stage = "PRODUCTION"
 
   tags = merge(local.common_tags, {
     Name = "${var.app_name}-${var.default_branch}"
