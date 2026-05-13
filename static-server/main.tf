@@ -35,6 +35,7 @@ resource "aws_vpc_endpoint" "s3_vpc_endpoint" {
 
   security_group_ids = [aws_security_group.s3_vpc_endpoint_sg.id]
   subnet_ids         = var.public_subnet_ids
+  tags               = { SBO_Billing = "common:networking" }
 }
 
 resource "aws_lb_target_group" "static_data_tg" {
