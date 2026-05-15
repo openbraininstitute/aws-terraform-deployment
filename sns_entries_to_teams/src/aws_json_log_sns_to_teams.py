@@ -112,6 +112,22 @@ def parse_eventbridge_json_to_readable_message(msg: Dict[str,Any]) -> str:
                 to = mailmsg['commonHeaders']['to']
                 final_message = f"{final_message}To: {to}\n\n"
         return final_message
+    if 'AlarmName' in msg:
+        logger.info("metrics alarm message => replacing the message")
+        final_message = ""
+        if 'AlarmName' in msg:
+            final_message += f"Alarm name: {msg['AlarmName']}\n\n"
+        if 'AlarmDescription' in msg:
+            final_message += f"Alarm description: {msg['AlarmDescription']}\n\n"
+        if 'NewStateValue' in msg:
+            final_message += f"New state value: {msg['NewStateValue']}\n\n"
+        if 'NewStateReason' in msg:
+            final_message += f"New state reason: {msg['NewStateReason']}\n\n"
+        if 'StateChangeTime' in msg:
+            final_message += f"State change time: {msg['StateChangeTime']}\n\n"
+        if 'OldStateValue' in msg:
+            final_message += f"Old state value: {msg['OldStateValue']}\n\n"
+        return final_message
     else:
         # all other types of messages
         final_message: str = ""

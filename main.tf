@@ -315,6 +315,17 @@ module "debug_notebookservice_cloudwatch_metric_alarms" {
   message_retention_seconds = 5 * 24 * 60 * 60 # 5 days
 }
 
+module "notebookservice_cloudwatch_metric_alarms_sns_entries_to_teams" {
+  source = "./sns_entries_to_teams"
+
+  webhook_secret_arn = local.teams_webhook_secrets_arn
+  webhook_secret_key = "staging_metric_alerts"
+
+  unique_short_name = "notebook_service_metric_alerts"
+  sns_topic_arn     = module.notebookservice_cloudwatch_metric_alarms.sns_topic_arn
+  python_runtime    = "python3.13"
+}
+
 module "entitycore_cloudwatch_error_log_entries_to_sns" {
   source = "./cloudwatch_error_log_entries_to_sns"
 
