@@ -6,3 +6,7 @@ output "private_lb_rule_suffix" {
 output "log_group_name" {
   value = aws_cloudwatch_log_group.entitycore_ecs_task_logs.name
 }
+
+output "rds_db_identifier" {
+  value = aws_db_instance.entitycore.identifier
+}
