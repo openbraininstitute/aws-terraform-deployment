@@ -47,6 +47,10 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
           value = "https://${var.domain_name}/auth"
         },
         {
+          name  = "KC_HOSTNAME_ADMIN"
+          value = "https://${var.keycloak_admin_hostname}/auth"
+        },
+        {
           name  = "KC_HOSTNAME_BACKCHANNEL_DYNAMIC"
           value = "true"
         },
@@ -118,7 +122,6 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
           name  = "KC_LOG_LEVEL"
           value = "INFO"
         },
-
       ]
       secrets = [
         {

@@ -31,8 +31,13 @@ variable "private_alb_https_listener_arn" {
   type = string
 }
 
-variable "allowed_source_ip_cidr_blocks" {
+variable "keycloak_allowed_source_ip_cidr_blocks" {
   type = list(string)
+}
+
+variable "keycloak_admin_allowed_source_ip_cidr_blocks" {
+  type        = list(string)
+  description = "CIDRs allowed to access the Keycloak admin console"
 }
 
 variable "domain_name" {
@@ -43,6 +48,24 @@ variable "domain_name" {
 variable "keycloak_secrets_arn" {
   type        = string
   description = "ARN of the Keycloak secrets manager"
+  sensitive   = false
+}
+
+variable "keycloak_admin_hostname" {
+  type        = string
+  description = "Hostname for the Keycloak admin console, as defined in common"
+  sensitive   = false
+}
+
+variable "keycloak_admin_cert_arn" {
+  type        = string
+  description = "ARN of the TLS certificate for the keycloak-admin subdomain"
+  sensitive   = false
+}
+
+variable "cell_a_private_zone_id" {
+  type        = string
+  description = "Route53 private zone ID for the cell-a domain (used within the VPC)"
   sensitive   = false
 }
 
