@@ -107,20 +107,26 @@ module "cs" {
   route_table_public_subnets_id  = local.route_table_public_id
   db_instance_class              = "db.t3.micro"
   private_alb_https_listener_arn = local.private_alb_https_listener_arn
-  keycloak_secrets_arn           = local.keycloak_secrets_arn
-  keycloak_task_size             = var.keycloak_task_size
-  aws_coreservices_ssh_key_id    = module.coreservices_key.key_pair_id
-  vpc_cidr_block                 = local.vpc_cidr_block
-  aws_region                     = local.aws_region
-  nat_gateway_id                 = data.terraform_remote_state.common.outputs.nat_gateway_id
-  aws_endpoints_subnet_cidr      = module.networking.endpoints_subnet_cidr
+
+  keycloak_secrets_arn    = local.keycloak_secrets_arn
+  keycloak_admin_hostname = data.terraform_remote_state.common.outputs.keycloak_admin_hostname
+  keycloak_admin_cert_arn = data.terraform_remote_state.common.outputs.keycloak_admin_cert_arn
+  keycloak_task_size      = var.keycloak_task_size
+
+  keycloak_allowed_source_ip_cidr_blocks       = ["0.0.0.0/0"]
+  keycloak_admin_allowed_source_ip_cidr_blocks = ["${module.bastion_host.bastion_instance_private_ip}/32"]
+
+  cell_a_private_zone_id      = data.terraform_remote_state.common.outputs.cell_a_private_zone_id
+  aws_coreservices_ssh_key_id = module.coreservices_key.key_pair_id
+  vpc_cidr_block              = local.vpc_cidr_block
+  aws_region                  = local.aws_region
+  nat_gateway_id              = data.terraform_remote_state.common.outputs.nat_gateway_id
+  aws_endpoints_subnet_cidr   = module.networking.endpoints_subnet_cidr
 
   domain_name = local.cell_a_primary_domain
 
   jupyterhub_secrets_arn = local.jupyterhub_secrets_arn
   jupyterhub_ec2_type    = var.jupyterhub_ec2_type
-
-  allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 
   private_alb_cidr_a      = data.terraform_remote_state.common.outputs.private_alb_cidr_a
   private_alb_cidr_b      = data.terraform_remote_state.common.outputs.private_alb_cidr_b

@@ -81,7 +81,6 @@ module "filesystems_test_vm" {
   public_data_efs_arn                = var.public_data_efs_arn
 }
 
-
 module "keycloak" {
   source                         = "./keycloak"
   private_subnets                = module.networking.keycloak_private_subnets
@@ -93,6 +92,9 @@ module "keycloak" {
   keycloak_subnets = module.networking.keycloak_private_subnets
 
   keycloak_secrets_arn     = var.keycloak_secrets_arn
+  keycloak_admin_hostname  = var.keycloak_admin_hostname
+  keycloak_admin_cert_arn  = var.keycloak_admin_cert_arn
+  cell_a_private_zone_id   = var.cell_a_private_zone_id
   keycloak_port            = 8081
   keycloak_management_port = 9000
   keycloak_task_size       = var.keycloak_task_size
@@ -100,7 +102,8 @@ module "keycloak" {
   keycloak_ecs_cluster_name = "keycloak-cluster"
   keycloak_ecs_service_name = "keycloak-service"
 
-  allowed_source_ip_cidr_blocks = var.allowed_source_ip_cidr_blocks
+  keycloak_allowed_source_ip_cidr_blocks       = var.keycloak_allowed_source_ip_cidr_blocks
+  keycloak_admin_allowed_source_ip_cidr_blocks = var.keycloak_admin_allowed_source_ip_cidr_blocks
 }
 
 module "secret_sharing_svc" {
