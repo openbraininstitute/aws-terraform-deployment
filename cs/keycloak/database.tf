@@ -58,8 +58,8 @@ resource "aws_db_instance" "keycloak_database" {
   db_subnet_group_name         = aws_db_subnet_group.keycloak_db_subnet_group.name
   copy_tags_to_snapshot        = true
 
-  # Enable automated backups
-  backup_retention_period = 15
+  # Disable automated backups (covered by the backup plan)
+  backup_retention_period = 0
   backup_window           = "02:00-03:00"
   maintenance_window      = "sun:01:00-sun:02:00"
 
