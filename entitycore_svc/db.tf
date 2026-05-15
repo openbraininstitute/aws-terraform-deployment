@@ -22,7 +22,7 @@ resource "aws_db_instance" "entitycore" {
   deletion_protection = true #tfsec:ignore:AVD-AWS-0177
   allocated_storage   = 50   # in gigabytes
 
-  backup_retention_period = 14 # in days
+  backup_retention_period = 0 # in days
   backup_window           = "01:00-02:00"
   maintenance_window      = "sun:05:00-sun:06:00"
 
