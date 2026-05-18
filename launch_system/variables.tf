@@ -67,6 +67,11 @@ variable "default_executor_image_url" {
   type        = string
 }
 
+variable "python_3_12_openmpi5_neuron9_neurodamus_executor_image_url" {
+  description = "Image for the python_3_12_openmpi5_neuron9_neurodamus executor"
+  type        = string
+}
+
 variable "db_name" {
   description = "Name of the database"
   type        = string

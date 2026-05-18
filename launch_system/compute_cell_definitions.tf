@@ -17,6 +17,7 @@ locals {
             memory_min      = 2
             memory_max      = 120
             type            = "machine"
+            image_type      = "python_3_12_compiler"
             launch_type     = "FARGATE"
             cluster_name    = aws_ecs_cluster.executor.name
             subnets         = [aws_subnet.untrusted_a.id, aws_subnet.untrusted_b.id]
@@ -29,6 +30,7 @@ locals {
             memory_min      = 2
             memory_max      = 120
             type            = "machine"
+            image_type      = "python_3_12_inait_executor"
             launch_type     = "FARGATE"
             cluster_name    = aws_ecs_cluster.executor.name
             subnets         = [aws_subnet.untrusted_a.id, aws_subnet.untrusted_b.id]
@@ -73,7 +75,7 @@ locals {
             type           = "machine"
             job_name       = "default-executor"
             resource_group = "launch-system-scus-rg"
-            image_type     = "default_python"
+            image_type     = "python_3_12_compiler"
           },
           {
             vcpu_min       = 16
@@ -83,7 +85,7 @@ locals {
             type           = "machine"
             job_name       = "ultra-executor"
             resource_group = "launch-system-scus-rg"
-            image_type     = "default_python"
+            image_type     = "python_3_12_compiler"
           }
         ]
 
