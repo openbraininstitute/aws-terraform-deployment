@@ -30,12 +30,25 @@ locals {
             memory_min      = 2
             memory_max      = 120
             type            = "machine"
-            image_type      = "python_3_12_inait_executor"
+            image_type      = "python_3_12_inait"
             launch_type     = "FARGATE"
             cluster_name    = aws_ecs_cluster.executor.name
             subnets         = [aws_subnet.untrusted_a.id, aws_subnet.untrusted_b.id]
             security_groups = [aws_security_group.executor.id]
             task_family     = aws_ecs_task_definition.inait_executor.family
+          },
+          {
+            vcpu_min        = 1
+            vcpu_max        = 16
+            memory_min      = 2
+            memory_max      = 120
+            type            = "machine"
+            image_type      = "python_3_12_openmpi5_neuron9_neurodamus"
+            launch_type     = "FARGATE"
+            cluster_name    = aws_ecs_cluster.executor.name
+            subnets         = [aws_subnet.untrusted_a.id, aws_subnet.untrusted_b.id]
+            security_groups = [aws_security_group.executor.id]
+            task_family     = aws_ecs_task_definition.python_3_12_openmpi5_neuron9_neurodamus_executor.family
           }
         ]
         cluster = {
