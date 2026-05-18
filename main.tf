@@ -50,6 +50,7 @@ locals {
 
   github_organisation = "openbraininstitute"
 
+  webhook_secret_key_for_metrics_alerts = "metric_alerts"
 }
 
 data "aws_secretsmanager_secret_version" "core_webapp_secrets" {
@@ -315,6 +316,17 @@ module "debug_notebookservice_cloudwatch_metric_alarms" {
   message_retention_seconds = 5 * 24 * 60 * 60 # 5 days
 }
 
+module "notebookservice_cloudwatch_metric_alarms_sns_entries_to_teams" {
+  source = "./sns_entries_to_teams"
+
+  webhook_secret_arn = local.teams_webhook_secrets_arn
+  webhook_secret_key = local.webhook_secret_key_for_metrics_alerts
+
+  unique_short_name = "notebook_service_metric_alerts"
+  sns_topic_arn     = module.notebookservice_cloudwatch_metric_alarms.sns_topic_arn
+  python_runtime    = "python3.13"
+}
+
 module "entitycore_cloudwatch_error_log_entries_to_sns" {
   source = "./cloudwatch_error_log_entries_to_sns"
 
@@ -343,6 +355,45 @@ module "entitycore_error_log_sns_entries_to_teams" {
   sns_topic_arn     = module.entitycore_cloudwatch_error_log_entries_to_sns.sns_topic_arn
   python_runtime    = "python3.13"
 }
+
+module "entitycore_db_metrics_alerts" {
+  source = "./rds_postgresql_cloudwatch_metric_alarms"
+
+  db_instance_identifier   = module.entitycore_svc.rds_db_identifier
+  short_name               = "entitycore"
+  enable_cpu_credit_alarms = true
+
+  cpu_utilization_high_threshold            = 40                      # %
+  freeable_memory_low_threshold             = 512 * 1024 * 1024       # 0.5 GB
+  free_storage_space_low_threshold          = 10 * 1024 * 1024 * 1024 # 10 GB
+  database_connections_high_threshold       = 50
+  read_latency_high_threshold               = 0.05
+  write_latency_high_threshold              = 0.05
+  swap_usage_high_threshold                 = 50 * 1024 * 1024 # 50 MB
+  disk_queue_depth_high_threshold           = 5
+  cpu_credit_balance_low_threshold          = 20
+  cpu_surplus_credit_balance_high_threshold = 5
+}
+
+module "debug_entitycore_db_metrics_alerts_sns_topic" {
+  source = "./sqs_debug_queue"
+
+  sns_topic_arn             = module.entitycore_db_metrics_alerts.sns_topic_arn
+  unique_short_name         = "entitycore_metrics"
+  message_retention_seconds = 5 * 24 * 60 * 60 # 5 days
+}
+
+module "entitycore_db_metrics_alerts_sns_entries_to_teams" {
+  source = "./sns_entries_to_teams"
+
+  webhook_secret_arn = local.teams_webhook_secrets_arn
+  webhook_secret_key = local.webhook_secret_key_for_metrics_alerts
+
+  unique_short_name = "entity_core_db_metrics"
+  sns_topic_arn     = module.entitycore_db_metrics_alerts.sns_topic_arn
+  python_runtime    = "python3.13"
+}
+
 
 module "accounting_cloudwatch_error_log_entries_to_sns" {
   source = "./cloudwatch_error_log_entries_to_sns"
