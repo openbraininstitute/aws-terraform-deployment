@@ -492,3 +492,21 @@ variable "resource_provisioner_container_uri" {
 variable "pcs_ami" {
   type = string
 }
+
+variable "datasync_target_account" {
+  type        = string
+  default     = ""
+  description = "Account to which datasync should sync entitycore data"
+}
+
+variable "destination_entitycore_internal_bucket" {
+  type        = string
+  default     = ""
+  description = "Destination bucket in {var.datasync_target_account} to which entitycore data needs to be synced"
+}
+
+variable "source_datasync_role" {
+  description = "IAM role to allow datasync to write to the S3 bucket. Should exist in the source account data comes from"
+  type        = string
+  default     = ""
+}

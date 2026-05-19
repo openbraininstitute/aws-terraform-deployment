@@ -103,3 +103,15 @@ variable "azure_nfs_internal_public_data_path" {
   type        = string
   description = "NFS export path for internal_public_data on azure"
 }
+
+variable "datasync_target_account" {
+  type        = string
+  default     = ""
+  description = "Account to which datasync should sync entitycore data"
+}
+
+variable "destination_entitycore_internal_bucket" {
+  type        = string
+  default     = ""
+  description = "Destination bucket in {var.datasync_target_account} to which entitycore data needs to be synced"
+}

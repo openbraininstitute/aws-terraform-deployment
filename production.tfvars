@@ -170,3 +170,6 @@ resource_provisioner_container_hash = "1837363b2413d5e7cfd8c7a859ba4b3cd35c685ac
 resource_provisioner_container_uri  = "985539765147.dkr.ecr.us-east-1.amazonaws.com/hpc-resource-provisioner:0.5.13.dev8"
 
 pcs_ami = "ami-0cfcd37a2d4cec1dc"
+
+datasync_target_account                = "992382665735"
+destination_entitycore_internal_bucket = "entitycore-data-staging"

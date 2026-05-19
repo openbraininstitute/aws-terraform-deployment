@@ -566,6 +566,8 @@ module "entitycore_svc" {
   obi_backup_plan = "obi_plan"
 
   api_asset_post_max_size = "524288000" # 500 * 1024**2
+
+  source_datasync_role = var.source_datasync_role
 }
 module "auth_manager" {
   source = "./auth-manager"
@@ -778,6 +780,10 @@ module "public_data_sync_opendata" {
   azure_nfs_server_hostname                   = var.azure_nfs_server_hostname
   azure_nfs_opendata_path                     = var.azure_nfs_opendata_path
   azure_nfs_internal_public_data_path         = var.azure_nfs_internal_public_data_path
+
+  datasync_target_account                = var.datasync_target_account
+  destination_entitycore_internal_bucket = var.destination_entitycore_internal_bucket
+
 
   providers = {
     aws           = aws
