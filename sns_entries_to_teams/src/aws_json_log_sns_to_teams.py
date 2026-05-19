@@ -112,22 +112,6 @@ def parse_eventbridge_json_to_readable_message(msg: Dict[str,Any]) -> str:
                 to = mailmsg['commonHeaders']['to']
                 final_message = f"{final_message}To: {to}\n\n"
         return final_message
-    if 'AlarmName' in msg:
-        logger.info("metrics alarm message => replacing the message")
-        final_message = ""
-        if 'AlarmName' in msg:
-            final_message += f"Alarm name: {msg['AlarmName']}\n\n"
-        if 'AlarmDescription' in msg:
-            final_message += f"Alarm description: {msg['AlarmDescription']}\n\n"
-        if 'NewStateValue' in msg:
-            final_message += f"New state value: {msg['NewStateValue']}\n\n"
-        if 'NewStateReason' in msg:
-            final_message += f"New state reason: {msg['NewStateReason']}\n\n"
-        if 'StateChangeTime' in msg:
-            final_message += f"State change time: {msg['StateChangeTime']}\n\n"
-        if 'OldStateValue' in msg:
-            final_message += f"Old state value: {msg['OldStateValue']}\n\n"
-        return final_message
     else:
         # all other types of messages
         final_message: str = ""
@@ -149,6 +133,23 @@ def parse_log_event_json_to_readable_message(msg: Dict[str,Any]) -> str:
     #   "extra": {},
     #   "exception": null }",
     messages: list[str] = []
+    if 'AlarmName' in msg:
+        logger.info("metrics alarm message => replacing the message")
+        final_message = ""
+        if 'AlarmName' in msg:
+            final_message += f"Alarm name: {msg['AlarmName']}\n\n"
+        if 'AlarmDescription' in msg:
+            final_message += f"Alarm description: {msg['AlarmDescription']}\n\n"
+        if 'NewStateValue' in msg:
+            final_message += f"New state value: {msg['NewStateValue']}\n\n"
+        if 'NewStateReason' in msg:
+            final_message += f"New state reason: {msg['NewStateReason']}\n\n"
+        if 'StateChangeTime' in msg:
+            final_message += f"State change time: {msg['StateChangeTime']}\n\n"
+        if 'OldStateValue' in msg:
+            final_message += f"Old state value: {msg['OldStateValue']}\n\n"
+        return final_message
+    # Any other type of sns log message
     if "time" in msg:
         messages.append(f"GMT time: {msg['time']}")
         dt_utc = datetime.fromisoformat(msg['time'])
@@ -182,7 +183,7 @@ def handle_eventbridge_ses_event(event: Dict[str, Any], _) -> Dict[str, Any]:
 
 
 def generic_handle_eventbridge_event_with_single_channel(event: Dict[str, Any])  -> Dict[str, Any]:
-    logger.info("Received event: %s", json.dumps(event))
+    logger.info("Received eventbridge event: %s", json.dumps(event))
     try:
         webhook_url = get_secret_by_name_and_key(TEAMS_WEBHOOK_SECRET_NAME, TEAMS_WEBHOOK_SECRET_KEY_IMPORTANT_MESSAGES)
         records: List[Dict[str, Any]] = event.get("Records", [])
@@ -211,7 +212,7 @@ def is_important_sns_message(sns_message: Dict[str, Any], log_source_name: str) 
 
 def handle_log_event(event: Dict[str, Any], _) -> Dict[str, Any]:
     """Main Lambda handler for processing SNS events."""
-    logger.info("Received event: %s", json.dumps(event))
+    logger.info("Received log event: %s", json.dumps(event))
 
     try:
         webhook_url_important = get_secret_by_name_and_key(TEAMS_WEBHOOK_SECRET_NAME, TEAMS_WEBHOOK_SECRET_KEY_IMPORTANT_MESSAGES)
@@ -222,11 +223,18 @@ def handle_log_event(event: Dict[str, Any], _) -> Dict[str, Any]:
         records: List[Dict[str, Any]] = event.get("Records", [])
 
         for record in records:
+            if "Sns" not in record:
+                logger.error(f"Record doesn't contain Sns: {record}")
+                continue
+            if "Message" not in record.get("Sns", {}):
+                logger.error(f"Record doesn't contain Message: {record.get("Sns", {})}")
+                continue
             raw_sns_message = record.get("Sns", {}).get("Message", {})
             if isinstance(raw_sns_message, str):
                 raw_sns_message = json.loads(raw_sns_message)
+            logger.info("Raw SNS message: %s", raw_sns_message)  # limit log size
             sns_message = parse_log_event_json_to_readable_message(raw_sns_message)
-            logger.info("Processing SNS message: %s", sns_message[:500])  # limit log size
+            logger.info("Readable SNS message: %s", sns_message[:500])  # limit log size
             if is_important_sns_message(raw_sns_message, log_source_name):
                 send_to_teams(sns_message, webhook_url_important)
             else:
@@ -255,4 +263,5 @@ def send_to_teams(message: str, webhook_url: str) -> None:
             logger.info("Message sent to Teams, response code: %s", response.getcode())
     except Exception as e:
         logger.error("Failed to send message to Teams: %s", e, exc_info=True)
+        logger.error("Failed payload: %s, webhook_url ends with: %s", teams_payload, webhook_url[-4:])
         raise

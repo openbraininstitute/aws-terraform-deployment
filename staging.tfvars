@@ -12,7 +12,7 @@ thumbnail_generation_api_docker_image_url = "public.ecr.aws/openbraininstitute/t
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2026.2.0"
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2026.04.2"
 jupyterhub_ec2_type                       = "c7i.large"
-notebook_service_docker_image_url         = "public.ecr.aws/openbraininstitute/notebook-service:2026.05.06-1"
+notebook_service_docker_image_url         = "985539765147.dkr.ecr.us-east-1.amazonaws.com/notebook-service:2026.05.19-1"
 notebook_service_bucket_name              = "obi-notebook-service-statistics-staging"
 notebook_service_aws_k8s_thread_enabled   = true
 notebook_service_azure_k8s_thread_enabled = true
@@ -25,7 +25,7 @@ keycloak_url_with_auth = "https://staging.cell-a.openbraininstitute.org/auth/"
 
 neuroagent_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-v0.17.3"
 
-neuroagent_typescript_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-ts-v0.1.6"
+neuroagent_typescript_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-ts-v0.1.7"
 ml_neuroagent_typescript_bucket_name   = "ml-neuroagent-typescript-staging"
 ml_typescript_subnet_a_cidr            = "10.0.9.0/24"
 ml_typescript_subnet_b_cidr            = "10.0.7.0/24"
