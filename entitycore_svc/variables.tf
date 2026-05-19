@@ -112,3 +112,9 @@ variable "db_migration_lock_timeout_ms" {
   description = "Abort any statement that waits longer than the specified amount of time"
   type        = string
 }
+
+variable "source_datasync_role" {
+  description = "IAM role to allow datasync to write to the S3 bucket. Should exist in the source account data comes from"
+  type        = string
+  default     = ""
+}

@@ -2,57 +2,6 @@ locals {
   opendata_paths = trim(replace(file("${path.module}/${var.opendata_paths_list}"), "\n", "|"), "|")
 }
 
-resource "aws_iam_role" "datasync_s3_role" {
-  name = "datasync-s3-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "datasync.amazonaws.com"
-        }
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy" "datasync_s3_policy" {
-  name = "datasync-s3-policy"
-  role = aws_iam_role.datasync_s3_role.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "s3:GetBucketLocation",
-          "s3:ListBucket",
-          "s3:ListBucketMultipartUploads",
-          "s3:AbortMultipartUpload",
-          "s3:DeleteObject",
-          "s3:GetObject",
-          "s3:ListMultipartUploadParts",
-          "s3:PutObject",
-          "s3:GetObjectVersion",
-          "s3:GetObjectVersionTagging",
-          "s3:GetObjectTagging",
-          "s3:PutObjectTagging"
-        ]
-        Resource = [
-          "arn:aws:s3:::${var.entitycore_internal_bucket}",
-          "arn:aws:s3:::${var.entitycore_internal_bucket}/*",
-          "arn:aws:s3:::${var.opendata_bucket}",
-          "arn:aws:s3:::${var.opendata_bucket}/*"
-        ]
-      }
-    ]
-  })
-}
-
 resource "aws_datasync_location_s3" "internal_source" {
   s3_bucket_arn = "arn:aws:s3:::${var.entitycore_internal_bucket}"
   subdirectory  = "/public"
@@ -69,6 +18,16 @@ resource "aws_datasync_location_s3" "opendata_source" {
 
   s3_config {
     bucket_access_role_arn = aws_iam_role.datasync_s3_role.arn
+  }
+}
+
+resource "aws_datasync_location_s3" "cross_account_internal_destination" {
+  count         = var.datasync_target_account == "" ? 0 : 1
+  s3_bucket_arn = "arn:aws:s3:::${var.destination_entitycore_internal_bucket}"
+  subdirectory  = "/public"
+
+  s3_config {
+    bucket_access_role_arn = aws_iam_role.cross_account_datasync_s3_role[0].arn
   }
 }
 
@@ -116,6 +75,14 @@ resource "aws_datasync_task" "internal_s3_to_efs" {
     # minute | hour | day of month | month | day of week | year
     schedule_expression = "cron(0 0 ? * * *)"
   }
+}
+
+resource "aws_datasync_task" "cross_account_internal_to_s3" {
+  count                    = var.datasync_target_account == "" ? 0 : 1
+  destination_location_arn = aws_datasync_location_s3.cross_account_internal_destination[0].arn
+  source_location_arn      = aws_datasync_location_s3.internal_source.arn
+  name                     = "cross-account-s3-to-s3-sync"
+  task_mode                = "ENHANCED"
 }
 
 resource "aws_datasync_location_efs" "opendata_destination" {

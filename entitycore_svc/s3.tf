@@ -53,39 +53,7 @@ resource "aws_s3_bucket_public_access_block" "entitycore" {
 resource "aws_s3_bucket_policy" "prevent_delete" {
   bucket = aws_s3_bucket.entitycore.id
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Sid       = "DenyInsecureTransport"
-        Effect    = "Deny"
-        Principal = "*"
-        Action    = "s3:*"
-        Resource = [
-          aws_s3_bucket.entitycore.arn,
-          "${aws_s3_bucket.entitycore.arn}/*"
-        ]
-        Condition = {
-          Bool = {
-            "aws:SecureTransport" = "false"
-          }
-        }
-      },
-      {
-        Sid       = "PreventDeleteBucketAndObjects"
-        Effect    = "Deny"
-        Principal = "*"
-        Action = [
-          "s3:DeleteBucket",
-          "s3:DeleteBucketPolicy"
-        ]
-        Resource = [
-          aws_s3_bucket.entitycore.arn,
-          "${aws_s3_bucket.entitycore.arn}/*"
-        ]
-      },
-    ]
-  })
+  policy = templatefile(var.source_datasync_role == "" ? "${path.module}/s3_bucket_policy_without_datasync_source.tftpl" : "${path.module}/s3_bucket_policy_with_datasync_source.tftpl", { "source_datasync_role" = var.source_datasync_role, "aws_s3_bucket_entitycore_arn" = aws_s3_bucket.entitycore.arn })
 }
 
 resource "aws_s3_bucket_metric" "entitycore-metrics" {

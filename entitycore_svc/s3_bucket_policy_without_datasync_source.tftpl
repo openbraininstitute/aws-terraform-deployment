@@ -1,0 +1,34 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "DenyInsecureTransport",
+        "Effect": "Deny",
+        "Principal": "*",
+        "Action": "s3:*",
+        "Resource": [
+          "${aws_s3_bucket_entitycore_arn}",
+          "${aws_s3_bucket_entitycore_arn}/*"
+        ],
+        "Condition": {
+          "Bool": {
+            "aws:SecureTransport": "false"
+          }
+        }
+      },
+      {
+        "Sid": "PreventDeleteBucketAndObjects",
+        "Effect": "Deny",
+        "Principal": "*",
+        "Action": [
+          "s3:DeleteBucket",
+          "s3:DeleteBucketPolicy"
+        ],
+        "Resource": [
+          "${aws_s3_bucket_entitycore_arn}",
+          "${aws_s3_bucket_entitycore_arn}/*"
+        ]
+      }
+    ]
+  }
+
