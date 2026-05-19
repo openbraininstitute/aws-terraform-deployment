@@ -1,6 +1,10 @@
 #!/bin/bash
 exec > >(tee /var/log/user-data.log | logger -t user-data) 2>&1
 
+# Mask admin password from logs
+ADMIN_PASS="${ADMIN_PASS}"
+exec > >(sed "s|$ADMIN_PASS|***|g" | tee /var/log/user-data.log | logger -t user-data) 2>&1
+
 EFS_MOUNT_OPS="nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
 
 sudo apt update
@@ -48,11 +52,60 @@ sudo tljh-config set services.cull.max_age 1800
 # set default interface to jupyterlab, open default notebook, and disable autosave feature
 sudo tljh-config set user_environment.default_app jupyterlab
 # default_url is not a tljh-config key, set it directly in jupyterhub config
-echo 'c.Spawner.default_url = "/lab/tree/notebooks/analysis_notebook.ipynb"' \
+echo 'c.Spawner.default_url = "/lab/tree/analysis_notebook.ipynb"' \
   | sudo tee /opt/tljh/config/jupyterhub_config.d/default_url.py
 for DIR in $(find /opt/tljh/ -name docmanager-extension -type d); do
   cat <<< $(jq '.properties.autosave.default = false' $DIR/plugin.json) > $DIR/plugin.json
 done
+
+# Restrict user execution environment
+cat <<EOF > /opt/tljh/config/jupyterhub_config.d/restrictions.py
+# Disable terminal access
+c.ServerApp.terminals_enabled = False
+
+# Restrict file browser to ~/notebooks - notebook files are root-owned RO,
+# only outputs/ subdir is writable (enforced by systemd ReadWritePaths below)
+c.Spawner.notebook_dir = "/home/{username}/notebooks"
+
+# Block pip --user installs and ~/.local site-packages
+c.Spawner.environment = {
+    "PIP_NO_USER_INSTALL": "1",
+    "PYTHONNOUSERSITE": "1",
+}
+
+# Per-user resource limits: 1 CPU, 2 GB RAM
+c.SystemdSpawner.cpu_limit = 1.0
+c.SystemdSpawner.mem_limit = "2G"
+
+# Harden the systemd unit for each user session.
+# SystemCallFilter uses a WHITELIST (no ~ prefix on the first entry) so only
+# the listed syscall groups are permitted; everything else is denied with SIGSYS.
+# Groups needed by Julia's runtime and ODE solver:
+#   @system-service  - broad baseline (read, write, mmap, futex, clock, signal...)
+#   @network-io      - socket/connect for Jupyter kernel ZMQ communication
+#   @file-system     - open/stat/getdents for reading JSON inputs, writing CSVs
+# Explicitly denied on top:
+#   ~@privileged     - no mount, iopl, kexec, etc.
+#   ~@resources      - no rlimit/nice manipulation
+# NoNewPrivileges  - process cannot gain privileges via setuid/setgid binaries
+# PrivateTmp       - isolated /tmp, prevents cross-user /tmp attacks
+# PrivateDevices   - no access to raw device nodes (/dev/mem, /dev/kmem, etc.)
+# RestrictAddressFamilies - only AF_INET/AF_INET6/AF_UNIX; blocks raw/netlink sockets
+# ProtectSystem=strict - entire filesystem is RO except explicitly listed
+#                        ReadWritePaths; prevents ccall(open) on /opt/tljh,
+#                        /etc/passwd, and any other path outside /home/%u/notebooks
+c.SystemdSpawner.extra_resource_limits = {
+    "SystemCallFilter": "@system-service @network-io @file-system ~@privileged ~@resources",
+    "ProtectSystem": "strict",
+    "ReadWritePaths": "/home/%u/notebooks /opt/tljh/user/share/julia/logs",
+    "NoNewPrivileges": "yes",
+    "PrivateTmp": "yes",
+    "PrivateDevices": "yes",
+    "RestrictAddressFamilies": "AF_INET AF_UNIX",
+    "IPAddressAllow": "localhost",
+    "IPAddressDeny": "any",
+}
+EOF
 
 # Setup Keycloak as a GenericOAuthenticator
 cat <<EOF > /opt/tljh/config/jupyterhub_config.d/keycloak.py
@@ -142,7 +195,6 @@ declare -A JULIA_PACKAGES=(
   ["Interact"]="0.10.5"
   ["WebIO"]="0.8.21"
   ["IJulia"]="1.26.0"
-  ["PyCall"]="1.96.4"
   ["BenchmarkTools"]="1.5.0"
 )
 
@@ -168,6 +220,12 @@ julia -e 'using IJulia; IJulia.installkernel("julia", env=Dict(
 source /opt/tljh/user/bin/activate
 pip install webio_jupyter_extension webio_jupyterlab_provider
 pip install --upgrade jupyterlab-pygments==0.2.0
+
+# Remove the Python kernel spec so users can only create Julia notebooks.
+# The Python interpreter stays installed (JupyterHub needs it) but is not
+# exposed as a selectable kernel in the UI.
+rm -rf /opt/tljh/user/share/jupyter/kernels/python3
+
 deactivate
 
 # Give jupyterhub-users groups access to $JULIA_DEPOT_PATH
@@ -175,6 +233,20 @@ chgrp -R jupyterhub-users $${JULIA_DEPOT_PATH}
 touch $${JULIA_DEPOT_PATH}/logs/repl_history.jl $${JULIA_DEPOT_PATH}/logs/manifest_usage.toml
 chmod 664 $${JULIA_DEPOT_PATH}/logs/repl_history.jl
 chmod 664 $${JULIA_DEPOT_PATH}/logs/manifest_usage.toml
+
+# Block ccall and cglobal system-wide via Julia's startup file.
+# This catches the @ccall/@cglobal macro forms. The expression form of ccall
+# (a compiler builtin) cannot be blocked at the language level; that is handled
+# by the syscall allowlist in the systemd unit (see restrictions.py).
+sudo mkdir -p /etc/julia
+cat <<'JULIA_STARTUP' > /etc/julia/startup.jl
+macro ccall(expr)
+    error("ccall is disabled in this environment")
+end
+macro cglobal(expr)
+    error("cglobal is disabled in this environment")
+end
+JULIA_STARTUP
 
 # Clone Metabolism notebooks into /etc/skel so every new user gets a personal copy on first login
 git clone --filter=blob:none --no-checkout --depth=1 --sparse \
