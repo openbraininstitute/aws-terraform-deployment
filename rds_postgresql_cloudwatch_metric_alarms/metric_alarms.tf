@@ -174,6 +174,54 @@ resource "aws_cloudwatch_metric_alarm" "rds_disk_queue_depth_high" {
   insufficient_data_actions = [aws_sns_topic.rds_alerts.arn]
 }
 
+resource "aws_cloudwatch_metric_alarm" "rds_db_load_high" {
+  count = var.enable_db_load_alarms ? 1 : 0
+
+  alarm_name          = "rds-${var.short_name}-db-load-high"
+  alarm_description   = "RDS instance ${var.short_name} DB load (average active sessions) is above ${var.db_load_high_threshold}"
+  namespace           = "AWS/RDS"
+  metric_name         = "DBLoad"
+  statistic           = "Average"
+  period              = 60
+  evaluation_periods  = 5
+  datapoints_to_alarm = 3
+  threshold           = var.db_load_high_threshold
+  comparison_operator = "GreaterThanThreshold"
+  treat_missing_data  = "missing"
+
+  dimensions = {
+    DBInstanceIdentifier = var.db_instance_identifier
+  }
+
+  alarm_actions             = [aws_sns_topic.rds_alerts.arn]
+  ok_actions                = [aws_sns_topic.rds_alerts.arn]
+  insufficient_data_actions = [aws_sns_topic.rds_alerts.arn]
+}
+
+resource "aws_cloudwatch_metric_alarm" "rds_db_load_relative_to_vcpus_high" {
+  count = var.enable_db_load_alarms ? 1 : 0
+
+  alarm_name          = "rds-${var.short_name}-db-load-relative-to-vcpus-high"
+  alarm_description   = "RDS instance ${var.short_name} DB load relative to vCPUs is above ${var.db_load_relative_to_vcpus_high_threshold} (>1.0 means more active sessions than vCPUs)"
+  namespace           = "AWS/RDS"
+  metric_name         = "DBLoadRelativeToNumVCPUs"
+  statistic           = "Average"
+  period              = 60
+  evaluation_periods  = 5
+  datapoints_to_alarm = 3
+  threshold           = var.db_load_relative_to_vcpus_high_threshold
+  comparison_operator = "GreaterThanThreshold"
+  treat_missing_data  = "missing"
+
+  dimensions = {
+    DBInstanceIdentifier = var.db_instance_identifier
+  }
+
+  alarm_actions             = [aws_sns_topic.rds_alerts.arn]
+  ok_actions                = [aws_sns_topic.rds_alerts.arn]
+  insufficient_data_actions = [aws_sns_topic.rds_alerts.arn]
+}
+
 resource "aws_cloudwatch_metric_alarm" "rds_cpu_credit_balance_low" {
   count = var.enable_cpu_credit_alarms ? 1 : 0
 

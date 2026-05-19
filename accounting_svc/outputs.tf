@@ -33,3 +33,9 @@ output "athena_data_catalog_name" {
 output "log_group_name" {
   value = aws_cloudwatch_log_group.accounting_ecs_task_logs.name
 }
+
+output "rds_db_identifier" {
+  value       = aws_db_instance.accounting.identifier
+  description = "Identifier of the accounting DB"
+  sensitive   = false
+}

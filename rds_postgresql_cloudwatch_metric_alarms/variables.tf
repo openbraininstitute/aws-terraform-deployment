@@ -86,3 +86,24 @@ variable "cpu_surplus_credit_balance_high_threshold" {
   sensitive   = false
   default     = 50
 }
+
+variable "enable_db_load_alarms" {
+  type        = bool
+  description = "Enable DBLoad and DBLoadRelativeToNumVCPUs alarms. Requires Performance Insights to be enabled on the RDS instance."
+  sensitive   = false
+  default     = false
+}
+
+variable "db_load_high_threshold" {
+  type        = number
+  description = "Threshold (average active sessions) above which DBLoad triggers an alarm"
+  sensitive   = false
+  default     = 10
+}
+
+variable "db_load_relative_to_vcpus_high_threshold" {
+  type        = number
+  description = "Threshold above which DBLoadRelativeToNumVCPUs triggers an alarm (1.0 = one session per vCPU, fully loaded)"
+  sensitive   = false
+  default     = 1.0
+}

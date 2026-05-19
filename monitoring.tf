@@ -1,4 +1,4 @@
-# Accounting
+# Accounting logs
 
 module "accounting_cloudwatch_error_log_entries_to_sns" {
   source = "./cloudwatch_error_log_entries_to_sns"
@@ -29,7 +29,55 @@ module "accounting_error_log_sns_entries_to_teams" {
   python_runtime    = "python3.13"
 }
 
-# EntityCore
+# Accounting DB
+
+module "accounting_db_metrics_alerts" {
+  source = "./rds_postgresql_cloudwatch_metric_alarms"
+
+  db_instance_identifier   = module.accounting_svc.rds_db_identifier
+  short_name               = "accounting"
+  enable_cpu_credit_alarms = true
+  enable_db_load_alarms    = true
+
+  cpu_utilization_high_threshold            = 30                      # %
+  freeable_memory_low_threshold             = 512 * 1024 * 1024       # 512 MB
+  free_storage_space_low_threshold          = 10 * 1024 * 1024 * 1024 # 10 GB
+  database_connections_high_threshold       = 10
+  read_latency_high_threshold               = 0.05             # 50 ms
+  write_latency_high_threshold              = 0.02             # 20 ms
+  swap_usage_high_threshold                 = 50 * 1024 * 1024 # 50 MB
+  disk_queue_depth_high_threshold           = 1
+  cpu_credit_balance_low_threshold          = 200
+  cpu_surplus_credit_balance_high_threshold = 5
+  db_load_high_threshold                    = 3   # average active sessions
+  db_load_relative_to_vcpus_high_threshold  = 1.0 # 1 active session per vcpu
+}
+
+# Auth Manager DB
+
+module "auth_manager_db_metrics_alerts" {
+  source = "./rds_postgresql_cloudwatch_metric_alarms"
+
+  db_instance_identifier   = module.auth_manager.rds_db_identifier
+  short_name               = "auth_manager"
+  enable_cpu_credit_alarms = true
+  enable_db_load_alarms    = true
+
+  cpu_utilization_high_threshold            = 30                      # %
+  freeable_memory_low_threshold             = 512 * 1024 * 1024       # 512 MB
+  free_storage_space_low_threshold          = 10 * 1024 * 1024 * 1024 # 10 GB
+  database_connections_high_threshold       = 20
+  read_latency_high_threshold               = 0.05             # 50 ms
+  write_latency_high_threshold              = 0.02             # 20 ms
+  swap_usage_high_threshold                 = 50 * 1024 * 1024 # 50 MB
+  disk_queue_depth_high_threshold           = 1
+  cpu_credit_balance_low_threshold          = 200
+  cpu_surplus_credit_balance_high_threshold = 5
+  db_load_high_threshold                    = 3   # average active sessions
+  db_load_relative_to_vcpus_high_threshold  = 1.0 # 1 active session per vcpu
+}
+
+# EntityCore logs
 
 module "entitycore_cloudwatch_error_log_entries_to_sns" {
   source = "./cloudwatch_error_log_entries_to_sns"
@@ -60,12 +108,15 @@ module "entitycore_error_log_sns_entries_to_teams" {
   python_runtime    = "python3.13"
 }
 
+# EntityCore DB
+
 module "entitycore_db_metrics_alerts" {
   source = "./rds_postgresql_cloudwatch_metric_alarms"
 
   db_instance_identifier   = module.entitycore_svc.rds_db_identifier
   short_name               = "entitycore"
   enable_cpu_credit_alarms = true
+  enable_db_load_alarms    = true
 
   cpu_utilization_high_threshold            = 40                      # %
   freeable_memory_low_threshold             = 50 * 1024 * 1024        # 50 MB
@@ -77,6 +128,9 @@ module "entitycore_db_metrics_alerts" {
   disk_queue_depth_high_threshold           = 1
   cpu_credit_balance_low_threshold          = 200
   cpu_surplus_credit_balance_high_threshold = 5
+  db_load_high_threshold                    = 3   # average active sessions
+  db_load_relative_to_vcpus_high_threshold  = 1.0 # 1 active session per vcpu
+
 }
 
 module "debug_entitycore_db_metrics_alerts_sns_topic" {
