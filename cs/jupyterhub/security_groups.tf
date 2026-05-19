@@ -17,16 +17,20 @@ resource "aws_security_group" "jupyterhub_efs_sg" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "jupyterhub_efs_sg_ingress" {
-  security_group_id = aws_security_group.jupyterhub_efs_sg.id
-  description       = "Allow ingress to NFS port from VPC"
-  cidr_ipv4         = data.aws_subnet.jupyterhub_subnet.cidr_block
-  ip_protocol       = "tcp"
-  from_port         = 2049
-  to_port           = 2049
+  security_group_id            = aws_security_group.jupyterhub_efs_sg.id
+  description                  = "Allow NFS only from JupyterHub EC2 SG"
+  referenced_security_group_id = aws_security_group.jupyterhub_sg.id
+  ip_protocol                  = "tcp"
+  from_port                    = 2049
+  to_port                      = 2049
 
   tags = {
     SBO_Billing = "jupyterhub_svc"
     Name        = var.jupyterhub_sg_efs_name
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
@@ -69,14 +73,77 @@ resource "aws_vpc_security_group_ingress_rule" "jupyterhub_allow_ssh_external" {
   }
 }
 
-resource "aws_vpc_security_group_egress_rule" "jupyterhub_allow_everything_outgoing" {
+# NFS to EFS mount target - scoped to EFS SG, not open internet
+resource "aws_vpc_security_group_egress_rule" "jupyterhub_allow_nfs_to_efs" {
+  security_group_id            = aws_security_group.jupyterhub_sg.id
+  description                  = "Allow NFS to EFS mount target"
+  ip_protocol                  = "tcp"
+  from_port                    = 2049
+  to_port                      = 2049
+  referenced_security_group_id = aws_security_group.jupyterhub_efs_sg.id
+
+  tags = {
+    SBO_Billing = "jupyterhub_svc"
+    Name        = "jupyterhub_allow_nfs_to_efs"
+  }
+}
+
+# HTTPS: needed for Keycloak OAuth, AWS APIs (Secrets Manager, SSM, CloudWatch), package installs during bootstrap
+resource "aws_vpc_security_group_egress_rule" "jupyterhub_allow_https_outgoing" {
   security_group_id = aws_security_group.jupyterhub_sg.id
-  description       = "Allow everything outgoing"
-  ip_protocol       = -1
+  description       = "Allow HTTPS outgoing"
+  ip_protocol       = "tcp"
+  from_port         = 443
+  to_port           = 443
   cidr_ipv4         = "0.0.0.0/0"
 
   tags = {
     SBO_Billing = "jupyterhub_svc"
-    Name        = "jupyterhub_allow_everything_outgoing"
+    Name        = "jupyterhub_allow_https_outgoing"
+  }
+}
+
+# HTTP: needed for apt and TLJH bootstrap installer
+resource "aws_vpc_security_group_egress_rule" "jupyterhub_allow_http_outgoing" {
+  security_group_id = aws_security_group.jupyterhub_sg.id
+  description       = "Allow HTTP outgoing (apt, TLJH bootstrap)"
+  ip_protocol       = "tcp"
+  from_port         = 80
+  to_port           = 80
+  cidr_ipv4         = "0.0.0.0/0"
+
+  tags = {
+    SBO_Billing = "jupyterhub_svc"
+    Name        = "jupyterhub_allow_http_outgoing"
+  }
+}
+
+# DNS
+resource "aws_vpc_security_group_egress_rule" "jupyterhub_allow_dns_outgoing" {
+  security_group_id = aws_security_group.jupyterhub_sg.id
+  description       = "Allow DNS outgoing"
+  ip_protocol       = "udp"
+  from_port         = 53
+  to_port           = 53
+  cidr_ipv4         = "0.0.0.0/0"
+
+  tags = {
+    SBO_Billing = "jupyterhub_svc"
+    Name        = "jupyterhub_allow_dns_outgoing"
+  }
+}
+
+# NTP
+resource "aws_vpc_security_group_egress_rule" "jupyterhub_allow_ntp_outgoing" {
+  security_group_id = aws_security_group.jupyterhub_sg.id
+  description       = "Allow NTP outgoing"
+  ip_protocol       = "udp"
+  from_port         = 123
+  to_port           = 123
+  cidr_ipv4         = "0.0.0.0/0"
+
+  tags = {
+    SBO_Billing = "jupyterhub_svc"
+    Name        = "jupyterhub_allow_ntp_outgoing"
   }
 }
