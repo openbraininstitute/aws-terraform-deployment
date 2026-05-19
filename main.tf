@@ -364,14 +364,14 @@ module "entitycore_db_metrics_alerts" {
   enable_cpu_credit_alarms = true
 
   cpu_utilization_high_threshold            = 40                      # %
-  freeable_memory_low_threshold             = 512 * 1024 * 1024       # 0.5 GB
+  freeable_memory_low_threshold             = 50 * 1024 * 1024        # 50 MB
   free_storage_space_low_threshold          = 10 * 1024 * 1024 * 1024 # 10 GB
-  database_connections_high_threshold       = 50
-  read_latency_high_threshold               = 0.05
-  write_latency_high_threshold              = 0.05
-  swap_usage_high_threshold                 = 50 * 1024 * 1024 # 50 MB
-  disk_queue_depth_high_threshold           = 5
-  cpu_credit_balance_low_threshold          = 20
+  database_connections_high_threshold       = 40
+  read_latency_high_threshold               = 0.05              # 50 ms
+  write_latency_high_threshold              = 0.02              # 20 ms
+  swap_usage_high_threshold                 = 150 * 1024 * 1024 # 200 MB
+  disk_queue_depth_high_threshold           = 1
+  cpu_credit_balance_low_threshold          = 200
   cpu_surplus_credit_balance_high_threshold = 5
 }
 
