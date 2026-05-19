@@ -1,7 +1,7 @@
 resource "aws_cloudwatch_metric_alarm" "ecs_service_memory_high" {
   alarm_name          = "ecs-${var.short_name}-memory-high"
   alarm_description   = "ECS service ${var.short_name} memory utilization is above ${var.ecs_service_memory_high_threshold}%"
-  namespace           = "ECS/ContainerInsights"
+  namespace           = "AWS/ECS"
   metric_name         = "MemoryUtilization"
   statistic           = "Average"
   period              = 60

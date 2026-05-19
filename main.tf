@@ -305,6 +305,11 @@ module "notebookservice_cloudwatch_metric_alarms" {
 
   short_name = "notebook_svc"
 
+  # As there's only a single container: same thresholds for now.
+  ecs_service_memory_high_threshold   = 50 # %
+  ecs_container_memory_high_threshold = 50 # %
+  ecs_task_memory_high_threshold      = 50 # %
+
   sbo_billing_tag = "notebook_service"
 }
 
