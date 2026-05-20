@@ -8,7 +8,7 @@ exec > >(sed "s|$ADMIN_PASS|***|g" | tee /var/log/user-data.log | logger -t user
 EFS_MOUNT_OPS="nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
 
 sudo apt update
-sudo apt install nfs-common nginx nodejs jq npm git -y
+sudo apt install nfs-common nginx nodejs jq npm git curl wget -y
 sudo mount -t nfs4 -o $${EFS_MOUNT_OPS} ${HOMEDIRS_EFS}:/ ${HOMEDIRS_PATH} \
   || { echo "FATAL: EFS mount failed"; exit 1; }
 
@@ -271,16 +271,9 @@ function Pkg.develop(args...; kwargs...)
     error("Package development is disabled in this environment")
 end
 
-# Prevent eval-based bypass of the overrides above.
-# A user could do Core.eval(Base, :(run(...) = ccall(...))) to restore
-# the original Base.run. Overriding Core.eval in Base's module context
-# raises an error before the re-definition can take effect.
-function Base.eval(m::Module, ex)
-    error("eval is disabled in this environment")
-end
-function Core.eval(m::Module, ex)
-    error("eval is disabled in this environment")
-end
+# Note: Core.eval cannot be safely blocked — IJulia and all packages use it
+# during kernel init. The iptables egress rules (uid >= 1000 blocked) are the
+# backstop against any eval-based bypass of the overrides above.
 JULIA_STARTUP
 
 # Lock down network egress for notebook users after bootstrap is complete.
@@ -288,6 +281,8 @@ JULIA_STARTUP
 # (uid 0) and the system (uid < 1000, covers tljh/hub processes) retain
 # full egress. This prevents curl/wget/Julia ccall network exploits at the
 # OS level, which is the backstop that Security Groups alone cannot provide.
+echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
+echo iptables-persistent iptables-persistent/autosave_v6 boolean false | debconf-set-selections
 apt-get install -y iptables-persistent
 
 # Flush any existing user-chain rules
