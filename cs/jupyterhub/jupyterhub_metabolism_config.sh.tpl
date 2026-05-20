@@ -102,7 +102,7 @@ c.GenericOAuthenticator.scope = ["openid"]
 c.GenericOAuthenticator.allow_all = True
 c.GenericOAuthenticator.auto_login = True
 c.GenericOAuthenticator.auto_login_oauth2_authorize = True
-c.GenericOAuthenticator.validate_server_cert = False
+c.GenericOAuthenticator.validate_server_cert = True
 EOF
 chmod 600 /opt/tljh/config/jupyterhub_config.d/keycloak.py
 
@@ -156,6 +156,9 @@ BASE_URL="https://julialang-s3.julialang.org/bin/linux/x64"
 URL="$BASE_URL/$JULIA_VER/julia-$JULIA_VERSION-linux-x86_64.tar.gz"
 
 wget -nv $URL -O /tmp/julia.tar.gz
+# Verify checksum before extracting (sha256 for julia-1.6.6-linux-x86_64.tar.gz)
+echo "c25ff71a4242207ab2681a0fcc5df50014e9d99f814e77cacbc5027e20514945  /tmp/julia.tar.gz" | sha256sum -c - \
+  || { echo "FATAL: Julia tarball checksum mismatch"; exit 1; }
 tar -x -f /tmp/julia.tar.gz -C /usr/local --strip-components 1
 rm /tmp/julia.tar.gz
 ln -sf /usr/local/bin/julia /opt/tljh/user/bin/julia
@@ -224,7 +227,9 @@ chmod 664 $${JULIA_DEPOT_PATH}/logs/manifest_usage.toml
 # - run/read/pipeline: prevent shell command execution
 # - download: prevent fetching remote payloads
 # - open with commands: prevent process spawning via open(`cmd`)
-# Note: ccall() builtin form cannot be blocked at language level.
+# - Pkg.add/update/develop: prevent package installation
+# Note: ccall() builtin form cannot be blocked at language level;
+#       network egress iptables rules below are the backstop for that.
 sudo mkdir -p /etc/julia
 cat <<'JULIA_STARTUP' > /etc/julia/startup.jl
 macro ccall(expr)
@@ -253,7 +258,55 @@ end
 function Base.open(cmd::Base.AbstractCmd, args...; kw...)
     error("Shell command execution is disabled in this environment")
 end
+
+# Block package installation
+import Pkg
+function Pkg.add(args...; kwargs...)
+    error("Package installation is disabled in this environment")
+end
+function Pkg.update(args...; kwargs...)
+    error("Package updates are disabled in this environment")
+end
+function Pkg.develop(args...; kwargs...)
+    error("Package development is disabled in this environment")
+end
+
+# Prevent eval-based bypass of the overrides above.
+# A user could do Core.eval(Base, :(run(...) = ccall(...))) to restore
+# the original Base.run. Overriding Core.eval in Base's module context
+# raises an error before the re-definition can take effect.
+function Base.eval(m::Module, ex)
+    error("eval is disabled in this environment")
+end
+function Core.eval(m::Module, ex)
+    error("eval is disabled in this environment")
+end
 JULIA_STARTUP
+
+# Lock down network egress for notebook users after bootstrap is complete.
+# jupyterhub-users are blocked from making outbound connections; only root
+# (uid 0) and the system (uid < 1000, covers tljh/hub processes) retain
+# full egress. This prevents curl/wget/Julia ccall network exploits at the
+# OS level, which is the backstop that Security Groups alone cannot provide.
+apt-get install -y iptables-persistent
+
+# Flush any existing user-chain rules
+iptables -F OUTPUT || true
+
+# Allow established/related traffic (responses to connections root initiated)
+iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Allow loopback
+iptables -A OUTPUT -o lo -j ACCEPT
+
+# Allow root and system processes (uid 0-999) full egress
+iptables -A OUTPUT -m owner --uid-owner 0:999 -j ACCEPT
+
+# Block all outbound traffic from notebook users (uid >= 1000, jupyter users start at 1001)
+iptables -A OUTPUT -m owner --uid-owner 1000:65535 -j REJECT --reject-with icmp-net-prohibited
+
+# Persist rules across reboots
+netfilter-persistent save
 
 # Clone Metabolism notebooks into /etc/skel so every new user gets a personal copy on first login
 git clone --filter=blob:none --no-checkout --depth=1 --sparse \

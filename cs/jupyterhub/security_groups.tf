@@ -88,7 +88,9 @@ resource "aws_vpc_security_group_egress_rule" "jupyterhub_allow_nfs_to_efs" {
   }
 }
 
-# HTTPS: needed for Keycloak OAuth, AWS APIs (Secrets Manager, SSM, CloudWatch), package installs during bootstrap
+# HTTPS: needed for Keycloak OAuth, AWS APIs (Secrets Manager, SSM, CloudWatch), package installs during bootstrap.
+# Runtime egress for notebook users (uid >= 1000) is blocked by iptables rules applied at the end of user_data,
+# so this SG rule only benefits root/system processes after bootstrap completes.
 resource "aws_vpc_security_group_egress_rule" "jupyterhub_allow_https_outgoing" {
   security_group_id = aws_security_group.jupyterhub_sg.id
   description       = "Allow HTTPS outgoing"
@@ -103,7 +105,8 @@ resource "aws_vpc_security_group_egress_rule" "jupyterhub_allow_https_outgoing" 
   }
 }
 
-# HTTP: needed for apt and TLJH bootstrap installer
+# HTTP: needed for apt and TLJH bootstrap installer.
+# See HTTPS comment above re: runtime restriction via iptables.
 resource "aws_vpc_security_group_egress_rule" "jupyterhub_allow_http_outgoing" {
   security_group_id = aws_security_group.jupyterhub_sg.id
   description       = "Allow HTTP outgoing (apt, TLJH bootstrap)"
