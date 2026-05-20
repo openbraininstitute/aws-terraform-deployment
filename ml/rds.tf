@@ -53,5 +53,7 @@ module "ml_rds_postgres" {
   # Database Deletion Protection
   deletion_protection = false
 
+  performance_insights_enabled = true
+
   tags = merge(var.tags, { obi_backup_plan = "obi_plan" })
 }

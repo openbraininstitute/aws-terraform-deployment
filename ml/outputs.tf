@@ -5,3 +5,7 @@ output "subnet_cidr_blocks" {
     aws_subnet.ml_subnet_b.cidr_block,
   ]
 }
+
+output "rds_db_identifier" {
+  value = local.rds_instance_identifier
+}

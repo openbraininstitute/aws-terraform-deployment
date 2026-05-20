@@ -38,3 +38,7 @@ output "jupyterhub_eks_private_a_cidr" {
 output "jupyterhub_eks_private_b_cidr" {
   value = module.jupyterhub_eks.jupyterhub_eks_private_b_cidr
 }
+
+output "keycloak_rds_db_identifier" {
+  value = module.keycloak.rds_db_identifier
+}

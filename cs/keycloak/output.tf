@@ -14,3 +14,7 @@ output "ecs_service_name" {
 output "ecs_task_definition_name" {
   value = aws_ecs_task_definition.sbo_keycloak_task.family
 }
+
+output "rds_db_identifier" {
+  value = aws_db_instance.keycloak_database.identifier
+}
