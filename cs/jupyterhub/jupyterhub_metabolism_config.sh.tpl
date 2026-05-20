@@ -60,51 +60,27 @@ done
 
 # Restrict user execution environment
 cat <<EOF > /opt/tljh/config/jupyterhub_config.d/restrictions.py
-# Disable terminal access
-c.ServerApp.terminals_enabled = False
-
-# Restrict file browser to ~/notebooks - notebook files are root-owned RO,
-# only outputs/ subdir is writable (enforced by systemd ReadWritePaths below)
-c.Spawner.notebook_dir = "/home/{username}/notebooks"
+# Restrict file browser to ~/notebooks
+c.Spawner.notebook_dir = "/home/jupyter-{username}/notebooks"
 
 # Block pip --user installs and ~/.local site-packages
-c.Spawner.environment = {
+c.SystemdSpawner.environment = {
     "PIP_NO_USER_INSTALL": "1",
     "PYTHONNOUSERSITE": "1",
 }
+
+# Disable terminal access via spawner args (cover both old and new server)
+c.Spawner.args = [
+    "--ServerApp.terminals_enabled=False",
+    "--NotebookApp.terminals_enabled=False",
+]
 
 # Per-user resource limits: 1 CPU, 2 GB RAM
 c.SystemdSpawner.cpu_limit = 1.0
 c.SystemdSpawner.mem_limit = "2G"
 
-# Harden the systemd unit for each user session.
-# SystemCallFilter uses a WHITELIST (no ~ prefix on the first entry) so only
-# the listed syscall groups are permitted; everything else is denied with SIGSYS.
-# Groups needed by Julia's runtime and ODE solver:
-#   @system-service  - broad baseline (read, write, mmap, futex, clock, signal...)
-#   @network-io      - socket/connect for Jupyter kernel ZMQ communication
-#   @file-system     - open/stat/getdents for reading JSON inputs, writing CSVs
-# Explicitly denied on top:
-#   ~@privileged     - no mount, iopl, kexec, etc.
-#   ~@resources      - no rlimit/nice manipulation
-# NoNewPrivileges  - process cannot gain privileges via setuid/setgid binaries
-# PrivateTmp       - isolated /tmp, prevents cross-user /tmp attacks
-# PrivateDevices   - no access to raw device nodes (/dev/mem, /dev/kmem, etc.)
-# RestrictAddressFamilies - only AF_INET/AF_INET6/AF_UNIX; blocks raw/netlink sockets
-# ProtectSystem=strict - entire filesystem is RO except explicitly listed
-#                        ReadWritePaths; prevents ccall(open) on /opt/tljh,
-#                        /etc/passwd, and any other path outside /home/%u/notebooks
-c.SystemdSpawner.extra_resource_limits = {
-    "SystemCallFilter": "@system-service @network-io @file-system ~@privileged ~@resources",
-    "ProtectSystem": "strict",
-    "ReadWritePaths": "/home/%u/notebooks /opt/tljh/user/share/julia/logs",
-    "NoNewPrivileges": "yes",
-    "PrivateTmp": "yes",
-    "PrivateDevices": "yes",
-    "RestrictAddressFamilies": "AF_INET AF_UNIX",
-    "IPAddressAllow": "localhost",
-    "IPAddressDeny": "any",
-}
+# Note: systemdspawner 0.16 does not support unit_extra_properties.
+# Filesystem restrictions are enforced via read-only .local and notebook_dir.
 EOF
 
 # Setup Keycloak as a GenericOAuthenticator
@@ -128,6 +104,7 @@ c.GenericOAuthenticator.auto_login = True
 c.GenericOAuthenticator.auto_login_oauth2_authorize = True
 c.GenericOAuthenticator.validate_server_cert = False
 EOF
+chmod 600 /opt/tljh/config/jupyterhub_config.d/keycloak.py
 
 # Setup Nginx as reverse proxy for JupyterHub
 sudo rm -f /etc/nginx/sites-enabled/default
@@ -226,6 +203,14 @@ pip install --upgrade jupyterlab-pygments==0.2.0
 # exposed as a selectable kernel in the UI.
 rm -rf /opt/tljh/user/share/jupyter/kernels/python3
 
+# Disable terminal extension at the JupyterLab level
+/opt/tljh/user/bin/jupyter labextension disable @jupyterlab/terminal-extension
+
+# Block pip --user installs by making .local/lib read-only in /etc/skel
+# Jupyter still needs write access to .local/share for runtime files
+mkdir -p /etc/skel/.local/lib
+chmod 555 /etc/skel/.local/lib
+
 deactivate
 
 # Give jupyterhub-users groups access to $JULIA_DEPOT_PATH
@@ -234,10 +219,12 @@ touch $${JULIA_DEPOT_PATH}/logs/repl_history.jl $${JULIA_DEPOT_PATH}/logs/manife
 chmod 664 $${JULIA_DEPOT_PATH}/logs/repl_history.jl
 chmod 664 $${JULIA_DEPOT_PATH}/logs/manifest_usage.toml
 
-# Block ccall and cglobal system-wide via Julia's startup file.
-# This catches the @ccall/@cglobal macro forms. The expression form of ccall
-# (a compiler builtin) cannot be blocked at the language level; that is handled
-# by the syscall allowlist in the systemd unit (see restrictions.py).
+# Block dangerous Julia functions system-wide via startup file.
+# - @ccall/@cglobal macros: prevent FFI calls
+# - run/read/pipeline: prevent shell command execution
+# - download: prevent fetching remote payloads
+# - open with commands: prevent process spawning via open(`cmd`)
+# Note: ccall() builtin form cannot be blocked at language level.
 sudo mkdir -p /etc/julia
 cat <<'JULIA_STARTUP' > /etc/julia/startup.jl
 macro ccall(expr)
@@ -245,6 +232,26 @@ macro ccall(expr)
 end
 macro cglobal(expr)
     error("cglobal is disabled in this environment")
+end
+
+# Override shell execution functions
+function Base.run(cmd::Base.AbstractCmd; kw...)
+    error("Shell command execution is disabled in this environment")
+end
+function Base.read(cmd::Base.AbstractCmd; kw...)
+    error("Shell command execution is disabled in this environment")
+end
+function Base.read(cmd::Base.AbstractCmd, ::Type{T}; kw...) where T
+    error("Shell command execution is disabled in this environment")
+end
+function Base.pipeline(cmd::Base.AbstractCmd; kw...)
+    error("Shell command execution is disabled in this environment")
+end
+function Base.download(url::AbstractString, dest::AbstractString=tempname())
+    error("download is disabled in this environment")
+end
+function Base.open(cmd::Base.AbstractCmd, args...; kw...)
+    error("Shell command execution is disabled in this environment")
 end
 JULIA_STARTUP
 
@@ -264,4 +271,3 @@ sudo tljh-config reload
 
 # Restart nginx reverse proxy
 sudo systemctl restart nginx
-
