@@ -10,3 +10,7 @@ output "subnet_cidr_blocks" {
     aws_subnet.virtual_lab_manager_b.cidr_block,
   ]
 }
+
+output "rds_db_identifier" {
+  value = aws_db_instance.virtual_lab_manager.identifier
+}

@@ -31,3 +31,7 @@ output "pcs_subnet_cidr_block" {
   description = "CIDR block of the PCS subnet"
   value       = aws_subnet.pcs.cidr_block
 }
+
+output "rds_db_identifier" {
+  value = aws_db_instance.main.identifier
+}

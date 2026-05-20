@@ -14,7 +14,7 @@ module "debug_accounting_cloudwatch_error_log_sns_topic" {
   source = "./sqs_debug_queue"
 
   sns_topic_arn             = module.accounting_cloudwatch_error_log_entries_to_sns.sns_topic_arn
-  unique_short_name         = "accounting"
+  unique_short_name         = "accounting_logs"
   message_retention_seconds = 172800 # 2 days
 }
 
@@ -53,6 +53,25 @@ module "accounting_db_metrics_alerts" {
   db_load_relative_to_vcpus_high_threshold  = 1.0 # 1 active session per vcpu
 }
 
+module "debug_accounting_db_metrics_alerts_sns_topic" {
+  source = "./sqs_debug_queue"
+
+  sns_topic_arn             = module.accounting_db_metrics_alerts.sns_topic_arn
+  unique_short_name         = "accounting_db_metrics"
+  message_retention_seconds = 5 * 24 * 60 * 60 # 5 days
+}
+
+module "accounting_db_metrics_alerts_sns_entries_to_teams" {
+  source = "./sns_entries_to_teams"
+
+  webhook_secret_arn = local.teams_webhook_secrets_arn
+  webhook_secret_key = local.webhook_secret_key_for_metrics_alerts
+
+  unique_short_name = "accounting_db_metrics"
+  sns_topic_arn     = module.accounting_db_metrics_alerts.sns_topic_arn
+  python_runtime    = "python3.13"
+}
+
 # Auth Manager DB
 
 module "auth_manager_db_metrics_alerts" {
@@ -77,6 +96,25 @@ module "auth_manager_db_metrics_alerts" {
   db_load_relative_to_vcpus_high_threshold  = 1.0 # 1 active session per vcpu
 }
 
+module "debug_auth_manager_db_metrics_alerts_sns_topic" {
+  source = "./sqs_debug_queue"
+
+  sns_topic_arn             = module.auth_manager_db_metrics_alerts.sns_topic_arn
+  unique_short_name         = "auth_manager_db_metrics"
+  message_retention_seconds = 5 * 24 * 60 * 60 # 5 days
+}
+
+module "auth_manager_db_metrics_alerts_sns_entries_to_teams" {
+  source = "./sns_entries_to_teams"
+
+  webhook_secret_arn = local.teams_webhook_secrets_arn
+  webhook_secret_key = local.webhook_secret_key_for_metrics_alerts
+
+  unique_short_name = "auth_manager_db_metrics"
+  sns_topic_arn     = module.auth_manager_db_metrics_alerts.sns_topic_arn
+  python_runtime    = "python3.13"
+}
+
 # EntityCore logs
 
 module "entitycore_cloudwatch_error_log_entries_to_sns" {
@@ -93,7 +131,7 @@ module "debug_entitycore_cloudwatch_error_log_sns_topic" {
   source = "./sqs_debug_queue"
 
   sns_topic_arn             = module.entitycore_cloudwatch_error_log_entries_to_sns.sns_topic_arn
-  unique_short_name         = "entitycore"
+  unique_short_name         = "entitycore_logs"
   message_retention_seconds = 172800 # 2 days
 }
 
@@ -103,7 +141,7 @@ module "entitycore_error_log_sns_entries_to_teams" {
   webhook_secret_arn = local.teams_webhook_secrets_arn
   webhook_secret_key = "entity_core_logs_errors"
 
-  unique_short_name = "entity_core"
+  unique_short_name = "entity_core_logs"
   sns_topic_arn     = module.entitycore_cloudwatch_error_log_entries_to_sns.sns_topic_arn
   python_runtime    = "python3.13"
 }
@@ -124,20 +162,19 @@ module "entitycore_db_metrics_alerts" {
   database_connections_high_threshold       = 40
   read_latency_high_threshold               = 0.05              # 50 ms
   write_latency_high_threshold              = 0.02              # 20 ms
-  swap_usage_high_threshold                 = 150 * 1024 * 1024 # 200 MB
+  swap_usage_high_threshold                 = 150 * 1024 * 1024 # 150 MB
   disk_queue_depth_high_threshold           = 1
   cpu_credit_balance_low_threshold          = 200
   cpu_surplus_credit_balance_high_threshold = 5
   db_load_high_threshold                    = 3   # average active sessions
   db_load_relative_to_vcpus_high_threshold  = 1.0 # 1 active session per vcpu
-
 }
 
 module "debug_entitycore_db_metrics_alerts_sns_topic" {
   source = "./sqs_debug_queue"
 
   sns_topic_arn             = module.entitycore_db_metrics_alerts.sns_topic_arn
-  unique_short_name         = "entitycore_metrics"
+  unique_short_name         = "entitycore_db_metrics"
   message_retention_seconds = 5 * 24 * 60 * 60 # 5 days
 }
 
@@ -149,6 +186,221 @@ module "entitycore_db_metrics_alerts_sns_entries_to_teams" {
 
   unique_short_name = "entity_core_db_metrics"
   sns_topic_arn     = module.entitycore_db_metrics_alerts.sns_topic_arn
+  python_runtime    = "python3.13"
+}
+
+# Keycloak DB
+
+module "keycloak_db_metrics_alerts" {
+  source = "./rds_postgresql_cloudwatch_metric_alarms"
+
+  db_instance_identifier   = module.cs.keycloak_rds_db_identifier
+  short_name               = "keycloak"
+  enable_cpu_credit_alarms = true
+  enable_db_load_alarms    = true
+
+  cpu_utilization_high_threshold            = 20                      # %
+  freeable_memory_low_threshold             = 50 * 1024 * 1024        # 50 MB
+  free_storage_space_low_threshold          = 10 * 1024 * 1024 * 1024 # 10 GB
+  database_connections_high_threshold       = 15
+  read_latency_high_threshold               = 0.05             # 50 ms
+  write_latency_high_threshold              = 0.02             # 20 ms
+  swap_usage_high_threshold                 = 50 * 1024 * 1024 # 50 MB
+  disk_queue_depth_high_threshold           = 1
+  cpu_credit_balance_low_threshold          = 200
+  cpu_surplus_credit_balance_high_threshold = 5
+  db_load_high_threshold                    = 1   # average active sessions
+  db_load_relative_to_vcpus_high_threshold  = 0.5 # 1 active session per vcpu
+}
+
+module "debug_keycloak_db_metrics_alerts_sns_topic" {
+  source = "./sqs_debug_queue"
+
+  sns_topic_arn             = module.keycloak_db_metrics_alerts.sns_topic_arn
+  unique_short_name         = "keycloak_db_metrics"
+  message_retention_seconds = 5 * 24 * 60 * 60 # 5 days
+}
+
+module "keycloak_db_metrics_alerts_sns_entries_to_teams" {
+  source = "./sns_entries_to_teams"
+
+  webhook_secret_arn = local.teams_webhook_secrets_arn
+  webhook_secret_key = local.webhook_secret_key_for_metrics_alerts
+
+  unique_short_name = "keycloak_db_metrics"
+  sns_topic_arn     = module.keycloak_db_metrics_alerts.sns_topic_arn
+  python_runtime    = "python3.13"
+}
+
+# Launch system DB
+
+module "launch_system_db_metrics_alerts" {
+  source = "./rds_postgresql_cloudwatch_metric_alarms"
+
+  db_instance_identifier   = module.launch_system.rds_db_identifier
+  short_name               = "launch_system"
+  enable_cpu_credit_alarms = true
+  enable_db_load_alarms    = true
+
+  cpu_utilization_high_threshold            = 20                      # %
+  freeable_memory_low_threshold             = 50 * 1024 * 1024        # 50 MB
+  free_storage_space_low_threshold          = 10 * 1024 * 1024 * 1024 # 10 GB
+  database_connections_high_threshold       = 8
+  read_latency_high_threshold               = 0.05             # 50 ms
+  write_latency_high_threshold              = 0.02             # 20 ms
+  swap_usage_high_threshold                 = 50 * 1024 * 1024 # 50 MB
+  disk_queue_depth_high_threshold           = 1
+  cpu_credit_balance_low_threshold          = 200
+  cpu_surplus_credit_balance_high_threshold = 5
+  db_load_high_threshold                    = 0.5 # average active sessions
+  db_load_relative_to_vcpus_high_threshold  = 0.4 # num active session per vcpu
+}
+
+module "debug_launch_system_db_metrics_alerts_sns_topic" {
+  source = "./sqs_debug_queue"
+
+  sns_topic_arn             = module.launch_system_db_metrics_alerts.sns_topic_arn
+  unique_short_name         = "launch_system_db_metrics"
+  message_retention_seconds = 5 * 24 * 60 * 60 # 5 days
+}
+
+module "launch_system_db_metrics_alerts_sns_entries_to_teams" {
+  source = "./sns_entries_to_teams"
+
+  webhook_secret_arn = local.teams_webhook_secrets_arn
+  webhook_secret_key = local.webhook_secret_key_for_metrics_alerts
+
+  unique_short_name = "launch_system_db_metrics"
+  sns_topic_arn     = module.launch_system_db_metrics_alerts.sns_topic_arn
+  python_runtime    = "python3.13"
+}
+
+# ML RDS postgres DB
+
+module "ml_rds_postgres_db_metrics_alerts" {
+  source = "./rds_postgresql_cloudwatch_metric_alarms"
+
+  db_instance_identifier   = module.ml.rds_db_identifier
+  short_name               = "ml_rds_postgres"
+  enable_cpu_credit_alarms = true
+  enable_db_load_alarms    = true
+
+  cpu_utilization_high_threshold            = 20                      # %
+  freeable_memory_low_threshold             = 50 * 1024 * 1024        # 50 MB
+  free_storage_space_low_threshold          = 10 * 1024 * 1024 * 1024 # 10 GB
+  database_connections_high_threshold       = 15
+  read_latency_high_threshold               = 0.03             # 30 ms
+  write_latency_high_threshold              = 0.05             # 50 ms
+  swap_usage_high_threshold                 = 50 * 1024 * 1024 # 50 MB
+  disk_queue_depth_high_threshold           = 1
+  cpu_credit_balance_low_threshold          = 200
+  cpu_surplus_credit_balance_high_threshold = 5
+  db_load_high_threshold                    = 0.5 # average active sessions
+  db_load_relative_to_vcpus_high_threshold  = 0.4 # num active session per vcpu
+}
+
+module "debug_ml_rds_postgres_db_metrics_alerts_sns_topic" {
+  source = "./sqs_debug_queue"
+
+  sns_topic_arn             = module.ml_rds_postgres_db_metrics_alerts.sns_topic_arn
+  unique_short_name         = "ml_rds_postgres_db_metrics"
+  message_retention_seconds = 5 * 24 * 60 * 60 # 5 days
+}
+
+module "ml_rds_postgres_db_metrics_alerts_sns_entries_to_teams" {
+  source = "./sns_entries_to_teams"
+
+  webhook_secret_arn = local.teams_webhook_secrets_arn
+  webhook_secret_key = local.webhook_secret_key_for_metrics_alerts
+
+  unique_short_name = "ml_rds_postgres_db_metrics"
+  sns_topic_arn     = module.ml_rds_postgres_db_metrics_alerts.sns_topic_arn
+  python_runtime    = "python3.13"
+}
+
+# ML Typescript RDS postgres DB
+
+module "ml_rds_ts_postgres_db_metrics_alerts" {
+  source = "./rds_postgresql_cloudwatch_metric_alarms"
+
+  db_instance_identifier   = module.ml_typescript.rds_db_identifier
+  short_name               = "ml_rds_ts_postgres"
+  enable_cpu_credit_alarms = true
+  enable_db_load_alarms    = true
+
+  cpu_utilization_high_threshold            = 20                      # %
+  freeable_memory_low_threshold             = 50 * 1024 * 1024        # 50 MB
+  free_storage_space_low_threshold          = 10 * 1024 * 1024 * 1024 # 10 GB
+  database_connections_high_threshold       = 15
+  read_latency_high_threshold               = 0.03             # 30 ms
+  write_latency_high_threshold              = 0.05             # 50 ms
+  swap_usage_high_threshold                 = 50 * 1024 * 1024 # 50 MB
+  disk_queue_depth_high_threshold           = 1
+  cpu_credit_balance_low_threshold          = 200
+  cpu_surplus_credit_balance_high_threshold = 5
+  db_load_high_threshold                    = 0.5 # average active sessions
+  db_load_relative_to_vcpus_high_threshold  = 0.4 # num active session per vcpu
+}
+
+module "debug_ml_rds_ts_postgres_db_metrics_alerts_sns_topic" {
+  source = "./sqs_debug_queue"
+
+  sns_topic_arn             = module.ml_rds_ts_postgres_db_metrics_alerts.sns_topic_arn
+  unique_short_name         = "ml_rds_ts_postgres_db_metrics"
+  message_retention_seconds = 5 * 24 * 60 * 60 # 5 days
+}
+
+module "ml_rds_ts_postgres_db_metrics_alerts_sns_entries_to_teams" {
+  source = "./sns_entries_to_teams"
+
+  webhook_secret_arn = local.teams_webhook_secrets_arn
+  webhook_secret_key = local.webhook_secret_key_for_metrics_alerts
+
+  unique_short_name = "ml_rds_ts_postgres_db_metrics"
+  sns_topic_arn     = module.ml_rds_ts_postgres_db_metrics_alerts.sns_topic_arn
+  python_runtime    = "python3.13"
+}
+
+# Virtual Lab Manager DB
+
+module "vlm_db_metrics_alerts" {
+  source = "./rds_postgresql_cloudwatch_metric_alarms"
+
+  db_instance_identifier   = module.virtual_lab_manager.rds_db_identifier
+  short_name               = "vlm"
+  enable_cpu_credit_alarms = true
+  enable_db_load_alarms    = true
+
+  cpu_utilization_high_threshold            = 20                     # %
+  freeable_memory_low_threshold             = 500 * 1024 * 1024      # 500 MB
+  free_storage_space_low_threshold          = 1 * 1024 * 1024 * 1024 # 1 GB
+  database_connections_high_threshold       = 15
+  read_latency_high_threshold               = 0.03             # 30 ms
+  write_latency_high_threshold              = 0.1              # 100 ms
+  swap_usage_high_threshold                 = 50 * 1024 * 1024 # 50 MB
+  disk_queue_depth_high_threshold           = 1
+  cpu_credit_balance_low_threshold          = 200
+  cpu_surplus_credit_balance_high_threshold = 5
+  db_load_high_threshold                    = 0.5 # average active sessions
+  db_load_relative_to_vcpus_high_threshold  = 0.4 # num active session per vcpu
+}
+
+module "debug_vlm_db_metrics_alerts_sns_topic" {
+  source = "./sqs_debug_queue"
+
+  sns_topic_arn             = module.vlm_db_metrics_alerts.sns_topic_arn
+  unique_short_name         = "vlm_db_metrics"
+  message_retention_seconds = 5 * 24 * 60 * 60 # 5 days
+}
+
+module "vlm_db_metrics_alerts_sns_entries_to_teams" {
+  source = "./sns_entries_to_teams"
+
+  webhook_secret_arn = local.teams_webhook_secrets_arn
+  webhook_secret_key = local.webhook_secret_key_for_metrics_alerts
+
+  unique_short_name = "vlm_db_metrics"
+  sns_topic_arn     = module.vlm_db_metrics_alerts.sns_topic_arn
   python_runtime    = "python3.13"
 }
 
