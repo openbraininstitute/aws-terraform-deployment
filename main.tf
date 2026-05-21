@@ -837,7 +837,7 @@ module "launch_system" {
   api_image_url                                              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.5.1"
   orchestrator_image_url                                     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.5.1"
   default_executor_image_url                                 = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler:2026.5.1"
-  python_3_12_openmpi5_neuron9_neurodamus_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-openmpi5-neuron9-neurodamus:2026.5.1"
+  python_3_12_openmpi5_neuron9_neurodamus_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler-openmpi5-neuron9-neurodamus:2026.5.1"
 
   api_task_size          = var.launch_system_api_task_size
   executor_task_size     = var.launch_system_executor_task_size
