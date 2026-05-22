@@ -104,6 +104,29 @@ variable "azure_nfs_internal_public_data_path" {
   description = "NFS export path for internal_public_data on azure"
 }
 
+variable "azure_agent_shutdown_client_id" {
+  type      = string
+  sensitive = true
+}
+
+variable "azure_tenant_id" {
+  type      = string
+  sensitive = true
+}
+
+variable "azure_agent_shutdown_client_secret" {
+  type      = string
+  sensitive = true
+}
+
+variable "azure_subscription_id" {
+  type = string
+}
+
+variable "azure_resource_group_name" {
+  type = string
+}
+
 variable "datasync_target_account" {
   type        = string
   default     = ""
@@ -114,4 +137,9 @@ variable "destination_entitycore_internal_bucket" {
   type        = string
   default     = ""
   description = "Destination bucket in {var.datasync_target_account} to which entitycore data needs to be synced"
+}
+
+variable "agent_vm_shutdown_version" {
+  type        = string
+  description = "Version of the release of the datasync-agent-vm-shutdown function"
 }

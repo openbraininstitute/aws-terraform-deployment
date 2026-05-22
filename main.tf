@@ -769,9 +769,15 @@ module "public_data_sync_opendata" {
   azure_nfs_opendata_path                     = var.azure_nfs_opendata_path
   azure_nfs_internal_public_data_path         = var.azure_nfs_internal_public_data_path
 
+  azure_agent_shutdown_client_id     = var.azure_agent_shutdown_client_id
+  azure_tenant_id                    = var.azure_tenant_id
+  azure_agent_shutdown_client_secret = var.azure_agent_shutdown_client_secret
+
+  azure_subscription_id     = var.azure_subscription_id
+  azure_resource_group_name = var.azure_datasync_agent_vm_resource_group_name
+
   datasync_target_account                = var.datasync_target_account
   destination_entitycore_internal_bucket = var.destination_entitycore_internal_bucket
-
 
   providers = {
     aws           = aws
