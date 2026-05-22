@@ -239,7 +239,7 @@ resource "aws_ecs_task_definition" "python_3_12_openmpi5_neuron9_neurodamus_exec
       environment = [
         {
           name  = "EXECUTOR_NAME"
-          value = "python_3_12_openmpi5_neuron9_neurodamus_executor"
+          value = "python_3_12_openmpi5_neuron9_neurodamus"
         }
       ]
       logConfiguration = merge(local.executor_container_base.logConfiguration, {
