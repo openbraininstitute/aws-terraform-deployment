@@ -96,10 +96,13 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
       ]
 
       healthcheck = {
-        command     = ["CMD-SHELL", "exit 0"] // TODO: add a proper health check.
-        interval    = 60
+        command = [
+          "CMD-SHELL",
+          "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000${var.root_path}/health')\" || exit 1"
+        ]
+        interval    = 30
         timeout     = 5
-        startPeriod = 30
+        startPeriod = 300
         retries     = 3
       }
 
@@ -241,6 +244,9 @@ resource "aws_ecs_service" "entitycore_ecs_service" {
 
   force_new_deployment = true
   desired_count        = 1
+
+  # ignore ALB health check failures for a grace period, to allow migrations to complete
+  health_check_grace_period_seconds = 300
 
   propagate_tags = "SERVICE"
 }

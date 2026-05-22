@@ -11,9 +11,13 @@ resource "aws_lb_target_group" "entitycore_private_tg" {
   }
 
   health_check {
-    enabled  = true
-    path     = "${var.root_path}/health"
-    protocol = "HTTP"
+    enabled             = true
+    path                = "${var.root_path}/health"
+    protocol            = "HTTP"
+    healthy_threshold   = 2
+    unhealthy_threshold = 3
+    interval            = 30
+    timeout             = 10
   }
 }
 
