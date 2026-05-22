@@ -245,7 +245,7 @@ resource "aws_ecs_service" "entitycore_ecs_service" {
   force_new_deployment = true
   desired_count        = 1
 
-  # ignore ALB health check failures for a grace period after, to allow migrations to complete
+  # ignore ALB health check failures for a grace period, to allow migrations to complete
   health_check_grace_period_seconds = 300
 
   propagate_tags = "SERVICE"
