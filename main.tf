@@ -560,7 +560,7 @@ module "entitycore_svc" {
   pagination_default_page_size = 30
   pagination_max_page_size     = 1000
 
-  db_migration_statement_timeout_ms = 60000
+  db_migration_statement_timeout_ms = 120000
   db_migration_lock_timeout_ms      = 10000
 
   obi_backup_plan = "obi_plan"
