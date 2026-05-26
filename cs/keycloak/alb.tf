@@ -21,6 +21,46 @@ resource "aws_lb_target_group" "private_keycloak_target_group" {
   }
 }
 
+resource "aws_lb_listener_rule" "oauth_authorization_server_metadata_redirect" {
+  listener_arn = var.private_alb_https_listener_arn
+  priority     = 562
+  action {
+    type = "redirect"
+    redirect {
+      path        = "/auth/realms/${var.keycloak_realm}/.well-known/oauth-authorization-server"
+      status_code = "HTTP_302"
+    }
+  }
+  condition {
+    path_pattern {
+      values = ["/.well-known/oauth-authorization-server/auth/realms/${var.keycloak_realm}"]
+    }
+  }
+  tags = {
+    SBO_Billing = "keycloak"
+  }
+}
+
+resource "aws_lb_listener_rule" "openid_configuration_redirect" {
+  listener_arn = var.private_alb_https_listener_arn
+  priority     = 563
+  action {
+    type = "redirect"
+    redirect {
+      path        = "/auth/realms/${var.keycloak_realm}/.well-known/openid-configuration"
+      status_code = "HTTP_302"
+    }
+  }
+  condition {
+    path_pattern {
+      values = ["/.well-known/openid-configuration/auth/realms/${var.keycloak_realm}"]
+    }
+  }
+  tags = {
+    SBO_Billing = "keycloak"
+  }
+}
+
 resource "aws_lb_listener_rule" "private_keycloak_https" {
   listener_arn = var.private_alb_https_listener_arn
   priority     = 565
