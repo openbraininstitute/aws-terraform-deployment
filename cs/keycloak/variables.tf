@@ -68,6 +68,12 @@ variable "keycloak_admin_allowed_source_ip_cidr_blocks" {
   description = "CIDRs allowed to access the Keycloak admin console"
 }
 
+variable "keycloak_realm" {
+  type        = string
+  description = "Keycloak realm name"
+  sensitive   = false
+}
+
 variable "keycloak_ecs_cluster_name" {
   type = string
 }

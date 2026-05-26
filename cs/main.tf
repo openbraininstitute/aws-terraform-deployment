@@ -104,6 +104,7 @@ module "keycloak" {
 
   keycloak_allowed_source_ip_cidr_blocks       = var.keycloak_allowed_source_ip_cidr_blocks
   keycloak_admin_allowed_source_ip_cidr_blocks = var.keycloak_admin_allowed_source_ip_cidr_blocks
+  keycloak_realm                               = "SBO"
 }
 
 module "secret_sharing_svc" {
