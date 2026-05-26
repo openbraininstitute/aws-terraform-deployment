@@ -47,9 +47,10 @@ resource "aws_route_table_association" "untrusted_b_internet_access" {
 }
 
 resource "aws_subnet" "pcs" {
-  vpc_id            = var.vpc_id
-  availability_zone = "${var.aws_region}a"
-  cidr_block        = var.pcs_cidr_block
+  vpc_id = var.vpc_id
+  # hpc7a.96xlarge nodes are only available in `use1-az6`
+  availability_zone_id = "use1-az6"
+  cidr_block           = var.pcs_cidr_block
   # need to have a public IP to talk to PCS service
   # https://docs.aws.amazon.com/pcs/latest/userguide/troubleshooting-compute-node-bootstrap.html#:~:text=AWS%20PrivateLink).-,Instance%20in%20a%20public%20subnet%20without%20public%20IP,-If%20your%20subnet 
   # TODO: 
