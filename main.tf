@@ -318,7 +318,6 @@ module "small_scale_simulator" {
   accounting_base_url = "https://${local.cell_a_primary_domain}${var.accounting_svc_base_path}"
   entitycore_url      = "https://${local.cell_a_primary_domain}/api/entitycore"
   keycloak_server_url = var.keycloak_url_with_auth
-  virtual_lab_api_url = "https://${local.cell_a_primary_domain}/api/virtual-lab-manager"
 
   api_task_size = var.small_scale_simulator_api_task_size
 
@@ -544,7 +543,8 @@ module "entitycore_svc" {
   root_path = "/api/entitycore"
 
   # use staging keycloak url in sandboxes
-  keycloak_url = "${var.keycloak_sbo_realm_url}/"
+  keycloak_url        = "${var.keycloak_sbo_realm_url}/"
+  virtual_lab_api_url = "https://${local.cell_a_primary_domain}/api/virtual-lab-manager"
 
   s3_bucket_allowed_origins = var.entitycore_svc_s3_bucket_allowed_origins
   aws_s3_internal_bucket    = var.entitycore_svc_aws_s3_internal_bucket
