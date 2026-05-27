@@ -26,6 +26,13 @@ resource "aws_subnet" "untrusted_b" {
   tags              = merge(var.tags, { Name = "launch_system_api_b" })
 }
 
+resource "aws_subnet" "untrusted_c" {
+  vpc_id            = var.vpc_id
+  availability_zone = "${var.aws_region}c"
+  cidr_block        = "10.0.37.0/25"
+  tags              = merge(var.tags, { Name = "launch_system_api_c" })
+}
+
 resource "aws_route_table_association" "trusted_a_internet_access" {
   subnet_id      = aws_subnet.trusted_a.id
   route_table_id = var.internet_access_route_id
@@ -46,14 +53,19 @@ resource "aws_route_table_association" "untrusted_b_internet_access" {
   route_table_id = var.internet_access_route_id
 }
 
+resource "aws_route_table_association" "untrusted_c_internet_access" {
+  subnet_id      = aws_subnet.untrusted_c.id
+  route_table_id = var.internet_access_route_id
+}
+
 resource "aws_subnet" "pcs" {
   vpc_id = var.vpc_id
   # hpc7a.96xlarge nodes are only available in `use1-az6`
   availability_zone_id = "use1-az6"
   cidr_block           = var.pcs_cidr_block
   # need to have a public IP to talk to PCS service
-  # https://docs.aws.amazon.com/pcs/latest/userguide/troubleshooting-compute-node-bootstrap.html#:~:text=AWS%20PrivateLink).-,Instance%20in%20a%20public%20subnet%20without%20public%20IP,-If%20your%20subnet 
-  # TODO: 
+  # https://docs.aws.amazon.com/pcs/latest/userguide/troubleshooting-compute-node-bootstrap.html#:~:text=AWS%20PrivateLink).-,Instance%20in%20a%20public%20subnet%20without%20public%20IP,-If%20your%20subnet
+  # TODO:
   map_public_ip_on_launch = false
 
   tags = merge(var.tags, { Name = "pcs-cluster" })

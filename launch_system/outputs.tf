@@ -8,6 +8,7 @@ output "executor_network_ids" {
   value = [
     aws_subnet.untrusted_a.id,
     aws_subnet.untrusted_b.id,
+    aws_subnet.untrusted_c.id,
   ]
 }
 
@@ -16,6 +17,7 @@ output "executor_subnet_cidr_blocks" {
   value = [
     aws_subnet.untrusted_a.cidr_block,
     aws_subnet.untrusted_b.cidr_block,
+    aws_subnet.untrusted_c.cidr_block,
   ]
 }
 
