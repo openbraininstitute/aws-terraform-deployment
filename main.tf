@@ -318,6 +318,7 @@ module "small_scale_simulator" {
   accounting_base_url = "https://${local.cell_a_primary_domain}${var.accounting_svc_base_path}"
   entitycore_url      = "https://${local.cell_a_primary_domain}/api/entitycore"
   keycloak_server_url = var.keycloak_url_with_auth
+  virtual_lab_api_url = "https://${local.cell_a_primary_domain}/api/virtual-lab-manager"
 
   api_task_size = var.small_scale_simulator_api_task_size
 

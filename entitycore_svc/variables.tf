@@ -118,3 +118,8 @@ variable "source_datasync_role" {
   type        = string
   default     = ""
 }
+
+variable "virtual_lab_api_url" {
+  description = "virtual lab manager URL"
+  type        = string
+}
