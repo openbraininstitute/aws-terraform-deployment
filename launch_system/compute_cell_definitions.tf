@@ -20,7 +20,7 @@ locals {
             image_type      = "python_3_12_compiler"
             launch_type     = "FARGATE"
             cluster_name    = aws_ecs_cluster.executor.name
-            subnets         = [aws_subnet.untrusted_a.id, aws_subnet.untrusted_b.id]
+            subnets         = [aws_subnet.untrusted_a.id, aws_subnet.untrusted_b.id, aws_subnet.untrusted_c.id]
             security_groups = [aws_security_group.executor.id]
             task_family     = aws_ecs_task_definition.default_executor.family
           },
@@ -33,7 +33,7 @@ locals {
             image_type      = "python_3_12_inait"
             launch_type     = "FARGATE"
             cluster_name    = aws_ecs_cluster.executor.name
-            subnets         = [aws_subnet.untrusted_a.id, aws_subnet.untrusted_b.id]
+            subnets         = [aws_subnet.untrusted_a.id, aws_subnet.untrusted_b.id, aws_subnet.untrusted_c.id]
             security_groups = [aws_security_group.executor.id]
             task_family     = aws_ecs_task_definition.inait_executor.family
           },
@@ -46,7 +46,7 @@ locals {
             image_type      = "python_3_12_openmpi5_neuron9_neurodamus"
             launch_type     = "FARGATE"
             cluster_name    = aws_ecs_cluster.executor.name
-            subnets         = [aws_subnet.untrusted_a.id, aws_subnet.untrusted_b.id]
+            subnets         = [aws_subnet.untrusted_a.id, aws_subnet.untrusted_b.id, aws_subnet.untrusted_c.id]
             security_groups = [aws_security_group.executor.id]
             task_family     = aws_ecs_task_definition.python_3_12_openmpi5_neuron9_neurodamus_executor.family
           }
