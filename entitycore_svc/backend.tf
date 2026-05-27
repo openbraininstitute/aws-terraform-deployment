@@ -179,6 +179,10 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
           name  = "DB_MIGRATION_LOCK_TIMEOUT_MS"
           value = var.db_migration_lock_timeout_ms
         },
+        {
+          name  = "VIRTUAL_LAB_API_URL"
+          value = var.virtual_lab_api_url
+        }
       ], var.cors_origin_regex != null ? [{ name = "CORS_ORIGIN_REGEX", value = var.cors_origin_regex }] : [])
 
       secrets = [
