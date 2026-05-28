@@ -248,6 +248,13 @@ def handle_log_event(event: Dict[str, Any], _) -> Dict[str, Any]:
 
 def send_to_teams(message: str, webhook_url: str) -> None:
     """Send a simple text message to a Microsoft Teams channel."""
+    # avoid showing full URLs as that might trigger teams to fetch the URLs
+    message = message.replace('https://staging.cell-a.openbraininstitute.org', 'STAGING.CELL-A')
+    message = message.replace('https://cell-a.openbraininstitute.org', 'CELL-A')
+    message = message.replace('https://staging.cell-b.openbraininstitute.org', 'STAGING.CELL-B')
+    message = message.replace('https://cell-b.openbraininstitute.org', 'CELL-B')
+    message = message.replace('https://staging.openbraininstitute.org', 'STAGING')
+    message = message.replace('https://www.openbraininstitute.org', 'WWW')
     headers = {'Content-Type': 'application/json'}
     teams_payload = {
         'text': f"{message}"
