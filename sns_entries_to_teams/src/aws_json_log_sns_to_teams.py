@@ -249,12 +249,22 @@ def handle_log_event(event: Dict[str, Any], _) -> Dict[str, Any]:
 def send_to_teams(message: str, webhook_url: str) -> None:
     """Send a simple text message to a Microsoft Teams channel."""
     # avoid showing full URLs as that might trigger teams to fetch the URLs
-    message = message.replace('https://staging.cell-a.openbraininstitute.org', 'STAGING.CELL-A')
-    message = message.replace('https://cell-a.openbraininstitute.org', 'CELL-A')
-    message = message.replace('https://staging.cell-b.openbraininstitute.org', 'STAGING.CELL-B')
-    message = message.replace('https://cell-b.openbraininstitute.org', 'CELL-B')
-    message = message.replace('https://staging.openbraininstitute.org', 'STAGING')
-    message = message.replace('https://www.openbraininstitute.org', 'WWW')
+    url_replacements = {
+        'https://staging.cell-a.openbraininstitute.org': 'STAGING.CELL-A',
+        'https://cell-a.openbraininstitute.org': 'CELL-A',
+        'https://staging.cell-b.openbraininstitute.org': 'STAGING.CELL-B',
+        'https://cell-b.openbraininstitute.org': 'CELL-B',
+        'https://staging.openbraininstitute.org': 'STAGING',
+        'https://www.openbraininstitute.org': 'WWW',
+        'http://staging.cell-a.openbraininstitute.org': 'STAGING.CELL-A',
+        'http://cell-a.openbraininstitute.org': 'CELL-A',
+        'http://staging.cell-b.openbraininstitute.org': 'STAGING.CELL-B',
+        'http://cell-b.openbraininstitute.org': 'CELL-B',
+        'http://staging.openbraininstitute.org': 'STAGING',
+        'http://www.openbraininstitute.org': 'WWW',
+    }
+    for url, replacement in url_replacements.items():
+        message = message.replace(url, replacement)
     headers = {'Content-Type': 'application/json'}
     teams_payload = {
         'text': f"{message}"
