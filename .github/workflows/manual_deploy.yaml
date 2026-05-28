@@ -73,7 +73,7 @@ jobs:
           SANITY_TOKEN: ${{ secrets.SANITY_TOKEN }}
         run: |
           set -e
-          npx -y sanity@$SANITY_CLI_VERSION datasets export staging staging.tar.gz --overwrite -p $SANITY_PROJECT_ID -t $SANITY_TOKEN
-          npx -y sanity@$SANITY_CLI_VERSION datasets delete production --force -p $SANITY_PROJECT_ID -t $SANITY_TOKEN
-          npx -y sanity@$SANITY_CLI_VERSION datasets create production --visibility public -p $SANITY_PROJECT_ID -t $SANITY_TOKEN
-          npx -y sanity@$SANITY_CLI_VERSION datasets import staging.tar.gz -d production -p $SANITY_PROJECT_ID -t $SANITY_TOKEN
+          npx -y sanity@${SANITY_CLI_VERSION} datasets export staging staging.tar.gz --overwrite -p $SANITY_PROJECT_ID -t $SANITY_TOKEN
+          npx -y sanity@${SANITY_CLI_VERSION} datasets delete production --force -p $SANITY_PROJECT_ID -t $SANITY_TOKEN
+          npx -y sanity@${SANITY_CLI_VERSION} datasets create production --visibility public -p $SANITY_PROJECT_ID -t $SANITY_TOKEN
+          npx -y sanity@${SANITY_CLI_VERSION} datasets import staging.tar.gz -d production -p $SANITY_PROJECT_ID -t $SANITY_TOKEN
