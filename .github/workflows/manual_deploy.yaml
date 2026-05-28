@@ -3,6 +3,8 @@ name: Manual - Apply changes
 env:
   AWS_ROLE_ARN_STAGING: arn:aws:iam::992382665735:role/GithubTerraformDeploy
   AWS_ROLE_ARN_PRODUCTION: arn:aws:iam::671250183987:role/GithubTerraformDeploy
+  SANITY_PROJECT_ID: fgi7eh1v
+  SANITY_CLI_VERSION: 6.6.0
 
 on:
   workflow_dispatch:
@@ -15,6 +17,10 @@ on:
         options:
           - staging
           - production
+      sync_sanity_dataset:
+        type: boolean
+        description: Copy Sanity dataset from staging to production (only applies when deploying to production)
+        default: true
 
 concurrency:
   group: terraform-${{ inputs.environment }}
@@ -60,3 +66,14 @@ jobs:
       - name: Run Terraform Apply
         run: |
           terraform apply -auto-approve -var-file="${{ inputs.environment }}.tfvars"
+
+      - name: Sync Sanity dataset (staging → production)
+        if: inputs.sync_sanity_dataset == true && inputs.environment == 'production'
+        env:
+          SANITY_TOKEN: ${{ secrets.SANITY_TOKEN }}
+        run: |
+          set -e
+          npx -y sanity@$SANITY_CLI_VERSION datasets export staging staging.tar.gz --overwrite -p $SANITY_PROJECT_ID -t $SANITY_TOKEN
+          npx -y sanity@$SANITY_CLI_VERSION datasets delete production --force -p $SANITY_PROJECT_ID -t $SANITY_TOKEN
+          npx -y sanity@$SANITY_CLI_VERSION datasets create production --visibility public -p $SANITY_PROJECT_ID -t $SANITY_TOKEN
+          npx -y sanity@$SANITY_CLI_VERSION datasets import staging.tar.gz -d production -p $SANITY_PROJECT_ID -t $SANITY_TOKEN
