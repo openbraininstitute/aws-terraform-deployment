@@ -35,6 +35,8 @@ resource "aws_db_instance" "entitycore" {
 
   publicly_accessible          = false
   performance_insights_enabled = true
+  monitoring_interval          = 15
+  monitoring_role_arn          = aws_iam_role.rds_enhanced_monitoring_entitycore.arn
   storage_encrypted            = false #tfsec:ignore:aws-rds-encrypt-instance-storage-data
 
   vpc_security_group_ids = [aws_security_group.acc_sg.id]
