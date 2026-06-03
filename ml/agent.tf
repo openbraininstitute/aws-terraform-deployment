@@ -1,6 +1,6 @@
 module "s3_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "v4.11.0"
+  version = "v5.13.0"
 
   bucket                                = var.neuroagent_bucket_name
   acl                                   = "private"
@@ -28,7 +28,7 @@ module "s3_bucket" {
 #tfsec:ignore:aws-ec2-no-public-egress-sgr
 module "ecs_service_agent" {
   source  = "terraform-aws-modules/ecs/aws//modules/service"
-  version = "v5.12.1"
+  version = "v6.12.0"
 
   name                  = local.ecs_service_name
   cluster_arn           = local.ecs_cluster_arn
@@ -182,14 +182,14 @@ module "ecs_service_agent" {
 
   service_connect_configuration = {
     namespace = aws_service_discovery_http_namespace.ml_agent.arn
-    service = {
+    service = [{
       client_alias = {
         port     = 8078
         dns_name = local.service_connect_port_name
       }
       port_name      = local.service_connect_port_name
       discovery_name = local.service_connect_port_name
-    }
+    }]
   }
 
   load_balancer = {
@@ -201,22 +201,21 @@ module "ecs_service_agent" {
   }
 
   subnet_ids = local.private_subnet_ids
-  security_group_rules = {
+  security_group_ingress_rules = {
     generic_private_alb = {
-      type                     = "ingress"
-      from_port                = 8078
-      to_port                  = 8078
-      protocol                 = "tcp"
-      description              = "Service port"
-      source_security_group_id = var.generic_private_alb_security_group_id
+      from_port                    = "8078"
+      to_port                      = "8078"
+      ip_protocol                  = "tcp"
+      description                  = "Service port"
+      referenced_security_group_id = var.generic_private_alb_security_group_id
     }
-
+  }
+  security_group_egress_rules = {
     egress_all = {
-      type        = "egress"
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
-      cidr_blocks = ["0.0.0.0/0"]
+      from_port   = "0"
+      to_port     = "0"
+      ip_protocol = "-1"
+      cidr_ipv4   = "0.0.0.0/0"
     }
   }
   tags           = var.tags

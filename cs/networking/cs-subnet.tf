@@ -1,7 +1,7 @@
 # Subnets for Keycloak svc
 resource "aws_subnet" "cs_subnet_a" {
   vpc_id                  = var.vpc_id
-  availability_zone       = "${data.aws_region.current.name}a"
+  availability_zone       = "${data.aws_region.current.region}a"
   cidr_block              = "10.0.13.0/25"
   map_public_ip_on_launch = false
 
@@ -13,7 +13,7 @@ resource "aws_subnet" "cs_subnet_a" {
 
 resource "aws_subnet" "cs_subnet_b" {
   vpc_id                  = var.vpc_id
-  availability_zone       = "${data.aws_region.current.name}b"
+  availability_zone       = "${data.aws_region.current.region}b"
   cidr_block              = "10.0.13.128/25"
   map_public_ip_on_launch = false
 
@@ -25,7 +25,7 @@ resource "aws_subnet" "cs_subnet_b" {
 
 resource "aws_subnet" "cs_jupyterhub_subnet" {
   vpc_id                  = var.vpc_id
-  availability_zone       = "${data.aws_region.current.name}a"
+  availability_zone       = "${data.aws_region.current.region}a"
   cidr_block              = "10.0.20.0/28"
   map_public_ip_on_launch = false
 
@@ -37,7 +37,7 @@ resource "aws_subnet" "cs_jupyterhub_subnet" {
 
 resource "aws_subnet" "cs_secret_sharing_svc_subnet" {
   vpc_id                  = var.vpc_id
-  availability_zone       = "${data.aws_region.current.name}a"
+  availability_zone       = "${data.aws_region.current.region}a"
   cidr_block              = "10.0.20.16/28"
   map_public_ip_on_launch = false
 
