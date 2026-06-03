@@ -82,9 +82,9 @@ module "auth_manager_db_metrics_alerts" {
   enable_cpu_credit_alarms = true
   enable_db_load_alarms    = true
 
-  cpu_utilization_high_threshold            = 30                      # %
-  freeable_memory_low_threshold             = 512 * 1024 * 1024       # 512 MB
-  free_storage_space_low_threshold          = 10 * 1024 * 1024 * 1024 # 10 GB
+  cpu_utilization_high_threshold            = 30                     # %
+  freeable_memory_low_threshold             = 512 * 1024 * 1024      # 512 MB
+  free_storage_space_low_threshold          = 5 * 1024 * 1024 * 1024 # 5 GB
   database_connections_high_threshold       = 20
   read_latency_high_threshold               = 0.05             # 50 ms
   write_latency_high_threshold              = 0.02             # 20 ms
@@ -289,9 +289,9 @@ module "ml_rds_postgres_db_metrics_alerts" {
   freeable_memory_low_threshold             = 50 * 1024 * 1024        # 50 MB
   free_storage_space_low_threshold          = 10 * 1024 * 1024 * 1024 # 10 GB
   database_connections_high_threshold       = 15
-  read_latency_high_threshold               = 0.03             # 30 ms
-  write_latency_high_threshold              = 0.05             # 50 ms
-  swap_usage_high_threshold                 = 50 * 1024 * 1024 # 50 MB
+  read_latency_high_threshold               = 0.03              # 30 ms
+  write_latency_high_threshold              = 0.05              # 50 ms
+  swap_usage_high_threshold                 = 100 * 1024 * 1024 # 100 MB
   disk_queue_depth_high_threshold           = 1
   cpu_credit_balance_low_threshold          = 200
   cpu_surplus_credit_balance_high_threshold = 5
@@ -332,9 +332,9 @@ module "ml_rds_ts_postgres_db_metrics_alerts" {
   freeable_memory_low_threshold             = 50 * 1024 * 1024        # 50 MB
   free_storage_space_low_threshold          = 10 * 1024 * 1024 * 1024 # 10 GB
   database_connections_high_threshold       = 15
-  read_latency_high_threshold               = 0.03             # 30 ms
-  write_latency_high_threshold              = 0.05             # 50 ms
-  swap_usage_high_threshold                 = 50 * 1024 * 1024 # 50 MB
+  read_latency_high_threshold               = 0.03              # 30 ms
+  write_latency_high_threshold              = 0.05              # 50 ms
+  swap_usage_high_threshold                 = 100 * 1024 * 1024 # 100 MB
   disk_queue_depth_high_threshold           = 1
   cpu_credit_balance_low_threshold          = 200
   cpu_surplus_credit_balance_high_threshold = 5
