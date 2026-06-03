@@ -168,7 +168,7 @@ resource "aws_iam_policy" "iam_build_policy" {
 
 module "github_oidc" {
   source  = "terraform-module/github-oidc-provider/aws"
-  version = "~> 1"
+  version = "~> 2"
 
   create_oidc_provider = false # now done centrally from main.tf
   oidc_provider_arn    = var.github_oidc_provider_arn

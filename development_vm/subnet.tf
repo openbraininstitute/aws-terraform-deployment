@@ -1,6 +1,6 @@
 resource "aws_subnet" "subnet" {
   vpc_id            = var.vpc_id
-  availability_zone = "${data.aws_region.current.name}a"
+  availability_zone = "${data.aws_region.current.region}a"
   cidr_block        = var.subnet_cidr_block
   tags = {
     Name = var.subnet_name

@@ -17,7 +17,7 @@ resource "aws_security_group" "ml_rds" {
 #tfsec:ignore:aws-rds-enable-performance-insights
 module "ml_rds_postgres" {
   source  = "terraform-aws-modules/rds/aws"
-  version = "v6.12.0"
+  version = "v6.13.1"
 
   identifier = local.rds_instance_identifier
 

@@ -1,6 +1,6 @@
 locals {
   account_id = data.aws_caller_identity.current.account_id
-  aws_region = data.aws_region.current.name
+  aws_region = data.aws_region.current.region
   vpc_id     = data.terraform_remote_state.common.outputs.vpc_id
 
   suffix = var.is_staging ? "-staging" : var.is_production ? "production" : ""
@@ -92,7 +92,7 @@ module "networking" {
 
 module "github_oidc_provider" {
   source  = "terraform-module/github-oidc-provider/aws"
-  version = "~> 1"
+  version = "~> 2"
 
   create_oidc_provider = true
 }

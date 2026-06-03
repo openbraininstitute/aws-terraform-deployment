@@ -150,7 +150,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = aws_cloudwatch_log_group.keycloak_ecs_task.name
-          awslogs-region        = data.aws_region.current.name
+          awslogs-region        = data.aws_region.current.region
           awslogs-stream-prefix = "ecs"
         }
       }
@@ -175,7 +175,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = aws_cloudwatch_log_group.keycloak_aws_otel_collector.name
-          awslogs-region        = data.aws_region.current.name
+          awslogs-region        = data.aws_region.current.region
           awslogs-stream-prefix = "ecs"
         }
       }
@@ -217,7 +217,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
         },
         {
           name  = "AWS_REGION"
-          value = data.aws_region.current.name
+          value = data.aws_region.current.region
         },
         {
           name  = "PROMETHEUS_ENDPOINT"
@@ -235,7 +235,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = aws_cloudwatch_log_group.keycloak_aws_otel_collector.name
-          awslogs-region        = data.aws_region.current.name
+          awslogs-region        = data.aws_region.current.region
           awslogs-stream-prefix = "ecs"
         }
       }

@@ -1,6 +1,6 @@
 resource "aws_subnet" "bastion" {
   vpc_id            = var.vpc_id
-  availability_zone = "${data.aws_region.current.name}a"
+  availability_zone = "${data.aws_region.current.region}a"
   cidr_block        = "10.0.3.0/28"
   tags = {
     Name = "bastion_host"
