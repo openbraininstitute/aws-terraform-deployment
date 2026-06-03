@@ -5,6 +5,7 @@
 # - keycloak_admin_password
 # - database_password
 # - invite_jwt_secret
+# - invite_webhook_secret
 # - mail_password
 # - mail_username
 resource "aws_iam_policy" "virtual_lab_manager_secrets_access" {
