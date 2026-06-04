@@ -52,4 +52,8 @@ resource "aws_security_group" "udp_security_group" {
   name        = "${var.vm_name}-udp"
   description = "Allow certain UDP traffic to VM"
   vpc_id      = var.vpc_id
+
+  tags = {
+    Name = "${var.vm_name}-udp"
+  }
 }
