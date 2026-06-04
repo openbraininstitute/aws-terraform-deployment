@@ -54,3 +54,17 @@ variable "user_groups" {
 variable "vpc_cidr_block" {
   type = string
 }
+
+# Specifically for Juanjo's VM, see https://github.com/openbraininstitute/INFRA/issues/558
+# Only enabled if NLB arn is set
+variable "public_nlb_arn" {
+  type        = string
+  description = "ARN of the public NLB, will be used to add an UDP listener"
+  default     = null
+}
+
+variable "udp_port_forward_from_public_nlb" {
+  type        = number
+  description = "UDP port to forward from the public NLB to the VM"
+  default     = null
+}
