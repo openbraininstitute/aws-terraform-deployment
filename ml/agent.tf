@@ -60,7 +60,7 @@ module "ecs_service_agent" {
           containerPath = "/tmp"
         }
       ]
-      port_mappings = [
+      portMappings = [
         {
           name          = local.service_connect_port_name
           containerPort = 8078
