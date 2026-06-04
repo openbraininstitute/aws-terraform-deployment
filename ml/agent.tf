@@ -212,8 +212,6 @@ module "ecs_service_agent" {
   }
   security_group_egress_rules = {
     egress_all = {
-      from_port   = "0"
-      to_port     = "0"
       ip_protocol = "-1"
       cidr_ipv4   = "0.0.0.0/0"
     }
