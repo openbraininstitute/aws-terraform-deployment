@@ -929,3 +929,21 @@ module "ses_user_virtuallab" {
   ecs_cluster = "virtual_lab_manager_ecs_cluster"
   ecs_service = "virtual_lab_manager_ecs_service"
 }
+
+module "temporary_nexus_user" {
+  source = "./temporary_user"
+
+  count = var.is_production ? 1 : 0
+
+  user_name = "nexus_reader"
+  allow_actions = [
+    "s3:ListBucket",
+    "s3:ListBucketVersions",
+    "s3:GetObject",
+    "s3:GetObjectVersion"
+  ]
+  allow_resources = [
+    "arn:aws:s3:::nexus-openscience-production",
+    "arn:aws:s3:::nexus-openscience-production/*"
+  ]
+}
