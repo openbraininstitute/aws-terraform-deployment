@@ -14,3 +14,8 @@ output "github_core_web_app_preview_deploy_role_arn" {
   value = var.is_staging ? module.core_webapp_preview[0].github_deploy_role_arn : null
 
 }
+
+output "temporary_nexus_user_credentials" {
+  value     = module.temporary_nexus_user
+  sensitive = true
+}
