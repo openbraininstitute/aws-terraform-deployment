@@ -181,6 +181,9 @@ module "development_vm_01" {
       sudo_access = true
     }
   }
+
+  public_nlb_arn                   = data.terraform_remote_state.common.outputs.public_nlb_arn
+  udp_port_forward_from_public_nlb = 8443
 }
 
 module "ml" {

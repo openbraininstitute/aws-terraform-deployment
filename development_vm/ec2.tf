@@ -15,7 +15,7 @@ resource "aws_launch_template" "launch_template" {
 
   network_interfaces {
     associate_public_ip_address = false
-    security_groups             = [aws_security_group.sg.id]
+    security_groups             = concat([aws_security_group.sg.id], var.public_nlb_arn != null ? [aws_security_group.udp_security_group[0].id] : [])
     subnet_id                   = aws_subnet.subnet.id
   }
 
