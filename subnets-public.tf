@@ -37,6 +37,15 @@ resource "aws_network_acl" "public" {
     from_port  = 443
     to_port    = 443
   }
+  # Allow port 8443 from anywhere for Juanjo's VM
+  ingress {
+    protocol   = "udp"
+    rule_no    = 111
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 8443
+    to_port    = 8443
+  }
   # Deny RDP from anywhere
   ingress {
     protocol   = "tcp"
