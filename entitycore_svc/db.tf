@@ -1,3 +1,18 @@
+resource "aws_db_parameter_group" "entitycore" {
+  name   = "entitycore"
+  family = "postgres17"
+
+  parameter {
+    name  = "autovacuum_analyze_scale_factor"
+    value = "0.02"
+  }
+
+  parameter {
+    name  = "autovacuum_vacuum_scale_factor"
+    value = "0.05"
+  }
+}
+
 resource "aws_db_subnet_group" "entitycore_db_cluster_subnet_group" {
   name       = "entitycore-db-cluster-group"
   subnet_ids = [aws_subnet.entitycore_db_a.id, aws_subnet.entitycore_db_b.id]
@@ -27,6 +42,7 @@ resource "aws_db_instance" "entitycore" {
   maintenance_window      = "sun:05:00-sun:06:00"
 
   db_subnet_group_name = aws_db_subnet_group.entitycore_db_cluster_subnet_group.name
+  parameter_group_name = aws_db_parameter_group.entitycore.name
 
   identifier = "entitycore"
   db_name    = var.db_name
