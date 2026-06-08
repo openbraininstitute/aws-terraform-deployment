@@ -180,6 +180,14 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
           value = var.db_migration_lock_timeout_ms
         },
         {
+          name  = "DB_POOL_SIZE"
+          value = "40"
+        },
+        {
+          name  = "DB_MAX_OVERFLOW"
+          value = "20"
+        },
+        {
           name  = "VIRTUAL_LAB_API_URL"
           value = var.virtual_lab_api_url
         }
