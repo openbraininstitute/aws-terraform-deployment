@@ -102,6 +102,10 @@ module "ecs_service_agent" {
           value = "openai/gpt-5.*"
         },
         {
+          name  = "NEUROAGENT__MCP__RESOURCE_URL"
+          value = "https://${var.primary_domain}/api/agent-ts/mcp"
+        },
+        {
           name  = "NEUROAGENT__MISC__APPLICATION_PREFIX"
           value = var.neuroagent_application_prefix
         },
