@@ -31,6 +31,18 @@ resource "aws_network_acl" "network_acl" {
     from_port  = 0
     to_port    = 0
   }
+  dynamic "ingress" {
+    for_each = var.public_nlb_arn != null ? [1] : []
+    content {
+      protocol   = "udp"
+      rule_no    = 201
+      action     = "allow"
+      cidr_block = "0.0.0.0/0"
+      from_port  = var.udp_port_forward_from_public_nlb
+      to_port    = var.udp_port_forward_from_public_nlb
+    }
+  }
+
   ingress {
     protocol   = "tcp"
     rule_no    = 300
