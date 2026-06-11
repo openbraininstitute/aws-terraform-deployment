@@ -83,6 +83,13 @@ resource "aws_datasync_task" "cross_account_internal_to_s3" {
   source_location_arn      = aws_datasync_location_s3.internal_source.arn
   name                     = "cross-account-s3-to-s3-sync"
   task_mode                = "ENHANCED"
+  options {
+    gid               = "NONE"
+    posix_permissions = "NONE"
+    uid               = "NONE"
+    verify_mode       = "ONLY_FILES_TRANSFERRED"
+  }
+
 }
 
 resource "aws_datasync_location_efs" "opendata_destination" {
