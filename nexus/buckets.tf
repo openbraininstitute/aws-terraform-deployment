@@ -136,7 +136,59 @@ resource "aws_s3_bucket_metric" "nexus_openscience" {
   name   = "EntireBucket"
 }
 
-resource "aws_s3_bucket_policy" "nexus_openscience" {
+resource "aws_s3_bucket_policy" "nexus_openscience_with_temporary_user" {
+  count  = var.temporary_read_user_arn != "" ? 1 : 0
+  bucket = aws_s3_bucket.nexus_openscience.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "DenyInsecureTransport"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = "s3:*"
+        Resource = [
+          aws_s3_bucket.nexus_openscience.arn,
+          "${aws_s3_bucket.nexus_openscience.arn}/*"
+        ]
+        Condition = {
+          Bool = {
+            "aws:SecureTransport" = "false"
+          }
+        }
+      },
+      {
+        "Sid" : "NexusUserTemporaryRead",
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : var.temporary_read_user_arn
+        },
+        "Action" : [
+          "s3:ListBucket",
+          "s3:ListBucketMultipartUploads",
+          "s3:ListBucketVersions",
+          "s3:ListMultipartUploadParts",
+          "s3:GetObject",
+          "s3:GetObjectAcl",
+          "s3:GetObjectAttributes",
+          "s3:GetObjectTagging",
+          "s3:GetObjectVersion",
+          "s3:GetObjectVersionTagging",
+          "s3:GetObjectVersionAttributes",
+          "s3:RestoreObject"
+        ],
+        "Resource" : [
+          "arn:aws:s3:::nexus-openscience-production",
+          "arn:aws:s3:::nexus-openscience-production/*"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_s3_bucket_policy" "nexus_openscience_without_temporary_user" {
+  count  = var.temporary_read_user_arn == "" ? 1 : 0
   bucket = aws_s3_bucket.nexus_openscience.id
 
   policy = jsonencode({
