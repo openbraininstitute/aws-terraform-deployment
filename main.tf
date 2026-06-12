@@ -271,6 +271,8 @@ module "nexus" {
   nexus_obp_bucket_name         = var.nexus_obp_bucket_name
   nexus_ship_bucket_name        = var.nexus_ship_bucket_name
   nexus_openscience_bucket_name = var.nexus_openscience_bucket_name
+
+  temporary_read_user_arn = var.is_production ? module.temporary_nexus_user[0].temporary_user_arn : ""
 }
 
 module "cells_svc" {
