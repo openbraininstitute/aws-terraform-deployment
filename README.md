@@ -2,6 +2,7 @@
 
 # AWS Deployment
 
+
 Deployment of the OBI platform in AWS with Terraform.
 
 <!-- BEGIN_TF_DOCS -->
