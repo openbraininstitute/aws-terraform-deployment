@@ -232,6 +232,23 @@ resource "aws_service_discovery_http_namespace" "ml_agent" {
   tags = var.tags
 }
 
+resource "aws_lb_listener_rule" "oauth_protected_resource_metadata_redirect" {
+  listener_arn = var.generic_private_alb_listener_arn
+  priority     = 574
+  action {
+    type = "redirect"
+    redirect {
+      path        = "/api/agent-ts/.well-known/oauth-protected-resource"
+      status_code = "HTTP_302"
+    }
+  }
+  condition {
+    path_pattern {
+      values = ["/.well-known/oauth-protected-resource/api/agent-ts/mcp"]
+    }
+  }
+}
+
 resource "aws_lb_listener_rule" "generic_private_agent_rule" {
   listener_arn = var.generic_private_alb_listener_arn
   priority     = var.agent_alb_listener_rule_priority
