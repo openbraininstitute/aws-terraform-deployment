@@ -47,6 +47,7 @@ locals {
   accounting_db_ro_secret_arn          = data.terraform_remote_state.common.outputs.accounting_database_readonly_secret_arn
   teams_webhook_secrets_arn            = data.terraform_remote_state.common.outputs.teams_webhook_secrets_arn
   auth_manager_secrets_arn             = data.terraform_remote_state.common.outputs.auth_manager_secrets_arn
+  grading_service_secrets_arn          = data.terraform_remote_state.common.outputs.grading_service_secrets_arn
 
   github_organisation = "openbraininstitute"
 
@@ -898,7 +899,8 @@ module "grading_service" {
 
   docker_image_url = var.grading_service_docker_image_url
 
-  base_path = "/api/grading-service"
+  base_path   = "/api/grading-service"
+  secrets_arn = local.grading_service_secrets_arn
 }
 
 module "dashboards" {
