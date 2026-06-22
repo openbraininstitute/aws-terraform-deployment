@@ -306,6 +306,10 @@ resource "aws_ecs_task_definition" "api" {
         {
           name  = "BASE_PATH"
           value = var.base_path
+        },
+        {
+          name  = "WEB_LAUNCH_URL"
+          value = var.web_launch_url
         }
       ]
 
