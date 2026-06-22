@@ -107,6 +107,27 @@ resource "aws_iam_role_policy_attachment" "execution_logs" {
   policy_arn = aws_iam_policy.ecs_task_logs.arn
 }
 
+resource "aws_iam_policy" "secrets_access" {
+  name        = "grading_service-secrets-access-policy"
+  description = "Allows the grading service ECS task to read its secrets"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["secretsmanager:GetSecretValue"]
+        Resource = [var.secrets_arn]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "execution_secrets" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = aws_iam_policy.secrets_access.arn
+}
+
 resource "aws_iam_role_policy_attachment" "execution_efs" {
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonElasticFileSystemClientFullAccess"
@@ -285,6 +306,13 @@ resource "aws_ecs_task_definition" "api" {
         {
           name  = "BASE_PATH"
           value = var.base_path
+        }
+      ]
+
+      secrets = [
+        {
+          name      = "WEB_LAUNCH_HMAC_SECRET"
+          valueFrom = "${var.secrets_arn}:WEB_LAUNCH_HMAC_SECRET::"
         }
       ]
 

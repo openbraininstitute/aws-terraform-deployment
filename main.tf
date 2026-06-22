@@ -47,6 +47,7 @@ locals {
   accounting_db_ro_secret_arn          = data.terraform_remote_state.common.outputs.accounting_database_readonly_secret_arn
   teams_webhook_secrets_arn            = data.terraform_remote_state.common.outputs.teams_webhook_secrets_arn
   auth_manager_secrets_arn             = data.terraform_remote_state.common.outputs.auth_manager_secrets_arn
+  grading_service_secrets_arn          = data.terraform_remote_state.common.outputs.grading_service_secrets_arn
 
   github_organisation = "openbraininstitute"
 
@@ -840,10 +841,10 @@ module "launch_system" {
   db_username     = "launch"
   obi_backup_plan = "obi_plan"
 
-  api_image_url                                              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.6.6"
-  orchestrator_image_url                                     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.6.6"
-  default_executor_image_url                                 = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler:2026.6.6"
-  python_3_12_openmpi5_neuron9_neurodamus_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler-openmpi5-neuron9-neurodamus:2026.6.6"
+  api_image_url                                              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.6.7"
+  orchestrator_image_url                                     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.6.7"
+  default_executor_image_url                                 = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler:2026.6.7"
+  python_3_12_openmpi5_neuron9_neurodamus_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler-openmpi5-neuron9-neurodamus:2026.6.7"
 
   api_task_size          = var.launch_system_api_task_size
   executor_task_size     = var.launch_system_executor_task_size
@@ -898,7 +899,8 @@ module "grading_service" {
 
   docker_image_url = var.grading_service_docker_image_url
 
-  base_path = "/api/grading-service"
+  base_path   = "/api/grading-service"
+  secrets_arn = local.grading_service_secrets_arn
 }
 
 module "dashboards" {
