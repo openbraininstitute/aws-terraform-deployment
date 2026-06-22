@@ -54,6 +54,11 @@ variable "secrets_arn" {
   description = "ARN of the grading service Secrets Manager secret (contains WEB_LAUNCH_HMAC_SECRET)"
 }
 
+variable "web_launch_url" {
+  type        = string
+  description = "URL of the graded notebook launch endpoint in Core Web app"
+}
+
 variable "tags" {
   type    = map(string)
   default = { SBO_Billing = "grading_service" }
