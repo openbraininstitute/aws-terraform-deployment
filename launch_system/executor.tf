@@ -54,10 +54,10 @@ locals {
       name = "public-internal-data"
       efs_volume_configuration = {
         file_system_id     = var.public_launch_data_efs_id
-        transit_encryption = "ENABLED"
+        transit_encryption = "DISABLED"
         authorization_config = {
           access_point_id = var.internal_public_data_access_point_id
-          iam             = "ENABLED"
+          iam             = "DISABLED"
         }
       }
     },
@@ -65,10 +65,10 @@ locals {
       name = "public-open-data"
       efs_volume_configuration = {
         file_system_id     = var.public_launch_data_efs_id
-        transit_encryption = "ENABLED"
+        transit_encryption = "DISABLED"
         authorization_config = {
           access_point_id = var.open_public_data_access_point_id
-          iam             = "ENABLED"
+          iam             = "DISABLED"
         }
       }
     }
