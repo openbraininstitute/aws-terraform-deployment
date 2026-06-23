@@ -165,3 +165,8 @@ variable "api_url" {
   description = "obi-one api url for callbacks"
   type        = string
 }
+
+variable "secrets_arn" {
+  description = "arn for the secrets"
+  type        = string
+}

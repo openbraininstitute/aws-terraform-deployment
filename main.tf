@@ -48,6 +48,7 @@ locals {
   teams_webhook_secrets_arn            = data.terraform_remote_state.common.outputs.teams_webhook_secrets_arn
   auth_manager_secrets_arn             = data.terraform_remote_state.common.outputs.auth_manager_secrets_arn
   grading_service_secrets_arn          = data.terraform_remote_state.common.outputs.grading_service_secrets_arn
+  obi_one_secrets_arn                  = data.terraform_remote_state.common.outputs.obi_one_secrets_arn
 
   github_organisation = "openbraininstitute"
 
@@ -631,6 +632,7 @@ module "obi_one_v2" {
       mount_extra_options   = "--no-sign-request"
     },
   ]
+  secrets_arn = local.obi_one_secrets_arn
 }
 
 module "thumbnail_generation_api" {
