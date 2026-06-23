@@ -275,49 +275,6 @@ module "launch_system_db_metrics_alerts_sns_entries_to_teams" {
   python_runtime    = "python3.13"
 }
 
-# ML RDS postgres DB
-
-module "ml_rds_postgres_db_metrics_alerts" {
-  source = "./rds_postgresql_cloudwatch_metric_alarms"
-
-  db_instance_identifier   = module.ml.rds_db_identifier
-  short_name               = "ml_rds_postgres"
-  enable_cpu_credit_alarms = true
-  enable_db_load_alarms    = true
-
-  cpu_utilization_high_threshold            = 20                      # %
-  freeable_memory_low_threshold             = 50 * 1024 * 1024        # 50 MB
-  free_storage_space_low_threshold          = 10 * 1024 * 1024 * 1024 # 10 GB
-  database_connections_high_threshold       = 15
-  read_latency_high_threshold               = 0.03              # 30 ms
-  write_latency_high_threshold              = 0.05              # 50 ms
-  swap_usage_high_threshold                 = 100 * 1024 * 1024 # 100 MB
-  disk_queue_depth_high_threshold           = 1
-  cpu_credit_balance_low_threshold          = 200
-  cpu_surplus_credit_balance_high_threshold = 5
-  db_load_high_threshold                    = 0.5 # average active sessions
-  db_load_relative_to_vcpus_high_threshold  = 0.4 # num active session per vcpu
-}
-
-module "debug_ml_rds_postgres_db_metrics_alerts_sns_topic" {
-  source = "./sqs_debug_queue"
-
-  sns_topic_arn             = module.ml_rds_postgres_db_metrics_alerts.sns_topic_arn
-  unique_short_name         = "ml_rds_postgres_db_metrics"
-  message_retention_seconds = 5 * 24 * 60 * 60 # 5 days
-}
-
-module "ml_rds_postgres_db_metrics_alerts_sns_entries_to_teams" {
-  source = "./sns_entries_to_teams"
-
-  webhook_secret_arn = local.teams_webhook_secrets_arn
-  webhook_secret_key = local.webhook_secret_key_for_metrics_alerts
-
-  unique_short_name = "ml_rds_postgres_db_metrics"
-  sns_topic_arn     = module.ml_rds_postgres_db_metrics_alerts.sns_topic_arn
-  python_runtime    = "python3.13"
-}
-
 # ML Typescript RDS postgres DB
 
 module "ml_rds_ts_postgres_db_metrics_alerts" {
