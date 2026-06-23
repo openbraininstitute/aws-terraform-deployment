@@ -23,3 +23,28 @@ resource "aws_iam_role_policy_attachment" "s3_access" {
   role       = aws_iam_role.obi_one_v2_ec2_instance_role.name
   policy_arn = aws_iam_policy.s3_access.arn
 }
+
+resource "aws_iam_policy" "obi_one_secrets_access" {
+  name        = "obi-one-secrets-access-policy"
+  description = "Policy that gives access to the obi-one secrets"
+
+  policy = <<-EOT
+  {
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": [
+          "ssm:GetParameters",
+          "secretsmanager:GetSecretValue"
+        ],
+        "Resource": [
+          "${var.secrets_arn}"
+        ]
+      }
+    ]
+  }
+  EOT
+
+  tags = var.tags
+}
