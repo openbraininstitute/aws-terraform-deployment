@@ -3,7 +3,6 @@ is_production                             = false
 deployment_env                            = "sandbox-benchmarks"
 terraform_remote_state_bucket_name        = "obi-tfstate-sandbox-benchmarks"
 cell_svc_bucket_name                      = "sbo-cell-svc-perf-test-sandbox-benchmarks"
-ml_neuroagent_bucket_name                 = "ml-neuroagent-staging"
 nexus_obp_bucket_name                     = "nexus-obp-sandbox-benchmarks-test"
 nexus_ship_bucket_name                    = "nexus-ship-sandbox-benchmarks-test"
 nexus_openscience_bucket_name             = "nexus-openscience-sandbox-benchmarks-test"
@@ -23,8 +22,6 @@ notebook_service_azure_storage_account    = ""
 
 keycloak_sbo_realm_url = "https://staging.cell-a.openbraininstitute.org/auth/realms/SBO"
 keycloak_url_with_auth = "https://staging.cell-a.openbraininstitute.org/auth/"
-
-neuroagent_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-v0.14.2"
 
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-staging"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-staging"

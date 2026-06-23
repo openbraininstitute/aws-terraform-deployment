@@ -17,11 +17,6 @@ variable "cell_svc_docker_image_url" {
   sensitive = false
 }
 
-variable "ml_neuroagent_bucket_name" {
-  type      = string
-  sensitive = false
-}
-
 variable "nexus_obp_bucket_name" {
   type      = string
   sensitive = false
@@ -42,13 +37,6 @@ variable "nexus_openscience_bucket_name" {
 variable "core_web_app_stripe_publishable_key" {
   type        = string
   description = "Stripe publishable key for the core-web-app"
-}
-
-variable "neuroagent_docker_image_url" {
-  default     = null
-  type        = string
-  description = "docker image for neuroagent"
-  sensitive   = false
 }
 
 variable "neuroagent_typescript_docker_image_url" {

@@ -187,41 +187,6 @@ module "development_vm_01" {
   udp_port_forward_from_public_nlb = 8443
 }
 
-module "ml" {
-  source = "./ml"
-
-  aws_region = local.aws_region
-  account_id = local.account_id
-
-  is_production   = var.is_production
-  obi_backup_plan = "obi_plan"
-
-  ml_secrets_arn = local.ml_secrets_arn
-
-  vpc_id                         = local.vpc_id
-  vpc_cidr_block                 = local.vpc_cidr_block
-  route_table_private_subnets_id = local.route_table_private_subnets_id
-
-  neuroagent_docker_image_url   = var.neuroagent_docker_image_url
-  neuroagent_bucket_name        = var.ml_neuroagent_bucket_name
-  neuroagent_application_prefix = "/api/agent"
-
-  primary_domain  = local.cell_a_primary_domain
-  frontend_domain = local.public_primary_domain_in_azure
-
-  # NEW PRIVATE ALB
-  generic_private_alb_listener_arn      = local.private_alb_https_listener_arn
-  generic_private_alb_security_group_id = data.terraform_remote_state.common.outputs.generic_private_alb_security_group_id
-
-  github_oidc_provider_arn = module.github_oidc_provider.oidc_provider_arn
-
-  github_repos = ["openbraininstitute/neuroagent"]
-
-  keycloak_sbo_realm_url = var.keycloak_sbo_realm_url
-
-  cors_origins = local.core_web_app_origins
-}
-
 module "ml_typescript" {
   source = "./ml"
 
@@ -515,7 +480,6 @@ module "accounting_svc" {
   allowed_source_ip_cidr_blocks = concat(
     module.small_scale_simulator.subnet_cidr_blocks,
     module.obi_one_v2.subnet_cidr_blocks,
-    module.ml.subnet_cidr_blocks,
     module.ml_typescript.subnet_cidr_blocks,
     module.notebook_service.subnet_cidr_blocks,
     module.virtual_lab_manager.subnet_cidr_blocks,

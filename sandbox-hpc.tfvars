@@ -3,7 +3,6 @@ is_production                             = false
 deployment_env                            = "sandbox-hpc"
 terraform_remote_state_bucket_name        = "obi-tfstate-sandbox-hpc"
 cell_svc_bucket_name                      = "sbo-cell-svc-perf-test-sandbox-hpc"
-ml_neuroagent_bucket_name                 = "ml-neuroagent-sandbox-hpc"
 nexus_obp_bucket_name                     = "nexus-obp-sandbox-hpc-test"
 nexus_ship_bucket_name                    = "nexus-ship-sandbox-hpc-test"
 nexus_openscience_bucket_name             = "nexus-openscience-sandbox-hpc-test"
@@ -22,8 +21,6 @@ notebook_service_azure_storage_account    = ""
 
 keycloak_sbo_realm_url = "https://staging.cell-a.openbraininstitute.org/auth/realms/SBO"
 keycloak_url_with_auth = "https://staging.cell-a.openbraininstitute.org/auth/"
-
-neuroagent_image_tag = "neuroagent-v0.11.4"
 
 neuroagent_typescript_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-typescript-v0.1.2"
 ml_neuroagent_typescript_bucket_name   = "ml-neuroagent-typescript-sandbox-hpc"
