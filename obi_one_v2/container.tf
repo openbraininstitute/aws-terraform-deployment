@@ -275,7 +275,7 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
       secrets = [
         {
           name      = "CAVECLIENT_MICRONS_API_KEY"
-          valueFrom = "${var.secrets_arn}:CAVECLIENT_MICRONS_API_KEY"
+          valueFrom = "${var.secrets_arn}:CAVECLIENT_MICRONS_API_KEY::"
         }
       ]
 
