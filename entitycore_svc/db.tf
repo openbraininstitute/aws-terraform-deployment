@@ -11,6 +11,16 @@ resource "aws_db_parameter_group" "entitycore" {
     name  = "autovacuum_vacuum_scale_factor"
     value = "0.05"
   }
+
+  parameter {
+    name  = "random_page_cost"
+    value = "1.1" # default: 4
+  }
+
+  parameter {
+    name  = "effective_io_concurrency"
+    value = "200" # default: 1
+  }
 }
 
 resource "aws_db_subnet_group" "entitycore_db_cluster_subnet_group" {
