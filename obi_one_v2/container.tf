@@ -272,6 +272,13 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
         }
       ], var.cors_origin_regex != null ? [{ name = "CORS_ORIGIN_REGEX", value = var.cors_origin_regex }] : [])
 
+      secrets = [
+        {
+          name      = "CAVECLIENT_MICRONS_API_KEY"
+          valueFrom = "${var.secrets_arn}:CAVECLIENT_MICRONS_API_KEY::"
+        }
+      ]
+
       healthcheck = {
         # command     = ["CMD", "/code/scripts/healthcheck.sh"]
         command     = ["CMD-SHELL", "exit 0"] // TODO: add a proper health check
@@ -450,6 +457,11 @@ resource "aws_iam_policy" "cloudwatch_write_policy" {
   )
 
   tags = var.tags
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_obi_one_secrets_access_policy_attachment" {
+  role       = aws_iam_role.obi_one_v2_ecs_task_execution_role.name
+  policy_arn = aws_iam_policy.obi_one_secrets_access.arn
 }
 
 resource "aws_iam_role_policy_attachment" "obi_one_v2_ecs_task_execution_role_policy_attachment" {
