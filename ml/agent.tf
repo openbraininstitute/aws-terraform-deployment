@@ -142,12 +142,16 @@ module "ecs_service_agent" {
           value = "https://${var.primary_domain}/api/thumbnail-generation"
         },
         {
+          name  = "NEUROAGENT__TOOLS__NOTEBOOK_SERVICE__URL"
+          value = "https://${var.primary_domain}/api/notebook_service"
+        },
+        {
           name  = "NEUROAGENT__TOOlS__FRONTEND_BASE_URL"
           value = "https://${var.frontend_domain}"
         },
         {
           name  = "NEUROAGENT__TOOLS__WHITELISTED_TOOL_REGEX"
-          value = "^(?!.*(downloadone|measurementannotation|experimentalsynapsesperconnection|weather)).*"
+          value = "^(?!.*(downloadone|measurementannotation|experimentalsynapsesperconnection|weather|execute-python|execute-shell)).*"
         },
       ]
       secrets = [
