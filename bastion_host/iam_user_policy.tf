@@ -63,6 +63,31 @@ resource "aws_iam_policy" "ssm_user_access" {
           "kms:GenerateDataKey"
         ]
         Resource = "*"
+      },
+      {
+        Sid    = "AllowSendCommandOnBastion"
+        Effect = "Allow"
+        Action = "ssm:SendCommand"
+        Resource = [
+          "arn:aws:ec2:*:${data.aws_caller_identity.current.account_id}:instance/*"
+        ]
+        Condition = {
+          StringEquals = {
+            "ec2:ResourceTag/Name" = "SSM-Bastion-Host"
+          }
+        }
+      },
+      {
+        Sid      = "AllowSendCommandWithRunShellScript"
+        Effect   = "Allow"
+        Action   = "ssm:SendCommand"
+        Resource = "arn:aws:ssm:*::document/AWS-RunShellScript"
+      },
+      {
+        Sid      = "AllowGetCommandInvocation"
+        Effect   = "Allow"
+        Action   = "ssm:GetCommandInvocation"
+        Resource = "arn:aws:ssm:*:${data.aws_caller_identity.current.account_id}:*"
       }
     ]
   })
