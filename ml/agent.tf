@@ -151,7 +151,7 @@ module "ecs_service_agent" {
         },
         {
           name  = "NEUROAGENT__TOOLS__WHITELISTED_TOOL_REGEX"
-          value = "^(?!.*(downloadone|measurementannotation|experimentalsynapsesperconnection|weather|execute-python|execute-shell)).*"
+          value = "^(?!.*(downloadone|measurementannotation|experimentalsynapsesperconnection|weather)).*"
         },
       ]
       secrets = [
