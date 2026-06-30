@@ -1,6 +1,8 @@
 # All compute cell definitions in one place
 
 locals {
+  slurmrestd_endpoint = [for e in awscc_pcs_cluster.cluster.endpoints : e if e.type == "SLURMRESTD"][0]
+
   executor_untrusted_subnet_ids = [
     aws_subnet.untrusted_a.id,
     aws_subnet.untrusted_b.id,
