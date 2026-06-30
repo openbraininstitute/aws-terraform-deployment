@@ -85,12 +85,14 @@ locals {
           uid                  = 4000
           gid                  = 4000
           homedir              = "/data/scratch/obiuser"
-          slurm_url            = "http://${module.pcs.slurmrestd_private_ip}:6820/slurm/v0.0.43"
-          slurm_accounting_url = "http://${module.pcs.slurmrestd_private_ip}:6820/slurmdb/v0.0.43"
+          slurm_url            = "http://${local.slurmrestd_endpoint.private_ip_address}:6820/slurm/v0.0.43"
+          slurm_accounting_url = "http://${local.slurmrestd_endpoint.private_ip_address}:6820/slurmdb/v0.0.43"
           slurm_secret         = "$${SECRET:SLURM_SECRET}"
           instance_types = {
-            small = [module.pcs.pcs_queue_small_name]
-            large = [module.pcs.pcs_queue_large_name]
+            small = [awscc_pcs_queue.pcs_queue_small.name]
+            large = [awscc_pcs_queue.pcs_queue_large.name]
+            #large = concat([awscc_pcs_queue.pcs_queue_large.name],
+            #[for k, q in awscc_pcs_queue.pcs_queue_large_fallback : q.name])
           }
         }
       }
