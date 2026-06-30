@@ -33,6 +33,13 @@ resource "aws_subnet" "untrusted_c" {
   tags              = merge(var.tags, { Name = "launch_system_api_c" })
 }
 
+resource "aws_subnet" "untrusted_d" {
+  vpc_id            = var.vpc_id
+  availability_zone = "${var.aws_region}d"
+  cidr_block        = "10.0.38.0/25"
+  tags              = merge(var.tags, { Name = "launch_system_api_d" })
+}
+
 resource "aws_route_table_association" "trusted_a_internet_access" {
   subnet_id      = aws_subnet.trusted_a.id
   route_table_id = var.internet_access_route_id
@@ -55,6 +62,11 @@ resource "aws_route_table_association" "untrusted_b_internet_access" {
 
 resource "aws_route_table_association" "untrusted_c_internet_access" {
   subnet_id      = aws_subnet.untrusted_c.id
+  route_table_id = var.internet_access_route_id
+}
+
+resource "aws_route_table_association" "untrusted_d_internet_access" {
+  subnet_id      = aws_subnet.untrusted_d.id
   route_table_id = var.internet_access_route_id
 }
 

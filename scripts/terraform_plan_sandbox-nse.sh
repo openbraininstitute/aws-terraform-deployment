@@ -1,9 +1,14 @@
-echo "Terraform plan for NSE sandbox"
+#!/usr/bin/env bash
+set -euo pipefail
 
-terraform plan \
-    -target=module.obi_one \
-    -target=module.obi_generative_gui \
-    -target=aws_ecs_service.obi_one_ecs_service \
-    -target=aws_ecs_service.obi_generative_gui_ecs_service \
-    -var-file=sandbox-nse.tfvars \
-    -out plan.tfplan && terraform show plan.tfplan
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
+echo "Terraform plan for NSE sandbox (launch-system: api, orchestrator, executors, public data EFS)"
+
+terraform -chdir="${REPO_ROOT}" plan -input=false \
+    -target=module.launch_system \
+    -target=module.bastion_host \
+    -target=module.public_data_efs_storage \
+    -var-file="${REPO_ROOT}/sandbox-nse.tfvars" \
+    -out plan.tfplan && terraform -chdir="${REPO_ROOT}" show plan.tfplan

@@ -97,6 +97,14 @@ resource "aws_ecs_cluster" "executor" {
   }
 }
 
+resource "aws_ecs_cluster_capacity_providers" "executor" {
+  cluster_name = aws_ecs_cluster.executor.name
+  capacity_providers = [
+    "FARGATE",
+    aws_ecs_capacity_provider.executor_gpu.name,
+  ]
+}
+
 # TODO make outgoing more strict, allow incoming if needed
 resource "aws_security_group" "executor" {
   name_prefix = "launch_system_executor"

@@ -796,7 +796,7 @@ module "launch_system" {
 
   launch_system_capability_secrets_arn = local.launch_system_capability_secrets_arn
 
-  deployment_env = var.deployment_env
+  deployment_env = var.is_production ? "production" : "staging"
 
   ec_node_type = "cache.t4g.micro" # for redis
 
@@ -807,10 +807,11 @@ module "launch_system" {
   db_username     = "launch"
   obi_backup_plan = "obi_plan"
 
-  api_image_url                                              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.6.7"
-  orchestrator_image_url                                     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.6.7"
-  default_executor_image_url                                 = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler:2026.6.7"
-  python_3_12_openmpi5_neuron9_neurodamus_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler-openmpi5-neuron9-neurodamus:2026.6.7"
+  api_image_url                                              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.6.9"
+  orchestrator_image_url                                     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.6.9"
+  default_executor_image_url                                 = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler:2026.6.9"
+  python_3_12_openmpi5_neuron9_neurodamus_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler-openmpi5-neuron9-neurodamus:2026.6.9"
+  python_3_12_compiler_cuda_12_8_image_url                   = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler-cuda12.8:2026.6.9"
 
   api_task_size          = var.launch_system_api_task_size
   executor_task_size     = var.launch_system_executor_task_size
