@@ -185,6 +185,10 @@ resource "awscc_pcs_queue" "pcs_queue_small" {
   ]
   name = "pcs-queue-small"
   tags = { SBO_Billing = "pcs-hpc" }
+
+  lifecycle {
+    replace_triggered_by = [awscc_pcs_compute_node_group.pcs_nodegroup_small]
+  }
 }
 
 resource "awscc_pcs_compute_node_group" "pcs_nodegroup_large" {
@@ -193,15 +197,23 @@ resource "awscc_pcs_compute_node_group" "pcs_nodegroup_large" {
   cluster_id = awscc_pcs_cluster.cluster.cluster_id
 
   custom_launch_template = {
-    template_id = aws_launch_template.pcs_launch_template_efa.id
-    version     = aws_launch_template.pcs_launch_template_efa.latest_version
+    template_id = (
+      var.pcs_large_enable_efa ?
+      aws_launch_template.pcs_launch_template_efa.id :
+      aws_launch_template.pcs_launch_template.id
+    )
+    version = (
+      var.pcs_large_enable_efa ?
+      aws_launch_template.pcs_launch_template_efa.latest_version :
+      aws_launch_template.pcs_launch_template.latest_version
+    )
   }
 
   iam_instance_profile_arn = aws_iam_instance_profile.pcs_profile.arn
 
   instance_configs = [
     {
-      instance_type = "hpc7a.96xlarge"
+      instance_type = var.pcs_large_instance_type
     },
   ]
 
@@ -235,6 +247,10 @@ resource "awscc_pcs_queue" "pcs_queue_large" {
   ]
   name = "pcs-queue-large"
   tags = { SBO_Billing = "pcs-hpc" }
+
+  lifecycle {
+    replace_triggered_by = [awscc_pcs_compute_node_group.pcs_nodegroup_large]
+  }
 }
 
 locals {
@@ -291,6 +307,10 @@ resource "awscc_pcs_queue" "pcs_queue_large_fallback" {
   ]
   name = "pcs-q-large-${each.key}"
   tags = { SBO_Billing = "pcs-hpc" }
+
+  lifecycle {
+    replace_triggered_by = [awscc_pcs_compute_node_group.pcs_ng_large_fallback[each.key]]
+  }
 }
 
 resource "aws_s3_bucket" "pcs_fsx_data" {
@@ -352,6 +372,11 @@ resource "aws_fsx_data_repository_association" "pcs_s3" {
 
   imported_file_chunk_size = 1024
   tags                     = { SBO_Billing = "hpc" }
+
+  timeouts {
+    create = "20m"
+    delete = "20m"
+  }
 }
 
 resource "aws_iam_role" "fsx_s3" {

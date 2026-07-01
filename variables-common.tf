@@ -481,6 +481,15 @@ variable "pcs_ami" {
   type = string
 }
 
+variable "pcs_large_instance_type" {
+  description = "EC2 instance type for the large PCS compute node group"
+  type        = string
+}
+
+variable "pcs_large_enable_efa" {
+  description = "Whether to use the EFA-enabled launch template for the large PCS node group"
+  type        = bool
+}
 variable "datasync_target_account" {
   type        = string
   default     = ""

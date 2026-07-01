@@ -97,10 +97,26 @@ def handle_deployment_event(event: Dict[str, Any], _) -> Dict[str, Any]:
 def send_to_teams(message: str, webhook_url: str) -> None:
     """Send a simple text message to a Microsoft Teams channel."""
     headers = {'Content-Type': 'application/json'}
-    # TODO ugly hack: apparently teams expects markdown, so 2 newlines to get separate lines
-    message = message.replace('\n', '\n\n')
     teams_payload = {
-        'text': f"{message}"
+        "type": "message",
+        "attachments": [
+            {
+                "contentType": "application/vnd.microsoft.card.adaptive",
+                "contentUrl": None,
+                "content": {
+                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                    "type": "AdaptiveCard",
+                    "version": "1.2",
+                    "body": [
+                        {
+                            "type": "TextBlock",
+                            "text": message,
+                            "wrap": True
+                        }
+                    ]
+                }
+            }
+        ]
     }
 
     req = urllib.request.Request(
