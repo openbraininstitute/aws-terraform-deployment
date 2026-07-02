@@ -15,7 +15,6 @@ secrets_client = boto3.client('secretsmanager')
 
 
 
-
 def get_teams_webhook_url() -> str:
     if TEAMS_WEBHOOK_SECRET_NAME not in os.environ:
         raise ValueError(f"Missing environment variable: {TEAMS_WEBHOOK_SECRET_NAME}")
