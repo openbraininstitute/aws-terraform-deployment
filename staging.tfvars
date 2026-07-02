@@ -22,7 +22,7 @@ notebook_service_azure_storage_account    = "obijupstoragestag"
 keycloak_sbo_realm_url = "https://staging.cell-a.openbraininstitute.org/auth/realms/SBO"
 keycloak_url_with_auth = "https://staging.cell-a.openbraininstitute.org/auth/"
 
-neuroagent_typescript_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-ts-v0.1.12"
+neuroagent_typescript_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-ts-v0.1.13"
 ml_neuroagent_typescript_bucket_name   = "ml-neuroagent-typescript-staging"
 ml_typescript_subnet_a_cidr            = "10.0.9.0/24"
 ml_typescript_subnet_b_cidr            = "10.0.7.0/24"
@@ -118,9 +118,9 @@ entitycore_svc_aws_s3_internal_region    = "us-east-1"
 entitycore_svc_aws_s3_open_bucket        = "openbluebrain"
 entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["*"]
-entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2026.6.6"
+entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2026.7.0"
 
-obi_one_v2_docker_image_url  = "985539765147.dkr.ecr.us-east-1.amazonaws.com/obi-one:2026.6.28"
+obi_one_v2_docker_image_url  = "985539765147.dkr.ecr.us-east-1.amazonaws.com/obi-one:2026.6.29"
 obi_one_v2_ec2_instance_type = "t3.medium" # vCPUs: 2, Memory: 4 GiB
 obi_one_v2_ecs_task_size = {
   cpu    = 2048
@@ -168,4 +168,6 @@ azure_nfs_internal_public_data_path = "/obibatchnfsstg/publicdata"
 resource_provisioner_container_hash = "1837363b2413d5e7cfd8c7a859ba4b3cd35c685acd4240f70101364aaaeee0b8"
 resource_provisioner_container_uri  = "985539765147.dkr.ecr.us-east-1.amazonaws.com/hpc-resource-provisioner:0.5.13.dev8"
 
-pcs_ami = "ami-01d53dbbc31fea9f1"
+pcs_ami                 = "ami-01d53dbbc31fea9f1"
+pcs_large_instance_type = "hpc7a.96xlarge"
+pcs_large_enable_efa    = true

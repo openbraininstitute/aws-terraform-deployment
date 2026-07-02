@@ -13,6 +13,7 @@ TEAMS_WEBHOOK_SECRET_KEY_IMPORTANT_MESSAGES: str = 'TEAMS_WEBHOOK_SECRET_KEY'
 TEAMS_WEBHOOK_SECRET_KEY_UNIMPORTANT_MESSAGES: str = 'TEAMS_WEBHOOK_SECRET_KEY_UNIMPORTANT'
 
 
+
 logger: logging.Logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
@@ -267,7 +268,25 @@ def send_to_teams(message: str, webhook_url: str) -> None:
         message = message.replace(url, replacement)
     headers = {'Content-Type': 'application/json'}
     teams_payload = {
-        'text': f"{message}"
+        "type": "message",
+        "attachments": [
+            {
+                "contentType": "application/vnd.microsoft.card.adaptive",
+                "contentUrl": None,
+                "content": {
+                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                    "type": "AdaptiveCard",
+                    "version": "1.2",
+                    "body": [
+                        {
+                            "type": "TextBlock",
+                            "text": message,
+                            "wrap": True
+                        }
+                    ]
+                }
+            }
+        ]
     }
 
     req = urllib.request.Request(
