@@ -427,3 +427,4 @@
 /Simulatable_Circuit/ConnectivityMatrixFolders/Allen-V1
 /Simulatable_Circuit/Circuits/nbS1
 /Simulatable_Circuit/Circuits/nbS1-O1-plastic
+/Simulatable_Circuit/Circuits/Thalamoreticular

@@ -3,7 +3,7 @@ locals {
   aws_region = data.aws_region.current.region
   vpc_id     = data.terraform_remote_state.common.outputs.vpc_id
 
-  suffix = var.is_staging ? "-staging" : var.is_production ? "production" : ""
+  suffix = var.is_staging ? "-staging" : var.is_production ? "production" : var.deployment_env
 
   private_alb_https_listener_arn = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
   route_table_private_subnets_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
@@ -386,6 +386,21 @@ module "github_keycloak_ecs_redeploy_role" {
   ecs_cluster_name         = module.cs.keycloak_ecs_cluster_name
   ecs_service_name         = module.cs.keycloak_ecs_service_name
   ecs_task_definition_name = module.cs.keycloak_ecs_task_definition_name
+}
+
+module "github_grading_service_ecs_redeploy_role" {
+  source = "./github_ecs_redeploy_role"
+
+  # Unconditional (no count): grading-service deploys to BOTH staging and
+  # production, so this role is needed in both accounts (unlike the staging-only
+  # roles above). Real tenants release to prod; the obi test tenant to staging.
+  account_id               = local.account_id
+  aws_region               = local.aws_region
+  github_organisation      = local.github_organisation
+  repo_name                = "grading-service"
+  ecs_cluster_name         = module.grading_service.ecs_cluster_name
+  ecs_service_name         = module.grading_service.ecs_service_name
+  ecs_task_definition_name = module.grading_service.ecs_task_definition_name
 }
 
 
@@ -825,9 +840,13 @@ module "launch_system" {
 
   cluster_task_maximum_runtime = 86400
 
-  entitycore_url        = "https://${local.cell_a_primary_domain}/api/entitycore"
-  auth_manager_url      = "https://${local.cell_a_primary_domain}/api/auth-manager"
-  launch_system_api_url = "https://${local.cell_a_primary_domain}/api/launch-system"
+  entitycore_url   = "https://${local.cell_a_primary_domain}/api/entitycore"
+  auth_manager_url = "https://${local.cell_a_primary_domain}/api/auth-manager"
+  launch_system_api_url = (
+    (var.is_staging || var.is_production) ?
+    "https://${local.cell_a_primary_domain}/api/launch-system" :
+    "https://${var.deployment_env}.cell-a.openbraininstitute.org/api/launch-system"
+  )
 
   local_store_prefix        = "/data"
   simulation_launch_command = "/data/scratch/run-simulation-venv/bin/python3 /data/scratch/run_simulation.py"
@@ -837,6 +856,8 @@ module "launch_system" {
   pcs_cidr_block                     = "10.0.36.0/24"
   pcs_fsx_scratch_s3_bucket_name     = "obi-pcs-scratch-fsx-${local.suffix}"
   pcs_large_nodes_max_instance_count = 20
+  pcs_large_instance_type            = var.pcs_large_instance_type
+  pcs_large_enable_efa               = var.pcs_large_enable_efa
   pcs_large_alternate_node_types     = [] # no alternates since we are using `hpc7a.96xlarge`
 
   codeartifact_config = {
