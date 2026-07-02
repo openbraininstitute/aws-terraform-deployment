@@ -388,6 +388,21 @@ module "github_keycloak_ecs_redeploy_role" {
   ecs_task_definition_name = module.cs.keycloak_ecs_task_definition_name
 }
 
+module "github_grading_service_ecs_redeploy_role" {
+  source = "./github_ecs_redeploy_role"
+
+  # Unconditional (no count): grading-service deploys to BOTH staging and
+  # production, so this role is needed in both accounts (unlike the staging-only
+  # roles above). Real tenants release to prod; the obi test tenant to staging.
+  account_id               = local.account_id
+  aws_region               = local.aws_region
+  github_organisation      = local.github_organisation
+  repo_name                = "grading-service"
+  ecs_cluster_name         = module.grading_service.ecs_cluster_name
+  ecs_service_name         = module.grading_service.ecs_service_name
+  ecs_task_definition_name = module.grading_service.ecs_task_definition_name
+}
+
 
 module "hpc" {
   source = "./hpc"
