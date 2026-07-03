@@ -5,7 +5,7 @@ This guide explains how to connect to a bastion host using AWS Systems Manager (
 ## Prerequisites
 - AWS CLI installed and configured.
 - Session Manager plugin installed (see installation instructions below).
-- The `BastionUserAccess` permission set assigned to your AWS user.
+- The `ReadOnlyAccess` permission set assigned to your AWS user.
 
 ### Install Session Manager Plugin (macOS)
 
@@ -28,24 +28,31 @@ session-manager-plugin --version
 Add the following profiles to your `~/.aws/config` file. These profiles configure the AWS CLI to use the correct SSO session, account ID, and role for accessing the staging and production environments.
 
 ```ini
-[profile BastionUserAccess-staging]
-sso_session = obi
-sso_account_id = 992382665735
-sso_role_name = BastionUserAccess
-region = us-east-1
-output = json
-
-[profile BastionUserAccess-prod]
-sso_session = obi
-sso_account_id = 671250183987
-sso_role_name = BastionUserAccess
-region = us-east-1
-output = json
-
 [sso-session obi]
 sso_start_url = https://openbraininstitute.awsapps.com/start/
 sso_region = us-east-1
 sso_registration_scopes = sso:account:access
+
+[profile staging]
+sso_session = obi
+sso_account_id = 992382665735
+sso_role_name = ReadOnlyAccess
+region = us-east-1
+output = json
+
+[profile production]
+sso_session = obi
+sso_account_id = 671250183987
+sso_role_name = ReadOnlyAccess
+region = us-east-1
+output = json
+
+[profile codeartifact]
+sso_session = obi
+sso_account_id = 985539765147
+sso_role_name = ReadOnlyAccess
+region = us-east-1
+output = json
 ```
 
 ## Step 2: Log in and Connect
@@ -56,13 +63,12 @@ The following commands will log you in, find the bastion instance, determine you
 
 First, log in:
 ```bash
-aws sso login --profile BastionUserAccess-staging
+aws sso login --sso-session obi
 ```
 
 Then, run this block to connect:
 ```bash
-# Set the profile for the environment
-export AWS_PROFILE="BastionUserAccess-staging"
+export AWS_PROFILE="staging"
 
 # Get the bastion instance ID
 INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=*Bastion*" "Name=instance-state-name,Values=running" --query 'Reservations[0].Instances[0].InstanceId' --output text)
@@ -79,13 +85,12 @@ aws ssm start-session --target "$INSTANCE_ID" --document-name "SSM-UserMapping-$
 
 First, log in:
 ```bash
-aws sso login --profile BastionUserAccess-prod
+aws sso login --sso-session obi
 ```
 
 Then, run this block to connect:
 ```bash
-# Set the profile for the environment
-export AWS_PROFILE="BastionUserAccess-prod"
+export AWS_PROFILE="production"
 
 # Get the bastion instance ID
 INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=*Bastion*" "Name=instance-state-name,Values=running" --query 'Reservations[0].Instances[0].InstanceId' --output text)
@@ -149,7 +154,7 @@ psql -h localhost -p 15432 -U your_username -d your_database
 ## Troubleshooting
 
 - **`An error occurred (UnauthorizedOperation) when calling the DescribeInstances operation`**:
-  - Your `BastionUserAccess` role may not have the required permissions.
+  - Your `ReadOnlyAccess` role may not have the required permissions.
   - Ensure you have logged in via `aws sso login` for the correct profile.
 
 - **`Could not find a running Bastion instance`**:
