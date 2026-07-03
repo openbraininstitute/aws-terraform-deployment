@@ -42,7 +42,7 @@ module "accounting_db_metrics_alerts" {
   cpu_utilization_high_threshold            = 30                      # %
   freeable_memory_low_threshold             = 512 * 1024 * 1024       # 512 MB
   free_storage_space_low_threshold          = 10 * 1024 * 1024 * 1024 # 10 GB
-  database_connections_high_threshold       = 10
+  database_connections_high_threshold       = 30
   read_latency_high_threshold               = 0.05             # 50 ms
   write_latency_high_threshold              = 0.02             # 20 ms
   swap_usage_high_threshold                 = 50 * 1024 * 1024 # 50 MB
