@@ -310,6 +310,10 @@ resource "aws_ecs_task_definition" "api" {
         {
           name  = "WEB_LAUNCH_URL"
           value = var.web_launch_url
+        },
+        {
+          name  = "PUBLIC_BASE_URL"
+          value = var.public_base_url
         }
       ]
 
@@ -317,6 +321,10 @@ resource "aws_ecs_task_definition" "api" {
         {
           name      = "WEB_LAUNCH_HMAC_SECRET"
           valueFrom = "${var.secrets_arn}:WEB_LAUNCH_HMAC_SECRET::"
+        },
+        {
+          name      = "LTI_TOOL_PRIVATE_KEY"
+          valueFrom = "${var.secrets_arn}:LTI_TOOL_PRIVATE_KEY::"
         }
       ]
 
