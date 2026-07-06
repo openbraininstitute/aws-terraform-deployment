@@ -411,3 +411,40 @@ resource "aws_iam_role_policy_attachment" "default_executor_logs_access" {
   role       = aws_iam_role.default_executor_execution.name
   policy_arn = aws_iam_policy.executor_logs_access.arn
 }
+
+resource "aws_iam_policy" "executor_s3files_access" {
+  name_prefix = "launch_system_executor_s3files"
+  description = "Allows ECS executor tasks to mount S3 Files for private data"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid      = "S3FilesClientAccess"
+        Effect   = "Allow"
+        Action   = ["s3files:ClientMount"]
+        Resource = aws_s3files_file_system.private_data.arn
+      },
+      {
+        Sid      = "S3ObjectReadAccess"
+        Effect   = "Allow"
+        Action   = ["s3:GetObject", "s3:GetObjectVersion"]
+        Resource = "arn:aws:s3:::${var.private_data_s3_bucket_name}/${var.private_data_s3_prefix}*"
+      },
+      {
+        Sid      = "S3BucketListAccess"
+        Effect   = "Allow"
+        Action   = ["s3:ListBucket"]
+        Resource = "arn:aws:s3:::${var.private_data_s3_bucket_name}"
+        Condition = {
+          StringLike = { "s3:prefix" = ["${var.private_data_s3_prefix}*"] }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "executor_task_s3files_access" {
+  role       = aws_iam_role.executor_task.name
+  policy_arn = aws_iam_policy.executor_s3files_access.arn
+}
