@@ -890,7 +890,8 @@ module "grading_service" {
   base_path   = "/api/grading-service"
   secrets_arn = local.grading_service_secrets_arn
 
-  web_launch_url = "https://${local.public_primary_domain_in_azure}/app/grading/launch"
+  web_launch_url  = "https://${local.public_primary_domain_in_azure}/app/grading/launch"
+  public_base_url = "https://${local.cell_a_primary_domain}"
 }
 
 module "dashboards" {

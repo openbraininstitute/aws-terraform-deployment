@@ -59,6 +59,11 @@ variable "web_launch_url" {
   description = "URL of the graded notebook launch endpoint in Core Web app"
 }
 
+variable "public_base_url" {
+  type        = string
+  description = "Externally reachable HTTPS base URL of the tool (scheme+host, no path). LTI 1.3 login/launch/jwks URLs handed to the platform are built as public_base_url + base_path + /lti/*."
+}
+
 variable "tags" {
   type    = map(string)
   default = { SBO_Billing = "grading_service" }
