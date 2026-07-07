@@ -333,6 +333,8 @@ resource "aws_iam_policy" "orchestrator_ecs_run_task" {
           "ecs:RegisterTaskDefinition",
           "ecs:DescribeTaskDefinition",
           "ecs:ListTaskDefinitions",
+          "ecs:DeregisterTaskDefinition",
+          "ecs:DeleteTaskDefinitions",
         ]
         Resource = ["*"]
       },
