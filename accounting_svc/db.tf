@@ -16,7 +16,7 @@ resource "aws_db_instance" "accounting" {
   engine         = "postgres"
   engine_version = "17"
   multi_az       = true
-  instance_class = "db.t3.small"
+  instance_class = "db.t4g.small"
 
   deletion_protection = true
   allocated_storage   = 50 # in gigabytes
