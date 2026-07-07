@@ -34,6 +34,7 @@ resource "aws_db_instance" "virtual_lab_manager" {
   deletion_protection     = true #tfsec:ignore:AVD-AWS-0177
   allocated_storage       = 5    # in gigabytes
   backup_retention_period = 0    # in days
+  maintenance_window      = "sun:05:00-sun:06:00"
 
   apply_immediately = false
 
