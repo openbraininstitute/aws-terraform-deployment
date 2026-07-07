@@ -43,7 +43,7 @@ resource "aws_db_instance" "virtual_lab_manager" {
   engine_version             = "17.9"
   auto_minor_version_upgrade = true
   multi_az                   = var.db_multi_az
-  instance_class             = "db.t3.small"
+  instance_class             = "db.t4g.small"
 
   identifier = "virtual-lab-manager-db-id"
   db_name    = var.virtual_lab_manager_postgres_db
