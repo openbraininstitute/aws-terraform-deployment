@@ -97,6 +97,8 @@ virtual_lab_manager_task_size = {
 
 multiple_vlabs_allowed_user_id = "16588c8b-ec88-4a49-a413-a0bb3a7b8541"
 
+keycloak_db_instance_class = "db.t4g.micro"
+
 keycloak_task_size = {
   cpu    = 1024
   memory = 2048
