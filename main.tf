@@ -108,7 +108,7 @@ module "cs" {
   vpc_id                         = local.vpc_id
   route_table_private_subnets_id = local.route_table_private_subnets_id
   route_table_public_subnets_id  = local.route_table_public_id
-  db_instance_class              = "db.t3.micro"
+  db_instance_class              = var.keycloak_db_instance_class
   private_alb_https_listener_arn = local.private_alb_https_listener_arn
 
   keycloak_secrets_arn    = local.keycloak_secrets_arn

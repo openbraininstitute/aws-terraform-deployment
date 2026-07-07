@@ -235,6 +235,11 @@ variable "notebook_service_azure_storage_account" {
 
 ### Keycloak ###
 
+variable "keycloak_db_instance_class" {
+  type        = string
+  description = "RDS instance class for the Keycloak database"
+}
+
 variable "keycloak_task_size" {
   type = object({
     cpu    = number
