@@ -123,6 +123,9 @@ opendata_paths_list = "staging_opendata_paths.txt"
 launch_system_aca_in_azure_cidr_block   = "10.120.0.0/16"
 launch_system_batch_in_azure_cidr_block = "10.122.0.0/16"
 
+# the bucket must exist in the sandbox and it must be versioned
+launch_system_private_data_s3_bucket_name = "test-s3-files-gf-009203151042-us-east-1-an"
+
 azure_blobstore_opendata_container_url             = "https://obibatchstoragestg.blob.core.windows.net/opendata"
 azure_blobstore_internal_public_data_container_url = "https://obibatchstoragestg.blob.core.windows.net/publicdata"
 azure_blobstore_opendata_sas_token                 = "placeholder"
