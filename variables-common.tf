@@ -408,6 +408,12 @@ variable "launch_system_orchestrator_num_workers" {
   type        = number
 }
 
+variable "launch_system_private_data_s3_bucket_name" {
+  type        = string
+  description = "Override for the S3 bucket used for launch-system private data."
+  default     = null
+}
+
 variable "opendata_paths_list" {
   type        = string
   description = "File in which the paths to sync on opendata are listed, one per line. Should exist in modules/public_data_efs"

@@ -870,6 +870,12 @@ module "launch_system" {
   public_launch_data_efs_id            = module.public_data_efs_storage.public_launch_data_efs_id
   internal_public_data_access_point_id = module.public_data_efs_storage.internal_public_data_access_point_id
   open_public_data_access_point_id     = module.public_data_efs_storage.open_public_data_access_point_id
+
+  private_data_s3_bucket_name = coalesce(
+    var.launch_system_private_data_s3_bucket_name,
+    var.entitycore_svc_aws_s3_internal_bucket,
+  )
+  private_data_s3_prefix = "private/"
 }
 
 module "grading_service" {

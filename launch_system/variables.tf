@@ -202,6 +202,16 @@ variable "open_public_data_access_point_id" {
   type        = string
 }
 
+variable "private_data_s3_bucket_name" {
+  description = "S3 bucket name containing private project data"
+  type        = string
+}
+
+variable "private_data_s3_prefix" {
+  description = "S3 key prefix under which private project data lives"
+  type        = string
+}
+
 variable "internet_access_route_id" {
   description = "Route table ID for internet access via NAT"
   type        = string

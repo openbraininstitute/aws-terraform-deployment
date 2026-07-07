@@ -113,6 +113,14 @@ resource "aws_ecs_task_definition" "orchestrator" {
           value = jsonencode(var.codeartifact_config)
         },
         {
+          name  = "ORCHESTRATOR_PRIVATE_DATA_S3FILES_ARN"
+          value = aws_s3files_file_system.private_data.arn
+        },
+        {
+          name  = "ORCHESTRATOR_PRIVATE_DATA_S3_BUCKET_NAME"
+          value = var.private_data_s3_bucket_name
+        },
+        {
           name  = "ORCHESTRATOR_COMPUTE_CELL_DEFINITIONS"
           value = local.compute_cell_definitions_tmpl
         },
@@ -307,10 +315,36 @@ resource "aws_iam_policy" "orchestrator_ecs_run_task" {
           "ecs:RunTask",
         ]
         Resource = [
+          # Base task definitions managed by Terraform
           aws_ecs_task_definition.default_executor.arn,
           aws_ecs_task_definition.inait_executor.arn,
           aws_ecs_task_definition.python_3_12_openmpi5_neuron9_neurodamus_executor.arn,
           aws_ecs_task_definition.python_3_12_compiler_cuda_12_8_executor.arn,
+          # Derived per-project task definitions created by the orchestrator
+          "arn:aws:ecs:${var.aws_region}:${var.account_id}:task-definition/${aws_ecs_task_definition.default_executor.family}-*",
+          "arn:aws:ecs:${var.aws_region}:${var.account_id}:task-definition/${aws_ecs_task_definition.inait_executor.family}-*",
+          "arn:aws:ecs:${var.aws_region}:${var.account_id}:task-definition/${aws_ecs_task_definition.python_3_12_openmpi5_neuron9_neurodamus_executor.family}-*",
+          "arn:aws:ecs:${var.aws_region}:${var.account_id}:task-definition/${aws_ecs_task_definition.python_3_12_compiler_cuda_12_8_executor.family}-*",
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ecs:RegisterTaskDefinition",
+          "ecs:DescribeTaskDefinition",
+          "ecs:ListTaskDefinitions",
+          "ecs:DeregisterTaskDefinition",
+          "ecs:DeleteTaskDefinitions",
+        ]
+        Resource = ["*"]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ecs:TagResource",
+        ]
+        Resource = [
+          "arn:aws:ecs:${var.aws_region}:${var.account_id}:task-definition/*",
         ]
       },
       {
@@ -348,6 +382,32 @@ resource "aws_iam_policy" "orchestrator_ecs_run_task" {
   })
 }
 
+resource "aws_iam_policy" "orchestrator_s3_private_data" {
+  name_prefix = "launch_system_orchestrator_s3_private"
+  description = "Allows orchestrator to create placeholder objects in the private data prefix"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["s3:PutObject"]
+        Resource = "arn:aws:s3:::${var.private_data_s3_bucket_name}/private/*"
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["s3:ListBucket"]
+        Resource = "arn:aws:s3:::${var.private_data_s3_bucket_name}"
+        Condition = {
+          StringLike = {
+            "s3:prefix" = ["private/*"]
+          }
+        }
+      }
+    ]
+  })
+}
+
 resource "aws_iam_role_policy_attachment" "orchestrator_ecs_run_task" {
   role       = aws_iam_role.orchestrator_task.name
   policy_arn = aws_iam_policy.orchestrator_ecs_run_task.arn
@@ -361,4 +421,9 @@ resource "aws_iam_role_policy_attachment" "orchestrator_secrets_access" {
 resource "aws_iam_role_policy_attachment" "orchestrator_logs_access" {
   role       = aws_iam_role.orchestrator_execution.name
   policy_arn = aws_iam_policy.orchestrator_logs_access.arn
+}
+
+resource "aws_iam_role_policy_attachment" "orchestrator_s3_private_data" {
+  role       = aws_iam_role.orchestrator_task.name
+  policy_arn = aws_iam_policy.orchestrator_s3_private_data.arn
 }
