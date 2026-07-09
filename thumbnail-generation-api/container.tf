@@ -144,6 +144,11 @@ resource "aws_ecs_task_definition" "main" {
   memory                   = 4096
   cpu                      = 2048
 
+  runtime_platform {
+    operating_system_family = "LINUX"
+    cpu_architecture        = "ARM64"
+  }
+
   volume {
     name = "tmp"
   }
