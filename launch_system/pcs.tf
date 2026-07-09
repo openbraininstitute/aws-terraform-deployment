@@ -37,12 +37,12 @@ resource "awscc_pcs_cluster" "cluster" {
         parameter_value = "CR_CPU_Memory"
       },
       {
-        parameter_name  = "Prolog"
-        parameter_value = "/usr/local/bin/prolog-mount-private-data.sh"
+        parameter_name  = "TaskProlog"
+        parameter_value = "/usr/local/bin/task-prolog.sh"
       },
       {
-        parameter_name  = "Epilog"
-        parameter_value = "/usr/local/bin/epilog-unmount-private-data.sh"
+        parameter_name  = "TaskEpilog"
+        parameter_value = "/usr/local/bin/task-epilog.sh"
       },
     ]
     slurm_rest = {
@@ -69,6 +69,7 @@ resource "aws_launch_template" "pcs_launch_template" {
     opendata_access_point_id   = var.open_public_data_access_point_id
     publicdata_access_point_id = var.internal_public_data_access_point_id
     region                     = var.aws_region
+    slurm_version              = awscc_pcs_cluster.cluster.scheduler.version
     sudo_users                 = local.sudo_users
   }))
 
@@ -114,6 +115,7 @@ resource "aws_launch_template" "pcs_launch_template_efa" {
     opendata_access_point_id   = var.open_public_data_access_point_id
     publicdata_access_point_id = var.internal_public_data_access_point_id
     region                     = var.aws_region
+    slurm_version              = awscc_pcs_cluster.cluster.scheduler.version
     sudo_users                 = local.sudo_users
   }))
 
@@ -195,7 +197,7 @@ resource "awscc_pcs_queue" "pcs_queue_small" {
   tags = { SBO_Billing = "pcs-hpc" }
 
   lifecycle {
-    replace_triggered_by = [awscc_pcs_compute_node_group.pcs_nodegroup_small]
+    replace_triggered_by = [awscc_pcs_compute_node_group.pcs_nodegroup_small.compute_node_group_id]
   }
 }
 
@@ -257,7 +259,7 @@ resource "awscc_pcs_queue" "pcs_queue_large" {
   tags = { SBO_Billing = "pcs-hpc" }
 
   lifecycle {
-    replace_triggered_by = [awscc_pcs_compute_node_group.pcs_nodegroup_large]
+    replace_triggered_by = [awscc_pcs_compute_node_group.pcs_nodegroup_large.compute_node_group_id]
   }
 }
 
@@ -317,7 +319,7 @@ resource "awscc_pcs_queue" "pcs_queue_large_fallback" {
   tags = { SBO_Billing = "pcs-hpc" }
 
   lifecycle {
-    replace_triggered_by = [awscc_pcs_compute_node_group.pcs_ng_large_fallback[each.key]]
+    replace_triggered_by = [awscc_pcs_compute_node_group.pcs_ng_large_fallback[each.key].compute_node_group_id]
   }
 }
 
