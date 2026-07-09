@@ -43,3 +43,28 @@ resource "aws_lb_listener_rule" "accounting_private_listener_rule" {
     }
   }
 }
+
+# Requests to the accounting path that did not match any source_ip allowlist
+# rule above are explicitly rejected instead of falling through to the
+# listener default action. Priority must stay above the highest possible
+# chunk rule (base + chunk_index) and below other services' rules (700+).
+resource "aws_lb_listener_rule" "accounting_private_listener_rule_deny" {
+  listener_arn = var.private_alb_listener_arn
+  priority     = var.listener_rule_base_priority + 40
+
+  action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "application/json"
+      message_body = "{\"detail\": \"Forbidden\"}"
+      status_code  = "403"
+    }
+  }
+
+  condition {
+    path_pattern {
+      values = ["${var.root_path}*"]
+    }
+  }
+}
