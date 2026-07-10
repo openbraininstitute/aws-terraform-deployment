@@ -305,8 +305,14 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
   cpu                      = var.task_size.cpu
   memory                   = var.task_size.memory
   requires_compatibilities = ["FARGATE"]
-  execution_role_arn       = aws_iam_role.ecs_virtual_lab_manager_task_execution_role[0].arn
-  task_role_arn            = aws_iam_role.ecs_virtual_lab_manager_task_role[0].arn
+
+  runtime_platform {
+    operating_system_family = "LINUX"
+    cpu_architecture        = "ARM64"
+  }
+
+  execution_role_arn = aws_iam_role.ecs_virtual_lab_manager_task_execution_role[0].arn
+  task_role_arn      = aws_iam_role.ecs_virtual_lab_manager_task_role[0].arn
 
   tags = {
     SBO_Billing = "virtual_lab_manager"
