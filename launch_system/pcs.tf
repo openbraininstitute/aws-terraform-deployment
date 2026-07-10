@@ -69,7 +69,6 @@ resource "aws_launch_template" "pcs_launch_template" {
     opendata_access_point_id   = var.open_public_data_access_point_id
     publicdata_access_point_id = var.internal_public_data_access_point_id
     region                     = var.aws_region
-    slurm_version              = awscc_pcs_cluster.cluster.scheduler.version
     sudo_users                 = local.sudo_users
   }))
 
@@ -115,7 +114,6 @@ resource "aws_launch_template" "pcs_launch_template_efa" {
     opendata_access_point_id   = var.open_public_data_access_point_id
     publicdata_access_point_id = var.internal_public_data_access_point_id
     region                     = var.aws_region
-    slurm_version              = awscc_pcs_cluster.cluster.scheduler.version
     sudo_users                 = local.sudo_users
   }))
 
