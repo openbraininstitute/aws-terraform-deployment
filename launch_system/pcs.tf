@@ -37,12 +37,12 @@ resource "awscc_pcs_cluster" "cluster" {
         parameter_value = "CR_CPU_Memory"
       },
       {
-        parameter_name  = "TaskProlog"
-        parameter_value = "/usr/local/bin/task-prolog.sh"
+        parameter_name  = "Prolog"
+        parameter_value = "/usr/local/bin/slurm-prolog.sh"
       },
       {
-        parameter_name  = "TaskEpilog"
-        parameter_value = "/usr/local/bin/task-epilog.sh"
+        parameter_name  = "Epilog"
+        parameter_value = "/usr/local/bin/slurm-epilog.sh"
       },
     ]
     slurm_rest = {
