@@ -499,6 +499,7 @@ module "accounting_svc" {
     module.ml_typescript.subnet_cidr_blocks,
     module.notebook_service.subnet_cidr_blocks,
     module.virtual_lab_manager.subnet_cidr_blocks,
+    module.launch_system.api_subnet_cidr_blocks,
     ["${module.bastion_host.bastion_instance_private_ip}/32"],
     [var.core_web_app_in_azure_cidr_block],
   )
