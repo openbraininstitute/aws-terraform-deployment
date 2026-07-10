@@ -76,7 +76,7 @@ resource "aws_amplify_app" "this" {
     KEYCLOAK_CLIENT_ID     = var.keycloak_client_id
     KEYCLOAK_CLIENT_SECRET = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["client_secret_cellb_azure_staging"]
     NEXTAUTH_SECRET        = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["nextauth_secret"]
-    AUTH_PROXY_URL         = "https://develop.${var.domain_name}"
+    AUTH_PROXY_URL         = "https://main.${var.domain_name}"
 
     GRADING_WEB_LAUNCH_HMAC_SECRET = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["GRADING_WEB_LAUNCH_HMAC_SECRET"]
   }

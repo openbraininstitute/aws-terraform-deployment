@@ -499,6 +499,7 @@ module "accounting_svc" {
     module.ml_typescript.subnet_cidr_blocks,
     module.notebook_service.subnet_cidr_blocks,
     module.virtual_lab_manager.subnet_cidr_blocks,
+    module.launch_system.api_subnet_cidr_blocks,
     ["${module.bastion_host.bastion_instance_private_ip}/32"],
     [var.core_web_app_in_azure_cidr_block],
   )
@@ -822,11 +823,11 @@ module "launch_system" {
   db_username     = "launch"
   obi_backup_plan = "obi_plan"
 
-  api_image_url                                              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.7.1"
-  orchestrator_image_url                                     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.7.1"
-  default_executor_image_url                                 = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler:2026.7.1"
-  python_3_12_openmpi5_neuron9_neurodamus_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler-openmpi5-neuron9-neurodamus:2026.7.1"
-  python_3_12_compiler_cuda_12_8_image_url                   = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler-cuda12.8:2026.7.1"
+  api_image_url                                              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.7.4"
+  orchestrator_image_url                                     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.7.4"
+  default_executor_image_url                                 = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler:2026.7.4"
+  python_3_12_openmpi5_neuron9_neurodamus_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler-openmpi5-neuron9-neurodamus:2026.7.4"
+  python_3_12_compiler_cuda_12_8_image_url                   = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler-cuda12.8:2026.7.4"
 
   api_task_size          = var.launch_system_api_task_size
   executor_task_size     = var.launch_system_executor_task_size
