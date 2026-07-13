@@ -12,8 +12,6 @@ locals {
   core_web_app_origins = concat(
     ["https://${local.public_primary_domain_in_azure}"],
     var.is_staging ? [
-      "http://127.0.0.1:3000",
-      "http://localhost:3000",
       "https://preview.openbraininstitute.org",
       "https://*.preview.openbraininstitute.org",
       "https://staging.cell-b.openbraininstitute.org",
@@ -21,7 +19,11 @@ locals {
     ] : ["https://cell-a.openbraininstitute.org", "https://cell-b.openbraininstitute.org", "https://www.cell-b.openbraininstitute.org"]
   )
 
-  core_web_app_cors_origin_regex = var.is_staging ? "https://.*\\.preview\\.openbraininstitute\\.org" : null
+  core_web_app_cors_origin_regex = var.is_staging ? join("|", [
+    "https://.*\\.preview\\.openbraininstitute\\.org",
+    "http://localhost(:\\d+)?",
+    "http://127\\.0\\.0\\.1(:\\d+)?",
+  ]) : null
 
   vpc_cidr_block    = data.terraform_remote_state.common.outputs.vpc_cidr_block
   vpc_default_sg_id = data.terraform_remote_state.common.outputs.vpc_default_sg_id
