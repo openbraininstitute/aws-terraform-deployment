@@ -224,6 +224,11 @@ module "ecs_service_agent" {
       cidr_ipv4   = "0.0.0.0/0"
     }
   }
+  runtime_platform = {
+    operating_system_family = "LINUX"
+    cpu_architecture        = "ARM64"
+  }
+
   tags           = var.tags
   propagate_tags = "SERVICE"
 
