@@ -12,8 +12,8 @@ locals {
   core_web_app_origins = concat(
     ["https://${local.public_primary_domain_in_azure}"],
     var.is_staging ? [
-      "http://127.0.0.1:3000",
-      "http://localhost:3000",
+      "http://127.0.0.1:*",
+      "http://localhost:*",
       "https://preview.openbraininstitute.org",
       "https://*.preview.openbraininstitute.org",
       "https://staging.cell-b.openbraininstitute.org",
