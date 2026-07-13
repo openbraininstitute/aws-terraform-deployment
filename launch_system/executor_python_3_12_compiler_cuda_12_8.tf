@@ -2,22 +2,58 @@ locals {
   # Prioritized fallbacks when g6e.4xlarge has no AZ capacity (common for L40S SKUs).
   # All types below provide >= 64 GiB RAM and 1 GPU.
   executor_gpu_instance_types = [
-    # 16 vCPU / 128 GiB / 1x NVIDIA L40S (48 GB VRAM)
-    "g6e.4xlarge",
-    # 16 vCPU / 128 GiB / 1x NVIDIA RTX PRO 6000 Blackwell Server Edition
-    "g7e.4xlarge",
-    # 8 vCPU / 64 GiB / 1x NVIDIA L40S (48 GB VRAM)
-    "g6e.2xlarge",
     # 16 vCPU / 64 GiB / 1x NVIDIA A10G (24 GB VRAM)
     "g5.4xlarge",
   ]
 }
 
-data "aws_ssm_parameter" "executor_gpu_ecs_ami" {
-  name = "/aws/service/ecs/optimized-ami/amazon-linux-2023/gpu/recommended/image_id"
+data "aws_iam_policy_document" "executor_gpu_infrastructure_role_assume" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    effect  = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["ecs.amazonaws.com"]
+    }
+  }
 }
 
-data "aws_iam_policy_document" "executor_gpu_ec2_instance_role_assume" {
+resource "aws_iam_role" "executor_gpu_infrastructure" {
+  name               = "launch_system_executor_gpu_infrastructure"
+  assume_role_policy = data.aws_iam_policy_document.executor_gpu_infrastructure_role_assume.json
+}
+
+resource "aws_iam_role_policy_attachment" "executor_gpu_infrastructure_managed_instances" {
+  role       = aws_iam_role.executor_gpu_infrastructure.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonECSInfrastructureRolePolicyForManagedInstances"
+}
+
+data "aws_iam_policy_document" "executor_gpu_infrastructure_pass_instance_role" {
+  statement {
+    sid    = "PassInstanceRoleToEC2"
+    effect = "Allow"
+
+    actions = ["iam:PassRole"]
+    resources = [
+      aws_iam_role.executor_gpu_instance.arn,
+    ]
+
+    condition {
+      test     = "StringLike"
+      variable = "iam:PassedToService"
+      values   = ["ec2.*"]
+    }
+  }
+}
+
+resource "aws_iam_role_policy" "executor_gpu_infrastructure_pass_instance_role" {
+  name   = "pass-instance-role"
+  role   = aws_iam_role.executor_gpu_infrastructure.id
+  policy = data.aws_iam_policy_document.executor_gpu_infrastructure_pass_instance_role.json
+}
+
+data "aws_iam_policy_document" "executor_gpu_instance_role_assume" {
   statement {
     actions = ["sts:AssumeRole"]
     effect  = "Allow"
@@ -29,156 +65,101 @@ data "aws_iam_policy_document" "executor_gpu_ec2_instance_role_assume" {
   }
 }
 
-resource "aws_iam_role" "executor_gpu_ec2_instance" {
-  name_prefix        = "launch_system_executor_gpu_ec2"
-  assume_role_policy = data.aws_iam_policy_document.executor_gpu_ec2_instance_role_assume.json
+resource "aws_iam_role" "executor_gpu_instance" {
+  name               = "launch_system_executor_gpu_instance"
+  assume_role_policy = data.aws_iam_policy_document.executor_gpu_instance_role_assume.json
 }
 
-resource "aws_iam_role_policy_attachment" "executor_gpu_ec2_instance_ecs" {
-  role       = aws_iam_role.executor_gpu_ec2_instance.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+resource "aws_iam_role_policy_attachment" "executor_gpu_instance_managed_instances" {
+  role       = aws_iam_role.executor_gpu_instance.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonECSInstanceRolePolicyForManagedInstances"
 }
 
-resource "aws_iam_role_policy_attachment" "executor_gpu_ec2_instance_ssm" {
-  role       = aws_iam_role.executor_gpu_ec2_instance.name
+resource "aws_iam_role_policy_attachment" "executor_gpu_instance_ssm" {
+  role       = aws_iam_role.executor_gpu_instance.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-resource "aws_iam_instance_profile" "executor_gpu_ec2_instance" {
-  name_prefix = "launch_system_executor_gpu_ec2"
-  role        = aws_iam_role.executor_gpu_ec2_instance.name
+resource "aws_iam_instance_profile" "executor_gpu_instance" {
+  name = "launch_system_executor_gpu_instance"
+  role = aws_iam_role.executor_gpu_instance.name
 }
 
-resource "aws_security_group" "executor_gpu_ec2_instance" {
-  name_prefix = "launch_system_executor_gpu_ec2"
+resource "aws_security_group" "executor_gpu_instance" {
+  name_prefix = "launch_system_executor_gpu"
   vpc_id      = var.vpc_id
-  description = "Security group for launch system executor GPU ECS instances"
+  description = "Security group for launch system executor GPU ECS managed instances"
 
-  tags = merge(var.tags, { Name = "launch_system_executor_gpu_ec2_instance" })
+  tags = merge(var.tags, { Name = "launch_system_executor_gpu_instance" })
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
-resource "aws_vpc_security_group_egress_rule" "executor_gpu_ec2_instance_allow_outgoing" {
-  security_group_id = aws_security_group.executor_gpu_ec2_instance.id
+resource "aws_vpc_security_group_egress_rule" "executor_gpu_instance_allow_outgoing" {
+  security_group_id = aws_security_group.executor_gpu_instance.id
   ip_protocol       = -1
   cidr_ipv4         = "0.0.0.0/0"
   description       = "Allow all egress for ECS GPU instances"
 }
 
-resource "aws_launch_template" "executor_gpu_ec2" {
-  name_prefix   = "launch-system-executor-gpu-"
-  image_id      = data.aws_ssm_parameter.executor_gpu_ecs_ami.value
-  instance_type = local.executor_gpu_instance_types[0]
-  user_data = base64encode(templatefile("${path.module}/templates/executor_gpu_ec2_userdata.sh.tftpl", {
-    ecs_cluster_name = aws_ecs_cluster.executor.name
-  }))
-  update_default_version = true
+resource "aws_ecs_capacity_provider" "executor_gpu" {
+  name    = "launch_system_executor_gpu"
+  cluster = aws_ecs_cluster.executor.name
 
-  vpc_security_group_ids = [aws_security_group.executor_gpu_ec2_instance.id]
+  managed_instances_provider {
+    infrastructure_role_arn = aws_iam_role.executor_gpu_infrastructure.arn
+    propagate_tags          = "CAPACITY_PROVIDER"
 
-  iam_instance_profile {
-    arn = aws_iam_instance_profile.executor_gpu_ec2_instance.arn
-  }
-
-  metadata_options {
-    http_tokens = "required"
-  }
-
-  monitoring {
-    enabled = true
-  }
-
-  dynamic "tag_specifications" {
-    for_each = toset(["instance", "volume"])
-    content {
-      resource_type = tag_specifications.value
-      tags = merge(var.tags, {
-        Name = "launch_system_executor_gpu_ec2"
-      })
+    infrastructure_optimization {
+      # Mirrors the previous ASG instance_warmup_period (300s) before idle scale-in.
+      scale_in_after = 300
     }
-  }
 
-  tags = merge(var.tags, { Name = "launch_system_executor_gpu_launch_template" })
-}
+    instance_launch_template {
+      ec2_instance_profile_arn = aws_iam_instance_profile.executor_gpu_instance.arn
+      monitoring               = "DETAILED"
 
-resource "aws_autoscaling_group" "executor_gpu_ec2" {
-  name_prefix = "launch-system-executor-gpu-"
-  # Pay-per-use: no GPU EC2 instances run until the ECS capacity provider scales out for a task.
-  min_size              = 0
-  max_size              = 4
-  desired_capacity      = 0
-  health_check_type     = "EC2"
-  protect_from_scale_in = false
-  vpc_zone_identifier   = local.executor_untrusted_subnet_ids
-  capacity_rebalance    = true
-  default_cooldown      = 60
-
-  mixed_instances_policy {
-    launch_template {
-      launch_template_specification {
-        launch_template_id = aws_launch_template.executor_gpu_ec2.id
-        version            = aws_launch_template.executor_gpu_ec2.latest_version
+      network_configuration {
+        subnets         = local.executor_untrusted_subnet_ids
+        security_groups = [aws_security_group.executor_gpu_instance.id]
       }
 
-      dynamic "override" {
-        for_each = local.executor_gpu_instance_types
-        content {
-          instance_type = override.value
+      instance_requirements {
+        allowed_instance_types = local.executor_gpu_instance_types
+
+        vcpu_count {
+          min = 8
+          max = 16
+        }
+
+        memory_mib {
+          min = 65536
+          max = 131072
+        }
+
+        accelerator_types         = ["gpu"]
+        accelerator_manufacturers = ["nvidia"]
+
+        accelerator_count {
+          min = 1
+          max = 1
         }
       }
     }
-    instances_distribution {
-      on_demand_allocation_strategy            = "prioritized"
-      on_demand_base_capacity                  = 0
-      on_demand_percentage_above_base_capacity = 100
-    }
   }
 
-  lifecycle {
-    create_before_destroy = true
-    # Managed scaling sets desired_capacity when tasks arrive; scale-in returns to 0 when idle.
-    # Ignore so terraform apply does not reset desired_capacity while tasks are provisioning.
-    ignore_changes = [desired_capacity]
-  }
+  tags = merge(var.tags, { Name = "launch_system_executor_gpu_capacity_provider" })
 
-  tag {
-    key                 = "Name"
-    value               = "launch_system_executor_gpu_asg"
-    propagate_at_launch = true
-  }
-
-  tag {
-    key                 = "AmazonECSManaged"
-    value               = ""
-    propagate_at_launch = true
-  }
-
-  dynamic "tag" {
-    for_each = var.tags
-    content {
-      key                 = tag.key
-      value               = tag.value
-      propagate_at_launch = true
-    }
-  }
-}
-
-resource "aws_ecs_capacity_provider" "executor_gpu" {
-  name = "launch_system_executor_gpu_ec2"
-
-  auto_scaling_group_provider {
-    auto_scaling_group_arn         = aws_autoscaling_group.executor_gpu_ec2.arn
-    managed_termination_protection = "DISABLED"
-    managed_scaling {
-      status                    = "ENABLED"
-      target_capacity           = 100
-      minimum_scaling_step_size = 1
-      # One pending task → one new container instance per scaling action.
-      maximum_scaling_step_size = 1
-      instance_warmup_period    = 300
-    }
-  }
-
-  tags = merge(var.tags, { Name = "launch_system_executor_gpu_ec2_capacity_provider" })
+  depends_on = [
+    aws_iam_role.executor_gpu_infrastructure,
+    aws_iam_role_policy_attachment.executor_gpu_infrastructure_managed_instances,
+    aws_iam_role_policy.executor_gpu_infrastructure_pass_instance_role,
+    aws_iam_role.executor_gpu_instance,
+    aws_iam_role_policy_attachment.executor_gpu_instance_managed_instances,
+    aws_iam_instance_profile.executor_gpu_instance,
+  ]
 }
 
 resource "aws_ecs_task_definition" "python_3_12_compiler_cuda_12_8_executor" {
@@ -186,7 +167,7 @@ resource "aws_ecs_task_definition" "python_3_12_compiler_cuda_12_8_executor" {
   network_mode             = "awsvpc"
   cpu                      = tostring(var.executor_task_size.cpu)
   memory                   = tostring(var.executor_task_size.memory)
-  requires_compatibilities = ["EC2"]
+  requires_compatibilities = ["MANAGED_INSTANCES"]
   execution_role_arn       = local.executor_base_config.default_execution_role_arn
   task_role_arn            = local.executor_base_config.task_role_arn
 

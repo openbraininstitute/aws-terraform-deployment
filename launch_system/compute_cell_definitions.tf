@@ -66,8 +66,8 @@ locals {
           {
             vcpu_min   = 16
             vcpu_max   = 16
-            memory_min = 128
-            memory_max = 128
+            memory_min = 64
+            memory_max = 64
             type       = "machine"
             image_type = "python_3_12_compiler_cuda_12_8"
             placement = {
