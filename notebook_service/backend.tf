@@ -116,6 +116,11 @@ resource "aws_ecs_task_definition" "ecs_definition" {
 
   requires_compatibilities = ["FARGATE"]
 
+  runtime_platform {
+    operating_system_family = "LINUX"
+    cpu_architecture        = "ARM64"
+  }
+
   volume {
     name = "homedirs"
     efs_volume_configuration {
