@@ -11,7 +11,7 @@ thumbnail_generation_api_docker_image_url = "public.ecr.aws/openbraininstitute/t
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2026.2.0"
 accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2026.07.0"
 jupyterhub_ec2_type                       = "c7i.large"
-notebook_service_docker_image_url         = "985539765147.dkr.ecr.us-east-1.amazonaws.com/notebook-service:2026.07.09-1"
+notebook_service_docker_image_url         = "985539765147.dkr.ecr.us-east-1.amazonaws.com/notebook-service:2026.07.13-1"
 notebook_service_bucket_name              = "obi-notebook-service-statistics-staging"
 notebook_service_aws_k8s_thread_enabled   = true
 notebook_service_azure_k8s_thread_enabled = true
@@ -22,7 +22,7 @@ notebook_service_azure_storage_account    = "obijupstoragestag"
 keycloak_sbo_realm_url = "https://staging.cell-a.openbraininstitute.org/auth/realms/SBO"
 keycloak_url_with_auth = "https://staging.cell-a.openbraininstitute.org/auth/"
 
-neuroagent_typescript_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-ts-v0.1.15"
+neuroagent_typescript_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-ts-v0.1.17"
 ml_neuroagent_typescript_bucket_name   = "ml-neuroagent-typescript-staging"
 ml_typescript_subnet_a_cidr            = "10.0.9.0/24"
 ml_typescript_subnet_b_cidr            = "10.0.7.0/24"
@@ -120,7 +120,7 @@ entitycore_svc_aws_s3_internal_region    = "us-east-1"
 entitycore_svc_aws_s3_open_bucket        = "openbluebrain"
 entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["*"]
-entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2026.7.5"
+entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2026.7.6"
 
 obi_one_v2_docker_image_url  = "985539765147.dkr.ecr.us-east-1.amazonaws.com/obi-one:2026.7.2"
 obi_one_v2_ec2_instance_type = "t3.medium" # vCPUs: 2, Memory: 4 GiB
