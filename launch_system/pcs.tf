@@ -36,6 +36,14 @@ resource "awscc_pcs_cluster" "cluster" {
         parameter_name  = "SelectTypeParameters"
         parameter_value = "CR_CPU_Memory"
       },
+      {
+        parameter_name  = "Prolog"
+        parameter_value = "/usr/local/bin/slurm-prolog.sh"
+      },
+      {
+        parameter_name  = "Epilog"
+        parameter_value = "/usr/local/bin/slurm-epilog.sh"
+      },
     ]
     slurm_rest = {
       mode = "STANDARD"
@@ -187,7 +195,7 @@ resource "awscc_pcs_queue" "pcs_queue_small" {
   tags = { SBO_Billing = "pcs-hpc" }
 
   lifecycle {
-    replace_triggered_by = [awscc_pcs_compute_node_group.pcs_nodegroup_small]
+    replace_triggered_by = [awscc_pcs_compute_node_group.pcs_nodegroup_small.compute_node_group_id]
   }
 }
 
@@ -249,7 +257,7 @@ resource "awscc_pcs_queue" "pcs_queue_large" {
   tags = { SBO_Billing = "pcs-hpc" }
 
   lifecycle {
-    replace_triggered_by = [awscc_pcs_compute_node_group.pcs_nodegroup_large]
+    replace_triggered_by = [awscc_pcs_compute_node_group.pcs_nodegroup_large.compute_node_group_id]
   }
 }
 
@@ -309,7 +317,7 @@ resource "awscc_pcs_queue" "pcs_queue_large_fallback" {
   tags = { SBO_Billing = "pcs-hpc" }
 
   lifecycle {
-    replace_triggered_by = [awscc_pcs_compute_node_group.pcs_ng_large_fallback[each.key]]
+    replace_triggered_by = [awscc_pcs_compute_node_group.pcs_ng_large_fallback[each.key].compute_node_group_id]
   }
 }
 
@@ -446,6 +454,30 @@ resource "aws_iam_role_policy" "pcs_policy" {
       ]
       Resource = "*"
     }]
+  })
+}
+
+resource "aws_iam_role_policy" "pcs_s3_private_data" {
+  name = "pcs-s3-private-data-access"
+  role = aws_iam_role.pcs_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["s3:GetObject", "s3:GetObjectVersion"]
+        Resource = "arn:aws:s3:::${var.private_data_s3_bucket_name}/${var.private_data_s3_prefix}*"
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["s3:ListBucket"]
+        Resource = "arn:aws:s3:::${var.private_data_s3_bucket_name}"
+        Condition = {
+          StringLike = { "s3:prefix" = ["${var.private_data_s3_prefix}*"] }
+        }
+      }
+    ]
   })
 }
 
