@@ -112,6 +112,10 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
           value = "false"
         },
         {
+          name  = "DEPLOYMENT_ENV"
+          value = var.deployment_env
+        },
+        {
           name  = "CORS_ORIGINS"
           value = jsonencode(var.cors_origins)
         },
@@ -201,6 +205,10 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
         {
           name      = "OPENAI_API_KEY"
           valueFrom = "${var.entitycore_service_secrets_arn}:OPENAI_API_KEY::"
+        },
+        {
+          name      = "SENTRY_DSN"
+          valueFrom = "${var.entitycore_service_secrets_arn}:SENTRY_DSN::"
         },
 
       ]
