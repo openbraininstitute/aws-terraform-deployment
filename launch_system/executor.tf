@@ -103,6 +103,12 @@ resource "aws_ecs_cluster_capacity_providers" "executor" {
     "FARGATE",
     aws_ecs_capacity_provider.executor_gpu.name,
   ]
+
+  lifecycle {
+    replace_triggered_by = [
+      aws_ecs_capacity_provider.executor_gpu,
+    ]
+  }
 }
 
 # TODO make outgoing more strict, allow incoming if needed
