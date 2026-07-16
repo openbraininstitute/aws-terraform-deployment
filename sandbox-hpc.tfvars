@@ -26,6 +26,7 @@ neuroagent_typescript_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazona
 ml_neuroagent_typescript_bucket_name   = "ml-neuroagent-typescript-sandbox-hpc"
 ml_typescript_subnet_a_cidr            = "10.0.9.0/24"
 ml_typescript_subnet_b_cidr            = "10.0.7.0/24"
+grading_service_docker_image_url       = "985539765147.dkr.ecr.us-east-1.amazonaws.com/grading-service:staging"
 
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-staging"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-staging"
@@ -80,6 +81,10 @@ virtual_lab_manager_task_size = {
   memory = 1024
 }
 
+multiple_vlabs_allowed_user_id = "16588c8b-ec88-4a49-a413-a0bb3a7b8541"
+
+keycloak_db_instance_class = "db.t4g.micro"
+
 keycloak_task_size = {
   cpu    = 1024
   memory = 2048
@@ -132,7 +137,13 @@ launch_system_orchestrator_num_workers = 2
 
 opendata_paths_list = "sandbox-hpc_opendata_paths.txt"
 
-core_web_app_in_azure_cidr_block    = "10.102.1.0/27" # staging azure core web app aca range
+core_web_app_in_azure_cidr_block = "10.102.1.0/27" # staging azure core web app aca range
+
+# From https://github.com/openbraininstitute/azure-terraform-deployment/blob/562f3fc/staging.tfvars#L25
+launch_system_aca_in_azure_cidr_block = "10.120.0.0/16"
+# From https://github.com/openbraininstitute/azure-terraform-deployment/blob/0d9b29e/staging.tfvars#L30
+launch_system_batch_in_azure_cidr_block = "10.122.0.0/16"
+
 core_web_app_stripe_publishable_key = "placeholder"
 
 azure_blobstore_opendata_container_url             = "https://obibatchstorageehe.blob.core.windows.net/opendata"
@@ -148,3 +159,9 @@ azure_nfs_internal_public_data_path         = "/obibatchnfsehe/publicdata"
 
 resource_provisioner_container_hash = "1837363b2413d5e7cfd8c7a859ba4b3cd35c685acd4240f70101364aaaeee0b8"
 resource_provisioner_container_uri  = "985539765147.dkr.ecr.us-east-1.amazonaws.com/hpc-resource-provisioner:0.5.13.dev8"
+
+pcs_ami                 = "ami-05ab51b6e76cb8213"
+pcs_large_instance_type = "hpc7a.96xlarge"
+pcs_large_enable_efa    = true
+
+backup_s3_buckets = ["erik-nexus-manual", "sboinfrastructureassets-sandbox"]

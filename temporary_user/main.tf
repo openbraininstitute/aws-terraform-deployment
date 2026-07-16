@@ -7,14 +7,8 @@ resource "aws_iam_user_policy" "temp_user_policy" {
   user = aws_iam_user.temp_user.name
 
   policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect   = "Allow"
-        Action   = var.allow_actions
-        Resource = var.allow_resources
-      }
-    ]
+    Version   = "2012-10-17"
+    Statement = [for action in var.allow_resource_actions : { Effect = "Allow", Action = action["allow_actions"], Resource = action["resources"] }]
   })
 }
 

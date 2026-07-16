@@ -518,3 +518,8 @@ variable "source_datasync_role" {
   type        = string
   default     = ""
 }
+
+variable "backup_s3_buckets" {
+  type        = list(string)
+  description = "List of S3 bucket names to backup to the NAS"
+}

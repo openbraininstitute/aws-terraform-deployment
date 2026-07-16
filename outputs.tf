@@ -23,3 +23,8 @@ output "temporary_nexus_user_credentials" {
   value     = module.temporary_nexus_user
   sensitive = true
 }
+
+output "nas_backup_user" {
+  value     = module.nas_backup_user
+  sensitive = true
+}

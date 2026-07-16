@@ -940,14 +940,56 @@ module "temporary_nexus_user" {
   count = var.is_production ? 1 : 0
 
   user_name = "nexus_reader"
-  allow_actions = [
-    "s3:ListBucket",
-    "s3:ListBucketVersions",
-    "s3:GetObject",
-    "s3:GetObjectVersion"
+  allow_resource_actions = [
+    {
+      resources = [
+        "arn:aws:s3:::nexus-openscience-production",
+        "arn:aws:s3:::nexus-openscience-production/*"
+      ],
+      allow_actions = [
+        "s3:ListBucket",
+        "s3:ListBucketVersions",
+        "s3:GetObject",
+        "s3:GetObjectVersion"
+      ]
+    }
   ]
-  allow_resources = [
-    "arn:aws:s3:::nexus-openscience-production",
-    "arn:aws:s3:::nexus-openscience-production/*"
+}
+
+
+module "nas_backup_user" {
+  source = "./temporary_user"
+
+  count = var.is_production ? 1 : 0
+
+  user_name = "nas_backup"
+
+  allow_resource_actions = [
+    {
+      resources = [
+        for backup_bucket in var.backup_s3_buckets :
+        "arn:aws:s3:::${backup_bucket}"
+      ]
+      allow_actions = [
+        "s3:GetBucketLocation",
+        "s3:ListBucket"
+      ]
+    },
+    {
+      resources = [
+        for backup_bucket in var.backup_s3_buckets :
+        "arn:aws:s3:::${backup_bucket}/*"
+      ]
+      allow_actions = [
+        "s3:GetObject",
+        "s3:GetObjectVersion"
+      ]
+    },
+    {
+      resources = ["arn:aws:s3:::*"]
+      allow_actions = [
+        "s3:ListAllMyBuckets"
+      ]
+    }
   ]
 }

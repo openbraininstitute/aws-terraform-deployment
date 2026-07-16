@@ -174,3 +174,5 @@ pcs_large_enable_efa    = true
 
 datasync_target_account                = "992382665735"
 destination_entitycore_internal_bucket = "entitycore-data-staging"
+
+backup_s3_buckets = ["entitycore-data-production"]
