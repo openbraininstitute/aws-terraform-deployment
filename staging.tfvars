@@ -9,7 +9,7 @@ nexus_openscience_bucket_name             = "nexus-openscience-production-stagin
 virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:2026.07.10.1"
 thumbnail_generation_api_docker_image_url = "public.ecr.aws/openbraininstitute/thumbnail-generation-api:2026.07.09.1"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2026.2.0"
-accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2026.07.0"
+accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2026.07.2"
 jupyterhub_ec2_type                       = "c7i.large"
 notebook_service_docker_image_url         = "985539765147.dkr.ecr.us-east-1.amazonaws.com/notebook-service:2026.07.14-1"
 notebook_service_bucket_name              = "obi-notebook-service-statistics-staging"
@@ -120,7 +120,7 @@ entitycore_svc_aws_s3_internal_region    = "us-east-1"
 entitycore_svc_aws_s3_open_bucket        = "openbluebrain"
 entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["*"]
-entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2026.7.7"
+entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2026.7.9"
 
 obi_one_v2_docker_image_url  = "985539765147.dkr.ecr.us-east-1.amazonaws.com/obi-one:2026.7.4"
 obi_one_v2_ec2_instance_type = "t3.medium" # vCPUs: 2, Memory: 4 GiB
