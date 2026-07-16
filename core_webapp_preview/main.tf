@@ -79,6 +79,9 @@ resource "aws_amplify_app" "this" {
     AUTH_PROXY_URL         = "https://main.${var.domain_name}"
 
     GRADING_WEB_LAUNCH_HMAC_SECRET = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["GRADING_WEB_LAUNCH_HMAC_SECRET"]
+    MAILCHIMP_API_KEY              = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["mailchimp_api_key"]
+    MAILCHIMP_AUDIENCE_ID          = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["mailchimp_audience_id"]
+    MAILCHIMP_API_SERVER           = jsondecode(data.aws_secretsmanager_secret_version.secrets.secret_string)["mailchimp_api_server"]
   }
 
   enable_branch_auto_build    = false
