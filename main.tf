@@ -960,7 +960,7 @@ module "temporary_nexus_user" {
 module "nas_backup_user" {
   source = "./temporary_user"
 
-  count = var.is_production ? 1 : 0
+  count = var.create_nas_backup_user ? 1 : 0
 
   user_name = "nas_backup"
 
@@ -992,4 +992,6 @@ module "nas_backup_user" {
       ]
     }
   ]
+
+  extra_policies = [var.ssm_readonly_access_policy_arn]
 }

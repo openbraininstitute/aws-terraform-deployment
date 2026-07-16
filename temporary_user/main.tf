@@ -12,6 +12,13 @@ resource "aws_iam_user_policy" "temp_user_policy" {
   })
 }
 
+resource "aws_iam_policy_attachment" "extra_policy" {
+  for_each   = toset(var.extra_policies)
+  name       = "extra policy"
+  policy_arn = each.key
+  users      = [aws_iam_user.temp_user.id]
+}
+
 resource "aws_iam_access_key" "temp_user_access_key" {
   user = aws_iam_user.temp_user.name
 }
