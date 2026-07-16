@@ -174,3 +174,7 @@ pcs_large_enable_efa    = true
 
 datasync_target_account                = "992382665735"
 destination_entitycore_internal_bucket = "entitycore-data-staging"
+
+create_nas_backup_user         = true
+backup_s3_buckets              = ["entitycore-data-production"]
+ssm_readonly_access_policy_arn = "arn:aws:iam::671250183987:policy/obi_SSMBastionUserAccess"

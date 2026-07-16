@@ -518,3 +518,19 @@ variable "source_datasync_role" {
   type        = string
   default     = ""
 }
+
+variable "create_nas_backup_user" {
+  type        = bool
+  default     = false
+  description = "Set to true if you want to create the NAS backup user in your subscription"
+}
+
+variable "backup_s3_buckets" {
+  type        = list(string)
+  description = "List of S3 bucket names to backup to the NAS"
+}
+
+variable "ssm_readonly_access_policy_arn" {
+  type        = string
+  description = "ARN for the SSM readonly access policy"
+}
