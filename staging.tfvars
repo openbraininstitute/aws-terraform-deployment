@@ -173,3 +173,7 @@ resource_provisioner_container_uri  = "985539765147.dkr.ecr.us-east-1.amazonaws.
 pcs_ami                 = "ami-05ab51b6e76cb8213"
 pcs_large_instance_type = "hpc7a.96xlarge"
 pcs_large_enable_efa    = true
+
+create_nas_backup_user         = true
+backup_s3_buckets              = []
+ssm_readonly_access_policy_arn = "arn:aws:iam::992382665735:policy/obi_SSMBastionUserAccess"
