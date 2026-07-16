@@ -62,7 +62,7 @@ variable "stripe_publishable_key" {
 
 variable "secrets_arn" {
   type        = string
-  description = "ARN of AWS Secrets Manager secret containing KEYCLOAK_CLIENT_ID, KEYCLOAK_CLIENT_SECRET, and NEXTAUTH_SECRET"
+  description = "ARN of AWS Secrets Manager secret containing KEYCLOAK_CLIENT_ID, KEYCLOAK_CLIENT_SECRET, NEXTAUTH_SECRET, mailchimp_api_key, mailchimp_audience_id, mailchimp_api_server"
 }
 
 variable "github_oidc_provider_arn" {
