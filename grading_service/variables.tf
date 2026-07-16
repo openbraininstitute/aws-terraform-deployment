@@ -49,6 +49,11 @@ variable "base_path" {
   description = "Base path for the API (e.g. /api/grading-service)"
 }
 
+variable "deployment_env" {
+  type        = string
+  description = "Deployment environment passed to the service, one of: staging, production"
+}
+
 variable "secrets_arn" {
   type        = string
   description = "ARN of the grading service Secrets Manager secret (contains WEB_LAUNCH_HMAC_SECRET)"

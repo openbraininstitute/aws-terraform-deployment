@@ -300,6 +300,10 @@ resource "aws_ecs_task_definition" "api" {
 
       environment = [
         {
+          name  = "DEPLOYMENT_ENV"
+          value = var.deployment_env
+        },
+        {
           name  = "REDIS_URL"
           value = "redis://redis.grading-service.local:6379"
         },
@@ -325,6 +329,10 @@ resource "aws_ecs_task_definition" "api" {
         {
           name      = "LTI_TOOL_PRIVATE_KEY"
           valueFrom = "${var.secrets_arn}:LTI_TOOL_PRIVATE_KEY::"
+        },
+        {
+          name      = "SENTRY_DSN"
+          valueFrom = "${var.secrets_arn}:SENTRY_DSN::"
         }
       ]
 

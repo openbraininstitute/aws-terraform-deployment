@@ -902,6 +902,8 @@ module "grading_service" {
 
   docker_image_url = var.grading_service_docker_image_url
 
+  deployment_env = var.is_production ? "production" : "staging"
+
   base_path   = "/api/grading-service"
   secrets_arn = local.grading_service_secrets_arn
 
