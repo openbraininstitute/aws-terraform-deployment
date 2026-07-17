@@ -74,6 +74,10 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
   family       = "entitycore_task_family"
   network_mode = "awsvpc"
 
+  runtime_platform {
+    cpu_architecture = "ARM64"
+  }
+
   container_definitions = jsonencode([
     {
       name = "entitycore"
