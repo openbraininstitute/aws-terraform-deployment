@@ -14,6 +14,9 @@ systemctl start sshd
 user_groups='${user_groups}'
 
 echo "$user_groups" | jq -r 'to_entries[] | .key as $group | .value as $groupinfo | .value.users[] | [$group, .username, $groupinfo.sudo_access, .public_key] | @tsv' | while IFS=$'\t' read -r group user sudo_access public_key; do
+    if [ "$public_key" == "" ]; then
+        continue
+    fi
     # Create group if it doesn't exist
     if ! getent group "$group" > /dev/null; then
         groupadd "$group"
