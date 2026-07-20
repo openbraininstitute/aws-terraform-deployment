@@ -58,6 +58,11 @@ variable "entitycore_service_secrets_arn" {
   type = string
 }
 
+variable "deployment_env" {
+  description = "Deployment environment passed to the service, one of: staging, production"
+  type        = string
+}
+
 variable "aws_s3_internal_bucket" {
   description = "S3 bucket name in which entitycore data lives."
   type        = string

@@ -513,6 +513,9 @@ module "accounting_svc" {
 
   accounting_db_ro_secret_arn = local.accounting_db_ro_secret_arn
   aws_deployment_env          = var.deployment_env
+
+  # DEPLOYMENT_ENV accepts only "local", "staging" or "production" in the service config.
+  deployment_env = var.is_production ? "production" : "staging"
 }
 
 module "entitycore_svc" {
@@ -528,6 +531,9 @@ module "entitycore_svc" {
   cors_origin_regex = local.core_web_app_cors_origin_regex
 
   entitycore_service_secrets_arn = local.entitycore_service_secrets_arn
+
+  # DEPLOYMENT_ENV accepts only "local", "staging" or "production" in the service config.
+  deployment_env = var.is_production ? "production" : "staging"
 
   root_path = "/api/entitycore"
 
@@ -895,6 +901,8 @@ module "grading_service" {
   aws_endpoints_subnet_cidr = module.networking.endpoints_subnet_cidr
 
   docker_image_url = var.grading_service_docker_image_url
+
+  deployment_env = var.is_production ? "production" : "staging"
 
   base_path   = "/api/grading-service"
   secrets_arn = local.grading_service_secrets_arn

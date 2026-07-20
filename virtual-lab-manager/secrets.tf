@@ -8,6 +8,7 @@
 # - invite_webhook_secret
 # - mail_password
 # - mail_username
+# - SENTRY_DSN
 resource "aws_iam_policy" "virtual_lab_manager_secrets_access" {
   name        = "virtual-lab-manager-secrets-access-policy"
   description = "Policy that gives access to the virtual lab manager secrets"

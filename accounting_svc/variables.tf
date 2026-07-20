@@ -60,4 +60,9 @@ variable "aws_deployment_env" {
   description = "Environment in AWS for the deployment"
 }
 
+variable "deployment_env" {
+  type        = string
+  description = "Deployment environment passed to the service, one of: staging, production"
+}
+
 
