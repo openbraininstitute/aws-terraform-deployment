@@ -120,7 +120,7 @@ entitycore_svc_aws_s3_internal_region    = "us-east-1"
 entitycore_svc_aws_s3_open_bucket        = "openbluebrain"
 entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["*"]
-entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2026.7.9"
+entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2026.7.11"
 
 obi_one_v2_docker_image_url  = "985539765147.dkr.ecr.us-east-1.amazonaws.com/obi-one:2026.7.5"
 obi_one_v2_ec2_instance_type = "t3.medium" # vCPUs: 2, Memory: 4 GiB
@@ -131,7 +131,7 @@ obi_one_v2_ecs_task_size = {
 }
 
 # CoreWebApp s3 and CloudFront configuration
-auth_manager_svc_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/auth-manager:2026.06.26.3"
+auth_manager_svc_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/auth-manager:2026.07.17.1"
 keycloak_client_uuid       = "a40fd6ea-79f8-4212-b087-45c75e4703a4"
 keycloak_client_id         = "core-webapp-cell-b-azure-staging"
 

@@ -3,6 +3,12 @@
 # Define user groups and their permissions
 locals {
   user_groups = {
+    service_users = {
+      users = [
+        { username = "nas_backup", email = "nas_backup@openbraininstitute.org", "public_key" = "" }
+      ]
+      sudo_access = false
+    }
     obi_users = {
       users = [
         { username = "bilal.meddah", email = "bilal.meddah@openbraininstitute.org", public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKIVViUnQg9sW+JfY9/A113WXzMCzwQNdA02wORg2ocC bilal.meddah@openbraininstitute.org" },
