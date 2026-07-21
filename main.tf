@@ -155,6 +155,8 @@ module "bastion_host" {
   route_table_private_subnets_id = local.route_table_private_subnets_id
   instance_type                  = "t3.medium"
   instance_volume_size           = 50
+
+  nas_backup_user_id = var.create_nas_backup_user ? module.nas_backup_user[0].user_id : ""
 }
 
 # Requested by Juanjo, https://github.com/openbraininstitute/INFRA/issues/487
