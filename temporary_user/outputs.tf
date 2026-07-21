@@ -11,3 +11,7 @@ output "aws_iam_user_access_key_secret" {
 output "temporary_user_arn" {
   value = aws_iam_user.temp_user.arn
 }
+
+output "user_id" {
+  value = aws_iam_user.temp_user.unique_id
+}

@@ -5,7 +5,10 @@ locals {
   user_groups = {
     service_users = {
       users = [
-        { username = "nas_backup", email = "nas_backup@openbraininstitute.org", "public_key" = "" }
+        # the email field is used in aws_iam_policy.ssm_user_access to determine whether the user gets access based on aws:userid
+        # for an IAM user, this is the user id and not the e-mail address
+        # it can be retrieved with `aws iam get-user --user-name nas_backup | jq -r .User.UserId`
+        { username = "nas_backup", email = var.nas_backup_user_id, "public_key" = "" }
       ]
       sudo_access = false
     }

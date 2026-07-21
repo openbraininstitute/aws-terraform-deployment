@@ -37,3 +37,8 @@ variable "instance_volume_size" {
   type        = number
   description = "Size of the root volume in GB for the bastion host"
 }
+
+variable "nas_backup_user_id" {
+  type        = string
+  description = "user ID for the NAS backup user"
+}
