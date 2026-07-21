@@ -16,6 +16,107 @@ receivers:
         metrics_path: /auth/metrics
         static_configs:
         - targets: ['localhost:${KEYCLOAK_MANAGEMENT_PORT}'] # keycloak metrics
+        metric_relabel_configs:
+        # Drop unused histogram buckets for vendor_statistics (use _count/_sum only)
+        - source_labels: [__name__]
+          regex: 'vendor_statistics_(hit|miss|remove_hit|remove_miss|store)_times_seconds_bucket'
+          action: drop
+        # Drop unused cross-site replication histogram buckets
+        - source_labels: [__name__]
+          regex: 'vendor_rpc_manager_cross_site_replication_times_seconds_bucket'
+          action: drop
+        # Drop unused transaction histogram buckets
+        - source_labels: [__name__]
+          regex: 'vendor_transactions_(commit|prepare|rollback)_times_seconds_bucket'
+          action: drop
+        # Drop unused base_* MicroProfile metrics (duplicated by jvm_*)
+        - source_labels: [__name__]
+          regex: 'base_.*'
+          action: drop
+        # Drop unused vendor_cache_container_stats (aggregate, not per-cache)
+        - source_labels: [__name__]
+          regex: 'vendor_cache_container_stats_.*'
+          action: drop
+        # Drop unused vendor_memoryPool_* (duplicated by jvm_memory_*)
+        - source_labels: [__name__]
+          regex: 'vendor_memoryPool_.*'
+          action: drop
+        # Drop unused vendor_BufferPool_* (duplicated by jvm_buffer_*)
+        - source_labels: [__name__]
+          regex: 'vendor_BufferPool_.*'
+          action: drop
+        # Drop unused fine-grained jgroups metrics not referenced in dashboards
+        - source_labels: [__name__]
+          regex: 'vendor_jgroups_(fd_sock2|frag4|gms|merge3|mfc|nakack2|stable|ufc|unicast3)_.*'
+          action: drop
+        # Drop unused vendor_statistics aggregates (duplicated by per-cache variants)
+        - source_labels: [__name__]
+          regex: 'vendor_statistics_(average_|data_memory|hit_ratio|hits$|misses$|number_of_entries$|off_heap|read_write|remove_hits$|remove_misses$|stores$|time_since|required_minimum|approximate_entries_in_memory|current_number_of_entries_in_memory|(hit|miss|remove_hit|remove_miss|store)_times_seconds_max|(hit|miss|remove_hit|remove_miss|store)_(backup|non|primary)_owner).*'
+          action: drop
+        # Drop unused netty metrics
+        - source_labels: [__name__]
+          regex: 'netty_.*'
+          action: drop
+        # Drop unused worker_pool metrics
+        - source_labels: [__name__]
+          regex: 'worker_pool_.*'
+          action: drop
+        # Drop unused http_server connection/byte _max metrics
+        - source_labels: [__name__]
+          regex: 'http_server_(connections_seconds|bytes_(read|written)_max|active_connections|requests_seconds_(max|sum))'
+          action: drop
+        # Drop unused jvm metrics
+        - source_labels: [__name__]
+          regex: 'jvm_(buffer|classes|gc_(concurrent|live|max|memory|memory_allocated|memory_promoted)|memory_max|memory_usage_after|threads_(daemon|live|peak|started)).*'
+          action: drop
+        # Drop unused process/system metrics
+        - source_labels: [__name__]
+          regex: '(process_(cpu_time|files|start_time|uptime)|system_(cpu_count|cpu_usage|load_average)).*'
+          action: drop
+        # Drop unused vendor_local_container_stats, vendor_lock_manager, vendor_number_of_*
+        - source_labels: [__name__]
+          regex: '(vendor_local_container_stats|vendor_lock_manager|vendor_number_of|vendor_configuration_eviction|vendor_passivation|vendor_state_transfer).*'
+          action: drop
+        # Drop unused agroal detail metrics (keep acquire, active, available, awaiting)
+        - source_labels: [__name__]
+          regex: 'agroal_(blocking|creation|destroy|flush|invalid|leak|max_used|reap).*'
+          action: drop
+        # Drop unused cache _max and _loads metrics
+        - source_labels: [__name__]
+          regex: 'cache_(evictions_(max|sum)|loads_seconds).*'
+          action: drop
+        # Drop unused keycloak_session_expiration metrics
+        - source_labels: [__name__]
+          regex: 'keycloak_session_expiration_task_seconds_(bucket|count|max|sum)'
+          action: drop
+        # Drop unused vendor_rpc_manager xsite metrics (no cross-site replication in ECS)
+        - source_labels: [__name__]
+          regex: 'vendor_rpc_manager_(average_xsite|cross_site|maximum_xsite|minimum_xsite|number_xsite|replication_count|replication_failures|success_ratio).*'
+          action: drop
+        # Drop unused vendor_transactions metrics
+        - source_labels: [__name__]
+          regex: 'vendor_transactions_.*'
+          action: drop
+        # Drop unused vendor_jgroups_tcp detail metrics (keep only num_msgs_sent/received)
+        - source_labels: [__name__]
+          regex: 'vendor_jgroups_tcp_get_(?!num_msgs_(sent|received)).*'
+          action: drop
+        # Drop unused vendor_cache_container_health and vendor_statistics_number_of_entries_in_memory
+        - source_labels: [__name__]
+          regex: '(vendor_cache_container_health|vendor_statistics_number_of_entries_in_memory).*'
+          action: drop
+        # Drop scrape meta-metrics (not useful in dashboards)
+        - source_labels: [__name__]
+          regex: 'scrape_(duration|samples|series).*'
+          action: drop
+        # Drop target_info (no use in dashboards)
+        - source_labels: [__name__]
+          regex: 'target_info'
+          action: drop
+        # Drop unused http_server connection tracking
+        - source_labels: [__name__]
+          regex: 'http_server_connections_seconds.*'
+          action: drop
 
 processors:
   batch:

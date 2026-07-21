@@ -92,7 +92,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
         },
         {
           name  = "KC_EVENT_METRICS_USER_ENABLED"
-          value = "false"
+          value = "true"
         },
         {
           name  = "KC_HTTP_METRICS_HISTOGRAMS_ENABLED"
