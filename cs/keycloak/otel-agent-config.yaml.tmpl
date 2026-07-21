@@ -97,9 +97,9 @@ receivers:
         - source_labels: [__name__]
           regex: 'vendor_transactions_.*'
           action: drop
-        # Drop unused vendor_jgroups_tcp detail metrics
+        # Drop unused vendor_jgroups_tcp detail metrics (keep only num_msgs_sent/received)
         - source_labels: [__name__]
-          regex: 'vendor_jgroups_tcp_get_.*'
+          regex: 'vendor_jgroups_tcp_get_(?!num_msgs_(sent|received)).*'
           action: drop
         # Drop unused vendor_cache_container_health and vendor_statistics_number_of_entries_in_memory
         - source_labels: [__name__]
