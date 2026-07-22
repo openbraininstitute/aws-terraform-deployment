@@ -22,7 +22,7 @@ processors:
     timeout: 60s
 
 exporters:
-  prometheusremotewrite:
+  prometheus_remote_write:
     endpoint: ${PROMETHEUS_ENDPOINT}
     auth:
       authenticator: sigv4auth
@@ -33,6 +33,6 @@ service:
     metrics:
       receivers: [prometheus]
       processors: [batch]
-      exporters: [prometheusremotewrite]
+      exporters: [prometheus_remote_write]
 
   extensions: [health_check, sigv4auth]
