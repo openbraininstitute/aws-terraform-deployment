@@ -659,6 +659,8 @@ module "obi_one_v2" {
     },
   ]
   secrets_arn = local.obi_one_secrets_arn
+
+  deployment_env = var.is_production ? "production" : "staging"
 }
 
 module "thumbnail_generation_api" {

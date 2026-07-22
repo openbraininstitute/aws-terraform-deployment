@@ -170,3 +170,8 @@ variable "secrets_arn" {
   description = "arn for the secrets"
   type        = string
 }
+
+variable "deployment_env" {
+  description = "Deployment environment passed to the service, one of: staging, production"
+  type        = string
+}
