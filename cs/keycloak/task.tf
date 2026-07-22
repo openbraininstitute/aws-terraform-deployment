@@ -158,7 +158,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
     },
     {
       name  = "aws-collector"
-      image = "public.ecr.aws/aws-observability/aws-otel-collector:v0.46.0"
+      image = "public.ecr.aws/aws-observability/aws-otel-collector:v0.49.0"
       command = [
         "--config=/etc/ecs/otel-agent-config.yaml"
       ]
