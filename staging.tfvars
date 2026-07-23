@@ -177,3 +177,5 @@ pcs_large_enable_efa    = true
 create_nas_backup_user         = true
 backup_s3_buckets              = ["entitycore-data-staging"] # placeholder for now
 ssm_readonly_access_policy_arn = "arn:aws:iam::992382665735:policy/obi_SSMBastionUserAccess"
+nas_backup_secret_arns         = ["arn:aws:secretsmanager:us-east-1:992382665735:secret:accounting_database_readonly_secret-hTpBh0"]
+databases_to_backup_arns       = ["arn:aws:rds:us-east-1:992382665735:db:accounting"]

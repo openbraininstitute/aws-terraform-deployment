@@ -178,3 +178,5 @@ destination_entitycore_internal_bucket = "entitycore-data-staging"
 create_nas_backup_user         = true
 backup_s3_buckets              = ["entitycore-data-production"]
 ssm_readonly_access_policy_arn = "arn:aws:iam::671250183987:policy/obi_SSMBastionUserAccess"
+nas_backup_secret_arns         = ["arn:aws:secretsmanager:us-east-1:671250183987:secret:accounting_database_readonly_secret-SaD437"]
+databases_to_backup_arns       = ["arn:aws:rds:us-east-1:671250183987:db:accounting", "arn:aws:rds:us-east-1:671250183987:db:auth-manager", "arn:aws:rds:us-east-1:671250183987:db:entitycore", "arn:aws:rds:us-east-1:671250183987:db:keycloak", "arn:aws:rds:us-east-1:671250183987:db:launch-system", "arn:aws:rds:us-east-1:671250183987:db:ml-ts-rds-postgres", "arn:aws:rds:us-east-1:671250183987:db:virtual-lab-manager-db-id"]
