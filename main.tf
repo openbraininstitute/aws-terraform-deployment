@@ -992,6 +992,18 @@ module "nas_backup_user" {
       allow_actions = [
         "s3:ListAllMyBuckets"
       ]
+    },
+    {
+      resources = var.nas_backup_secret_arns
+      allow_actions = [
+        "secretsmanager:GetSecretValue"
+      ]
+    },
+    {
+      resources = var.databases_to_backup_arns
+      allow_actions = [
+        "rds:DescribeDBInstances"
+      ]
     }
   ]
 
