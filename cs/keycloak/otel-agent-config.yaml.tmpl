@@ -97,9 +97,9 @@ receivers:
         - source_labels: [__name__]
           regex: 'vendor_transactions_.*'
           action: drop
-        # Drop unused vendor_jgroups_tcp detail metrics (keep only num_msgs_sent/received)
+        # Drop unused vendor_jgroups_tcp detail metrics
         - source_labels: [__name__]
-          regex: 'vendor_jgroups_tcp_get_(?!num_msgs_(sent|received)).*'
+          regex: 'vendor_jgroups_tcp_get_.*'
           action: drop
         # Drop unused vendor_cache_container_health and vendor_statistics_number_of_entries_in_memory
         - source_labels: [__name__]
@@ -123,7 +123,7 @@ processors:
     timeout: 60s
 
 exporters:
-  prometheusremotewrite:
+  prometheus_remote_write:
     endpoint: ${PROMETHEUS_ENDPOINT}
     auth:
       authenticator: sigv4auth
@@ -134,6 +134,6 @@ service:
     metrics:
       receivers: [prometheus]
       processors: [batch]
-      exporters: [prometheusremotewrite]
+      exporters: [prometheus_remote_write]
 
   extensions: [health_check, sigv4auth]
