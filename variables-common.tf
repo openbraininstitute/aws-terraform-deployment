@@ -534,3 +534,13 @@ variable "ssm_readonly_access_policy_arn" {
   type        = string
   description = "ARN for the SSM readonly access policy"
 }
+
+variable "nas_backup_secret_arns" {
+  type        = list(string)
+  description = "ARNs for the secrets that nas_backup user has read access to"
+}
+
+variable "databases_to_backup_arns" {
+  type        = list(string)
+  description = "ARNs for the databases that need to be backed up"
+}
