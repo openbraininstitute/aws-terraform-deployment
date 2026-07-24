@@ -198,6 +198,11 @@ resource "aws_ecs_task_definition" "orchestrator" {
 
   requires_compatibilities = ["FARGATE"]
 
+  runtime_platform {
+    operating_system_family = "LINUX"
+    cpu_architecture        = "ARM64"
+  }
+
   volume {
     name = "tmp"
   }
