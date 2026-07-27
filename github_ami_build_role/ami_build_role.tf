@@ -226,3 +226,13 @@ resource "aws_iam_role_policy_attachment" "github_machine_images" {
   role       = aws_iam_role.github_machine_images.name
   policy_arn = aws_iam_policy.iam_build_policy.arn
 }
+
+moved {
+  from = module.github_oidc.aws_iam_role.this[0]
+  to   = aws_iam_role.github_machine_images
+}
+
+moved {
+  from = module.github_oidc.aws_iam_role_policy_attachment.attach[0]
+  to   = aws_iam_role_policy_attachment.github_machine_images
+}
