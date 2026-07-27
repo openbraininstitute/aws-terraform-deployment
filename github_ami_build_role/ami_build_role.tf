@@ -155,11 +155,41 @@ resource "aws_iam_policy" "iam_build_policy" {
           "ec2:DescribeInstanceTypes",
           "ec2:DescribeInstanceTypeOfferings",
           "ec2:DescribeSecurityGroups",
-          "cloudformation:DescribeStacks",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeVpcs",
+          "ec2:DescribeVolumes",
+          "ec2:DescribeKeyPairs",
+          "cloudformation:DescribeStacks"
         ],
         "Effect" : "Allow",
         "Resource" : [
           "*"
+        ]
+      },
+      {
+        "Action" : [
+          "ec2:RunInstances",
+          "ec2:StopInstances",
+          "ec2:TerminateInstances",
+          "ec2:CreateImage",
+          "ec2:CreateTags",
+          "ec2:CreateKeyPair",
+          "ec2:DeleteKeyPair",
+          "ec2:CreateSecurityGroup",
+          "ec2:DeleteSecurityGroup",
+          "ec2:AuthorizeSecurityGroupIngress",
+          "ec2:RevokeSecurityGroupIngress"
+        ],
+        "Effect" : "Allow",
+        "Resource" : [
+          "arn:aws:ec2:${var.aws_region}:${var.account_id}:instance/*",
+          "arn:aws:ec2:${var.aws_region}:${var.account_id}:key-pair/packer_*",
+          "arn:aws:ec2:${var.aws_region}:${var.account_id}:security-group/*",
+          "arn:aws:ec2:${var.aws_region}:${var.account_id}:subnet/*",
+          "arn:aws:ec2:${var.aws_region}:${var.account_id}:network-interface/*",
+          "arn:aws:ec2:${var.aws_region}:${var.account_id}:volume/*",
+          "arn:aws:ec2:${var.aws_region}::image/*",
+          "arn:aws:ec2:${var.aws_region}::snapshot/*"
         ]
       }
     ]
@@ -175,6 +205,6 @@ module "github_oidc" {
   create_oidc_role     = true
   role_name            = "GithubMachineImages"
 
-  repositories              = ["openbraininstitute/machine-images"]
+  repositories              = ["openbraininstitute/machine-images:ref:refs/heads/main"]
   oidc_role_attach_policies = [aws_iam_policy.iam_build_policy.arn]
 }
