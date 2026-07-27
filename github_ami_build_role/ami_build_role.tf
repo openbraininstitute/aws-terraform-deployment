@@ -208,11 +208,8 @@ resource "aws_iam_role" "github_machine_images" {
       }
       Action = "sts:AssumeRoleWithWebIdentity"
       Condition = {
-        "ForAnyValue:StringLike" = {
-          "token.actions.githubusercontent.com:sub" = [
-            "repo:openbraininstitute/machine-images:ref:refs/heads/main",
-            "repo:openbraininstitute@*/machine-images@*:ref:refs/heads/main",
-          ]
+        StringLike = {
+          "token.actions.githubusercontent.com:sub" = "repo:openbraininstitute/machine-images:*"
         }
         StringEquals = {
           "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
