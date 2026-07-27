@@ -196,15 +196,33 @@ resource "aws_iam_policy" "iam_build_policy" {
   })
 }
 
-module "github_oidc" {
-  source  = "terraform-module/github-oidc-provider/aws"
-  version = "~> 2"
+resource "aws_iam_role" "github_machine_images" {
+  name = "GithubMachineImages"
 
-  create_oidc_provider = false # now done centrally from main.tf
-  oidc_provider_arn    = var.github_oidc_provider_arn
-  create_oidc_role     = true
-  role_name            = "GithubMachineImages"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Principal = {
+        Federated = var.github_oidc_provider_arn
+      }
+      Action = "sts:AssumeRoleWithWebIdentity"
+      Condition = {
+        "ForAnyValue:StringLike" = {
+          "token.actions.githubusercontent.com:sub" = [
+            "repo:openbraininstitute/machine-images:ref:refs/heads/main",
+            "repo:openbraininstitute@*/machine-images@*:ref:refs/heads/main",
+          ]
+        }
+        StringEquals = {
+          "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
+        }
+      }
+    }]
+  })
+}
 
-  repositories              = ["openbraininstitute/machine-images:ref:refs/heads/main"]
-  oidc_role_attach_policies = [aws_iam_policy.iam_build_policy.arn]
+resource "aws_iam_role_policy_attachment" "github_machine_images" {
+  role       = aws_iam_role.github_machine_images.name
+  policy_arn = aws_iam_policy.iam_build_policy.arn
 }
