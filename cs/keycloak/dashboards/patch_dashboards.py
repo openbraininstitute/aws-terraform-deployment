@@ -104,6 +104,7 @@ def patch_dashboard(d):
         "pluginId": "prometheus",
         "pluginName": "Prometheus"
     }]
+    d['time'] = {'from': 'now-24h', 'to': 'now'}
     d.pop('id', None)
     d.pop('uid', None)
     return d
