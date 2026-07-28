@@ -74,6 +74,10 @@ resource "aws_ecs_task_definition" "accounting_ecs_definition" {
   family       = "accounting_task_family"
   network_mode = "awsvpc"
 
+  runtime_platform {
+    cpu_architecture = "ARM64"
+  }
+
   container_definitions = jsonencode([
     {
       name = "accounting"

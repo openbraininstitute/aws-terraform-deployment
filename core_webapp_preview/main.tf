@@ -206,8 +206,11 @@ resource "aws_iam_role" "github_deploy" {
         StringEquals = {
           "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
         }
-        StringLike = {
-          "token.actions.githubusercontent.com:sub" = "repo:${local.github_repo}:*"
+        "ForAnyValue:StringLike" = {
+          "token.actions.githubusercontent.com:sub" = [
+            "repo:${local.github_repo}:*",
+            "repo:openbraininstitute@*/${replace(local.github_repo, "openbraininstitute/", "")}@*:*",
+          ]
         }
       }
     }]

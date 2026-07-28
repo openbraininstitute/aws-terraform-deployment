@@ -154,27 +154,92 @@ resource "aws_iam_policy" "iam_build_policy" {
           "ec2:DescribeInstances",
           "ec2:DescribeInstanceTypes",
           "ec2:DescribeInstanceTypeOfferings",
+          "ec2:DescribeRegions",
           "ec2:DescribeSecurityGroups",
-          "cloudformation:DescribeStacks",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeVpcs",
+          "ec2:DescribeVolumes",
+          "ec2:DescribeKeyPairs",
+          "ec2:CreateSecurityGroup",
+          "ec2:DeleteSecurityGroup",
+          "ec2:AuthorizeSecurityGroupIngress",
+          "ec2:RevokeSecurityGroupIngress",
+          "ec2:RunInstances",
+          "ec2:TerminateInstances",
+          "ec2:CreateTags",
+          "ec2:CreateKeyPair",
+          "ec2:DeleteKeyPair",
+          "cloudformation:DescribeStacks"
         ],
         "Effect" : "Allow",
         "Resource" : [
           "*"
+        ]
+      },
+      {
+        "Action" : [
+          "ec2:RunInstances",
+          "ec2:StopInstances",
+          "ec2:TerminateInstances",
+          "ec2:CreateImage",
+          "ec2:CreateTags",
+          "ec2:CreateKeyPair",
+          "ec2:DeleteKeyPair",
+          "ec2:CreateSecurityGroup",
+          "ec2:DeleteSecurityGroup",
+          "ec2:AuthorizeSecurityGroupIngress",
+          "ec2:RevokeSecurityGroupIngress"
+        ],
+        "Effect" : "Allow",
+        "Resource" : [
+          "arn:aws:ec2:${var.aws_region}:${var.account_id}:instance/*",
+          "arn:aws:ec2:${var.aws_region}:${var.account_id}:key-pair/packer_*",
+          "arn:aws:ec2:${var.aws_region}:${var.account_id}:security-group/*",
+          "arn:aws:ec2:${var.aws_region}:${var.account_id}:subnet/*",
+          "arn:aws:ec2:${var.aws_region}:${var.account_id}:network-interface/*",
+          "arn:aws:ec2:${var.aws_region}:${var.account_id}:volume/*",
+          "arn:aws:ec2:${var.aws_region}::image/*",
+          "arn:aws:ec2:${var.aws_region}::snapshot/*"
         ]
       }
     ]
   })
 }
 
-module "github_oidc" {
-  source  = "terraform-module/github-oidc-provider/aws"
-  version = "~> 2"
+resource "aws_iam_role" "github_machine_images" {
+  name = "GithubMachineImages"
 
-  create_oidc_provider = false # now done centrally from main.tf
-  oidc_provider_arn    = var.github_oidc_provider_arn
-  create_oidc_role     = true
-  role_name            = "GithubMachineImages"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Principal = {
+        Federated = var.github_oidc_provider_arn
+      }
+      Action = "sts:AssumeRoleWithWebIdentity"
+      Condition = {
+        StringLike = {
+          "token.actions.githubusercontent.com:sub" = "repo:openbraininstitute/machine-images:*"
+        }
+        StringEquals = {
+          "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
+        }
+      }
+    }]
+  })
+}
 
-  repositories              = ["openbraininstitute/machine-images"]
-  oidc_role_attach_policies = [aws_iam_policy.iam_build_policy.arn]
+resource "aws_iam_role_policy_attachment" "github_machine_images" {
+  role       = aws_iam_role.github_machine_images.name
+  policy_arn = aws_iam_policy.iam_build_policy.arn
+}
+
+moved {
+  from = module.github_oidc.aws_iam_role.this[0]
+  to   = aws_iam_role.github_machine_images
+}
+
+moved {
+  from = module.github_oidc.aws_iam_role_policy_attachment.attach[0]
+  to   = aws_iam_role_policy_attachment.github_machine_images
 }
