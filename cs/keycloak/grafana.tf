@@ -5,6 +5,7 @@ resource "aws_grafana_workspace" "grafana-managed-workspace" {
   authentication_providers = ["AWS_SSO"]
   permission_type          = "SERVICE_MANAGED"
   data_sources             = ["PROMETHEUS"]
+  grafana_version          = "12.4"
   role_arn                 = aws_iam_role.assume.arn
   tags = {
     SBO_Billing = "keycloak"
