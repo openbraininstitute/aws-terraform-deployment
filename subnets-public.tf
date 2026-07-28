@@ -46,6 +46,15 @@ resource "aws_network_acl" "public" {
     from_port  = 8443
     to_port    = 8443
   }
+  # Allow SSH from anywhere (needed for Packer AMI builds)
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 115
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 22
+    to_port    = 22
+  }
   # Deny RDP from anywhere
   ingress {
     protocol   = "tcp"
