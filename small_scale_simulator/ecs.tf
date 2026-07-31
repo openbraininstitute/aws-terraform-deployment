@@ -271,11 +271,10 @@ resource "aws_ecs_task_definition" "api" {
   execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn      = aws_iam_role.ecs_task_role.arn
 
-  // TODO: Add this back once ARM image build is fixed
-  # runtime_platform {
-  #   operating_system_family = "LINUX"
-  #   cpu_architecture        = "ARM64"
-  # }
+  runtime_platform {
+    operating_system_family = "LINUX"
+    cpu_architecture        = "ARM64"
+  }
 
   volume {
     name = "storage"
