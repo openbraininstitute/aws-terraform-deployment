@@ -25,6 +25,11 @@ locals {
     "http://127\\.0\\.0\\.1(:\\d+)?",
   ]) : null
 
+  ml_ts_agent_cors_origins = concat(
+    local.core_web_app_origins,
+    var.is_staging ? ["http://localhost:3000", "http://127.0.0.1:3000"] : []
+  )
+
   vpc_cidr_block    = data.terraform_remote_state.common.outputs.vpc_cidr_block
   vpc_default_sg_id = data.terraform_remote_state.common.outputs.vpc_default_sg_id
 
@@ -226,7 +231,7 @@ module "ml_typescript" {
 
   keycloak_sbo_realm_url = var.keycloak_sbo_realm_url
 
-  cors_origins = local.core_web_app_origins
+  cors_origins = local.ml_ts_agent_cors_origins
 
   agent_alb_listener_rule_priority = var.ml_typescript_alb_listener_rule_priority
   agent_path_pattern               = var.ml_typescript_agent_path_pattern
