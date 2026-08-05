@@ -53,7 +53,10 @@ resource "aws_iam_policy" "grafana_prometheus_access_policy" {
           "aps:GetSeries",
           "aps:GetMetricMetadata"
         ],
-        "Resource" : aws_prometheus_workspace.keycloak-managed-prometheus-workspace.arn
+        "Resource" : [
+          aws_prometheus_workspace.keycloak-managed-prometheus-workspace.arn,
+          aws_prometheus_workspace.jupyterhub-managed-prometheus-workspace.arn
+        ]
       }
     ]
   })
