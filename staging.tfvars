@@ -22,7 +22,7 @@ notebook_service_azure_storage_account    = "obijupstoragestag"
 keycloak_sbo_realm_url = "https://staging.cell-a.openbraininstitute.org/auth/realms/SBO"
 keycloak_url_with_auth = "https://staging.cell-a.openbraininstitute.org/auth/"
 
-neuroagent_typescript_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-ts-v0.1.19"
+neuroagent_typescript_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-ts-v0.1.20"
 ml_neuroagent_typescript_bucket_name   = "ml-neuroagent-typescript-staging"
 ml_typescript_subnet_a_cidr            = "10.0.9.0/24"
 ml_typescript_subnet_b_cidr            = "10.0.7.0/24"
