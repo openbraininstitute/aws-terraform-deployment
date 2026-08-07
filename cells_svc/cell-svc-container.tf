@@ -324,58 +324,6 @@ resource "aws_ecs_service" "cell_svc_ecs_service" {
   tags           = var.tags
 }
 
-# { Used by the ECS service to manage the cells ECS cluster
-# *not* for the EC2 systems and also not for the ECS containers
-resource "aws_iam_role" "cells_ecs_service_role" {
-  name_prefix        = "cl_ecs"
-  assume_role_policy = data.aws_iam_policy_document.cells_ecs_service_policy.json
-  tags               = var.tags
-}
-
-data "aws_iam_policy_document" "cells_ecs_service_policy" {
-  statement {
-    actions = ["sts:AssumeRole"]
-    effect  = "Allow"
-
-    principals {
-      type        = "Service"
-      identifiers = ["ecs.amazonaws.com", ]
-    }
-  }
-}
-
-# for ecs service role, not for the containers itself
-resource "aws_iam_role_policy" "cells_ecs_service_role_policy" {
-  name   = "Cells_ECS_ServiceRolePolicy"
-  policy = data.aws_iam_policy_document.cells_ecs_service_role_policy.json
-  role   = aws_iam_role.cells_ecs_service_role.name
-}
-
-# for ecs service role, not for the containers itself
-#tfsec:ignore:aws-iam-no-policy-wildcards
-data "aws_iam_policy_document" "cells_ecs_service_role_policy" {
-  statement {
-    effect = "Allow"
-    actions = [
-      "ec2:AuthorizeSecurityGroupIngress",
-      "ec2:Describe*",
-      "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
-      "elasticloadbalancing:DeregisterTargets",
-      "elasticloadbalancing:Describe*",
-      "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
-      "elasticloadbalancing:RegisterTargets",
-      "ec2:DescribeTags",
-      "logs:CreateLogGroup",
-      "logs:CreateLogStream",
-      "logs:DescribeLogStreams",
-      "logs:PutSubscriptionFilter",
-      "logs:PutLogEvents"
-    ]
-    resources = ["*"]
-  }
-}
-# } Used by the ECS service to manage the cells ECS cluster
-
 # { ECS Task IAM
 resource "aws_iam_role" "ecs_cell_svc_task_execution_role" {
   name_prefix        = "cl_exe"

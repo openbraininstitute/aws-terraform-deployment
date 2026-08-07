@@ -363,58 +363,6 @@ resource "aws_ecs_service" "obi_one_v2_ecs_service" {
   tags           = var.tags
 }
 
-# { Used by the ECS service to manage the ECS cluster
-# *not* for the EC2 systems and also not for the ECS containers
-resource "aws_iam_role" "obi_one_v2_ecs_service_role" {
-  name_prefix        = "obi-one-v2-ecs"
-  assume_role_policy = data.aws_iam_policy_document.obi_one_v2_ecs_service_policy.json
-  tags               = var.tags
-}
-
-data "aws_iam_policy_document" "obi_one_v2_ecs_service_policy" {
-  statement {
-    actions = ["sts:AssumeRole"]
-    effect  = "Allow"
-
-    principals {
-      type        = "Service"
-      identifiers = ["ecs.amazonaws.com", ]
-    }
-  }
-}
-
-# for ecs service role, not for the containers itself
-resource "aws_iam_role_policy" "obi_one_v2_ecs_service_role_policy" {
-  name   = "obi_one_v2_ECS_ServiceRolePolicy"
-  policy = data.aws_iam_policy_document.obi_one_v2_ecs_service_role_policy.json
-  role   = aws_iam_role.obi_one_v2_ecs_service_role.name
-}
-
-# for ecs service role, not for the containers itself
-#tfsec:ignore:aws-iam-no-policy-wildcards
-data "aws_iam_policy_document" "obi_one_v2_ecs_service_role_policy" {
-  statement {
-    effect = "Allow"
-    actions = [
-      "ec2:AuthorizeSecurityGroupIngress",
-      "ec2:Describe*",
-      "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
-      "elasticloadbalancing:DeregisterTargets",
-      "elasticloadbalancing:Describe*",
-      "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
-      "elasticloadbalancing:RegisterTargets",
-      "ec2:DescribeTags",
-      "logs:CreateLogGroup",
-      "logs:CreateLogStream",
-      "logs:DescribeLogStreams",
-      "logs:PutSubscriptionFilter",
-      "logs:PutLogEvents"
-    ]
-    resources = ["*"]
-  }
-}
-# } Used by the ECS service to manage the ECS cluster
-
 # { ECS Task IAM
 resource "aws_iam_role" "obi_one_v2_ecs_task_execution_role" {
   name_prefix        = "obi-one-v2-ecs-exe"
