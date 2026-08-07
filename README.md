@@ -66,6 +66,7 @@ Deployment of the OBI platform in AWS with Terraform.
 | <a name="module_eventbridge_archive_for_ses_events"></a> [eventbridge\_archive\_for\_ses\_events](#module\_eventbridge\_archive\_for\_ses\_events) | ./eventbridge_archive | n/a |
 | <a name="module_generic_aws_errors_sns_entries_to_teams"></a> [generic\_aws\_errors\_sns\_entries\_to\_teams](#module\_generic\_aws\_errors\_sns\_entries\_to\_teams) | ./sns_entries_to_teams | n/a |
 | <a name="module_github_ami_build_role"></a> [github\_ami\_build\_role](#module\_github\_ami\_build\_role) | ./github_ami_build_role | n/a |
+| <a name="module_github_grading_service_ecs_redeploy_role"></a> [github\_grading\_service\_ecs\_redeploy\_role](#module\_github\_grading\_service\_ecs\_redeploy\_role) | ./github_ecs_redeploy_role | n/a |
 | <a name="module_github_keycloak_ecs_redeploy_role"></a> [github\_keycloak\_ecs\_redeploy\_role](#module\_github\_keycloak\_ecs\_redeploy\_role) | ./github_ecs_redeploy_role | n/a |
 | <a name="module_github_notebook_service_ecs_redeploy_role"></a> [github\_notebook\_service\_ecs\_redeploy\_role](#module\_github\_notebook\_service\_ecs\_redeploy\_role) | ./github_ecs_redeploy_role | n/a |
 | <a name="module_github_oidc_provider"></a> [github\_oidc\_provider](#module\_github\_oidc\_provider) | terraform-module/github-oidc-provider/aws | ~> 2 |
@@ -79,6 +80,7 @@ Deployment of the OBI platform in AWS with Terraform.
 | <a name="module_ml_rds_ts_postgres_db_metrics_alerts"></a> [ml\_rds\_ts\_postgres\_db\_metrics\_alerts](#module\_ml\_rds\_ts\_postgres\_db\_metrics\_alerts) | ./rds_postgresql_cloudwatch_metric_alarms | n/a |
 | <a name="module_ml_rds_ts_postgres_db_metrics_alerts_sns_entries_to_teams"></a> [ml\_rds\_ts\_postgres\_db\_metrics\_alerts\_sns\_entries\_to\_teams](#module\_ml\_rds\_ts\_postgres\_db\_metrics\_alerts\_sns\_entries\_to\_teams) | ./sns_entries_to_teams | n/a |
 | <a name="module_ml_typescript"></a> [ml\_typescript](#module\_ml\_typescript) | ./ml | n/a |
+| <a name="module_nas_backup_user"></a> [nas\_backup\_user](#module\_nas\_backup\_user) | ./temporary_user | n/a |
 | <a name="module_networking"></a> [networking](#module\_networking) | ./networking | n/a |
 | <a name="module_nexus"></a> [nexus](#module\_nexus) | ./nexus | n/a |
 | <a name="module_notebook_service"></a> [notebook\_service](#module\_notebook\_service) | ./notebook_service | n/a |
@@ -137,11 +139,14 @@ Deployment of the OBI platform in AWS with Terraform.
 | <a name="input_azure_nfs_internal_public_data_path"></a> [azure\_nfs\_internal\_public\_data\_path](#input\_azure\_nfs\_internal\_public\_data\_path) | NFS export path for internal\_public\_data on azure | `string` | n/a | yes |
 | <a name="input_azure_nfs_opendata_path"></a> [azure\_nfs\_opendata\_path](#input\_azure\_nfs\_opendata\_path) | NFS export path for opendata on azure | `string` | n/a | yes |
 | <a name="input_azure_nfs_server_hostname"></a> [azure\_nfs\_server\_hostname](#input\_azure\_nfs\_server\_hostname) | Hostname for the NFS share for opendata and internal\_public\_data | `string` | n/a | yes |
+| <a name="input_backup_s3_buckets"></a> [backup\_s3\_buckets](#input\_backup\_s3\_buckets) | List of S3 bucket names to backup to the NAS | `list(string)` | n/a | yes |
 | <a name="input_cell_svc_bucket_name"></a> [cell\_svc\_bucket\_name](#input\_cell\_svc\_bucket\_name) | n/a | `string` | n/a | yes |
 | <a name="input_cell_svc_docker_image_url"></a> [cell\_svc\_docker\_image\_url](#input\_cell\_svc\_docker\_image\_url) | n/a | `string` | n/a | yes |
 | <a name="input_core_web_app_in_azure_cidr_block"></a> [core\_web\_app\_in\_azure\_cidr\_block](#input\_core\_web\_app\_in\_azure\_cidr\_block) | The cidr used by the corewebapp containers which are deployed within azure | `string` | n/a | yes |
 | <a name="input_core_web_app_stripe_publishable_key"></a> [core\_web\_app\_stripe\_publishable\_key](#input\_core\_web\_app\_stripe\_publishable\_key) | Stripe publishable key for the core-web-app | `string` | n/a | yes |
 | <a name="input_coreservices_public_key"></a> [coreservices\_public\_key](#input\_coreservices\_public\_key) | Public SSH key for the coreservices team | `string` | n/a | yes |
+| <a name="input_create_nas_backup_user"></a> [create\_nas\_backup\_user](#input\_create\_nas\_backup\_user) | Set to true if you want to create the NAS backup user in your subscription | `bool` | `false` | no |
+| <a name="input_databases_to_backup_arns"></a> [databases\_to\_backup\_arns](#input\_databases\_to\_backup\_arns) | ARNs for the databases that need to be backed up | `list(string)` | n/a | yes |
 | <a name="input_datasync_target_account"></a> [datasync\_target\_account](#input\_datasync\_target\_account) | Account to which datasync should sync entitycore data | `string` | `""` | no |
 | <a name="input_deployment_env"></a> [deployment\_env](#input\_deployment\_env) | The deployment environment, values: 'staging', 'production' | `string` | n/a | yes |
 | <a name="input_destination_entitycore_internal_bucket"></a> [destination\_entitycore\_internal\_bucket](#input\_destination\_entitycore\_internal\_bucket) | Destination bucket in {var.datasync\_target\_account} to which entitycore data needs to be synced | `string` | `""` | no |
@@ -163,6 +168,7 @@ Deployment of the OBI platform in AWS with Terraform.
 | <a name="input_jupyterhub_ec2_type"></a> [jupyterhub\_ec2\_type](#input\_jupyterhub\_ec2\_type) | JupyterHub service Amazon EC2 Instance type | `string` | `"t3.small"` | no |
 | <a name="input_keycloak_client_id"></a> [keycloak\_client\_id](#input\_keycloak\_client\_id) | ID of the Keycloak client | `string` | n/a | yes |
 | <a name="input_keycloak_client_uuid"></a> [keycloak\_client\_uuid](#input\_keycloak\_client\_uuid) | UUID of the Keycloak client | `string` | n/a | yes |
+| <a name="input_keycloak_db_instance_class"></a> [keycloak\_db\_instance\_class](#input\_keycloak\_db\_instance\_class) | RDS instance class for the Keycloak database | `string` | n/a | yes |
 | <a name="input_keycloak_sbo_realm_url"></a> [keycloak\_sbo\_realm\_url](#input\_keycloak\_sbo\_realm\_url) | Keycloak realm URL for SBO, for example https://staging.cell-a.openbraininstitute.org/auth/realms/SBO | `string` | n/a | yes |
 | <a name="input_keycloak_task_size"></a> [keycloak\_task\_size](#input\_keycloak\_task\_size) | CPU and memory limit for Keycloak's ECS task (number or string format) | <pre>object({<br/>    cpu    = number<br/>    memory = number<br/>  })</pre> | n/a | yes |
 | <a name="input_keycloak_url_with_auth"></a> [keycloak\_url\_with\_auth](#input\_keycloak\_url\_with\_auth) | Keycloak URL with auth and slash, for example for example https://staging.cell-a.openbraininstitute.org/auth/ | `string` | n/a | yes |
@@ -172,6 +178,7 @@ Deployment of the OBI platform in AWS with Terraform.
 | <a name="input_launch_system_executor_task_size"></a> [launch\_system\_executor\_task\_size](#input\_launch\_system\_executor\_task\_size) | CPU and memory limit for launch-system executor tasks (number or string format) | <pre>object({<br/>    cpu    = any<br/>    memory = any<br/>  })</pre> | n/a | yes |
 | <a name="input_launch_system_orchestrator_num_workers"></a> [launch\_system\_orchestrator\_num\_workers](#input\_launch\_system\_orchestrator\_num\_workers) | Number of workers processing the queues in the orchestrator task. | `number` | n/a | yes |
 | <a name="input_launch_system_orchestrator_task_size"></a> [launch\_system\_orchestrator\_task\_size](#input\_launch\_system\_orchestrator\_task\_size) | CPU and memory limit for launch-system orchestrator task (number or string format) | <pre>object({<br/>    cpu    = any<br/>    memory = any<br/>  })</pre> | n/a | yes |
+| <a name="input_launch_system_private_data_s3_bucket_name"></a> [launch\_system\_private\_data\_s3\_bucket\_name](#input\_launch\_system\_private\_data\_s3\_bucket\_name) | Override for the S3 bucket used for launch-system private data. | `string` | `null` | no |
 | <a name="input_ml_neuroagent_typescript_bucket_name"></a> [ml\_neuroagent\_typescript\_bucket\_name](#input\_ml\_neuroagent\_typescript\_bucket\_name) | S3 bucket name for the TypeScript neuroagent stack. Override in staging, production, and sandbox-hpc tfvars. | `string` | `"ml-neuroagent-typescript-unspecified-env"` | no |
 | <a name="input_ml_typescript_agent_path_pattern"></a> [ml\_typescript\_agent\_path\_pattern](#input\_ml\_typescript\_agent\_path\_pattern) | Path pattern(s) for the ml\_typescript private ALB listener rule. | `list(string)` | <pre>[<br/>  "/api/agent-ts/*"<br/>]</pre> | no |
 | <a name="input_ml_typescript_alb_listener_rule_priority"></a> [ml\_typescript\_alb\_listener\_rule\_priority](#input\_ml\_typescript\_alb\_listener\_rule\_priority) | ALB listener rule priority for ml\_typescript neuroagent (unique on the listener). | `number` | `576` | no |
@@ -179,6 +186,7 @@ Deployment of the OBI platform in AWS with Terraform.
 | <a name="input_ml_typescript_subnet_a_cidr"></a> [ml\_typescript\_subnet\_a\_cidr](#input\_ml\_typescript\_subnet\_a\_cidr) | First private subnet CIDR for module ml\_typescript. Must not overlap module.ml subnets or other subnets in the same VPC.<br/>The same values are often used across staging/production/sandbox-hpc tfvars because each deployment uses a separate VPC (or account); only in-VPC uniqueness matters. | `string` | `"10.0.5.0/24"` | no |
 | <a name="input_ml_typescript_subnet_b_cidr"></a> [ml\_typescript\_subnet\_b\_cidr](#input\_ml\_typescript\_subnet\_b\_cidr) | Second private subnet CIDR for module ml\_typescript. Must not overlap module.ml subnets or other subnets in the same VPC.<br/>The same values are often used across staging/production/sandbox-hpc tfvars because each deployment uses a separate VPC (or account); only in-VPC uniqueness matters. | `string` | `"10.0.7.0/24"` | no |
 | <a name="input_multiple_vlabs_allowed_user_id"></a> [multiple\_vlabs\_allowed\_user\_id](#input\_multiple\_vlabs\_allowed\_user\_id) | User ID allowed to create multiple virtual labs | `string` | n/a | yes |
+| <a name="input_nas_backup_secret_arns"></a> [nas\_backup\_secret\_arns](#input\_nas\_backup\_secret\_arns) | ARNs for the secrets that nas\_backup user has read access to | `list(string)` | n/a | yes |
 | <a name="input_neuroagent_typescript_docker_image_url"></a> [neuroagent\_typescript\_docker\_image\_url](#input\_neuroagent\_typescript\_docker\_image\_url) | ECR image URL for the TypeScript neuroagent stack (module ml\_typescript). Override in staging, production, and sandbox-hpc tfvars. | `string` | `null` | no |
 | <a name="input_nexus_obp_bucket_name"></a> [nexus\_obp\_bucket\_name](#input\_nexus\_obp\_bucket\_name) | n/a | `string` | n/a | yes |
 | <a name="input_nexus_openscience_bucket_name"></a> [nexus\_openscience\_bucket\_name](#input\_nexus\_openscience\_bucket\_name) | n/a | `string` | n/a | yes |
@@ -196,6 +204,8 @@ Deployment of the OBI platform in AWS with Terraform.
 | <a name="input_opendata_paths_list"></a> [opendata\_paths\_list](#input\_opendata\_paths\_list) | File in which the paths to sync on opendata are listed, one per line. Should exist in modules/public\_data\_efs | `string` | n/a | yes |
 | <a name="input_pcluster_ami_id"></a> [pcluster\_ami\_id](#input\_pcluster\_ami\_id) | n/a | `string` | n/a | yes |
 | <a name="input_pcs_ami"></a> [pcs\_ami](#input\_pcs\_ami) | n/a | `string` | n/a | yes |
+| <a name="input_pcs_large_enable_efa"></a> [pcs\_large\_enable\_efa](#input\_pcs\_large\_enable\_efa) | Whether to use the EFA-enabled launch template for the large PCS node group | `bool` | n/a | yes |
+| <a name="input_pcs_large_instance_type"></a> [pcs\_large\_instance\_type](#input\_pcs\_large\_instance\_type) | EC2 instance type for the large PCS compute node group | `string` | n/a | yes |
 | <a name="input_resource_provisioner_container_hash"></a> [resource\_provisioner\_container\_hash](#input\_resource\_provisioner\_container\_hash) | n/a | `string` | n/a | yes |
 | <a name="input_resource_provisioner_container_uri"></a> [resource\_provisioner\_container\_uri](#input\_resource\_provisioner\_container\_uri) | n/a | `string` | n/a | yes |
 | <a name="input_small_scale_simulator_api_docker_image_url"></a> [small\_scale\_simulator\_api\_docker\_image\_url](#input\_small\_scale\_simulator\_api\_docker\_image\_url) | Docker image URL for the small scale simulator API | `string` | n/a | yes |
@@ -204,6 +214,7 @@ Deployment of the OBI platform in AWS with Terraform.
 | <a name="input_small_scale_simulator_daemon_workers"></a> [small\_scale\_simulator\_daemon\_workers](#input\_small\_scale\_simulator\_daemon\_workers) | Map of daemon worker configurations for small scale simulator. Each key represents a worker service name with optional auto-scaling configuration. | <pre>map(object({<br/>    task_size = object({<br/>      cpu    = any<br/>      memory = any<br/>    })<br/>    num_workers_per_task = number<br/>    queues               = list(string)<br/>    num_worker_tasks     = optional(number, 1)<br/>    autoscaler = optional(object({<br/>      enabled              = optional(bool, false)<br/>      max_num_worker_tasks = optional(number, 10)<br/>    }), {})<br/>    capacity_provider_strategy = list(object({<br/>      capacity_provider = string # Valid values: FARGATE, FARGATE_SPOT<br/>      weight            = number<br/>    }))<br/>  }))</pre> | n/a | yes |
 | <a name="input_small_scale_simulator_worker_docker_image_url"></a> [small\_scale\_simulator\_worker\_docker\_image\_url](#input\_small\_scale\_simulator\_worker\_docker\_image\_url) | Docker image URL for the small scale simulator worker | `string` | n/a | yes |
 | <a name="input_source_datasync_role"></a> [source\_datasync\_role](#input\_source\_datasync\_role) | IAM role to allow datasync to write to the S3 bucket. Should exist in the source account data comes from | `string` | `""` | no |
+| <a name="input_ssm_readonly_access_policy_arn"></a> [ssm\_readonly\_access\_policy\_arn](#input\_ssm\_readonly\_access\_policy\_arn) | ARN for the SSM readonly access policy | `string` | n/a | yes |
 | <a name="input_terraform_remote_state_bucket_name"></a> [terraform\_remote\_state\_bucket\_name](#input\_terraform\_remote\_state\_bucket\_name) | Bucket name storing the deployment-common tfstate | `string` | n/a | yes |
 | <a name="input_thumbnail_generation_api_docker_image_url"></a> [thumbnail\_generation\_api\_docker\_image\_url](#input\_thumbnail\_generation\_api\_docker\_image\_url) | Docker image for the thumbnail generation api | `string` | n/a | yes |
 | <a name="input_virtual_lab_manager_base_path"></a> [virtual\_lab\_manager\_base\_path](#input\_virtual\_lab\_manager\_base\_path) | The base path for the virtual lab manager | `string` | `"/api/virtual-lab-manager"` | no |
@@ -217,7 +228,9 @@ Deployment of the OBI platform in AWS with Terraform.
 | Name | Description |
 | ---- | ----------- |
 | <a name="output_github_core_web_app_preview_deploy_role_arn"></a> [github\_core\_web\_app\_preview\_deploy\_role\_arn](#output\_github\_core\_web\_app\_preview\_deploy\_role\_arn) | n/a |
+| <a name="output_grading_service_redeploy_role_arn"></a> [grading\_service\_redeploy\_role\_arn](#output\_grading\_service\_redeploy\_role\_arn) | n/a |
 | <a name="output_keycloak_redeploy_role"></a> [keycloak\_redeploy\_role](#output\_keycloak\_redeploy\_role) | n/a |
+| <a name="output_nas_backup_user"></a> [nas\_backup\_user](#output\_nas\_backup\_user) | n/a |
 | <a name="output_notebook_service"></a> [notebook\_service](#output\_notebook\_service) | n/a |
 | <a name="output_notebook_service_redeploy_role"></a> [notebook\_service\_redeploy\_role](#output\_notebook\_service\_redeploy\_role) | n/a |
 | <a name="output_temporary_nexus_user_credentials"></a> [temporary\_nexus\_user\_credentials](#output\_temporary\_nexus\_user\_credentials) | n/a |
