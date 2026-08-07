@@ -177,7 +177,7 @@ def disconnect(event, context):
     )
     ip = data["Attributes"]["ip"]["S"]
     task = data["Attributes"]["task"]["S"]
-    if ip and ECS_STOP_ON_WS_DISCONNECT:
+    if ip and ECS_STOP_ON_WS_DISCONNECT.lower() == "true":
         try:
             # let shutdown cleanup task wait 10sec
             urlopen(Request(f"http://{ip}:8000/shutdown", method="POST"), timeout=10)
