@@ -1,5 +1,3 @@
-is_staging                                = false
-is_production                             = false
 deployment_env                            = "sandbox-nse"
 terraform_remote_state_bucket_name        = "obi-tfstate-sandbox-nse"
 cell_svc_bucket_name                      = "sbo-cell-svc-perf-test-sandbox-nse"

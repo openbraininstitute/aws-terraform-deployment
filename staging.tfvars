@@ -1,5 +1,3 @@
-is_staging                                = true
-is_production                             = false
 deployment_env                            = "staging"
 terraform_remote_state_bucket_name        = "obi-tfstate-staging"
 cell_svc_bucket_name                      = "sbo-cell-svc-perf-test-staging"

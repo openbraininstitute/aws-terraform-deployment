@@ -3,7 +3,10 @@ locals {
   aws_region = data.aws_region.current.region
   vpc_id     = data.terraform_remote_state.common.outputs.vpc_id
 
-  suffix = var.is_staging ? "-staging" : var.is_production ? "production" : var.deployment_env
+  is_production = var.deployment_env == "production"
+  is_staging    = var.deployment_env == "staging"
+
+  suffix = local.is_staging ? "-staging" : local.is_production ? "production" : var.deployment_env
 
   private_alb_https_listener_arn = data.terraform_remote_state.common.outputs.private_alb_https_listener_arn
   route_table_private_subnets_id = data.terraform_remote_state.common.outputs.route_table_private_subnets_id
@@ -11,7 +14,7 @@ locals {
 
   core_web_app_origins = concat(
     ["https://${local.public_primary_domain_in_azure}"],
-    var.is_staging ? [
+    local.is_staging ? [
       "https://preview.openbraininstitute.org",
       "https://*.preview.openbraininstitute.org",
       "https://staging.cell-b.openbraininstitute.org",
@@ -19,7 +22,7 @@ locals {
     ] : ["https://cell-a.openbraininstitute.org", "https://cell-b.openbraininstitute.org", "https://www.cell-b.openbraininstitute.org"]
   )
 
-  core_web_app_cors_origin_regex = var.is_staging ? join("|", [
+  core_web_app_cors_origin_regex = local.is_staging ? join("|", [
     "https://.*\\.preview\\.openbraininstitute\\.org",
     "http://localhost(:\\d+)?",
     "http://127\\.0\\.0\\.1(:\\d+)?",
@@ -27,14 +30,14 @@ locals {
 
   ml_ts_agent_cors_origins = concat(
     local.core_web_app_origins,
-    var.is_staging ? ["http://localhost:3000", "http://127.0.0.1:3000"] : []
+    local.is_staging ? ["http://localhost:3000", "http://127.0.0.1:3000"] : []
   )
 
   vpc_cidr_block    = data.terraform_remote_state.common.outputs.vpc_cidr_block
   vpc_default_sg_id = data.terraform_remote_state.common.outputs.vpc_default_sg_id
 
   public_primary_domain_in_azure = data.terraform_remote_state.common.outputs.primary_domain # "staging.openbraininstitute.org" or "www.openbraininstitute.org"
-  cell_a_primary_domain          = var.is_production ? "cell-a.openbraininstitute.org" : "staging.cell-a.openbraininstitute.org"
+  cell_a_primary_domain          = local.is_production ? "cell-a.openbraininstitute.org" : "staging.cell-a.openbraininstitute.org"
 
   email_domain_name = data.terraform_remote_state.common.outputs.email_domain_name
 
@@ -63,7 +66,7 @@ locals {
 }
 
 data "aws_secretsmanager_secret_version" "core_webapp_secrets" {
-  count     = var.is_staging ? 1 : 0
+  count     = local.is_staging ? 1 : 0
   secret_id = local.core_webapp_secrets_arn
 }
 
@@ -110,8 +113,8 @@ module "github_oidc_provider" {
 module "cs" {
   source = "./cs"
 
-  is_production                  = var.is_production
-  is_staging                     = var.is_staging
+  is_production                  = local.is_production
+  is_staging                     = local.is_staging
   vpc_id                         = local.vpc_id
   route_table_private_subnets_id = local.route_table_private_subnets_id
   route_table_public_subnets_id  = local.route_table_public_id
@@ -169,7 +172,7 @@ module "bastion_host" {
 # "NVIDIA RTX Virtual Workstation - Ubuntu 24.04" at the AWS marketplace
 # at https://aws.amazon.com/marketplace/procurement/?productId=prod-3755r2gl3dkew
 module "development_vm_01" {
-  count = var.is_staging ? 1 : 0
+  count = local.is_staging ? 1 : 0
 
   source                         = "./development_vm"
   vpc_id                         = local.vpc_id
@@ -203,7 +206,7 @@ module "ml_typescript" {
   account_id   = local.account_id
   instance_key = var.ml_typescript_instance_key
 
-  is_production   = var.is_production
+  is_production   = local.is_production
   obi_backup_plan = "obi_plan"
 
   ml_secrets_arn = local.ml_secrets_arn
@@ -243,7 +246,7 @@ module "nexus" {
   nexus_ship_bucket_name        = var.nexus_ship_bucket_name
   nexus_openscience_bucket_name = var.nexus_openscience_bucket_name
 
-  temporary_read_user_arn = var.is_production ? module.temporary_nexus_user[0].temporary_user_arn : ""
+  temporary_read_user_arn = local.is_production ? module.temporary_nexus_user[0].temporary_user_arn : ""
 }
 
 module "cells_svc" {
@@ -331,7 +334,7 @@ module "notebook_service" {
   kubernetes_thread_check_interval       = 15
   azure_kubernetes_thread_check_interval = 15
 
-  enable_run_command_in_ecs_container = var.is_staging
+  enable_run_command_in_ecs_container = local.is_staging
 
   task_size = {
     cpu    = 512
@@ -365,7 +368,7 @@ module "github_notebook_service_ecs_redeploy_role" {
   source = "./github_ecs_redeploy_role"
 
   # for now we only want such a redeploy role in staging
-  count = var.is_staging ? 1 : 0
+  count = local.is_staging ? 1 : 0
 
   account_id               = local.account_id
   aws_region               = local.aws_region
@@ -381,7 +384,7 @@ module "github_keycloak_ecs_redeploy_role" {
   source = "./github_ecs_redeploy_role"
 
   # for now we only want such a redeploy role in staging
-  count = var.is_staging ? 1 : 0
+  count = local.is_staging ? 1 : 0
 
   account_id               = local.account_id
   aws_region               = local.aws_region
@@ -427,8 +430,8 @@ module "hpc" {
   av_zone_suffixes                 = var.hpc_av_zone_suffixes
   peering_route_tables             = [local.route_table_private_subnets_id, local.route_table_public_id]
   lambda_subnet_cidr               = "10.0.16.0/24"
-  is_staging                       = var.is_staging
-  is_production                    = var.is_production
+  is_staging                       = local.is_staging
+  is_production                    = local.is_production
   aws_endpoints_subnet_cidr        = module.networking.endpoints_subnet_cidr
   endpoints_route_table_id         = local.route_table_private_subnets_id
   hpc_slurm_secrets_arn            = local.hpc_slurm_secrets_arn
@@ -456,13 +459,13 @@ module "static-server" {
   alb_listener_rule_priority = 600
 
   cell_static_content_bucket_name = local.cell_a_primary_domain
-  is_production                   = var.is_production
+  is_production                   = local.is_production
 }
 
 module "core_webapp_preview" {
   source = "./core_webapp_preview"
 
-  count = var.is_staging ? 1 : 0
+  count = local.is_staging ? 1 : 0
 
   app_name                 = "core-webapp-preview"
   github_access_token      = jsondecode(data.aws_secretsmanager_secret_version.core_webapp_secrets[0].secret_string)["GITHUB_REPO_PREVIEW_DEPLOYMENT_PAT"]
@@ -516,7 +519,7 @@ module "accounting_svc" {
   aws_deployment_env          = var.deployment_env
 
   # DEPLOYMENT_ENV accepts only "local", "staging" or "production" in the service config.
-  deployment_env = var.is_production ? "production" : "staging"
+  deployment_env = local.is_production ? "production" : "staging"
 }
 
 module "entitycore_svc" {
@@ -534,7 +537,7 @@ module "entitycore_svc" {
   entitycore_service_secrets_arn = local.entitycore_service_secrets_arn
 
   # DEPLOYMENT_ENV accepts only "local", "staging" or "production" in the service config.
-  deployment_env = var.is_production ? "production" : "staging"
+  deployment_env = local.is_production ? "production" : "staging"
 
   root_path = "/api/entitycore"
 
@@ -592,7 +595,7 @@ module "auth_manager" {
   keycloak_client_uuid = var.keycloak_client_uuid
   keycloak_client_id   = var.keycloak_client_id
 
-  deployment_env = var.is_production ? "production" : "staging"
+  deployment_env = local.is_production ? "production" : "staging"
 
   db_name     = "auth_manager"
   db_username = "auth_manager"
@@ -659,7 +662,7 @@ module "obi_one_v2" {
   ]
   secrets_arn = local.obi_one_secrets_arn
 
-  deployment_env = var.is_production ? "production" : "staging"
+  deployment_env = local.is_production ? "production" : "staging"
 }
 
 module "thumbnail_generation_api" {
@@ -695,7 +698,7 @@ module "virtual_lab_manager" {
   invite_link = "https://${local.public_primary_domain_in_azure}/app"
   mail_from   = "support@${local.email_domain_name}"
 
-  db_multi_az = var.is_production
+  db_multi_az = local.is_production
 
   virtual_lab_manager_postgres_db   = "vlm"
   virtual_lab_manager_postgres_user = "vlm_user"
@@ -711,7 +714,7 @@ module "virtual_lab_manager" {
   task_size                = var.virtual_lab_manager_task_size
   ecs_number_of_containers = var.virtual_lab_manager_ecs_number_of_containers
 
-  virtual_lab_manager_depoloyment_env = var.is_production ? "production" : "staging"
+  virtual_lab_manager_depoloyment_env = local.is_production ? "production" : "staging"
 
   virtual_lab_manager_invite_expiration = "7"
 
@@ -752,7 +755,7 @@ module "public_data_efs_storage" {
 module "public_data_sync_opendata" {
   source = "./public_data_sync_opendata"
 
-  count = (var.is_staging || var.is_production) ? 1 : 0
+  count = (local.is_staging || local.is_production) ? 1 : 0
 
   access_point_subnet_ids = module.launch_system.executor_network_ids
   account_id              = local.account_id
@@ -823,7 +826,7 @@ module "launch_system" {
 
   launch_system_capability_secrets_arn = local.launch_system_capability_secrets_arn
 
-  deployment_env = var.is_production ? "production" : "staging"
+  deployment_env = local.is_production ? "production" : "staging"
 
   ec_node_type = "cache.t4g.micro" # for redis
 
@@ -855,7 +858,7 @@ module "launch_system" {
   entitycore_url   = "https://${local.cell_a_primary_domain}/api/entitycore"
   auth_manager_url = "https://${local.cell_a_primary_domain}/api/auth-manager"
   launch_system_api_url = (
-    (var.is_staging || var.is_production) ?
+    (local.is_staging || local.is_production) ?
     "https://${local.cell_a_primary_domain}/api/launch-system" :
     "https://${var.deployment_env}.cell-a.openbraininstitute.org/api/launch-system"
   )
@@ -905,7 +908,7 @@ module "grading_service" {
 
   docker_image_url = var.grading_service_docker_image_url
 
-  deployment_env = var.is_production ? "production" : "staging"
+  deployment_env = local.is_production ? "production" : "staging"
 
   base_path   = "/api/grading-service"
   secrets_arn = local.grading_service_secrets_arn
@@ -948,7 +951,7 @@ module "ses_user_virtuallab" {
 module "temporary_nexus_user" {
   source = "./temporary_user"
 
-  count = var.is_production ? 1 : 0
+  count = local.is_production ? 1 : 0
 
   user_name = "nexus_reader"
   allow_resource_actions = [
