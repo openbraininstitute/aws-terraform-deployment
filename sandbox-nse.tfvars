@@ -3,7 +3,6 @@ is_production                             = false
 deployment_env                            = "sandbox-nse"
 terraform_remote_state_bucket_name        = "obi-tfstate-sandbox-nse"
 cell_svc_bucket_name                      = "sbo-cell-svc-perf-test-sandbox-nse"
-ml_paper_bucket_name                      = "ml-paper-bucket-sandbox-nse-test"
 nexus_obp_bucket_name                     = "nexus-obp-sandbox-nse-test"
 nexus_ship_bucket_name                    = "nexus-ship-sandbox-nse-test"
 nexus_openscience_bucket_name             = "nexus-openscience-sandbox-nse-test"
@@ -23,12 +22,6 @@ notebook_service_azure_storage_account    = ""
 
 keycloak_sbo_realm_url = "https://staging.cell-a.openbraininstitute.org/auth/realms/SBO"
 keycloak_url_with_auth = "https://staging.cell-a.openbraininstitute.org/auth/"
-
-bluenaas_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:staging"
-bluenaas_task_size = {
-  cpu    = 4096
-  memory = 8192
-}
 
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-staging"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-staging"
@@ -70,7 +63,6 @@ keycloak_task_size = {
 }
 
 coreservices_public_key                    = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCy8UW1JdUjIuiiaI+xFId3smXFe6iwxdn6Klqi8y4E+cFHP/uQxW4AuCfJVoOjOQ2CNU0UIGRlCkw3IwUmZvwGjFZS1Vs6jt+KjWiDRdFzQQrz5+vuqPX2576wXlT+EHe0W6r7Qla5i1L6cjz6/E4u5yFZ3MJQSBYjLqXjT7Da4R72gPx9oiIoSH2JBu3vHyfkTEo3l6C+WJlYnUGOLnUxGGGnhJrBKmIRNMmtRNgQlBkPR4mnCAFABJfgpzgNf4bpqLbma5DabQGbvpX6qCLSAV5Zdd4gBQLIAJfS/a5pMWaIy9qDTWB2vy4Z39HI45k6efrLL+xgo+XYSRqn5jDT heeren@Mac"
-hpc_resource_provisioner_container_version = "latest-dev"
 
 hpc_resource_provisioner_data_bucket        = "s3://sbonexusdata-sandbox"
 infrastructureassets_bucket                 = "s3://sboinfrastructureassets-sandbox"
