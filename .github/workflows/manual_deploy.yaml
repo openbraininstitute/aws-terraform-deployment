@@ -23,7 +23,7 @@ on:
         default: true
 
 concurrency:
-  group: terraform-${{ inputs.environment }}
+  group: terraform-${{ inputs.environment }}-deploy
   cancel-in-progress: false
 
 jobs:
