@@ -224,10 +224,6 @@ module "ml_typescript" {
   generic_private_alb_listener_arn      = local.private_alb_https_listener_arn
   generic_private_alb_security_group_id = data.terraform_remote_state.common.outputs.generic_private_alb_security_group_id
 
-  github_oidc_provider_arn = module.github_oidc_provider.oidc_provider_arn
-
-  github_repos = ["openbraininstitute/neuroagent-ts"]
-
   keycloak_sbo_realm_url = var.keycloak_sbo_realm_url
 
   cors_origins = local.ml_ts_agent_cors_origins
@@ -440,7 +436,6 @@ module "hpc" {
   containers_bucket                = var.hpc_resource_provisioner_containers_bucket
   scratch_bucket                   = var.hpc_resource_provisioner_scratch_bucket
   scratch_bucket_arn               = var.hpc_resource_provisioner_scratch_bucket_arn
-  private_alb_https_listener_arn   = local.private_alb_https_listener_arn
   infrastructureassets_bucket_name = var.infrastructureassets_bucket
   pcluster_ami_id                  = var.pcluster_ami_id
 
