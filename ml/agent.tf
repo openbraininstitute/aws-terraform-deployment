@@ -146,7 +146,7 @@ module "ecs_service_agent" {
           value = "https://${var.primary_domain}/api/notebook_service"
         },
         {
-          name  = "NEUROAGENT__TOOlS__FRONTEND_BASE_URL"
+          name  = "NEUROAGENT__TOOLS__FRONTEND_BASE_URL"
           value = "https://${var.frontend_domain}"
         },
         {
