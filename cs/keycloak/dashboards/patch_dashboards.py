@@ -56,6 +56,7 @@ PANELS_TO_HIDE = {
 DASHBOARD_FILES = [
     "keycloak-capacity-planning.json",
     "keycloak-troubleshooting.json",
+    "keycloak-users-sessions.json",
 ]
 
 FOLDER_TITLE = "Keycloak"
@@ -137,13 +138,20 @@ def do_push(workspace_id, profile, out_dir, prometheus_uid):
     endpoint = workspace_resp['workspace']['endpoint']
 
     key_name = f"patch-dashboards-{int(time.time())}"
-    resp = client.create_workspace_api_key(
-        keyName=key_name,
-        keyRole='ADMIN',
+    sa_resp = client.create_workspace_service_account(
+        name=key_name,
+        grafanaRole='ADMIN',
+        workspaceId=workspace_id,
+    )
+    sa_id = sa_resp['id']
+
+    token_resp = client.create_workspace_service_account_token(
+        name=key_name,
+        serviceAccountId=str(sa_id),
         secondsToLive=300,
         workspaceId=workspace_id,
     )
-    token = resp['key']
+    token = token_resp['serviceAccountToken']['key']
 
     base_url = f"https://{endpoint}"
     headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
@@ -188,8 +196,11 @@ def do_push(workspace_id, profile, out_dir, prometheus_uid):
             result = api("POST", "/api/dashboards/db", payload)
             print(f"Pushed {fname}: {result.get('status')} → {result.get('url')}")
     finally:
-        client.delete_workspace_api_key(keyName=key_name, workspaceId=workspace_id)
-        print(f"Deleted API key '{key_name}'")
+        client.delete_workspace_service_account(
+            serviceAccountId=str(sa_id),
+            workspaceId=workspace_id,
+        )
+        print(f"Deleted service account '{key_name}'")
 
 
 def main():
