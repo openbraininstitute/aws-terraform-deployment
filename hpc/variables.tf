@@ -109,10 +109,6 @@ variable "scratch_bucket_arn" {
   type = string
 }
 
-variable "private_alb_https_listener_arn" {
-  type = string
-}
-
 variable "infrastructureassets_bucket_name" {
   type = string
 }
