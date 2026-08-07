@@ -130,18 +130,6 @@ resource "aws_cloudwatch_log_group" "cell_svc" {
   tags = merge(var.tags, { Application = "cell_svc" })
 }
 
-# TODO check: not used?
-resource "aws_cloudwatch_log_group" "cell_svc_ecs" {
-  # TODO check if the logs can be encrypted
-  name_prefix       = "cl_log"
-  skip_destroy      = false
-  retention_in_days = 5
-
-  kms_key_id = null #tfsec:ignore:aws-cloudwatch-log-group-customer-key
-
-  tags = merge(var.tags, { Application = "cell_svc" })
-}
-
 # ECS cluster for cells
 resource "aws_ecs_cluster" "cell_svc_ecs_cluster" {
   name = "cell_svc_ecs_cluster"
