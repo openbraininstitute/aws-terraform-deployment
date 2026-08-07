@@ -6,7 +6,6 @@ cell_svc_bucket_name                      = "sbo-cell-svc-perf-test-sandbox-benc
 nexus_obp_bucket_name                     = "nexus-obp-sandbox-benchmarks-test"
 nexus_ship_bucket_name                    = "nexus-ship-sandbox-benchmarks-test"
 nexus_openscience_bucket_name             = "nexus-openscience-sandbox-benchmarks-test"
-nexus_az_letter_id                        = "a"
 virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:20250226.1"
 thumbnail_generation_api_docker_image_url = "bluebrain/thumbnail-generation-api:latest"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2025.5.0"
