@@ -119,16 +119,6 @@ variable "rds_db_name" {
 
 }
 
-variable "github_repos" {
-  description = "List of github repos that should be allowed to use ML's ECR"
-  type        = list(string)
-}
-
-variable "github_oidc_provider_arn" {
-  description = "ARN of the OIDC provider for GitHub"
-  type        = string
-}
-
 variable "tags" {
   description = "tags of the resources."
   type        = map(string)
