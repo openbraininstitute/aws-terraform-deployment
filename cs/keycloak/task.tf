@@ -17,6 +17,12 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
       memory    = var.keycloak_task_size.memory
       command   = ["start", "--spi-events-listener-jboss-logging-success-level=info", "--spi-events-listener-jboss-logging-error-level=error"]
       essential = true
+      dependsOn = [
+        {
+          containerName = "keycloak-init"
+          condition     = "COMPLETE"
+        }
+      ]
       portMappings = [
         {
           name          = "keycloak-container-port-tcp"
@@ -100,6 +106,10 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
         },
         {
           name  = "KC_CACHE_METRICS_HISTOGRAMS_ENABLED"
+          value = "true"
+        },
+        {
+          name  = "KC_METRICS_STATS_ENABLED"
           value = "true"
         },
         {
@@ -189,21 +199,39 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
       }
       dependsOn = [
         {
-          containerName = "keycloak-otel-agent-config"
+          containerName = "keycloak-init"
           condition     = "COMPLETE"
         }
       ]
     },
     {
-      name                   = "keycloak-otel-agent-config"
-      image                  = "public.ecr.aws/docker/library/bash:alpine3.23"
+      name                   = "keycloak-init"
+      image                  = "public.ecr.aws/docker/library/alpine:3.23"
       essential              = false
       readonlyRootFilesystem = true
       command = [
         "sh",
         "-c",
         <<-EOT
-          echo $OTEL_AGENT_CONFIG | base64 -d - | tee /etc/ecs/otel-agent-config.yaml && sed -i -e "s;\$${KEYCLOAK_MANAGEMENT_PORT};$KEYCLOAK_MANAGEMENT_PORT;g" -e "s;\$${AWS_REGION};$AWS_REGION;g" -e "s;\$${PROMETHEUS_ENDPOINT};$PROMETHEUS_ENDPOINT;g" /etc/ecs/otel-agent-config.yaml
+          # Write OTel collector config
+          echo $OTEL_AGENT_CONFIG | base64 -d - | tee /etc/ecs/otel-agent-config.yaml && \
+          sed -i \
+            -e "s;\$${KEYCLOAK_MANAGEMENT_PORT};$KEYCLOAK_MANAGEMENT_PORT;g" \
+            -e "s;\$${AWS_REGION};$AWS_REGION;g" \
+            -e "s;\$${PROMETHEUS_ENDPOINT};$PROMETHEUS_ENDPOINT;g" \
+            /etc/ecs/otel-agent-config.yaml
+
+          # Download keycloak-event-metrics provider if not already present
+          METRICS_VERSION="2.0.0"
+          METRICS_JAR="keycloak-event-metrics-$${METRICS_VERSION}.jar"
+          DEST="/opt/keycloak/providers/$${METRICS_JAR}"
+          if [ -f "$${DEST}" ]; then
+            echo "Provider $${METRICS_JAR} already present, skipping download"
+          else
+            echo "Downloading $${METRICS_JAR}..."
+            wget -q -O "$${DEST}" "https://repo1.maven.org/maven2/io/kokuwa/keycloak/keycloak-event-metrics/$${METRICS_VERSION}/$${METRICS_JAR}"
+            echo "Downloaded $${METRICS_JAR} to $${DEST}"
+          fi
         EOT
       ]
       environment = [
@@ -229,12 +257,17 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
           sourceVolume  = "otel-config-volume"
           containerPath = "/etc/ecs/"
           readOnly      = false
+        },
+        {
+          sourceVolume  = "keycloak-providers-volume"
+          containerPath = "/opt/keycloak/providers"
+          readOnly      = false
         }
       ]
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = aws_cloudwatch_log_group.keycloak_aws_otel_collector.name
+          awslogs-group         = aws_cloudwatch_log_group.keycloak_ecs_task.name
           awslogs-region        = data.aws_region.current.region
           awslogs-stream-prefix = "ecs"
         }
