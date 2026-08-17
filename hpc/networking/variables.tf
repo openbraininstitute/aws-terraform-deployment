@@ -32,6 +32,11 @@ variable "compute_subnet_count" {
   type = number
 }
 
+variable "create_compute_instances" {
+  type        = bool
+  description = "Whether compute instances are enabled. When false, inter-subnet ACL rules are not created."
+}
+
 variable "av_zone_suffixes" {
   type = list(any)
 }

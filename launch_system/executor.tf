@@ -287,31 +287,6 @@ resource "aws_ecs_task_definition" "python_3_12_openmpi5_neuron9_neurodamus_exec
 # aws_ecs_service isn't defined because the ECS tasks are started dynamically by the orchestrator,
 # with the proper cluster, taskDefinition, launchType, and networkConfiguration
 
-# resource "aws_ecs_service" "default_executor" {
-#   name            = "launch_system_default_executor"
-#   cluster         = aws_ecs_cluster.executor.id
-#   launch_type     = "FARGATE"
-#   task_definition = aws_ecs_task_definition.default_executor.arn
-#
-#   network_configuration {
-#     security_groups = [aws_security_group.executor.id]
-#     subnets = [
-#       aws_subnet.untrusted_a.id,
-#       aws_subnet.untrusted_b.id,
-#     ]
-#     assign_public_ip = false
-#   }
-#
-#   depends_on = [
-#     aws_iam_role.executor_execution,
-#   ]
-#
-#   force_new_deployment = true
-#   desired_count        = 1
-#
-#   propagate_tags = "SERVICE"
-# }
-
 resource "aws_iam_role" "default_executor_execution" {
   name_prefix = "launch_system_executor"
 

@@ -31,6 +31,7 @@ module "networking" {
   obp_vpc_id                = var.obp_vpc_id
   vpc_peering_connection_id = module.vpc.peering_connection_id
   aws_region                = var.aws_region
+  create_compute_instances  = var.create_compute_instances
   create_slurmdb            = var.create_slurmdb
   create_jumphost           = var.create_jumphost
   compute_nat_access        = var.compute_nat_access

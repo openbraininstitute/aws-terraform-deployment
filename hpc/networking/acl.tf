@@ -4,7 +4,7 @@
 
 resource "aws_network_acl" "compute" {
   vpc_id     = var.pcluster_vpc_id
-  count      = var.compute_subnet_count
+  count      = var.create_compute_instances ? var.compute_subnet_count : 0
   subnet_ids = [aws_subnet.compute[count.index].id]
 }
 
@@ -41,7 +41,7 @@ resource "aws_network_acl" "compute" {
 # add one to the compute_subnet_index we want to block
 
 resource "aws_network_acl_rule" "deny_other_compute_subnets" {
-  count          = var.compute_subnet_count * (var.compute_subnet_count - 1)
+  count          = var.create_compute_instances ? var.compute_subnet_count * (var.compute_subnet_count - 1) : 0
   network_acl_id = aws_network_acl.compute[count.index % var.compute_subnet_count].id
   protocol       = -1
   rule_number    = 1000 + count.index
@@ -61,7 +61,7 @@ resource "aws_network_acl_rule" "deny_other_compute_subnets" {
 
 # now do it again, but for egress
 resource "aws_network_acl_rule" "deny_other_compute_subnets_egress" {
-  count          = var.compute_subnet_count * (var.compute_subnet_count - 1)
+  count          = var.create_compute_instances ? var.compute_subnet_count * (var.compute_subnet_count - 1) : 0
   network_acl_id = aws_network_acl.compute[count.index % var.compute_subnet_count].id
   egress         = true
   protocol       = -1
@@ -82,7 +82,7 @@ resource "aws_network_acl_rule" "deny_other_compute_subnets_egress" {
 
 # Refine as needed, for now we just want to block traffic between compute subnets
 resource "aws_network_acl_rule" "allow_other_traffic_from_pcluster_vpc" {
-  count          = var.compute_subnet_count
+  count          = var.create_compute_instances ? var.compute_subnet_count : 0
   network_acl_id = aws_network_acl.compute[count.index].id
   protocol       = -1
   rule_number    = 4000 + count.index
@@ -93,7 +93,7 @@ resource "aws_network_acl_rule" "allow_other_traffic_from_pcluster_vpc" {
 }
 
 resource "aws_network_acl_rule" "allow_other_traffic_to_pcluster_vpc" {
-  count          = var.compute_subnet_count
+  count          = var.create_compute_instances ? var.compute_subnet_count : 0
   network_acl_id = aws_network_acl.compute[count.index].id
   egress         = true
   protocol       = -1
@@ -105,7 +105,7 @@ resource "aws_network_acl_rule" "allow_other_traffic_to_pcluster_vpc" {
 }
 
 resource "aws_network_acl_rule" "allow_other_traffic_from_obp_vpc" {
-  count          = var.compute_subnet_count
+  count          = var.create_compute_instances ? var.compute_subnet_count : 0
   network_acl_id = aws_network_acl.compute[count.index].id
   protocol       = -1
   rule_number    = 4200 + count.index
@@ -116,7 +116,7 @@ resource "aws_network_acl_rule" "allow_other_traffic_from_obp_vpc" {
 }
 
 resource "aws_network_acl_rule" "allow_other_traffic_to_obp_vpc" {
-  count          = var.compute_subnet_count
+  count          = var.create_compute_instances ? var.compute_subnet_count : 0
   network_acl_id = aws_network_acl.compute[count.index].id
   egress         = true
   protocol       = -1
@@ -128,7 +128,7 @@ resource "aws_network_acl_rule" "allow_other_traffic_to_obp_vpc" {
 }
 
 resource "aws_network_acl_rule" "deny_rdp_in" {
-  count          = var.compute_subnet_count
+  count          = var.create_compute_instances ? var.compute_subnet_count : 0
   network_acl_id = aws_network_acl.compute[count.index].id
   protocol       = "tcp"
   rule_number    = 3000 + count.index
@@ -139,7 +139,7 @@ resource "aws_network_acl_rule" "deny_rdp_in" {
 }
 
 resource "aws_network_acl_rule" "allow_return_traffic_in" {
-  count          = var.compute_subnet_count
+  count          = var.create_compute_instances ? var.compute_subnet_count : 0
   network_acl_id = aws_network_acl.compute[count.index].id
   protocol       = "tcp"
   rule_number    = 4400 + count.index
@@ -151,7 +151,7 @@ resource "aws_network_acl_rule" "allow_return_traffic_in" {
 
 # for S3 traffic
 resource "aws_network_acl_rule" "allow_https_traffic_out" {
-  count          = var.compute_subnet_count
+  count          = var.create_compute_instances ? var.compute_subnet_count : 0
   network_acl_id = aws_network_acl.compute[count.index].id
   egress         = true
   protocol       = "tcp"
