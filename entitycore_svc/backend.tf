@@ -1,6 +1,6 @@
 locals {
   cpu    = 1024
-  memory = 2048
+  memory = 4096
 }
 
 resource "aws_cloudwatch_log_group" "entitycore_ecs_task_logs" {
@@ -102,12 +102,12 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
       healthcheck = {
         command = [
           "CMD-SHELL",
-          "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000${var.root_path}/health')\" || exit 1"
+          "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000${var.root_path}/health', timeout=120)\" || exit 1"
         ]
-        interval    = 30
-        timeout     = 5
+        interval    = 60
+        timeout     = 120
         startPeriod = 300
-        retries     = 3
+        retries     = 5
       }
 
       environment = concat([
