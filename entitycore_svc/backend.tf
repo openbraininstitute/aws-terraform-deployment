@@ -120,6 +120,10 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
           value = var.deployment_env
         },
         {
+          name  = "TRACEMALLOC_ENABLED"
+          value = var.tracemalloc_enabled
+        },
+        {
           name  = "CORS_ORIGINS"
           value = jsonencode(var.cors_origins)
         },

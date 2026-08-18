@@ -63,6 +63,11 @@ variable "deployment_env" {
   type        = string
 }
 
+variable "tracemalloc_enabled" {
+  description = "True to enable tracemalloc, false otherwise."
+  type        = string
+}
+
 variable "aws_s3_internal_bucket" {
   description = "S3 bucket name in which entitycore data lives."
   type        = string
