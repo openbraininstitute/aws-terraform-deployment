@@ -538,6 +538,7 @@ module "entitycore_svc" {
 
   # DEPLOYMENT_ENV accepts only "local", "staging" or "production" in the service config.
   deployment_env = local.is_production ? "production" : "staging"
+  tracemalloc_enabled = local.is_production ? "false" : "true"
 
   root_path = "/api/entitycore"
 
