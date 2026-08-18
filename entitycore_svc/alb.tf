@@ -16,7 +16,7 @@ resource "aws_lb_target_group" "entitycore_private_tg" {
     protocol            = "HTTP"
     healthy_threshold   = 2
     unhealthy_threshold = 5
-    interval            = 30
+    interval            = 300
     timeout             = 120
   }
 }
