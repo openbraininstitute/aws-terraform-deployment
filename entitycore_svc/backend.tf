@@ -102,12 +102,14 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
       healthcheck = {
         command = [
           "CMD-SHELL",
-          "exit 0"
+          "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000${var.root_path}/health')\" || exit 1" # leak?
+          # "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000${var.root_path}/health', timeout=5)\" || exit 1"
+          # "exit 0"
         ]
-        interval    = 60
-        timeout     = 60
+        interval    = 30
+        timeout     = 5
         startPeriod = 300
-        retries     = 5
+        retries     = 3
       }
 
       environment = concat([
