@@ -162,7 +162,7 @@ resource "aws_ecs_task_definition" "this" {
           add  = ["SYS_ADMIN"]
           drop = []
         }
-      } : {
+        } : {
         initProcessEnabled = true
       }
       portMappings = [
