@@ -260,6 +260,10 @@ resource "aws_ecs_task_definition" "redis" {
           awslogs-stream-prefix = "grading-service"
         }
       }
+
+      linuxParameters = {
+        initProcessEnabled = true
+      }
     }
   ])
 }
@@ -344,6 +348,10 @@ resource "aws_ecs_task_definition" "api" {
           awslogs-create-group  = "true"
           awslogs-stream-prefix = "grading-service"
         }
+      }
+
+      linuxParameters = {
+        initProcessEnabled = true
       }
     }
   ])

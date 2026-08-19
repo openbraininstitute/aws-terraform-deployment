@@ -305,6 +305,10 @@ resource "aws_ecs_task_definition" "ecs_definition" {
           awslogs-stream-prefix = "notebook_service"
         }
       }
+
+      linuxParameters = {
+        initProcessEnabled = true
+      }
     }
   ])
 

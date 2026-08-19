@@ -182,6 +182,10 @@ resource "aws_ecs_task_definition" "orchestrator" {
           awslogs-stream-prefix = "launch_system_orchestrator"
         }
       }
+
+      linuxParameters = {
+        initProcessEnabled = true
+      }
     }
   ])
 

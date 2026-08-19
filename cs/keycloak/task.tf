@@ -165,6 +165,9 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
         }
       }
       systemControls = []
+      linuxParameters = {
+        initProcessEnabled = true
+      }
     },
     {
       name  = "aws-collector"

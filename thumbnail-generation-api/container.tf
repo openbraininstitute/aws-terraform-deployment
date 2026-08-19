@@ -250,6 +250,10 @@ resource "aws_ecs_task_definition" "main" {
             awslogs-stream-prefix = "thumbnail_generation_api"
           }
         }
+
+        linuxParameters = {
+          initProcessEnabled = true
+        }
       }
   ])
 }
