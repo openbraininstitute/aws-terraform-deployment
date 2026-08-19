@@ -72,3 +72,32 @@ resource "aws_iam_role_policy_attachment" "rds_enhanced_monitoring_entitycore" {
   role       = aws_iam_role.rds_enhanced_monitoring_entitycore.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
 }
+
+# ECS Exec: minimal SSM permissions for interactive container access
+resource "aws_iam_policy" "ecs_exec_ssm" {
+  count       = var.enable_ecs_exec ? 1 : 0
+  name        = "entitycore-ecs-exec-ssm-policy"
+  description = "Minimal permissions for ECS Exec (SSM Session Manager)"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ssmmessages:CreateControlChannel",
+          "ssmmessages:CreateDataChannel",
+          "ssmmessages:OpenControlChannel",
+          "ssmmessages:OpenDataChannel"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_exec_ssm" {
+  count      = var.enable_ecs_exec ? 1 : 0
+  role       = aws_iam_role.ecs_entitycore_task_role.name
+  policy_arn = aws_iam_policy.ecs_exec_ssm[0].arn
+}

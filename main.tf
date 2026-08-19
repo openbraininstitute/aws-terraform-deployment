@@ -531,6 +531,8 @@ module "entitycore_svc" {
   internet_access_route_id      = local.route_table_private_subnets_id
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 
+  enable_ecs_exec = local.is_staging
+
   cors_origins      = local.core_web_app_origins
   cors_origin_regex = local.core_web_app_cors_origin_regex
 
