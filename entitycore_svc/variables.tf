@@ -133,3 +133,9 @@ variable "virtual_lab_api_url" {
   description = "virtual lab manager URL"
   type        = string
 }
+
+variable "enable_ecs_exec" {
+  description = "Enable ECS Exec for interactive debugging of containers."
+  type        = bool
+  default     = false
+}

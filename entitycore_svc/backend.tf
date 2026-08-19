@@ -232,6 +232,10 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
           awslogs-stream-prefix = "entitycore"
         }
       }
+
+      linuxParameters = {
+        initProcessEnabled = true
+      }
     }
   ])
 
@@ -253,6 +257,8 @@ resource "aws_ecs_service" "entitycore_ecs_service" {
   cluster         = aws_ecs_cluster.entitycore.id
   launch_type     = "FARGATE"
   task_definition = aws_ecs_task_definition.entitycore_ecs_definition.arn
+
+  enable_execute_command = var.enable_ecs_exec
 
   load_balancer {
     target_group_arn = aws_lb_target_group.entitycore_private_tg.arn
