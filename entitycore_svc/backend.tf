@@ -1,6 +1,6 @@
 locals {
   cpu    = 1024
-  memory = 8192
+  memory = 2048
 }
 
 resource "aws_cloudwatch_log_group" "entitycore_ecs_task_logs" {
