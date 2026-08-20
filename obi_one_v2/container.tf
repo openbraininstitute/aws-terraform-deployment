@@ -216,6 +216,7 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
       ]
 
       linuxParameters = {
+        initProcessEnabled = true
         tmpfs = [
           {
             containerPath = "/tmp"

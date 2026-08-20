@@ -179,6 +179,10 @@ resource "aws_ecs_task_definition" "api" {
           awslogs-stream-prefix = "launch_system_api"
         }
       }
+
+      linuxParameters = {
+        initProcessEnabled = true
+      }
     }
   ])
 

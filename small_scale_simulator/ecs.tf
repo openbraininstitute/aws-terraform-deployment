@@ -255,6 +255,10 @@ resource "aws_ecs_task_definition" "redis" {
           awslogs-stream-prefix = "small-scale-simulator"
         }
       }
+
+      linuxParameters = {
+        initProcessEnabled = true
+      }
     }
   ])
 }
@@ -400,6 +404,10 @@ resource "aws_ecs_task_definition" "api" {
           awslogs-stream-prefix = "small-scale-simulator"
         }
       }
+
+      linuxParameters = {
+        initProcessEnabled = true
+      }
     }
   ])
 }
@@ -526,6 +534,10 @@ resource "aws_ecs_task_definition" "worker" {
           awslogs-region        = var.aws_region
           awslogs-stream-prefix = "small-scale-simulator"
         }
+      }
+
+      linuxParameters = {
+        initProcessEnabled = true
       }
     }
   ])
@@ -773,6 +785,10 @@ resource "aws_ecs_task_definition" "batch_worker" {
           awslogs-region        = var.aws_region
           awslogs-stream-prefix = "small-scale-simulator-on-demand"
         }
+      }
+
+      linuxParameters = {
+        initProcessEnabled = true
       }
     }
   ])

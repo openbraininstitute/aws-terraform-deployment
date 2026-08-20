@@ -198,6 +198,10 @@ resource "aws_ecs_task_definition" "auth_manager_ecs_definition" {
           awslogs-stream-prefix = "auth_manager"
         }
       }
+
+      linuxParameters = {
+        initProcessEnabled = true
+      }
     }
   ])
 

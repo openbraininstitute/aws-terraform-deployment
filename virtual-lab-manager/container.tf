@@ -299,6 +299,10 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
           awslogs-stream-prefix = "virtual_lab_manager"
         }
       }
+
+      linuxParameters = {
+        initProcessEnabled = true
+      }
     }
   ])
 

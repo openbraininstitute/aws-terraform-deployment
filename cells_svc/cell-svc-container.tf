@@ -221,6 +221,7 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
       ]
 
       linuxParameters = {
+        initProcessEnabled = true
         tmpfs = [
           {
             containerPath = "/tmp"

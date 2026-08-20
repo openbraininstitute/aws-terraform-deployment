@@ -153,6 +153,7 @@ resource "aws_ecs_task_definition" "this" {
       essential   = true
       image       = var.svc_image
       linuxParameters = var.ecs_task_type == "EC2" ? {
+        initProcessEnabled = true
         devices = [{
           hostPath      = "/dev/fuse"
           containerPath = "/dev/fuse"
@@ -161,7 +162,9 @@ resource "aws_ecs_task_definition" "this" {
           add  = ["SYS_ADMIN"]
           drop = []
         }
-      } : null
+        } : {
+        initProcessEnabled = true
+      }
       portMappings = [
         {
           hostPort      = 8000

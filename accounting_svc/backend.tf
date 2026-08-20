@@ -184,6 +184,10 @@ resource "aws_ecs_task_definition" "accounting_ecs_definition" {
           awslogs-stream-prefix = "accounting"
         }
       }
+
+      linuxParameters = {
+        initProcessEnabled = true
+      }
     }
   ])
 

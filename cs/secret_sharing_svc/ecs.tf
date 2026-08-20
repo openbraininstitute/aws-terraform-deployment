@@ -71,6 +71,10 @@ resource "aws_ecs_task_definition" "secret_sharing_svc_task" {
           awslogs-stream-prefix = "ecs"
         }
       }
+
+      linuxParameters = {
+        initProcessEnabled = true
+      }
     }
   ])
 
