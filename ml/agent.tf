@@ -138,6 +138,10 @@ module "ecs_service_agent" {
           value = "https://${var.primary_domain}/api/entitycore"
         },
         {
+          name  = "NEUROAGENT__TOOLS__VIRTUAL_LAB_MANAGER__URL"
+          value = "https://${var.primary_domain}/api/virtual-lab-manager"
+        },
+        {
           name  = "NEUROAGENT__TOOLS__THUMBNAIL_GENERATION__URL"
           value = "https://${var.primary_domain}/api/thumbnail-generation"
         },
