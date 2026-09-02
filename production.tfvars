@@ -113,6 +113,7 @@ pcluster_ami_id                             = ""
 hpc_av_zone_suffixes                        = ["a"]
 
 entitycore_svc_aws_s3_internal_bucket    = "entitycore-data-production"
+entitycore_db_instance_class             = "db.m7g.2xlarge"
 entitycore_svc_aws_s3_internal_region    = "us-east-1"
 entitycore_svc_aws_s3_open_bucket        = "openbluebrain"
 entitycore_svc_aws_s3_open_region        = "us-west-2"

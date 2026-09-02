@@ -50,6 +50,11 @@ variable "db_username" {
   type        = string
 }
 
+variable "db_instance_class" {
+  description = "RDS instance class for the Entitycore database"
+  type        = string
+}
+
 variable "internet_access_route_id" {
   type = string
 }

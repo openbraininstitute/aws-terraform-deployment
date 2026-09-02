@@ -113,6 +113,7 @@ pcluster_ami_id                             = ""
 hpc_av_zone_suffixes                        = ["a"]
 
 entitycore_svc_aws_s3_internal_bucket    = "entitycore-data-staging"
+entitycore_db_instance_class             = "db.t4g.medium"
 source_datasync_role                     = "arn:aws:iam::671250183987:role/cross_account-datasync-s3-role"
 entitycore_svc_aws_s3_internal_region    = "us-east-1"
 entitycore_svc_aws_s3_open_bucket        = "openbluebrain"

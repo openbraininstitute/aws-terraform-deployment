@@ -42,7 +42,7 @@ resource "aws_db_instance" "entitycore" {
   engine_version              = "17"
   allow_major_version_upgrade = true
   multi_az                    = true
-  instance_class              = "db.t4g.medium"
+  instance_class              = var.db_instance_class
 
   deletion_protection = true #tfsec:ignore:AVD-AWS-0177
   allocated_storage   = 50   # in gigabytes

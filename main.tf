@@ -565,6 +565,7 @@ module "entitycore_svc" {
 
   db_migration_statement_timeout_ms = 120000
   db_migration_lock_timeout_ms      = 10000
+  db_instance_class                 = var.entitycore_db_instance_class
 
   obi_backup_plan = "obi_plan"
 
