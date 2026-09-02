@@ -290,6 +290,11 @@ variable "hpc_av_zone_suffixes" {
 }
 
 ### entitycore ###
+variable "entitycore_db_instance_class" {
+  type        = string
+  description = "RDS instance class for the Entitycore database"
+  default     = "db.t4g.medium"
+}
 variable "entitycore_svc_aws_s3_internal_bucket" {
   type        = string
   description = "S3 bucket name in which entitycore data lives."
