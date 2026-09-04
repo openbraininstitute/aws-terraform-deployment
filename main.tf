@@ -841,11 +841,11 @@ module "launch_system" {
   db_username     = "launch"
   obi_backup_plan = "obi_plan"
 
-  api_image_url                                              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.8.1"
-  orchestrator_image_url                                     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.8.1"
-  default_executor_image_url                                 = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler:2026.8.1"
-  python_3_12_openmpi5_neuron9_neurodamus_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler-openmpi5-neuron9-neurodamus:2026.8.1"
-  python_3_12_compiler_cuda_12_8_image_url                   = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler-cuda12.8:2026.8.1"
+  api_image_url                                              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.9.0"
+  orchestrator_image_url                                     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.9.0"
+  default_executor_image_url                                 = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler:2026.9.0"
+  python_3_12_openmpi5_neuron9_neurodamus_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler-openmpi5-neuron9-neurodamus:2026.9.0"
+  python_3_12_compiler_cuda_12_8_image_url                   = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler-cuda12.8:2026.9.0"
 
   api_task_size          = var.launch_system_api_task_size
   executor_task_size     = var.launch_system_executor_task_size
