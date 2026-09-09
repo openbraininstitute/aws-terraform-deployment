@@ -342,6 +342,16 @@ variable "obi_one_v2_ec2_instance_type" {
   description = "EC2 instance type to run obi-one ECS tasks."
 }
 
+variable "obi_one_v2_ec2_root_volume_size" {
+  type        = number
+  description = <<-EOT
+    Size in GiB of the root volume of the EC2 instances running obi-one ECS tasks.
+
+    Holds the container images, the mountpoint-s3 cache and the scratch directory the task uses
+    as TMPDIR, so it bounds the largest circuit obi-one can stage from a private project.
+  EOT
+}
+
 variable "obi_one_v2_ecs_task_size" {
   type = object({
     cpu    = any

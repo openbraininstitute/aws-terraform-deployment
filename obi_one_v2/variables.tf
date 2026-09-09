@@ -32,6 +32,20 @@ variable "ecs_task_size" {
   description = "CPU and memory limit for ECS task (number or string format)"
 }
 
+variable "ec2_root_volume_size" {
+  type        = number
+  description = <<-EOT
+    Size of the EC2 root volume in GiB.
+
+    The volume holds the container images, the mountpoint-s3 cache and the scratch directory
+    that is bind-mounted into the container (see the `scratch` volume in container.tf), so it
+    has to be sized for the largest circuit the service is expected to stage.
+
+    Defaults to 30, which is what the ECS-optimized AMI used before this was set explicitly.
+  EOT
+  default     = 30
+}
+
 variable "aws_region" {
   type = string
 }
