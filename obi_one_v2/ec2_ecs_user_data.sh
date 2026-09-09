@@ -28,6 +28,7 @@ install_s3_mount() {
     yum install -y ./mount-s3.rpm || return 1
 }
 retry install_s3_mount
+%{ if scratch_host_path != "" ~}
 
 # Scratch space bind-mounted into the obi-one container as its TMPDIR.
 #
@@ -48,6 +49,7 @@ chmod 1777 "${scratch_host_path}"
 cat << EOF > /etc/tmpfiles.d/obi-one-scratch.conf
 d ${scratch_host_path} 1777 root root 1d
 EOF
+%{ endif ~}
 
 # https://github.com/awslabs/mountpoint-s3/issues/441#issuecomment-1676918612
 %{ for cfg in mount_buckets ~}

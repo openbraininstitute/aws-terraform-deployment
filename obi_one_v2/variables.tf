@@ -34,16 +34,20 @@ variable "ecs_task_size" {
 
 variable "ec2_root_volume_size" {
   type        = number
+  nullable    = true
   description = <<-EOT
-    Size of the EC2 root volume in GiB.
+    Size of the EC2 root volume in GiB, or null to leave the ECS-optimized AMI default (30 GiB).
 
-    The volume holds the container images, the mountpoint-s3 cache and the scratch directory
-    that is bind-mounted into the container (see the `scratch` volume in container.tf), so it
-    has to be sized for the largest circuit the service is expected to stage.
+    Setting this also provisions the scratch directory that is bind-mounted into the container
+    and used as its TMPDIR (see `scratch_host_path` in container.tf). The two go together: the
+    scratch directory lives on the root volume, so giving the container somewhere to write large
+    files is only useful alongside a volume big enough to hold them.
 
-    Defaults to 30, which is what the ECS-optimized AMI used before this was set explicitly.
+    Leaving it null keeps the launch template, its user data and the task definition byte
+    identical to before this variable existed, so an environment that has not opted in sees no
+    plan diff and no instance replacement.
   EOT
-  default     = 30
+  default     = null
 }
 
 variable "aws_region" {

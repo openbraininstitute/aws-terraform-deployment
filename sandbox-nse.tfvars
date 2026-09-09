@@ -78,9 +78,8 @@ entitycore_svc_s3_bucket_allowed_origins = ["*"]
 
 entitycore_svc_image_url = "public.ecr.aws/openbraininstitute/entitycore:2025.4.2"
 
-obi_one_v2_docker_image_url     = "public.ecr.aws/openbraininstitute/obi-one:2025.10.4"
-obi_one_v2_ec2_instance_type    = "t3.small" # vCPUs: 2, Memory: 2 GiB
-obi_one_v2_ec2_root_volume_size = 30         # GiB; unchanged from the AMI default
+obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2025.10.4"
+obi_one_v2_ec2_instance_type = "t3.small" # vCPUs: 2, Memory: 2 GiB
 obi_one_v2_ecs_task_size = {
   cpu    = 2048
   memory = 1536
