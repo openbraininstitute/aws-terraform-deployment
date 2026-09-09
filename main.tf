@@ -620,8 +620,9 @@ module "obi_one_v2" {
 
   aws_coreservices_ssh_key_id = module.coreservices_key.key_pair_id
 
-  ec2_instance_type = var.obi_one_v2_ec2_instance_type
-  ecs_task_size     = var.obi_one_v2_ecs_task_size
+  ec2_instance_type    = var.obi_one_v2_ec2_instance_type
+  ec2_root_volume_size = var.obi_one_v2_ec2_root_volume_size
+  ecs_task_size        = var.obi_one_v2_ecs_task_size
 
   root_path      = "/api/obi-one"
   container_port = 8000
