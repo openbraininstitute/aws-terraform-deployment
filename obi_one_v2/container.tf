@@ -107,6 +107,10 @@ resource "aws_launch_template" "obi_one_v2_ec2_launch_template" {
         volume_size = block_device_mappings.value
         volume_type = "gp3"
         encrypted   = true
+        # Set explicitly rather than inherited from the AMI: the AMI is resolved by a floating
+        # data source, and a scratch volume this size left behind by every instance the ASG
+        # rolls would quietly accumulate cost.
+        delete_on_termination = true
       }
     }
   }
