@@ -262,6 +262,31 @@ resource "aws_lb_listener_rule" "oauth_protected_resource_metadata_redirect" {
   }
 }
 
+# Bare-root RFC 9728 protected-resource metadata. MCP clients (Claude Desktop)
+# probe the bare /.well-known/oauth-protected-resource path. It must NOT return
+# a redirect (the client aborts on redirects here); the real metadata is fetched
+# via the absolute resource_metadata URL from the 401 challenge
+# (/api/agent-ts/.well-known/oauth-protected-resource, HTTP 200). Return a
+# terminal 404 so the bare probe fails cleanly instead of hitting the listener's
+# cross-host redirect to the frontend.
+resource "aws_lb_listener_rule" "oauth_protected_resource_metadata_root_404" {
+  listener_arn = var.generic_private_alb_listener_arn
+  priority     = 573
+  action {
+    type = "fixed-response"
+    fixed_response {
+      content_type = "application/json"
+      message_body = "{\"error\":\"not_found\"}"
+      status_code  = "404"
+    }
+  }
+  condition {
+    path_pattern {
+      values = ["/.well-known/oauth-protected-resource"]
+    }
+  }
+}
+
 resource "aws_lb_listener_rule" "generic_private_agent_rule" {
   listener_arn = var.generic_private_alb_listener_arn
   priority     = var.agent_alb_listener_rule_priority
