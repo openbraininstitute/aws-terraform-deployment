@@ -70,6 +70,18 @@ data "aws_iam_policy_document" "obi_one_v2_ec2_instance_role_policy" {
 }
 # } IAM Role for the EC2 instances which will be used for the ECS
 
+# Scratch space bind-mounted into the container. The container root filesystem is read-only and
+# /tmp is a small tmpfs that consumes task memory, so this is the only place the service can
+# write anything large -- notably circuits staged from private projects, which cannot be served
+# from the read-only S3 mounts. Backed by the instance root volume, hence opt-in together with
+# var.ec2_root_volume_size; when that is null nothing below is emitted.
+locals {
+  scratch_enabled     = var.ec2_root_volume_size != null
+  scratch_volume_name = "scratch"
+  scratch_host_path   = "/scratch/obi-one"
+  scratch_mount_path  = "/scratch"
+}
+
 # Launch template for the EC2 machines that will be used to run the ECS cluster/containers
 resource "aws_launch_template" "obi_one_v2_ec2_launch_template" {
   name          = "obi_one_v2_ec2_launch_template"
@@ -81,9 +93,27 @@ resource "aws_launch_template" "obi_one_v2_ec2_launch_template" {
     mount_buckets    = var.mount_buckets,
     ecs_cluster_name = aws_ecs_cluster.obi_one_v2_ecs_cluster.name,
     ecs_cluster_tags = join(",", [for k, v in var.tags : "\"${k}\": \"${v}\""]),
+    # Empty disables the scratch section of the script entirely.
+    scratch_host_path = local.scratch_enabled ? local.scratch_host_path : "",
   }))
   vpc_security_group_ids = [aws_security_group.obi_one_v2_ec2_ecs_instance_sg.id]
   update_default_version = true
+
+  dynamic "block_device_mappings" {
+    for_each = local.scratch_enabled ? [var.ec2_root_volume_size] : []
+    content {
+      device_name = "/dev/xvda" # root device of the ECS-optimized Amazon Linux AMI
+      ebs {
+        volume_size = block_device_mappings.value
+        volume_type = "gp3"
+        encrypted   = true
+        # Set explicitly rather than inherited from the AMI: the AMI is resolved by a floating
+        # data source, and a scratch volume this size left behind by every instance the ASG
+        # rolls would quietly accumulate cost.
+        delete_on_termination = true
+      }
+    }
+  }
 
   iam_instance_profile {
     arn = aws_iam_instance_profile.obi_one_v2_ec2_instance_role_profile.arn
@@ -188,6 +218,14 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
     }
   }
 
+  dynamic "volume" {
+    for_each = local.scratch_enabled ? [local.scratch_host_path] : []
+    content {
+      name      = local.scratch_volume_name
+      host_path = volume.value
+    }
+  }
+
   container_definitions = jsonencode([
     {
       memory                 = var.ecs_task_size.memory
@@ -206,14 +244,23 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
         }
       ]
 
-      mountPoints = [
-        for m in var.mount_buckets :
-        {
-          readOnly      = true
-          sourceVolume  = m.volume_name
-          containerPath = "${var.mount_base_dir}${m.volume_container_path}"
-        }
-      ]
+      mountPoints = concat(
+        [
+          for m in var.mount_buckets :
+          {
+            readOnly      = true
+            sourceVolume  = m.volume_name
+            containerPath = "${var.mount_base_dir}${m.volume_container_path}"
+          }
+        ],
+        local.scratch_enabled ? [
+          {
+            readOnly      = false
+            sourceVolume  = local.scratch_volume_name
+            containerPath = local.scratch_mount_path
+          }
+        ] : []
+      )
 
       linuxParameters = {
         initProcessEnabled = true
@@ -275,7 +322,14 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
           name  = "MPLCONFIGDIR",
           value = "/tmp/matplotlib"
         }
-      ], var.cors_origin_regex != null ? [{ name = "CORS_ORIGIN_REGEX", value = var.cors_origin_regex }] : [])
+        ], local.scratch_enabled ? [{
+          # Python's tempfile honours TMPDIR, so this moves every temporary directory the
+          # service creates -- circuit staging above all -- off the small /tmp tmpfs and onto
+          # the instance volume. No application change needed.
+          name  = "TMPDIR",
+          value = local.scratch_mount_path
+        }] : [],
+      var.cors_origin_regex != null ? [{ name = "CORS_ORIGIN_REGEX", value = var.cors_origin_regex }] : [])
 
       secrets = [
         {

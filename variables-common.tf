@@ -342,6 +342,21 @@ variable "obi_one_v2_ec2_instance_type" {
   description = "EC2 instance type to run obi-one ECS tasks."
 }
 
+variable "obi_one_v2_ec2_root_volume_size" {
+  type        = number
+  nullable    = true
+  description = <<-EOT
+    Size in GiB of the root volume of the EC2 instances running obi-one ECS tasks, or null to
+    leave the ECS-optimized AMI default (30 GiB).
+
+    Setting it also gives the task a writable scratch directory on that volume, used as its
+    TMPDIR, which is what bounds the largest circuit obi-one can stage from a private project.
+    Environments left at null are unaffected: the launch template and task definition are
+    unchanged, so there is no plan diff and no instance replacement.
+  EOT
+  default     = null
+}
+
 variable "obi_one_v2_ecs_task_size" {
   type = object({
     cpu    = any

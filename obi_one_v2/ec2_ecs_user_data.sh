@@ -28,6 +28,28 @@ install_s3_mount() {
     yum install -y ./mount-s3.rpm || return 1
 }
 retry install_s3_mount
+%{ if scratch_host_path != "" ~}
+
+# Scratch space bind-mounted into the obi-one container as its TMPDIR.
+#
+# The container root filesystem is read-only and /tmp is a tmpfs of a few hundred MiB that is
+# charged to the task's memory, so without this the service has nowhere to put a staged circuit.
+#
+# Mode 1777 mirrors /tmp. The container runs as a non-root user created with `useradd -r` at
+# image build time, so its uid is not fixed and the host cannot chown the directory to it.
+# The sticky bit still prevents one writer from removing another's files.
+echo "Setup scratch directory ${scratch_host_path}"
+mkdir -p "${scratch_host_path}"
+chmod 1777 "${scratch_host_path}"
+
+# Staged circuits are removed by the service when it is done with them, but a container that is
+# killed mid-request leaves them behind, and the directory outlives the container. Have
+# systemd-tmpfiles-clean.timer sweep anything older than a day; generation takes minutes, so
+# this cannot collect files still in use.
+cat << EOF > /etc/tmpfiles.d/obi-one-scratch.conf
+d ${scratch_host_path} 1777 root root 1d
+EOF
+%{ endif ~}
 
 # https://github.com/awslabs/mountpoint-s3/issues/441#issuecomment-1676918612
 %{ for cfg in mount_buckets ~}
