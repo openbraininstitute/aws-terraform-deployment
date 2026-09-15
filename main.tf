@@ -870,7 +870,7 @@ module "launch_system" {
 
   local_store_prefix                 = "/data"
   simulation_launch_command          = "/data/scratch/run-simulation-venv/bin/python3 /data/scratch/run_simulation.py"
-  emodel_optimisation_launch_command = "/data/scratch/run-emodel-optimisation-venv/bin/python3 /data/scratch/run_emodel_optimisation.py"
+  emodel_optimisation_launch_command = "source /data/scratch/run-emodel-optimisation-venv/bin/activate && python3 /data/scratch/run_emodel_optimisation.py"
 
   pcs_ami                            = var.pcs_ami
   pcs_nat_gateway_id                 = data.terraform_remote_state.common.outputs.nat_gateway_id
