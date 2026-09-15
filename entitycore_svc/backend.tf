@@ -1,6 +1,6 @@
 locals {
   cpu    = 1024
-  memory = 4096
+  memory = 2048
 }
 
 resource "aws_cloudwatch_log_group" "entitycore_ecs_task_logs" {
@@ -266,7 +266,7 @@ resource "aws_ecs_service" "entitycore_ecs_service" {
   ]
 
   force_new_deployment = true
-  desired_count        = 4
+  desired_count        = 1
 
   # ignore ALB health check failures for a grace period, to allow migrations to complete
   health_check_grace_period_seconds = 300
