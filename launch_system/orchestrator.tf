@@ -108,10 +108,10 @@ resource "aws_ecs_task_definition" "orchestrator" {
           name  = "ORCHESTRATOR_SIMULATION_LAUNCH_COMMAND"
           value = var.simulation_launch_command
         },
-	{
-	  name = "ORCHESTRATOR_EMODEL_OPTIMISATION_LAUNCH_COMMAND"
-	  value = var.emodel_optimisation_launch_command
-	},
+        {
+          name  = "ORCHESTRATOR_EMODEL_OPTIMISATION_LAUNCH_COMMAND"
+          value = var.emodel_optimisation_launch_command
+        },
         {
           name  = "ORCHESTRATOR_CODEARTIFACT_CONFIG"
           value = jsonencode(var.codeartifact_config)
