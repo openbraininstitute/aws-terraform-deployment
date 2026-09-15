@@ -127,6 +127,11 @@ variable "simulation_launch_command" {
   type        = string
 }
 
+variable "emodel_optimisation_launch_command" {
+  description = "Base command used to launch the emodel optimisation."
+  type = string
+}
+
 variable "entitycore_url" {
   description = "URL of entitycore"
   type        = string

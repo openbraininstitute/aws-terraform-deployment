@@ -842,11 +842,11 @@ module "launch_system" {
   db_username     = "launch"
   obi_backup_plan = "obi_plan"
 
-  api_image_url                                              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.9.0"
-  orchestrator_image_url                                     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.9.0"
-  default_executor_image_url                                 = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler:2026.9.0"
-  python_3_12_openmpi5_neuron9_neurodamus_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler-openmpi5-neuron9-neurodamus:2026.9.0"
-  python_3_12_compiler_cuda_12_8_image_url                   = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler-cuda12.8:2026.9.0"
+  api_image_url                                              = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/api:2026.9.1"
+  orchestrator_image_url                                     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/orchestrator:2026.9.1"
+  default_executor_image_url                                 = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler:2026.9.1"
+  python_3_12_openmpi5_neuron9_neurodamus_executor_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler-openmpi5-neuron9-neurodamus:2026.9.1"
+  python_3_12_compiler_cuda_12_8_image_url                   = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system/runtimes/python3.12-compiler-cuda12.8:2026.9.1"
 
   api_task_size          = var.launch_system_api_task_size
   executor_task_size     = var.launch_system_executor_task_size
@@ -868,8 +868,9 @@ module "launch_system" {
     "https://${var.deployment_env}.cell-a.openbraininstitute.org/api/launch-system"
   )
 
-  local_store_prefix        = "/data"
-  simulation_launch_command = "/data/scratch/run-simulation-venv/bin/python3 /data/scratch/run_simulation.py"
+  local_store_prefix                 = "/data"
+  simulation_launch_command          = "/data/scratch/run-simulation-venv/bin/python3 /data/scratch/run_simulation.py"
+  emodel_optimisation_launch_command = "/data/scratch/run-emodel-optimisation-venv/bin/python3 /data/scratch/run_emodel_optimisation.py"
 
   pcs_ami                            = var.pcs_ami
   pcs_nat_gateway_id                 = data.terraform_remote_state.common.outputs.nat_gateway_id
