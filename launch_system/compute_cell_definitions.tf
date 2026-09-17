@@ -63,6 +63,58 @@ locals {
             security_groups = [aws_security_group.executor.id]
             task_family     = aws_ecs_task_definition.python_3_12_openmpi5_neuron9_neurodamus_executor.family
           },
+          # ECS Managed Instances variants of the three non-GPU executors. Same image_type as the
+          # Fargate entries above; the orchestrator selects one based on the optional per-request
+          # `placement_type` (defaulting to Fargate when unset). This enables per-request testing of
+          # Managed Instances without changing default behavior.
+          {
+            vcpu_min   = 1
+            vcpu_max   = 16
+            memory_min = 2
+            memory_max = 120
+            type       = "machine"
+            image_type = "python_3_12_compiler"
+            placement = {
+              type              = "ec2_capacity_provider"
+              capacity_provider = aws_ecs_capacity_provider.executor_cpu.name
+            }
+            cluster_name    = aws_ecs_cluster.executor.name
+            subnets         = local.executor_untrusted_subnet_ids
+            security_groups = [aws_security_group.executor.id]
+            task_family     = aws_ecs_task_definition.default_executor_managed.family
+          },
+          {
+            vcpu_min   = 1
+            vcpu_max   = 16
+            memory_min = 2
+            memory_max = 120
+            type       = "machine"
+            image_type = "python_3_12_inait"
+            placement = {
+              type              = "ec2_capacity_provider"
+              capacity_provider = aws_ecs_capacity_provider.executor_cpu.name
+            }
+            cluster_name    = aws_ecs_cluster.executor.name
+            subnets         = local.executor_untrusted_subnet_ids
+            security_groups = [aws_security_group.executor.id]
+            task_family     = aws_ecs_task_definition.inait_executor_managed.family
+          },
+          {
+            vcpu_min   = 1
+            vcpu_max   = 16
+            memory_min = 2
+            memory_max = 120
+            type       = "machine"
+            image_type = "python_3_12_openmpi5_neuron9_neurodamus"
+            placement = {
+              type              = "ec2_capacity_provider"
+              capacity_provider = aws_ecs_capacity_provider.executor_cpu.name
+            }
+            cluster_name    = aws_ecs_cluster.executor.name
+            subnets         = local.executor_untrusted_subnet_ids
+            security_groups = [aws_security_group.executor.id]
+            task_family     = aws_ecs_task_definition.python_3_12_openmpi5_neuron9_neurodamus_executor_managed.family
+          },
           {
             vcpu_min   = 16
             vcpu_max   = 16
