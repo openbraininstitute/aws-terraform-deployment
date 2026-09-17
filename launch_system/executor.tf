@@ -104,11 +104,13 @@ resource "aws_ecs_cluster_capacity_providers" "executor" {
   cluster_name = aws_ecs_cluster.executor.name
   capacity_providers = [
     "FARGATE",
+    aws_ecs_capacity_provider.executor_cpu.name,
     aws_ecs_capacity_provider.executor_gpu.name,
   ]
 
   lifecycle {
     replace_triggered_by = [
+      aws_ecs_capacity_provider.executor_cpu,
       aws_ecs_capacity_provider.executor_gpu,
     ]
   }
