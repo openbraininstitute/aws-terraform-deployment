@@ -168,13 +168,15 @@ resource "aws_ecs_capacity_provider" "executor_cpu" {
 
   tags = merge(var.tags, { Name = "launch_system_executor_cpu_capacity_provider" })
 
+  # Only the permission grants need an explicit edge: ECS validates the infrastructure role
+  # when the capacity provider is created, and an attachment or inline policy is not reachable
+  # from any attribute reference here. The two roles and the instance profile are already
+  # ordered by the infrastructure_role_arn and ec2_instance_profile_arn references above
+  # (the instance role transitively, through the instance profile).
   depends_on = [
-    aws_iam_role.executor_cpu_infrastructure,
     aws_iam_role_policy_attachment.executor_cpu_infrastructure_managed_instances,
     aws_iam_role_policy.executor_cpu_infrastructure_pass_instance_role,
-    aws_iam_role.executor_cpu_instance,
     aws_iam_role_policy_attachment.executor_cpu_instance_managed_instances,
-    aws_iam_instance_profile.executor_cpu_instance,
   ]
 }
 
