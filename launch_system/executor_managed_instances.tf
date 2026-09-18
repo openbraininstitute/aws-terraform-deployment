@@ -119,7 +119,12 @@ resource "aws_ecs_capacity_provider" "executor_cpu" {
 
     instance_launch_template {
       ec2_instance_profile_arn = aws_iam_instance_profile.executor_cpu_instance.arn
-      monitoring               = "DETAILED"
+      # BASIC is the ECS Managed Instances default: 5-minute EC2 metrics, no extra charge.
+      # DETAILED adds paid 1-minute metrics per instance, which is not worth it here: executor
+      # scheduling and task-level utilization are observed through ECS/CloudWatch task metrics,
+      # not host metrics. Raise to DETAILED temporarily if host-level 1-minute resolution is
+      # needed to debug instance sizing or bin-packing.
+      monitoring = "BASIC"
 
       network_configuration {
         subnets         = local.executor_untrusted_subnet_ids
