@@ -178,7 +178,7 @@ resource "aws_ecs_capacity_provider" "executor_cpu" {
 # launch_system_executor_cpu ECS Managed Instances capacity provider defined above. They exist
 # ALONGSIDE the Fargate task definitions in executor.tf so that jobs default to Fargate but can
 # opt into Managed Instances per request via `placement_type: "ecs_managed_instances"` (see the
-# matching `ecs_managed_instances` entries in compute_cell_definitions.tf). They reuse the shared
+# matching Managed Instances entries in compute_cell_definitions.tf). They reuse the shared
 # executor locals and are intentionally identical to their Fargate counterparts except for
 # `requires_compatibilities`.
 
