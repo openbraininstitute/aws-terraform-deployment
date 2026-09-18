@@ -3,20 +3,6 @@
 locals {
   slurmrestd_endpoint = [for e in awscc_pcs_cluster.cluster.endpoints : e if e.type == "SLURMRESTD"][0]
 
-  # Placement tag emitted for ECS Managed Instances executors.
-  #
-  # The orchestrator calls this placement `ecs_managed_instances`, but it used to be called
-  # `ec2_capacity_provider` and it still accepts that value, normalizing it on load. These
-  # definitions are rendered into ORCHESTRATOR_COMPUTE_CELL_DEFINITIONS, which the orchestrator
-  # parses as a strict discriminated union: an unknown tag rejects the whole document and fails
-  # every job, not just the executor that changed. Since this repository and the orchestrator
-  # deploy independently, emit the value that BOTH the current and the previous orchestrator
-  # understand, so an apply here never has to be synchronized with an image rollout.
-  #
-  # TODO: switch to "ecs_managed_instances" once every environment runs an orchestrator that
-  # emits it, then drop the alias in launch-system app/types.py.
-  executor_managed_instances_placement_type = "ec2_capacity_provider"
-
   executor_untrusted_subnet_ids = [
     aws_subnet.untrusted_a.id,
     aws_subnet.untrusted_b.id,
@@ -81,9 +67,7 @@ locals {
           # Fargate entries above; the orchestrator selects one based on the per-request
           # `placement_type`. Because these image types exist on both placements, a request that
           # does not set `placement_type` still resolves to Fargate, so Managed Instances can be
-          # tested per request without changing default behavior. Note the wire value of
-          # `placement.type` is the legacy alias; see
-          # `executor_managed_instances_placement_type` above.
+          # tested per request without changing default behavior.
           {
             vcpu_min   = 1
             vcpu_max   = 16
@@ -92,7 +76,7 @@ locals {
             type       = "machine"
             image_type = "python_3_12_compiler"
             placement = {
-              type              = local.executor_managed_instances_placement_type
+              type              = "ecs_managed_instances"
               capacity_provider = aws_ecs_capacity_provider.executor_cpu.name
             }
             cluster_name    = aws_ecs_cluster.executor.name
@@ -108,7 +92,7 @@ locals {
             type       = "machine"
             image_type = "python_3_12_inait"
             placement = {
-              type              = local.executor_managed_instances_placement_type
+              type              = "ecs_managed_instances"
               capacity_provider = aws_ecs_capacity_provider.executor_cpu.name
             }
             cluster_name    = aws_ecs_cluster.executor.name
@@ -124,7 +108,7 @@ locals {
             type       = "machine"
             image_type = "python_3_12_openmpi5_neuron9_neurodamus"
             placement = {
-              type              = local.executor_managed_instances_placement_type
+              type              = "ecs_managed_instances"
               capacity_provider = aws_ecs_capacity_provider.executor_cpu.name
             }
             cluster_name    = aws_ecs_cluster.executor.name
@@ -140,7 +124,7 @@ locals {
             type       = "machine"
             image_type = "python_3_12_compiler_cuda_12_8"
             placement = {
-              type              = local.executor_managed_instances_placement_type
+              type              = "ecs_managed_instances"
               capacity_provider = aws_ecs_capacity_provider.executor_gpu.name
             }
             cluster_name    = aws_ecs_cluster.executor.name
