@@ -177,9 +177,10 @@ resource "aws_ecs_capacity_provider" "executor_cpu" {
 # Parallel task definitions for the three non-GPU executors, compatible with the
 # launch_system_executor_cpu ECS Managed Instances capacity provider defined above. They exist
 # ALONGSIDE the Fargate task definitions in executor.tf so that jobs default to Fargate but can
-# opt into Managed Instances per request (see the orchestrator `placement_type` request field and
-# the matching compute_cell_definitions.tf entries). They reuse the shared executor locals and are
-# intentionally identical to their Fargate counterparts except for `requires_compatibilities`.
+# opt into Managed Instances per request via `placement_type: "ecs_managed_instances"` (see the
+# matching `ecs_managed_instances` entries in compute_cell_definitions.tf). They reuse the shared
+# executor locals and are intentionally identical to their Fargate counterparts except for
+# `requires_compatibilities`.
 
 resource "aws_ecs_task_definition" "default_executor_managed" {
   family                   = "launch_system_default_executor_managed_task_family"
