@@ -112,6 +112,18 @@ resource "aws_ecs_capacity_provider" "executor_cpu" {
     infrastructure_role_arn = aws_iam_role.executor_cpu_infrastructure.arn
     propagate_tags          = "CAPACITY_PROVIDER"
 
+    # Replace instances that fail their EC2/ECS health checks instead of leaving them in the
+    # pool. Pinned rather than inherited: the provider treats this as computed, so the default
+    # is whatever the ECS API currently does and could change without a diff here. It matters
+    # more than usual because scale_in_after keeps empty instances alive for a long time, so an
+    # unhealthy host would otherwise keep attracting placements.
+    #
+    # Tradeoff: repair terminates the instance, so tasks running on it are killed. The
+    # orchestrator already retries capacity/start failures, and executors are re-runnable.
+    auto_repair_configuration {
+      actions_status = "ENABLED"
+    }
+
     infrastructure_optimization {
       # Keep empty instances available to reduce cold starts between jobs. See the variable
       # description for the idle-cost tradeoff.
