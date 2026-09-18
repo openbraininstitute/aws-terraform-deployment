@@ -113,8 +113,9 @@ resource "aws_ecs_capacity_provider" "executor_cpu" {
     propagate_tags          = "CAPACITY_PROVIDER"
 
     infrastructure_optimization {
-      # Keep empty instances available for one hour to reduce cold starts between jobs.
-      scale_in_after = 3600
+      # Keep empty instances available to reduce cold starts between jobs. See the variable
+      # description for the idle-cost tradeoff.
+      scale_in_after = var.executor_cpu_scale_in_after
     }
 
     instance_launch_template {
