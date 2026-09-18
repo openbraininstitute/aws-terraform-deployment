@@ -166,9 +166,12 @@ resource "aws_ecs_capacity_provider" "executor_cpu" {
 
         # Keep selection on general-purpose x86 CPU hosts.
         cpu_manufacturers = ["intel", "amd"]
-        # TODO: revisit whether restricting to ["current"] gives materially better
-        # per-core performance for executor workloads, at the cost of a smaller pool.
-        instance_generations  = ["current", "previous"]
+        # Current generation only. Previous-generation families (m4/r4 era) have materially
+        # slower cores, lower network and EBS throughput, and no NVMe, which works against the
+        # cold-start and runtime goals of this capacity provider and makes benchmark results
+        # depend on which family a given task happened to land on. The smaller pool is an
+        # accepted tradeoff; widen it only if capacity errors show up in practice.
+        instance_generations  = ["current"]
         burstable_performance = "excluded"
 
         # CPU-only: never place these tasks on accelerated (GPU) instances.
