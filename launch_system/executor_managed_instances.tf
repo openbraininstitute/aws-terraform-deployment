@@ -150,18 +150,34 @@ resource "aws_ecs_capacity_provider" "executor_cpu" {
         storage_size_gib = 200
       }
 
-      # Attribute-based selection: describe the resources needed and let ECS Managed
-      # Instances choose a suitable instance type. The vCPU/memory range fits the largest
-      # supported executor task (16 vCPU / 120 GiB) and allows bin-packing multiple tasks.
+      # Attribute-based selection: describe the resources needed and let ECS Managed Instances
+      # choose a suitable instance type.
+      #
+      # The floor is 16 vCPU rather than 32 because ENI count, not vCPU, limits how many awsvpc
+      # tasks fit on a host, and it does not scale with instance size in this range: m6i.4xlarge
+      # (16 vCPU) and m6i.8xlarge (32 vCPU) both expose 8 ENIs, so both cap at 7 tasks while the
+      # 8xlarge costs twice as much. The next real step in density is 16xlarge at 15 ENIs. A
+      # larger type is still selected automatically when a single task does not fit the floor.
+      # Revisit if awsvpcTrunking is enabled, which removes the ENI ceiling as the binding limit.
       instance_requirements {
         vcpu_count {
-          min = 32
+          min = 16
           max = 64
         }
 
+        # Bounds follow from the ratio below: 16 vCPU at ~4 GiB/vCPU is 64 GiB.
         memory_mib {
-          min = 131072
+          min = 65536
           max = 262144
+        }
+
+        # "General purpose" is a ratio property, not an absolute one: c-family is ~2 GiB/vCPU,
+        # m-family ~4, r-family ~8. Expressing it as a ratio holds at every instance size,
+        # whereas absolute memory bounds shift which families qualify as vCPU changes and can
+        # admit r-family hosts at memory-optimized prices for CPU-bound work.
+        memory_gib_per_vcpu {
+          min = 3.5
+          max = 4.5
         }
 
         # Keep selection on general-purpose x86 CPU hosts.
