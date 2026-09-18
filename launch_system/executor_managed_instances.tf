@@ -90,7 +90,7 @@ resource "aws_security_group" "executor_cpu_instance" {
 
 resource "aws_vpc_security_group_egress_rule" "executor_cpu_instance_allow_outgoing" {
   security_group_id = aws_security_group.executor_cpu_instance.id
-  ip_protocol       = -1
+  ip_protocol       = "-1"
   cidr_ipv4         = "0.0.0.0/0"
   description       = "Allow all egress for ECS CPU instances"
 }
