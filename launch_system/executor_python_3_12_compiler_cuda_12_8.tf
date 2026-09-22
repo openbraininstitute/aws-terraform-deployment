@@ -112,17 +112,28 @@ resource "aws_ecs_capacity_provider" "executor_gpu" {
     infrastructure_role_arn = aws_iam_role.executor_gpu_infrastructure.arn
     propagate_tags          = "CAPACITY_PROVIDER"
 
-    # Auto repair replaces instances that fail their health checks, which terminates the tasks
-    # running on them. GPU executor jobs can run for hours, and an instance reported unhealthy is
-    # not necessarily one whose task is doomed (an ECS agent disconnect is enough), so repairing
-    # it would discard hours of work for a condition the task may well survive. Prefer keeping a
-    # degraded host until its task finishes.
+    # GPU auto repair triggers on critical NVIDIA GPU hardware failures only: ECS uses DCGM and
+    # acts on a specific XID list (79 "fallen off the bus", 110 "disappeared from the bus", 48
+    # and 140 ECC errors, 46 "GPU stopped processing", 95 "uncontained memory error", ...). Those
+    # are unrecoverable, so a CUDA task on such an instance has already lost its GPU and will
+    # hang or error rather than finish. It is NOT triggered by transient conditions such as an
+    # ECS agent disconnect.
+    #
+    # ENABLED despite executor jobs running for hours, because DISABLED is worse here: ECS keeps
+    # monitoring GPU health but never marks the impaired instance DRAINING, so it stays in the
+    # pool and keeps receiving new GPU tasks. One hardware fault then becomes a stream of failed
+    # jobs on the same dead GPU instead of a single already-lost task.
+    #
+    # Repair drains gracefully (start-before-stop: DRAINING, provision replacement, honor the
+    # task stop timeout, then terminate) and is rate limited to 20% of the provider's instances,
+    # or one instance when fewer than 9 exist -- which is always the case here, since
+    # accelerator_count pins this provider to a single GPU instance at a time.
     #
     # Pinned rather than left unset: actions_status is optional and computed, so the behaviour
-    # would otherwise be whatever the ECS API currently defaults to and could change without
-    # producing a diff here.
+    # would otherwise be whatever the ECS API defaults to and could change without a diff here.
+    # Note that DISABLED would also disable ECS Managed Daemons auto repair.
     auto_repair_configuration {
-      actions_status = "DISABLED"
+      actions_status = "ENABLED"
     }
 
     infrastructure_optimization {
