@@ -112,6 +112,19 @@ resource "aws_ecs_capacity_provider" "executor_gpu" {
     infrastructure_role_arn = aws_iam_role.executor_gpu_infrastructure.arn
     propagate_tags          = "CAPACITY_PROVIDER"
 
+    # Auto repair replaces instances that fail their health checks, which terminates the tasks
+    # running on them. GPU executor jobs can run for hours, and an instance reported unhealthy is
+    # not necessarily one whose task is doomed (an ECS agent disconnect is enough), so repairing
+    # it would discard hours of work for a condition the task may well survive. Prefer keeping a
+    # degraded host until its task finishes.
+    #
+    # Pinned rather than left unset: actions_status is optional and computed, so the behaviour
+    # would otherwise be whatever the ECS API currently defaults to and could change without
+    # producing a diff here.
+    auto_repair_configuration {
+      actions_status = "DISABLED"
+    }
+
     infrastructure_optimization {
       # Mirrors the previous ASG instance_warmup_period (300s) before idle scale-in.
       scale_in_after = 300
@@ -119,7 +132,10 @@ resource "aws_ecs_capacity_provider" "executor_gpu" {
 
     instance_launch_template {
       ec2_instance_profile_arn = aws_iam_instance_profile.executor_gpu_instance.arn
-      monitoring               = "DETAILED"
+      # BASIC is the ECS Managed Instances default: 5-minute EC2 metrics, no extra charge.
+      # DETAILED adds paid 1-minute metrics per instance, which is not needed here: GPU executor
+      # behaviour is observed through ECS task metrics rather than host metrics.
+      monitoring = "BASIC"
 
       network_configuration {
         subnets         = local.executor_untrusted_subnet_ids
