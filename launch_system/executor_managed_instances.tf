@@ -165,10 +165,14 @@ resource "aws_ecs_capacity_provider" "executor_cpu" {
           max = 64
         }
 
-        # Bounds follow from the ratio below: 16 vCPU at ~4 GiB/vCPU is 64 GiB.
+        # Absolute bounds derived from the vCPU range and the ratio band below, so the ratio is
+        # what actually selects the family at every size: 16 vCPU x 3.5 = 56 GiB and
+        # 64 vCPU x 4.5 = 288 GiB. Keeping these in step matters -- a floor of 64 GiB here would
+        # silently override the 3.5 lower bound at 16 vCPU and make the effective minimum ratio
+        # 4.0, so a future change to the ratio band would have no effect at the floor.
         memory_mib {
-          min = 65536
-          max = 262144
+          min = 57344
+          max = 294912
         }
 
         # "General purpose" is a ratio property, not an absolute one: c-family is ~2 GiB/vCPU,
