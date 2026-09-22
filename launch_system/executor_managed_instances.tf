@@ -220,6 +220,25 @@ resource "aws_ecs_capacity_provider" "executor_cpu" {
 # matching Managed Instances entries in compute_cell_definitions.tf). They reuse the shared
 # executor locals and are intentionally identical to their Fargate counterparts except for
 # `requires_compatibilities`.
+#
+# THIS DUPLICATION IS DELIBERATELY TEMPORARY. It exists only so the two placements can be
+# compared on the same workload, and it is not meant to be maintained: an executor image bump
+# or a secrets change has to be applied here AND in executor.tf, and forgetting one silently
+# gives the two placements different behavior.
+#
+# Removal condition -- exactly one of:
+#   * Managed Instances wins: delete the Fargate task definitions in executor.tf and the
+#     `fargate` entries in compute_cell_definitions.tf, then rename these to drop `_managed`.
+#     Note that renaming a family orphans the orchestrator's derived per-project task
+#     definitions (`{family}-{project_id}`), so plan that as its own change.
+#   * Fargate wins: delete this file, the `ecs_managed_instances` entries in
+#     compute_cell_definitions.tf, the executor_cpu capacity provider, and its registration in
+#     executor.tf.
+#
+# TODO: if the comparison is inconclusive and the dual path has to stay, collapse both sets into
+# one `for_each` over a variants map keyed by (executor, compatibility) instead of six near
+# identical resources. That refactor must keep every `family` string byte-identical and use
+# `moved` blocks (see moved.tf) so no task definition is orphaned.
 
 resource "aws_ecs_task_definition" "default_executor_managed" {
   family                   = "launch_system_default_executor_managed_task_family"
