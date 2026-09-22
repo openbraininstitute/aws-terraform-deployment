@@ -187,7 +187,14 @@ variable "executor_cpu_scale_in_after" {
     before it is scaled in. This is the cold-start/idle-cost tradeoff: a warm instance only pays
     off if the next job arrives before it is reclaimed, and until then a large on-demand instance
     is billed while doing nothing. Size it from the observed job inter-arrival time (roughly the
-    p50-p75 gap) rather than by intuition. Running instances are never affected.
+    p50-p75 gap) rather than by intuition.
+
+    Instances with running tasks are not affected, but the reason is load bearing: ScaleInAfter
+    governs BOTH idle-instance termination and consolidation of underutilized instances, and
+    consolidation drains instances to move their tasks. ECS excludes instances running
+    standalone tasks from consolidation because it does not replace standalone tasks, and these
+    executors are launched with RunTask rather than as an ECS service. Converting them to a
+    service would expose long-running tasks to being drained mid-run for consolidation.
   EOT
   type        = number
   # 15 minutes: keeps the cold-start win for bursts of related jobs without paying for a full
