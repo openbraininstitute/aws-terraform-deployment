@@ -95,14 +95,13 @@ resource "aws_vpc_security_group_egress_rule" "executor_cpu_instance_allow_outgo
   description       = "Allow all egress for ECS CPU instances"
 }
 
-resource "aws_vpc_security_group_ingress_rule" "s3files_nfs_from_executor_cpu_instance" {
-  security_group_id            = aws_security_group.s3files_private_data.id
-  description                  = "Allow NFS from executor CPU managed instances"
-  from_port                    = 2049
-  to_port                      = 2049
-  ip_protocol                  = "tcp"
-  referenced_security_group_id = aws_security_group.executor_cpu_instance.id
-}
+# No S3 Files ingress rule is needed for this security group. Tested in sandbox-nse: the NFS
+# mount for an S3 Files volume originates from the TASK's branch ENI, so it is governed by the
+# task security group (see `s3files_nfs_from_executor` in s3files.tf), not by the instance
+# security group carried on the trunk ENI. Running the same task definition with a task security
+# group lacking that ingress fails with `mount.nfs4: Connection timed out`, and succeeds with the
+# executor task security group. This matches the documented split: image pulls, secrets, logs and
+# env files use the instance's primary ENI, while application traffic uses the task ENI.
 
 resource "aws_ecs_capacity_provider" "executor_cpu" {
   name    = "launch_system_executor_cpu"
@@ -153,12 +152,18 @@ resource "aws_ecs_capacity_provider" "executor_cpu" {
       # Attribute-based selection: describe the resources needed and let ECS Managed Instances
       # choose a suitable instance type.
       #
-      # The floor is 16 vCPU rather than 32 because ENI count, not vCPU, limits how many awsvpc
-      # tasks fit on a host, and it does not scale with instance size in this range: m6i.4xlarge
-      # (16 vCPU) and m6i.8xlarge (32 vCPU) both expose 8 ENIs, so both cap at 7 tasks while the
-      # 8xlarge costs twice as much. The next real step in density is 16xlarge at 15 ENIs. A
-      # larger type is still selected automatically when a single task does not fit the floor.
-      # Revisit if awsvpcTrunking is enabled, which removes the ENI ceiling as the binding limit.
+      # The floor is 16 vCPU purely for cost: it is the smallest size satisfying the ratio below,
+      # ECS automatically selects a larger type when a single task does not fit, and a 32 vCPU
+      # floor would double the hourly rate to serve executor tasks that are 1-2 vCPU by default
+      # (see var.executor_task_size).
+      #
+      # Task density is NOT limited by ENIs here. ECS Managed Instances attaches a trunk ENI as
+      # the instance's primary interface by default and gives each task a branch ENI on it, so
+      # the classic "one instance ENI per task" ceiling does not apply and the awsvpcTrunking
+      # account setting is irrelevant. With trunking the documented limit is 60 tasks on a
+      # 4xlarge (90 on 8xlarge, 120 on 12xlarge), far above what cpu/memory allows: verified in
+      # sandbox-nse by running 12 concurrent 1 vCPU/2 GB tasks on a single m6a.4xlarge. cpu and
+      # memory are therefore the binding constraints, which is what this block should be sized on.
       instance_requirements {
         vcpu_count {
           min = 16
