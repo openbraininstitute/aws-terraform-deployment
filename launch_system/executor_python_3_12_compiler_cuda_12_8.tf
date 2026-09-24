@@ -112,26 +112,14 @@ resource "aws_ecs_capacity_provider" "executor_gpu" {
     infrastructure_role_arn = aws_iam_role.executor_gpu_infrastructure.arn
     propagate_tags          = "CAPACITY_PROVIDER"
 
-    # GPU auto repair triggers on critical NVIDIA GPU hardware failures only: ECS uses DCGM and
-    # acts on a specific XID list (79 "fallen off the bus", 110 "disappeared from the bus", 48
-    # and 140 ECC errors, 46 "GPU stopped processing", 95 "uncontained memory error", ...). Those
-    # are unrecoverable, so a CUDA task on such an instance has already lost its GPU and will
-    # hang or error rather than finish. It is NOT triggered by transient conditions such as an
-    # ECS agent disconnect.
-    #
-    # ENABLED despite executor jobs running for hours, because DISABLED is worse here: ECS keeps
-    # monitoring GPU health but never marks the impaired instance DRAINING, so it stays in the
-    # pool and keeps receiving new GPU tasks. One hardware fault then becomes a stream of failed
-    # jobs on the same dead GPU instead of a single already-lost task.
-    #
-    # Repair drains gracefully (start-before-stop: DRAINING, provision replacement, honor the
-    # task stop timeout, then terminate) and is rate limited to 20% of the provider's instances,
-    # or one instance when fewer than 9 exist -- which is always the case here, since
-    # accelerator_count pins this provider to a single GPU instance at a time.
-    #
-    # Pinned rather than left unset: actions_status is optional and computed, so the behaviour
-    # would otherwise be whatever the ECS API defaults to and could change without a diff here.
-    # Note that DISABLED would also disable ECS Managed Daemons auto repair.
+    # Triggers only on unrecoverable NVIDIA faults (DCGM XID list: GPU off the bus, ECC errors,
+    # ...), never on transient ones like an agent disconnect, so the CUDA task has already lost
+    # its GPU. ENABLED even though jobs run for hours, because DISABLED never drains the
+    # impaired host -- it keeps taking new GPU tasks, turning one fault into many failures.
+    # Repair is graceful (start-before-stop, honors the stop timeout) and rate limited to one
+    # instance at this provider's size. Pinned because the attribute is computed, so the
+    # inherited default could change without a diff. DISABLED would also disable Managed
+    # Daemons auto repair.
     auto_repair_configuration {
       actions_status = "ENABLED"
     }
@@ -143,9 +131,7 @@ resource "aws_ecs_capacity_provider" "executor_gpu" {
 
     instance_launch_template {
       ec2_instance_profile_arn = aws_iam_instance_profile.executor_gpu_instance.arn
-      # BASIC is the ECS Managed Instances default: 5-minute EC2 metrics, no extra charge.
-      # DETAILED adds paid 1-minute metrics per instance, which is not needed here: GPU executor
-      # behaviour is observed through ECS task metrics rather than host metrics.
+      # Default; DETAILED bills 1-minute host metrics per instance, which we do not use.
       monitoring = "BASIC"
 
       network_configuration {

@@ -95,13 +95,9 @@ resource "aws_vpc_security_group_egress_rule" "executor_cpu_instance_allow_outgo
   description       = "Allow all egress for ECS CPU instances"
 }
 
-# No S3 Files ingress rule is needed for this security group. Tested in sandbox-nse: the NFS
-# mount for an S3 Files volume originates from the TASK's branch ENI, so it is governed by the
-# task security group (see `s3files_nfs_from_executor` in s3files.tf), not by the instance
-# security group carried on the trunk ENI. Running the same task definition with a task security
-# group lacking that ingress fails with `mount.nfs4: Connection timed out`, and succeeds with the
-# executor task security group. This matches the documented split: image pulls, secrets, logs and
-# env files use the instance's primary ENI, while application traffic uses the task ENI.
+# Deliberately no S3 Files ingress rule here: mounts use the TASK ENI, so the task security
+# group governs them (see `s3files_nfs_from_executor` in s3files.tf). Verified in sandbox-nse.
+# Only image pulls, secrets and logs use the instance ENI.
 
 resource "aws_ecs_capacity_provider" "executor_cpu" {
   name    = "launch_system_executor_cpu"
@@ -111,14 +107,10 @@ resource "aws_ecs_capacity_provider" "executor_cpu" {
     infrastructure_role_arn = aws_iam_role.executor_cpu_infrastructure.arn
     propagate_tags          = "CAPACITY_PROVIDER"
 
-    # Replace instances that fail their EC2/ECS health checks instead of leaving them in the
-    # pool. Pinned rather than inherited: the provider treats this as computed, so the default
-    # is whatever the ECS API currently does and could change without a diff here. It matters
-    # more than usual because scale_in_after keeps empty instances alive for a long time, so an
-    # unhealthy host would otherwise keep attracting placements.
-    #
-    # Tradeoff: repair terminates the instance, so tasks running on it are killed. The
-    # orchestrator already retries capacity/start failures, and executors are re-runnable.
+    # Replace unhealthy instances rather than let them keep attracting placements, which
+    # scale_in_after would otherwise prolong. Pinned because the attribute is computed, so the
+    # inherited default could change without a diff. Repair kills running tasks; acceptable
+    # since executors are re-runnable and the orchestrator retries.
     auto_repair_configuration {
       actions_status = "ENABLED"
     }
@@ -131,11 +123,7 @@ resource "aws_ecs_capacity_provider" "executor_cpu" {
 
     instance_launch_template {
       ec2_instance_profile_arn = aws_iam_instance_profile.executor_cpu_instance.arn
-      # BASIC is the ECS Managed Instances default: 5-minute EC2 metrics, no extra charge.
-      # DETAILED adds paid 1-minute metrics per instance, which is not worth it here: executor
-      # scheduling and task-level utilization are observed through ECS/CloudWatch task metrics,
-      # not host metrics. Raise to DETAILED temporarily if host-level 1-minute resolution is
-      # needed to debug instance sizing or bin-packing.
+      # Default; DETAILED bills 1-minute host metrics per instance, which we do not use.
       monitoring = "BASIC"
 
       network_configuration {
@@ -143,47 +131,34 @@ resource "aws_ecs_capacity_provider" "executor_cpu" {
         security_groups = [aws_security_group.executor_cpu_instance.id]
       }
 
-      # Shared by container images, writable layers, and task scratch data. This replaces
-      # per-task Fargate ephemeral storage for executors running on managed instances.
+      # Shared by images, writable layers and task scratch; replaces per-task Fargate
+      # ephemeral storage. Note there is no per-task quota on this volume.
       storage_configuration {
         storage_size_gib = 200
       }
 
-      # Attribute-based selection: describe the resources needed and let ECS Managed Instances
-      # choose a suitable instance type.
+      # Attribute-based selection: state the requirements, let ECS pick the instance type.
       #
-      # The floor is 16 vCPU purely for cost: it is the smallest size satisfying the ratio below,
-      # ECS automatically selects a larger type when a single task does not fit, and a 32 vCPU
-      # floor would double the hourly rate to serve executor tasks that are 1-2 vCPU by default
-      # (see var.executor_task_size).
-      #
-      # Task density is NOT limited by ENIs here. ECS Managed Instances attaches a trunk ENI as
-      # the instance's primary interface by default and gives each task a branch ENI on it, so
-      # the classic "one instance ENI per task" ceiling does not apply and the awsvpcTrunking
-      # account setting is irrelevant. With trunking the documented limit is 60 tasks on a
-      # 4xlarge (90 on 8xlarge, 120 on 12xlarge), far above what cpu/memory allows: verified in
-      # sandbox-nse by running 12 concurrent 1 vCPU/2 GB tasks on a single m6a.4xlarge. cpu and
-      # memory are therefore the binding constraints, which is what this block should be sized on.
+      # 16 vCPU floor is a cost choice -- smallest size meeting the ratio below, and ECS picks
+      # something larger when a task does not fit. Density is bound by cpu/memory, NOT by ENIs:
+      # Managed Instances attaches a trunk ENI and gives each task a branch ENI, so the
+      # one-ENI-per-task ceiling and the awsvpcTrunking setting do not apply (documented limit
+      # is 60 tasks on a 4xlarge; 12 concurrent tasks on one m6a.4xlarge verified in sandbox).
       instance_requirements {
         vcpu_count {
           min = 16
           max = 64
         }
 
-        # Absolute bounds derived from the vCPU range and the ratio band below, so the ratio is
-        # what actually selects the family at every size: 16 vCPU x 3.5 = 56 GiB and
-        # 64 vCPU x 4.5 = 288 GiB. Keeping these in step matters -- a floor of 64 GiB here would
-        # silently override the 3.5 lower bound at 16 vCPU and make the effective minimum ratio
-        # 4.0, so a future change to the ratio band would have no effect at the floor.
+        # Derived from the vCPU range x the ratio band below (16x3.5=56 GiB, 64x4.5=288 GiB).
+        # Keep in step: a tighter floor here would override the ratio's lower bound silently.
         memory_mib {
           min = 57344
           max = 294912
         }
 
-        # "General purpose" is a ratio property, not an absolute one: c-family is ~2 GiB/vCPU,
-        # m-family ~4, r-family ~8. Expressing it as a ratio holds at every instance size,
-        # whereas absolute memory bounds shift which families qualify as vCPU changes and can
-        # admit r-family hosts at memory-optimized prices for CPU-bound work.
+        # Selects the family by ratio (c~2, m~4, r~8 GiB/vCPU), which holds at every size --
+        # absolute bounds would drift and could admit r-family at memory-optimized prices.
         memory_gib_per_vcpu {
           min = 3.5
           max = 4.5
@@ -191,11 +166,8 @@ resource "aws_ecs_capacity_provider" "executor_cpu" {
 
         # Keep selection on general-purpose x86 CPU hosts.
         cpu_manufacturers = ["intel", "amd"]
-        # Current generation only. Previous-generation families (m4/r4 era) have materially
-        # slower cores, lower network and EBS throughput, and no NVMe, which works against the
-        # cold-start and runtime goals of this capacity provider and makes benchmark results
-        # depend on which family a given task happened to land on. The smaller pool is an
-        # accepted tradeoff; widen it only if capacity errors show up in practice.
+        # Previous generations are materially slower and make benchmarks depend on which
+        # family a task landed on. Widen only if capacity errors appear.
         instance_generations  = ["current"]
         burstable_performance = "excluded"
 
@@ -209,11 +181,9 @@ resource "aws_ecs_capacity_provider" "executor_cpu" {
 
   tags = merge(var.tags, { Name = "launch_system_executor_cpu_capacity_provider" })
 
-  # Only the permission grants need an explicit edge: ECS validates the infrastructure role
-  # when the capacity provider is created, and an attachment or inline policy is not reachable
-  # from any attribute reference here. The two roles and the instance profile are already
-  # ordered by the infrastructure_role_arn and ec2_instance_profile_arn references above
-  # (the instance role transitively, through the instance profile).
+  # Only the permission grants need an explicit edge -- no attribute reference reaches them,
+  # and ECS validates the role at creation. Roles and profile are already ordered by the
+  # infrastructure_role_arn / ec2_instance_profile_arn references above.
   depends_on = [
     aws_iam_role_policy_attachment.executor_cpu_infrastructure_managed_instances,
     aws_iam_role_policy.executor_cpu_infrastructure_pass_instance_role,
@@ -224,30 +194,20 @@ resource "aws_ecs_capacity_provider" "executor_cpu" {
 # --- ECS Managed Instances task definitions -------------------------------------------------
 # Parallel task definitions for the three non-GPU executors, compatible with the
 # launch_system_executor_cpu ECS Managed Instances capacity provider defined above. They exist
-# ALONGSIDE the Fargate task definitions in executor.tf so that jobs default to Fargate but can
-# opt into Managed Instances per request via `placement_type: "ecs_managed_instances"` (see the
-# matching Managed Instances entries in compute_cell_definitions.tf). They reuse the shared
-# executor locals and are intentionally identical to their Fargate counterparts except for
-# `requires_compatibilities`.
+# ALONGSIDE the Fargate ones in executor.tf, so jobs default to Fargate and opt in per request
+# via `placement_type: "ecs_managed_instances"`. Identical except `requires_compatibilities`.
 #
-# THIS DUPLICATION IS DELIBERATELY TEMPORARY. It exists only so the two placements can be
-# compared on the same workload, and it is not meant to be maintained: an executor image bump
-# or a secrets change has to be applied here AND in executor.tf, and forgetting one silently
-# gives the two placements different behavior.
+# DELIBERATELY TEMPORARY, and not meant to be maintained: an image or secrets change must be
+# made here AND in executor.tf, and missing one silently diverges the two placements.
 #
-# Removal condition -- exactly one of:
-#   * Managed Instances wins: delete the Fargate task definitions in executor.tf and the
-#     `fargate` entries in compute_cell_definitions.tf, then rename these to drop `_managed`.
-#     Note that renaming a family orphans the orchestrator's derived per-project task
-#     definitions (`{family}-{project_id}`), so plan that as its own change.
-#   * Fargate wins: delete this file, the `ecs_managed_instances` entries in
-#     compute_cell_definitions.tf, the executor_cpu capacity provider, and its registration in
-#     executor.tf.
-#
-# TODO: if the comparison is inconclusive and the dual path has to stay, collapse both sets into
-# one `for_each` over a variants map keyed by (executor, compatibility) instead of six near
-# identical resources. That refactor must keep every `family` string byte-identical and use
-# `moved` blocks (see moved.tf) so no task definition is orphaned.
+# Remove one side once the comparison concludes:
+#   * MI wins      -> drop the Fargate task defs + `fargate` cell entries, then rename these to
+#                     drop `_managed` (a family rename orphans the orchestrator's derived
+#                     `{family}-{project_id}` definitions, so do it as its own change).
+#   * Fargate wins -> drop this file, the `ecs_managed_instances` cell entries, the executor_cpu
+#                     capacity provider and its registration in executor.tf.
+# If it stays, collapse both sets into one `for_each` over (executor, compatibility), keeping
+# every `family` string byte-identical and using `moved` blocks.
 
 resource "aws_ecs_task_definition" "default_executor_managed" {
   family                   = "launch_system_default_executor_managed_task_family"
