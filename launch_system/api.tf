@@ -161,9 +161,7 @@ resource "aws_ecs_task_definition" "api" {
           name  = "CODEARTIFACT_CONFIG"
           value = jsonencode(var.codeartifact_config)
         },
-        # Same definitions the orchestrator gets, used to validate job requests up front.
-        # Unprefixed on purpose: the ORCHESTRATOR_ prefixed copy is secret-interpolated and would
-        # require the full launch-system secret here. Validation only needs the structure.
+        # Same definitions the orchestrator gets, but we do not need the secret interpolation here
         {
           name  = "COMPUTE_CELL_DEFINITIONS"
           value = local.compute_cell_definitions_tmpl
