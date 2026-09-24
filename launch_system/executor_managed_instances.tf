@@ -191,24 +191,6 @@ resource "aws_ecs_capacity_provider" "executor_cpu" {
   ]
 }
 
-# --- ECS Managed Instances task definitions -------------------------------------------------
-# Parallel task definitions for the three non-GPU executors, compatible with the
-# launch_system_executor_cpu ECS Managed Instances capacity provider defined above. They exist
-# ALONGSIDE the Fargate ones in executor.tf, so jobs default to Fargate and opt in per request
-# via `placement_type: "ecs_managed_instances"`. Identical except `requires_compatibilities`.
-#
-# DELIBERATELY TEMPORARY, and not meant to be maintained: an image or secrets change must be
-# made here AND in executor.tf, and missing one silently diverges the two placements.
-#
-# Remove one side once the comparison concludes:
-#   * MI wins      -> drop the Fargate task defs + `fargate` cell entries, then rename these to
-#                     drop `_managed` (a family rename orphans the orchestrator's derived
-#                     `{family}-{project_id}` definitions, so do it as its own change).
-#   * Fargate wins -> drop this file, the `ecs_managed_instances` cell entries, the executor_cpu
-#                     capacity provider and its registration in executor.tf.
-# If it stays, collapse both sets into one `for_each` over (executor, compatibility), keeping
-# every `family` string byte-identical and using `moved` blocks.
-
 resource "aws_ecs_task_definition" "default_executor_managed" {
   family                   = "launch_system_default_executor_managed_task_family"
   network_mode             = local.executor_base_config.network_mode
