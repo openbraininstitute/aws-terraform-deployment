@@ -360,6 +360,20 @@ resource "aws_iam_policy" "orchestrator_ecs_run_task" {
         ]
       },
       {
+        # ListTasks supports no resource-level permissions: any ECS ARN in Resource
+        # yields implicitDeny. Grant on "*" and scope it with the ecs:cluster condition.
+        Effect = "Allow"
+        Action = [
+          "ecs:ListTasks",
+        ]
+        Resource = "*"
+        Condition = {
+          ArnEquals = {
+            "ecs:cluster" = aws_ecs_cluster.executor.arn
+          }
+        }
+      },
+      {
         Effect = "Allow"
         Action = [
           "ecs:StopTask",
