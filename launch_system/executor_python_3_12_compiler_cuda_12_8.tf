@@ -99,7 +99,7 @@ resource "aws_security_group" "executor_gpu_instance" {
 
 resource "aws_vpc_security_group_egress_rule" "executor_gpu_instance_allow_outgoing" {
   security_group_id = aws_security_group.executor_gpu_instance.id
-  ip_protocol       = -1
+  ip_protocol       = "-1"
   cidr_ipv4         = "0.0.0.0/0"
   description       = "Allow all egress for ECS GPU instances"
 }
@@ -112,6 +112,18 @@ resource "aws_ecs_capacity_provider" "executor_gpu" {
     infrastructure_role_arn = aws_iam_role.executor_gpu_infrastructure.arn
     propagate_tags          = "CAPACITY_PROVIDER"
 
+    # Triggers only on unrecoverable NVIDIA faults (DCGM XID list: GPU off the bus, ECC errors,
+    # ...), never on transient ones like an agent disconnect, so the CUDA task has already lost
+    # its GPU. ENABLED even though jobs run for hours, because DISABLED never drains the
+    # impaired host -- it keeps taking new GPU tasks, turning one fault into many failures.
+    # Repair is graceful (start-before-stop, honors the stop timeout) and rate limited to one
+    # instance at this provider's size. Pinned because the attribute is computed, so the
+    # inherited default could change without a diff. DISABLED would also disable Managed
+    # Daemons auto repair.
+    auto_repair_configuration {
+      actions_status = "ENABLED"
+    }
+
     infrastructure_optimization {
       # Mirrors the previous ASG instance_warmup_period (300s) before idle scale-in.
       scale_in_after = 300
@@ -119,7 +131,8 @@ resource "aws_ecs_capacity_provider" "executor_gpu" {
 
     instance_launch_template {
       ec2_instance_profile_arn = aws_iam_instance_profile.executor_gpu_instance.arn
-      monitoring               = "DETAILED"
+      # Default; DETAILED bills 1-minute host metrics per instance, which we do not use.
+      monitoring = "BASIC"
 
       network_configuration {
         subnets         = local.executor_untrusted_subnet_ids

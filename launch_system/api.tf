@@ -160,6 +160,11 @@ resource "aws_ecs_task_definition" "api" {
         {
           name  = "CODEARTIFACT_CONFIG"
           value = jsonencode(var.codeartifact_config)
+        },
+        # Same definitions the orchestrator gets, but we do not need the secret interpolation here
+        {
+          name  = "COMPUTE_CELL_DEFINITIONS"
+          value = local.compute_cell_definitions_tmpl
         }
       ]
 

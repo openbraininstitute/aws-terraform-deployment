@@ -181,6 +181,27 @@ variable "executor_task_size" {
   description = "CPU and memory limit for the executor tasks (number or string format)"
 }
 
+variable "executor_cpu_scale_in_after" {
+  description = <<-EOT
+    Seconds an EMPTY instance is kept before scale-in: the cold-start vs idle-cost tradeoff.
+    Size it from observed job inter-arrival time (roughly the p50-p75 gap).
+
+    Running tasks are unaffected, but the reason is load bearing: ScaleInAfter also governs
+    consolidation of underutilized instances, which drains them. ECS exempts instances running
+    standalone tasks, and these executors use RunTask -- converting them to an ECS service would
+    expose long-running tasks to mid-run draining.
+  EOT
+  type        = number
+  # 15 minutes: keeps the cold-start win for bursts of related jobs without paying for a full
+  # idle hour after an isolated one. Revisit once job arrival patterns are measured.
+  default = 900
+
+  validation {
+    condition     = var.executor_cpu_scale_in_after >= 60 && var.executor_cpu_scale_in_after <= 3600
+    error_message = "executor_cpu_scale_in_after must be between 60 and 3600 seconds."
+  }
+}
+
 variable "orchestrator_num_workers" {
   description = "Number of workers processing the queues in the orchestrator task."
   type        = number
