@@ -63,11 +63,9 @@ locals {
             security_groups = [aws_security_group.executor.id]
             task_family     = aws_ecs_task_definition.python_3_12_openmpi5_neuron9_neurodamus_executor.family
           },
-          # ECS Managed Instances variants of the three non-GPU executors. Same image_type as the
-          # Fargate entries above; the orchestrator selects one based on the per-request
-          # `placement_type`. Because these image types exist on both placements, a request that
-          # does not set `placement_type` still resolves to Fargate, so Managed Instances can be
-          # tested per request without changing default behavior.
+          # Managed Instances variants of the three non-GPU executors, same image_type as the
+          # Fargate entries above. Since both placements exist, a request without
+          # `placement_type` still resolves to Fargate, so this changes no default behavior.
           {
             vcpu_min   = 1
             vcpu_max   = 16
