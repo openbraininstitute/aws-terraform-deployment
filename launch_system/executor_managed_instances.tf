@@ -171,6 +171,18 @@ resource "aws_ecs_capacity_provider" "executor_cpu" {
         instance_generations  = ["current"]
         burstable_performance = "excluded"
 
+        # instance_generations = ["current"] is not sufficient: AWS still classifies the m5
+        # generation as current, so the pool above spans 2.2-5.0 GHz sustained clock. Measured
+        # on staging with one identical single-neuron simulation (same config, sequential tasks,
+        # no co-tenancy): m6a.4xlarge 10.1s (n=4, +/-0.04) vs m5a.4xlarge 31.2s (n=3) for the
+        # NEURON solve, and 15.2s vs 26.7s to compile mechanisms. The solve is single-threaded
+        # and memory-latency bound, so Zen 1's cache/NUMA layout costs more than the 1.4x clock
+        # gap suggests. Without this the same request is a coin flip between ~10s and ~31s.
+        #
+        # h1/d3en are storage-optimized families that satisfy the ratio band but are older and
+        # not intended for this workload.
+        excluded_instance_types = ["m5a.*", "m5ad.*", "h1.*", "d3en.*"]
+
         # CPU-only: never place these tasks on accelerated (GPU) instances.
         accelerator_count {
           max = 0
