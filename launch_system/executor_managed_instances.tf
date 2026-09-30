@@ -18,6 +18,8 @@ locals {
     ]
   })
   executor_managed_volumes = []
+  # Host networking skips per-task ENI attach. RunTask must omit networkConfiguration.
+  executor_managed_network_mode = "host"
 }
 
 data "aws_iam_policy_document" "executor_cpu_infrastructure_role_assume" {
@@ -227,7 +229,7 @@ resource "aws_ecs_capacity_provider" "executor_cpu" {
 
 resource "aws_ecs_task_definition" "default_executor_managed" {
   family                   = "launch_system_default_executor_managed_task_family"
-  network_mode             = local.executor_base_config.network_mode
+  network_mode             = local.executor_managed_network_mode
   cpu                      = local.executor_base_config.cpu
   memory                   = local.executor_base_config.memory
   requires_compatibilities = ["MANAGED_INSTANCES"]
@@ -279,7 +281,7 @@ resource "aws_ecs_task_definition" "default_executor_managed" {
 
 resource "aws_ecs_task_definition" "inait_executor_managed" {
   family                   = "launch_system_inait_executor_managed_task_family"
-  network_mode             = local.executor_base_config.network_mode
+  network_mode             = local.executor_managed_network_mode
   cpu                      = local.executor_base_config.cpu
   memory                   = local.executor_base_config.memory
   requires_compatibilities = ["MANAGED_INSTANCES"]
@@ -337,7 +339,7 @@ resource "aws_ecs_task_definition" "inait_executor_managed" {
 
 resource "aws_ecs_task_definition" "python_3_12_openmpi5_neuron9_neurodamus_executor_managed" {
   family                   = "launch_system_python_3_12_openmpi5_neuron9_neurodamus_executor_managed_task_family"
-  network_mode             = local.executor_base_config.network_mode
+  network_mode             = local.executor_managed_network_mode
   cpu                      = local.executor_base_config.cpu
   memory                   = local.executor_base_config.memory
   requires_compatibilities = ["MANAGED_INSTANCES"]
