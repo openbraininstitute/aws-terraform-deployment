@@ -1,15 +1,16 @@
 locals {
-  # Host bind mount for uv's package cache (survives across tasks on the same instance).
+  # Per-instance local uv cache (host bind mount; survives across tasks on the same MI).
   # MI-only: bind mounts drop FARGATE compatibility. Wrapper chowns before dropping privs.
-  executor_scratch_volume_name = "scratch-cache"
-  executor_scratch_host_path   = "/var/lib/containerd/scratch/cache"
-  executor_scratch_mount_path  = "${var.local_store_prefix}/cache"
+  # No shared/EFS cache for now.
+  executor_local_cache_volume_name = "local-cache"
+  executor_local_cache_host_path   = "/var/lib/containerd/scratch/local-cache"
+  executor_local_cache_mount_path  = "${var.local_store_prefix}/scratch/local-cache"
 
   executor_managed_container_base = merge(local.executor_container_base, {
     mountPoints = concat(local.executor_container_base.mountPoints, [
       {
-        containerPath = local.executor_scratch_mount_path
-        sourceVolume  = local.executor_scratch_volume_name
+        containerPath = local.executor_local_cache_mount_path
+        sourceVolume  = local.executor_local_cache_volume_name
         readOnly      = false
       }
     ])
@@ -264,8 +265,8 @@ resource "aws_ecs_task_definition" "default_executor_managed" {
 
 
   volume {
-    name      = local.executor_scratch_volume_name
-    host_path = local.executor_scratch_host_path
+    name      = local.executor_local_cache_volume_name
+    host_path = local.executor_local_cache_host_path
   }
 
   depends_on = [
@@ -322,8 +323,8 @@ resource "aws_ecs_task_definition" "inait_executor_managed" {
 
 
   volume {
-    name      = local.executor_scratch_volume_name
-    host_path = local.executor_scratch_host_path
+    name      = local.executor_local_cache_volume_name
+    host_path = local.executor_local_cache_host_path
   }
 
   depends_on = [
@@ -374,8 +375,8 @@ resource "aws_ecs_task_definition" "python_3_12_openmpi5_neuron9_neurodamus_exec
 
 
   volume {
-    name      = local.executor_scratch_volume_name
-    host_path = local.executor_scratch_host_path
+    name      = local.executor_local_cache_volume_name
+    host_path = local.executor_local_cache_host_path
   }
 
   depends_on = [
