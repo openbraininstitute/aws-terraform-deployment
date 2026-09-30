@@ -1,3 +1,21 @@
+locals {
+  # Host bind mount for uv's package cache (survives across tasks on the same instance).
+  # MI-only: bind mounts drop FARGATE compatibility. Wrapper chowns before dropping privs.
+  executor_scratch_volume_name = "scratch-cache"
+  executor_scratch_host_path   = "/var/lib/containerd/scratch/cache"
+  executor_scratch_mount_path  = "${var.local_store_prefix}/cache"
+
+  executor_managed_container_base = merge(local.executor_container_base, {
+    mountPoints = concat(local.executor_container_base.mountPoints, [
+      {
+        containerPath = local.executor_scratch_mount_path
+        sourceVolume  = local.executor_scratch_volume_name
+        readOnly      = false
+      }
+    ])
+  })
+}
+
 data "aws_iam_policy_document" "executor_cpu_infrastructure_role_assume" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -213,7 +231,7 @@ resource "aws_ecs_task_definition" "default_executor_managed" {
   task_role_arn            = local.executor_base_config.task_role_arn
 
   container_definitions = jsonencode([
-    merge(local.executor_container_base, {
+    merge(local.executor_managed_container_base, {
       image = var.default_executor_image_url
       environment = [
         {
@@ -244,6 +262,12 @@ resource "aws_ecs_task_definition" "default_executor_managed" {
     }
   }
 
+
+  volume {
+    name      = local.executor_scratch_volume_name
+    host_path = local.executor_scratch_host_path
+  }
+
   depends_on = [
     aws_cloudwatch_log_group.executor,
   ]
@@ -259,7 +283,7 @@ resource "aws_ecs_task_definition" "inait_executor_managed" {
   task_role_arn            = local.executor_base_config.task_role_arn
 
   container_definitions = jsonencode([
-    merge(local.executor_container_base, {
+    merge(local.executor_managed_container_base, {
       image = var.default_executor_image_url
       environment = [
         {
@@ -296,6 +320,12 @@ resource "aws_ecs_task_definition" "inait_executor_managed" {
     }
   }
 
+
+  volume {
+    name      = local.executor_scratch_volume_name
+    host_path = local.executor_scratch_host_path
+  }
+
   depends_on = [
     aws_cloudwatch_log_group.executor,
   ]
@@ -311,7 +341,7 @@ resource "aws_ecs_task_definition" "python_3_12_openmpi5_neuron9_neurodamus_exec
   task_role_arn            = local.executor_base_config.task_role_arn
 
   container_definitions = jsonencode([
-    merge(local.executor_container_base, {
+    merge(local.executor_managed_container_base, {
       image = var.python_3_12_openmpi5_neuron9_neurodamus_executor_image_url
       environment = [
         {
@@ -340,6 +370,12 @@ resource "aws_ecs_task_definition" "python_3_12_openmpi5_neuron9_neurodamus_exec
         }
       }
     }
+  }
+
+
+  volume {
+    name      = local.executor_scratch_volume_name
+    host_path = local.executor_scratch_host_path
   }
 
   depends_on = [
