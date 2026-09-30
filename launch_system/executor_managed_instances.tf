@@ -6,15 +6,18 @@ locals {
   executor_local_cache_host_path   = "/var/lib/containerd/scratch/local-cache"
   executor_local_cache_mount_path  = "${var.local_store_prefix}/scratch/local-cache"
 
+  # Omit public EFS mounts on MI: per-task EFS attach adds startup latency.
+  # Fargate placements retain the mounts via executor_container_base / executor_volumes.
   executor_managed_container_base = merge(local.executor_container_base, {
-    mountPoints = concat(local.executor_container_base.mountPoints, [
+    mountPoints = [
       {
         containerPath = local.executor_local_cache_mount_path
         sourceVolume  = local.executor_local_cache_volume_name
         readOnly      = false
       }
-    ])
+    ]
   })
+  executor_managed_volumes = []
 }
 
 data "aws_iam_policy_document" "executor_cpu_infrastructure_role_assume" {
@@ -249,7 +252,7 @@ resource "aws_ecs_task_definition" "default_executor_managed" {
   ])
 
   dynamic "volume" {
-    for_each = local.executor_volumes
+    for_each = local.executor_managed_volumes
     content {
       name = volume.value.name
       efs_volume_configuration {
@@ -307,7 +310,7 @@ resource "aws_ecs_task_definition" "inait_executor_managed" {
   ])
 
   dynamic "volume" {
-    for_each = local.executor_volumes
+    for_each = local.executor_managed_volumes
     content {
       name = volume.value.name
       efs_volume_configuration {
@@ -359,7 +362,7 @@ resource "aws_ecs_task_definition" "python_3_12_openmpi5_neuron9_neurodamus_exec
   ])
 
   dynamic "volume" {
-    for_each = local.executor_volumes
+    for_each = local.executor_managed_volumes
     content {
       name = volume.value.name
       efs_volume_configuration {
