@@ -192,9 +192,8 @@ variable "executor_cpu_scale_in_after" {
     expose long-running tasks to mid-run draining.
   EOT
   type        = number
-  # 15 minutes: keeps the cold-start win for bursts of related jobs without paying for a full
-  # idle hour after an isolated one. Revisit once job arrival patterns are measured.
-  default = 900
+  # 1 hour: keep interactive MI warm between bursts; AWS max for this attribute is 3600.
+  default = 3600
 
   validation {
     condition     = var.executor_cpu_scale_in_after >= 60 && var.executor_cpu_scale_in_after <= 3600
