@@ -76,6 +76,7 @@ locals {
             placement = {
               type              = "ecs_managed_instances"
               capacity_provider = aws_ecs_capacity_provider.executor_cpu.name
+              network_mode      = "host"
             }
             cluster_name    = aws_ecs_cluster.executor.name
             subnets         = local.executor_untrusted_subnet_ids
@@ -92,6 +93,7 @@ locals {
             placement = {
               type              = "ecs_managed_instances"
               capacity_provider = aws_ecs_capacity_provider.executor_cpu.name
+              network_mode      = "host"
             }
             cluster_name    = aws_ecs_cluster.executor.name
             subnets         = local.executor_untrusted_subnet_ids
@@ -108,6 +110,7 @@ locals {
             placement = {
               type              = "ecs_managed_instances"
               capacity_provider = aws_ecs_capacity_provider.executor_cpu.name
+              network_mode      = "host"
             }
             cluster_name    = aws_ecs_cluster.executor.name
             subnets         = local.executor_untrusted_subnet_ids
