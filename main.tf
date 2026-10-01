@@ -187,9 +187,7 @@ module "development_vm_01" {
   user_groups = {
     obi_users = {
       users = [
-        { username = "juanjose.garcia", email = "juanjose.garcia@openbraininstitute.org", public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDzDi+u9H5BDwytC7NQDl6rSk/2Kbjf7Xh+YKjBxJI4t juanjose.garcia@Juans-MacBook-Pro.local" },
         { username = "daniel.fernandez", email = "daniel.fernandez@openbraininstitute.org", public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDnwCEkde+9uNQJ+sUPJwuCGbCQM1NFa5T0uPZNbQFTe1cw3XhW8X+HZg9em5xdX6NrT+R3gHTMvpqhLepmZzcWNpautY7qGG833i/gKO2VrTWf/Vd0aRefvc9ssWChWKWxnJu0IGnOJF7gSA27MMWvFHjIoYzPG0UVmfE+Nr1OYLMjpYEsxqj+bby44xD7ii7/hVJXp1reuRjOiSK+AosO1GNIkXcw7CQJy1gQ9VAc3qpKwv5uqBTlvKG8olL42U0Ndy61slyQrbJm3GVFIQFd4aIpYjEGlY+B1jhY+wvf8RxxjCqpJ8bz+yG+/QPzGEZeaDNYsOTxWIJRVSm9voLf danielfr@aur" },
-        { username = "erik.heeren", email = "erik.heeren@openbraininstitute.org", public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICCwlGHR/vz8esSOTMtXT0qnO7zg+kjPJYicxjyryO3h heeren@bbd-fsczyl3" },
       ]
       sudo_access = true
     }
