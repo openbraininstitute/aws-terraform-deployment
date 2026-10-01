@@ -271,7 +271,7 @@ module "cells_svc" {
 
   bastion_instance_private_ip = module.bastion_host.bastion_instance_private_ip
 
-  amazon_linux_ecs_ami_id = data.aws_ami.amazon_linux_2_ecs.id
+  amazon_linux_ecs_ami_id = data.aws_ami.amazon_linux_2_ecs_arm64.id
 
   cell_svc_docker_image_url = var.cell_svc_docker_image_url
 }

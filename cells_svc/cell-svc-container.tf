@@ -84,7 +84,7 @@ data "aws_iam_policy_document" "cells_ec2_instance_role_policy" {
 resource "aws_launch_template" "cells_svc_ec2_launch_template" {
   name          = "cells_svc_ec2_launch_template"
   image_id      = var.amazon_linux_ecs_ami_id
-  instance_type = "t2.medium"
+  instance_type = "t4g.medium"
   key_name      = var.aws_coreservices_ssh_key_id
   user_data = base64encode(templatefile("${path.module}/cells_ec2_ecs_user_data.sh", {
     cell_svc_perf_bucket_name = var.cell_svc_perf_bucket_name,
@@ -183,6 +183,11 @@ resource "aws_ecs_task_definition" "cell_svc_ecs_definition" {
   family = "cell_svc_task_family"
 
   requires_compatibilities = ["EC2"]
+
+  runtime_platform {
+    cpu_architecture        = "ARM64"
+    operating_system_family = "LINUX"
+  }
 
   execution_role_arn = aws_iam_role.ecs_cell_svc_task_execution_role.arn
   task_role_arn      = aws_iam_role.ecs_cell_svc_task_role.arn
