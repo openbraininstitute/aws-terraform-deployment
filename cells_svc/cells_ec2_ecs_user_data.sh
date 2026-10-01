@@ -25,7 +25,7 @@ append_file_once 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDTQQu/jmTIhy7MjfoOlW6pqg
 install_s3_mount() {
     echo "install_s3_mount"
     yum install -y wget || return 1
-    wget https://s3.amazonaws.com/mountpoint-s3-release/latest/x86_64/mount-s3.rpm || return 1
+    wget https://s3.amazonaws.com/mountpoint-s3-release/latest/arm64/mount-s3.rpm || return 1
     yum install -y ./mount-s3.rpm || return 1
     mkdir -p /sbo/data/project || return 1
 }
