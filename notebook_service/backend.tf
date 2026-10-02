@@ -222,6 +222,12 @@ resource "aws_ecs_task_definition" "ecs_definition" {
           value = tostring(var.kubernetes_thread_check_interval)
         },
         {
+          # Reclaim notebooks (stop pod + billing) after this many seconds with
+          # all kernels idle. Same value in staging and prod for now. 0 disables.
+          name  = "NOTEBOOK_IDLE_TIMEOUT",
+          value = "3600"
+        },
+        {
           name  = "AZURE_ACCOUNTING_ENABLED",
           value = var.azure_accounting_enabled ? "True" : "False"
         },
