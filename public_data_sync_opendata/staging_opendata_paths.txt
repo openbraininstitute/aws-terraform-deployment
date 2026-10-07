@@ -429,3 +429,7 @@
 /Simulatable_Circuit/Circuits/nbS1-noMidrange
 /Simulatable_Circuit/Circuits/nbS1-O1-plastic
 /Simulatable_Circuit/Circuits/Thalamoreticular
+/Simulatable_Circuit/Circuits/nbS1-O1_v2
+/Simulatable_Circuit/ConnectivityMatrixFolders/nbS1-O1_v2
+/Simulatable_Circuit/Circuits/nbS1-HEX0_v2
+/Simulatable_Circuit/ConnectivityMatrixFolders/nbS1-HEX0_v2
