@@ -294,3 +294,7 @@
 /Simulatable_Circuit/Circuits/nbS1-noMidrange
 /Simulatable_Circuit/Circuits/Allen-V1
 /Simulatable_Circuit/ConnectivityMatrixFolders/Allen-V1
+/Simulatable_Circuit/Circuits/nbS1-O1_v2
+/Simulatable_Circuit/ConnectivityMatrixFolders/nbS1-O1_v2
+/Simulatable_Circuit/Circuits/nbS1-HEX0_v2
+/Simulatable_Circuit/ConnectivityMatrixFolders/nbS1-HEX0_v2
