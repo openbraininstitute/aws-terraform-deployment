@@ -26,6 +26,9 @@ Environment variables:
   GITHUB_EXCLUDE_STATUSES     comma-separated project "Status" option names to
                               exclude (project mode only), e.g.
                               "Cancelled,Archived (done),Archived (cancelled)"
+  GITHUB_INCLUDE_STATUSES     comma-separated project "Status" option names to
+                              keep (project mode only); if set, only these
+                              statuses pass
   STALE_DAYS                  staleness threshold in days (default: 7)
   INCLUDE_PRS                 "true" to include pull requests (default: false)
   MAX_ITEMS                   max items to list in the digest (default: 100)
@@ -336,16 +339,20 @@ def fetch_stale_issues_from_project(
     labels: Optional[List[str]] = None,
     assignees: Optional[List[str]] = None,
     exclude_statuses: Optional[List[str]] = None,
+    include_statuses: Optional[List[str]] = None,
 ) -> Dict[str, Any]:
     """Stale digest scoped to a Projects v2 board.
 
     Runs the REST issue search, enriches those candidates with their board
-    ``Status`` for ``project_number`` via batched GraphQL, and drops any whose
-    status is in ``exclude_statuses``. Requires the token to have ``repo`` and
-    ``read:project`` scopes. Returns the same payload shape as
+    ``Status`` for ``project_number`` via batched GraphQL, then filters by
+    status: if ``include_statuses`` is given, only those statuses are kept;
+    ``exclude_statuses`` drops matching statuses. Requires the token to have
+    ``repo`` and ``read:project`` scopes. Returns the same payload shape as
     :func:`fetch_stale_issues`, with each issue annotated with its ``status``.
     """
     drop_statuses = {s.strip() for s in (exclude_statuses or []) if s.strip()}
+    status_order = [s.strip() for s in (include_statuses or []) if s.strip()]
+    keep_statuses = set(status_order)
 
     base = fetch_stale_issues(
         token, org, stale_days, include_prs, labels, assignees
@@ -360,6 +367,9 @@ def fetch_stale_issues_from_project(
     for c in candidates:
         status = statuses.get(c.get("node_id"))
         c["status"] = status
+        if keep_statuses and status not in keep_statuses:
+            excluded += 1
+            continue
         if status in drop_statuses:
             excluded += 1
             continue
@@ -376,6 +386,8 @@ def fetch_stale_issues_from_project(
     base["issues"] = kept
     base["project_number"] = project_number
     base["exclude_statuses"] = sorted(drop_statuses)
+    base["include_statuses"] = sorted(keep_statuses)
+    base["status_order"] = status_order
     return base
 
 
@@ -415,55 +427,85 @@ def build_adaptive_card(digest: Dict[str, Any], max_items: int) -> Dict[str, Any
 
     if total == 0:
         body.append(
+            {"type": "TextBlock", "text": "No stale tickets. 🎉", "wrap": True}
+        )
+        return _wrap_card(body)
+
+    shown = issues[:max_items]
+
+    def item_blocks(item: Dict[str, Any]) -> List[Dict[str, Any]]:
+        days = _days_since(item.get("updated_at"))
+        age = f"{days}d" if days is not None else "age unknown"
+        assignees = item.get("assignees") or []
+        who = ", ".join(assignees) if assignees else "unassigned"
+        title = item.get("title") or "(no title)"
+        url = item.get("url") or ""
+        repo = item.get("repository") or ""
+        short_repo = repo.split("/")[-1] if repo else repo
+        number = item.get("number")
+        ref = f"{short_repo}#{number}" if short_repo else f"#{number}"
+        link = f"[{ref}]({url})" if url else ref
+        meta = " · ".join(p for p in (link, age, who) if p)
+        return [
             {
                 "type": "TextBlock",
-                "text": "No stale tickets. 🎉",
+                "spacing": "Small",
+                "text": title,
+                "wrap": True,
+            },
+            {
+                "type": "TextBlock",
+                "spacing": "None",
+                "isSubtle": True,
+                "text": meta,
+                "wrap": True,
+            },
+        ]
+
+    # Group by board status, in the configured order; any leftover statuses
+    # (shouldn't occur with an allow-list) fall into a trailing group.
+    status_order: List[str] = digest.get("status_order") or []
+    if status_order:
+        groups: List[tuple] = [(s, [i for i in shown if i.get("status") == s]) for s in status_order]
+        leftover = [i for i in shown if i.get("status") not in set(status_order)]
+        if leftover:
+            groups.append(("Other", leftover))
+        for name, items in groups:
+            if not items:
+                continue
+            body.append(
+                {
+                    "type": "TextBlock",
+                    "spacing": "Large",
+                    "separator": True,
+                    "size": "Medium",
+                    "weight": "Bolder",
+                    "color": "Accent",
+                    "text": f"{name} ({len(items)})",
+                    "wrap": True,
+                }
+            )
+            for item in items:
+                body.extend(item_blocks(item))
+    else:
+        for item in shown:
+            body.extend(item_blocks(item))
+
+    if total > len(shown):
+        body.append(
+            {
+                "type": "TextBlock",
+                "spacing": "Medium",
+                "isSubtle": True,
+                "text": f"… and {total - len(shown)} more.",
                 "wrap": True,
             }
         )
-    else:
-        shown = issues[:max_items]
-        for item in shown:
-            days = _days_since(item.get("updated_at"))
-            age = f"{days}d stale" if days is not None else "age unknown"
-            assignees = item.get("assignees") or []
-            who = ", ".join(assignees) if assignees else "unassigned"
-            title = item.get("title") or "(no title)"
-            url = item.get("url") or ""
-            repo = item.get("repository") or ""
-            short_repo = repo.split("/")[-1] if repo else repo
-            number = item.get("number")
-            ref = f"{short_repo}#{number}" if short_repo else f"#{number}"
-            link = f"[{ref}]({url})" if url else ref
-            body.append(
-                {
-                    "type": "TextBlock",
-                    "spacing": "Medium",
-                    "weight": "Bolder",
-                    "text": f"{link}: {title}",
-                    "wrap": True,
-                }
-            )
-            body.append(
-                {
-                    "type": "TextBlock",
-                    "spacing": "None",
-                    "isSubtle": True,
-                    "text": f"{age} · {who}",
-                    "wrap": True,
-                }
-            )
-        if total > len(shown):
-            body.append(
-                {
-                    "type": "TextBlock",
-                    "spacing": "Medium",
-                    "isSubtle": True,
-                    "text": f"… and {total - len(shown)} more.",
-                    "wrap": True,
-                }
-            )
 
+    return _wrap_card(body)
+
+
+def _wrap_card(body: List[Dict[str, Any]]) -> Dict[str, Any]:
     return {
         "type": "message",
         "attachments": [
@@ -545,6 +587,11 @@ def handler(event: Dict[str, Any], _context: Any) -> Dict[str, Any]:
             for s in os.environ.get("GITHUB_EXCLUDE_STATUSES", "").split(",")
             if s.strip()
         ]
+        include_statuses = [
+            s.strip()
+            for s in os.environ.get("GITHUB_INCLUDE_STATUSES", "").split(",")
+            if s.strip()
+        ]
 
         github_token = _get_secret_by_name_and_key(
             "GITHUB_TOKEN_SECRET_ID", "GITHUB_TOKEN_SECRET_KEY"
@@ -566,6 +613,7 @@ def handler(event: Dict[str, Any], _context: Any) -> Dict[str, Any]:
                 labels,
                 assignees,
                 exclude_statuses,
+                include_statuses,
             )
         else:
             logger.info("Sourcing from org-wide issue search (org %s)", org)

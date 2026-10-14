@@ -35,6 +35,7 @@ resource "aws_lambda_function" "digest" {
       GITHUB_PROJECT_NUMBER    = tostring(var.project_number)
       GITHUB_LABELS            = join(",", var.labels)
       GITHUB_EXCLUDE_STATUSES  = join(",", var.exclude_statuses)
+      GITHUB_INCLUDE_STATUSES  = join(",", var.include_statuses)
       STALE_DAYS               = tostring(var.stale_days)
       INCLUDE_PRS              = var.include_prs ? "true" : "false"
       MAX_ITEMS                = tostring(var.max_items)
