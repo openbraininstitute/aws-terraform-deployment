@@ -166,3 +166,15 @@ variable "bastion_instance_private_ip" {
   type        = string
   sensitive   = false
 }
+
+variable "github_ticket_digest_secrets_arn" {
+  description = "ARN of the Secrets Manager secret (JSON) holding the obiadministrator GitHub token, used by the github_ticket_digest Lambda (staging only)."
+  type        = string
+  default     = ""
+}
+
+variable "teams_webhook_secrets_arn" {
+  description = "ARN of the shared Teams webhook Secrets Manager secret (JSON)."
+  type        = string
+  default     = ""
+}
