@@ -114,7 +114,7 @@ module "github_ticket_digest" {
 
   unique_name = "github-ticket-digest"
   github_org  = "openbraininstitute"
-  stale_days  = 7
+  stale_days  = 14
   include_prs = false
 
   # Reconstructs board #10 ("OBI 2025-2026") standup view.
