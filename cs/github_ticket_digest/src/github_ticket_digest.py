@@ -391,6 +391,19 @@ def fetch_stale_issues_from_project(
     return base
 
 
+def _sanitize_markdown(text: str) -> str:
+    """Render issue titles as literal text in Teams markdown.
+
+    Removes backticks (which Teams turns into code spans) and escapes other
+    markdown-active characters so titles like ``m5_xlarge`` or ``*note*`` are
+    not italicised/bolded or turned into links.
+    """
+    text = text.replace("`", "")
+    for ch in ("\\", "*", "_", "[", "]"):
+        text = text.replace(ch, "\\" + ch)
+    return text
+
+
 def _days_since(updated_at: Optional[str]) -> Optional[int]:
     dt = _parse_ts(updated_at)
     if dt is None:
@@ -438,7 +451,7 @@ def build_adaptive_card(digest: Dict[str, Any], max_items: int) -> Dict[str, Any
         age = f"{days}d" if days is not None else "age unknown"
         assignees = item.get("assignees") or []
         who = ", ".join(assignees) if assignees else "unassigned"
-        title = item.get("title") or "(no title)"
+        title = _sanitize_markdown(item.get("title") or "(no title)")
         url = item.get("url") or ""
         repo = item.get("repository") or ""
         short_repo = repo.split("/")[-1] if repo else repo
@@ -478,7 +491,7 @@ def build_adaptive_card(digest: Dict[str, Any], max_items: int) -> Dict[str, Any
                     "type": "TextBlock",
                     "spacing": "Large",
                     "separator": True,
-                    "size": "Medium",
+                    "size": "Large",
                     "weight": "Bolder",
                     "color": "Accent",
                     "text": f"{name} ({len(items)})",
