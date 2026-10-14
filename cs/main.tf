@@ -107,6 +107,31 @@ module "keycloak" {
   keycloak_realm                               = "SBO"
 }
 
+# Weekly digest of stale GitHub tickets to Teams
+module "github_ticket_digest" {
+  count  = var.is_staging ? 1 : 0 # only deployed in staging
+  source = "./github_ticket_digest"
+
+  unique_name = "github-ticket-digest"
+  github_org  = "openbraininstitute"
+  stale_days  = 7
+  include_prs = false
+
+  # Reconstructs board #10 ("OBI 2025-2026") standup view.
+  project_number   = 10
+  labels           = ["standup"]
+  exclude_statuses = ["Cancelled", "Archived (done)", "Archived (cancelled)"]
+
+  # Monday 08:00 UTC
+  schedule_expression = "cron(0 8 ? * MON *)"
+
+  github_token_secret_arn = var.github_ticket_digest_secrets_arn
+  github_token_secret_key = "github_token"
+
+  teams_webhook_secret_arn = var.teams_webhook_secrets_arn
+  teams_webhook_secret_key = "github_ticket_digest"
+}
+
 module "secret_sharing_svc" {
   count                          = var.is_staging ? 1 : 0 # only deployed in staging
   source                         = "./secret_sharing_svc"
