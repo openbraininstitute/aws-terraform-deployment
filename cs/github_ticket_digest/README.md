@@ -10,12 +10,12 @@ schedule rule (default: Monday 08:00 UTC).
 
 By default it reproduces project #10's "standup" board view: a single REST
 issue search for `label:standup` + open + stale, then a cheap batched GraphQL
-lookup of each candidate's board **Status** on project #10, dropping
-`Cancelled`, `Archived (done)`, `Archived (cancelled)`. (The GitHub API cannot
-return a project view's items directly, nor filter a board server-side, so the
-view's filter is reconstructed here; the full board is never scanned.) Set
-`project_number = 0` to skip the status enrichment and use the plain org-wide
-issue search.
+lookup of each candidate's board **Status** on project #10, keeping only
+`To do`, `In progress`, `Blocked`, `Code Review / In Preview`. (The GitHub API
+cannot return a project view's items directly, nor filter a board server-side,
+so the view's filter is reconstructed here; the full board is never scanned.)
+Set `project_number = 0` to skip the status enrichment and use the plain
+org-wide issue search.
 
 ## GitHub token scopes
 

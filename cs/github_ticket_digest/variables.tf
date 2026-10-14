@@ -41,7 +41,13 @@ variable "project_number" {
 variable "exclude_statuses" {
   description = "Project board 'Status' option names to exclude (project mode only)."
   type        = list(string)
-  default     = ["Cancelled", "Archived (done)", "Archived (cancelled)"]
+  default     = []
+}
+
+variable "include_statuses" {
+  description = "Project board 'Status' option names to keep (project mode only). If non-empty, only these statuses pass."
+  type        = list(string)
+  default     = ["To do", "In progress", "Blocked", "Code Review / In Preview"]
 }
 
 variable "labels" {

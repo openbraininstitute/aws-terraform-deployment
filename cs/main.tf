@@ -120,7 +120,7 @@ module "github_ticket_digest" {
   # Reconstructs board #10 ("OBI 2025-2026") standup view.
   project_number   = 10
   labels           = ["standup"]
-  exclude_statuses = ["Cancelled", "Archived (done)", "Archived (cancelled)"]
+  include_statuses = ["To do", "In progress", "Blocked", "Code Review / In Preview"]
 
   # Monday 08:00 UTC
   schedule_expression = "cron(0 8 ? * MON *)"
