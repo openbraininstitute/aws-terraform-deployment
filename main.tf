@@ -56,7 +56,7 @@ locals {
   virtual_lab_manager_db_ro_secret_arn = data.terraform_remote_state.common.outputs.virtual_lab_manager_database_readonly_secret_arn
   accounting_db_ro_secret_arn          = data.terraform_remote_state.common.outputs.accounting_database_readonly_secret_arn
   teams_webhook_secrets_arn            = data.terraform_remote_state.common.outputs.teams_webhook_secrets_arn
-  github_ticket_digest_secrets_arn     = data.terraform_remote_state.common.outputs.github_ticket_digest_secrets_arn
+  github_ticket_digest_secrets_arn     = local.is_staging ? data.terraform_remote_state.common.outputs.github_ticket_digest_secrets_arn : ""
   auth_manager_secrets_arn             = data.terraform_remote_state.common.outputs.auth_manager_secrets_arn
   grading_service_secrets_arn          = data.terraform_remote_state.common.outputs.grading_service_secrets_arn
   obi_one_secrets_arn                  = data.terraform_remote_state.common.outputs.obi_one_secrets_arn
