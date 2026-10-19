@@ -325,7 +325,7 @@ resource "aws_iam_policy" "orchestrator_ecs_run_task" {
           aws_ecs_task_definition.inait_executor.arn,
           aws_ecs_task_definition.python_3_12_openmpi5_neuron9_neurodamus_executor.arn,
           aws_ecs_task_definition.python_3_12_compiler_cuda_12_8_executor.arn,
-          # Parallel ECS Managed Instances task definitions for the non-GPU executors
+          # EC2 ASG task definitions for the non-GPU executors
           aws_ecs_task_definition.default_executor_ec2.arn,
           aws_ecs_task_definition.inait_executor_ec2.arn,
           aws_ecs_task_definition.python_3_12_openmpi5_neuron9_neurodamus_executor_ec2.arn,

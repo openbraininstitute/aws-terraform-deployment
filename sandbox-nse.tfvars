@@ -138,7 +138,6 @@ pcs_ami                 = "ami-0fa11a6354572d8b5"
 pcs_large_instance_type = "c5n.large" # 2 vCPUs, 5.3 GiB
 pcs_large_enable_efa    = false
 
-# Required root vars (NAS backup unused in this sandbox).
 create_nas_backup_user         = false
 backup_s3_buckets              = []
 ssm_readonly_access_policy_arn = "arn:aws:iam::009203151042:policy/obi_SSMBastionUserAccess"

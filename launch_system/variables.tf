@@ -208,15 +208,12 @@ variable "open_public_data_access_point_id" {
 }
 
 variable "internal_public_data_efs_path" {
-  description = <<-EOT
-    Path of the internal public data inside the EFS file system. Instances mount this subpath
-    directly rather than through an access point, because one host mount is shared by all tasks.
-  EOT
+  description = "EFS subpath for internal public data (host-mounted, not via access point)."
   type        = string
 }
 
 variable "open_public_data_efs_path" {
-  description = "Path of the open public data inside the EFS file system."
+  description = "EFS subpath for open public data."
   type        = string
 }
 
@@ -232,16 +229,9 @@ variable "executor_cpu_max_size" {
 }
 
 variable "executor_cpu_target_capacity" {
-  description = <<-EOT
-    ECS managed scaling target, as a percentage of cluster capacity to keep in use. Below 100
-    leaves spare headroom so the next task does not wait for an instance launch, which is this
-    setup's equivalent of the Managed Instances idle window. Lower means faster starts and more
-    idle cost.
-  EOT
+  description = "ECS managed scaling target percent (below 100 keeps spare capacity for warm starts)."
   type        = number
-  # 80 keeps ~20% spare capacity so the next interactive task rarely waits on a cold
-  # instance launch. Closest ASG equivalent of Managed Instances scale_in_after idle warm.
-  default = 80
+  default     = 80
 
   validation {
     condition     = var.executor_cpu_target_capacity > 0 && var.executor_cpu_target_capacity <= 100
@@ -250,10 +240,7 @@ variable "executor_cpu_target_capacity" {
 }
 
 variable "executor_cpu_instance_warmup" {
-  description = <<-EOT
-    Seconds before a new instance counts as available to the scaler. Must cover boot, the EFS
-    mounts and the image pre-pull, or ECS over-provisions while instances are still bootstrapping.
-  EOT
+  description = "Seconds before a new instance counts as available (cover boot + mounts + pull)."
   type        = number
   default     = 300
 }
@@ -265,16 +252,13 @@ variable "executor_cpu_max_scaling_step" {
 }
 
 variable "executor_cpu_volume_size_gib" {
-  description = <<-EOT
-    Root volume size. Holds the OS, the cached container images and the per-instance local cache.
-    Matches the 200 GiB the Managed Instances provider attached. No per-task quota applies.
-  EOT
+  description = "Root volume size (GiB) for OS, image cache, and local task cache."
   type        = number
   default     = 200
 }
 
 variable "executor_cpu_reserved_memory_mib" {
-  description = "Memory held back from task placement for the agent and host daemons."
+  description = "Memory reserved for the agent and host daemons."
   type        = number
   default     = 1024
 }

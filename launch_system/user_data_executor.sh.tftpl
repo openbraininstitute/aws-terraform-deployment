@@ -1,62 +1,33 @@
 #!/bin/bash
-# Bootstrap for launch-system executor instances (ECS on EC2).
-#
-# Everything the tasks depend on is prepared here, at instance level, so that per-task startup
-# carries no volume attach cost.
-#
-# Ordering is already guaranteed by the AMI: ecs.service declares After=cloud-final.service, and
-# this script runs inside cloud-final, so the agent cannot register before the mounts exist. Do
-# NOT start or stop the agent from here -- `systemctl start ecs` enqueues a job that waits for
-# cloud-final, which is waiting for this script, and the instance deadlocks with the agent
-# never registering. Verified in the sandbox: systemd showed `ecs.service start waiting` behind
-# `cloud-final.service start running` indefinitely.
+# Instance bootstrap: prepare mounts before the agent registers.
+# Do not systemctl start/stop ecs here — that deadlocks with cloud-final (ecs After=cloud-final).
 set -o errexit -o nounset -o pipefail
 
-# A bootstrap failure leaves an instance that never registers. ECS does not count it as capacity
-# and keeps scaling out, so fail loudly and let the group replace the instance instead of
-# accumulating idle hosts.
 trap 'echo "bootstrap FAILED at line $LINENO; shutting down for replacement"; shutdown -h now' ERR
 
 exec > >(tee /var/log/executor-bootstrap.log | logger -t executor-bootstrap -s 2>/dev/console) 2>&1
 echo "bootstrap starting at $(date --iso-8601=seconds)"
 
-# ---------------------------------------------------------------------------------------------
-# Agent configuration.
-# ---------------------------------------------------------------------------------------------
 cat <<EOF > /etc/ecs/ecs.config
 ECS_CLUSTER=${cluster_name}
 ECS_ENABLE_TASK_IAM_ROLE=true
 ECS_ENABLE_TASK_IAM_ROLE_NETWORK_HOST=true
-
-# Keep pulled images on the instance so repeat tasks start from a warm image cache. This is the
-# EC2 equivalent of the image caching Managed Instances gave us implicitly, and it matters
-# because the runtime images are multi-gigabyte.
 ECS_IMAGE_PULL_BEHAVIOR=prefer-cached
 ECS_DISABLE_IMAGE_CLEANUP=true
-
-# Tasks are re-runnable; let a draining instance finish rather than killing work mid-simulation.
 ECS_CONTAINER_STOP_TIMEOUT=2m
 ECS_ENABLE_CONTAINER_METADATA=true
 ECS_RESERVED_MEMORY=${reserved_memory_mib}
 EOF
 
-# ---------------------------------------------------------------------------------------------
-# NFS client.
-# ---------------------------------------------------------------------------------------------
 dnf install -y nfs-utils
 
-# mount_efs <file-system-id> <efs-subpath> <local-mountpoint> <extra-opts>
-#
-# Mounts a subdirectory of the file system directly instead of using an EFS access point: access
-# points are enforced through the EFS mount helper and IAM on a per-client basis, which does not
-# apply when the host performs one mount shared by every task. Read-only is enforced here by the
-# mount options and again by readOnly on each task's bind mount.
+# mount_efs <fs-id> <efs-subpath> <local-mountpoint> <extra-opts>
+# Subpath mount (not access point): one host mount shared by all tasks.
 mount_efs() {
   local fs_id="$1" subpath="$2" target="$3" extra="$4"
   local opts="nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport,_netdev"
 
   mkdir -p "$target"
-  # Persist first so a reboot restores the mount without re-running user_data.
   if ! grep -qs " $target " /etc/fstab; then
     echo "$fs_id.efs.${aws_region}.amazonaws.com:$subpath $target nfs4 $opts,$extra 0 0" >> /etc/fstab
   fi
@@ -77,24 +48,15 @@ mount_efs() {
   fi
 }
 
-# ---------------------------------------------------------------------------------------------
-# Public data, read-only. These replace the per-task EFS volumes the task definitions used to
-# declare; tasks now bind-mount these host paths.
-# ---------------------------------------------------------------------------------------------
 mount_efs "${public_data_efs_id}" "${internal_public_data_efs_path}" "${internal_public_data_host_path}" "ro"
 mount_efs "${public_data_efs_id}" "${open_public_data_efs_path}" "${open_public_data_host_path}" "ro"
 
-# ---------------------------------------------------------------------------------------------
-# Shared cache, writable. The subdirectory has to exist inside the file system before it can be
-# mounted, so the root is mounted briefly to create it.
-# ---------------------------------------------------------------------------------------------
+# Ensure shared-cache subpath exists, then mount it rw.
 shared_cache_root=/mnt/.shared-cache-root
 mkdir -p "$shared_cache_root"
 if mount -t nfs4 -o nfsvers=4.1,noresvport \
     "${shared_cache_efs_id}.efs.${aws_region}.amazonaws.com:/" "$shared_cache_root"; then
   mkdir -p "$shared_cache_root${shared_cache_efs_path}"
-  # The container user is uid/gid 1000 (`exec`); the wrapper also chowns, but setting it here
-  # means the first task does not depend on that.
   chown 1000:1000 "$shared_cache_root${shared_cache_efs_path}"
   chmod 755 "$shared_cache_root${shared_cache_efs_path}"
   umount "$shared_cache_root"
@@ -103,26 +65,11 @@ rmdir "$shared_cache_root" || true
 
 mount_efs "${shared_cache_efs_id}" "${shared_cache_efs_path}" "${shared_cache_host_path}" "rw"
 
-# ---------------------------------------------------------------------------------------------
-# Per-instance local cache. Plain directory on the instance volume -- the fast tier, and the
-# only one the wrapper writes to today.
-# ---------------------------------------------------------------------------------------------
 mkdir -p "${local_cache_host_path}"
 chown 1000:1000 "${local_cache_host_path}"
 chmod 755 "${local_cache_host_path}"
 
-# ---------------------------------------------------------------------------------------------
-# Pre-pull the runtime images so the first task on a new instance does not wait for a
-# multi-gigabyte pull. Failure is not fatal -- the agent still pulls on demand with the task
-# execution role -- but then the first task pays the pull.
-#
-# The images live in a different account from the cluster, so this only works if the instance
-# role is allowed by the ECR repository policy in that account. The execution role already is;
-# the instance role is a separate principal and must be added, otherwise this logs
-# `ecr:BatchGetImage ... no resource-based policy allows` and silently skips the warm-up.
-# ---------------------------------------------------------------------------------------------
-# ECS AL2023 AMIs use containerd; docker may be absent. Pre-pull is best-effort: a miss only
-# means the first task pays the image pull (agent still authenticates with the execution role).
+# Best-effort pre-pull; needs cross-account ECR repo policy for the instance role.
 if command -v docker >/dev/null 2>&1; then
   systemctl start docker || true
   aws ecr get-login-password --region "${aws_region}" \
@@ -131,12 +78,9 @@ if command -v docker >/dev/null 2>&1; then
   docker pull "${image}" || echo "WARNING: pre-pull failed for ${image}"
 %{ endfor ~}
 else
-  echo "WARNING: docker CLI not present; skipping image pre-pull (containerd AMI)"
+  echo "WARNING: docker CLI not present; skipping image pre-pull"
 fi
 
-# ---------------------------------------------------------------------------------------------
-# Done. systemd starts ecs.service once cloud-final completes, i.e. once this script returns.
-# ---------------------------------------------------------------------------------------------
 echo "mounts in place:"
 findmnt -t nfs4 -o TARGET,SOURCE,OPTIONS || true
 echo "bootstrap finished at $(date --iso-8601=seconds)"
