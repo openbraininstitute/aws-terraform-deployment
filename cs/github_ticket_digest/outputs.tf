@@ -9,6 +9,6 @@ output "lambda_function_arn" {
 }
 
 output "schedule_rule_arn" {
-  description = "ARN of the EventBridge schedule rule."
-  value       = aws_cloudwatch_event_rule.weekly_schedule.arn
+  description = "ARN of the EventBridge Scheduler schedule."
+  value       = aws_scheduler_schedule.weekly_schedule.arn
 }
