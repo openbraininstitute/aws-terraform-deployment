@@ -1,8 +1,3 @@
-locals {
-  cpu    = 1024
-  memory = 2048
-}
-
 resource "aws_cloudwatch_log_group" "entitycore_ecs_task_logs" {
   # TODO check if the logs can be encrypted
   name_prefix       = "entitycore"
@@ -82,8 +77,8 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
     {
       name = "entitycore"
 
-      cpu    = local.cpu
-      memory = local.memory
+      cpu    = var.task_size.cpu
+      memory = var.task_size.memory
 
       networkMode = "awsvpc"
 
@@ -226,8 +221,8 @@ resource "aws_ecs_task_definition" "entitycore_ecs_definition" {
     }
   ])
 
-  cpu    = local.cpu
-  memory = local.memory
+  cpu    = var.task_size.cpu
+  memory = var.task_size.memory
 
   requires_compatibilities = ["FARGATE"]
 

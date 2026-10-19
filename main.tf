@@ -559,6 +559,7 @@ module "entitycore_svc" {
 
 
   image_url = var.entitycore_svc_image_url
+  task_size = var.entitycore_svc_task_size
 
   db_name     = "entitycore"
   db_username = "entitycore"
