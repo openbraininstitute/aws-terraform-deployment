@@ -895,6 +895,8 @@ module "launch_system" {
   public_launch_data_efs_id            = module.public_data_efs_storage.public_launch_data_efs_id
   internal_public_data_access_point_id = module.public_data_efs_storage.internal_public_data_access_point_id
   open_public_data_access_point_id     = module.public_data_efs_storage.open_public_data_access_point_id
+  internal_public_data_efs_path        = module.public_data_efs_storage.internal_public_data_mountpath
+  open_public_data_efs_path            = module.public_data_efs_storage.opendata_mountpath
 
   private_data_s3_bucket_name = coalesce(
     var.launch_system_private_data_s3_bucket_name,
