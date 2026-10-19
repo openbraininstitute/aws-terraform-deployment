@@ -1,8 +1,4 @@
-# CPU executor capacity as ECS on EC2.
-#
-# Replaces Managed Instances: MI's InstanceLaunchTemplate has no userData (or custom AMI), so
-# there is no way to premount EFS on the host. Per-task efsVolumeConfiguration then costs ~4s on
-# every start. Owning the ASG lets user_data mount EFS once and expose it via hostPath (~1s).
+# CPU executor capacity as ECS on EC2 (replaces Managed Instances).
 
 data "aws_ssm_parameter" "ecs_optimized_ami" {
   name = "/aws/service/ecs/optimized-ami/amazon-linux-2023/recommended/image_id"
