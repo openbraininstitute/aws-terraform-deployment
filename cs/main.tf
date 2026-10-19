@@ -122,8 +122,10 @@ module "github_ticket_digest" {
   labels           = ["standup"]
   include_statuses = ["To do", "In progress", "Blocked", "Code Review / In Preview"]
 
-  # Monday 08:00 UTC
-  schedule_expression = "cron(0 8 ? * MON *)"
+  # Monday 09:00 CET/CEST. EventBridge Scheduler evaluates the cron in the
+  # named timezone and follows DST, so it stays at 09:00 local year-round.
+  schedule_expression = "cron(0 9 ? * MON *)"
+  schedule_timezone   = "Europe/Zurich"
 
   github_token_secret_arn = var.github_ticket_digest_secrets_arn
   github_token_secret_key = "github_token"
