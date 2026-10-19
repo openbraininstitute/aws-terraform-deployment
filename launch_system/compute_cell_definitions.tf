@@ -63,9 +63,11 @@ locals {
             security_groups = [aws_security_group.executor.id]
             task_family     = aws_ecs_task_definition.python_3_12_openmpi5_neuron9_neurodamus_executor.family
           },
-          # Managed Instances variants of the three non-GPU executors, same image_type as the
-          # Fargate entries above. Since both placements exist, a request without
-          # `placement_type` still resolves to Fargate, so this changes no default behavior.
+          # ECS-on-EC2 variants of the three non-GPU executors, same image_type as the Fargate
+          # entries above. Since both placements exist, a request without `placement_type` still
+          # resolves to Fargate, so this changes no default behavior. The placement type string
+          # stays `ecs_managed_instances`: it is the application's wire value for "run on our own
+          # instances", and renaming it would require a coordinated obi-one release.
           {
             vcpu_min   = 1
             vcpu_max   = 16
@@ -75,13 +77,13 @@ locals {
             image_type = "python_3_12_compiler"
             placement = {
               type              = "ecs_managed_instances"
-              capacity_provider = aws_ecs_capacity_provider.executor_cpu.name
+              capacity_provider = aws_ecs_capacity_provider.executor_cpu_ec2.name
               network_mode      = "host"
             }
             cluster_name    = aws_ecs_cluster.executor.name
             subnets         = local.executor_untrusted_subnet_ids
             security_groups = [aws_security_group.executor.id]
-            task_family     = aws_ecs_task_definition.default_executor_managed.family
+            task_family     = aws_ecs_task_definition.default_executor_ec2.family
           },
           {
             vcpu_min   = 1
@@ -92,13 +94,13 @@ locals {
             image_type = "python_3_12_inait"
             placement = {
               type              = "ecs_managed_instances"
-              capacity_provider = aws_ecs_capacity_provider.executor_cpu.name
+              capacity_provider = aws_ecs_capacity_provider.executor_cpu_ec2.name
               network_mode      = "host"
             }
             cluster_name    = aws_ecs_cluster.executor.name
             subnets         = local.executor_untrusted_subnet_ids
             security_groups = [aws_security_group.executor.id]
-            task_family     = aws_ecs_task_definition.inait_executor_managed.family
+            task_family     = aws_ecs_task_definition.inait_executor_ec2.family
           },
           {
             vcpu_min   = 1
@@ -109,13 +111,13 @@ locals {
             image_type = "python_3_12_openmpi5_neuron9_neurodamus"
             placement = {
               type              = "ecs_managed_instances"
-              capacity_provider = aws_ecs_capacity_provider.executor_cpu.name
+              capacity_provider = aws_ecs_capacity_provider.executor_cpu_ec2.name
               network_mode      = "host"
             }
             cluster_name    = aws_ecs_cluster.executor.name
             subnets         = local.executor_untrusted_subnet_ids
             security_groups = [aws_security_group.executor.id]
-            task_family     = aws_ecs_task_definition.python_3_12_openmpi5_neuron9_neurodamus_executor_managed.family
+            task_family     = aws_ecs_task_definition.python_3_12_openmpi5_neuron9_neurodamus_executor_ec2.family
           },
           {
             vcpu_min   = 16

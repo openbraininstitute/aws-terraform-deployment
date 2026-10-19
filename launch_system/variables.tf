@@ -181,26 +181,6 @@ variable "executor_task_size" {
   description = "CPU and memory limit for the executor tasks (number or string format)"
 }
 
-variable "executor_cpu_scale_in_after" {
-  description = <<-EOT
-    Seconds an EMPTY instance is kept before scale-in: the cold-start vs idle-cost tradeoff.
-    Size it from observed job inter-arrival time (roughly the p50-p75 gap).
-
-    Running tasks are unaffected, but the reason is load bearing: ScaleInAfter also governs
-    consolidation of underutilized instances, which drains them. ECS exempts instances running
-    standalone tasks, and these executors use RunTask -- converting them to an ECS service would
-    expose long-running tasks to mid-run draining.
-  EOT
-  type        = number
-  # 1 hour: keep interactive MI warm between bursts; AWS max for this attribute is 3600.
-  default = 3600
-
-  validation {
-    condition     = var.executor_cpu_scale_in_after >= 60 && var.executor_cpu_scale_in_after <= 3600
-    error_message = "executor_cpu_scale_in_after must be between 60 and 3600 seconds."
-  }
-}
-
 variable "orchestrator_num_workers" {
   description = "Number of workers processing the queues in the orchestrator task."
   type        = number
@@ -225,6 +205,78 @@ variable "internal_public_data_access_point_id" {
 variable "open_public_data_access_point_id" {
   description = "The ID for the access point with open public data"
   type        = string
+}
+
+variable "internal_public_data_efs_path" {
+  description = <<-EOT
+    Path of the internal public data inside the EFS file system. Instances mount this subpath
+    directly rather than through an access point, because one host mount is shared by all tasks.
+  EOT
+  type        = string
+}
+
+variable "open_public_data_efs_path" {
+  description = "Path of the open public data inside the EFS file system."
+  type        = string
+}
+
+variable "executor_cpu_max_size" {
+  description = "Maximum executor instances in the Auto Scaling group."
+  type        = number
+  default     = 20
+
+  validation {
+    condition     = var.executor_cpu_max_size >= 1 && var.executor_cpu_max_size <= 200
+    error_message = "executor_cpu_max_size must be between 1 and 200."
+  }
+}
+
+variable "executor_cpu_target_capacity" {
+  description = <<-EOT
+    ECS managed scaling target, as a percentage of cluster capacity to keep in use. Below 100
+    leaves spare headroom so the next task does not wait for an instance launch, which is this
+    setup's equivalent of the Managed Instances idle window. Lower means faster starts and more
+    idle cost.
+  EOT
+  type        = number
+  # 80 keeps ~20% spare capacity so the next interactive task rarely waits on a cold
+  # instance launch. Closest ASG equivalent of Managed Instances scale_in_after idle warm.
+  default     = 80
+
+  validation {
+    condition     = var.executor_cpu_target_capacity > 0 && var.executor_cpu_target_capacity <= 100
+    error_message = "executor_cpu_target_capacity must be in (0, 100]."
+  }
+}
+
+variable "executor_cpu_instance_warmup" {
+  description = <<-EOT
+    Seconds before a new instance counts as available to the scaler. Must cover boot, the EFS
+    mounts and the image pre-pull, or ECS over-provisions while instances are still bootstrapping.
+  EOT
+  type        = number
+  default     = 300
+}
+
+variable "executor_cpu_max_scaling_step" {
+  description = "Largest number of instances ECS managed scaling may add or remove at once."
+  type        = number
+  default     = 10
+}
+
+variable "executor_cpu_volume_size_gib" {
+  description = <<-EOT
+    Root volume size. Holds the OS, the cached container images and the per-instance local cache.
+    Matches the 200 GiB the Managed Instances provider attached. No per-task quota applies.
+  EOT
+  type        = number
+  default     = 200
+}
+
+variable "executor_cpu_reserved_memory_mib" {
+  description = "Memory held back from task placement for the agent and host daemons."
+  type        = number
+  default     = 1024
 }
 
 variable "private_data_s3_bucket_name" {
