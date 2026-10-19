@@ -75,9 +75,15 @@ variable "max_items" {
 }
 
 variable "schedule_expression" {
-  description = "EventBridge schedule expression that triggers the digest. Default: Monday 08:00 UTC."
+  description = "EventBridge Scheduler expression that triggers the digest, interpreted in var.schedule_timezone. Default: Monday 09:00."
   type        = string
-  default     = "cron(0 8 ? * MON *)"
+  default     = "cron(0 9 ? * MON *)"
+}
+
+variable "schedule_timezone" {
+  description = "IANA timezone in which schedule_expression is evaluated. EventBridge Scheduler follows DST for named zones. Default: Europe/Zurich (CET/CEST)."
+  type        = string
+  default     = "Europe/Zurich"
 }
 
 variable "python_runtime" {
