@@ -63,11 +63,8 @@ locals {
             security_groups = [aws_security_group.executor.id]
             task_family     = aws_ecs_task_definition.python_3_12_openmpi5_neuron9_neurodamus_executor.family
           },
-          # ECS-on-EC2 variants of the three non-GPU executors, same image_type as the Fargate
-          # entries above. Since both placements exist, a request without `placement_type` still
-          # resolves to Fargate, so this changes no default behavior. The placement type string
-          # stays `ecs_managed_instances`: it is the application's wire value for "run on our own
-          # instances", and renaming it would require a coordinated obi-one release.
+          # EC2 ASG variants; placement type stays ecs_managed_instances (app wire value).
+          # Unpinned requests still prefer Fargate when both placements exist.
           {
             vcpu_min   = 1
             vcpu_max   = 16

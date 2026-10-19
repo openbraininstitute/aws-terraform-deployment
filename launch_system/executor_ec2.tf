@@ -1,32 +1,15 @@
-# CPU capacity for the launch-system executors, as ECS on EC2.
-#
-# This replaces the Managed Instances provider. The reason for owning the instances is control
-# over their bootstrap: EFS can then be mounted once per instance instead of once per task, and
-# images can be pre-pulled. Managed Instances exposes no instance-launch hook at all --
-# InstanceLaunchTemplate has no userData and no imageId -- so neither is possible there.
-#
-# What we take on in exchange: the AMI, its patch cadence, instance replacement and the scaling
-# configuration, all of which Managed Instances handled.
+# CPU executor capacity as ECS on EC2 (replaces Managed Instances). Owns bootstrap so EFS can
+# be mounted once per instance and images pre-pulled; MI has no userData/imageId hook.
 
-# Tracks the current ECS-optimised AL2023 AMI. Pinned to a specific image id in state at apply
-# time, so a new AMI release only rolls out when this is re-applied.
 data "aws_ssm_parameter" "ecs_optimized_ami" {
   name = "/aws/service/ecs/optimized-ami/amazon-linux-2023/recommended/image_id"
 }
 
-# ------------------------------------------------------------------------------------------------
-# Instance role. The Managed Instances variant of this used
-# AmazonECSInstanceRolePolicyForManagedInstances; a self-managed instance needs the EC2 container
-# service role instead, which grants cluster registration and image pulls.
-# ------------------------------------------------------------------------------------------------
 resource "aws_iam_role_policy_attachment" "executor_cpu_instance_ec2" {
   role       = aws_iam_role.executor_cpu_instance.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
 }
 
-# ------------------------------------------------------------------------------------------------
-# Launch template.
-# ------------------------------------------------------------------------------------------------
 resource "aws_launch_template" "executor_cpu" {
   name_prefix            = "launch_system_executor_cpu"
   image_id               = data.aws_ssm_parameter.ecs_optimized_ami.value
@@ -38,9 +21,6 @@ resource "aws_launch_template" "executor_cpu" {
 
   vpc_security_group_ids = [aws_security_group.executor_cpu_instance.id]
 
-  # Single volume holding the OS, the image cache and the local task cache. Sized to match the
-  # 200 GiB the Managed Instances provider attached, and gp3 so throughput does not scale with
-  # size the way gp2 does.
   block_device_mappings {
     device_name = "/dev/xvda"
 
@@ -56,15 +36,13 @@ resource "aws_launch_template" "executor_cpu" {
 
   metadata_options {
     http_endpoint = "enabled"
-    # IMDSv2 only. Tasks use host networking, so they share the instance's network namespace and
-    # could otherwise reach IMDS; a hop limit of 1 keeps the credentials off the task's path.
+    # Host networking shares the instance netns; hop limit 1 keeps IMDS off the task path.
     http_tokens                 = "required"
     http_put_response_hop_limit = 1
     instance_metadata_tags      = "enabled"
   }
 
   monitoring {
-    # DETAILED bills per-minute host metrics per instance, which we do not consume.
     enabled = false
   }
 
@@ -109,32 +87,22 @@ resource "aws_launch_template" "executor_cpu" {
   }
 }
 
-# ------------------------------------------------------------------------------------------------
-# Auto Scaling group. The instance_requirements block mirrors the Managed Instances provider so
-# the instance pool is unchanged -- see the comments there for why each bound is what it is.
-# ------------------------------------------------------------------------------------------------
 resource "aws_autoscaling_group" "executor_cpu" {
   name_prefix         = "launch_system_executor_cpu"
   vpc_zone_identifier = local.executor_untrusted_subnet_ids
 
-  # ECS managed scaling drives the desired count; starting at zero keeps an apply from launching
-  # instances before any work exists.
   min_size         = 0
   max_size         = var.executor_cpu_max_size
   desired_capacity = 0
 
-  # Required by managed_termination_protection on the capacity provider: ECS marks instances
-  # running tasks as protected, and the group must honour that.
+  # Required when capacity-provider managed_termination_protection is ENABLED.
   protect_from_scale_in = true
 
-  # An instance that fails its EC2 health check is replaced. This is the equivalent of the
-  # Managed Instances auto_repair_configuration.
   health_check_type         = "EC2"
   health_check_grace_period = 300
 
   mixed_instances_policy {
     instances_distribution {
-      # On-demand only, matching Managed Instances. Spot would interrupt simulations mid-run.
       on_demand_percentage_above_base_capacity = 100
       spot_allocation_strategy                 = "price-capacity-optimized"
     }
@@ -169,15 +137,13 @@ resource "aws_autoscaling_group" "executor_cpu" {
             max = 0
           }
 
-          # m5a/m5ad are Zen 1 and measured ~3x slower on the NEURON solve than m6a; h1/d3en are
-          # older storage-optimised families that happen to satisfy the ratio band.
+          # m5a ~3x slower on NEURON solve than m6a; h1/d3en are storage-optimised outliers.
           excluded_instance_types = ["m5a.*", "m5ad.*", "h1.*", "d3en.*"]
         }
       }
     }
   }
 
-  # ECS discovers the group through this tag.
   tag {
     key                 = "AmazonECSManaged"
     value               = "true"
@@ -193,8 +159,6 @@ resource "aws_autoscaling_group" "executor_cpu" {
     }
   }
 
-  # The template is versioned and replaced on change; the group follows rather than being
-  # recreated, so running tasks are not disturbed by an unrelated edit.
   instance_refresh {
     strategy = "Rolling"
     preferences {
@@ -205,33 +169,21 @@ resource "aws_autoscaling_group" "executor_cpu" {
 
   lifecycle {
     create_before_destroy = true
-    # Managed scaling owns this; a terraform diff on it would fight the ECS scaler.
-    ignore_changes = [desired_capacity]
+    ignore_changes        = [desired_capacity]
   }
 }
 
-# ------------------------------------------------------------------------------------------------
-# Capacity provider.
-# ------------------------------------------------------------------------------------------------
 resource "aws_ecs_capacity_provider" "executor_cpu_ec2" {
   name = "launch_system_executor_cpu_ec2"
 
   auto_scaling_group_provider {
-    auto_scaling_group_arn = aws_autoscaling_group.executor_cpu.arn
-
-    # Lets ECS hold an instance back from scale-in while it still runs tasks.
+    auto_scaling_group_arn         = aws_autoscaling_group.executor_cpu.arn
     managed_termination_protection = "ENABLED"
-    # Drains tasks off an instance being terminated instead of killing them outright.
-    managed_draining = "ENABLED"
+    managed_draining               = "ENABLED"
 
     managed_scaling {
-      status = "ENABLED"
-      # Below 100 ECS keeps spare capacity, which is the closest equivalent to the Managed
-      # Instances scale_in_after idle window: headroom for the next task without a cold launch.
-      target_capacity = var.executor_cpu_target_capacity
-
-      # Instances take a while to boot, mount EFS and pre-pull images; without a warmup the
-      # scaler counts them as available too early and over-provisions.
+      status                    = "ENABLED"
+      target_capacity           = var.executor_cpu_target_capacity
       instance_warmup_period    = var.executor_cpu_instance_warmup
       minimum_scaling_step_size = 1
       maximum_scaling_step_size = var.executor_cpu_max_scaling_step
@@ -240,7 +192,6 @@ resource "aws_ecs_capacity_provider" "executor_cpu_ec2" {
 
   tags = merge(var.tags, { Name = "launch_system_executor_cpu_ec2_capacity_provider" })
 
-  # Mount targets must exist before the first instance boots and runs user_data NFS mounts.
   depends_on = [
     aws_efs_mount_target.executor_shared_cache,
   ]

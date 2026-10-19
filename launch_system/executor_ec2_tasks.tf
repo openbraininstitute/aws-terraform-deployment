@@ -1,30 +1,19 @@
 locals {
-  # Everything the tasks mount is prepared once per instance by user_data, so a task attaches
-  # nothing at launch. Host paths below are what user_data creates; container paths are what the
-  # application already expects, so no application change is needed for the data mounts.
+  # Host paths prepared by user_data; container paths match existing app expectations.
   executor_internal_public_data_host_path = "/mnt/efs/internal_public_data"
   executor_open_public_data_host_path     = "/mnt/efs/open_data"
 
-  # Per-instance cache: the fast tier, written by the wrapper (uv cache today). Survives across
-  # tasks on the same instance and dies with it.
   executor_local_cache_volume_name = "local-cache"
   executor_local_cache_host_path   = "/var/lib/ecs-cache/local"
   executor_local_cache_mount_path  = "${var.local_store_prefix}/scratch/local-cache"
 
-  # Cluster-wide cache: survives instance replacement, so a freshly provisioned instance can
-  # start warm. Archives only -- see executor_shared_cache.tf.
   executor_shared_cache_volume_name = "shared-cache"
   executor_shared_cache_efs_path    = "/cache/executor"
   executor_shared_cache_host_path   = "/mnt/efs/shared_cache"
   executor_shared_cache_mount_path  = "${var.local_store_prefix}/scratch/shared-cache"
 
-  # Registry to authenticate against for the image pre-pull. Derived from an image URL so it
-  # tracks the account and region actually in use.
   executor_ecr_registry = split("/", var.default_executor_image_url)[0]
 
-  # Bind mounts replace the per-task EFS volumes. readOnly on the public data is the second half
-  # of the protection the read-only access points used to provide; the first half is the `ro`
-  # mount option on the host.
   executor_ec2_container_base = merge(local.executor_container_base, {
     mountPoints = [
       {
@@ -50,10 +39,9 @@ locals {
     ]
   })
 
-  # Host networking skips per-task ENI attach. RunTask must omit networkConfiguration.
+  # Host networking: RunTask must omit networkConfiguration.
   executor_ec2_network_mode = "host"
 
-  # Declared by every EC2 executor task definition.
   executor_ec2_volumes = [
     { name = "public-internal-data", host_path = local.executor_internal_public_data_host_path },
     { name = "public-open-data", host_path = local.executor_open_public_data_host_path },
@@ -92,7 +80,7 @@ resource "aws_iam_instance_profile" "executor_cpu_instance" {
 resource "aws_security_group" "executor_cpu_instance" {
   name_prefix = "launch_system_executor_cpu"
   vpc_id      = var.vpc_id
-  description = "Security group for launch system executor CPU ECS managed instances"
+  description = "Security group for launch system executor CPU instances"
 
   tags = merge(var.tags, { Name = "launch_system_executor_cpu_instance" })
 
@@ -107,10 +95,6 @@ resource "aws_vpc_security_group_egress_rule" "executor_cpu_instance_allow_outgo
   cidr_ipv4         = "0.0.0.0/0"
   description       = "Allow all egress for ECS CPU instances"
 }
-
-# Host-networked CPU tasks skip S3 Files (orchestrator omits the volume). Public data and the
-# shared cache are host Path mounts prepared by user_data; NFS to those file systems is allowed
-# via the VPC CIDR rule on public EFS and the instance-SG rule on the shared-cache EFS.
 
 resource "aws_ecs_task_definition" "default_executor_ec2" {
   family                   = "launch_system_default_executor_ec2_task_family"
