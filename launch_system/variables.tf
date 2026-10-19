@@ -241,7 +241,7 @@ variable "executor_cpu_target_capacity" {
   type        = number
   # 80 keeps ~20% spare capacity so the next interactive task rarely waits on a cold
   # instance launch. Closest ASG equivalent of Managed Instances scale_in_after idle warm.
-  default     = 80
+  default = 80
 
   validation {
     condition     = var.executor_cpu_target_capacity > 0 && var.executor_cpu_target_capacity <= 100
