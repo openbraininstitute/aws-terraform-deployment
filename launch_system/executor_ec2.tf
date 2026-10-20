@@ -143,10 +143,11 @@ resource "aws_autoscaling_group" "executor_cpu" {
     }
   }
 
+  # Empty value + propagate matches obi_one_v2 / on_demand_svc; required for ECS ASG management.
   tag {
     key                 = "AmazonECSManaged"
-    value               = "true"
-    propagate_at_launch = false
+    value               = ""
+    propagate_at_launch = true
   }
 
   dynamic "tag" {
