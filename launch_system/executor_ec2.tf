@@ -182,10 +182,10 @@ resource "aws_autoscaling_group" "executor_cpu" {
   }
 }
 
-# Terraform address is executor_cpu_ec2 (ASG-backed); keep the ECS name
-# launch_system_executor_cpu so cells/runbooks stay stable across MI → EC2.
+# Name suffix avoids colliding with the MI provider during cutover (same AWS name
+# cannot exist twice; Terraform does not serialize destroy-before-create across resources).
 resource "aws_ecs_capacity_provider" "executor_cpu_ec2" {
-  name = "launch_system_executor_cpu"
+  name = "launch_system_executor_cpu_ec2"
 
   auto_scaling_group_provider {
     auto_scaling_group_arn         = aws_autoscaling_group.executor_cpu.arn
@@ -201,7 +201,7 @@ resource "aws_ecs_capacity_provider" "executor_cpu_ec2" {
     }
   }
 
-  tags = merge(var.tags, { Name = "launch_system_executor_cpu_capacity_provider" })
+  tags = merge(var.tags, { Name = "launch_system_executor_cpu_ec2_capacity_provider" })
 
   depends_on = [
     aws_efs_mount_target.executor_shared_cache,
