@@ -90,9 +90,10 @@ resource "aws_autoscaling_group" "executor_cpu" {
   name_prefix         = "launch_system_executor_cpu"
   vpc_zone_identifier = local.executor_untrusted_subnet_ids
 
-  min_size         = 0
+  # Keep at least one warm instance so interactive jobs avoid a cold ASG launch.
+  min_size         = 1
   max_size         = var.executor_cpu_max_size
-  desired_capacity = 0
+  desired_capacity = 1
 
   # Required when capacity-provider managed_termination_protection is ENABLED.
   protect_from_scale_in = true
