@@ -1,9 +1,5 @@
 # CPU executor capacity as ECS on EC2 (replaces Managed Instances).
 
-data "aws_ssm_parameter" "ecs_optimized_ami" {
-  name = "/aws/service/ecs/optimized-ami/amazon-linux-2023/recommended/image_id"
-}
-
 resource "aws_iam_role_policy_attachment" "executor_cpu_instance_ec2" {
   role       = aws_iam_role.executor_cpu_instance.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
@@ -11,7 +7,7 @@ resource "aws_iam_role_policy_attachment" "executor_cpu_instance_ec2" {
 
 resource "aws_launch_template" "executor_cpu" {
   name_prefix            = "launch_system_executor_cpu"
-  image_id               = data.aws_ssm_parameter.ecs_optimized_ami.value
+  image_id               = var.amazon_linux_ecs_ami_id
   update_default_version = true
 
   iam_instance_profile {

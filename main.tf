@@ -892,6 +892,8 @@ module "launch_system" {
     region       = "us-east-1"
   }
 
+  amazon_linux_ecs_ami_id = data.aws_ami.amazon_linux_2_ecs.id
+
   public_launch_data_efs_id            = module.public_data_efs_storage.public_launch_data_efs_id
   internal_public_data_access_point_id = module.public_data_efs_storage.internal_public_data_access_point_id
   open_public_data_access_point_id     = module.public_data_efs_storage.open_public_data_access_point_id

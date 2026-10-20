@@ -217,6 +217,11 @@ variable "open_public_data_efs_path" {
   type        = string
 }
 
+variable "amazon_linux_ecs_ami_id" {
+  description = "ECS-optimized AL2023 AMI for CPU executor instances (same source as obi_one_v2 / cells)."
+  type        = string
+}
+
 variable "executor_cpu_max_size" {
   description = "Maximum executor instances in the Auto Scaling group."
   type        = number
