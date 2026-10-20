@@ -79,12 +79,16 @@ resource "aws_iam_instance_profile" "executor_cpu_instance" {
 resource "aws_security_group" "executor_cpu_instance" {
   name_prefix = "launch_system_executor_cpu"
   vpc_id      = var.vpc_id
-  description = "Security group for launch system executor CPU instances"
+  # Description is ForceNew. Keep staging text for greenfield; ignore drift so
+  # renaming an existing group (sandbox already applied a shorter string) does
+  # not replace the SG under live MI/ASG ENIs.
+  description = "Security group for launch system executor CPU ECS managed instances"
 
   tags = merge(var.tags, { Name = "launch_system_executor_cpu_instance" })
 
   lifecycle {
     create_before_destroy = true
+    ignore_changes        = [description]
   }
 }
 

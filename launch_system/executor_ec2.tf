@@ -31,7 +31,10 @@ resource "aws_launch_template" "executor_cpu" {
 
   metadata_options {
     http_endpoint = "enabled"
-    # Host networking shares the instance netns; hop limit 1 keeps IMDS off the task path.
+    # IMDSv2 required. hop_limit=1 is defense-in-depth only: host-networked tasks share the
+    # instance netns, so they can still reach IMDS (unlike awsvpc, where hop_limit blocks the
+    # extra hop through the task ENI). Prefer task-role credentials; use awsvpc/Fargate/MI
+    # awsvpc for workloads that must not see instance metadata.
     http_tokens                 = "required"
     http_put_response_hop_limit = 1
     instance_metadata_tags      = "enabled"
@@ -112,7 +115,7 @@ resource "aws_autoscaling_group" "executor_cpu" {
     launch_template {
       launch_template_specification {
         launch_template_id = aws_launch_template.executor_cpu.id
-        version            = "$Latest"
+        version            = aws_launch_template.executor_cpu.latest_version
       }
 
       override {
@@ -174,6 +177,12 @@ resource "aws_autoscaling_group" "executor_cpu" {
     create_before_destroy = true
     ignore_changes        = [desired_capacity]
   }
+
+  # Userdata mounts EFS before the agent registers; without this, first apply can
+  # launch instances while shared-cache mount targets are still creating.
+  depends_on = [
+    aws_efs_mount_target.executor_shared_cache,
+  ]
 }
 
 # Name suffix avoids colliding with the MI provider during cutover (same AWS name
@@ -196,8 +205,4 @@ resource "aws_ecs_capacity_provider" "executor_cpu_ec2" {
   }
 
   tags = merge(var.tags, { Name = "launch_system_executor_cpu_ec2_capacity_provider" })
-
-  depends_on = [
-    aws_efs_mount_target.executor_shared_cache,
-  ]
 }
