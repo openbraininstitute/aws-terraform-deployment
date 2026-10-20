@@ -58,12 +58,6 @@ resource "aws_launch_template" "executor_cpu" {
     shared_cache_host_path = local.executor_shared_cache_host_path
 
     local_cache_host_path = local.executor_local_cache_host_path
-
-    ecr_registry = local.executor_ecr_registry
-    prepull_images = [
-      var.default_executor_image_url,
-      var.python_3_12_openmpi5_neuron9_neurodamus_executor_image_url,
-    ]
   }))
 
   tag_specifications {
