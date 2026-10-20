@@ -117,6 +117,8 @@ locals {
           },
           # CPU ECS-on-EC2 ASG (additional: premounted EFS + shared/local caches, binpack).
           # Unpinned requests still prefer Fargate when multiple placements exist.
+          # memory_max=120 can exceed the warm ~16 vCPU / ~64 GiB floor; those jobs cold-launch
+          # a larger instance from the same attribute pool (up to 64 vCPU / ~288 GiB), same as MI.
           {
             vcpu_min   = 1
             vcpu_max   = 16

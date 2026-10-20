@@ -8,6 +8,8 @@ trap 'echo "bootstrap FAILED at line $LINENO; shutting down for replacement"; sh
 exec > >(tee /var/log/executor-bootstrap.log | logger -t executor-bootstrap -s 2>/dev/console) 2>&1
 echo "bootstrap starting at $(date --iso-8601=seconds)"
 
+# TODO(future): prefer-cached disables ECS agent image cleanup, so local images
+# accumulate. Add a host prune (e.g. keep N newest) before long-lived hosts fill disk.
 cat <<EOF > /etc/ecs/ecs.config
 ECS_CLUSTER=${cluster_name}
 ECS_CONTAINER_INSTANCE_TAGS={${ecs_instance_tags}}
