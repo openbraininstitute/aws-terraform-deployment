@@ -125,7 +125,7 @@ retry_nfs_mount() {
       echo "mounted $source at $target"
       return 0
     fi
-    echo "mount attempt $attempt/$EFS_MOUNT_ATTEMPTS for $target failed; retrying in ${EFS_MOUNT_SLEEP_SEC}s"
+    echo "mount attempt $attempt/$EFS_MOUNT_ATTEMPTS for $target failed; retrying in $${EFS_MOUNT_SLEEP_SEC}s"
     sleep "$EFS_MOUNT_SLEEP_SEC"
   done
   echo "ERROR: could not mount $source at $target after $EFS_MOUNT_ATTEMPTS attempts"
@@ -154,7 +154,7 @@ mount_efs() {
       echo "mounted $fs_id:$subpath at $target"
       return 0
     fi
-    echo "mount attempt $attempt/$EFS_MOUNT_ATTEMPTS for $target failed; retrying in ${EFS_MOUNT_SLEEP_SEC}s"
+    echo "mount attempt $attempt/$EFS_MOUNT_ATTEMPTS for $target failed; retrying in $${EFS_MOUNT_SLEEP_SEC}s"
     sleep "$EFS_MOUNT_SLEEP_SEC"
     if mountpoint -q "$target"; then
       return 0
