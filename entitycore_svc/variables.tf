@@ -139,6 +139,15 @@ variable "virtual_lab_api_url" {
   type        = string
 }
 
+variable "task_size" {
+  type = object({
+    cpu    = any
+    memory = any
+  })
+
+  description = "CPU and memory limit for ECS task (number or string format)"
+}
+
 variable "enable_ecs_exec" {
   description = "Enable ECS Exec for interactive debugging of containers."
   type        = bool

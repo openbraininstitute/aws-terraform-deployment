@@ -290,6 +290,13 @@ variable "hpc_av_zone_suffixes" {
 }
 
 ### entitycore ###
+variable "entitycore_svc_task_size" {
+  type = object({
+    cpu    = any
+    memory = any
+  })
+  description = "CPU and memory limit for ECS task (number or string format) for entitycore"
+}
 variable "entitycore_db_instance_class" {
   type        = string
   description = "RDS instance class for the Entitycore database"
