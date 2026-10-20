@@ -181,6 +181,21 @@ variable "executor_task_size" {
   description = "CPU and memory limit for the executor tasks (number or string format)"
 }
 
+variable "executor_cpu_scale_in_after" {
+  description = <<-EOT
+    Seconds an EMPTY Managed Instances host is kept before scale-in (cold-start vs idle-cost).
+    Running tasks are unaffected; ECS exempts instances with standalone RunTask work.
+  EOT
+  type        = number
+  # 1 hour: keep interactive MI warm between bursts; AWS max for this attribute is 3600.
+  default = 3600
+
+  validation {
+    condition     = var.executor_cpu_scale_in_after >= 60 && var.executor_cpu_scale_in_after <= 3600
+    error_message = "executor_cpu_scale_in_after must be between 60 and 3600 seconds."
+  }
+}
+
 variable "orchestrator_num_workers" {
   description = "Number of workers processing the queues in the orchestrator task."
   type        = number

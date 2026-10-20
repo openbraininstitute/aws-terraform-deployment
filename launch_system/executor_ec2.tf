@@ -1,4 +1,4 @@
-# CPU executor capacity as ECS on EC2 (replaces Managed Instances).
+# CPU executor capacity as classic ECS-on-EC2 ASG (additional to Managed Instances).
 
 resource "aws_iam_role_policy_attachment" "executor_cpu_instance_ec2" {
   role       = aws_iam_role.executor_cpu_instance.name
