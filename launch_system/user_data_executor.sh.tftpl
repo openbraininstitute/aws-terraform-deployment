@@ -3,13 +3,13 @@
 # Do not systemctl start/stop ecs here — that deadlocks with cloud-final (ecs After=cloud-final).
 set -o errexit -o nounset -o pipefail
 
+# LT sets instance_initiated_shutdown_behavior=terminate so this replaces the host via ASG.
 trap 'echo "bootstrap FAILED at line $LINENO; shutting down for replacement"; shutdown -h now' ERR
 
 exec > >(tee /var/log/executor-bootstrap.log | logger -t executor-bootstrap -s 2>/dev/console) 2>&1
 echo "bootstrap starting at $(date --iso-8601=seconds)"
 
-# TODO(future): prefer-cached disables ECS agent image cleanup, so local images
-# accumulate. Add a host prune (e.g. keep N newest) before long-lived hosts fill disk.
+# prefer-cached disables the agent's image cleanup; prune ourselves below (keep 5 tags/repo).
 cat <<EOF > /etc/ecs/ecs.config
 ECS_CLUSTER=${cluster_name}
 ECS_CONTAINER_INSTANCE_TAGS={${ecs_instance_tags}}
@@ -22,48 +22,162 @@ ECS_ENABLE_CONTAINER_METADATA=true
 ECS_RESERVED_MEMORY=${reserved_memory_mib}
 EOF
 
+# Keep up to KEEP_PER_REPO newest tags per image Repository (name); drop older tags.
+# Docker exposes Repository vs Tag separately (e.g. .../python3.12-compiler vs 2026.10.2).
+cat <<'EOF' > /usr/local/sbin/executor-prune-images
+#!/usr/bin/env bash
+set -euo pipefail
+KEEP_PER_REPO=5
+
+declare -A in_use_ids=()
+while read -r img; do
+  [[ -n "$${img}" ]] || continue
+  in_use_ids["$${img#sha256:}"]=1
+done < <(docker ps -aq | xargs -r docker inspect -f '{{.Image}}' 2>/dev/null || true)
+
+# Newest first within each repository. Skip untagged/dangling rows.
+mapfile -t rows < <(
+  docker images --format '{{.CreatedAt}}\t{{.Repository}}\t{{.Tag}}\t{{.ID}}' \
+    | awk -F '\t' '$$2 != "<none>" && $$3 != "<none>"' \
+    | sort -t $'\t' -k2,2 -k1,1r
+)
+
+current_repo=""
+kept=0
+for row in "$${rows[@]}"; do
+  IFS=$'\t' read -r _created repo tag id <<<"$${row}"
+  [[ -n "$${repo}" && -n "$${tag}" ]] || continue
+
+  if [[ "$${repo}" != "$${current_repo}" ]]; then
+    current_repo="$${repo}"
+    kept=0
+  fi
+
+  if (( kept < KEEP_PER_REPO )); then
+    kept=$((kept + 1))
+    continue
+  fi
+
+  skip=0
+  for u in "$${!in_use_ids[@]}"; do
+    if [[ "$${u}" == "$${id}"* || "$${id}" == "$${u}"* ]]; then
+      skip=1
+      break
+    fi
+  done
+  if (( skip )); then
+    echo "executor-prune-images: keep in-use $${repo}:$${tag} ($${id})"
+    continue
+  fi
+
+  echo "executor-prune-images: remove $${repo}:$${tag} ($${id})"
+  docker rmi "$${repo}:$${tag}" || true
+done
+
+docker image prune -f >/dev/null || true
+EOF
+chmod 755 /usr/local/sbin/executor-prune-images
+
+cat <<'EOF' > /etc/systemd/system/executor-prune-images.service
+[Unit]
+Description=Daily Docker image prune on launch-system executor (keep 5 tags per repository)
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/executor-prune-images
+EOF
+
+cat <<'EOF' > /etc/systemd/system/executor-prune-images.timer
+[Unit]
+Description=Daily Docker image prune on launch-system executor hosts
+
+[Timer]
+OnBootSec=15min
+OnUnitActiveSec=1d
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+EOF
+
+systemctl daemon-reload
+systemctl enable --now executor-prune-images.timer
+
 dnf install -y nfs-utils
+
+# Mount-target DNS can take up to ~90s after create; retry well past that.
+EFS_MOUNT_ATTEMPTS=24
+EFS_MOUNT_SLEEP_SEC=5
+
+# retry_nfs_mount <source> <target> [extra mount -o opts...]
+retry_nfs_mount() {
+  local source="$1" target="$2"
+  shift 2
+  local attempt
+  mkdir -p "$target"
+  for attempt in $(seq 1 "$EFS_MOUNT_ATTEMPTS"); do
+    if mountpoint -q "$target"; then
+      return 0
+    fi
+    if mount -t nfs4 "$@" "$source" "$target"; then
+      echo "mounted $source at $target"
+      return 0
+    fi
+    echo "mount attempt $attempt/$EFS_MOUNT_ATTEMPTS for $target failed; retrying in ${EFS_MOUNT_SLEEP_SEC}s"
+    sleep "$EFS_MOUNT_SLEEP_SEC"
+  done
+  echo "ERROR: could not mount $source at $target after $EFS_MOUNT_ATTEMPTS attempts"
+  return 1
+}
 
 # mount_efs <fs-id> <efs-subpath> <local-mountpoint> <extra-opts>
 # Subpath mount (not access point): one host mount shared by all tasks.
 mount_efs() {
   local fs_id="$1" subpath="$2" target="$3" extra="$4"
   local opts="nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport,_netdev"
+  local source="$fs_id.efs.${aws_region}.amazonaws.com:$subpath"
 
   mkdir -p "$target"
   if ! grep -qs " $target " /etc/fstab; then
-    echo "$fs_id.efs.${aws_region}.amazonaws.com:$subpath $target nfs4 $opts,$extra 0 0" >> /etc/fstab
+    echo "$source $target nfs4 $opts,$extra 0 0" >> /etc/fstab
   fi
 
-  for attempt in 1 2 3 4 5; do
-    if mountpoint -q "$target"; then break; fi
+  if mountpoint -q "$target"; then
+    return 0
+  fi
+  # Prefer fstab entry (includes extra opts like ro/rw); fall back to explicit mount.
+  local attempt
+  for attempt in $(seq 1 "$EFS_MOUNT_ATTEMPTS"); do
     if mount "$target"; then
       echo "mounted $fs_id:$subpath at $target"
-      break
+      return 0
     fi
-    echo "mount attempt $attempt for $target failed; retrying"
-    sleep 5
+    echo "mount attempt $attempt/$EFS_MOUNT_ATTEMPTS for $target failed; retrying in ${EFS_MOUNT_SLEEP_SEC}s"
+    sleep "$EFS_MOUNT_SLEEP_SEC"
+    if mountpoint -q "$target"; then
+      return 0
+    fi
   done
-
-  if ! mountpoint -q "$target"; then
-    echo "ERROR: could not mount $fs_id:$subpath at $target"
-    return 1
-  fi
+  echo "ERROR: could not mount $fs_id:$subpath at $target after $EFS_MOUNT_ATTEMPTS attempts"
+  return 1
 }
 
 mount_efs "${public_data_efs_id}" "${internal_public_data_efs_path}" "${internal_public_data_host_path}" "ro"
 mount_efs "${public_data_efs_id}" "${open_public_data_efs_path}" "${open_public_data_host_path}" "ro"
 
-# Ensure shared-cache subpath exists, then mount it rw.
+# Ensure shared-cache subpath exists on the FS, then mount the subpath rw for tasks.
 shared_cache_root=/mnt/.shared-cache-root
 mkdir -p "$shared_cache_root"
-if mount -t nfs4 -o nfsvers=4.1,noresvport \
-    "${shared_cache_efs_id}.efs.${aws_region}.amazonaws.com:/" "$shared_cache_root"; then
-  mkdir -p "$shared_cache_root${shared_cache_efs_path}"
-  chown 1000:1000 "$shared_cache_root${shared_cache_efs_path}"
-  chmod 755 "$shared_cache_root${shared_cache_efs_path}"
-  umount "$shared_cache_root"
-fi
+retry_nfs_mount \
+  "${shared_cache_efs_id}.efs.${aws_region}.amazonaws.com:/" \
+  "$shared_cache_root" \
+  -o nfsvers=4.1,noresvport
+mkdir -p "$shared_cache_root${shared_cache_efs_path}"
+chown 1000:1000 "$shared_cache_root${shared_cache_efs_path}"
+chmod 755 "$shared_cache_root${shared_cache_efs_path}"
+umount "$shared_cache_root"
 rmdir "$shared_cache_root" || true
 
 mount_efs "${shared_cache_efs_id}" "${shared_cache_efs_path}" "${shared_cache_host_path}" "rw"

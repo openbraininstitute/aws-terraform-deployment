@@ -77,9 +77,9 @@ resource "aws_iam_role_policy_attachment" "executor_cpu_instance_managed_instanc
   policy_arn = "arn:aws:iam::aws:policy/AmazonECSInstanceRolePolicyForManagedInstances"
 }
 
-# Deliberately no S3 Files ingress rule here: mounts use the TASK ENI, so the task security
-# group governs them (see `s3files_nfs_from_executor` in s3files.tf). Verified in sandbox-nse.
-# Only image pulls, secrets and logs use the instance ENI.
+# CPU MI uses host networking (shared instance ENI). Private-data S3 Files is skipped for host
+# mode in the orchestrator; public data uses per-task efsVolumeConfiguration. Image pulls,
+# secrets and logs use the instance ENI / instance role.
 
 resource "aws_ecs_capacity_provider" "executor_cpu" {
   name    = "launch_system_executor_cpu"
@@ -116,16 +116,15 @@ resource "aws_ecs_capacity_provider" "executor_cpu" {
       # Shared by images, writable layers and task scratch; replaces per-task Fargate
       # ephemeral storage. Note there is no per-task quota on this volume.
       storage_configuration {
-        storage_size_gib = 200
+        storage_size_gib = var.executor_cpu_volume_size_gib
       }
 
       # Attribute-based selection: state the requirements, let ECS pick the instance type.
       #
-      # 16 vCPU floor is a cost choice -- smallest size meeting the ratio below, and ECS picks
-      # something larger when a task does not fit. Density is bound by cpu/memory, NOT by ENIs:
-      # Managed Instances attaches a trunk ENI and gives each task a branch ENI, so the
-      # one-ENI-per-task ceiling and the awsvpcTrunking setting do not apply (documented limit
-      # is 60 tasks on a 4xlarge; 12 concurrent tasks on one m6a.4xlarge verified in sandbox).
+      # 16 vCPU floor is a cost choice -- smallest size meeting the ratio below. Unlike the
+      # ECS-on-EC2 ASG capacity provider, Managed Instances can launch a larger type when a
+      # task does not fit the floor. Host networking: density is bound by cpu/memory only
+      # (no per-task ENI). Concurrent packing on a 4xlarge verified in sandbox.
       instance_requirements {
         vcpu_count {
           min = 16

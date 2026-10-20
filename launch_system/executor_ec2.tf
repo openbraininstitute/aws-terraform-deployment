@@ -9,6 +9,8 @@ resource "aws_launch_template" "executor_cpu" {
   name_prefix            = "launch_system_executor_cpu"
   image_id               = var.amazon_linux_ecs_ami_id
   update_default_version = true
+  # Userdata ERR trap uses shutdown -h; terminate so ASG replaces instead of leaving stopped EBS.
+  instance_initiated_shutdown_behavior = "terminate"
 
   iam_instance_profile {
     arn = aws_iam_instance_profile.executor_cpu_instance.arn
@@ -37,11 +39,13 @@ resource "aws_launch_template" "executor_cpu" {
     # awsvpc for workloads that must not see instance metadata.
     http_tokens                 = "required"
     http_put_response_hop_limit = 1
-    instance_metadata_tags      = "enabled"
+    # Tags are pushed via ECS_CONTAINER_INSTANCE_TAGS in userdata; no need to expose via IMDS.
+    instance_metadata_tags = "disabled"
   }
 
+  # Match MI BASIC: we do not use 1-minute EC2 instance metrics.
   monitoring {
-    enabled = true
+    enabled = false
   }
 
   user_data = base64encode(templatefile("${path.module}/user_data_executor.sh.tftpl", {
@@ -89,11 +93,14 @@ resource "aws_autoscaling_group" "executor_cpu" {
   max_size         = var.executor_cpu_max_size
   desired_capacity = 1
 
+  # Recycle hosts so AMI/userdata/image-cache drift cannot linger on busy binpack nodes.
+  max_instance_lifetime = 1209600 # 14 days
+
   # Required when capacity-provider managed_termination_protection is ENABLED.
   protect_from_scale_in = true
 
   health_check_type         = "EC2"
-  health_check_grace_period = 300
+  health_check_grace_period = var.executor_cpu_instance_warmup
 
   enabled_metrics = [
     "GroupMinSize",
@@ -169,7 +176,9 @@ resource "aws_autoscaling_group" "executor_cpu" {
     strategy = "Rolling"
     preferences {
       min_healthy_percentage = 0
-      instance_warmup        = 300
+      instance_warmup        = var.executor_cpu_instance_warmup
+      # Replace scale-in-protected (busy) hosts too; jobs are re-runnable.
+      scale_in_protected_instances = "Refresh"
     }
   }
 
