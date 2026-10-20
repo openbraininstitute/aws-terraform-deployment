@@ -45,6 +45,7 @@ resource "aws_launch_template" "executor_cpu" {
     cluster_name        = aws_ecs_cluster.executor.name
     aws_region          = var.aws_region
     reserved_memory_mib = var.executor_cpu_reserved_memory_mib
+    ecs_instance_tags   = join(",", [for k, v in var.tags : "\"${k}\": \"${v}\""])
 
     public_data_efs_id             = var.public_launch_data_efs_id
     internal_public_data_efs_path  = var.internal_public_data_efs_path
