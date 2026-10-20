@@ -97,6 +97,17 @@ resource "aws_autoscaling_group" "executor_cpu" {
   health_check_type         = "EC2"
   health_check_grace_period = 300
 
+  enabled_metrics = [
+    "GroupMinSize",
+    "GroupMaxSize",
+    "GroupDesiredCapacity",
+    "GroupInServiceInstances",
+    "GroupPendingInstances",
+    "GroupStandbyInstances",
+    "GroupTerminatingInstances",
+    "GroupTotalInstances",
+  ]
+
   mixed_instances_policy {
     instances_distribution {
       on_demand_percentage_above_base_capacity = 100
