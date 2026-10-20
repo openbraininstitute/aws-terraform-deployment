@@ -69,7 +69,19 @@ mkdir -p "${local_cache_host_path}"
 chown 1000:1000 "${local_cache_host_path}"
 chmod 755 "${local_cache_host_path}"
 
-# Best-effort pre-pull; needs cross-account ECR repo policy for the instance role.
+# Image pre-pull (best-effort).
+#
+# Issue: runtime images live in account 985539765147. Task *execution* role is already on that
+# repo's resource policy, so the agent can pull when a task starts. This script authenticates as
+# the *instance* role (launch_system_executor_cpu_instance), a different principal. Without an
+# explicit ecr:BatchGetImage / GetDownloadUrlForLayer / BatchCheckLayerAvailability grant for
+# that role on each runtime repo, pre-pull fails and the first task on a new host pays the
+# multi-GB pull (~10-20s+).
+#
+# Fix (infra account 985539765147): add the instance-role ARN to each launch-system runtime
+# repository policy (same statements already granted to the execution role), e.g.
+#   arn:aws:iam::ACCOUNT:role/launch_system_executor_cpu_instance
+# Until then failures are non-fatal; the agent still pulls on demand with the execution role.
 if command -v docker >/dev/null 2>&1; then
   systemctl start docker || true
   aws ecr get-login-password --region "${aws_region}" \
