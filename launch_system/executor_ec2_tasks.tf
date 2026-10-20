@@ -3,13 +3,14 @@ locals {
   executor_internal_public_data_host_path = "/mnt/efs/internal_public_data"
   executor_open_public_data_host_path     = "/mnt/efs/open_data"
 
+  # Instance-local disk (not EFS). Container path stays under local_store_prefix.
   executor_local_cache_volume_name = "local-cache"
-  executor_local_cache_host_path   = "${var.local_store_prefix}/scratch/local-cache"
+  executor_local_cache_host_path   = "/var/lib/scratch/local-cache"
   executor_local_cache_mount_path  = "${var.local_store_prefix}/scratch/local-cache"
 
   executor_shared_cache_volume_name = "shared-cache"
   executor_shared_cache_efs_path    = "/cache/executor"
-  executor_shared_cache_host_path   = "${var.local_store_prefix}/scratch/shared-cache"
+  executor_shared_cache_host_path   = "/mnt/efs/shared_cache"
   executor_shared_cache_mount_path  = "${var.local_store_prefix}/scratch/shared-cache"
 
   executor_ecr_registry = split("/", var.default_executor_image_url)[0]
