@@ -583,7 +583,14 @@ resource "aws_autoscaling_group" "obi_one_v2_ecs_autoscaling_group" {
     version = aws_launch_template.obi_one_v2_ec2_launch_template.latest_version
   }
 
-  instance_refresh { strategy = "Rolling" }
+  instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      # min_healthy_percentage = 0 lets a single-instance ASG roll in place.
+      min_healthy_percentage = 0
+      instance_warmup        = 300
+    }
+  }
   lifecycle { create_before_destroy = true }
 
   tag {

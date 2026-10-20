@@ -454,9 +454,12 @@ resource "aws_appautoscaling_policy" "cells_ecs_memory_policy" {
 
 ## Creates an ASG linked with our main VPC
 resource "aws_autoscaling_group" "cells_ecs_autoscaling_group" {
-  name_prefix           = "cl_asg"
-  max_size              = 1
+  name_prefix = "cl_asg"
+  # max_size > min/desired gives headroom for an in-place instance refresh
+  # (e.g. AMI/arch change) without a destructive ASG force-delete.
+  max_size              = 2
   min_size              = 1
+  desired_capacity      = 1
   vpc_zone_identifier   = [aws_subnet.cells.id]
   health_check_type     = "EC2"
   protect_from_scale_in = true
@@ -477,7 +480,14 @@ resource "aws_autoscaling_group" "cells_ecs_autoscaling_group" {
     version = aws_launch_template.cells_svc_ec2_launch_template.latest_version
   }
 
-  instance_refresh { strategy = "Rolling" }
+  instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      # min_healthy_percentage = 0 lets a single-instance ASG roll in place.
+      min_healthy_percentage = 0
+      instance_warmup        = 300
+    }
+  }
   lifecycle { create_before_destroy = true }
 
   tag {
