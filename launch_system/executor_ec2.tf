@@ -38,7 +38,7 @@ resource "aws_launch_template" "executor_cpu" {
   }
 
   monitoring {
-    enabled = false
+    enabled = true
   }
 
   user_data = base64encode(templatefile("${path.module}/user_data_executor.sh.tftpl", {
