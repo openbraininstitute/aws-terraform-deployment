@@ -10,6 +10,7 @@ echo "bootstrap starting at $(date --iso-8601=seconds)"
 
 cat <<EOF > /etc/ecs/ecs.config
 ECS_CLUSTER=${cluster_name}
+ECS_CONTAINER_INSTANCE_TAGS={${ecs_instance_tags}}
 ECS_ENABLE_TASK_IAM_ROLE=true
 ECS_ENABLE_TASK_IAM_ROLE_NETWORK_HOST=true
 ECS_IMAGE_PULL_BEHAVIOR=prefer-cached
