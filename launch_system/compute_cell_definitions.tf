@@ -63,7 +63,7 @@ locals {
             security_groups = [aws_security_group.executor.id]
             task_family     = aws_ecs_task_definition.python_3_12_openmpi5_neuron9_neurodamus_executor.family
           },
-          # EC2 ASG variants; placement type stays ecs_managed_instances (app wire value).
+          # ECS-on-EC2 ASG variants (placement_type=ecs_ec2). GPU stays on Managed Instances.
           # Unpinned requests still prefer Fargate when both placements exist.
           {
             vcpu_min   = 1
@@ -73,7 +73,7 @@ locals {
             type       = "machine"
             image_type = "python_3_12_compiler"
             placement = {
-              type              = "ecs_managed_instances"
+              type              = "ecs_ec2"
               capacity_provider = aws_ecs_capacity_provider.executor_cpu_ec2.name
               network_mode      = "host"
             }
@@ -90,7 +90,7 @@ locals {
             type       = "machine"
             image_type = "python_3_12_inait"
             placement = {
-              type              = "ecs_managed_instances"
+              type              = "ecs_ec2"
               capacity_provider = aws_ecs_capacity_provider.executor_cpu_ec2.name
               network_mode      = "host"
             }
@@ -107,7 +107,7 @@ locals {
             type       = "machine"
             image_type = "python_3_12_openmpi5_neuron9_neurodamus"
             placement = {
-              type              = "ecs_managed_instances"
+              type              = "ecs_ec2"
               capacity_provider = aws_ecs_capacity_provider.executor_cpu_ec2.name
               network_mode      = "host"
             }
