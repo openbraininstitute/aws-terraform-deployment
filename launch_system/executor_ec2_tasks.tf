@@ -3,8 +3,9 @@ locals {
   executor_internal_public_data_host_path = "/mnt/efs/internal_public_data"
   executor_open_public_data_host_path     = "/mnt/efs/open_data"
 
+  # Host path only; container still sees ${local_store_prefix}/scratch/local-cache.
   executor_local_cache_volume_name = "local-cache"
-  executor_local_cache_host_path   = "/var/lib/ecs-cache/local"
+  executor_local_cache_host_path   = "/var/lib/scratch/local-cache"
   executor_local_cache_mount_path  = "${var.local_store_prefix}/scratch/local-cache"
 
   executor_shared_cache_volume_name = "shared-cache"
