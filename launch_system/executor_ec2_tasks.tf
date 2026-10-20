@@ -13,8 +13,6 @@ locals {
   executor_shared_cache_host_path   = "/mnt/efs/shared_cache"
   executor_shared_cache_mount_path  = "${var.local_store_prefix}/scratch/shared-cache"
 
-  executor_ecr_registry = split("/", var.default_executor_image_url)[0]
-
   executor_ec2_container_base = merge(local.executor_container_base, {
     mountPoints = [
       {
