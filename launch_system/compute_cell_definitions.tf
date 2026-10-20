@@ -63,8 +63,61 @@ locals {
             security_groups = [aws_security_group.executor.id]
             task_family     = aws_ecs_task_definition.python_3_12_openmpi5_neuron9_neurodamus_executor.family
           },
-          # ECS-on-EC2 ASG variants (placement_type=ecs_ec2). GPU stays on Managed Instances.
-          # Unpinned requests still prefer Fargate when both placements exist.
+          # CPU on the ASG capacity provider, offered under two placement types:
+          # - ecs_managed_instances: existing wire value (compat)
+          # - ecs_ec2: new name; launch-system applies binpack on RunTask
+          # Unpinned requests still prefer Fargate when multiple placements exist.
+          {
+            vcpu_min   = 1
+            vcpu_max   = 16
+            memory_min = 2
+            memory_max = 120
+            type       = "machine"
+            image_type = "python_3_12_compiler"
+            placement = {
+              type              = "ecs_managed_instances"
+              capacity_provider = aws_ecs_capacity_provider.executor_cpu_ec2.name
+              network_mode      = "host"
+            }
+            cluster_name    = aws_ecs_cluster.executor.name
+            subnets         = local.executor_untrusted_subnet_ids
+            security_groups = [aws_security_group.executor.id]
+            task_family     = aws_ecs_task_definition.default_executor_ec2.family
+          },
+          {
+            vcpu_min   = 1
+            vcpu_max   = 16
+            memory_min = 2
+            memory_max = 120
+            type       = "machine"
+            image_type = "python_3_12_inait"
+            placement = {
+              type              = "ecs_managed_instances"
+              capacity_provider = aws_ecs_capacity_provider.executor_cpu_ec2.name
+              network_mode      = "host"
+            }
+            cluster_name    = aws_ecs_cluster.executor.name
+            subnets         = local.executor_untrusted_subnet_ids
+            security_groups = [aws_security_group.executor.id]
+            task_family     = aws_ecs_task_definition.inait_executor_ec2.family
+          },
+          {
+            vcpu_min   = 1
+            vcpu_max   = 16
+            memory_min = 2
+            memory_max = 120
+            type       = "machine"
+            image_type = "python_3_12_openmpi5_neuron9_neurodamus"
+            placement = {
+              type              = "ecs_managed_instances"
+              capacity_provider = aws_ecs_capacity_provider.executor_cpu_ec2.name
+              network_mode      = "host"
+            }
+            cluster_name    = aws_ecs_cluster.executor.name
+            subnets         = local.executor_untrusted_subnet_ids
+            security_groups = [aws_security_group.executor.id]
+            task_family     = aws_ecs_task_definition.python_3_12_openmpi5_neuron9_neurodamus_executor_ec2.family
+          },
           {
             vcpu_min   = 1
             vcpu_max   = 16
@@ -116,6 +169,7 @@ locals {
             security_groups = [aws_security_group.executor.id]
             task_family     = aws_ecs_task_definition.python_3_12_openmpi5_neuron9_neurodamus_executor_ec2.family
           },
+          # GPU remains real Managed Instances.
           {
             vcpu_min   = 16
             vcpu_max   = 16
