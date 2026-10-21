@@ -125,7 +125,7 @@ entitycore_svc_task_size = {
   memory = 4096
 }
 
-obi_one_v2_docker_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/obi-one:2026.10.18"
+obi_one_v2_docker_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/obi-one:2026.10.19"
 obi_one_v2_ec2_instance_type    = "t3.medium" # vCPUs: 2, Memory: 4 GiB
 obi_one_v2_ec2_root_volume_size = 200         # GiB; holds images, the S3 mount cache and staged circuits
 obi_one_v2_ecs_task_size = {
