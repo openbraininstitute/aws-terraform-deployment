@@ -177,8 +177,8 @@ resource "aws_autoscaling_group" "executor_cpu" {
     preferences {
       min_healthy_percentage = 0
       instance_warmup        = var.executor_cpu_instance_warmup
-      # Replace scale-in-protected (busy) hosts too; jobs are re-runnable.
-      scale_in_protected_instances = "Refresh"
+      # Wait for busy (scale-in-protected) hosts to drain; jobs are not re-runnable.
+      scale_in_protected_instances = "Wait"
     }
   }
 
