@@ -10,9 +10,10 @@ resource "aws_lb_target_group" "entitycore_private_tg" {
     create_before_destroy = true
   }
 
+  # health checks are sent directly to the target, without the listener rule rewrite
   health_check {
     enabled             = true
-    path                = "${var.root_path}/health"
+    path                = "/health"
     protocol            = "HTTP"
     healthy_threshold   = 2
     unhealthy_threshold = 3
@@ -30,9 +31,21 @@ resource "aws_lb_listener_rule" "entitycore_private_listener_rule" {
     target_group_arn = aws_lb_target_group.entitycore_private_tg.arn
   }
 
+  # strip the root path, as expected by uvicorn --root-path:
+  # /api/entitycore/foo -> /foo, /api/entitycore -> /
+  transform {
+    type = "url-rewrite"
+    url_rewrite_config {
+      rewrite {
+        regex   = "^${var.root_path}/?(.*)$"
+        replace = "/$1"
+      }
+    }
+  }
+
   condition {
     path_pattern {
-      values = ["${var.root_path}*"]
+      values = [var.root_path, "${var.root_path}/*"]
     }
   }
 
