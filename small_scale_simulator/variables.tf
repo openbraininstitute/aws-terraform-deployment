@@ -132,4 +132,13 @@ variable "batch_workers" {
 
   description = "Map of batch worker configurations. Each key represents an on-demand worker auto-provisioned based on CloudWatch job queue length metrics."
   default     = {}
+  validation {
+    condition = alltrue([
+      for w in values(var.batch_workers) : (
+        (w.ephemeral_storage == null || (w.ephemeral_storage >= 21 && w.ephemeral_storage <= 200)) &&
+        (w.max_idle_time == null || w.num_workers_per_task == 1)
+      )
+    ])
+    error_message = "ephemeral_storage must be 21 to 200 GiB, and max_idle_time is only taken by a group of one worker a task."
+  }
 }

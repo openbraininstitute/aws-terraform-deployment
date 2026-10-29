@@ -13,12 +13,12 @@ RUN_TASK_MAX_COUNT = 10
 
 
 def queue_length(cloudwatch, queue_name, now):
-    """The newest datapoint of the queue length in the last minute, or 0 if there is none."""
+    """The newest datapoint of the queue length in the last two minutes, or 0 if there is none."""
     response = cloudwatch.get_metric_statistics(
         Namespace="SmallScaleSimulator/JobQueue",
         MetricName="QueueLength",
         Dimensions=[{"Name": "QueueName", "Value": queue_name}],
-        StartTime=now - timedelta(minutes=1),
+        StartTime=now - timedelta(minutes=2),
         EndTime=now,
         Period=10,
         Statistics=["Minimum"],
