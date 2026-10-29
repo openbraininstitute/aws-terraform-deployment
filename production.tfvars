@@ -74,15 +74,17 @@ small_scale_simulator_batch_workers = {
     max_worker_tasks     = 4
     capacity_provider    = "FARGATE_SPOT"
   }
-  mesh_skeletonization = {
+  "4cpu-16gb" = {
     task_size = {
-      cpu    = 16384
-      memory = 32768
+      cpu    = 4096
+      memory = 16384
     }
     num_workers_per_task = 1
-    queues               = ["mesh_skeletonization"]
-    max_worker_tasks     = 8
+    queues               = ["4cpu-16gb"]
+    max_worker_tasks     = 2
     capacity_provider    = "FARGATE"
+    ephemeral_storage    = 100
+    max_idle_time        = 120
   }
 }
 

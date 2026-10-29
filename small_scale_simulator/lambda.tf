@@ -161,13 +161,15 @@ resource "aws_cloudwatch_event_target" "lambda_target" {
   arn       = aws_lambda_function.batch_worker.arn
 
   input = jsonencode({
-    worker_name       = each.key
-    task_definition   = aws_ecs_task_definition.batch_worker[each.key].arn
-    max_worker_tasks  = each.value.max_worker_tasks
-    capacity_provider = each.value.capacity_provider
-    queues            = each.value.queues
-    subnets           = [aws_subnet.small_scale_simulator_secondary_a.id, aws_subnet.small_scale_simulator_secondary_b.id]
-    security_groups   = [aws_security_group.worker.id]
+    worker_name          = each.key
+    task_definition      = aws_ecs_task_definition.batch_worker[each.key].arn
+    task_family          = aws_ecs_task_definition.batch_worker[each.key].family
+    num_workers_per_task = each.value.num_workers_per_task
+    max_worker_tasks     = each.value.max_worker_tasks
+    capacity_provider    = each.value.capacity_provider
+    queues               = each.value.queues
+    subnets              = [aws_subnet.small_scale_simulator_secondary_a.id, aws_subnet.small_scale_simulator_secondary_b.id]
+    security_groups      = [aws_security_group.worker.id]
   })
 }
 

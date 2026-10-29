@@ -62,16 +62,6 @@ small_scale_simulator_batch_workers = {
     max_worker_tasks     = 4
     capacity_provider    = "FARGATE_SPOT"
   }
-  mesh_skeletonization = {
-    task_size = {
-      cpu    = 16384
-      memory = 32768
-    }
-    num_workers_per_task = 1
-    queues               = ["mesh_skeletonization"]
-    max_worker_tasks     = 8
-    capacity_provider    = "FARGATE_SPOT"
-  }
 }
 
 virtual_lab_manager_task_size = {

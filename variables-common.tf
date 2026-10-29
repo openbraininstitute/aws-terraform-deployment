@@ -141,7 +141,9 @@ variable "small_scale_simulator_batch_workers" {
     num_workers_per_task = number
     queues               = list(string)
     max_worker_tasks     = number
-    capacity_provider    = string # Valid values: FARGATE, FARGATE_SPOT
+    capacity_provider    = string           # Valid values: FARGATE, FARGATE_SPOT
+    ephemeral_storage    = optional(number) # GiB, 21 to 200. Fargate's 20 GiB when not set
+    max_idle_time        = optional(number) # Seconds a single worker waits for a job before it exits
   }))
 
   description = "Map of batch worker configurations. Each key represents an on-demand worker auto-provisioned based on CloudWatch job queue length metrics."
