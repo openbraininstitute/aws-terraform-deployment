@@ -30,14 +30,17 @@ def queue_length(cloudwatch, queue_name, now):
     return int(latest["Minimum"])
 
 
-def worker_tasks(ecs, cluster_name, family):
+def worker_task_arns(ecs, cluster_name, family):
     """All tasks of the family that are starting or running."""
     arns = []
     for page in ecs.get_paginator("list_tasks").paginate(
         cluster=cluster_name, family=family, desiredStatus="RUNNING"
     ):
         arns.extend(page["taskArns"])
+    return arns
 
+
+def described(ecs, cluster_name, arns):
     tasks = []
     for i in range(0, len(arns), DESCRIBE_TASKS_BATCH):
         response = ecs.describe_tasks(
@@ -60,9 +63,9 @@ def is_in_flight(task, now):
     )
 
 
-def tasks_to_start(queued, workers_per_task, tasks, in_flight, max_worker_tasks):
+def tasks_to_start(queued, workers_per_task, running, in_flight, max_worker_tasks):
     needed = math.ceil(queued / workers_per_task) - in_flight
-    return max(0, min(needed, max_worker_tasks - tasks))
+    return max(0, min(needed, max_worker_tasks - running))
 
 
 def handler(event, context):
@@ -97,7 +100,17 @@ def handler(event, context):
             print("No jobs in queues. Skipping worker deployment.")
             return {"statusCode": 200, "body": json.dumps("No jobs in queues")}
 
-        tasks = worker_tasks(ecs, cluster_name, task_family)
+        arns = worker_task_arns(ecs, cluster_name, task_family)
+        if len(arns) >= max_worker_tasks:
+            print(
+                f"Maximum workers ({max_worker_tasks}) already running. Skipping deployment."
+            )
+            return {
+                "statusCode": 200,
+                "body": json.dumps("Maximum workers already running"),
+            }
+
+        tasks = described(ecs, cluster_name, arns)
         in_flight = sum(1 for task in tasks if is_in_flight(task, now))
         count = tasks_to_start(
             queued, workers_per_task, len(tasks), in_flight, max_worker_tasks
