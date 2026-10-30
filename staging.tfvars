@@ -127,7 +127,8 @@ entitycore_svc_task_size = {
   memory = 4096
 }
 
-obi_one_v2_docker_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/obi-one:2026.10.25"
+obi_one_v2_base_image_url       = "985539765147.dkr.ecr.us-east-1.amazonaws.com/obi-one"
+obi_one_v2_tag                  = "2026.10.25"
 obi_one_v2_ec2_instance_type    = "t3.medium" # vCPUs: 2, Memory: 4 GiB
 obi_one_v2_ec2_root_volume_size = 200         # GiB; holds images, the S3 mount cache and staged circuits
 obi_one_v2_ecs_task_size = {
@@ -142,6 +143,8 @@ keycloak_client_uuid       = "a40fd6ea-79f8-4212-b087-45c75e4703a4"
 keycloak_client_id         = "core-webapp-cell-b-azure-staging"
 
 # launch-system configuration
+launch_system_base_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system"
+launch_system_tag            = "2026.10.10"
 launch_system_api_task_size = {
   cpu    = 512
   memory = 1024
