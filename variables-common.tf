@@ -408,6 +408,11 @@ variable "keycloak_client_id" {
 
 ### launch-system ###
 
+variable "launch_system_version" {
+  type        = string
+  description = "Image tag for launch-system services. Neurodamus uses this plus the obi-one version."
+}
+
 variable "launch_system_api_task_size" {
   type = object({
     cpu    = any

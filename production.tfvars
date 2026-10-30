@@ -140,6 +140,7 @@ keycloak_client_uuid       = "5c060da0-5f9f-4a35-b9fd-32c5fafb1aca"
 keycloak_client_id         = "core-webapp-cell-b-azure"
 
 # launch-system configuration
+launch_system_version = "2026.10.10"
 launch_system_api_task_size = {
   cpu    = 512
   memory = 1024

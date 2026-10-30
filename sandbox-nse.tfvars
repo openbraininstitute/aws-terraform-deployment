@@ -99,6 +99,7 @@ core_web_app_stripe_publishable_key = "placeholder"
 core_web_app_in_azure_cidr_block = "10.102.1.0/27" # staging azure core web app aca range
 
 # launch-system configuration
+launch_system_version = "2026.10.10"
 launch_system_api_task_size = {
   cpu    = 512
   memory = 1024

@@ -112,6 +112,7 @@ keycloak_client_uuid       = "569228c5-674f-4f54-b9cb-8d179be66bda"
 keycloak_client_id         = "core-webapp-dev"
 
 # launch-system configuration
+launch_system_version = "2026.10.10"
 launch_system_api_task_size = {
   cpu    = 512
   memory = 1024
