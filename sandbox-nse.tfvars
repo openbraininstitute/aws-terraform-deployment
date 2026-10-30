@@ -82,7 +82,8 @@ entitycore_svc_task_size = {
   memory = 2048
 }
 
-obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2025.10.4"
+obi_one_v2_base_image_url    = "public.ecr.aws/openbraininstitute/obi-one"
+obi_one_v2_tag               = "2025.10.4"
 obi_one_v2_ec2_instance_type = "t3.small" # vCPUs: 2, Memory: 2 GiB
 obi_one_v2_ecs_task_size = {
   cpu    = 2048
@@ -99,6 +100,8 @@ core_web_app_stripe_publishable_key = "placeholder"
 core_web_app_in_azure_cidr_block = "10.102.1.0/27" # staging azure core web app aca range
 
 # launch-system configuration
+launch_system_base_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system"
+launch_system_tag            = "2026.10.10"
 launch_system_api_task_size = {
   cpu    = 512
   memory = 1024
