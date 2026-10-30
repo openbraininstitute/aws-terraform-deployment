@@ -125,9 +125,20 @@ variable "batch_workers" {
     num_workers_per_task = number
     queues               = list(string)
     max_worker_tasks     = number
-    capacity_provider    = string # Valid values: FARGATE, FARGATE_SPOT
+    capacity_provider    = string           # Valid values: FARGATE, FARGATE_SPOT
+    ephemeral_storage    = optional(number) # GiB, 21 to 200. Fargate's 20 GiB when not set
+    max_idle_time        = optional(number) # Seconds a single worker waits for a job before it exits
   }))
 
   description = "Map of batch worker configurations. Each key represents an on-demand worker auto-provisioned based on CloudWatch job queue length metrics."
   default     = {}
+  validation {
+    condition = alltrue([
+      for w in values(var.batch_workers) : (
+        (w.ephemeral_storage == null || (w.ephemeral_storage >= 21 && w.ephemeral_storage <= 200)) &&
+        (w.max_idle_time == null || w.num_workers_per_task == 1)
+      )
+    ])
+    error_message = "ephemeral_storage must be 21 to 200 GiB, and max_idle_time is only taken by a group of one worker a task."
+  }
 }

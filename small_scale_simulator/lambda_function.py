@@ -1,7 +1,71 @@
 import boto3
 import json
+import math
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+
+# A task that started this recently may hold jobs the queue metric still counts as queued
+RECENTLY_STARTED = timedelta(seconds=150)
+IN_FLIGHT_STATUSES = {"PROVISIONING", "PENDING", "ACTIVATING"}
+# ECS limits
+DESCRIBE_TASKS_BATCH = 100
+RUN_TASK_MAX_COUNT = 10
+
+
+def queue_length(cloudwatch, queue_name, now):
+    """The newest datapoint of the queue length in the last two minutes, or 0 if there is none."""
+    response = cloudwatch.get_metric_statistics(
+        Namespace="SmallScaleSimulator/JobQueue",
+        MetricName="QueueLength",
+        Dimensions=[{"Name": "QueueName", "Value": queue_name}],
+        StartTime=now - timedelta(minutes=2),
+        EndTime=now,
+        Period=10,
+        Statistics=["Minimum"],
+    )
+    if not response["Datapoints"]:
+        print(f"No metrics found for queue: {queue_name}")
+        return 0
+    latest = max(response["Datapoints"], key=lambda x: x["Timestamp"])
+    return int(latest["Minimum"])
+
+
+def worker_task_arns(ecs, cluster_name, family):
+    """All tasks of the family that are starting or running."""
+    arns = []
+    for page in ecs.get_paginator("list_tasks").paginate(
+        cluster=cluster_name, family=family, desiredStatus="RUNNING"
+    ):
+        arns.extend(page["taskArns"])
+    return arns
+
+
+def described(ecs, cluster_name, arns):
+    tasks = []
+    for i in range(0, len(arns), DESCRIBE_TASKS_BATCH):
+        response = ecs.describe_tasks(
+            cluster=cluster_name, tasks=arns[i : i + DESCRIBE_TASKS_BATCH]
+        )
+        tasks.extend(response["tasks"])
+    return tasks
+
+
+def is_in_flight(task, now):
+    """Whether the task has not taken its share of the queued jobs yet, as far as the metric
+    knows."""
+    if task["lastStatus"] in IN_FLIGHT_STATUSES:
+        return True
+    started_at = task.get("startedAt")
+    return (
+        task["lastStatus"] == "RUNNING"
+        and started_at is not None
+        and now - started_at < RECENTLY_STARTED
+    )
+
+
+def tasks_to_start(queued, workers_per_task, running, in_flight, max_worker_tasks):
+    needed = math.ceil(queued / workers_per_task) - in_flight
+    return max(0, min(needed, max_worker_tasks - running))
 
 
 def handler(event, context):
@@ -9,13 +73,13 @@ def handler(event, context):
     Lambda function to monitor CloudWatch queue metrics and deploy ECS tasks on demand
     """
 
-    # Initialize AWS clients
     cloudwatch = boto3.client("cloudwatch")
     ecs = boto3.client("ecs")
 
-    # Get configuration from event
     worker_name = event["worker_name"]
     task_definition = event["task_definition"]
+    task_family = event["task_family"]
+    workers_per_task = event["num_workers_per_task"]
     max_worker_tasks = event["max_worker_tasks"]
     capacity_provider = event["capacity_provider"]
     queues = event["queues"]
@@ -28,53 +92,16 @@ def handler(event, context):
     print(f"Monitoring queues: {queues}")
 
     try:
-        # Check queue lengths for all queues
-        total_queue_length = 0
+        now = datetime.now(timezone.utc)
+        queued = sum(queue_length(cloudwatch, queue_name, now) for queue_name in queues)
+        print(f"Total queue length: {queued}")
 
-        for queue_name in queues:
-            # Get the most recent queue length metric
-            response = cloudwatch.get_metric_statistics(
-                Namespace="SmallScaleSimulator/JobQueue",
-                MetricName="QueueLength",
-                Dimensions=[{"Name": "QueueName", "Value": queue_name}],
-                StartTime=datetime.utcnow() - timedelta(minutes=2),
-                EndTime=datetime.utcnow(),
-                Period=10,  # 10 seconds
-                Statistics=["Minimum"],
-            )
-
-            if response["Datapoints"]:
-                print("Datapoints:")
-                print(response["Datapoints"])
-                # Get the most recent datapoint
-                latest_datapoint = max(
-                    response["Datapoints"], key=lambda x: x["Timestamp"]
-                )
-                queue_length = int(latest_datapoint["Minimum"])
-                total_queue_length += queue_length
-                print(f"Queue {queue_name} length: {queue_length}")
-            else:
-                print(f"No metrics found for queue: {queue_name}")
-
-        print(f"Total queue length: {total_queue_length}")
-
-        # If no jobs in queues, no need to deploy workers
-        if total_queue_length == 0:
+        if queued == 0:
             print("No jobs in queues. Skipping worker deployment.")
             return {"statusCode": 200, "body": json.dumps("No jobs in queues")}
 
-        # Count currently running on-demand tasks for this worker
-        family_name = f"small-scale-simulator-on-demand-worker-{worker_name}"
-
-        list_response = ecs.list_tasks(
-            cluster=cluster_name, family=family_name, desiredStatus="RUNNING"
-        )
-
-        running_tasks = len(list_response["taskArns"])
-        print(f"Currently running on-demand tasks: {running_tasks}")
-
-        # Check if we've reached the maximum
-        if running_tasks >= max_worker_tasks:
+        arns = worker_task_arns(ecs, cluster_name, task_family)
+        if len(arns) >= max_worker_tasks:
             print(
                 f"Maximum workers ({max_worker_tasks}) already running. Skipping deployment."
             )
@@ -83,7 +110,16 @@ def handler(event, context):
                 "body": json.dumps("Maximum workers already running"),
             }
 
-        # Deploy a new task
+        tasks = described(ecs, cluster_name, arns)
+        in_flight = sum(1 for task in tasks if is_in_flight(task, now))
+        count = tasks_to_start(
+            queued, workers_per_task, len(tasks), in_flight, max_worker_tasks
+        )
+        print(f"Tasks: {len(tasks)}, in flight: {in_flight}, to start: {count}")
+
+        if count == 0:
+            return {"statusCode": 200, "body": json.dumps("No more workers needed")}
+
         capacity_provider_strategy = []
         if capacity_provider == "FARGATE":
             capacity_provider_strategy = [{"capacityProvider": "FARGATE", "weight": 1}]
@@ -95,6 +131,7 @@ def handler(event, context):
         run_response = ecs.run_task(
             cluster=cluster_name,
             taskDefinition=task_definition,
+            count=min(count, RUN_TASK_MAX_COUNT),
             capacityProviderStrategy=capacity_provider_strategy,
             networkConfiguration={
                 "awsvpcConfiguration": {
@@ -105,27 +142,29 @@ def handler(event, context):
             },
         )
 
-        if run_response["tasks"]:
-            task_arn = run_response["tasks"][0]["taskArn"]
-            print(f"Successfully deployed on-demand worker task: {task_arn}")
+        for failure in run_response.get("failures", []):
+            print(f"Failed to deploy a worker task: {failure}")
 
-            return {
-                "statusCode": 200,
-                "body": json.dumps(
-                    {
-                        "message": "Worker task deployed successfully",
-                        "taskArn": task_arn,
-                        "workerName": worker_name,
-                        "totalQueueLength": total_queue_length,
-                    }
-                ),
-            }
-        else:
+        task_arns = [task["taskArn"] for task in run_response["tasks"]]
+        if not task_arns:
             print("Failed to deploy worker task")
             return {
                 "statusCode": 500,
                 "body": json.dumps("Failed to deploy worker task"),
             }
+
+        print(f"Successfully deployed on-demand worker tasks: {task_arns}")
+        return {
+            "statusCode": 200,
+            "body": json.dumps(
+                {
+                    "message": "Worker tasks deployed successfully",
+                    "taskArns": task_arns,
+                    "workerName": worker_name,
+                    "totalQueueLength": queued,
+                }
+            ),
+        }
 
     except Exception as e:
         print(f"Error: {str(e)}")

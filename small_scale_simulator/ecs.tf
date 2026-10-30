@@ -667,6 +667,13 @@ resource "aws_ecs_task_definition" "batch_worker" {
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
 
+  dynamic "ephemeral_storage" {
+    for_each = each.value.ephemeral_storage == null ? [] : [each.value.ephemeral_storage]
+    content {
+      size_in_gib = ephemeral_storage.value
+    }
+  }
+
   cpu    = each.value.task_size.cpu
   memory = each.value.task_size.memory
 
@@ -715,7 +722,7 @@ resource "aws_ecs_task_definition" "batch_worker" {
           readOnly      = false
         }
       ]
-      environment = [
+      environment = concat([
         {
           name  = "QUEUES"
           value = join(" ", each.value.queues)
@@ -760,7 +767,7 @@ resource "aws_ecs_task_definition" "batch_worker" {
           name  = "ACCOUNTING_BASE_URL"
           value = var.accounting_base_url
         }
-      ]
+      ], each.value.max_idle_time != null ? [{ name = "MAX_IDLE_TIME", value = tostring(each.value.max_idle_time) }] : [])
 
       secrets = [
         {
