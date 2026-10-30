@@ -65,14 +65,13 @@ locals {
 
   webhook_secret_key_for_metrics_alerts = "metric_alerts"
 
-  obi_one_version   = regex("[^:]+$", var.obi_one_v2_docker_image_url)
-  launch_system_ecr = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system"
+  obi_one_v2_docker_image_url = "${var.obi_one_v2_base_image_url}:${var.obi_one_v2_tag}"
 
-  launch_system_api_image_url              = "${local.launch_system_ecr}/api:${var.launch_system_version}"
-  launch_system_orchestrator_image_url     = "${local.launch_system_ecr}/orchestrator:${var.launch_system_version}"
-  launch_system_default_executor_image_url = "${local.launch_system_ecr}/runtimes/python3.12-compiler:${var.launch_system_version}"
-  launch_system_neurodamus_image_url       = "${local.launch_system_ecr}/runtimes/python3.12-compiler-openmpi5-neuron9-neurodamus:${var.launch_system_version}-${local.obi_one_version}"
-  launch_system_cuda_image_url             = "${local.launch_system_ecr}/runtimes/python3.12-compiler-cuda12.8:${var.launch_system_version}"
+  launch_system_api_image_url              = "${var.launch_system_base_image_url}/api:${var.launch_system_tag}"
+  launch_system_orchestrator_image_url     = "${var.launch_system_base_image_url}/orchestrator:${var.launch_system_tag}"
+  launch_system_default_executor_image_url = "${var.launch_system_base_image_url}/runtimes/python3.12-compiler:${var.launch_system_tag}"
+  launch_system_neurodamus_image_url       = "${var.launch_system_base_image_url}/runtimes/python3.12-compiler-openmpi5-neuron9-neurodamus:${var.launch_system_tag}-${var.obi_one_v2_tag}"
+  launch_system_cuda_image_url             = "${var.launch_system_base_image_url}/runtimes/python3.12-compiler-cuda12.8:${var.launch_system_tag}"
 }
 
 data "aws_secretsmanager_secret_version" "core_webapp_secrets" {
@@ -655,7 +654,7 @@ module "obi_one_v2" {
 
   amazon_linux_ecs_ami_id = data.aws_ami.amazon_linux_2_ecs.id
 
-  docker_image_url = var.obi_one_v2_docker_image_url
+  docker_image_url = local.obi_one_v2_docker_image_url
 
   mount_base_dir = "/data" # used to prefix both volume_host_path and volume_container_path
   mount_buckets = [

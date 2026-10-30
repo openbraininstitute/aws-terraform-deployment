@@ -341,9 +341,14 @@ variable "thumbnail_generation_api_docker_image_url" {
   sensitive   = false
 }
 
-variable "obi_one_v2_docker_image_url" {
+variable "obi_one_v2_base_image_url" {
   type        = string
-  description = "Docker image URL for obi-one service."
+  description = "Docker image repository URL for obi-one (without tag)."
+}
+
+variable "obi_one_v2_tag" {
+  type        = string
+  description = "Docker image tag for obi-one. Also used as the second half of the neurodamus executor tag."
 }
 
 variable "obi_one_v2_ec2_instance_type" {
@@ -408,9 +413,14 @@ variable "keycloak_client_id" {
 
 ### launch-system ###
 
-variable "launch_system_version" {
+variable "launch_system_base_image_url" {
   type        = string
-  description = "Image tag for launch-system services. Neurodamus uses this plus the obi-one version."
+  description = "Docker image repository base URL for launch-system (without image name or tag)."
+}
+
+variable "launch_system_tag" {
+  type        = string
+  description = "Image tag for launch-system services. Neurodamus uses this plus obi_one_v2_tag."
 }
 
 variable "launch_system_api_task_size" {

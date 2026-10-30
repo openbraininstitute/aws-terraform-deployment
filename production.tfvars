@@ -126,7 +126,8 @@ entitycore_svc_task_size = {
   memory = 4096
 }
 
-obi_one_v2_docker_image_url  = "985539765147.dkr.ecr.us-east-1.amazonaws.com/obi-one:2026.10.23"
+obi_one_v2_base_image_url    = "985539765147.dkr.ecr.us-east-1.amazonaws.com/obi-one"
+obi_one_v2_tag               = "2026.10.23"
 obi_one_v2_ec2_instance_type = "t3.large" # vCPUs: 2, Memory: 8 GiB
 obi_one_v2_ecs_task_size = {
   cpu    = 2048
@@ -140,7 +141,8 @@ keycloak_client_uuid       = "5c060da0-5f9f-4a35-b9fd-32c5fafb1aca"
 keycloak_client_id         = "core-webapp-cell-b-azure"
 
 # launch-system configuration
-launch_system_version = "2026.10.10"
+launch_system_base_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system"
+launch_system_tag            = "2026.10.10"
 launch_system_api_task_size = {
   cpu    = 512
   memory = 1024

@@ -98,7 +98,8 @@ entitycore_svc_task_size = {
   memory = 2048
 }
 
-obi_one_v2_docker_image_url  = "public.ecr.aws/openbraininstitute/obi-one:2025.10.9"
+obi_one_v2_base_image_url    = "public.ecr.aws/openbraininstitute/obi-one"
+obi_one_v2_tag               = "2025.10.9"
 obi_one_v2_ec2_instance_type = "t3.small" # vCPUs: 2, Memory: 2 GiB
 obi_one_v2_ecs_task_size = {
   cpu    = 2048
@@ -112,7 +113,8 @@ keycloak_client_uuid       = "569228c5-674f-4f54-b9cb-8d179be66bda"
 keycloak_client_id         = "core-webapp-dev"
 
 # launch-system configuration
-launch_system_version = "2026.10.10"
+launch_system_base_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/launch-system"
+launch_system_tag            = "2026.10.10"
 launch_system_api_task_size = {
   cpu    = 512
   memory = 1024
