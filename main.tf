@@ -375,6 +375,25 @@ module "notebook_service" {
   azure_files_storage_account_name = var.notebook_service_azure_storage_account
 }
 
+module "research_agent" {
+  source = "./research_agent"
+
+  aws_region               = local.aws_region
+  vpc_id                   = local.vpc_id
+  internet_access_route_id = local.route_table_private_subnets_id
+
+  # No image pushed to a real tag yet - bump this once researchagent's
+  # own GH Actions workflow has pushed a tagged build (see
+  # openbraininstitute/aws-terraform-ecr#116 for the matching ECR repo).
+  container_uri = "985539765147.dkr.ecr.${local.aws_region}.amazonaws.com/research-agent:latest"
+
+  notebook_service_url = "https://${local.cell_a_primary_domain}/api/notebook_service"
+
+  # accounting-sdk's RESEARCH_AGENT subtype + a Price entry don't exist
+  # yet, so keep this disabled (the module default) until both land.
+  accounting_base_url = "https://${local.cell_a_primary_domain}${var.accounting_svc_base_path}"
+}
+
 module "github_notebook_service_ecs_redeploy_role" {
   source = "./github_ecs_redeploy_role"
 
