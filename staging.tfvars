@@ -189,3 +189,5 @@ backup_s3_buckets              = ["entitycore-data-staging"] # placeholder for n
 ssm_readonly_access_policy_arn = "arn:aws:iam::992382665735:policy/obi_SSMBastionUserAccess"
 nas_backup_secret_arns         = ["arn:aws:secretsmanager:us-east-1:992382665735:secret:accounting_database_readonly_secret-hTpBh0"]
 databases_to_backup_arns       = ["arn:aws:rds:us-east-1:992382665735:db:accounting"]
+
+research_agent_enabled = true

@@ -225,6 +225,11 @@ variable "research_agent_docker_image_url" {
   description = "Docker image for the research agent AgentCore Runtime"
 }
 
+variable "research_agent_enabled" {
+  type        = bool
+  description = "Feature flag for the research agent's endpoints/MCP tools in neuroagent-ts - set explicitly per environment so it can be switched off in production independently of staging."
+}
+
 variable "notebook_service_aws_accounting_enabled" {
   type        = bool
   description = "Should accounting be enabled in the notebook service in aws?"

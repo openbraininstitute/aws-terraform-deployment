@@ -46,6 +46,18 @@ variable "neuroagent_docker_image_url" {
   type        = string
 }
 
+variable "research_agent_enabled" {
+  description = "Feature flag for the research agent's endpoints/MCP tools - kept false until the research_agent AgentCore Runtime module is applied and verified."
+  type        = bool
+  default     = false
+}
+
+variable "research_agent_runtime_arn" {
+  description = "ARN of the research_agent AgentCore Runtime (module.research_agent.agent_runtime_arn), empty until that module is applied."
+  type        = string
+  default     = ""
+}
+
 variable "ec_cluster_name" {
   description = "ElastiCache cluster_id when instance_key is empty. Ignored when instance_key is set (derived name is used, max 20 chars)."
   default     = "redis-cluster"
