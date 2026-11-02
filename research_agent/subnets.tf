@@ -11,6 +11,13 @@
 # availability zone" at Runtime-create time (CREATE_FAILED), even
 # though every other module in this repo happily uses "a"/"b". Picking
 # by AZ ID instead of letter avoids relying on a per-account mapping.
+#
+# Changing availability_zone forces subnet replacement, and this
+# provider version creates the replacement before destroying the old
+# one rather than the reverse - so the CIDR here must differ from the
+# previous attempt's (10.0.40.0/27, 10.0.40.32/27) or the create
+# collides with the still-live old subnet ("CIDR conflicts with
+# another subnet").
 data "aws_availability_zones" "agentcore_supported" {
   state = "available"
   filter {
