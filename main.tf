@@ -245,6 +245,9 @@ module "ml_typescript" {
   agent_alb_listener_rule_priority = var.ml_typescript_alb_listener_rule_priority
   agent_path_pattern               = var.ml_typescript_agent_path_pattern
   neuroagent_application_prefix    = "/api/agent-ts"
+
+  research_agent_enabled     = var.research_agent_enabled
+  research_agent_runtime_arn = module.research_agent.agent_runtime_arn
 }
 
 # NOTE: The Nexus service has been fully decommissioned.
@@ -386,8 +389,6 @@ module "research_agent" {
 
   notebook_service_url = "https://${local.cell_a_primary_domain}/api/notebook_service"
 
-  # accounting-sdk's RESEARCH_AGENT subtype + a Price entry don't exist
-  # yet, so keep this disabled (the module default) until both land.
   accounting_base_url = "https://${local.cell_a_primary_domain}${var.accounting_svc_base_path}"
 }
 

@@ -68,7 +68,7 @@ module "ecs_service_agent" {
           protocol      = "tcp"
         }
       ]
-      environment = [
+      environment = concat([
         {
           name  = "NEUROAGENT__ACCOUNTING__BASE_URL"
           value = "https://${var.primary_domain}/api/accounting"
@@ -157,7 +157,16 @@ module "ecs_service_agent" {
           name  = "NEUROAGENT__TOOLS__WHITELISTED_TOOL_REGEX"
           value = "^(?!.*(downloadone|measurementannotation|experimentalsynapsesperconnection|weather)).*"
         },
-      ]
+        ], var.research_agent_runtime_arn == "" ? [] : [
+        {
+          name  = "NEUROAGENT__AGENTCORE__AGENT_RUNTIME_ARN"
+          value = var.research_agent_runtime_arn
+        },
+        {
+          name  = "NEUROAGENT__RESEARCH_AGENT__ENABLED"
+          value = tostring(var.research_agent_enabled)
+        },
+      ])
       secrets = [
         {
           name      = "NEUROAGENT__DB__PASSWORD"
