@@ -382,10 +382,10 @@ module "research_agent" {
   vpc_id                   = local.vpc_id
   internet_access_route_id = local.route_table_private_subnets_id
 
-  # No image pushed to a real tag yet - bump this once researchagent's
-  # own GH Actions workflow has pushed a tagged build (see
-  # openbraininstitute/aws-terraform-ecr#116 for the matching ECR repo).
-  container_uri = "985539765147.dkr.ecr.${local.aws_region}.amazonaws.com/research-agent:latest"
+  # First image pushed from researchagent's own GH Actions workflow
+  # (openbraininstitute/researchagent, tag v0.1.0). Bump this on each
+  # future release tag.
+  container_uri = "985539765147.dkr.ecr.${local.aws_region}.amazonaws.com/research-agent:v0.1.0"
 
   notebook_service_url = "https://${local.cell_a_primary_domain}/api/notebook_service"
 
