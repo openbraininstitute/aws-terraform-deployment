@@ -13,12 +13,12 @@ variable "internet_access_route_id" {
 
 variable "subnet_cidr_block_a" {
   type    = string
-  default = "10.0.40.0/27"
+  default = "10.0.41.0/27"
 }
 
 variable "subnet_cidr_block_b" {
   type    = string
-  default = "10.0.40.32/27"
+  default = "10.0.41.32/27"
 }
 
 variable "container_uri" {
