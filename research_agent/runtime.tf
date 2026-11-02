@@ -35,4 +35,13 @@ resource "aws_bedrockagentcore_agent_runtime" "research_agent" {
   tags = {
     Name = "research-agent"
   }
+
+  # agent_runtime_name must be globally unique per account - without
+  # this, a tainted/failed resource gets replaced create-before-destroy
+  # by default, and the create collides with the still-live old one
+  # under the same name ("An agent with the specified name already
+  # exists"). Force destroy-before-create instead.
+  lifecycle {
+    create_before_destroy = false
+  }
 }
