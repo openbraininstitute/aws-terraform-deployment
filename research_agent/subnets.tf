@@ -4,10 +4,24 @@
 # module in this repo uses to reuse the shared network rather than
 # creating its own VPC/NAT. AgentCore's own `network_mode_config`
 # expects a set of subnet ids across AZs, hence two, not one.
+#
+# AgentCore Runtime (VPC mode) only supports a subset of this region's
+# AZs - confirmed the hard way: "us-east-1a" resolved to AZ ID
+# use1-az6 in this account, which AWS rejected with "unsupported
+# availability zone" at Runtime-create time (CREATE_FAILED), even
+# though every other module in this repo happily uses "a"/"b". Picking
+# by AZ ID instead of letter avoids relying on a per-account mapping.
+data "aws_availability_zones" "agentcore_supported" {
+  state = "available"
+  filter {
+    name   = "zone-id"
+    values = ["use1-az1", "use1-az2", "use1-az4"]
+  }
+}
 
 resource "aws_subnet" "research_agent_a" {
   vpc_id            = var.vpc_id
-  availability_zone = "${var.aws_region}a"
+  availability_zone = data.aws_availability_zones.agentcore_supported.names[0]
   cidr_block        = var.subnet_cidr_block_a
   tags = {
     Name = "research_agent_a"
@@ -16,7 +30,7 @@ resource "aws_subnet" "research_agent_a" {
 
 resource "aws_subnet" "research_agent_b" {
   vpc_id            = var.vpc_id
-  availability_zone = "${var.aws_region}b"
+  availability_zone = data.aws_availability_zones.agentcore_supported.names[1]
   cidr_block        = var.subnet_cidr_block_b
   tags = {
     Name = "research_agent_b"
