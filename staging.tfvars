@@ -7,7 +7,7 @@ nexus_openscience_bucket_name             = "nexus-openscience-production-stagin
 virtual_lab_manager_docker_image_url      = "public.ecr.aws/openbraininstitute/virtual-lab-api:2026.10.14.2"
 thumbnail_generation_api_docker_image_url = "public.ecr.aws/openbraininstitute/thumbnail-generation-api:2026.10.21.1"
 cell_svc_docker_image_url                 = "public.ecr.aws/openbraininstitute/sonata-cell-position:2026.9.2"
-accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2026.10.0"
+accounting_svc_docker_image_url           = "public.ecr.aws/openbraininstitute/accounting-service:2026.11.0"
 jupyterhub_ec2_type                       = "c7i.large"
 notebook_service_docker_image_url         = "985539765147.dkr.ecr.us-east-1.amazonaws.com/notebook-service:2026.10.21-2"
 notebook_service_bucket_name              = "obi-notebook-service-statistics-staging"
@@ -129,7 +129,7 @@ entitycore_svc_task_size = {
 }
 
 obi_one_v2_base_image_url       = "985539765147.dkr.ecr.us-east-1.amazonaws.com/obi-one"
-obi_one_v2_tag                  = "2026.10.26"
+obi_one_v2_tag                  = "2026.11.0"
 obi_one_v2_ec2_instance_type    = "t3.medium" # vCPUs: 2, Memory: 4 GiB
 obi_one_v2_ec2_root_volume_size = 200         # GiB; holds images, the S3 mount cache and staged circuits
 obi_one_v2_ecs_task_size = {
