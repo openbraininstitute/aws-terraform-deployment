@@ -220,6 +220,11 @@ variable "notebook_service_docker_image_url" {
   description = "Docker image for the notebook service"
 }
 
+variable "research_agent_docker_image_url" {
+  type        = string
+  description = "Docker image for the research agent AgentCore Runtime"
+}
+
 variable "notebook_service_aws_accounting_enabled" {
   type        = bool
   description = "Should accounting be enabled in the notebook service in aws?"

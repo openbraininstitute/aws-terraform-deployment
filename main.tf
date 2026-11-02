@@ -382,10 +382,7 @@ module "research_agent" {
   vpc_id                   = local.vpc_id
   internet_access_route_id = local.route_table_private_subnets_id
 
-  # First image pushed from researchagent's own GH Actions workflow
-  # (openbraininstitute/researchagent, tag v0.1.0). Bump this on each
-  # future release tag.
-  container_uri = "985539765147.dkr.ecr.${local.aws_region}.amazonaws.com/research-agent:v0.1.0"
+  container_uri = var.research_agent_docker_image_url
 
   notebook_service_url = "https://${local.cell_a_primary_domain}/api/notebook_service"
 
