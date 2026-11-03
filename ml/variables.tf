@@ -58,6 +58,12 @@ variable "research_agent_runtime_arn" {
   default     = ""
 }
 
+variable "research_agent_memory_id" {
+  description = "ID of the research_agent AgentCore Memory (module.research_agent.memory_id), empty until that module is applied."
+  type        = string
+  default     = ""
+}
+
 variable "ec_cluster_name" {
   description = "ElastiCache cluster_id when instance_key is empty. Ignored when instance_key is set (derived name is used, max 20 chars)."
   default     = "redis-cluster"
