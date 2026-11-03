@@ -392,6 +392,12 @@ module "research_agent" {
   notebook_service_url = "https://${local.cell_a_primary_domain}/api/notebook_service"
 
   accounting_base_url = "https://${local.cell_a_primary_domain}${var.accounting_svc_base_path}"
+  # No Price entry for the RESEARCH_AGENT subtype in accounting-service
+  # yet (prod-ai#138) - _report_accounting_usage's own try/except logs
+  # a warning and no-ops on that rather than failing the run, so this
+  # is safe to enable now ahead of that, to verify reservation/charge
+  # calls reach accounting-service at all before the real price lands.
+  accounting_disabled = false
 }
 
 module "github_notebook_service_ecs_redeploy_role" {
@@ -536,6 +542,7 @@ module "accounting_svc" {
     module.notebook_service.subnet_cidr_blocks,
     module.virtual_lab_manager.subnet_cidr_blocks,
     module.launch_system.api_subnet_cidr_blocks,
+    module.research_agent.subnet_cidr_blocks,
     ["${module.bastion_host.bastion_instance_private_ip}/32"],
     [var.core_web_app_in_azure_cidr_block],
   )
