@@ -43,25 +43,25 @@ variable "model_id" {
 variable "agent_max_turns" {
   description = "Max agent loop iterations (model call + any tool execution) per invocation."
   type        = number
-  default     = 50
+  default     = 10
 }
 
 variable "agent_max_output_tokens" {
   description = "Max cumulative model output tokens per invocation."
   type        = number
-  default     = 20000
+  default     = 8000
 }
 
 variable "agent_max_total_tokens" {
   description = "Max cumulative input+output tokens per invocation."
   type        = number
-  default     = 500000
+  default     = 50000
 }
 
 variable "agent_max_tool_calls" {
   description = "Max total tool calls per invocation."
   type        = number
-  default     = 100
+  default     = 15
 }
 
 # Accounting (obp-accounting-sdk) - reports credits for each research

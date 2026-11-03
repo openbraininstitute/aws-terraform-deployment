@@ -391,6 +391,14 @@ module "research_agent" {
 
   notebook_service_url = "https://${local.cell_a_primary_domain}/api/notebook_service"
 
+  # Module defaults (10/8000/50000/15) were POC-era placeholders that
+  # would stop a run early regardless of how much budget_time was
+  # left - raised here for real multi-hour use on staging.
+  agent_max_turns         = 50
+  agent_max_output_tokens = 20000
+  agent_max_total_tokens  = 500000
+  agent_max_tool_calls    = 100
+
   accounting_base_url = "https://${local.cell_a_primary_domain}${var.accounting_svc_base_path}"
   # No Price entry for the RESEARCH_AGENT subtype in accounting-service
   # yet (prod-ai#138) - _report_accounting_usage's own try/except logs
