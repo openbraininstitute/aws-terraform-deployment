@@ -13,3 +13,7 @@ output "agent_runtime_arn" {
 output "memory_id" {
   value = aws_bedrockagentcore_memory.research_agent.id
 }
+
+output "memory_arn" {
+  value = aws_bedrockagentcore_memory.research_agent.arn
+}

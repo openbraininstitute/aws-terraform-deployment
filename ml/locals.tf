@@ -35,9 +35,10 @@ locals {
     32
   )
 
-  iam_log_policy_name  = local.legacy ? "ml_ecs_agent_logs" : replace("${local.ml_prefix}_ecs_agent_logs", "-", "_")
-  iam_s3_policy_name   = local.legacy ? "ml_ecs_agent_s3_access" : replace("${local.ml_prefix}_ecs_agent_s3_access", "-", "_")
-  cloudwatch_dashboard = local.legacy ? "neuroagent" : substr("neuroagent-${replace(lower(var.instance_key), "_", "-")}", 0, 255)
+  iam_log_policy_name       = local.legacy ? "ml_ecs_agent_logs" : replace("${local.ml_prefix}_ecs_agent_logs", "-", "_")
+  iam_s3_policy_name        = local.legacy ? "ml_ecs_agent_s3_access" : replace("${local.ml_prefix}_ecs_agent_s3_access", "-", "_")
+  iam_agentcore_policy_name = local.legacy ? "ml_ecs_agent_agentcore_access" : replace("${local.ml_prefix}_ecs_agent_agentcore_access", "-", "_")
+  cloudwatch_dashboard      = local.legacy ? "neuroagent" : substr("neuroagent-${replace(lower(var.instance_key), "_", "-")}", 0, 255)
 
   ml_subnet_a_tag_name = local.legacy ? "ml_a" : "${local.ml_prefix}_subnet_a"
   ml_subnet_b_tag_name = local.legacy ? "ml_b" : "${local.ml_prefix}_subnet_b"

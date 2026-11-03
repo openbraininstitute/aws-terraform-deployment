@@ -201,9 +201,14 @@ module "ecs_service_agent" {
   }
 
   # Add the S3 policy to the task role (not execution role)
-  tasks_iam_role_policies = {
-    s3-policy = aws_iam_policy.ml_ecs_agent_s3_policy.arn
-  }
+  tasks_iam_role_policies = merge(
+    {
+      s3-policy = aws_iam_policy.ml_ecs_agent_s3_policy.arn
+    },
+    var.research_agent_runtime_arn == "" ? {} : {
+      agentcore-policy = aws_iam_policy.ml_ecs_agent_agentcore_policy[0].arn
+    }
+  )
 
   service_connect_configuration = {
     namespace = aws_service_discovery_http_namespace.ml_agent.arn
@@ -363,6 +368,35 @@ resource "aws_iam_policy" "ml_ecs_agent_s3_policy" {
           module.s3_bucket.s3_bucket_arn,
           "${module.s3_bucket.s3_bucket_arn}/*"
         ]
+      }
+    ]
+  })
+  tags = var.tags
+}
+
+# Lets this ECS task call the research agent's AgentCore Runtime/Memory
+# directly (agentcore-agent.ts) - only created once the research_agent
+# module is actually applied (research_agent_runtime_arn is non-empty).
+resource "aws_iam_policy" "ml_ecs_agent_agentcore_policy" {
+  count = var.research_agent_runtime_arn == "" ? 0 : 1
+  name  = local.iam_agentcore_policy_name
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["bedrock-agentcore:InvokeAgentRuntime"]
+        Resource = ["${var.research_agent_runtime_arn}*"]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "bedrock-agentcore:ListEvents",
+          "bedrock-agentcore:ListSessions",
+          "bedrock-agentcore:ListMemoryRecords",
+          "bedrock-agentcore:RetrieveMemoryRecords",
+        ]
+        Resource = [var.research_agent_memory_arn]
       }
     ]
   })
