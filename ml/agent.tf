@@ -163,6 +163,10 @@ module "ecs_service_agent" {
           value = var.research_agent_runtime_arn
         },
         {
+          name  = "NEUROAGENT__AGENTCORE__MEMORY_ID"
+          value = var.research_agent_memory_id
+        },
+        {
           name  = "NEUROAGENT__RESEARCH_AGENT__ENABLED"
           value = tostring(var.research_agent_enabled)
         },

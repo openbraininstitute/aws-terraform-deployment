@@ -248,6 +248,7 @@ module "ml_typescript" {
 
   research_agent_enabled     = var.research_agent_enabled
   research_agent_runtime_arn = module.research_agent.agent_runtime_arn
+  research_agent_memory_id   = module.research_agent.memory_id
 }
 
 # NOTE: The Nexus service has been fully decommissioned.
