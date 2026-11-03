@@ -25,7 +25,7 @@ ml_neuroagent_typescript_bucket_name   = "ml-neuroagent-typescript-staging"
 ml_typescript_subnet_a_cidr            = "10.0.9.0/24"
 ml_typescript_subnet_b_cidr            = "10.0.7.0/24"
 grading_service_docker_image_url       = "985539765147.dkr.ecr.us-east-1.amazonaws.com/grading-service:staging"
-research_agent_docker_image_url        = "985539765147.dkr.ecr.us-east-1.amazonaws.com/research-agent:v0.2.1"
+research_agent_docker_image_url        = "985539765147.dkr.ecr.us-east-1.amazonaws.com/research-agent:v0.3.0"
 
 small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2026.11.03.1"
 small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2026.11.03.1"
