@@ -31,6 +31,12 @@ variable "notebook_service_url" {
   type        = string
 }
 
+variable "model_id" {
+  description = "Bedrock model ID (or inference profile ID) the research agent uses. Changing this is just a Terraform update, not a rebuild/republish - see researchagent's MODEL_ID env var."
+  type        = string
+  default     = "us.anthropic.claude-sonnet-5"
+}
+
 # Per-invocation agent budget caps (Strands' own `limits`/intervention
 # mechanism) - passed as Runtime env vars rather than baked into the
 # image so they can be tuned without a rebuild/redeploy.
