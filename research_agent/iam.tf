@@ -29,6 +29,18 @@ data "aws_iam_policy_document" "research_agent_runtime_permissions" {
     resources = ["*"] # tightened once the specific model ARN is fixed
   }
 
+  # Anthropic models on Bedrock are AWS Marketplace products - the
+  # first invocation in an account auto-subscribes, but that requires
+  # these permissions or it fails with AccessDeniedException (confirmed
+  # the hard way: ConverseStream denied until this was added). Once a
+  # model is enabled once per account, every role can call it without
+  # this - but we're not relying on another role having done that first.
+  statement {
+    sid       = "BedrockModelMarketplaceSubscription"
+    actions   = ["aws-marketplace:ViewSubscriptions", "aws-marketplace:Subscribe", "aws-marketplace:Unsubscribe"]
+    resources = ["*"]
+  }
+
   # Observability (OTEL spans/metrics) - a real, separate IAM
   # requirement per AWS's own documented execution-role policy, not
   # something Runtime grants for free. Without this, the ADOT exporter
