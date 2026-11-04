@@ -236,8 +236,8 @@ resource "aws_ecs_task_definition" "virtual_lab_manager_ecs_definition" {
           value = "100"
         },
         {
-          name  = "MAX_PROJECTS_NUMBER"
-          value = "40"
+          name  = "MAX_PROJECTS_PER_VIRTUAL_LAB"
+          value = "100"
         },
         {
           name  = "MULTIPLE_VLABS_ALLOWED_USER_ID"
