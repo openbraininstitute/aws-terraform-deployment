@@ -879,6 +879,7 @@ module "launch_system" {
     [
       var.launch_system_aca_in_azure_cidr_block,
       var.launch_system_batch_in_azure_cidr_block,
+      var.core_web_app_in_azure_cidr_block,
     ],
   )
 
