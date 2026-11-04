@@ -394,10 +394,20 @@ module "research_agent" {
   # Module defaults (10/8000/50000/15) were POC-era placeholders that
   # would stop a run early regardless of how much budget_time was
   # left - raised here for real multi-hour use on staging.
-  agent_max_turns         = 50
-  agent_max_output_tokens = 20000
-  agent_max_total_tokens  = 500000
-  agent_max_tool_calls    = 100
+  #
+  # agent_max_turns/agent_max_tool_calls have no cost side effect -
+  # confirmed, the reservation formula below only depends on
+  # total_tokens - so both are raised a lot. agent_max_total_tokens
+  # IS NOT just a safety ceiling - it directly sets the upfront
+  # credit reservation per call (credits_estimate = total_tokens /
+  # 10_000 * CREDITS_PER_10K_OUTPUT_TOKENS in entrypoint.py), so it's
+  # only raised modestly here to avoid reserving an unreasonable
+  # amount of a project's budget on every single
+  # launch-research-run call.
+  agent_max_turns         = 10000
+  agent_max_output_tokens = 40000
+  agent_max_total_tokens  = 1000000
+  agent_max_tool_calls    = 10000
 
   accounting_base_url = "https://${local.cell_a_primary_domain}${var.accounting_svc_base_path}"
   # No Price entry for the RESEARCH_AGENT subtype in accounting-service
