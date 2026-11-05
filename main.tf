@@ -401,7 +401,7 @@ module "research_agent" {
   # safety-net values - not realistic ceilings, just a backstop
   # against a genuinely runaway loop.
   agent_max_turns             = 1000000
-  agent_max_output_tokens     = 10000000
+  agent_max_output_tokens     = 100000000
   agent_max_total_tokens      = 100000000
   agent_max_tool_calls        = 1000000
   fixed_reservation_credits   = 10000
