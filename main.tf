@@ -404,7 +404,7 @@ module "research_agent" {
   agent_max_output_tokens     = 100000000
   agent_max_total_tokens      = 100000000
   agent_max_tool_calls        = 1000000
-  fixed_reservation_credits   = 10000
+  fixed_reservation_credits   = 200
   default_budget_time_minutes = 480 # 8h - matches AgentCore's own max session lifetime on this compute type, so nothing beyond this can actually run anyway
 
   accounting_base_url = "https://${local.cell_a_primary_domain}${var.accounting_svc_base_path}"
