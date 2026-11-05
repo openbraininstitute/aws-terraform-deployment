@@ -64,6 +64,18 @@ variable "agent_max_tool_calls" {
   default     = 15
 }
 
+variable "fixed_reservation_credits" {
+  description = "Optional flat credit amount to reserve per call, bypassing the token-derived estimate - needed once agent_max_total_tokens is set to an effectively-unbounded safety-net value rather than a realistic ceiling. Null means fall back to the token-derived reservation."
+  type        = number
+  default     = null
+}
+
+variable "default_budget_time_minutes" {
+  description = "Default budget_time (minutes) for a call that doesn't specify one, overriding the agent's own hardcoded 60-minute fallback."
+  type        = number
+  default     = null
+}
+
 # Accounting (obp-accounting-sdk) - reports credits for each research
 # run under the RESEARCH_AGENT service subtype, once it exists in a
 # released accounting-sdk version and a Price entry exists for it.
