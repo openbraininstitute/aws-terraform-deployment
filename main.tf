@@ -247,9 +247,9 @@ module "ml_typescript" {
   neuroagent_application_prefix    = "/api/agent-ts"
 
   research_agent_enabled     = var.research_agent_enabled
-  research_agent_runtime_arn = module.research_agent.agent_runtime_arn
-  research_agent_memory_id   = module.research_agent.memory_id
-  research_agent_memory_arn  = module.research_agent.memory_arn
+  research_agent_runtime_arn = var.deploy_research_agent ? module.research_agent[0].agent_runtime_arn : ""
+  research_agent_memory_id   = var.deploy_research_agent ? module.research_agent[0].memory_id : ""
+  research_agent_memory_arn  = var.deploy_research_agent ? module.research_agent[0].memory_arn : ""
 }
 
 # NOTE: The Nexus service has been fully decommissioned.
@@ -382,6 +382,17 @@ module "notebook_service" {
 
 module "research_agent" {
   source = "./research_agent"
+
+  # No Bedrock model access/Marketplace subscription in production yet
+  # (prod-ai#142) - count = 0 skips the whole module (Runtime, IAM,
+  # Memory, subnets), not just the research_agent_enabled app-level
+  # kill switch on neuroagent-ts, which only gates its MCP tools/
+  # endpoints and doesn't affect whether this infra exists at all.
+  count = var.deploy_research_agent ? 1 : 0
+
+  providers = {
+    aws = aws.research_agent
+  }
 
   aws_region               = local.aws_region
   vpc_id                   = local.vpc_id
@@ -558,7 +569,7 @@ module "accounting_svc" {
     module.notebook_service.subnet_cidr_blocks,
     module.virtual_lab_manager.subnet_cidr_blocks,
     module.launch_system.api_subnet_cidr_blocks,
-    module.research_agent.subnet_cidr_blocks,
+    flatten(module.research_agent[*].subnet_cidr_blocks),
     ["${module.bastion_host.bastion_instance_private_ip}/32"],
     [var.core_web_app_in_azure_cidr_block],
   )

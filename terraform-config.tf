@@ -58,3 +58,12 @@ provider "aws" {
     }
   }
 }
+
+provider "aws" {
+  alias = "research_agent"
+  default_tags {
+    tags = {
+      SBO_Billing = "research_agent"
+    }
+  }
+}

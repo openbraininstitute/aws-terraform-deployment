@@ -222,12 +222,18 @@ variable "notebook_service_docker_image_url" {
 
 variable "research_agent_docker_image_url" {
   type        = string
-  description = "Docker image for the research agent AgentCore Runtime"
+  description = "Docker image for the research agent AgentCore Runtime. Unused (and harmless) when deploy_research_agent is false."
+  default     = ""
 }
 
 variable "research_agent_enabled" {
   type        = bool
   description = "Feature flag for the research agent's endpoints/MCP tools in neuroagent-ts - set explicitly per environment so it can be switched off in production independently of staging."
+}
+
+variable "deploy_research_agent" {
+  type        = bool
+  description = "Whether to provision the research_agent Terraform module at all (Runtime, IAM, Memory, subnets) - set explicitly per environment, false in production until Bedrock model access/Marketplace subscription is sorted there (prod-ai#142). Distinct from research_agent_enabled, which only gates neuroagent-ts's own MCP tools/endpoints and does not affect whether this infra exists."
 }
 
 variable "notebook_service_aws_accounting_enabled" {
