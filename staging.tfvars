@@ -191,4 +191,3 @@ nas_backup_secret_arns         = ["arn:aws:secretsmanager:us-east-1:992382665735
 databases_to_backup_arns       = ["arn:aws:rds:us-east-1:992382665735:db:accounting"]
 
 research_agent_enabled = true
-deploy_research_agent  = true
