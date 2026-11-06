@@ -191,3 +191,8 @@ databases_to_backup_arns       = ["arn:aws:rds:us-east-1:671250183987:db:account
 
 # Kill switch for the research agent's endpoints/MCP tools in neuroagent-ts.
 research_agent_enabled = false
+
+# No Bedrock model access/Marketplace subscription in production yet
+# (prod-ai#142) - skips provisioning the research_agent module entirely
+# (Runtime, IAM, Memory, subnets), not just the app-level kill switch above.
+deploy_research_agent = false
