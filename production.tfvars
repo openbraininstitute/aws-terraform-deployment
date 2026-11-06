@@ -189,10 +189,8 @@ ssm_readonly_access_policy_arn = "arn:aws:iam::671250183987:policy/obi_SSMBastio
 nas_backup_secret_arns         = ["arn:aws:secretsmanager:us-east-1:671250183987:secret:accounting_database_readonly_secret-SaD437"]
 databases_to_backup_arns       = ["arn:aws:rds:us-east-1:671250183987:db:accounting", "arn:aws:rds:us-east-1:671250183987:db:auth-manager", "arn:aws:rds:us-east-1:671250183987:db:entitycore", "arn:aws:rds:us-east-1:671250183987:db:keycloak", "arn:aws:rds:us-east-1:671250183987:db:launch-system", "arn:aws:rds:us-east-1:671250183987:db:ml-ts-rds-postgres", "arn:aws:rds:us-east-1:671250183987:db:virtual-lab-manager-db-id"]
 
-# Kill switch for the research agent's endpoints/MCP tools in neuroagent-ts.
-research_agent_enabled = false
-
 # No Bedrock model access/Marketplace subscription in production yet
-# (prod-ai#142) - skips provisioning the research_agent module entirely
-# (Runtime, IAM, Memory, subnets), not just the app-level kill switch above.
-deploy_research_agent = false
+# (prod-ai#142) - gates both the research_agent module's infra
+# (Runtime, IAM, Memory, subnets) and neuroagent-ts's own MCP
+# tools/endpoints for it.
+research_agent_enabled = false

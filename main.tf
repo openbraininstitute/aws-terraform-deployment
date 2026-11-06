@@ -247,9 +247,9 @@ module "ml_typescript" {
   neuroagent_application_prefix    = "/api/agent-ts"
 
   research_agent_enabled     = var.research_agent_enabled
-  research_agent_runtime_arn = var.deploy_research_agent ? module.research_agent[0].agent_runtime_arn : ""
-  research_agent_memory_id   = var.deploy_research_agent ? module.research_agent[0].memory_id : ""
-  research_agent_memory_arn  = var.deploy_research_agent ? module.research_agent[0].memory_arn : ""
+  research_agent_runtime_arn = var.research_agent_enabled ? module.research_agent[0].agent_runtime_arn : ""
+  research_agent_memory_id   = var.research_agent_enabled ? module.research_agent[0].memory_id : ""
+  research_agent_memory_arn  = var.research_agent_enabled ? module.research_agent[0].memory_arn : ""
 }
 
 # NOTE: The Nexus service has been fully decommissioned.
@@ -384,11 +384,10 @@ module "research_agent" {
   source = "./research_agent"
 
   # No Bedrock model access/Marketplace subscription in production yet
-  # (prod-ai#142) - count = 0 skips the whole module (Runtime, IAM,
-  # Memory, subnets), not just the research_agent_enabled app-level
-  # kill switch on neuroagent-ts, which only gates its MCP tools/
-  # endpoints and doesn't affect whether this infra exists at all.
-  count = var.deploy_research_agent ? 1 : 0
+  # (prod-ai#142) - research_agent_enabled gates both this module's
+  # infra (Runtime, IAM, Memory, subnets) and neuroagent-ts's own MCP
+  # tools/endpoints for it, so the two can't drift out of sync.
+  count = var.research_agent_enabled ? 1 : 0
 
   providers = {
     aws = aws.research_agent
