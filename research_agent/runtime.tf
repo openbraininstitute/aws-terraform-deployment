@@ -32,6 +32,7 @@ resource "aws_bedrockagentcore_agent_runtime" "research_agent" {
       MEMORY_ID               = aws_bedrockagentcore_memory.research_agent.id
       ACCOUNTING_BASE_URL     = var.accounting_base_url
       ACCOUNTING_DISABLED     = var.accounting_disabled ? "1" : "0"
+      WEB_SEARCH_GATEWAY_URL  = aws_bedrockagentcore_gateway.research_agent_web_search.gateway_url
     },
     var.fixed_reservation_credits == null ? {} : {
       FIXED_RESERVATION_CREDITS = tostring(var.fixed_reservation_credits)
