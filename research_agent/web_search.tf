@@ -59,11 +59,6 @@ resource "aws_bedrockagentcore_gateway" "research_agent_web_search" {
 
   protocol_configuration {
     mcp {
-      # The real API rejects an empty mcp block (ValidationException:
-      # "MCP configuration cannot be empty. Add supportedVersions,
-      # searchType or instructions.") - confirmed via a failed apply,
-      # not guessed. instructions is the simplest field that satisfies
-      # this; it has no other effect on a single-target gateway.
       instructions = "Search the web for current, cited information to ground research_agent's responses."
     }
   }
