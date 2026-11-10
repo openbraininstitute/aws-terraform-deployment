@@ -58,7 +58,9 @@ resource "aws_bedrockagentcore_gateway" "research_agent_web_search" {
   authorizer_type = "AWS_IAM"
 
   protocol_configuration {
-    mcp {}
+    mcp {
+      instructions = "Search the web for current, cited information to ground research_agent's responses."
+    }
   }
 }
 
