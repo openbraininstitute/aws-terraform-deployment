@@ -147,10 +147,11 @@ locals {
     WHITELISTED_CORS_URLS = jsonencode(var.cors_origins)
     CORS_ORIGIN_REGEX     = var.cors_origin_regex # null: left out, app default
 
-    ENTITY_CORE_URI             = var.entitycore_url
-    ENTITY_CORE_TIMEOUT_SECONDS = "30"
-    ENTITY_CORE_MAX_CONNECTIONS = "32"
-    ENTITY_CORE_MAX_ASSET_BYTES = tostring(512 * 1024 * 1024) # drawing takes 3x the file: fits in 4 GiB
+    ENTITY_CORE_URI              = var.entitycore_url
+    ENTITY_CORE_TIMEOUT_SECONDS  = "30"
+    ENTITY_CORE_DOWNLOAD_SECONDS = "60" # whole download, below nginx's 120 s
+    ENTITY_CORE_MAX_CONNECTIONS  = "32"
+    ENTITY_CORE_MAX_ASSET_BYTES  = null # left out: RENDER_MEMORY_BYTES / 3 (341 MiB), the most it may be
 
     RENDER_CONCURRENCY  = "4"
     RENDER_DOWNLOADS    = "16"
