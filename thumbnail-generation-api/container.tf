@@ -134,6 +134,54 @@ resource "aws_vpc_security_group_egress_rule" "allow_outgoing_udp" {
 }
 
 
+# Task size, and every setting of the app (thumbnail-generation-api src/app/settings.py and
+# .env.example, which explain each one). Values sized to this task:
+#
+#   2 vCPU, 4 GiB. The image runs nginx and 2 granian worker processes (supervisord.conf): one
+#   process per vCPU, since a drawing holds Python's GIL.
+#   Memory: the container idles at about 450 MiB (measured, staging 2026-11-10). Each process may
+#   hold RENDER_MEMORY_BYTES of files being drawn (3x a file's size, app/application/admission.py):
+#   2 x 1 GiB = 2 GiB, the same half-of-the-container share that was measured safe at 2 GiB, and
+#   about 1.5 GiB left for Chromium (kaleido, simulation plots), figures and nginx.
+#   ENTITY_CORE_MAX_ASSET_BYTES: a file larger than the budget runs alone, using 3x its size.
+#   512 MiB -> 1.5 GiB, plus the other process's 1 GiB and the idle 0.45 GiB, stays under 4 GiB.
+#   The old limit (1 GiB -> 3 GiB alone) could exceed the container. The largest of 200 staging
+#   ephys files measured is 77 MB; the size of every real asset was not measured.
+#   Connections: RENDER_DOWNLOADS and ENTITY_CORE_MAX_CONNECTIONS protect entitycore, not this
+#   task (staging entitycore failed with 200 calls at once), so they keep the app defaults.
+#   Disk: the nginx image cache is 1 GiB (nginx.conf), within Fargate's 20 GiB ephemeral storage.
+locals {
+  task_cpu        = 2048
+  task_memory_mib = 4096
+
+  environment = {
+    ENVIRONMENT = var.environment
+
+    BASE_PATH             = var.base_path
+    WHITELISTED_CORS_URLS = jsonencode(var.cors_origins)
+    CORS_ORIGIN_REGEX     = var.cors_origin_regex # null: not set, the app default (localhost) applies
+
+    ENTITY_CORE_URI             = var.entitycore_url
+    ENTITY_CORE_TIMEOUT_SECONDS = "30"
+    ENTITY_CORE_MAX_CONNECTIONS = "32"
+    ENTITY_CORE_MAX_ASSET_BYTES = tostring(512 * 1024 * 1024)
+
+    RENDER_CONCURRENCY  = "4"
+    RENDER_DOWNLOADS    = "16"
+    RENDER_MEMORY_BYTES = tostring(1024 * 1024 * 1024)
+
+    SENTRY_DSN                  = "https://df67a83aab2f208467f94df08a207e59@o224246.ingest.us.sentry.io/4507457507885056"
+    SENTRY_TRACES_SAMPLE_RATE   = "0.2"
+    SENTRY_PROFILES_SAMPLE_RATE = "0.05"
+
+    LOG_LEVEL  = "INFO"
+    LOG_FORMAT = "JSON"
+    LOG_DEBUG  = ""
+
+    MPLCONFIGDIR = "/tmp/matplotlib" # read by matplotlib; /tmp is the writable volume
+  }
+}
+
 # Task Definition
 resource "aws_ecs_task_definition" "main" {
   family                   = "thumbnail-generation-api-task-definition"
@@ -141,8 +189,8 @@ resource "aws_ecs_task_definition" "main" {
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn            = aws_iam_role.ecs_task_role.arn
-  memory                   = 4096
-  cpu                      = 2048
+  memory                   = local.task_memory_mib
+  cpu                      = local.task_cpu
 
   runtime_platform {
     operating_system_family = "LINUX"
@@ -163,10 +211,6 @@ resource "aws_ecs_task_definition" "main" {
 
   volume {
     name = "var-lib-nginx"
-  }
-
-  volume {
-    name = "app-output"
   }
 
   volume {
@@ -201,10 +245,6 @@ resource "aws_ecs_task_definition" "main" {
           {
             sourceVolume  = "var-lib-nginx",
             containerPath = "/var/lib/nginx"
-          },
-          {
-            sourceVolume  = "app-output",
-            containerPath = "/app/output"
           }
         ],
         portMappings = [
@@ -213,34 +253,10 @@ resource "aws_ecs_task_definition" "main" {
             protocol      = "tcp"
           }
         ],
-        environment = concat([
-          {
-            name  = "WHITELISTED_CORS_URLS",
-            value = jsonencode(var.cors_origins)
-          },
-          {
-            name  = "BASE_PATH"
-            value = var.base_path
-          },
-          {
-            name  = "ENVIRONMENT"
-            value = "production"
-          },
-          {
-            name  = "SENTRY_DSN"
-            value = "https://df67a83aab2f208467f94df08a207e59@o224246.ingest.us.sentry.io/4507457507885056"
-          },
-          {
-            name : "ENTITY_CORE_URI",
-            value : var.entitycore_url
-          },
-          {
-            name  = "MPLCONFIGDIR",
-            value = "/tmp/matplotlib"
-          },
-        ], var.cors_origin_regex != null ? [{ name = "CORS_ORIGIN_REGEX", value = var.cors_origin_regex }] : []),
-        memory = 2048
-        cpu    = 1024
+        environment = [for name, value in local.environment : { name = name, value = value } if value != null],
+        # The one container gets the whole task (it was capped at half: 1 vCPU / 2 GiB).
+        memory = local.task_memory_mib
+        cpu    = local.task_cpu
         logConfiguration = {
           logDriver = "awslogs"
           options = {

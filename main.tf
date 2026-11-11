@@ -742,6 +742,7 @@ module "thumbnail_generation_api" {
   cors_origins                  = local.core_web_app_origins
   cors_origin_regex             = local.core_web_app_cors_origin_regex
   entitycore_url                = "https://${local.cell_a_primary_domain}/api/entitycore"
+  environment                   = local.is_production ? "production" : var.deployment_env == "staging" ? "staging" : "development"
 }
 
 module "virtual_lab_manager" {

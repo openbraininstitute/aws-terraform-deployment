@@ -68,3 +68,12 @@ variable "cors_origin_regex" {
   type        = string
   default     = null
 }
+
+variable "environment" {
+  description = "ENVIRONMENT of the app: tags its logs and Sentry events"
+  type        = string
+  validation {
+    condition     = contains(["development", "staging", "production"], var.environment)
+    error_message = "The app accepts development, staging or production."
+  }
+}
