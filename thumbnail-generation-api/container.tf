@@ -145,7 +145,7 @@ locals {
 
     BASE_PATH             = var.base_path
     WHITELISTED_CORS_URLS = jsonencode(var.cors_origins)
-    CORS_ORIGIN_REGEX     = var.cors_origin_regex # null: left out, app default
+    CORS_ORIGIN_REGEX     = var.cors_origin_regex # null (production): left out, only the list above
 
     ENTITY_CORE_URI              = var.entitycore_url
     ENTITY_CORE_TIMEOUT_SECONDS  = "30"
@@ -163,7 +163,7 @@ locals {
 
     LOG_LEVEL  = "INFO"
     LOG_FORMAT = "JSON"
-    LOG_DEBUG  = ""
+    LOG_DEBUG  = null # left out: no scope at DEBUG (an empty value can show as a change on every plan)
 
     MPLCONFIGDIR = "/tmp/matplotlib" # /tmp is writable
   }
