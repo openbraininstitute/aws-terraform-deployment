@@ -729,6 +729,12 @@ module "obi_one_v2" {
 module "thumbnail_generation_api" {
   source = "./thumbnail-generation-api"
 
+  count = (local.is_staging || local.is_production) ? 1 : 0
+
+  providers = {
+    aws = aws.thumbnail-generation-api
+  }
+
   private_alb_https_listener_arn = local.private_alb_https_listener_arn
   route_table_id                 = local.route_table_private_subnets_id
   vpc_cidr_block                 = local.vpc_cidr_block
@@ -742,7 +748,7 @@ module "thumbnail_generation_api" {
   cors_origins                  = local.core_web_app_origins
   cors_origin_regex             = local.core_web_app_cors_origin_regex
   entitycore_url                = "https://${local.cell_a_primary_domain}/api/entitycore"
-  environment                   = local.is_production ? "production" : var.deployment_env == "staging" ? "staging" : "development"
+  environment                   = local.is_production ? "production" : "staging"
 }
 
 module "virtual_lab_manager" {
@@ -990,18 +996,19 @@ module "dashboards" {
   aws_region = local.aws_region
 
   private_load_balancer_id = local.private_alb_https_listener_arn
-  private_load_balancer_target_suffixes = {
+  private_load_balancer_target_suffixes = merge({
     "AccountingService"   = module.accounting_svc.private_lb_rule_suffix
     "EntityCoreService"   = module.entitycore_svc.private_lb_rule_suffix
     "KeyCloak"            = module.cs.private_keycloak_lb_rule_suffix
     "SmallScaleSimulator" = module.small_scale_simulator.private_lb_rule_suffix
     "SonataCellService"   = module.cells_svc.private_lb_rule_suffix
-    "ThumbnailGenerator"  = module.thumbnail_generation_api.private_lb_rule_suffix
     "VLabManager"         = module.virtual_lab_manager.private_arn_suffix
     "ObiOneV2"            = module.obi_one_v2.private_lb_rule_suffix
     "LaunchSystem"        = module.launch_system.private_lb_rule_suffix
     "GradingService"      = module.grading_service.private_lb_rule_suffix
-  }
+    }, (local.is_staging || local.is_production) ? {
+    "ThumbnailGenerator" = module.thumbnail_generation_api[0].private_lb_rule_suffix
+  } : {})
 }
 
 

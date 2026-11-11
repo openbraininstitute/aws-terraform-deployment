@@ -347,7 +347,8 @@ variable "entitycore_svc_image_url" {
 
 variable "thumbnail_generation_api_docker_image_url" {
   type        = string
-  description = "Docker image for the thumbnail generation api"
+  description = "Docker image for the thumbnail generation api (staging and production only)"
+  default     = null
   sensitive   = false
 }
 

@@ -73,7 +73,7 @@ variable "environment" {
   description = "ENVIRONMENT of the app: tags its logs and Sentry events"
   type        = string
   validation {
-    condition     = contains(["development", "staging", "production"], var.environment)
-    error_message = "The app accepts development, staging or production."
+    condition     = contains(["staging", "production"], var.environment)
+    error_message = "Deployed in staging and production only."
   }
 }
