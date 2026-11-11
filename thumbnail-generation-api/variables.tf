@@ -40,6 +40,7 @@ variable "vpc_id" {
 variable "docker_image_url" {
   type        = string
   description = "docker image for the thumbnail generation api"
+  nullable    = false # the root variable is optional (not set in sandboxes): fail here, at plan
 }
 
 variable "base_path" {

@@ -996,19 +996,21 @@ module "dashboards" {
   aws_region = local.aws_region
 
   private_load_balancer_id = local.private_alb_https_listener_arn
-  private_load_balancer_target_suffixes = merge({
-    "AccountingService"   = module.accounting_svc.private_lb_rule_suffix
-    "EntityCoreService"   = module.entitycore_svc.private_lb_rule_suffix
-    "KeyCloak"            = module.cs.private_keycloak_lb_rule_suffix
-    "SmallScaleSimulator" = module.small_scale_simulator.private_lb_rule_suffix
-    "SonataCellService"   = module.cells_svc.private_lb_rule_suffix
-    "VLabManager"         = module.virtual_lab_manager.private_arn_suffix
-    "ObiOneV2"            = module.obi_one_v2.private_lb_rule_suffix
-    "LaunchSystem"        = module.launch_system.private_lb_rule_suffix
-    "GradingService"      = module.grading_service.private_lb_rule_suffix
-    }, (local.is_staging || local.is_production) ? {
-    "ThumbnailGenerator" = module.thumbnail_generation_api[0].private_lb_rule_suffix
-  } : {})
+  private_load_balancer_target_suffixes = merge(
+    {
+      "AccountingService"   = module.accounting_svc.private_lb_rule_suffix
+      "EntityCoreService"   = module.entitycore_svc.private_lb_rule_suffix
+      "KeyCloak"            = module.cs.private_keycloak_lb_rule_suffix
+      "SmallScaleSimulator" = module.small_scale_simulator.private_lb_rule_suffix
+      "SonataCellService"   = module.cells_svc.private_lb_rule_suffix
+      "VLabManager"         = module.virtual_lab_manager.private_arn_suffix
+      "ObiOneV2"            = module.obi_one_v2.private_lb_rule_suffix
+      "LaunchSystem"        = module.launch_system.private_lb_rule_suffix
+      "GradingService"      = module.grading_service.private_lb_rule_suffix
+    },
+    # Only where the service is deployed (staging and production).
+    { for service in module.thumbnail_generation_api : "ThumbnailGenerator" => service.private_lb_rule_suffix },
+  )
 }
 
 
