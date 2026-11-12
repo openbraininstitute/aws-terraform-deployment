@@ -400,6 +400,7 @@ module "research_agent" {
   container_uri = var.research_agent_docker_image_url
 
   notebook_service_url = "https://${local.cell_a_primary_domain}/api/notebook_service"
+  auth_manager_url     = "https://${local.cell_a_primary_domain}/api/auth-manager"
 
   # Module defaults (10/8000/50000/15) were POC-era placeholders that
   # would stop a run early regardless of how much budget_time was

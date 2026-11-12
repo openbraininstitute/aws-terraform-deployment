@@ -31,6 +31,11 @@ variable "notebook_service_url" {
   type        = string
 }
 
+variable "auth_manager_url" {
+  description = "auth-manager base URL - the Runtime exchanges the launch-time access token for a persistent token id here, then mints fresh access tokens from it for every notebook-service call (prod-ai#153)."
+  type        = string
+}
+
 variable "model_id" {
   description = "Bedrock model ID (or inference profile ID) the research agent uses. Changing this is just a Terraform update, not a rebuild/republish - see researchagent's MODEL_ID env var."
   type        = string
