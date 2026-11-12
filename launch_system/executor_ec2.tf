@@ -126,32 +126,8 @@ resource "aws_autoscaling_group" "executor_cpu" {
       }
 
       override {
-        instance_requirements {
-          vcpu_count {
-            min = 16
-            max = 64
-          }
-
-          memory_mib {
-            min = 57344
-            max = 294912
-          }
-
-          memory_gib_per_vcpu {
-            min = 3.5
-            max = 4.5
-          }
-
-          cpu_manufacturers     = ["intel", "amd"]
-          instance_generations  = ["current"]
-          burstable_performance = "excluded"
-          accelerator_count {
-            max = 0
-          }
-
-          # m5a ~3x slower on NEURON solve than m6a; h1/d3en are storage-optimised outliers.
-          excluded_instance_types = ["m5a.*", "m5ad.*", "h1.*", "d3en.*"]
-        }
+        # Pin to m8a.4xlarge (16 vCPU / 64 GiB) for consistent NEURON solve latency.
+        instance_type = "m8a.4xlarge"
       }
     }
   }
