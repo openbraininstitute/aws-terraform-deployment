@@ -116,7 +116,9 @@ resource "aws_autoscaling_group" "executor_cpu" {
   mixed_instances_policy {
     instances_distribution {
       on_demand_percentage_above_base_capacity = 100
-      spot_allocation_strategy                 = "price-capacity-optimized"
+      # Prefer m8a; fall through overrides in list order when an AZ lacks capacity.
+      on_demand_allocation_strategy = "prioritized"
+      spot_allocation_strategy      = "price-capacity-optimized"
     }
 
     launch_template {
@@ -125,33 +127,17 @@ resource "aws_autoscaling_group" "executor_cpu" {
         version            = aws_launch_template.executor_cpu.latest_version
       }
 
+      # All 16 vCPU / 64 GiB; skip m5a (measured ~3x slower NEURON solve than m6a).
       override {
-        instance_requirements {
-          vcpu_count {
-            min = 16
-            max = 64
-          }
+        instance_type = "m8a.4xlarge"
+      }
 
-          memory_mib {
-            min = 57344
-            max = 294912
-          }
+      override {
+        instance_type = "m7a.4xlarge"
+      }
 
-          memory_gib_per_vcpu {
-            min = 3.5
-            max = 4.5
-          }
-
-          cpu_manufacturers     = ["intel", "amd"]
-          instance_generations  = ["current"]
-          burstable_performance = "excluded"
-          accelerator_count {
-            max = 0
-          }
-
-          # m5a ~3x slower on NEURON solve than m6a; h1/d3en are storage-optimised outliers.
-          excluded_instance_types = ["m5a.*", "m5ad.*", "h1.*", "d3en.*"]
-        }
+      override {
+        instance_type = "m6a.4xlarge"
       }
     }
   }

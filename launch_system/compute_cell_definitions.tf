@@ -117,15 +117,15 @@ locals {
           },
           # CPU ECS-on-EC2 ASG (additional: premounted EFS + shared/local caches, binpack).
           # Unpinned requests still prefer Fargate when multiple placements exist.
-          # memory_max must fit the ASG's smallest instance (~56 GiB floor minus agent/OS
-          # reserve): managed scaling will not launch a larger type for an oversized task
-          # (unlike MI); those jobs stay PROVISIONING. Prefer MI/Fargate for bigger memory.
+          # memory_max must fit the ASG hosts (m8a/m7a/m6a.4xlarge = 64 GiB minus ~2 GiB
+          # agent/OS headroom): managed scaling will not launch a larger type for an oversized
+          # task (unlike MI); those jobs stay PROVISIONING. Prefer MI/Fargate for bigger memory.
           # subnets/security_groups are schema-required but unused in host mode (instance SG applies).
           {
             vcpu_min   = 1
             vcpu_max   = 16
             memory_min = 2
-            memory_max = 54
+            memory_max = 62
             type       = "machine"
             image_type = "python_3_12_compiler"
             placement = {
@@ -142,7 +142,7 @@ locals {
             vcpu_min   = 1
             vcpu_max   = 16
             memory_min = 2
-            memory_max = 54
+            memory_max = 62
             type       = "machine"
             image_type = "python_3_12_inait"
             placement = {
@@ -159,7 +159,7 @@ locals {
             vcpu_min   = 1
             vcpu_max   = 16
             memory_min = 2
-            memory_max = 54
+            memory_max = 62
             type       = "machine"
             image_type = "python_3_12_openmpi5_neuron9_neurodamus"
             placement = {
