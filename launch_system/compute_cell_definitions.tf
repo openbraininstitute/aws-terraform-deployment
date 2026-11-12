@@ -117,7 +117,7 @@ locals {
           },
           # CPU ECS-on-EC2 ASG (additional: premounted EFS + shared/local caches, binpack).
           # Unpinned requests still prefer Fargate when multiple placements exist.
-          # memory_max must fit the ASG's smallest instance (~56 GiB floor minus agent/OS
+          # memory_max must fit the ASG hosts (m8a/m7a/m6a.4xlarge = 64 GiB minus agent/OS
           # reserve): managed scaling will not launch a larger type for an oversized task
           # (unlike MI); those jobs stay PROVISIONING. Prefer MI/Fargate for bigger memory.
           # subnets/security_groups are schema-required but unused in host mode (instance SG applies).
