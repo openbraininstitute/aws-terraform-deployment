@@ -1,3 +1,9 @@
+# thumbnail_generation_api: count added (staging and production only); keep the running service
+moved {
+  from = module.thumbnail_generation_api
+  to   = module.thumbnail_generation_api[0]
+}
+
 # Remove count from launch_system module
 moved {
   from = module.launch_system[0]
