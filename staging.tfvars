@@ -193,3 +193,26 @@ nas_backup_secret_arns         = ["arn:aws:secretsmanager:us-east-1:992382665735
 databases_to_backup_arns       = ["arn:aws:rds:us-east-1:992382665735:db:accounting"]
 
 research_agent_enabled = true
+
+# --- logbook server: STAGING values ---
+# Off until the common secret exists and this account can pull the image.
+logbook_enabled           = false
+logbook_svc_image_url     = "" # set before enabling
+logbook_router_image_url  = "" # set before enabling: the router image of the same version
+logbook_svc_desired_count = 1  # one task is enough to test; use 2 to test the Redis relay between tasks
+logbook_svc_max_count     = 2  # one extra task, enough to watch a scale-out
+logbook_svc_task_size = {
+  cpu    = 1024
+  memory = 2048
+}
+logbook_svc_shed_loop_delay_ms = 200 # load shedding on, as in production
+# Starting guesses: set the real ones from a load test on one task.
+logbook_svc_scale_out_busy_pct = 60 # add a task: average at or above this for 30 s
+logbook_svc_scale_in_busy_pct  = 25 # remove a task: average at or under this for 15 minutes
+logbook_svc_hand_off_busy_pct  = 85 # one task alone this busy for 30 s moves pages to the others
+# Limit: about 80 connections, so at most 2 tasks (a deploy holds 58). Upgrade: db.t4g.small for up to 6.
+logbook_db_instance_class             = "db.t4g.micro"
+logbook_db_connections_high_threshold = 64                # about 80 % of the 80 connections
+logbook_redis_node_type               = "cache.t4g.micro" # 0.5 GB: transient relay messages and small cache keys only
+# Must match the STAGING Azure Application Gateway subnets.
+azure_appgw_cidr_blocks = ["10.102.1.64/27", "10.102.1.96/27"]
