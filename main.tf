@@ -638,6 +638,78 @@ module "entitycore_svc" {
 
   source_datasync_role = var.source_datasync_role
 }
+
+module "logbook_svc" {
+  source = "./logbook_svc"
+
+  # Gated per environment: the module needs the common secret
+  # logbook_service_secrets_arn, created in deployment-common first.
+  count = var.logbook_enabled ? 1 : 0
+
+  providers = {
+    aws = aws.logbook
+  }
+
+  aws_region               = local.aws_region
+  vpc_id                   = local.vpc_id
+  internet_access_route_id = local.route_table_private_subnets_id
+
+  private_alb_listener_arn      = local.private_alb_https_listener_arn
+  private_alb_security_group_id = data.terraform_remote_state.common.outputs.generic_private_alb_security_group_id
+  alb_listener_rule_priority    = 702 # free on the listener (700 cells_svc, 701 obi_one_v2)
+  # The page paths, to the page router: free, and below 702 because the
+  # ALB tries the lowest number first.
+  router_listener_rule_priority = 699
+  bastion_cidr_block            = "${module.bastion_host.bastion_instance_private_ip}/32"
+
+  # Also the prefix apps/router/haproxy.cfg (log-book) matches: change both.
+  base_path = "/api/logbook" # the image's SERVER_BASE_PATH default
+
+  # The server compares the Origin header with this list exactly (no
+  # wildcard), so the "*.preview" entries are left out: preview
+  # deployments cannot open the live socket.
+  allowed_origins = [for origin in local.core_web_app_origins : origin if !strcontains(origin, "*")]
+
+  # Trusted proxy list for the client IP: the private ALB nodes, and the
+  # Azure Application Gateway instances and Private Link NAT addresses the
+  # browsers' calls arrive from over the VPN. The module adds the page
+  # router's subnets (its own task subnets, logbook_svc/backend.tf).
+  trusted_proxy_cidr_blocks = concat(
+    [
+      data.terraform_remote_state.common.outputs.private_alb_cidr_a,
+      data.terraform_remote_state.common.outputs.private_alb_cidr_b,
+    ],
+    var.azure_appgw_cidr_blocks,
+  )
+
+  keycloak_issuer = var.keycloak_sbo_realm_url
+  entitycore_url  = "https://${local.cell_a_primary_domain}/api/entitycore"
+
+  image_url             = var.logbook_svc_image_url
+  task_size             = var.logbook_svc_task_size
+  desired_count         = var.logbook_svc_desired_count
+  max_count             = var.logbook_svc_max_count
+  shed_loop_delay_ms    = var.logbook_svc_shed_loop_delay_ms
+  server_timing_enabled = !local.is_production
+
+  # The page router (logbook_svc/router.tf), released with the server.
+  # Two in production (one per AZ, a router deploy never stops page
+  # traffic); one is enough in staging.
+  router_image_url     = var.logbook_router_image_url
+  router_desired_count = local.is_production ? 2 : 1
+  router_max_count     = local.is_production ? 4 : 1 # staging: one router, as one task carries its pages
+
+  logbook_service_secrets_arn = data.terraform_remote_state.common.outputs.logbook_service_secrets_arn
+
+  db_name           = "logbook"
+  db_username       = "logbook"
+  db_instance_class = var.logbook_db_instance_class
+  db_multi_az       = local.is_production
+  redis_node_type   = var.logbook_redis_node_type
+
+  obi_backup_plan = "obi_plan"
+}
+
 module "auth_manager" {
   source = "./auth-manager"
 

@@ -194,3 +194,41 @@ databases_to_backup_arns       = ["arn:aws:rds:us-east-1:671250183987:db:account
 # (Runtime, IAM, Memory, subnets) and neuroagent-ts's own MCP
 # tools/endpoints for it.
 research_agent_enabled = false
+
+# --- logbook server: PRODUCTION values ---
+# Off until deployment-common has the secret logbook_service_secrets_arn
+# (key DB_PASS) and the image is in a registry this account can pull.
+logbook_enabled           = false
+logbook_svc_image_url     = "" # set before enabling
+logbook_router_image_url  = "" # set before enabling: the router image of the same version
+logbook_svc_desired_count = 2  # two tasks in two AZs: a deploy or a task crash never stops live editing
+logbook_svc_max_count     = 8  # autoscaling's ceiling: the page router sees at most 8 tasks (Cloud Map DNS, logbook_svc/router.tf)
+logbook_svc_task_size = {
+  cpu    = 1024
+  memory = 2048
+}
+logbook_svc_shed_loop_delay_ms = 200 # load shedding on (log-book deployment.md 6.4 and 8)
+# 2 GB: about 190 connections (not checked against the instance). Each task
+# holds 14 and its start one more (the migrator); a deploy doubles the tasks
+# for a moment: 2 x N x 14 + N.
+# When to move the class (log-book deployment.md 6.7):
+# - Up to 6 tasks fits: a deploy at 6 holds 174. A deploy at 7 or 8 tasks
+#   (203, 232) passes max_connections: new tasks fail their migration and the
+#   circuit breaker rolls the deploy back, the running tasks keep working.
+#   So move before the service runs at 7 or more tasks, or deploy only below.
+# - Or when the database CPU alarm (40 %, monitoring.tf) fires under the
+#   daily load: 0.82 of 2 cores (41 %) was measured at 200 busy pages.
+# - Next class: db.m7g.large (2 vCPU, not burstable, about 800 connections)
+#   for typical typing (12 to 16 tasks at 1,000 pages); db.m7g.xlarge (4 vCPU,
+#   about 1,700) for busy typing (about 26 tasks). Then set
+#   enable_cpu_credit_alarms = false (monitoring.tf) and raise
+#   logbook_db_connections_high_threshold. Past 8 tasks the page router
+#   needs its DiscoverInstances poller first (logbook_svc/router.tf).
+# - Keep DATABASE_POOL_MAX at 10 until a run measures 6: no RDS Proxy, the
+#   pools are fixed and fully open per task (14 x N + 1 measured).
+logbook_db_instance_class             = "db.t4g.small"
+logbook_db_connections_high_threshold = 150               # about 80 % of the 190 connections
+logbook_redis_node_type               = "cache.t4g.small" # 1.4 GB: headroom for the relay when many pages are open
+# PRODUCTION Azure Application Gateway subnets (azure-terraform-deployment production.tfvars:
+# appgw_access_subnet_ip_range, appgw_privlink_subnet_ip_range): trusted proxies for the client IP
+azure_appgw_cidr_blocks = ["10.103.1.64/27", "10.103.1.96/27"]

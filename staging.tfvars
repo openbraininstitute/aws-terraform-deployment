@@ -191,3 +191,26 @@ nas_backup_secret_arns         = ["arn:aws:secretsmanager:us-east-1:992382665735
 databases_to_backup_arns       = ["arn:aws:rds:us-east-1:992382665735:db:accounting"]
 
 research_agent_enabled = true
+
+# --- logbook server: STAGING values ---
+# Off until deployment-common has the secret logbook_service_secrets_arn
+# (key DB_PASS) and the image is in a registry this account can pull.
+logbook_enabled           = false
+logbook_svc_image_url     = "" # set before enabling
+logbook_router_image_url  = "" # set before enabling: the router image of the same version
+logbook_svc_desired_count = 1  # one task is enough to test; 2 to test the Redis relay between tasks
+logbook_svc_max_count     = 2  # autoscaling may add one task: enough to watch a scale-out and the page router move pages
+logbook_svc_task_size = {
+  cpu    = 1024
+  memory = 2048
+}
+logbook_svc_shed_loop_delay_ms = 200 # load shedding on, as in production (log-book deployment.md 6.4 and 8)
+# 1 GB: about 80 connections. A deploy at the most tasks holds
+# 2 x 2 x 14 + 2 migrators = 58. Above max_count 2, move the class first
+# (db.t4g.small: about 190 connections, up to 6 tasks).
+logbook_db_instance_class             = "db.t4g.micro"
+logbook_db_connections_high_threshold = 64                # about 80 % of the 80 connections
+logbook_redis_node_type               = "cache.t4g.micro" # 0.5 GB: transient relay messages and small cache keys only
+# STAGING Azure Application Gateway subnets (azure-terraform-deployment staging.tfvars:
+# appgw_access_subnet_ip_range, appgw_privlink_subnet_ip_range): trusted proxies for the client IP
+azure_appgw_cidr_blocks = ["10.102.1.64/27", "10.102.1.96/27"]

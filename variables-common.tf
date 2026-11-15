@@ -346,6 +346,76 @@ variable "entitycore_svc_image_url" {
 }
 
 
+### logbook ###
+variable "logbook_enabled" {
+  type        = bool
+  description = "Whether the logbook server (logbook_svc module) runs in this environment. Needs the common secret logbook_service_secrets_arn (deployment-common) first."
+  default     = false
+}
+
+variable "logbook_svc_image_url" {
+  type        = string
+  description = "Image URL for the logbook server (linux/arm64). Unused when logbook_enabled is false."
+  default     = ""
+}
+
+variable "logbook_router_image_url" {
+  type        = string
+  description = "Image URL for the logbook page router (log-book apps/router, linux/arm64), the same version as logbook_svc_image_url. Unused when logbook_enabled is false."
+  default     = ""
+}
+
+variable "logbook_svc_task_size" {
+  type = object({
+    cpu    = any
+    memory = any
+  })
+  description = "CPU and memory limit for ECS task (number or string format) for the logbook server"
+  # 1 vCPU runs the event loop plus one Yjs worker (WORKERS_YJS_POOL_SIZE=1);
+  # 2 GB holds the worker's worst page (about 510 MB RSS), 16 queued merges
+  # (about 130 MB) and the open pages (log-book apps/server/.env.example).
+  default = {
+    cpu    = 1024
+    memory = 2048
+  }
+}
+
+variable "logbook_svc_desired_count" {
+  type        = number
+  description = "Fewest logbook server tasks: the floor of autoscaling (logbook_svc/autoscaling.tf). After the first apply a change acts through the scaling target, not on the running count directly."
+  default     = 1
+}
+
+variable "logbook_svc_max_count" {
+  type        = number
+  description = "Most logbook server tasks autoscaling may run; at least logbook_svc_desired_count, at most 8 (the page router's Cloud Map ceiling). Bound: 2 x max x 14 + max connections (a deploy at the most tasks) under the database's max_connections."
+  default     = 1
+}
+
+variable "logbook_svc_shed_loop_delay_ms" {
+  type        = number
+  description = "LIVE_SHED_LOOP_DELAY_MS of the logbook server: the event loop's median delay (ms) at which a task refuses new work (load shedding, log-book deployment.md 6.4). 0 never refuses (the image default)."
+  default     = 0
+}
+
+variable "logbook_db_connections_high_threshold" {
+  type        = number
+  description = "DatabaseConnections alarm of the logbook database: about 80 % of the instance class's max_connections, so it fires before Postgres refuses a connection. Change it with logbook_db_instance_class."
+  default     = 60
+}
+
+variable "logbook_db_instance_class" {
+  type        = string
+  description = "RDS instance class for the logbook database"
+  default     = "db.t4g.micro"
+}
+
+variable "logbook_redis_node_type" {
+  type        = string
+  description = "ElastiCache node type for the logbook Redis (relay and caches, no stored data)"
+  default     = "cache.t4g.micro"
+}
+
 variable "thumbnail_generation_api_docker_image_url" {
   type        = string
   description = "Docker image for the thumbnail generation api"

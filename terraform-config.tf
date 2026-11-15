@@ -60,6 +60,15 @@ provider "aws" {
 }
 
 provider "aws" {
+  alias = "logbook"
+  default_tags {
+    tags = {
+      SBO_Billing = "logbook"
+    }
+  }
+}
+
+provider "aws" {
   alias = "research_agent"
   default_tags {
     tags = {
