@@ -346,6 +346,92 @@ variable "entitycore_svc_image_url" {
 }
 
 
+### logbook ###
+variable "logbook_enabled" {
+  type        = bool
+  description = "Turns the logbook server on; needs the common secret logbook_service_secrets_arn first."
+  default     = false
+}
+
+variable "logbook_svc_image_url" {
+  type        = string
+  description = "Image URL for the logbook server (linux/arm64)."
+  default     = ""
+}
+
+variable "logbook_router_image_url" {
+  type        = string
+  description = "Image URL for the logbook page router; must match the logbook_svc_image_url version."
+  default     = ""
+}
+
+variable "logbook_svc_task_size" {
+  type = object({
+    cpu    = any
+    memory = any
+  })
+  description = "CPU and memory limit for ECS task (number or string format) for the logbook server"
+  # 1 vCPU for the event loop and one Yjs worker; 2 GB for the worst page, queued merges and open pages.
+  default = {
+    cpu    = 1024
+    memory = 2048
+  }
+}
+
+variable "logbook_svc_desired_count" {
+  type        = number
+  description = "Fewest logbook server tasks, the autoscaling floor."
+  default     = 1
+}
+
+variable "logbook_svc_max_count" {
+  type        = number
+  description = "Most logbook server tasks autoscaling may run, at most 8."
+  default     = 1
+}
+
+variable "logbook_svc_scale_out_busy_pct" {
+  type        = number
+  description = "Average busy share (loop.busy.pct, 0 to 100) that adds a logbook server task after 30 s."
+  default     = 60
+}
+
+variable "logbook_svc_scale_in_busy_pct" {
+  type        = number
+  description = "Average busy share that removes a logbook server task after 15 minutes; under half the scale-out level."
+  default     = 25
+}
+
+variable "logbook_svc_hand_off_busy_pct" {
+  type        = number
+  description = "Server env COLLABORATION_HAND_OFF_BUSY_PCT: one task's busy share at which it moves pages to other tasks (0 never)."
+  default     = 0
+}
+
+variable "logbook_svc_shed_loop_delay_ms" {
+  type        = number
+  description = "Server env COLLABORATION_SHED_LOOP_DELAY_MS: event loop delay (ms) at which a task turns new work away (0 never)."
+  default     = 0
+}
+
+variable "logbook_db_connections_high_threshold" {
+  type        = number
+  description = "Logbook database connection alarm level, about 80 % of the class's max_connections; change it with the class."
+  default     = 60
+}
+
+variable "logbook_db_instance_class" {
+  type        = string
+  description = "RDS instance class for the logbook database"
+  default     = "db.t4g.micro"
+}
+
+variable "logbook_redis_node_type" {
+  type        = string
+  description = "ElastiCache node type for the logbook Redis (relay and caches, no stored data)"
+  default     = "cache.t4g.micro"
+}
+
 variable "thumbnail_generation_api_docker_image_url" {
   type        = string
   description = "Docker image for the thumbnail generation api"

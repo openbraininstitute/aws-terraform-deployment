@@ -194,3 +194,26 @@ databases_to_backup_arns       = ["arn:aws:rds:us-east-1:671250183987:db:account
 # (Runtime, IAM, Memory, subnets) and neuroagent-ts's own MCP
 # tools/endpoints for it.
 research_agent_enabled = false
+
+# --- logbook server: PRODUCTION values ---
+# Off until the common secret exists and this account can pull the image.
+logbook_enabled           = false
+logbook_svc_image_url     = "" # set before enabling
+logbook_router_image_url  = "" # set before enabling: the router image of the same version
+logbook_svc_desired_count = 2  # two tasks in two AZs: a deploy or a task crash never stops live editing
+logbook_svc_max_count     = 8  # the page router sees at most 8 tasks
+logbook_svc_task_size = {
+  cpu    = 1024
+  memory = 2048
+}
+logbook_svc_shed_loop_delay_ms = 200 # load shedding on
+# Starting guesses: set the real ones from a load test on one task.
+logbook_svc_scale_out_busy_pct = 60 # add a task: average at or above this for 30 s
+logbook_svc_scale_in_busy_pct  = 25 # remove a task: average at or under this for 15 minutes
+logbook_svc_hand_off_busy_pct  = 85 # one task alone this busy for 30 s moves pages to the others
+# Limit: about 190 connections, so deploys work up to 6 tasks. Upgrade: db.m7g.large before running 7+.
+logbook_db_instance_class             = "db.t4g.small"
+logbook_db_connections_high_threshold = 150               # about 80 % of the 190 connections
+logbook_redis_node_type               = "cache.t4g.small" # 1.4 GB: headroom for the relay when many pages are open
+# Must match the PRODUCTION Azure Application Gateway subnets.
+azure_appgw_cidr_blocks = ["10.103.1.64/27", "10.103.1.96/27"]

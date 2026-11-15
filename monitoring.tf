@@ -428,6 +428,108 @@ module "notebookservice_cloudwatch_metric_alarms_sns_entries_to_teams" {
   python_runtime    = "python3.13"
 }
 
+# Logbook server (each module is on only when logbook_enabled is true)
+
+module "logbook_cloudwatch_error_log_entries_to_sns" {
+  source = "./cloudwatch_error_log_entries_to_sns"
+  count  = var.logbook_enabled ? 1 : 0
+
+  log_group_name    = module.logbook_svc[0].log_group_name
+  unique_short_name = "logbook"
+  region            = local.aws_region
+  # the server logs levels in lower case, and this filter is case-sensitive
+  filter_pattern  = "{ $.level = \"error\" || $.level = \"fatal\" }"
+  sbo_billing_tag = "logbook"
+}
+
+module "debug_logbook_cloudwatch_error_log_sns_topic" {
+  source = "./sqs_debug_queue"
+  count  = var.logbook_enabled ? 1 : 0
+
+  sns_topic_arn             = module.logbook_cloudwatch_error_log_entries_to_sns[0].sns_topic_arn
+  unique_short_name         = "logbook_logs"
+  message_retention_seconds = 172800 # 2 days
+}
+
+module "logbook_error_log_sns_entries_to_teams" {
+  source = "./sns_entries_to_teams"
+  count  = var.logbook_enabled ? 1 : 0
+
+  webhook_secret_arn = local.teams_webhook_secrets_arn
+  webhook_secret_key = "logbook_logs_errors" # key to add to the Teams webhook secret
+
+  unique_short_name = "logbook_logs"
+  sns_topic_arn     = module.logbook_cloudwatch_error_log_entries_to_sns[0].sns_topic_arn
+  python_runtime    = "python3.13"
+}
+
+# The logbook alarms live in logbook_svc/alarms.tf: the shared ECS module needs Container Insights, which is off.
+
+module "debug_logbook_cloudwatch_metric_alarms" {
+  source = "./sqs_debug_queue"
+  count  = var.logbook_enabled ? 1 : 0
+
+  sns_topic_arn             = module.logbook_svc[0].alarms_sns_topic_arn
+  unique_short_name         = "logbook_alerts"
+  message_retention_seconds = 5 * 24 * 60 * 60 # 5 days
+}
+
+module "logbook_cloudwatch_metric_alarms_sns_entries_to_teams" {
+  source = "./sns_entries_to_teams"
+  count  = var.logbook_enabled ? 1 : 0
+
+  webhook_secret_arn = local.teams_webhook_secrets_arn
+  webhook_secret_key = local.webhook_secret_key_for_metrics_alerts
+
+  unique_short_name = "logbook_metric_alerts"
+  sns_topic_arn     = module.logbook_svc[0].alarms_sns_topic_arn
+  python_runtime    = "python3.13"
+}
+
+module "logbook_db_metrics_alerts" {
+  source = "./rds_postgresql_cloudwatch_metric_alarms"
+  count  = var.logbook_enabled ? 1 : 0
+
+  db_instance_identifier   = module.logbook_svc[0].rds_db_identifier
+  short_name               = "logbook"
+  enable_cpu_credit_alarms = true # burstable t4g instance
+  # DBLoad needs Performance Insights, which this instance doesn't turn on
+  enable_db_load_alarms = false
+
+  # 40 % means time to plan a bigger class; spending CPU credits is the credit alarms' job.
+  cpu_utilization_high_threshold            = 40                     # %
+  freeable_memory_low_threshold             = 64 * 1024 * 1024       # 64 MB
+  free_storage_space_low_threshold          = 4 * 1024 * 1024 * 1024 # 4 GB; storage autoscaling also grows the disk
+  database_connections_high_threshold       = var.logbook_db_connections_high_threshold
+  read_latency_high_threshold               = 0.05              # 50 ms
+  write_latency_high_threshold              = 0.02              # 20 ms: every task saves once a second
+  swap_usage_high_threshold                 = 150 * 1024 * 1024 # 150 MB
+  disk_queue_depth_high_threshold           = 1
+  cpu_credit_balance_low_threshold          = 50
+  cpu_surplus_credit_balance_high_threshold = 5
+}
+
+module "debug_logbook_db_metrics_alerts_sns_topic" {
+  source = "./sqs_debug_queue"
+  count  = var.logbook_enabled ? 1 : 0
+
+  sns_topic_arn             = module.logbook_db_metrics_alerts[0].sns_topic_arn
+  unique_short_name         = "logbook_db_metrics"
+  message_retention_seconds = 5 * 24 * 60 * 60 # 5 days
+}
+
+module "logbook_db_metrics_alerts_sns_entries_to_teams" {
+  source = "./sns_entries_to_teams"
+  count  = var.logbook_enabled ? 1 : 0
+
+  webhook_secret_arn = local.teams_webhook_secrets_arn
+  webhook_secret_key = local.webhook_secret_key_for_metrics_alerts
+
+  unique_short_name = "logbook_db_metrics"
+  sns_topic_arn     = module.logbook_db_metrics_alerts[0].sns_topic_arn
+  python_runtime    = "python3.13"
+}
+
 # EventBridge - generic AWS errors
 
 module "aws_errors_sns_topic" {
