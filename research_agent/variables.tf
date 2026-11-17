@@ -31,6 +31,11 @@ variable "notebook_service_url" {
   type        = string
 }
 
+variable "auth_manager_url" {
+  description = "auth-manager base URL - the Runtime exchanges the launch-time access token for a persistent token id here, then mints fresh access tokens from it for every notebook-service call (prod-ai#153)."
+  type        = string
+}
+
 variable "model_id" {
   description = "Bedrock model ID (or inference profile ID) the research agent uses. Changing this is just a Terraform update, not a rebuild/republish - see researchagent's MODEL_ID env var."
   type        = string
@@ -62,6 +67,18 @@ variable "agent_max_tool_calls" {
   description = "Max total tool calls per invocation."
   type        = number
   default     = 15
+}
+
+variable "fixed_reservation_credits" {
+  description = "Optional flat credit amount to reserve per call, bypassing the token-derived estimate - needed once agent_max_total_tokens is set to an effectively-unbounded safety-net value rather than a realistic ceiling. Null means fall back to the token-derived reservation."
+  type        = number
+  default     = null
+}
+
+variable "default_budget_time_minutes" {
+  description = "Default budget_time (minutes) for a call that doesn't specify one, overriding the agent's own hardcoded 60-minute fallback."
+  type        = number
+  default     = null
 }
 
 # Accounting (obp-accounting-sdk) - reports credits for each research

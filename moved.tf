@@ -4,6 +4,15 @@ moved {
   to   = module.launch_system
 }
 
+# Add count to research_agent module (prod-ai#142) - without this, the
+# resources are planned as destroy+recreate at the new [0]-indexed
+# address, which makes their attributes unknown-until-apply and breaks
+# ml/agent.tf's own count expression that reads them.
+moved {
+  from = module.research_agent
+  to   = module.research_agent[0]
+}
+
 # Merge launch_system_network into launch_system
 moved {
   from = module.launch_system_network.aws_subnet.trusted_a
