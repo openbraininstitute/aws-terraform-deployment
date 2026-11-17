@@ -188,6 +188,10 @@ module "ecs_service_agent" {
           name      = "NEUROAGENT__TOOLS__EXA_API_KEY"
           valueFrom = "${var.ml_secrets_arn}:EXA_API_KEY::"
         },
+        {
+          name      = "NEUROAGENT__TOOLS__NOTEBOOK_SERVICE__TRANSFER_SECRET"
+          valueFrom = "${var.ml_secrets_arn}:NOTEBOOK_SERVICE_TRANSFER_SECRET::"
+        },
       ]
     }
   }

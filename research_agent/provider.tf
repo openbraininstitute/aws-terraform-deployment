@@ -6,14 +6,10 @@ terraform {
   }
 }
 
-provider "aws" {
-  default_tags {
-    tags = {
-      SBO_Billing = "research_agent"
-    }
-  }
-  region = var.aws_region
-}
+# Provider configuration (including default_tags) is supplied by the
+# caller as an aliased provider (aws.research_agent, see
+# terraform-config.tf) - a module with its own local provider
+# configuration cannot use count/for_each/depends_on at the call site.
 
 data "aws_caller_identity" "current" {}
 

@@ -222,12 +222,13 @@ variable "notebook_service_docker_image_url" {
 
 variable "research_agent_docker_image_url" {
   type        = string
-  description = "Docker image for the research agent AgentCore Runtime"
+  description = "Docker image for the research agent AgentCore Runtime. Unused (and harmless) when research_agent_enabled is false."
+  default     = ""
 }
 
 variable "research_agent_enabled" {
   type        = bool
-  description = "Feature flag for the research agent's endpoints/MCP tools in neuroagent-ts - set explicitly per environment so it can be switched off in production independently of staging."
+  description = "Whether the research agent is live in this environment at all - gates both provisioning the research_agent Terraform module (Runtime, IAM, Memory, subnets) and neuroagent-ts's own MCP tools/endpoints for it. Set explicitly per environment (prod-ai#142) - false in production until Bedrock model access/Marketplace subscription is sorted there."
 }
 
 variable "notebook_service_aws_accounting_enabled" {
@@ -250,6 +251,11 @@ variable "notebook_service_azure_storage_account" {
 variable "keycloak_db_instance_class" {
   type        = string
   description = "RDS instance class for the Keycloak database"
+}
+
+variable "keycloak_container_image_url" {
+  type        = string
+  description = "Docker image URL for the Keycloak container"
 }
 
 variable "keycloak_task_size" {

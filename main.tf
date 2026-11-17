@@ -130,10 +130,11 @@ module "cs" {
   db_instance_class              = var.keycloak_db_instance_class
   private_alb_https_listener_arn = local.private_alb_https_listener_arn
 
-  keycloak_secrets_arn    = local.keycloak_secrets_arn
-  keycloak_admin_hostname = data.terraform_remote_state.common.outputs.keycloak_admin_hostname
-  keycloak_admin_cert_arn = data.terraform_remote_state.common.outputs.keycloak_admin_cert_arn
-  keycloak_task_size      = var.keycloak_task_size
+  keycloak_secrets_arn         = local.keycloak_secrets_arn
+  keycloak_admin_hostname      = data.terraform_remote_state.common.outputs.keycloak_admin_hostname
+  keycloak_admin_cert_arn      = data.terraform_remote_state.common.outputs.keycloak_admin_cert_arn
+  keycloak_task_size           = var.keycloak_task_size
+  keycloak_container_image_url = var.keycloak_container_image_url
 
   keycloak_allowed_source_ip_cidr_blocks       = ["0.0.0.0/0"]
   keycloak_admin_allowed_source_ip_cidr_blocks = ["${module.bastion_host.bastion_instance_private_ip}/32"]
@@ -247,9 +248,9 @@ module "ml_typescript" {
   neuroagent_application_prefix    = "/api/agent-ts"
 
   research_agent_enabled     = var.research_agent_enabled
-  research_agent_runtime_arn = module.research_agent.agent_runtime_arn
-  research_agent_memory_id   = module.research_agent.memory_id
-  research_agent_memory_arn  = module.research_agent.memory_arn
+  research_agent_runtime_arn = var.research_agent_enabled ? module.research_agent[0].agent_runtime_arn : ""
+  research_agent_memory_id   = var.research_agent_enabled ? module.research_agent[0].memory_id : ""
+  research_agent_memory_arn  = var.research_agent_enabled ? module.research_agent[0].memory_arn : ""
 }
 
 # NOTE: The Nexus service has been fully decommissioned.
@@ -383,6 +384,16 @@ module "notebook_service" {
 module "research_agent" {
   source = "./research_agent"
 
+  # No Bedrock model access/Marketplace subscription in production yet
+  # (prod-ai#142) - research_agent_enabled gates both this module's
+  # infra (Runtime, IAM, Memory, subnets) and neuroagent-ts's own MCP
+  # tools/endpoints for it, so the two can't drift out of sync.
+  count = var.research_agent_enabled ? 1 : 0
+
+  providers = {
+    aws = aws.research_agent
+  }
+
   aws_region               = local.aws_region
   vpc_id                   = local.vpc_id
   internet_access_route_id = local.route_table_private_subnets_id
@@ -390,24 +401,23 @@ module "research_agent" {
   container_uri = var.research_agent_docker_image_url
 
   notebook_service_url = "https://${local.cell_a_primary_domain}/api/notebook_service"
+  auth_manager_url     = "https://${local.cell_a_primary_domain}/api/auth-manager"
 
   # Module defaults (10/8000/50000/15) were POC-era placeholders that
   # would stop a run early regardless of how much budget_time was
-  # left - raised here for real multi-hour use on staging.
-  #
-  # agent_max_turns/agent_max_tool_calls have no cost side effect -
-  # confirmed, the reservation formula below only depends on
-  # total_tokens - so both are raised a lot. agent_max_total_tokens
-  # IS NOT just a safety ceiling - it directly sets the upfront
-  # credit reservation per call (credits_estimate = total_tokens /
-  # 10_000 * CREDITS_PER_10K_OUTPUT_TOKENS in entrypoint.py), so it's
-  # only raised modestly here to avoid reserving an unreasonable
-  # amount of a project's budget on every single
-  # launch-research-run call.
-  agent_max_turns         = 10000
-  agent_max_output_tokens = 40000
-  agent_max_total_tokens  = 1000000
-  agent_max_tool_calls    = 10000
+  # left. Now that fixed_reservation_credits decouples the upfront
+  # credit reservation from agent_max_total_tokens (researchagent#6 -
+  # without it, raising total_tokens this high would reserve an
+  # unrealistic amount of a project's budget on every single
+  # launch-research-run call), these are set to effectively-unbounded
+  # safety-net values - not realistic ceilings, just a backstop
+  # against a genuinely runaway loop.
+  agent_max_turns             = 1000000
+  agent_max_output_tokens     = 100000000
+  agent_max_total_tokens      = 100000000
+  agent_max_tool_calls        = 1000000
+  fixed_reservation_credits   = 200
+  default_budget_time_minutes = 480 # 8h - matches AgentCore's own max session lifetime on this compute type, so nothing beyond this can actually run anyway
 
   accounting_base_url = "https://${local.cell_a_primary_domain}${var.accounting_svc_base_path}"
   # No Price entry for the RESEARCH_AGENT subtype in accounting-service
@@ -560,7 +570,7 @@ module "accounting_svc" {
     module.notebook_service.subnet_cidr_blocks,
     module.virtual_lab_manager.subnet_cidr_blocks,
     module.launch_system.api_subnet_cidr_blocks,
-    module.research_agent.subnet_cidr_blocks,
+    flatten(module.research_agent[*].subnet_cidr_blocks),
     ["${module.bastion_host.bastion_instance_private_ip}/32"],
     [var.core_web_app_in_azure_cidr_block],
   )
@@ -886,6 +896,7 @@ module "launch_system" {
     [
       var.launch_system_aca_in_azure_cidr_block,
       var.launch_system_batch_in_azure_cidr_block,
+      var.core_web_app_in_azure_cidr_block,
     ],
   )
 
