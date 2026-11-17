@@ -134,6 +134,41 @@ resource "aws_vpc_security_group_egress_rule" "allow_outgoing_udp" {
 }
 
 
+# Task: 2 vCPU / 4 GiB, all for the container (nginx + 2 app processes, one per vCPU).
+# Every app setting is listed; .env.example in the service repo explains each one.
+locals {
+  task_cpu        = 2048
+  task_memory_mib = 4096
+
+  environment = {
+    ENVIRONMENT = var.environment
+
+    BASE_PATH             = var.base_path
+    WHITELISTED_CORS_URLS = jsonencode(var.cors_origins)
+    CORS_ORIGIN_REGEX     = var.cors_origin_regex # null (production): left out, only the list above
+
+    ENTITY_CORE_URI              = var.entitycore_url
+    ENTITY_CORE_TIMEOUT_SECONDS  = "30"
+    ENTITY_CORE_DOWNLOAD_SECONDS = "60" # whole download, below nginx's 120 s
+    ENTITY_CORE_MAX_CONNECTIONS  = "32"
+    ENTITY_CORE_MAX_ASSET_BYTES  = null # left out: RENDER_MEMORY_BYTES / 3 (341 MiB), the most it may be
+
+    RENDER_CONCURRENCY  = "4"
+    RENDER_DOWNLOADS    = "16"
+    RENDER_MEMORY_BYTES = tostring(1024 * 1024 * 1024) # per process: half the container for files
+
+    SENTRY_DSN                  = "https://df67a83aab2f208467f94df08a207e59@o224246.ingest.us.sentry.io/4507457507885056"
+    SENTRY_TRACES_SAMPLE_RATE   = "0.2"
+    SENTRY_PROFILES_SAMPLE_RATE = "0.05"
+
+    LOG_LEVEL  = "INFO"
+    LOG_FORMAT = "JSON"
+    LOG_DEBUG  = null # left out: no scope at DEBUG (an empty value can show as a change on every plan)
+
+    MPLCONFIGDIR = "/tmp/matplotlib" # /tmp is writable
+  }
+}
+
 # Task Definition
 resource "aws_ecs_task_definition" "main" {
   family                   = "thumbnail-generation-api-task-definition"
@@ -141,8 +176,8 @@ resource "aws_ecs_task_definition" "main" {
   requires_compatibilities = ["FARGATE"]
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn            = aws_iam_role.ecs_task_role.arn
-  memory                   = 4096
-  cpu                      = 2048
+  memory                   = local.task_memory_mib
+  cpu                      = local.task_cpu
 
   runtime_platform {
     operating_system_family = "LINUX"
@@ -163,10 +198,6 @@ resource "aws_ecs_task_definition" "main" {
 
   volume {
     name = "var-lib-nginx"
-  }
-
-  volume {
-    name = "app-output"
   }
 
   volume {
@@ -201,10 +232,6 @@ resource "aws_ecs_task_definition" "main" {
           {
             sourceVolume  = "var-lib-nginx",
             containerPath = "/var/lib/nginx"
-          },
-          {
-            sourceVolume  = "app-output",
-            containerPath = "/app/output"
           }
         ],
         portMappings = [
@@ -213,34 +240,10 @@ resource "aws_ecs_task_definition" "main" {
             protocol      = "tcp"
           }
         ],
-        environment = concat([
-          {
-            name  = "WHITELISTED_CORS_URLS",
-            value = jsonencode(var.cors_origins)
-          },
-          {
-            name  = "BASE_PATH"
-            value = var.base_path
-          },
-          {
-            name  = "ENVIRONMENT"
-            value = "production"
-          },
-          {
-            name  = "SENTRY_DSN"
-            value = "https://df67a83aab2f208467f94df08a207e59@o224246.ingest.us.sentry.io/4507457507885056"
-          },
-          {
-            name : "ENTITY_CORE_URI",
-            value : var.entitycore_url
-          },
-          {
-            name  = "MPLCONFIGDIR",
-            value = "/tmp/matplotlib"
-          },
-        ], var.cors_origin_regex != null ? [{ name = "CORS_ORIGIN_REGEX", value = var.cors_origin_regex }] : []),
-        memory = 2048
-        cpu    = 1024
+        environment = [for name, value in local.environment : { name = name, value = value } if value != null],
+        # The whole task.
+        memory = local.task_memory_mib
+        cpu    = local.task_cpu
         logConfiguration = {
           logDriver = "awslogs"
           options = {
