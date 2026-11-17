@@ -253,6 +253,11 @@ variable "keycloak_db_instance_class" {
   description = "RDS instance class for the Keycloak database"
 }
 
+variable "keycloak_container_image_url" {
+  type        = string
+  description = "Docker image URL for the Keycloak container"
+}
+
 variable "keycloak_task_size" {
   type = object({
     cpu    = number

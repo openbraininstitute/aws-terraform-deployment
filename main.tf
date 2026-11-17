@@ -130,10 +130,11 @@ module "cs" {
   db_instance_class              = var.keycloak_db_instance_class
   private_alb_https_listener_arn = local.private_alb_https_listener_arn
 
-  keycloak_secrets_arn    = local.keycloak_secrets_arn
-  keycloak_admin_hostname = data.terraform_remote_state.common.outputs.keycloak_admin_hostname
-  keycloak_admin_cert_arn = data.terraform_remote_state.common.outputs.keycloak_admin_cert_arn
-  keycloak_task_size      = var.keycloak_task_size
+  keycloak_secrets_arn         = local.keycloak_secrets_arn
+  keycloak_admin_hostname      = data.terraform_remote_state.common.outputs.keycloak_admin_hostname
+  keycloak_admin_cert_arn      = data.terraform_remote_state.common.outputs.keycloak_admin_cert_arn
+  keycloak_task_size           = var.keycloak_task_size
+  keycloak_container_image_url = var.keycloak_container_image_url
 
   keycloak_allowed_source_ip_cidr_blocks       = ["0.0.0.0/0"]
   keycloak_admin_allowed_source_ip_cidr_blocks = ["${module.bastion_host.bastion_instance_private_ip}/32"]

@@ -91,13 +91,14 @@ module "keycloak" {
   domain_name      = var.domain_name
   keycloak_subnets = module.networking.keycloak_private_subnets
 
-  keycloak_secrets_arn     = var.keycloak_secrets_arn
-  keycloak_admin_hostname  = var.keycloak_admin_hostname
-  keycloak_admin_cert_arn  = var.keycloak_admin_cert_arn
-  cell_a_private_zone_id   = var.cell_a_private_zone_id
-  keycloak_port            = 8081
-  keycloak_management_port = 9000
-  keycloak_task_size       = var.keycloak_task_size
+  keycloak_secrets_arn         = var.keycloak_secrets_arn
+  keycloak_admin_hostname      = var.keycloak_admin_hostname
+  keycloak_admin_cert_arn      = var.keycloak_admin_cert_arn
+  cell_a_private_zone_id       = var.cell_a_private_zone_id
+  keycloak_port                = 8081
+  keycloak_management_port     = 9000
+  keycloak_task_size           = var.keycloak_task_size
+  keycloak_container_image_url = var.keycloak_container_image_url
 
   keycloak_ecs_cluster_name = "keycloak-cluster"
   keycloak_ecs_service_name = "keycloak-service"
