@@ -100,7 +100,7 @@ multiple_vlabs_allowed_user_id = "16588c8b-ec88-4a49-a413-a0bb3a7b8541"
 
 keycloak_db_instance_class = "db.t4g.micro"
 
-keycloak_container_image_url = "quay.io/keycloak/keycloak:26.5.7"
+keycloak_container_image_url = "quay.io/keycloak/keycloak:26.7.5"
 
 keycloak_task_size = {
   cpu    = 1024
