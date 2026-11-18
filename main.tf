@@ -690,8 +690,8 @@ module "logbook_svc" {
 
   # Two routers in production, one per AZ, so a router deploy never stops page traffic.
   router_image_url     = var.logbook_router_image_url
-  router_desired_count = local.is_production ? 2 : 1
-  router_max_count     = local.is_production ? 4 : 1 # 4 routers carry about what 8 server tasks do
+  router_desired_count = 1
+  router_max_count     = local.is_production ? 2 : 1 # one 1 vCPU router carries about 200 busy pages
 
   logbook_service_secrets_arn = data.terraform_remote_state.common.outputs.logbook_service_secrets_arn
 
