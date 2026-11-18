@@ -1,5 +1,18 @@
 # scales server tasks on main-thread busy share (loop.busy.pct), 
 # not CPU, which missed a full main thread in load tests
+locals {
+  # about RDS's default max_connections per class, rounded down; check with SHOW max_connections
+  db_max_connections = {
+    "db.t4g.micro"  = 80
+    "db.t4g.small"  = 190
+    "db.m7g.large"  = 800
+    "db.m7g.xlarge" = 1700
+  }
+  # each task holds both pools plus 1, its migrator 1 more at start, and a deploy doubles the tasks
+  db_connections_per_task  = local.server_environment.DATABASE_POOL_MAX + local.server_environment.JOBS_POOL_MAX + 1
+  db_connections_at_deploy = 2 * var.max_count * local.db_connections_per_task + var.max_count
+}
+
 resource "aws_appautoscaling_target" "logbook" {
   min_capacity       = var.desired_count
   max_capacity       = var.max_count
@@ -16,6 +29,10 @@ resource "aws_appautoscaling_target" "logbook" {
     precondition {
       condition     = var.scale_in_busy_pct * 2 < var.scale_out_busy_pct
       error_message = "scale_in_busy_pct must be under half of scale_out_busy_pct."
+    }
+    precondition {
+      condition     = local.db_connections_at_deploy <= lookup(local.db_max_connections, var.db_instance_class, 0)
+      error_message = "A deploy at max_count needs ${local.db_connections_at_deploy} DB connections, more than ${var.db_instance_class} has (or the class is missing from db_max_connections): lower max_count or move to a bigger class."
     }
   }
 }
@@ -78,7 +95,8 @@ resource "aws_cloudwatch_metric_alarm" "busy_scale_out" {
   threshold           = var.scale_out_busy_pct
   comparison_operator = "GreaterThanOrEqualToThreshold"
 
-  treat_missing_data = "notBreaching"
+  # metrics land a few seconds late; "missing" looks back for them instead of counting them as fine
+  treat_missing_data = "missing"
 
   alarm_actions = [aws_appautoscaling_policy.logbook_scale_out.arn]
 }
