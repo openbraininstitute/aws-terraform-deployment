@@ -1,5 +1,5 @@
-# One node, no replica or snapshot: the server can rebuild everything in it.
-# While Redis is down, open pages keep working and new page opens fail after 2 s.
+# one node, no replica or snapshot: the server can rebuild everything in it
+# when Redis is down, open pages keep working and new page opens fail after 2 s
 
 resource "aws_elasticache_subnet_group" "logbook" {
   name       = "logbook-redis-subnet-group" # only alphanumeric characters and hyphens
@@ -21,7 +21,6 @@ resource "aws_elasticache_cluster" "logbook" {
   parameter_group_name = "default.redis7"
   security_group_ids   = [aws_security_group.logbook_redis.id]
 
-  # Node restarts wait for the maintenance window, so an apply never breaks page opens in working hours.
   apply_immediately  = false
   maintenance_window = "sun:05:00-sun:06:00"
 

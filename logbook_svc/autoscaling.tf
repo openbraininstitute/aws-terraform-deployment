@@ -1,6 +1,5 @@
-# Scales server tasks on main-thread busy share (loop.busy.pct), not CPU, which missed a full main thread in load tests.
-# Step scaling with 10 s periods reacts in about 30 s; target tracking needs 3 x 60 s. Not checked on AWS yet.
-
+# scales server tasks on main-thread busy share (loop.busy.pct), 
+# not CPU, which missed a full main thread in load tests
 resource "aws_appautoscaling_target" "logbook" {
   min_capacity       = var.desired_count
   max_capacity       = var.max_count
@@ -8,14 +7,12 @@ resource "aws_appautoscaling_target" "logbook" {
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
 
-  # Preconditions, because a validation that reads another variable needs Terraform 1.9.
   lifecycle {
     precondition {
       condition     = var.max_count >= var.desired_count
       error_message = "logbook_svc_max_count must be at least logbook_svc_desired_count."
     }
 
-    # Removing a task can double the average (2 to 1), which must not trigger a scale-out.
     precondition {
       condition     = var.scale_in_busy_pct * 2 < var.scale_out_busy_pct
       error_message = "scale_in_busy_pct must be under half of scale_out_busy_pct."
@@ -34,10 +31,11 @@ resource "aws_appautoscaling_policy" "logbook_scale_out" {
     adjustment_type         = "ChangeInCapacity"
     metric_aggregation_type = "Average"
 
-    # Long enough for the new task to start taking pages, so one load doesn't add two tasks.
+    # long enough for the new task to start taking pages, 
+    # so one load doesn't add two tasks
     cooldown = 60 # seconds
 
-    # One task per alarm, however far above the level.
+    # one task per alarm, however far above the level
     step_adjustment {
       metric_interval_lower_bound = 0
       scaling_adjustment          = 1
@@ -56,7 +54,7 @@ resource "aws_appautoscaling_policy" "logbook_scale_in" {
     adjustment_type         = "ChangeInCapacity"
     metric_aggregation_type = "Average"
 
-    # Each scale-in reconnects a task's people, so at most two an hour.
+    # each scale-in reconnects a task's people, so at most two an hour.
     cooldown = 1800 # seconds
 
     step_adjustment {
@@ -66,7 +64,6 @@ resource "aws_appautoscaling_policy" "logbook_scale_in" {
   }
 }
 
-# These two alarms only drive scaling, which is normal, so they notify nobody.
 resource "aws_cloudwatch_metric_alarm" "busy_scale_out" {
   alarm_name        = "logbook-busy-scale-out"
   alarm_description = "The logbook server tasks are busy (average loop.busy.pct at or above the scale-out level for 30 s): autoscaling adds a task"
