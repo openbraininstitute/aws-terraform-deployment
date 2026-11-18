@@ -1,5 +1,5 @@
-# HAProxy keeps each page on one task (hash of the page id) so its changes skip Redis; only a speed-up.
-# Limit: Cloud Map returns at most 8 records. Upgrade before 8 tasks: DiscoverInstances + HAProxy runtime API.
+# HAProxy keeps each page on one task (hash of the page id) so its changes skip Redis; only a speed-up
+# NOTE: limitation of Cloud Map returns at most 8 records. Upgrade before 8 tasks: DiscoverInstances + HAProxy runtime API.
 
 locals {
   router_container_name = "router"
@@ -15,7 +15,6 @@ resource "aws_service_discovery_private_dns_namespace" "logbook" {
   vpc         = data.aws_vpc.main.id
 }
 
-# No custom health check (the server image has no shell); the router checks /readyz itself.
 resource "aws_service_discovery_service" "logbook_tasks" {
   name = "tasks"
 
@@ -37,7 +36,7 @@ resource "aws_ecs_task_definition" "logbook_router" {
 
   runtime_platform {
     operating_system_family = "LINUX"
-    cpu_architecture        = "ARM64" # the router image is built for linux/arm64 only
+    cpu_architecture        = "ARM64"
   }
 
   container_definitions = jsonencode([
@@ -61,7 +60,7 @@ resource "aws_ecs_task_definition" "logbook_router" {
         },
       ]
 
-      # Two file handles per WebSocket; maxconn 30000 in haproxy.cfg is sized to this.
+      # two file handles per WebSocket; maxconn 30000 in haproxy.cfg is sized to this.
       ulimits = [
         {
           name      = "nofile"
@@ -70,7 +69,7 @@ resource "aws_ecs_task_definition" "logbook_router" {
         }
       ]
 
-      # The ALB has drained the router by now; hard-stop-after 10s in haproxy.cfg ends the rest.
+      # the ALB has drained the router by now; hard-stop-after 10s in haproxy.cfg ends the rest.
       stopTimeout = 15
 
       logConfiguration = merge(local.log_configuration, {
@@ -81,13 +80,12 @@ resource "aws_ecs_task_definition" "logbook_router" {
     }
   ])
 
-  # CPU grows with typing (0.5 vCPU maxed out at 200 busy pages, measured); 2 GB is the Fargate minimum for 1 vCPU.
+  # CPU grows with typing (0.5 vCPU maxed out at 200 busy pages, measured)
   cpu    = 1024
   memory = 2048
 
   requires_compatibilities = ["FARGATE"]
 
-  # Same role as the server (ECR pull, CloudWatch Logs); the router calls no AWS API.
   execution_role_arn = aws_iam_role.ecs_logbook_task_execution_role.arn
 }
 
@@ -102,8 +100,6 @@ resource "aws_ecs_service" "logbook_router" {
     container_name   = local.router_container_name
     container_port   = local.router_port
   }
-
-  # Task subnets on purpose: the server trusts these ranges as proxies (SERVER_TRUSTED_PROXIES).
   network_configuration {
     security_groups = [aws_security_group.logbook_router.id]
     subnets = [
@@ -116,12 +112,11 @@ resource "aws_ecs_service" "logbook_router" {
   force_new_deployment = true
   desired_count        = var.router_desired_count
 
-  # App Auto Scaling owns the router count.
   lifecycle {
     ignore_changes = [desired_count]
   }
 
-  # All routers build the same hash ring, so a page keeps its task across a router deploy.
+  # all routers build the same hash ring, so a page keeps its task across a router deploy
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
 
@@ -130,7 +125,6 @@ resource "aws_ecs_service" "logbook_router" {
     rollback = true
   }
 
-  # HAProxy answers /routerz as soon as it listens.
   health_check_grace_period_seconds = 30
 
   propagate_tags = "SERVICE"

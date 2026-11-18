@@ -1,5 +1,5 @@
-# Two AZs: RDS and ElastiCache need them, and a task per AZ keeps editing up if one AZ fails.
-# /27 fits twice the tasks during a rolling deploy; /28 fits RDS, its standby and Redis.
+# two AZs: RDS and ElastiCache need them, and a task per AZ keeps editing up if one AZ fails
+# /27 fits twice the tasks during a rolling deploy; /28 fits RDS, its standby and Redis
 
 resource "aws_subnet" "logbook_ecs_a" {
   vpc_id            = var.vpc_id
@@ -37,7 +37,6 @@ resource "aws_subnet" "logbook_data_b" {
   }
 }
 
-# Internet through the shared NAT, for ECR, Keycloak and EntityCore.
 resource "aws_route_table_association" "logbook_ecs_a_internet_access" {
   subnet_id      = aws_subnet.logbook_ecs_a.id
   route_table_id = var.internet_access_route_id

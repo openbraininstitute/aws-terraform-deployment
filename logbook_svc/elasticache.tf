@@ -2,7 +2,7 @@
 # when Redis is down, open pages keep working and new page opens fail after 2 s
 
 resource "aws_elasticache_subnet_group" "logbook" {
-  name       = "logbook-redis-subnet-group" # only alphanumeric characters and hyphens
+  name       = "logbook-redis-subnet-group"
   subnet_ids = [aws_subnet.logbook_data_a.id, aws_subnet.logbook_data_b.id]
 
   tags = {
@@ -11,7 +11,7 @@ resource "aws_elasticache_subnet_group" "logbook" {
 }
 
 resource "aws_elasticache_cluster" "logbook" {
-  cluster_id           = "logbook-redis" # only alphanumeric characters and hyphens
+  cluster_id           = "logbook-redis"
   engine               = "redis"
   engine_version       = "7.1"
   node_type            = var.redis_node_type

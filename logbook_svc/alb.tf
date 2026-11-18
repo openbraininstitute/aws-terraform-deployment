@@ -38,7 +38,6 @@ resource "aws_lb_listener_rule" "logbook_private_listener_rule" {
     target_group_arn = aws_lb_target_group.logbook_private_tg.arn
   }
 
-  # Two patterns, not "${base_path}*", so a future /api/logbooks service isn't caught here.
   condition {
     path_pattern {
       values = [var.base_path, "${var.base_path}/*"]
@@ -58,8 +57,6 @@ resource "aws_lb_target_group" "logbook_router_tg" {
   # Same 20 s as the tasks; browsers then reconnect through another router, which picks the same task.
   deregistration_delay = 20
 
-  # No stickiness: the router's hash is the affinity.
-
   lifecycle {
     create_before_destroy = true
   }
@@ -77,8 +74,8 @@ resource "aws_lb_target_group" "logbook_router_tg" {
   }
 }
 
-# Page paths go to the router, the rest falls to the rule above, so this priority must be lower.
-# The paths must match the page ACL in haproxy.cfg.
+# "page" paths go to the router, the rest falls to the rule above, so this priority must be lower.
+# the paths must match the page ACL in haproxy.cfg.
 resource "aws_lb_listener_rule" "logbook_router_listener_rule" {
   listener_arn = var.private_alb_listener_arn
   priority     = var.router_listener_rule_priority
@@ -97,7 +94,6 @@ resource "aws_lb_listener_rule" "logbook_router_listener_rule" {
     }
   }
 
-  # A precondition: cross-variable validations need Terraform 1.9, and this repo supports >= 1.2.
   lifecycle {
     precondition {
       condition     = var.router_listener_rule_priority < var.alb_listener_rule_priority

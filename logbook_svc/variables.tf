@@ -48,7 +48,6 @@ variable "alb_listener_rule_priority" {
 variable "router_listener_rule_priority" {
   description = "Priority of the page router's rule on the shared private ALB listener, lower than alb_listener_rule_priority."
   type        = number
-  # Checked in alb.tf, because a validation that reads another variable needs Terraform 1.9.
 }
 
 variable "router_image_url" {
@@ -129,7 +128,8 @@ variable "desired_count" {
   description = "Fewest server tasks, the autoscaling floor."
   type        = number
 
-  # Limit: Cloud Map DNS shows the page router at most 8 tasks. Upgrade: a DiscoverInstances poller in the router.
+  # Limit: Cloud Map DNS shows the page router at most 8 tasks
+  # Note: upgrade to DiscoverInstances poller in the router
   validation {
     condition     = var.desired_count <= 8
     error_message = "At most 8 tasks: past that the page router sees only 8."
@@ -145,7 +145,7 @@ variable "max_count" {
   description = "Most server tasks autoscaling may run."
   type        = number
 
-  # Checked against desired_count in autoscaling.tf, because a validation that reads another variable needs Terraform 1.9.
+  # Checked against desired_count in autoscaling.tf
   validation {
     condition     = var.max_count <= 8
     error_message = "At most 8 tasks: past that the page router sees only 8."
