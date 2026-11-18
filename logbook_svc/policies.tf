@@ -1,7 +1,7 @@
 resource "aws_secretsmanager_secret" "logbook_runtime" {
   name_prefix             = "logbook-runtime-"
   description             = "Logbook server: DATABASE_URL, built by Terraform"
-  recovery_window_in_days = 7 # the next apply rebuilds it, so no need for the 30-day default
+  recovery_window_in_days = 7
 }
 
 resource "aws_secretsmanager_secret_version" "logbook_runtime" {
@@ -16,7 +16,6 @@ resource "aws_secretsmanager_secret_version" "logbook_runtime" {
       aws_db_instance.logbook.port,
       var.db_name,
     )
-    # The EntityCore sync signs in as the Keycloak client logbook-server with this.
     KEYCLOAK_SERVICE_CLIENT_SECRET = lookup(local.common_secret, "KEYCLOAK_SERVICE_CLIENT_SECRET", "")
   })
 

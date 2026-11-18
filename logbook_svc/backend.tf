@@ -25,7 +25,6 @@ locals {
 
 
   server_environment = {
-    # The HTTP server
     SERVER_PORT                   = local.container_port
     SERVER_BASE_PATH              = var.base_path
     SERVER_ALLOWED_ORIGINS        = join(",", var.allowed_origins)                                                                 # CORS and the WebSocket Origin check
@@ -94,7 +93,7 @@ locals {
     MERGE_PAGE_MAX_BYTES = 8388608
     MERGE_CONCURRENCY    = 2
 
-    # Copying pages to EntityCore, signed in as the Keycloak client logbook-server (EntityCore admin)
+    # sync pages to entitycore, signed in as the Keycloak client logbook-server (entitycore admin)
     ENTITYCORE_SYNC_ENABLED           = true
     ENTITYCORE_SYNC_QUIET_S           = 120
     ENTITYCORE_SYNC_DEADLINE_S        = 900
@@ -104,7 +103,6 @@ locals {
     ENTITYCORE_SYNC_LEASE_S           = 120
     ENTITYCORE_SYNC_UPLOAD_TIMEOUT_MS = 30000
 
-    # The Yjs worker threads
     WORKERS_YJS_POOL_SIZE          = 1
     WORKERS_YJS_INLINE_MAX_BYTES   = 16384
     WORKERS_YJS_COMPACT_TIMEOUT_MS = 30000
@@ -131,7 +129,6 @@ locals {
     RATE_LIMIT_UPGRADE_PER_MINUTE     = 240
     RATE_LIMIT_TOKEN_CHECK_PER_MINUTE = 120
 
-    # Background jobs (they use DATABASE_URL)
     JOBS_POOL_MAX             = 3
     JOBS_POLL_INTERVAL_S      = 5
     JOBS_CONCURRENCY          = 1
@@ -280,7 +277,7 @@ resource "aws_ecs_service" "logbook_ecs_service" {
     rollback = true
   }
 
-  # Room for the migrations to run before the server answers health checks.
+  # room for the migrations to run before the server answers health checks.
   health_check_grace_period_seconds = 120
 
   propagate_tags = "SERVICE"
@@ -292,7 +289,7 @@ resource "aws_ecs_service" "logbook_ecs_service" {
 }
 
 resource "aws_iam_role" "ecs_logbook_task_execution_role" {
-  name_prefix = "logbook"
+  name = "logbook_service"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

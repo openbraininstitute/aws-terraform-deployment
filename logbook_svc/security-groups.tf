@@ -1,5 +1,3 @@
-# Access by security group, not IP range: only the ALB and router reach the tasks, only the tasks reach the data stores.
-
 resource "aws_security_group" "logbook_ecs_task" {
   name_prefix = "logbook"
   vpc_id      = var.vpc_id
@@ -22,10 +20,9 @@ resource "aws_vpc_security_group_ingress_rule" "logbook_from_alb" {
 
 resource "aws_vpc_security_group_egress_rule" "logbook_allow_outgoing" {
   security_group_id = aws_security_group.logbook_ecs_task.id
-  # Postgres, Redis, ECR, Keycloak and EntityCore (via the ALB), like the other services.
-  ip_protocol = "-1"
-  cidr_ipv4   = "0.0.0.0/0"
-  description = "Allow all outgoing"
+  ip_protocol       = "-1"
+  cidr_ipv4         = "0.0.0.0/0"
+  description       = "Allow all outgoing"
 }
 
 resource "aws_vpc_security_group_ingress_rule" "logbook_from_router" {
@@ -38,7 +35,6 @@ resource "aws_vpc_security_group_ingress_rule" "logbook_from_router" {
   description                  = "HTTP and WebSocket of the pages from the page router (traffic and its /readyz checks)"
 }
 
-# Only the ALB reaches the page router, and it talks only to the tasks (plus ECR and CloudWatch Logs at start).
 resource "aws_security_group" "logbook_router" {
   name_prefix = "logbook_router"
   vpc_id      = var.vpc_id
@@ -61,10 +57,9 @@ resource "aws_vpc_security_group_ingress_rule" "logbook_router_from_alb" {
 
 resource "aws_vpc_security_group_egress_rule" "logbook_router_allow_outgoing" {
   security_group_id = aws_security_group.logbook_router.id
-  # The tasks, the VPC DNS (for Cloud Map), ECR and CloudWatch Logs; same rule as the tasks.
-  ip_protocol = "-1"
-  cidr_ipv4   = "0.0.0.0/0"
-  description = "Allow all outgoing"
+  ip_protocol       = "-1"
+  cidr_ipv4         = "0.0.0.0/0"
+  description       = "Allow all outgoing"
 }
 
 resource "aws_security_group" "logbook_db" {

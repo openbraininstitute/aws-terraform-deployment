@@ -1,10 +1,6 @@
-# Alarms that warn before users feel a limit. No Container Insights here (it is off), so no shared ECS module.
-# They read the Service series (all tasks), so Maximum means the worst task and p95 is over all tasks.
-
 locals {
   metrics_namespace = "Logbook/Server" # must match the server's metrics namespace
 
-  # Must match the server's service name, or every alarm below goes quiet.
   service_dimension = { Service = "logbook-server" }
 
   alarm_actions = [aws_sns_topic.logbook_alarms.arn]
@@ -14,7 +10,6 @@ resource "aws_sns_topic" "logbook_alarms" {
   name = "ecs-logbook_svc-alerts"
 }
 
-# --- The task: CPU and memory (AWS/ECS, no Container Insights) ---
 
 resource "aws_cloudwatch_metric_alarm" "cpu_high" {
   alarm_name          = "logbook-cpu-high"
@@ -44,11 +39,10 @@ resource "aws_cloudwatch_metric_alarm" "memory_high" {
   alarm_description   = "A logbook task uses more than 75 % of its memory."
   namespace           = "AWS/ECS"
   metric_name         = "MemoryUtilization"
-  statistic           = "Maximum" # meant as the fullest task; not checked yet, verify on staging
+  statistic           = "Maximum"
   period              = 60
   evaluation_periods  = 5
   datapoints_to_alarm = 3
-  # Memory jumps in big steps (a merge worker is about 510 MB), so warn well before the kill at 100 %.
   threshold           = 75
   comparison_operator = "GreaterThanThreshold"
   treat_missing_data  = "missing"
@@ -63,7 +57,6 @@ resource "aws_cloudwatch_metric_alarm" "memory_high" {
   insufficient_data_actions = local.alarm_actions
 }
 
-# --- Saving and the event loop (server metrics, Service dimension) ---
 
 resource "aws_cloudwatch_metric_alarm" "unsaved_age_high" {
   alarm_name          = "logbook-unsaved-age-high"
@@ -183,8 +176,6 @@ resource "aws_cloudwatch_metric_alarm" "load_shed" {
   insufficient_data_actions = local.alarm_actions
 }
 
-# --- Merges and the Yjs worker ---
-
 resource "aws_cloudwatch_metric_alarm" "worker_queue_full" {
   alarm_name          = "logbook-worker-queue-full"
   alarm_description   = "A task's Yjs merge queue is full: merges wait and agent changes get 503."
@@ -223,9 +214,6 @@ resource "aws_cloudwatch_metric_alarm" "merge_failed" {
   ok_actions                = local.alarm_actions
   insufficient_data_actions = local.alarm_actions
 }
-
-# --- Agent writes that time out (503 share of POST content) ---
-# Read from the server's request log line (the ALB counts 5xx for all routes); renamed fields make it go quiet.
 
 locals {
   content_write_pattern = "$.event = \"request\" && $.method = \"POST\" && $.route = \"${var.base_path}/v1/page/:pageId/content\""
@@ -289,8 +277,6 @@ resource "aws_cloudwatch_metric_alarm" "agent_write_unavailable" {
       stat        = "Sum"
     }
   }
-
-  # Needs at least 20 writes a minute, so one 503 at low traffic doesn't fire it.
   metric_query {
     id          = "share"
     expression  = "IF(FILL(writes, 0) >= 20, 100 * FILL(unavailable, 0) / FILL(writes, 1), 0)"

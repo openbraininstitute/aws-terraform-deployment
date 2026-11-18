@@ -72,14 +72,12 @@ resource "aws_cloudwatch_metric_alarm" "busy_scale_out" {
   statistic         = "Average"
   dimensions        = local.service_dimension
 
-  # 30 s: long enough to skip a burst like a paste, short because a new task takes minutes.
   period              = 10
   evaluation_periods  = 3
   datapoints_to_alarm = 3
   threshold           = var.scale_out_busy_pct
   comparison_operator = "GreaterThanOrEqualToThreshold"
 
-  # No metrics is no reason to add tasks.
   treat_missing_data = "notBreaching"
 
   alarm_actions = [aws_appautoscaling_policy.logbook_scale_out.arn]
@@ -93,20 +91,18 @@ resource "aws_cloudwatch_metric_alarm" "busy_scale_in" {
   statistic         = "Average"
   dimensions        = local.service_dimension
 
-  # Every minute for 15 minutes: truly quiet, not a short lull.
   period              = 60
   evaluation_periods  = 15
   datapoints_to_alarm = 15
   threshold           = var.scale_in_busy_pct
   comparison_operator = "LessThanOrEqualToThreshold"
 
-  # Never remove a task blind.
   treat_missing_data = "notBreaching"
 
   alarm_actions = [aws_appautoscaling_policy.logbook_scale_in.arn]
 }
 
-# Routers scale on average CPU; they all share one page-to-task map, so adding or removing one moves no page.
+# routers scale on average CPU; they all share one page-to-task map, so adding or removing one moves no page.
 resource "aws_appautoscaling_target" "logbook_router" {
   min_capacity       = var.router_desired_count
   max_capacity       = var.router_max_count
@@ -134,7 +130,7 @@ resource "aws_appautoscaling_policy" "logbook_router_cpu" {
       predefined_metric_type = "ECSServiceAverageCPUUtilization"
     }
 
-    # Room to spare while a new router starts; a full router slows every page on it.
+    # room to spare while a new router starts; a full router slows every page on it.
     target_value       = 60
     scale_out_cooldown = 120  # seconds
     scale_in_cooldown  = 1800 # seconds: each scale-in reconnects that router's sockets

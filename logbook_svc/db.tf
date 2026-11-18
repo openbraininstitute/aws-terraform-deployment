@@ -8,7 +8,7 @@ resource "aws_db_parameter_group" "logbook" {
 
   parameter {
     name  = "rds.force_ssl"
-    value = "1" # already the default on PostgreSQL 15+; set anyway: no plain-text connections
+    value = "1" # already the default
   }
 
   parameter {
@@ -37,7 +37,7 @@ resource "aws_db_instance" "logbook" {
   #ts:skip=AC_AWS_0058
 
   engine         = "postgres"
-  engine_version = "18" # RDS picks the default 18.x minor; minor upgrades happen in the maintenance window
+  engine_version = "18"
   multi_az       = var.db_multi_az
   instance_class = var.db_instance_class
 
@@ -45,10 +45,10 @@ resource "aws_db_instance" "logbook" {
 
 
   storage_type          = "gp3"
-  allocated_storage     = 20  # in gigabytes; the gp3 minimum
-  max_allocated_storage = 200 # in gigabytes
+  allocated_storage     = 20
+  max_allocated_storage = 200
 
-  backup_retention_period = 0 # in days
+  backup_retention_period = 0
   backup_window           = "01:00-02:00"
   maintenance_window      = "sun:05:00-sun:06:00"
 
