@@ -16,7 +16,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_high" {
   alarm_description   = "A logbook task is above 70 % CPU for 5 minutes, near its limit."
   namespace           = "AWS/ECS"
   metric_name         = "CPUUtilization"
-  statistic           = "Maximum" # meant as the hottest task; not checked yet, verify on staging
+  statistic           = "Maximum" # with the service dimension: the busiest task (AWS docs)
   period              = 60
   evaluation_periods  = 5
   datapoints_to_alarm = 5

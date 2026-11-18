@@ -393,7 +393,7 @@ variable "logbook_svc_max_count" {
 variable "logbook_svc_scale_out_busy_pct" {
   type        = number
   description = "Average busy share (loop.busy.pct, 0 to 100) that adds a logbook server task after 30 s."
-  default     = 60
+  default     = 60 # a starting guess: set the real one from a load test on one task
 }
 
 variable "logbook_svc_scale_in_busy_pct" {
@@ -405,13 +405,13 @@ variable "logbook_svc_scale_in_busy_pct" {
 variable "logbook_svc_hand_off_busy_pct" {
   type        = number
   description = "Server env COLLABORATION_HAND_OFF_BUSY_PCT: one task's busy share at which it moves pages to other tasks (0 never)."
-  default     = 0
+  default     = 85 # above the scale-out level, so adding a task comes first
 }
 
 variable "logbook_svc_shed_loop_delay_ms" {
   type        = number
   description = "Server env COLLABORATION_SHED_LOOP_DELAY_MS: event loop delay (ms) at which a task turns new work away (0 never)."
-  default     = 0
+  default     = 200
 }
 
 variable "logbook_db_connections_high_threshold" {
