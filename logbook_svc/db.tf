@@ -43,12 +43,11 @@ resource "aws_db_instance" "logbook" {
 
   deletion_protection = true #tfsec:ignore:AVD-AWS-0177
 
-  # Storage grows by itself up to the max, with no downtime, so a full disk never stops saves.
+
   storage_type          = "gp3"
   allocated_storage     = 20  # in gigabytes; the gp3 minimum
   max_allocated_storage = 200 # in gigabytes
 
-  # Backups come from AWS Backup (obi_backup_plan tag), not RDS automated backups.
   backup_retention_period = 0 # in days
   backup_window           = "01:00-02:00"
   maintenance_window      = "sun:05:00-sun:06:00"
@@ -63,7 +62,7 @@ resource "aws_db_instance" "logbook" {
 
   publicly_accessible = false
 
-  # Can only be set at creation; free with the AWS-managed key.
+
   storage_encrypted = true
 
   vpc_security_group_ids = [aws_security_group.logbook_db.id]
