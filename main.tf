@@ -664,8 +664,13 @@ module "logbook_svc" {
   # Must match the page router image's prefix.
   base_path = "/api/logbook" # the image's SERVER_BASE_PATH default
 
-  # The server has no wildcard origins, so preview deployments can't open the live socket.
-  allowed_origins = [for origin in local.core_web_app_origins : origin if !strcontains(origin, "*")]
+  # Exact origins: the server takes no host wildcard, so preview deployments can't open the live
+  # socket. In staging also localhost and 127.0.0.1 on any port (`:*`, as
+  # core_web_app_cors_origin_regex allows the other services), so a local web app reaches it.
+  allowed_origins = concat(
+    [for origin in local.core_web_app_origins : origin if !strcontains(origin, "*")],
+    local.is_staging ? ["http://localhost:*", "http://127.0.0.1:*"] : []
+  )
 
   # The private ALB and the Azure Application Gateway; the module adds the router's subnets.
   trusted_proxy_cidr_blocks = concat(
