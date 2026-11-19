@@ -40,6 +40,7 @@ variable "vpc_id" {
 variable "docker_image_url" {
   type        = string
   description = "docker image for the thumbnail generation api"
+  nullable    = false # the root variable is optional (not set in sandboxes): fail here, at plan
 }
 
 variable "base_path" {
@@ -67,4 +68,13 @@ variable "cors_origin_regex" {
   description = "CORS origin regex"
   type        = string
   default     = null
+}
+
+variable "environment" {
+  description = "ENVIRONMENT of the app: tags its logs and Sentry events"
+  type        = string
+  validation {
+    condition     = contains(["staging", "production"], var.environment)
+    error_message = "Deployed in staging and production only."
+  }
 }

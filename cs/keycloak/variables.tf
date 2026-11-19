@@ -82,6 +82,11 @@ variable "keycloak_ecs_service_name" {
   type = string
 }
 
+variable "keycloak_container_image_url" {
+  type        = string
+  description = "Docker image URL for the Keycloak container"
+}
+
 variable "keycloak_task_size" {
   type = object({
     cpu    = number

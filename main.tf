@@ -130,10 +130,11 @@ module "cs" {
   db_instance_class              = var.keycloak_db_instance_class
   private_alb_https_listener_arn = local.private_alb_https_listener_arn
 
-  keycloak_secrets_arn    = local.keycloak_secrets_arn
-  keycloak_admin_hostname = data.terraform_remote_state.common.outputs.keycloak_admin_hostname
-  keycloak_admin_cert_arn = data.terraform_remote_state.common.outputs.keycloak_admin_cert_arn
-  keycloak_task_size      = var.keycloak_task_size
+  keycloak_secrets_arn         = local.keycloak_secrets_arn
+  keycloak_admin_hostname      = data.terraform_remote_state.common.outputs.keycloak_admin_hostname
+  keycloak_admin_cert_arn      = data.terraform_remote_state.common.outputs.keycloak_admin_cert_arn
+  keycloak_task_size           = var.keycloak_task_size
+  keycloak_container_image_url = var.keycloak_container_image_url
 
   keycloak_allowed_source_ip_cidr_blocks       = ["0.0.0.0/0"]
   keycloak_admin_allowed_source_ip_cidr_blocks = ["${module.bastion_host.bastion_instance_private_ip}/32"]
@@ -804,6 +805,12 @@ module "obi_one_v2" {
 module "thumbnail_generation_api" {
   source = "./thumbnail-generation-api"
 
+  count = (local.is_staging || local.is_production) ? 1 : 0
+
+  providers = {
+    aws = aws.thumbnail-generation-api
+  }
+
   private_alb_https_listener_arn = local.private_alb_https_listener_arn
   route_table_id                 = local.route_table_private_subnets_id
   vpc_cidr_block                 = local.vpc_cidr_block
@@ -817,6 +824,7 @@ module "thumbnail_generation_api" {
   cors_origins                  = local.core_web_app_origins
   cors_origin_regex             = local.core_web_app_cors_origin_regex
   entitycore_url                = "https://${local.cell_a_primary_domain}/api/entitycore"
+  environment                   = local.is_production ? "production" : "staging"
 }
 
 module "virtual_lab_manager" {
@@ -954,6 +962,7 @@ module "launch_system" {
     [
       var.launch_system_aca_in_azure_cidr_block,
       var.launch_system_batch_in_azure_cidr_block,
+      var.core_web_app_in_azure_cidr_block,
     ],
   )
 
@@ -1064,18 +1073,21 @@ module "dashboards" {
   aws_region = local.aws_region
 
   private_load_balancer_id = local.private_alb_https_listener_arn
-  private_load_balancer_target_suffixes = {
-    "AccountingService"   = module.accounting_svc.private_lb_rule_suffix
-    "EntityCoreService"   = module.entitycore_svc.private_lb_rule_suffix
-    "KeyCloak"            = module.cs.private_keycloak_lb_rule_suffix
-    "SmallScaleSimulator" = module.small_scale_simulator.private_lb_rule_suffix
-    "SonataCellService"   = module.cells_svc.private_lb_rule_suffix
-    "ThumbnailGenerator"  = module.thumbnail_generation_api.private_lb_rule_suffix
-    "VLabManager"         = module.virtual_lab_manager.private_arn_suffix
-    "ObiOneV2"            = module.obi_one_v2.private_lb_rule_suffix
-    "LaunchSystem"        = module.launch_system.private_lb_rule_suffix
-    "GradingService"      = module.grading_service.private_lb_rule_suffix
-  }
+  private_load_balancer_target_suffixes = merge(
+    {
+      "AccountingService"   = module.accounting_svc.private_lb_rule_suffix
+      "EntityCoreService"   = module.entitycore_svc.private_lb_rule_suffix
+      "KeyCloak"            = module.cs.private_keycloak_lb_rule_suffix
+      "SmallScaleSimulator" = module.small_scale_simulator.private_lb_rule_suffix
+      "SonataCellService"   = module.cells_svc.private_lb_rule_suffix
+      "VLabManager"         = module.virtual_lab_manager.private_arn_suffix
+      "ObiOneV2"            = module.obi_one_v2.private_lb_rule_suffix
+      "LaunchSystem"        = module.launch_system.private_lb_rule_suffix
+      "GradingService"      = module.grading_service.private_lb_rule_suffix
+    },
+    # Only where the service is deployed (staging and production).
+    { for service in module.thumbnail_generation_api : "ThumbnailGenerator" => service.private_lb_rule_suffix },
+  )
 }
 
 

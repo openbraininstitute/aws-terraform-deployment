@@ -12,7 +12,7 @@ resource "aws_ecs_task_definition" "sbo_keycloak_task" {
   container_definitions = jsonencode([
     {
       name      = "keycloak-container"
-      image     = "quay.io/keycloak/keycloak:26.5.7"
+      image     = var.keycloak_container_image_url
       cpu       = var.keycloak_task_size.cpu
       memory    = var.keycloak_task_size.memory
       command   = ["start", "--spi-events-listener-jboss-logging-success-level=info", "--spi-events-listener-jboss-logging-error-level=error"]

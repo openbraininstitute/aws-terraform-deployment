@@ -50,6 +50,17 @@ provider "aws" {
   }
 }
 
+# Was the module's own provider; a module with count must get it from here.
+provider "aws" {
+  alias  = "thumbnail-generation-api"
+  region = "us-east-1" # the default provider's region, which var.aws_region was
+  default_tags {
+    tags = {
+      SBO_Billing = "thumbnail_generation_api"
+    }
+  }
+}
+
 provider "aws" {
   alias = "networking"
   default_tags {

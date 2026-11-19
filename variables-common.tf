@@ -253,6 +253,11 @@ variable "keycloak_db_instance_class" {
   description = "RDS instance class for the Keycloak database"
 }
 
+variable "keycloak_container_image_url" {
+  type        = string
+  description = "Docker image URL for the Keycloak container"
+}
+
 variable "keycloak_task_size" {
   type = object({
     cpu    = number
@@ -434,7 +439,8 @@ variable "logbook_redis_node_type" {
 
 variable "thumbnail_generation_api_docker_image_url" {
   type        = string
-  description = "Docker image for the thumbnail generation api"
+  description = "Docker image for the thumbnail generation api (staging and production only)"
+  default     = null
   sensitive   = false
 }
 
