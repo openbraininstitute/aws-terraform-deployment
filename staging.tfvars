@@ -197,8 +197,8 @@ research_agent_enabled = true
 # --- logbook server: STAGING values ---
 # On: needs the common secret and the ECR pull permission for role logbook_service.
 logbook_enabled           = true
-logbook_svc_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/logbook-server:2026.11.19.3"
-logbook_router_image_url  = "985539765147.dkr.ecr.us-east-1.amazonaws.com/logbook-router:2026.11.19.3" # same version as the server
+logbook_svc_image_url     = "985539765147.dkr.ecr.us-east-1.amazonaws.com/logbook-server:2026.11.19.4"
+logbook_router_image_url  = "985539765147.dkr.ecr.us-east-1.amazonaws.com/logbook-router:2026.11.19.4" # same version as the server
 logbook_svc_desired_count = 1                                                                          # one task is enough to test; use 2 to test the Redis relay between tasks
 logbook_svc_max_count     = 2                                                                          # one extra task, enough to watch a scale-out
 # Limit: about 80 connections, so at most 2 tasks (a deploy holds 58). Upgrade: db.t4g.small for up to 6.
