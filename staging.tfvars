@@ -20,15 +20,15 @@ notebook_service_azure_storage_account    = "obijupstoragestag"
 keycloak_sbo_realm_url = "https://staging.cell-a.openbraininstitute.org/auth/realms/SBO"
 keycloak_url_with_auth = "https://staging.cell-a.openbraininstitute.org/auth/"
 
-neuroagent_typescript_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-ts-v0.2.3"
+neuroagent_typescript_docker_image_url = "985539765147.dkr.ecr.us-east-1.amazonaws.com/neuroagent:neuroagent-ts-v0.3.0"
 ml_neuroagent_typescript_bucket_name   = "ml-neuroagent-typescript-staging"
 ml_typescript_subnet_a_cidr            = "10.0.9.0/24"
 ml_typescript_subnet_b_cidr            = "10.0.7.0/24"
 grading_service_docker_image_url       = "985539765147.dkr.ecr.us-east-1.amazonaws.com/grading-service:staging"
 research_agent_docker_image_url        = "985539765147.dkr.ecr.us-east-1.amazonaws.com/research-agent:v0.5.3"
 
-small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2026.11.10.1"
-small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2026.11.10.1"
+small_scale_simulator_api_docker_image_url    = "public.ecr.aws/openbraininstitute/single-cell-simulator:api-2026.11.20.1"
+small_scale_simulator_worker_docker_image_url = "public.ecr.aws/openbraininstitute/single-cell-simulator:worker-2026.11.20.1"
 small_scale_simulator_api_task_size = {
   cpu    = 256
   memory = 512
@@ -124,16 +124,16 @@ entitycore_svc_aws_s3_internal_region    = "us-east-1"
 entitycore_svc_aws_s3_open_bucket        = "openbluebrain"
 entitycore_svc_aws_s3_open_region        = "us-west-2"
 entitycore_svc_s3_bucket_allowed_origins = ["*"]
-entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2026.11.6"
+entitycore_svc_image_url                 = "public.ecr.aws/openbraininstitute/entitycore:2026.11.7"
 entitycore_svc_task_size = {
   cpu    = 1024
   memory = 4096
 }
 
 obi_one_v2_base_image_url       = "985539765147.dkr.ecr.us-east-1.amazonaws.com/obi-one"
-obi_one_v2_tag                  = "2026.11.7"
-obi_one_v2_ec2_instance_type    = "t3.medium" # vCPUs: 2, Memory: 4 GiB
-obi_one_v2_ec2_root_volume_size = 200         # GiB; holds images, the S3 mount cache and staged circuits
+obi_one_v2_tag                  = "2026.11.8"
+obi_one_v2_ec2_instance_type    = "t4g.medium" # vCPUs: 2, Memory: 4 GiB
+obi_one_v2_ec2_root_volume_size = 200          # GiB; holds images, the S3 mount cache and staged circuits
 obi_one_v2_ecs_task_size = {
   cpu    = 2048
   memory = 3584

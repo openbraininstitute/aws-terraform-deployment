@@ -777,7 +777,7 @@ module "obi_one_v2" {
 
   allowed_source_ip_cidr_blocks = ["0.0.0.0/0"]
 
-  amazon_linux_ecs_ami_id = data.aws_ami.amazon_linux_2_ecs.id
+  amazon_linux_ecs_ami_id = data.aws_ami.amazon_linux_2_ecs_arm64.id
 
   docker_image_url = local.obi_one_v2_docker_image_url
 
