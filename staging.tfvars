@@ -131,9 +131,9 @@ entitycore_svc_task_size = {
 }
 
 obi_one_v2_base_image_url       = "985539765147.dkr.ecr.us-east-1.amazonaws.com/obi-one"
-obi_one_v2_tag                  = "2026.11.7"
-obi_one_v2_ec2_instance_type    = "t3.medium" # vCPUs: 2, Memory: 4 GiB
-obi_one_v2_ec2_root_volume_size = 200         # GiB; holds images, the S3 mount cache and staged circuits
+obi_one_v2_tag                  = "2026.11.8"
+obi_one_v2_ec2_instance_type    = "t4g.medium" # vCPUs: 2, Memory: 4 GiB
+obi_one_v2_ec2_root_volume_size = 200          # GiB; holds images, the S3 mount cache and staged circuits
 obi_one_v2_ecs_task_size = {
   cpu    = 2048
   memory = 3584
