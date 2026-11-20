@@ -205,6 +205,11 @@ resource "aws_ecs_task_definition" "obi_one_v2_ecs_definition" {
 
   requires_compatibilities = ["EC2"]
 
+  runtime_platform {
+    cpu_architecture        = "ARM64"
+    operating_system_family = "LINUX"
+  }
+
   execution_role_arn = aws_iam_role.obi_one_v2_ecs_task_execution_role.arn
   task_role_arn      = aws_iam_role.obi_one_v2_ecs_task_role.arn
 
