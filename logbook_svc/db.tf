@@ -7,11 +7,6 @@ resource "aws_db_parameter_group" "logbook" {
   }
 
   parameter {
-    name  = "rds.force_ssl"
-    value = "1" # already the default
-  }
-
-  parameter {
     name  = "random_page_cost"
     value = "1.1" # default 4 is for spinning disks; gp3 is SSD
   }
