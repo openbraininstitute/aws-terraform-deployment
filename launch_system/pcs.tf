@@ -166,7 +166,8 @@ resource "awscc_pcs_compute_node_group" "pcs_nodegroup_small" {
 
   scaling_configuration = {
     min_instance_count = 0
-    max_instance_count = 4
+    # SMALL cluster allows 32 total across all node groups; large reserves 20
+    max_instance_count = 12
   }
 
   slurm_configuration = {
