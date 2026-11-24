@@ -6,6 +6,7 @@ resource "aws_ecs_service" "keycloak_service_terraform" {
   # TEMPORARY (keycloak 26.6+ migration): never run old and new versions together. Revert after the upgrade.
   deployment_minimum_healthy_percent = 0
   deployment_maximum_percent         = 100
+  health_check_grace_period_seconds  = 300
   launch_type                        = "FARGATE"
   network_configuration {
     subnets         = var.private_subnets

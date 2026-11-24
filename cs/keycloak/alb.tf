@@ -5,6 +5,9 @@ resource "aws_lb_target_group" "private_keycloak_target_group" {
   protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = var.vpc_id
+
+  deregistration_delay = 30
+
   tags = {
     Name        = "Private Keycloak Target Group"
     SBO_Billing = "keycloak"
@@ -13,10 +16,10 @@ resource "aws_lb_target_group" "private_keycloak_target_group" {
     path                = "/auth/health/ready"
     port                = var.keycloak_management_port
     protocol            = "HTTP"
-    interval            = 60
+    interval            = 15
     timeout             = 5
     healthy_threshold   = 2
-    unhealthy_threshold = 2
+    unhealthy_threshold = 3
     matcher             = "200"
   }
 }
