@@ -300,3 +300,5 @@
 /Simulatable_Circuit/Circuits/nbS1-HEX0_v2
 /Simulatable_Circuit/ConnectivityMatrixFolders/nbS1-HEX0_v2
 /Simulatable_Circuit/Circuits/SSp-bfd-spec
+/Simulatable_Circuit/Circuits/Human_Stochastic_Microcircuit
+/Simulatable_Circuit/ConnectivityMatrixFolders/Human_Stochastic_Microcircuit
