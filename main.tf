@@ -399,6 +399,7 @@ module "research_agent" {
   internet_access_route_id = local.route_table_private_subnets_id
 
   container_uri = var.research_agent_docker_image_url
+  model_id      = "us.anthropic.claude-opus-5-5"
 
   notebook_service_url = "https://${local.cell_a_primary_domain}/api/notebook_service"
   auth_manager_url     = "https://${local.cell_a_primary_domain}/api/auth-manager"
