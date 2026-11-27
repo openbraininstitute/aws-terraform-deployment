@@ -639,6 +639,11 @@ variable "pcs_ami" {
   type = string
 }
 
+variable "pcs_slurm_version" {
+  description = "Slurm major version of the PCS cluster controller; pcs_ami must contain a compatible Slurm (see launch_system/pcs.tf)"
+  type        = string
+}
+
 variable "pcs_large_instance_type" {
   description = "EC2 instance type for the large PCS compute node group"
   type        = string

@@ -18,9 +18,15 @@ resource "awscc_pcs_cluster" "cluster" {
   # https://docs.aws.amazon.com/pcs/latest/userguide/slurm-versions.html
   # note that changes to the version may require changes to the slurm `url`
   # and the service if the slrmREST API has changed
+  #
+  # The version is updated in place (UpdateCluster, needs awscc >= 1.90).
+  # Before changing it, roll out a `pcs_ami` that contains both the current
+  # and the target Slurm versions: the PCS agent starts the slurmd matching
+  # the controller, so nodes keep working before and after the update.
+  # https://docs.aws.amazon.com/pcs/latest/userguide/working-with_clusters_version_update.html
   scheduler = {
     type    = "SLURM"
-    version = "25.05"
+    version = var.pcs_slurm_version
   }
   size = "SMALL"
   slurm_configuration = {

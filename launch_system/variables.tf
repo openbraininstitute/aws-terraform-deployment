@@ -328,6 +328,11 @@ variable "pcs_ami" {
   type        = string
 }
 
+variable "pcs_slurm_version" {
+  description = "Slurm major version of the PCS cluster controller, e.g. 26.05"
+  type        = string
+}
+
 variable "pcs_nat_gateway_id" {
   description = "NAT Gateway ID for PCS to connect to the internet, instead of public IPs"
   type        = string
