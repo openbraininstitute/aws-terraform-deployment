@@ -53,7 +53,7 @@ variable "research_agent_enabled" {
 }
 
 variable "logbook_tools_enabled" {
-  description = "Turns on neuroagent-ts's logbook-* MCP tools and their obi-logbook skill. The tools call the logbook server at /api/logbook on primary_domain. When it is off, neuroagent serves no logbook tool and the obi-logbook skill keeps logbook.md."
+  description = "Turns on neuroagent-ts's logbook-* MCP tools. The tools call the logbook server at /api/logbook on primary_domain. When it is off, neuroagent serves no logbook tool."
   type        = bool
   default     = false
 }
