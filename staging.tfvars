@@ -194,6 +194,8 @@ databases_to_backup_arns       = ["arn:aws:rds:us-east-1:992382665735:db:account
 
 research_agent_enabled = true
 
+neuroagent_logbook_tools_enabled = true
+
 # --- logbook server: STAGING values ---
 # On: needs the common secret and the ECR pull permission for role logbook_service.
 logbook_enabled           = true
