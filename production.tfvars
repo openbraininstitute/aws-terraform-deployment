@@ -197,7 +197,7 @@ databases_to_backup_arns       = ["arn:aws:rds:us-east-1:671250183987:db:account
 # tools/endpoints for it.
 research_agent_enabled = false
 
-# neuroagent-ts's logbook-* MCP tools: off, so production agents keep the
+# neuroagent-ts's logbook-* MCP tools stay off, so production agents keep the
 # obi-logbook skill with logbook.md until launch.
 neuroagent_logbook_tools_enabled = false
 

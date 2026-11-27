@@ -360,7 +360,7 @@ variable "logbook_enabled" {
 
 variable "neuroagent_logbook_tools_enabled" {
   type        = bool
-  description = "Turns on neuroagent-ts's logbook-* MCP tools for this environment. Needs logbook_enabled, since the tools call the logbook server. Off in production while the tools are tested in staging."
+  description = "Turns on neuroagent-ts's logbook-* MCP tools for this environment. It needs logbook_enabled, because the tools call the logbook server. Production keeps it off while the team tests the tools in staging."
   default     = false
 }
 

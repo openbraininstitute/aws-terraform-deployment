@@ -194,7 +194,7 @@ databases_to_backup_arns       = ["arn:aws:rds:us-east-1:992382665735:db:account
 
 research_agent_enabled = true
 
-# neuroagent-ts's logbook-* MCP tools: tested here before production.
+# neuroagent-ts's logbook-* MCP tools. The team tests them here before production.
 neuroagent_logbook_tools_enabled = true
 
 # --- logbook server: STAGING values ---
