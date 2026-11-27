@@ -52,6 +52,12 @@ variable "research_agent_enabled" {
   default     = false
 }
 
+variable "logbook_tools_enabled" {
+  description = "Turns on neuroagent-ts's logbook-* MCP tools and their obi-logbook skill, served by the logbook server at /api/logbook of primary_domain. Off: no logbook tool, and the obi-logbook skill keeps logbook.md."
+  type        = bool
+  default     = false
+}
+
 variable "research_agent_runtime_arn" {
   description = "ARN of the research_agent AgentCore Runtime (module.research_agent.agent_runtime_arn), empty until that module is applied."
   type        = string

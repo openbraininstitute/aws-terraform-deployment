@@ -170,7 +170,16 @@ module "ecs_service_agent" {
           name  = "NEUROAGENT__RESEARCH_AGENT__ENABLED"
           value = tostring(var.research_agent_enabled)
         },
-      ])
+        ], var.logbook_tools_enabled ? [
+        {
+          name  = "NEUROAGENT__TOOLS__LOGBOOK__ENABLED"
+          value = "true"
+        },
+        {
+          name  = "NEUROAGENT__TOOLS__LOGBOOK__URL"
+          value = "https://${var.primary_domain}/api/logbook"
+        },
+      ] : [])
       secrets = [
         {
           name      = "NEUROAGENT__DB__PASSWORD"

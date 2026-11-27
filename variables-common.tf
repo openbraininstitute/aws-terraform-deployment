@@ -358,6 +358,12 @@ variable "logbook_enabled" {
   default     = false
 }
 
+variable "neuroagent_logbook_tools_enabled" {
+  type        = bool
+  description = "Turns on neuroagent-ts's logbook-* MCP tools for this environment. Needs logbook_enabled, since the tools call the logbook server. Off in production while the tools are tested in staging."
+  default     = false
+}
+
 variable "logbook_svc_image_url" {
   type        = string
   description = "Image URL for the logbook server (linux/arm64)."
