@@ -157,6 +157,7 @@ resource_provisioner_container_uri  = "985539765147.dkr.ecr.us-east-1.amazonaws.
 pcs_ami                 = "ami-05ab51b6e76cb8213"
 pcs_large_instance_type = "hpc7a.96xlarge"
 pcs_large_enable_efa    = true
+pcs_slurm_version       = "25.05"
 
 backup_s3_buckets              = ["erik-nexus-manual", "sboinfrastructureassets-sandbox"]
 ssm_readonly_access_policy_arn = "arn:aws:iam::130659266700:policy/obi_SSMBastionUserAccess"

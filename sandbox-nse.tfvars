@@ -139,6 +139,7 @@ resource_provisioner_container_uri                 = "985539765147.dkr.ecr.us-ea
 pcs_ami                 = "ami-0fa11a6354572d8b5"
 pcs_large_instance_type = "c5n.large" # 2 vCPUs, 5.3 GiB
 pcs_large_enable_efa    = false
+pcs_slurm_version       = "25.05"
 
 create_nas_backup_user         = false
 backup_s3_buckets              = []

@@ -1019,6 +1019,7 @@ module "launch_system" {
   emodel_optimisation_launch_command = "source /data/scratch/run-emodel-optimisation-venv/bin/activate && python3 /data/scratch/run_emodel_optimisation.py"
 
   pcs_ami                            = var.pcs_ami
+  pcs_slurm_version                  = var.pcs_slurm_version
   pcs_nat_gateway_id                 = data.terraform_remote_state.common.outputs.nat_gateway_id
   pcs_cidr_block                     = "10.0.36.0/24"
   pcs_fsx_scratch_s3_bucket_name     = "obi-pcs-scratch-fsx-${local.suffix}"
